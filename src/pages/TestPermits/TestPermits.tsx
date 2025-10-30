@@ -139,7 +139,7 @@ export function TestPermits() {
                   key={token.address}
                   className="flex cursor-pointer items-center space-x-6 border-b-1/2 border-slate-600 p-2 pb-4"
                 >
-                  <TokenIcon symbol={token.symbol} displaySize={32} importSize={40} />
+                  <TokenIcon symbol={token.symbol} displaySize={32} />
                   <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex flex-col gap-2 hover:underline" onClick={() => handleTokenClick(token)}>
                       <span className="text-lg truncate font-medium">{token.symbol}</span>
@@ -189,7 +189,7 @@ export function TestPermits() {
           {selectedToken && (
             <div className="flex min-w-[400px] flex-col  space-y-8">
               <div className="mb-6 flex flex-col space-x-4">
-                <TokenIcon symbol={selectedToken.symbol} displaySize={40} importSize={40} />
+                <TokenIcon symbol={selectedToken.symbol} displaySize={40} />
                 <div>
                   <h2 className="text-2xl font-semibold text-typography-primary">{selectedToken.symbol}</h2>
                   <div>

@@ -7,9 +7,9 @@ import type { PositionTradeAction } from "types/tradeHistory";
 import type { SwapTradeAction } from "types/tradeHistory";
 
 import { getByKey } from "./objects";
-import { isIncreaseOrderType, isSwapOrderType } from "./orders";
+import { isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType, isSwapOrderType } from "./orders";
 import { getSwapPathOutputAddresses } from "./swap/swapStats";
-import { parseContractPrice } from "./tokens";
+import { convertToUsd, parseContractPrice } from "./tokens";
 import { TradeActionType } from "../types/tradeHistory";
 
 export function createRawTradeActionTransformer(
@@ -45,6 +45,7 @@ export function createRawTradeActionTransformer(
       }
 
       const tradeAction: SwapTradeAction = {
+        type: "swap",
         id: rawAction.id,
         srcChainId: rawAction.srcChainId ? Number(rawAction.srcChainId) : undefined,
         eventName: rawAction.eventName as TradeActionType,
@@ -95,6 +96,7 @@ export function createRawTradeActionTransformer(
       }
 
       const tradeAction: PositionTradeAction = {
+        type: "position",
         id: rawAction.id,
         eventName: rawAction.eventName as TradeActionType,
         account: rawAction.account,
@@ -108,6 +110,7 @@ export function createRawTradeActionTransformer(
         targetCollateralToken,
         initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
         sizeDeltaUsd: bigNumberify(rawAction.sizeDeltaUsd)!,
+        sizeDeltaInTokens: rawAction.sizeDeltaInTokens ? bigNumberify(rawAction.sizeDeltaInTokens) : undefined,
         triggerPrice: rawAction.triggerPrice
           ? parseContractPrice(bigNumberify(rawAction.triggerPrice)!, indexToken.decimals)
           : undefined,
@@ -135,7 +138,6 @@ export function createRawTradeActionTransformer(
         orderType,
         orderKey: rawAction.orderKey,
         isLong: rawAction.isLong!,
-        pnlUsd: rawAction.pnlUsd ? BigInt(rawAction.pnlUsd) : undefined,
         basePnlUsd: rawAction.basePnlUsd ? BigInt(rawAction.basePnlUsd) : undefined,
 
         priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigInt(rawAction.priceImpactDiffUsd) : undefined,
@@ -161,9 +163,42 @@ export function createRawTradeActionTransformer(
             : undefined,
       };
 
+      tradeAction.pnlUsd = getTradeActionPnlUsd(tradeAction);
+
       return tradeAction;
     }
   };
+}
+
+export function getTradeActionPnlUsd({
+  basePnlUsd,
+  borrowingFeeAmount,
+  fundingFeeAmount,
+  positionFeeAmount,
+  liquidationFeeAmount,
+  collateralTokenPriceMax,
+  initialCollateralToken,
+  totalImpactUsd,
+  orderType,
+}: PositionTradeAction): bigint | undefined {
+  if (
+    (!isDecreaseOrderType(orderType) && !isLiquidationOrderType(orderType)) ||
+    basePnlUsd === undefined ||
+    borrowingFeeAmount === undefined ||
+    fundingFeeAmount === undefined ||
+    positionFeeAmount === undefined ||
+    liquidationFeeAmount === undefined ||
+    collateralTokenPriceMax === undefined ||
+    initialCollateralToken === undefined ||
+    totalImpactUsd === undefined
+  ) {
+    return undefined;
+  }
+
+  const feeTotalAmount = borrowingFeeAmount + fundingFeeAmount + positionFeeAmount + liquidationFeeAmount;
+  const feeUsd = convertToUsd(feeTotalAmount, initialCollateralToken.decimals, collateralTokenPriceMax)!;
+
+  return basePnlUsd - feeUsd + totalImpactUsd;
 }
 
 export function bigNumberify(n?: bigint | string | null | undefined) {

@@ -254,9 +254,7 @@ export default function TokenSelector(props: Props) {
                   />
                 )}
                 <div className="Token-info">
-                  {showTokenImgInDropdown && (
-                    <TokenIcon symbol={token.symbol} displaySize={40} importSize={40} badge={tokenBadge} />
-                  )}
+                  {showTokenImgInDropdown && <TokenIcon symbol={token.symbol} displaySize={40} badge={tokenBadge} />}
                   <div className="items ml-16 flex gap-4">
                     <div>
                       {token.isMarketToken && marketToken ? `GM: ${getMarketIndexName(marketToken)}` : token.symbol}
@@ -297,9 +295,7 @@ export default function TokenSelector(props: Props) {
       >
         {selectedTokenLabel || (
           <span className="inline-flex items-center">
-            {showSymbolImage && (
-              <TokenIcon className="mr-4" symbol={tokenInfo.symbol} importSize={24} displaySize={20} />
-            )}
+            {showSymbolImage && <TokenIcon className="mr-4" symbol={tokenInfo.symbol} displaySize={20} />}
             {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
         )}

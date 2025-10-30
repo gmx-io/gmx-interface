@@ -24,6 +24,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import DownloadIcon from "img/ic_download2.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -117,7 +118,7 @@ export function TradeHistory(p: Props) {
     }
   }, [currentPage, pageCount, tradeActionsPageIndex, setTradeActionsPageIndex]);
 
-  const [, handleCsvDownload] = useDownloadAsCsv({
+  const [isLoadingCsv, handleCsvDownload] = useDownloadAsCsv({
     account,
     forAllAccounts,
     fromTxTimestamp,
@@ -136,7 +137,7 @@ export function TradeHistory(p: Props) {
       <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
 
       <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
-        <DownloadIcon className="size-16" />
+        {isLoadingCsv ? <SpinnerIcon className="mr-4 animate-spin" /> : <DownloadIcon className="size-16" />}
         CSV
       </Button>
     </>
@@ -166,23 +167,23 @@ export function TradeHistory(p: Props) {
           </colgroup>
           <thead>
             <TableTheadTr>
-              <TableTh className="w-[22%]">
+              <TableTh className="w-[18%]">
                 <ActionFilter value={actionFilter} onChange={setActionFilter} />
               </TableTh>
-              <TableTh className="w-[22%]">
+              <TableTh className="w-[18%]">
                 <MarketFilterLongShort
                   withPositions="all"
                   value={marketsDirectionsFilter}
                   onChange={setMarketsDirectionsFilter}
                 />
               </TableTh>
-              <TableTh className="w-[22%]">
+              <TableTh className="w-[26%]">
                 <Trans>Size</Trans>
               </TableTh>
               <TableTh className="w-[22%]">
                 <Trans>Price</Trans>
               </TableTh>
-              <TableTh className="TradeHistorySynthetics-pnl-fees-header w-[12%]">
+              <TableTh className="w-[12%]">
                 <TooltipWithPortal
                   variant="iconStroke"
                   content={<Trans>Realized PnL after fees and net price impact.</Trans>}
@@ -190,6 +191,7 @@ export function TradeHistory(p: Props) {
                   <Trans>RPnL</Trans>
                 </TooltipWithPortal>
               </TableTh>
+              <TableTh className="w-[100px]" />
             </TableTheadTr>
           </thead>
           <tbody>

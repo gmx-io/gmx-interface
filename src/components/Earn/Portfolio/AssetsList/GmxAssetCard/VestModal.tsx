@@ -29,8 +29,8 @@ import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementCha
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import EsGmxIcon from "img/ic_esgmx_24.svg?react";
-import GmxIcon from "img/ic_gmx_24.svg?react";
+import EsGmxIcon from "img/tokens/ic_esgmx.svg?react";
+import GmxIcon from "img/tokens/ic_gmx.svg?react";
 
 export type VestVault = "gmx" | "affiliate";
 export type VestAction = "deposit" | "withdraw" | "claim";

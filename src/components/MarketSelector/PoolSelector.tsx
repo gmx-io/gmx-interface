@@ -255,7 +255,6 @@ export function PoolSelector({
                     ? marketInfo.glvToken.symbol
                     : marketInfo?.indexToken.symbol
               }
-              importSize={40}
               displaySize={20}
             />
           )}

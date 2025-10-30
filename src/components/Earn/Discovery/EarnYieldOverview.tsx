@@ -24,9 +24,9 @@ import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
-import glvIcon from "img/ic_glv_24.svg";
-import gmIcon from "img/ic_gm_24.svg";
-import gmxIcon from "img/ic_gmx_24.svg";
+import glvIcon from "img/tokens/ic_glv.svg";
+import gmIcon from "img/tokens/ic_gm.svg";
+import gmxIcon from "img/tokens/ic_gmx.svg";
 
 const PERIOD = "90d";
 

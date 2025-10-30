@@ -1,7 +1,12 @@
-import { t } from "@lingui/macro";
-import { useState } from "react";
+import { t, Trans } from "@lingui/macro";
+import { useCallback, useMemo, useState } from "react";
 
-import { getMarketIndexName, getMarketPoolName, useMarketsInfoRequest } from "domain/synthetics/markets";
+import {
+  getMarketIndexName,
+  getMarketPoolName,
+  MarketsInfoData,
+  useMarketsInfoRequest,
+} from "domain/synthetics/markets";
 import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffiliateRewardsTxn";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
@@ -13,11 +18,10 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";
+import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+import { Table, TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
-
-import "./ClaimAffiliatesModal.scss";
 
 type Props = {
   onClose: () => void;
@@ -36,85 +40,23 @@ export function ClaimAffiliatesModal(p: Props) {
 
   const rewards = Object.values(affiliateRewardsData || {});
 
+  const [selectedMarketAddresses, setSelectedMarketAddresses] = useState<string[]>([]);
+
+  const handleToggleSelect = useCallback((marketAddress: string) => {
+    setSelectedMarketAddresses((prev) => {
+      if (prev.includes(marketAddress)) {
+        return prev.filter((address) => address !== marketAddress);
+      }
+      return [...prev, marketAddress];
+    });
+  }, []);
+
   const totalClaimableFundingUsd =
     marketsInfoData && affiliateRewardsData
       ? getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData)
       : 0n;
 
-  function renderRewardSection(reward: AffiliateReward) {
-    const marketInfo = getByKey(marketsInfoData, reward.marketAddress);
-    if (!marketInfo) {
-      return null;
-    }
-
-    const { longToken, shortToken, isSameCollaterals } = marketInfo;
-    const indexName = getMarketIndexName(marketInfo);
-    const poolName = getMarketPoolName(marketInfo);
-
-    const { longTokenAmount, shortTokenAmount } = reward;
-
-    const longRewardUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
-
-    let totalReward = longRewardUsd;
-
-    if (!isSameCollaterals) {
-      const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
-      totalReward += shortRewardUsd;
-    }
-
-    if (totalReward <= 0) {
-      return null;
-    }
-
-    const claimableAmountsItems: string[] = [];
-
-    if (longTokenAmount > 0) {
-      claimableAmountsItems.push(
-        formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol, { isStable: longToken.isStable })!
-      );
-    }
-
-    if (!isSameCollaterals && shortTokenAmount > 0) {
-      claimableAmountsItems.push(
-        formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol, { isStable: shortToken.isStable })!
-      );
-    }
-
-    return (
-      <div key={marketInfo.marketTokenAddress} className="App-card-content">
-        <ExchangeInfoRow
-          className="ClaimModal-row"
-          label={t`Market`}
-          value={
-            <div className="flex items-center">
-              <span>{indexName}</span>
-              <span className="subtext">[{poolName}]</span>
-            </div>
-          }
-        />
-        <ExchangeInfoRow
-          className="ClaimModal-row"
-          label={t`Rewards`}
-          value={
-            <Tooltip
-              className="ClaimModal-row-tooltip"
-              handle={formatUsd(totalReward)}
-              position="top-end"
-              renderContent={() => (
-                <>
-                  {claimableAmountsItems.map((item) => (
-                    <div key={item}>{item}</div>
-                  ))}
-                </>
-              )}
-            />
-          }
-        />
-
-        <div className="App-card-divider ClaimModal-divider" />
-      </div>
-    );
-  }
+  const selectedRewards = rewards.filter((reward) => selectedMarketAddresses.includes(reward.marketAddress));
 
   function onSubmit() {
     if (!account || !signer || !affiliateRewardsData || !marketsInfoData) return;
@@ -122,7 +64,7 @@ export function ClaimAffiliatesModal(p: Props) {
     const marketAddresses: string[] = [];
     const tokenAddresses: string[] = [];
 
-    for (const reward of rewards) {
+    for (const reward of selectedRewards) {
       const market = getByKey(marketsInfoData, reward.marketAddress);
 
       if (!market) {
@@ -154,13 +96,152 @@ export function ClaimAffiliatesModal(p: Props) {
       .finally(() => setIsSubmitting(false));
   }
 
+  const isButtonDisabled = isSubmitting || selectedMarketAddresses.length === 0;
+  const buttonText = useMemo(() => {
+    if (isSubmitting) {
+      return t`Claiming...`;
+    }
+    if (selectedMarketAddresses.length === 0) {
+      return t`No rewards selected`;
+    }
+    return t`Claim`;
+  }, [isSubmitting, selectedMarketAddresses.length]);
+
+  const isAllChecked = selectedMarketAddresses.length === rewards.length;
+
+  const handleToggleSelectAll = useCallback(() => {
+    if (isAllChecked) {
+      setSelectedMarketAddresses([]);
+    } else {
+      setSelectedMarketAddresses(rewards.map((reward) => reward.marketAddress));
+    }
+  }, [isAllChecked, rewards, setSelectedMarketAddresses]);
+
   return (
-    <Modal className="Confirmation-box ClaimableModal" isVisible={true} setIsVisible={onClose} label={t`Confirm Claim`}>
-      <div className="ConfirmationBox-main text-center">Claim {formatUsd(totalClaimableFundingUsd)}</div>
-      <div className="ClaimModal-content">{rewards.map(renderRewardSection)}</div>
-      <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isSubmitting}>
-        {isSubmitting ? t`Claiming...` : t`Claim`}
-      </Button>
+    <Modal
+      contentClassName="w-[400px] overflow-y-auto"
+      isVisible={true}
+      setIsVisible={onClose}
+      label={t`Confirm Claim`}
+      withMobileBottomPosition
+    >
+      <div className="flex flex-col gap-12">
+        <div className="text-center text-20 font-medium">Claim {formatUsd(totalClaimableFundingUsd)}</div>
+
+        <Table>
+          <TableTheadTr>
+            <TableTh className="w-[20px] !pl-0">
+              <Checkbox
+                isChecked={isAllChecked}
+                setIsChecked={handleToggleSelectAll}
+                isPartialChecked={selectedMarketAddresses.length > 0 && selectedMarketAddresses.length < rewards.length}
+              />
+            </TableTh>
+            <TableTh>
+              <Trans>Market</Trans>
+            </TableTh>
+            <TableTh className="!pr-0">
+              <Trans>Rewards</Trans>
+            </TableTh>
+          </TableTheadTr>
+          {rewards.map((reward) => (
+            <ClaimRewardRow
+              key={reward.marketAddress}
+              reward={reward}
+              marketsInfoData={marketsInfoData}
+              isSelected={selectedMarketAddresses.includes(reward.marketAddress)}
+              onToggleSelect={handleToggleSelect}
+            />
+          ))}
+        </Table>
+
+        <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isButtonDisabled}>
+          {buttonText}
+        </Button>
+      </div>
     </Modal>
+  );
+}
+
+function ClaimRewardRow({
+  reward,
+  marketsInfoData,
+  isSelected,
+  onToggleSelect,
+}: {
+  reward: AffiliateReward;
+  marketsInfoData: MarketsInfoData | undefined;
+  isSelected: boolean;
+  onToggleSelect: (marketAddress: string) => void;
+}) {
+  const handleToggleSelect = useCallback(() => {
+    onToggleSelect(reward.marketAddress);
+  }, [onToggleSelect, reward.marketAddress]);
+
+  const marketInfo = getByKey(marketsInfoData, reward.marketAddress);
+  if (!marketInfo) {
+    return null;
+  }
+
+  const { longToken, shortToken, isSameCollaterals } = marketInfo;
+  const indexName = getMarketIndexName(marketInfo);
+  const poolName = getMarketPoolName(marketInfo);
+
+  const { longTokenAmount, shortTokenAmount } = reward;
+
+  const longRewardUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
+
+  let totalReward = longRewardUsd;
+
+  if (!isSameCollaterals) {
+    const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
+    totalReward += shortRewardUsd;
+  }
+
+  if (totalReward <= 0) {
+    return null;
+  }
+
+  const claimableAmountsItems: string[] = [];
+
+  if (longTokenAmount > 0) {
+    claimableAmountsItems.push(
+      formatTokenAmount(longTokenAmount, longToken.decimals, longToken.symbol, { isStable: longToken.isStable })!
+    );
+  }
+
+  if (!isSameCollaterals && shortTokenAmount > 0) {
+    claimableAmountsItems.push(
+      formatTokenAmount(shortTokenAmount, shortToken.decimals, shortToken.symbol, { isStable: shortToken.isStable })!
+    );
+  }
+
+  return (
+    <tr>
+      <TableTd className="!pl-0">
+        <Checkbox isChecked={isSelected} setIsChecked={handleToggleSelect} />
+      </TableTd>
+      <TableTd>
+        <div className="flex items-center">
+          <span>{indexName}</span>
+          <span className="subtext">[{poolName}]</span>
+        </div>
+      </TableTd>
+
+      <TableTd className="!pr-0">
+        <Tooltip
+          className="ClaimModal-row-tooltip"
+          handle={formatUsd(totalReward)}
+          position="top-end"
+          renderContent={() => (
+            <>
+              {claimableAmountsItems.map((item) => (
+                <div key={item}>{item}</div>
+              ))}
+            </>
+          )}
+        />
+      </TableTd>
+    </tr>
   );
 }

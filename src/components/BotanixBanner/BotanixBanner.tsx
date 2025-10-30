@@ -5,9 +5,9 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
-import ArbitrumIcon from "img/ic_arbitrum_24.svg?react";
-import AvalancheIcon from "img/ic_avalanche_24.svg?react";
-import BotanixIcon from "img/ic_botanix_24.svg?react";
+import ArbitrumIcon from "img/tokens/ic_arbitrum.svg?react";
+import AvalancheIcon from "img/tokens/ic_avalanche.svg?react";
+import BotanixIcon from "img/tokens/ic_botanix.svg?react";
 
 export function BotanixBanner() {
   const { active, chainId } = useWallet();

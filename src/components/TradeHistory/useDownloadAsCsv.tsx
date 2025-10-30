@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import dateFnsFormat from "date-fns/format";
 import { useCallback, useState } from "react";
+import { withRetry } from "viem";
 
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -8,16 +9,12 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { OrderType } from "domain/synthetics/orders/types";
-import {
-  fetchTradeActions,
-  PositionTradeAction,
-  SwapTradeAction,
-  TradeActionType,
-} from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
+import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { downloadAsCsv } from "lib/csv";
 import { definedOrThrow } from "lib/guards";
 import { helperToast } from "lib/helperToast";
-import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
@@ -26,7 +23,7 @@ import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import type { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
 
-const GRAPHQL_MAX_SIZE = 10_000;
+const PAGE_SIZE = 300;
 
 export function useDownloadAsCsv({
   marketsDirectionsFilter,
@@ -62,26 +59,57 @@ export function useDownloadAsCsv({
     try {
       setIsLoading(true);
 
-      const client = getSyntheticsGraphClient(chainId);
-      definedOrThrow(client);
+      // Ensure dependent data is available before fetching
+      if (!marketsInfoData || !tokensData || minCollateralUsd === undefined) {
+        throw new Error("Required market/token data not loaded yet");
+      }
 
-      const tradeActions = await fetchTradeActions({
-        chainId,
-        pageIndex: 0,
-        pageSize: GRAPHQL_MAX_SIZE,
-        marketsDirectionsFilter,
-        forAllAccounts,
-        account,
-        fromTxTimestamp,
-        toTxTimestamp,
-        orderEventCombinations,
-        marketsInfoData,
-        tokensData,
-      });
+      // Fetch in pages to avoid GraphQL response-size limits
+      const aggregatedTradeActions: (PositionTradeAction | SwapTradeAction)[] = [];
+      let currentPageIndex = 0;
+      let hasMorePages = true;
 
-      definedOrThrow(tradeActions);
+      while (hasMorePages) {
+        const rawPage = await withRetry(
+          () =>
+            fetchRawTradeActions({
+              chainId,
+              pageIndex: currentPageIndex,
+              pageSize: PAGE_SIZE,
+              marketsDirectionsFilter,
+              forAllAccounts,
+              account,
+              fromTxTimestamp,
+              toTxTimestamp,
+              orderEventCombinations,
+            }),
+          {
+            retryCount: 3,
+            delay: 300,
+          }
+        );
 
-      const fullFormattedData = tradeActions
+        const processedPage = processRawTradeActions({
+          chainId,
+          rawActions: rawPage,
+          marketsInfoData,
+          tokensData,
+          marketsDirectionsFilter,
+        }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
+
+        if (!processedPage || processedPage.length === 0 || processedPage.length < PAGE_SIZE) {
+          hasMorePages = false;
+        }
+
+        if (processedPage && processedPage.length) {
+          aggregatedTradeActions.push(...processedPage);
+        }
+        currentPageIndex += 1;
+      }
+
+      definedOrThrow(aggregatedTradeActions);
+
+      const fullFormattedData = aggregatedTradeActions
         .map((tradeAction) => {
           const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transaction.hash}`;
 
@@ -90,7 +118,7 @@ export function useDownloadAsCsv({
           if (isSwapOrderType(tradeAction.orderType!)) {
             rowDetails = formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
           } else {
-            rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd!, false);
+            rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);
           }
 
           return {

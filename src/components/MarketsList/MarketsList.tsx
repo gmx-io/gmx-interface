@@ -207,7 +207,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
           <div className="flex items-center">
             <div className="App-card-title-info-icon min-h-40">
               <img
-                src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + "_40.svg")}
+                src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + ".svg")}
                 alt={stats.token.symbol}
                 width="40"
               />
