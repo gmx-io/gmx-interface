@@ -42,7 +42,7 @@ export function ExpressTradingWarningCard({
   const history = useHistory();
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
   const [, setNativeTokenWarningHidden] = useLocalStorageSerializeKey(
     EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
@@ -138,17 +138,11 @@ export function ExpressTradingWarningCard({
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
-    if (isGmxAccount) {
+    if (srcChainId) {
       icon = ExpressIcon;
+      content = <Trans>Insufficient gas balance, please deposit more {gasPaymentTokensText}.</Trans>;
+      buttonText = <Trans>Deposit {gasPaymentTokensText}</Trans>;
 
-      const hasEth = getNativeToken(chainId).symbol === "ETH";
-      content = hasEth ? (
-        <Trans>Insufficient gas balance, please deposit more WETH or USDC.</Trans>
-      ) : (
-        <Trans>Insufficient gas balance, please deposit more USDC.</Trans>
-      );
-
-      buttonText = hasEth ? <Trans>Deposit USDC or ETH</Trans> : <Trans>Deposit USDC</Trans>;
       onClick = () => {
         setGmxAccountModalOpen("deposit");
       };
