@@ -9,16 +9,12 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { OrderType } from "domain/synthetics/orders/types";
-import {
-  fetchTradeActions,
-  PositionTradeAction,
-  SwapTradeAction,
-  TradeActionType,
-} from "domain/synthetics/tradeHistory";
+import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
+import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { downloadAsCsv } from "lib/csv";
 import { definedOrThrow } from "lib/guards";
 import { helperToast } from "lib/helperToast";
-import { getSyntheticsGraphClient } from "lib/subgraph/clients";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
@@ -63,9 +59,6 @@ export function useDownloadAsCsv({
     try {
       setIsLoading(true);
 
-      const client = getSyntheticsGraphClient(chainId);
-      definedOrThrow(client);
-
       // Ensure dependent data is available before fetching
       if (!marketsInfoData || !tokensData || minCollateralUsd === undefined) {
         throw new Error("Required market/token data not loaded yet");
@@ -77,9 +70,9 @@ export function useDownloadAsCsv({
       let hasMorePages = true;
 
       while (hasMorePages) {
-        const page = await withRetry(
+        const rawPage = await withRetry(
           () =>
-            fetchTradeActions({
+            fetchRawTradeActions({
               chainId,
               pageIndex: currentPageIndex,
               pageSize: PAGE_SIZE,
@@ -89,8 +82,6 @@ export function useDownloadAsCsv({
               fromTxTimestamp,
               toTxTimestamp,
               orderEventCombinations,
-              marketsInfoData,
-              tokensData,
             }),
           {
             retryCount: 3,
@@ -98,11 +89,21 @@ export function useDownloadAsCsv({
           }
         );
 
-        if (!page || page.length === 0 || page.length < PAGE_SIZE) {
+        const processedPage = processRawTradeActions({
+          chainId,
+          rawActions: rawPage,
+          marketsInfoData,
+          tokensData,
+          marketsDirectionsFilter,
+        }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
+
+        if (!processedPage || processedPage.length === 0 || processedPage.length < PAGE_SIZE) {
           hasMorePages = false;
         }
 
-        aggregatedTradeActions.push(...(page ?? []));
+        if (processedPage && processedPage.length) {
+          aggregatedTradeActions.push(...processedPage);
+        }
         currentPageIndex += 1;
       }
 
