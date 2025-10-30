@@ -47,6 +47,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
+import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
@@ -518,13 +519,15 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  className={cx("Exchange-list-info-label Position-pnl text-body-small numbers", {
+                  className={cx("text-body-small flex cursor-pointer items-center gap-2 numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
                   })}
+                  onClick={p.onShareClick}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                  <NewLinkThinIcon className="mt-1 size-14" />
                 </div>
               )}
             </div>
@@ -661,13 +664,15 @@ export function PositionItem(p: Props) {
             </div>
             <div>
               <span
-                className={cx("Exchange-list-info-label Position-pnl numbers", {
+                className={cx("flex cursor-pointer items-center gap-2 numbers", {
                   positive: displayedPnl > 0,
                   negative: displayedPnl < 0,
                   muted: displayedPnl == 0n,
                 })}
+                onClick={p.onShareClick}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                <NewLinkThinIcon className="mt-2 size-16" />
               </span>
             </div>
           </div>

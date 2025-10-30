@@ -25,6 +25,10 @@ msgstr "钱包未连接"
 msgid "Transaction completed."
 msgstr "交易完成。"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "No rewards selected"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pear Protocol"
 msgstr "Pear Protocol"
@@ -844,6 +848,11 @@ msgstr "无效滑点值"
 msgid "Max {0} buyable amount exceeded"
 msgstr "超过最大 {0} 可购买金额"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "代码已被使用"
@@ -1949,6 +1958,10 @@ msgstr "连接钱包"
 msgid "System"
 msgstr "系统"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Earn rewards by sharing your code!"
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "未平仓位"
@@ -2863,6 +2876,7 @@ msgstr "可用流动性不足。当有流动性可用时，订单将成交。"
 msgid "Market"
 msgstr "市场"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -2933,6 +2947,10 @@ msgstr "调试值不可用"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "触发价格低于清算价格"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your successful GMX trade on X"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -3284,6 +3302,10 @@ msgstr "<0>每</0> {hours} 小时{0}"
 msgid "Fail External Swaps"
 msgstr "外部交换失败"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Learn more</0>"
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat Transaction"
 msgstr "重复交易"
@@ -3389,6 +3411,7 @@ msgstr "在浏览器中查看"
 msgid "Bonus APR"
 msgstr "奖金年化收益率"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr "推荐码已提交。"
@@ -4080,6 +4103,7 @@ msgstr "提取已提交。"
 msgid "Net Price Impact"
 msgstr "净价格影响"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4177,6 +4201,7 @@ msgid "Create Stop Loss"
 msgstr "创建止损"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -4606,9 +4631,17 @@ msgstr ""
 msgid "Referrals"
 msgstr "推荐"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL Amounts"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "订单类型"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Are you sure you want to skip creating a referral code?"
+msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -4661,6 +4694,10 @@ msgstr "取消 {ordersText}。"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "正在加载..."
+
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Share"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize your positions"
@@ -5708,10 +5745,6 @@ msgstr "过去 7 天"
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr "将 {fromAmount} 交换为 {toAmount}"
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Copy"
-msgstr "复制"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5779,6 +5812,7 @@ msgstr "存入失败"
 msgid "Deposit USDC or ETH"
 msgstr "存入 USDC 或 ETH"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr "推荐码已创建。"
@@ -6001,6 +6035,10 @@ msgstr ""
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr "在 Explorer 中打开 {0}"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "It allows you to earn rewards."
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
@@ -6262,6 +6300,11 @@ msgstr "转移 {nativeTokenSymbol}"
 msgid "Meme"
 msgstr "Meme"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Create code"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
@@ -6512,6 +6555,10 @@ msgstr "超过最大 {0} 金额"
 msgid "Realized Base PnL"
 msgstr "已实现基础盈亏"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Creating code"
+msgstr ""
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
@@ -6718,6 +6765,7 @@ msgstr "池子"
 msgid "Venus"
 msgstr "Venus"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "推荐代码创建失败。"
@@ -7243,10 +7291,6 @@ msgstr "无可用数据"
 msgid "{prefix} <0>{text}</0>"
 msgstr "{prefix} <0>{text}</0>"
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Tweet"
-msgstr "推文"
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr "资金已申领。"
@@ -7466,7 +7510,6 @@ msgid "GMX V2 discounts are automatically applied on each trade and are not disp
 msgstr "GMX V2 折扣自动应用于每笔交易，并未在此表格中显示。"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionShare/PositionShare.tsx
 msgid "Share Position"
 msgstr "分享仓位"
 
@@ -7741,10 +7784,6 @@ msgstr "无法使用智能账户签署消息"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "此仓位可能被清算（不包括任何价格变动），因为资金和借款费用率会随着时间减少仓位的抵押品。"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
-#~ msgstr "Gemini 钱包不支持快速或一键交易。"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -7781,6 +7820,10 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "请求存款"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Copy link"
+msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
@@ -7848,8 +7891,16 @@ msgstr "限价"
 msgid "Trading Settings"
 msgstr "交易设置"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Don't show this again"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Great for passive users"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share on"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx

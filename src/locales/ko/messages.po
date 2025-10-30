@@ -25,6 +25,10 @@ msgstr "지갑이 연결되지 않음"
 msgid "Transaction completed."
 msgstr "거래가 완료되었습니다."
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "No rewards selected"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pear Protocol"
 msgstr "Pear Protocol"
@@ -844,6 +848,11 @@ msgstr "유효하지 않은 슬리피지 값"
 msgid "Max {0} buyable amount exceeded"
 msgstr "최대 {0} 구매 가능 금액 초과"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "이미 사용된 코드입니다"
@@ -1949,6 +1958,10 @@ msgstr "지갑 연동"
 msgid "System"
 msgstr "시스템"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Earn rewards by sharing your code!"
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "오픈 포지션"
@@ -2863,6 +2876,7 @@ msgstr "사용 가능한 유동성이 부족합니다. 유동성이 있을 때 �
 msgid "Market"
 msgstr "마켓"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -2933,6 +2947,10 @@ msgstr "디버그 값 사용 불가"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "트리거 가격이 청산 가격 미만"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your successful GMX trade on X"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -3284,6 +3302,10 @@ msgstr "<0>매</0> {hours} 시간{0}"
 msgid "Fail External Swaps"
 msgstr "외부 스왑 실패"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Learn more</0>"
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat Transaction"
 msgstr "거래 반복"
@@ -3389,6 +3411,7 @@ msgstr "Explorer에서 보기"
 msgid "Bonus APR"
 msgstr "보너스 APR"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr "추천 코드 제출됨."
@@ -4080,6 +4103,7 @@ msgstr "인출 제출 완료."
 msgid "Net Price Impact"
 msgstr "순 가격 영향"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4177,6 +4201,7 @@ msgid "Create Stop Loss"
 msgstr "손절 생성"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -4606,9 +4631,17 @@ msgstr ""
 msgid "Referrals"
 msgstr "추천"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL Amounts"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
 msgstr "주문 유형"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Are you sure you want to skip creating a referral code?"
+msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -4661,6 +4694,10 @@ msgstr "{ordersText} 취소 중."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
 msgstr "로딩 중..."
+
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Share"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize your positions"
@@ -5708,10 +5745,6 @@ msgstr "최근 7일"
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr "{fromAmount}을 {toAmount}으로 스왑"
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Copy"
-msgstr "복사"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5779,6 +5812,7 @@ msgstr "입금 실패"
 msgid "Deposit USDC or ETH"
 msgstr "USDC 또는 ETH 입금"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr "추천 코드 생성됨."
@@ -6001,6 +6035,10 @@ msgstr ""
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
 msgstr "탐색기에서 {0} 열기"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "It allows you to earn rewards."
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "{0} and {1} can be used to buy GM for this market up to the specified buying caps."
@@ -6262,6 +6300,11 @@ msgstr "{nativeTokenSymbol} 전송"
 msgid "Meme"
 msgstr "Meme"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Create code"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
@@ -6512,6 +6555,10 @@ msgstr "최대 {0} 수량 초과"
 msgid "Realized Base PnL"
 msgstr "실현 기본 PnL"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Creating code"
+msgstr ""
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
@@ -6718,6 +6765,7 @@ msgstr "풀"
 msgid "Venus"
 msgstr "비너스"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "추천 코드 생성 실패."
@@ -7243,10 +7291,6 @@ msgstr "데이터 없음"
 msgid "{prefix} <0>{text}</0>"
 msgstr "{prefix} <0>{text}</0>"
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Tweet"
-msgstr "트윗"
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr "펀딩 청구됨."
@@ -7466,7 +7510,6 @@ msgid "GMX V2 discounts are automatically applied on each trade and are not disp
 msgstr "GMX V2 할인은 각 거래에서 자동 적용되며 이 테이블에 표시되지 않습니다."
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionShare/PositionShare.tsx
 msgid "Share Position"
 msgstr "포지션 공유"
 
@@ -7741,10 +7784,6 @@ msgstr "스마트 계정으로 메시지 서명 불가"
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "자금 및 대출 수수료율로 인해 가격 움직임 제외 포지션 담보 감소로 청산될 수 있음."
 
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
-#~ msgstr "Gemini 지갑은 익스프레스 또는 원클릭 거래를 지원하지 않습니다."
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -7781,6 +7820,10 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "입금 요청"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Copy link"
+msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
@@ -7848,8 +7891,16 @@ msgstr "지정가"
 msgid "Trading Settings"
 msgstr "거래 설정"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Don't show this again"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Great for passive users"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share on"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx

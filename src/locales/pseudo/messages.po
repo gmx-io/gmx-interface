@@ -25,6 +25,10 @@ msgstr ""
 msgid "Transaction completed."
 msgstr ""
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "No rewards selected"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pear Protocol"
 msgstr ""
@@ -844,6 +848,11 @@ msgstr ""
 msgid "Max {0} buyable amount exceeded"
 msgstr ""
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Disable Share Modal PnL Check"
+msgstr ""
+
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr ""
@@ -1949,6 +1958,10 @@ msgstr ""
 msgid "System"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Earn rewards by sharing your code!"
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr ""
@@ -2863,6 +2876,7 @@ msgstr ""
 msgid "Market"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -2932,6 +2946,10 @@ msgstr ""
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share your successful GMX trade on X"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
@@ -3284,6 +3302,10 @@ msgstr ""
 msgid "Fail External Swaps"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Learn more</0>"
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat Transaction"
 msgstr ""
@@ -3389,6 +3411,7 @@ msgstr ""
 msgid "Bonus APR"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted."
 msgstr ""
@@ -4080,6 +4103,7 @@ msgstr ""
 msgid "Net Price Impact"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4177,6 +4201,7 @@ msgid "Create Stop Loss"
 msgstr ""
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -4606,8 +4631,16 @@ msgstr ""
 msgid "Referrals"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL Amounts"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Order Type"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Are you sure you want to skip creating a referral code?"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
@@ -4660,6 +4693,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Loading..."
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "Share"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
@@ -5708,10 +5745,6 @@ msgstr ""
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr ""
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Copy"
-msgstr ""
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5779,6 +5812,7 @@ msgstr ""
 msgid "Deposit USDC or ETH"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr ""
@@ -6000,6 +6034,10 @@ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open {0} in Explorer"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "It allows you to earn rewards."
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
@@ -6262,6 +6300,11 @@ msgstr ""
 msgid "Meme"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Create code"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
@@ -6512,6 +6555,10 @@ msgstr ""
 msgid "Realized Base PnL"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+msgid "Creating code"
+msgstr ""
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed."
@@ -6718,6 +6765,7 @@ msgstr ""
 msgid "Venus"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr ""
@@ -7243,10 +7291,6 @@ msgstr ""
 msgid "{prefix} <0>{text}</0>"
 msgstr ""
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Tweet"
-msgstr ""
-
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr ""
@@ -7466,7 +7510,6 @@ msgid "GMX V2 discounts are automatically applied on each trade and are not disp
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionShare/PositionShare.tsx
 msgid "Share Position"
 msgstr ""
 
@@ -7778,6 +7821,10 @@ msgstr ""
 msgid "Request Deposit"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Copy link"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Number of Parts"
 msgstr ""
@@ -7844,8 +7891,16 @@ msgstr ""
 msgid "Trading Settings"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Don't show this again"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Great for passive users"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Share on"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx

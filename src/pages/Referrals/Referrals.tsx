@@ -1,6 +1,6 @@
 import { Trans, msg, t } from "@lingui/macro";
 import { ethers } from "ethers";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 
@@ -21,6 +21,7 @@ import { useLocalizedMap } from "lib/i18n";
 import { getPageTitle, isHashZero } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { serializeBigIntsInObject } from "lib/numbers";
+import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -32,7 +33,11 @@ import PageTitle from "components/PageTitle/PageTitle";
 import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
-import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
+import {
+  CREATE_REFERRAL_CODE_QUERY_PARAM,
+  deserializeSampleStats,
+  isRecentReferralCodeNotExpired,
+} from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
 import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
@@ -73,6 +78,9 @@ function Referrals() {
   const { discountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
   const { pendingTxns } = usePendingTxns();
   const localizedTabOptionLabels = useLocalizedMap(TAB_OPTION_LABELS);
+  const routeQuery = useRouteQuery();
+
+  const createReferralCodePrefill = routeQuery.get(CREATE_REFERRAL_CODE_QUERY_PARAM) ?? undefined;
 
   function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
@@ -109,6 +117,7 @@ function Referrals() {
           active={active}
           recentlyAddedCodes={recentlyAddedCodes}
           setRecentlyAddedCodes={setRecentlyAddedCodes}
+          initialReferralCode={createReferralCodePrefill}
         />
       );
     }
@@ -120,6 +129,12 @@ function Referrals() {
       label: localizedTabOptionLabels[option],
     }));
   }, [localizedTabOptionLabels]);
+
+  useEffect(() => {
+    if (createReferralCodePrefill && activeTab !== AFFILIATES) {
+      setActiveTab(AFFILIATES);
+    }
+  }, [createReferralCodePrefill, activeTab, setActiveTab]);
 
   function renderTradersTab() {
     if (loading) return <Loader />;

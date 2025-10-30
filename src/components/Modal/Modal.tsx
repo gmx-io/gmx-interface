@@ -57,7 +57,7 @@ export default function Modal({
   qa,
   contentClassName,
   disableOverflowHandling = false,
-  withMobileBottomPosition: withMobileStyles = false,
+  withMobileBottomPosition = false,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -101,7 +101,7 @@ export default function Modal({
       {isVisible && (
         <RemoveScroll>
           <motion.div
-            className={cx("Modal", className, { "max-md:!items-end": withMobileStyles })}
+            className={cx("Modal", className, { "max-md:!items-end": withMobileBottomPosition })}
             ref={modalRef}
             style={modalStyle}
             initial="hidden"
@@ -121,7 +121,7 @@ export default function Modal({
                 "Modal-content flex flex-col",
                 {
                   "gap-16": contentPadding,
-                  "max-md:w-full max-md:!rounded-t-0": withMobileStyles,
+                  "max-md:w-full max-md:!rounded-t-0": withMobileBottomPosition,
                 },
                 contentClassName
               )}

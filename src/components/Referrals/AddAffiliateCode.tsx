@@ -17,7 +17,21 @@ import Button from "components/Button/Button";
 
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 
-function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCodes, recentlyAddedCodes }) {
+type AddAffiliateCodeProps = {
+  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  active: boolean;
+  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
+  recentlyAddedCodes: ReferralCodeStats[] | undefined;
+  initialReferralCode: string | undefined;
+};
+
+function AddAffiliateCode({
+  handleCreateReferralCode,
+  active,
+  setRecentlyAddedCodes,
+  recentlyAddedCodes,
+  initialReferralCode,
+}: AddAffiliateCodeProps) {
   const { openConnectModal } = useConnectModal();
   return (
     <div className="referral-card section-center">
@@ -35,6 +49,7 @@ function AddAffiliateCode({ handleCreateReferralCode, active, setRecentlyAddedCo
             handleCreateReferralCode={handleCreateReferralCode}
             recentlyAddedCodes={recentlyAddedCodes}
             setRecentlyAddedCodes={setRecentlyAddedCodes}
+            initialReferralCode={initialReferralCode}
           />
         ) : (
           <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
@@ -51,13 +66,15 @@ export function AffiliateCodeForm({
   recentlyAddedCodes,
   setRecentlyAddedCodes,
   callAfterSuccess,
+  initialReferralCode = "",
 }: {
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
   callAfterSuccess?: () => void;
+  initialReferralCode?: string;
 }) {
-  const [referralCode, setReferralCode] = useState("");
+  const [referralCode, setReferralCode] = useState(initialReferralCode?.trim() ?? "");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -69,6 +86,12 @@ export function AffiliateCodeForm({
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    const sanitizedCode = initialReferralCode?.trim() ?? "";
+    setReferralCode(sanitizedCode);
+    setError(getCodeError(sanitizedCode));
+  }, [initialReferralCode]);
 
   useEffect(() => {
     let cancelled = false;

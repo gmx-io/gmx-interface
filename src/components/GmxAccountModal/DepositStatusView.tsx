@@ -90,7 +90,7 @@ export const DepositStatusView = () => {
 
         {token && transfer && (
           <div className="flex items-center gap-8">
-            <TokenIcon symbol={token.symbol} displaySize={20} importSize={24} chainIdBadge={transfer.sourceChainId} />
+            <TokenIcon symbol={token.symbol} displaySize={20} chainIdBadge={transfer.sourceChainId} />
             <div className="flex flex-col">
               <Amount
                 amount={transfer.sentAmount}
