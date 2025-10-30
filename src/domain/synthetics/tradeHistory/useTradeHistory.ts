@@ -43,6 +43,7 @@ export function useTradeHistory(
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
+    refreshInterval?: number;
     orderEventCombinations?: {
       eventName?: TradeActionType;
       orderType?: OrderType[];
@@ -59,6 +60,7 @@ export function useTradeHistory(
     toTxTimestamp,
     marketsDirectionsFilter,
     orderEventCombinations,
+    refreshInterval,
   } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
@@ -108,6 +110,7 @@ export function useTradeHistory(
         showDebugValues,
       });
     },
+    refreshInterval,
   });
 
   const hasPopulatedData = data !== undefined && data.every((p) => p !== undefined);
@@ -325,6 +328,7 @@ export async function fetchTradeActions({
 
             initialCollateralDeltaAmount
             sizeDeltaUsd
+            sizeDeltaInTokens
             triggerPrice
             acceptablePrice
             executionPrice

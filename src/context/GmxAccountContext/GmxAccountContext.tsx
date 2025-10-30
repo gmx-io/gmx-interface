@@ -13,6 +13,7 @@ export type GmxAccountModalView =
   | "availableToTradeAssets"
   | "transferDetails"
   | "deposit"
+  | "depositStatus"
   | "selectAssetToDeposit"
   | "withdraw";
 

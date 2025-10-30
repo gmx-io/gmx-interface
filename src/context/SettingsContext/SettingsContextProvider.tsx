@@ -8,6 +8,7 @@ import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
+  DISABLE_SHARE_MODAL_PNL_CHECK_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
@@ -49,6 +50,8 @@ export type SettingsContextType = {
   setIsPnlInLeverage: (val: boolean) => void;
   shouldDisableValidationForTesting: boolean;
   setShouldDisableValidationForTesting: (val: boolean) => void;
+  shouldDisableShareModalPnlCheck: boolean;
+  setShouldDisableShareModalPnlCheck: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
   isAutoCancelTPSL: boolean;
@@ -199,18 +202,22 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
   }
 
-  let savedShouldDisableValidationForTesting: boolean | undefined;
-  let setSavedShouldDisableValidationForTesting: (val: boolean) => void;
-  if (isDevelopment()) {
-    // Safety: isDevelopment never changes
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
-      [chainId, DISABLE_ORDER_VALIDATION_KEY],
-      false
-    );
-  } else {
+  let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_ORDER_VALIDATION_KEY],
+    false
+  );
+  if (!isDevelopment()) {
     savedShouldDisableValidationForTesting = false;
     setSavedShouldDisableValidationForTesting = noop;
+  }
+
+  let [savedShouldDisableShareModalPnlCheck, setSavedShouldDisableShareModalPnlCheck] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_SHARE_MODAL_PNL_CHECK_KEY],
+    false
+  );
+  if (!isDevelopment()) {
+    savedShouldDisableShareModalPnlCheck = false;
+    setSavedShouldDisableShareModalPnlCheck = noop;
   }
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
@@ -269,6 +276,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setIsPnlInLeverage: setSavedIsPnlInLeverage,
       shouldDisableValidationForTesting: savedShouldDisableValidationForTesting!,
       setShouldDisableValidationForTesting: setSavedShouldDisableValidationForTesting,
+      shouldDisableShareModalPnlCheck: savedShouldDisableShareModalPnlCheck!,
+      setShouldDisableShareModalPnlCheck: setSavedShouldDisableShareModalPnlCheck,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
       isAutoCancelTPSL: savedIsAutoCancelTPSL!,
@@ -331,6 +340,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedIsPnlInLeverage,
     savedShouldDisableValidationForTesting,
     setSavedShouldDisableValidationForTesting,
+    savedShouldDisableShareModalPnlCheck,
+    setSavedShouldDisableShareModalPnlCheck,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
     savedIsAutoCancelTPSL,

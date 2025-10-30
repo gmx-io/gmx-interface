@@ -83,6 +83,23 @@ export type DisconnectWalletEvent = {
   };
 };
 
+export type OneClickPromotionEvent = {
+  event: "OneClickPromotion";
+  data:
+    | {
+        action: "PopupShown";
+      }
+    | {
+        action: "EnableOneClickClicked";
+      }
+    | {
+        action: "UserRejected";
+      }
+    | {
+        action: "EnableOneClickSuccess";
+      };
+};
+
 export type TradeBoxInteractionStartedEvent = {
   event: "TradeBoxAction";
   data: {
@@ -266,10 +283,15 @@ export type SharePositionClickEvent = {
   };
 };
 
+export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list";
+
 export type SharePositionActionEvent = {
   event: "SharePositionAction";
   data: {
-    action: "Copy" | "Download" | "ShareTwitter";
+    action: "Copy" | "Download" | "ShareTwitter" | "PromptShown" | "PromptClose" | "ReferralCodeCreated";
+    source?: SharePositionActionSource;
+    hasReferralCode?: boolean;
+    doNotShowAgain?: boolean;
   };
 };
 
