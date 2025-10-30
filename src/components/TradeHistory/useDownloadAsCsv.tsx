@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import dateFnsFormat from "date-fns/format";
 import { useCallback, useState } from "react";
+import { withRetry } from "viem";
 
 import { getExplorerUrl } from "config/chains";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -26,7 +27,7 @@ import { formatPositionMessage } from "./TradeHistoryRow/utils/position";
 import type { RowDetails } from "./TradeHistoryRow/utils/shared";
 import { formatSwapMessage } from "./TradeHistoryRow/utils/swap";
 
-const GRAPHQL_MAX_SIZE = 10_000;
+const PAGE_SIZE = 300;
 
 export function useDownloadAsCsv({
   marketsDirectionsFilter,
@@ -65,23 +66,49 @@ export function useDownloadAsCsv({
       const client = getSyntheticsGraphClient(chainId);
       definedOrThrow(client);
 
-      const tradeActions = await fetchTradeActions({
-        chainId,
-        pageIndex: 0,
-        pageSize: GRAPHQL_MAX_SIZE,
-        marketsDirectionsFilter,
-        forAllAccounts,
-        account,
-        fromTxTimestamp,
-        toTxTimestamp,
-        orderEventCombinations,
-        marketsInfoData,
-        tokensData,
-      });
+      // Ensure dependent data is available before fetching
+      if (!marketsInfoData || !tokensData || minCollateralUsd === undefined) {
+        throw new Error("Required market/token data not loaded yet");
+      }
 
-      definedOrThrow(tradeActions);
+      // Fetch in pages to avoid GraphQL response-size limits
+      const aggregatedTradeActions: (PositionTradeAction | SwapTradeAction)[] = [];
+      let currentPageIndex = 0;
+      let hasMorePages = true;
 
-      const fullFormattedData = tradeActions
+      while (hasMorePages) {
+        const page = await withRetry(
+          () =>
+            fetchTradeActions({
+              chainId,
+              pageIndex: currentPageIndex,
+              pageSize: PAGE_SIZE,
+              marketsDirectionsFilter,
+              forAllAccounts,
+              account,
+              fromTxTimestamp,
+              toTxTimestamp,
+              orderEventCombinations,
+              marketsInfoData,
+              tokensData,
+            }),
+          {
+            retryCount: 3,
+            delay: 300,
+          }
+        );
+
+        if (!page || page.length === 0 || page.length < PAGE_SIZE) {
+          hasMorePages = false;
+        }
+
+        aggregatedTradeActions.push(...(page ?? []));
+        currentPageIndex += 1;
+      }
+
+      definedOrThrow(aggregatedTradeActions);
+
+      const fullFormattedData = aggregatedTradeActions
         .map((tradeAction) => {
           const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transaction.hash}`;
 
@@ -90,7 +117,7 @@ export function useDownloadAsCsv({
           if (isSwapOrderType(tradeAction.orderType!)) {
             rowDetails = formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
           } else {
-            rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd!, false);
+            rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);
           }
 
           return {
