@@ -13,6 +13,7 @@ import {
 import { isDevelopment } from "config/env";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "config/multichain";
+import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 
 const IS_DEVELOPMENT = isDevelopment();
@@ -30,6 +31,9 @@ if (IS_DEVELOPMENT) {
 export function useChainIdImpl(settlementChainId: SettlementChainId): {
   chainId: ContractsChainId;
   isConnectedToChainId?: boolean;
+  /**
+   * Guaranteed to be related to the settlement chain in `chainId`
+   */
   srcChainId?: SourceChainId;
 } {
   let { chainId: connectedChainId } = useAccount();
@@ -40,7 +44,12 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
 
   const possibleSrcChainId = connectedChainId ?? chainIdFromLocalStorage;
   let srcChainId: SourceChainId | undefined = undefined;
-  if (possibleSrcChainId && isSourceChain(possibleSrcChainId) && !isSettlementChain(possibleSrcChainId)) {
+  if (
+    possibleSrcChainId &&
+    isSourceChain(possibleSrcChainId) &&
+    !isSettlementChain(possibleSrcChainId) &&
+    areChainsRelated(settlementChainId, possibleSrcChainId)
+  ) {
     srcChainId = possibleSrcChainId;
   }
 

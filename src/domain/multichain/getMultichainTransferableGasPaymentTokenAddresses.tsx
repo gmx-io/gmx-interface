@@ -2,6 +2,7 @@ import intersection from "lodash/intersection";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { MULTICHAIN_TOKEN_MAPPING } from "config/multichain";
+import { EMPTY_OBJECT } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
@@ -13,7 +14,7 @@ export function getMultichainTransferableGasPaymentTokenAddresses(
     convertTokenAddress(chainId, tokenAddress, "native")
   );
 
-  const multichainTokens = Object.values(MULTICHAIN_TOKEN_MAPPING[chainId][srcChainId]).map(
+  const multichainTokens = Object.values(MULTICHAIN_TOKEN_MAPPING[chainId]?.[srcChainId] || EMPTY_OBJECT).map(
     (token) => token.settlementChainTokenAddress
   );
 
