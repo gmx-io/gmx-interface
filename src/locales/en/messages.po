@@ -1439,8 +1439,8 @@ msgid "Order executed"
 msgstr "Order executed"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High impact on collateral"
-msgstr "High impact on collateral"
+#~ msgid "High impact on collateral"
+#~ msgstr "High impact on collateral"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -2855,6 +2855,10 @@ msgstr "Enter referral code"
 msgid "Read the rules"
 msgstr "Read the rules"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High Net Price Impact"
+msgstr "High Net Price Impact"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Lev."
 msgstr "Lev."
@@ -4260,8 +4264,8 @@ msgid "Create Referral Code"
 msgstr "Create Referral Code"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High price impact"
-msgstr "High price impact"
+#~ msgid "High price impact"
+#~ msgstr "High price impact"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -4854,6 +4858,10 @@ msgstr "Start unrealized pnl"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Approval submitted! <0>View status.</0>"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
+msgstr "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."

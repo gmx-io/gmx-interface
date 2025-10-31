@@ -1435,8 +1435,8 @@ msgid "Order executed"
 msgstr "Ордер исполнен"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High impact on collateral"
-msgstr "Высокое влияние на коллатераль"
+#~ msgid "High impact on collateral"
+#~ msgstr "Высокое влияние на коллатераль"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -2851,6 +2851,10 @@ msgstr "Введите реферальный код"
 msgid "Read the rules"
 msgstr "Прочитайте правила"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High Net Price Impact"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Lev."
 msgstr "Плечо"
@@ -4256,8 +4260,8 @@ msgid "Create Referral Code"
 msgstr "Создать Реферальный Код"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High price impact"
-msgstr "Высокое влияние цены"
+#~ msgid "High price impact"
+#~ msgstr "Высокое влияние цены"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -4850,6 +4854,10 @@ msgstr "Начальный нереализованный PnL"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Одобрение подано! <0>Просмотреть статус.</0>"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
