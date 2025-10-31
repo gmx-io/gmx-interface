@@ -125,21 +125,22 @@ export function LeaderboardPositionsTable({
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>
             <TableTheadTr className="text-body-medium">
-				<TableHeaderCell
-				  title={t`Rank`}
-				  width={6}
-				  tooltip={
-					<Trans values={{ minCollateral: formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, { displayDecimals: 0 }) }}>
-					  Only positions with over {{ minCollateral }} in capital used are ranked.
-					  <br />
-					  <br />
-					  The capital used is calculated as the highest value of [
-					  <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>
-					  ].
-					</Trans>
-				  }
-				  tooltipPosition="bottom-start"
-				/>
+              <TableHeaderCell
+                title={t`Rank`}
+                width={6}
+                tooltip={
+                  <Trans>
+                    Only positions with over {formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+                      displayDecimals: 0,
+                    })} in capital used are ranked.
+                    <br />
+                    <br />
+                    The capital used is calculated as the highest value of [
+                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                  </Trans>
+                }
+                tooltipPosition="bottom-start"
+              />
               <TableHeaderCell title={t`Address`} width={14} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
@@ -469,7 +470,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
 
     let msg = t`You have not traded during the selected period.`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum "Capital Used" of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+      msg = t`You have yet to reach the minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,
       })} to qualify for the rankings.`;
     else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
