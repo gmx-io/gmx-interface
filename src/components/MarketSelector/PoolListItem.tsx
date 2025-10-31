@@ -107,20 +107,18 @@ export function PoolListItem(props: {
         <div className="Token-info">
           <div className="collaterals-logo">
             {showAllPools ? (
-              <TokenIcon symbol={indexTokenImage} displaySize={40} importSize={40} badge={tokenBadge} />
+              <TokenIcon symbol={indexTokenImage} displaySize={40} badge={tokenBadge} />
             ) : (
               <>
                 <TokenIcon
                   symbol={longToken.symbol}
                   displaySize={40}
-                  importSize={40}
                   className="collateral-logo collateral-logo-first"
                 />
                 {shortToken && (
                   <TokenIcon
                     symbol={shortToken.symbol}
                     displaySize={40}
-                    importSize={40}
                     className="collateral-logo collateral-logo-second"
                   />
                 )}

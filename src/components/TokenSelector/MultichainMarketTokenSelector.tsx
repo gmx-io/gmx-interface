@@ -151,7 +151,6 @@ export function MultichainMarketTokenSelector({
             <TokenIcon
               className="mr-5"
               symbol={isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol}
-              importSize={24}
               displaySize={20}
               chainIdBadge={paySource === "sourceChain" ? srcChainId : paySource === "gmxAccount" ? 0 : undefined}
             />
@@ -244,13 +243,7 @@ function AvailableToTradeTokenList({
             onClick={() => onSelectTokenAddress(token.chainId)}
           >
             <div className="text-body-large flex items-center gap-8">
-              <TokenIcon
-                symbol={token.symbol}
-                className="size-40"
-                displaySize={40}
-                importSize={40}
-                chainIdBadge={token.chainId}
-              />
+              <TokenIcon symbol={token.symbol} className="size-40" displaySize={40} chainIdBadge={token.chainId} />
 
               {/* <SelectedPoolLabel glvOrMarketInfo={marketInfo} /> */}
               {marketInfo && (

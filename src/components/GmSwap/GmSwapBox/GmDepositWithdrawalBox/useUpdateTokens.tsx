@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 
+import { PoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getTokenPoolType } from "domain/synthetics/markets/utils";
-import { Token } from "domain/tokens";
+import { ERC20Address, NativeTokenSupportedAddress, Token } from "domain/tokens";
 import { convertTokenAddress } from "sdk/configs/tokens";
-
-import { FocusedInput } from "./types";
 
 export function useUpdateTokens({
   chainId,
@@ -23,16 +22,16 @@ export function useUpdateTokens({
 }: {
   chainId: number;
   tokenOptions: Token[];
-  firstTokenAddress: string | undefined;
-  setFirstTokenAddress: (address: string | undefined) => void;
+  firstTokenAddress: PoolsDetailsState["firstTokenAddress"];
+  setFirstTokenAddress: PoolsDetailsState["setFirstTokenAddress"];
   isSingle: boolean;
   isPair: boolean;
-  secondTokenAddress: string | undefined;
+  secondTokenAddress: PoolsDetailsState["secondTokenAddress"];
   marketInfo: GlvOrMarketInfo | undefined;
   secondTokenAmount: bigint | undefined;
-  setFocusedInput: (input: FocusedInput) => void;
-  setSecondTokenAddress: (address: string | undefined) => void;
-  setSecondTokenInputValue: (value: string) => void;
+  setFocusedInput: PoolsDetailsState["setFocusedInput"];
+  setSecondTokenAddress: PoolsDetailsState["setSecondTokenAddress"];
+  setSecondTokenInputValue: PoolsDetailsState["setSecondTokenInputValue"];
 }) {
   useEffect(
     function updateTokens() {
@@ -40,7 +39,7 @@ export function useUpdateTokens({
 
       const isFirstTokenValid = tokenOptions.find((token) => token.address === firstTokenAddress);
       if (!isFirstTokenValid) {
-        setFirstTokenAddress(tokenOptions[0].address);
+        setFirstTokenAddress(tokenOptions[0].address as ERC20Address | NativeTokenSupportedAddress);
       }
 
       const moveFromPairToSingleWithPresentSecondToken =
@@ -75,7 +74,7 @@ export function useUpdateTokens({
               convertTokenAddress(chainId, firstTokenAddress, "wrapped")
             );
           });
-          setSecondTokenAddress(secondToken?.address);
+          setSecondTokenAddress(secondToken?.address as ERC20Address | NativeTokenSupportedAddress | undefined);
         }
       }
     },

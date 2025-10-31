@@ -228,6 +228,10 @@ async function estimateSourceChainDepositInitialTxFees({
     },
   ]);
 
+  if (!transferRequests) {
+    throw new Error("Transfer requests not found");
+  }
+
   const signature = await signCreateDeposit({
     chainId,
     srcChainId,

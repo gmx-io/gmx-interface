@@ -212,6 +212,10 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     },
   ]);
 
+  if (!transferRequests) {
+    throw new Error("Transfer requests not found");
+  }
+
   const signature = await signCreateGlvDeposit({
     chainId,
     srcChainId,

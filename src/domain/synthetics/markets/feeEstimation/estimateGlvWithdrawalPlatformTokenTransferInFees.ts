@@ -102,6 +102,10 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     },
   ]);
 
+  if (!transferRequests) {
+    throw new Error("Transfer requests not found");
+  }
+
   const signature = await signCreateWithdrawal({
     chainId,
     srcChainId,

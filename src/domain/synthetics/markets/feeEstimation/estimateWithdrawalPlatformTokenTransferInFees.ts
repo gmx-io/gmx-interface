@@ -101,6 +101,10 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
     },
   ]);
 
+  if (!transferRequests) {
+    throw new Error("Transfer requests not found");
+  }
+
   const signature = await signCreateWithdrawal({
     chainId,
     srcChainId,

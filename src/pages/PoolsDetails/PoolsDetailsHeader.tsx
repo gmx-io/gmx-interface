@@ -120,7 +120,6 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                   <TokenIcon
                     symbol={iconName}
                     displaySize={40}
-                    importSize={40}
                     badge={
                       isGlv
                         ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(glvOrMarketInfo))

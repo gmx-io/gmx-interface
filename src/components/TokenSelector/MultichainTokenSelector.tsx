@@ -229,23 +229,12 @@ export function MultichainTokenSelector({
       >
         {!token.isPlatformToken ? (
           <span className="inline-flex items-center">
-            <TokenIcon
-              className="mr-4"
-              symbol={token.symbol}
-              importSize={24}
-              displaySize={20}
-              chainIdBadge={payChainId}
-            />
+            <TokenIcon className="mr-4" symbol={token.symbol} displaySize={20} chainIdBadge={payChainId} />
             {token.symbol}
           </span>
         ) : (
           <span className="inline-flex items-center">
-            <TokenIcon
-              symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)}
-              className="mr-4"
-              displaySize={20}
-              importSize={24}
-            />
+            <TokenIcon symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)} className="mr-4" displaySize={20} />
 
             {getMarketIndexName({
               indexToken: getMarketIndexToken(chainId, tokenAddress)!,
@@ -418,7 +407,6 @@ function AvailableToTradeTokenList({
                     symbol={getMarketIndexTokenSymbol(chainId, token.address)}
                     className="size-40"
                     displaySize={40}
-                    importSize={40}
                     chainIdBadge={token.chainId}
                     badge={
                       [
@@ -446,13 +434,7 @@ function AvailableToTradeTokenList({
                 </>
               ) : (
                 <>
-                  <TokenIcon
-                    symbol={token.symbol}
-                    className="size-40"
-                    displaySize={40}
-                    importSize={40}
-                    chainIdBadge={token.chainId}
-                  />
+                  <TokenIcon symbol={token.symbol} className="size-40" displaySize={40} chainIdBadge={token.chainId} />
                   <div>
                     <div className="text-body-large">{token.symbol}</div>
                     <span className="text-body-small text-typography-secondary">{token.name}</span>
@@ -574,7 +556,6 @@ function MultichainTokenList({
                 symbol={token.symbol}
                 className="size-40"
                 displaySize={40}
-                importSize={40}
                 chainIdBadge={token.sourceChainId}
               />
 

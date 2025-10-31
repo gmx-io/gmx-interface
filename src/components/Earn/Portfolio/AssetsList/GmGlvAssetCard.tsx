@@ -70,7 +70,6 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, feeApy
         <TokenIcon
           symbol={iconTokenSymbol}
           displaySize={40}
-          importSize={40}
           badge={getMarketBadge(chainId, marketInfo)}
           badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] -bottom-1" : undefined}
         />

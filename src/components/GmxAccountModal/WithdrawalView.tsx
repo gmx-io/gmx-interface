@@ -865,7 +865,7 @@ export const WithdrawalView = () => {
             button={
               selectedTokenAddress && selectedToken ? (
                 <div className="flex items-center gap-8">
-                  <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
+                  <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
                   <span>{selectedToken.symbol}</span>
                 </div>
               ) : undefined
@@ -1139,7 +1139,7 @@ function WithdrawAssetItem({ option }: { option: TokenData }) {
   return (
     <div className="flex items-center justify-between gap-8">
       <div className="flex gap-8">
-        <TokenIcon symbol={option.symbol} displaySize={20} importSize={40} />
+        <TokenIcon symbol={option.symbol} displaySize={20} />
         <span>
           {option.symbol} <span className="text-body-small text-typography-secondary">{option.name}</span>
         </span>

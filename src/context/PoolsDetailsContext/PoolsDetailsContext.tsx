@@ -77,8 +77,8 @@ export type PoolsDetailsState = {
   setSelectedMarketForGlv: (marketAddress?: string) => void;
   setFocusedInput: (input: FocusedInput) => void;
   setPaySource: (source: GmPaySource) => void;
-  setFirstTokenAddress: (address: string | undefined) => void;
-  setSecondTokenAddress: (address: string | undefined) => void;
+  setFirstTokenAddress: (address: ERC20Address | NativeTokenSupportedAddress | undefined) => void;
+  setSecondTokenAddress: (address: ERC20Address | NativeTokenSupportedAddress | undefined) => void;
   setFirstTokenInputValue: (value: string) => void;
   setSecondTokenInputValue: (value: string) => void;
   setMarketOrGlvTokenInputValue: (value: string) => void;
@@ -110,7 +110,7 @@ export function usePoolsDetailsState({
   account: string | undefined;
   glvData: GlvInfoData | undefined;
   withGlv: boolean;
-}) {
+}): PoolsDetailsState | undefined {
   const searchParams = useRouteQuery();
   const { chainId, srcChainId } = useChainId();
 
@@ -151,14 +151,12 @@ export function usePoolsDetailsState({
     [mode, operation, rawPaySource, setPaySource, srcChainId]
   );
 
-  const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "first"],
-    undefined
-  );
-  const [secondTokenAddress, setSecondTokenAddress] = useLocalStorageSerializeKey<string | undefined>(
-    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "second"],
-    undefined
-  );
+  const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<
+    ERC20Address | NativeTokenSupportedAddress | undefined
+  >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "first"], undefined);
+  const [secondTokenAddress, setSecondTokenAddress] = useLocalStorageSerializeKey<
+    ERC20Address | NativeTokenSupportedAddress | undefined
+  >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "second"], undefined);
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
@@ -196,7 +194,7 @@ export function usePoolsDetailsState({
     }
   }, [glvOrMarketAddress, marketsInfoData, mode, operation, enabled]);
 
-  const value = useMemo(() => {
+  const value = useMemo((): PoolsDetailsState | undefined => {
     if (!enabled) {
       return undefined;
     }

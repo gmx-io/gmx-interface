@@ -67,7 +67,7 @@ import {
 } from "domain/synthetics/markets/utils";
 import { convertToUsd, getMidPrice, getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { Token } from "domain/tokens";
+import { ERC20Address, NativeTokenSupportedAddress, Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
@@ -650,7 +650,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   );
 
   const handleFirstTokenSelect = useCallback(
-    (tokenAddress: string): void => {
+    (tokenAddress: ERC20Address | NativeTokenSupportedAddress): void => {
       setFirstTokenAddress(tokenAddress);
 
       const isGmMarketSelected = glvInfo && glvInfo.markets.find((m) => m.address === tokenAddress);
@@ -798,7 +798,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                         setPaySource(
                           isSourceChain(newSrcChainId) ? "sourceChain" : isGmxAccount ? "gmxAccount" : "settlementChain"
                         );
-                        handleFirstTokenSelect(tokenAddress);
+                        handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}
                       multichainTokens={tokenChainDataArray}
                       includeMultichainTokensInPay
@@ -809,7 +809,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                       chainId={chainId}
                       tokenAddress={firstTokenAddress}
                       onSelectToken={(token) => {
-                        handleFirstTokenSelect(token.address);
+                        handleFirstTokenSelect(token.address as ERC20Address | NativeTokenSupportedAddress);
                       }}
                       showSymbolImage
                       showTokenImgInDropdown
