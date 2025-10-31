@@ -13,6 +13,7 @@ import { TradeMode } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
 
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
@@ -188,6 +189,7 @@ const PositionItemWrapper = memo(
     hideActions: boolean | undefined;
     onCancelOrder: (orderKey: string) => void;
   }) => {
+    const { account } = useWallet();
     const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
     const handleEditCollateralClick = useCallback(
       () => onEditCollateralClick(position.key),
@@ -211,6 +213,8 @@ const PositionItemWrapper = memo(
       [onOrdersClick, position.key]
     );
 
+    const isShareAvailable = account === position.account;
+
     return (
       <PositionItem
         position={position}
@@ -222,7 +226,7 @@ const PositionItemWrapper = memo(
         isLarge={isLarge}
         hideActions={hideActions}
         onCancelOrder={handleCancelOrder}
-        onShareClick={handleShareClick}
+        onShareClick={isShareAvailable ? handleShareClick : undefined}
       />
     );
   }
