@@ -178,7 +178,7 @@ export function getTradeActionPnlUsd({
   liquidationFeeAmount,
   collateralTokenPriceMax,
   initialCollateralToken,
-  totalImpactUsd,
+  totalImpactUsd = 0n,
   orderType,
 }: PositionTradeAction): bigint | undefined {
   if (
@@ -189,8 +189,7 @@ export function getTradeActionPnlUsd({
     positionFeeAmount === undefined ||
     liquidationFeeAmount === undefined ||
     collateralTokenPriceMax === undefined ||
-    initialCollateralToken === undefined ||
-    totalImpactUsd === undefined
+    initialCollateralToken === undefined
   ) {
     return undefined;
   }
