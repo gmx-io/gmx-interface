@@ -24,9 +24,11 @@ import {
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSelector,
+  useGmxAccountSelectedTransferGuid,
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -57,7 +59,9 @@ import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "li
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
+import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -114,6 +118,7 @@ export const DepositView = () => {
   const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
 
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
 
   const [depositViewTokenAddress, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [inputValue, setInputValue] = useGmxAccountDepositViewTokenInputValue();
@@ -384,6 +389,12 @@ export const DepositView = () => {
   const isFirstDeposit = useIsFirstDeposit();
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
 
+  const subaccountState = useSubaccountContext();
+
+  const isGeminiWallet = useIsGeminiWallet();
+  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
+
   const sameChainCallback: TxnCallback<WalletTxnCtx> = useCallback(
     (txnEvent) => {
       if (txnEvent.event === TxnEventName.Sent) {
@@ -458,10 +469,11 @@ export const DepositView = () => {
 
           sendTxnErrorMetric(params.metricId, prettyError, "unknown");
         } else if (txnEvent.event === TxnEventName.Sent) {
-          setIsVisibleOrView("main");
           setIsSubmitting(false);
 
           sendTxnSentMetric(params.metricId);
+
+          let submittedDepositGuid: string | undefined;
 
           if (txnEvent.data.type === "wallet") {
             const settlementChainDecimals = getToken(settlementChainId, params.tokenAddress)?.decimals;
@@ -478,7 +490,7 @@ export const DepositView = () => {
                 settlementChainDecimals
               );
 
-              setMultichainSubmittedDeposit({
+              submittedDepositGuid = setMultichainSubmittedDeposit({
                 amount,
                 settlementChainId,
                 sourceChainId: params.depositViewChain,
@@ -487,13 +499,27 @@ export const DepositView = () => {
               });
             }
           }
+
+          if (submittedDepositGuid) {
+            setSelectedTransferGuid(submittedDepositGuid);
+            if (!subaccountState.subaccount && !isExpressTradingDisabled) {
+              setIsVisibleOrView("depositStatus");
+            }
+          }
         } else if (txnEvent.event === TxnEventName.Simulated) {
           sendOrderSimulatedMetric(params.metricId);
         } else if (txnEvent.event === TxnEventName.Sending) {
           sendOrderTxnSubmittedMetric(params.metricId);
         }
       },
-    [setIsVisibleOrView, setMultichainSubmittedDeposit, settlementChainId]
+    [
+      setIsVisibleOrView,
+      setMultichainSubmittedDeposit,
+      setSelectedTransferGuid,
+      settlementChainId,
+      subaccountState.subaccount,
+      isExpressTradingDisabled,
+    ]
   );
 
   const canSendCrossChainDeposit =
@@ -772,7 +798,7 @@ export const DepositView = () => {
               <div className="flex items-center gap-8">
                 {selectedToken ? (
                   <>
-                    <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
+                    <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
                     <span className="text-16 leading-base">{selectedToken.symbol}</span>
                   </>
                 ) : depositViewChain !== undefined ? (

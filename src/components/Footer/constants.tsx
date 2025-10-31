@@ -20,32 +20,21 @@ type SocialLink = {
   icon: React.ReactNode;
 };
 
-export function getFooterLinks(isHome) {
-  const FOOTER_LINKS: { home: Link[]; app: Link[] } = {
-    home: [
-      { label: t`Terms and Conditions`, link: "/terms-and-conditions" },
-      { label: t`Referral Terms`, link: "/referral-terms" },
-      { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
-      // { label: "Jobs", link: "/jobs", isAppLink: true },
-    ],
-    app: [
-      {
-        label: (
-          <>
-            <V1Icon />
-            {t`V1 Interface`}
-          </>
-        ),
-        link: "https://v1.app.gmx.io/#/v1",
-        external: true,
-      },
-      { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
-      { label: t`Charts by TradingView`, link: "https://www.tradingview.com/", external: true },
-      // { label: "Jobs", link: "/jobs" },
-    ],
-  };
-  return FOOTER_LINKS[isHome ? "home" : "app"];
-}
+export const getFooterLinks = (): Link[] => [
+  {
+    label: (
+      <>
+        <V1Icon />
+        {t`V1 Interface`}
+      </>
+    ),
+    link: "https://v1.app.gmx.io/#/v1",
+    external: true,
+  },
+  { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
+  { label: t`Charts by TradingView`, link: "https://www.tradingview.com/", external: true },
+  // { label: "Jobs", link: "/jobs" },
+];
 
 export const SOCIAL_LINKS: SocialLink[] = [
   { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: <XIcon className="size-16" /> },
@@ -57,7 +46,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 function V1Icon() {
   return (
-    <div className="rounded-2 bg-typography-secondary px-3 py-2 text-[8px] font-bold text-white dark:text-black">
+    <div className="rounded-2 bg-typography-secondary px-3 py-2 text-[8px] font-medium text-white dark:text-black">
       V1
     </div>
   );

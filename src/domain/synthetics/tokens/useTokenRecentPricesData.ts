@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import { metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
+import { registerOracleKeeperFailure, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/types/tokens";
@@ -72,6 +72,7 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
         // eslint-disable-next-line no-console
         console.warn("tickersPartialData");
         metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
+        registerOracleKeeperFailure(chainId, "tickers");
 
         Object.keys(pricesCacheUpdatedRef.current).forEach((address) => {
           const cacheUpdatedAt = pricesCacheUpdatedRef.current[address];

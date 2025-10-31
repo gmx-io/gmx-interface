@@ -70,7 +70,7 @@ export function ColorfulBanner({
             <Icon className="size-20 p-[1.25px]" />
           </div>
         )}
-        <div>{children}</div>
+        <div className="flex flex-col justify-center">{children}</div>
       </div>
       {onClose && (
         <button
@@ -89,17 +89,23 @@ export const ColorfulButtonLink = ({
   to,
   onClick,
   color = "blue",
+  newTab,
+  disabled,
 }: {
   children: React.ReactNode;
   to?: string;
   onClick?: () => void;
   color?: keyof typeof colorSchemas;
+  newTab?: boolean;
+  disabled?: boolean;
 }) => {
-  const className = cx("mt-4 flex items-center gap-4 font-medium", colorSchemas[color].icon);
+  const className = cx("mt-4 flex items-center gap-4 font-medium", colorSchemas[color].icon, {
+    "cursor-not-allowed opacity-50": disabled,
+  });
 
   if (to) {
     return (
-      <ButtonLink className={className} to={to} onClick={onClick}>
+      <ButtonLink className={className} to={to} onClick={onClick} newTab={newTab}>
         {children}
 
         <ChevronRightIcon className="size-12" />

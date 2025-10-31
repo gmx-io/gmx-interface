@@ -10,11 +10,13 @@ import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
+import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useHashQueryParams } from "lib/useHashQueryParams";
+import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
@@ -113,7 +115,15 @@ export function AppRoutes() {
     }
   }, [urlParams, history]);
 
+  const isEarnPage = history.location.pathname.startsWith("/earn");
+  useEffect(() => {
+    if (isEarnPage) {
+      sendEarnPageViewEvent();
+    }
+  }, [isEarnPage]);
+
   useRealChainIdWarning();
+  useNonEoaAccountChainWarning();
 
   return (
     <>

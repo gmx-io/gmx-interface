@@ -999,7 +999,7 @@ export function getStakingData(stakingInfo: bigint[] | undefined):
   return data as any;
 }
 
-export type ProcessedData = Partial<{
+export type StakingProcessedData = Partial<{
   gmxBalance: bigint;
   gmxBalanceUsd: bigint;
   gmxSupply: bigint;
@@ -1057,12 +1057,19 @@ export type ProcessedData = Partial<{
   totalNativeTokenRewards: bigint;
   totalNativeTokenRewardsUsd: bigint;
   totalRewardsUsd: bigint;
+  cumulativeTotalRewardsUsd: bigint;
+  cumulativeEsGmxRewards: bigint;
+  cumulativeEsGmxRewardsUsd: bigint;
+  cumulativeGmxRewards: bigint;
+  cumulativeGmxRewardsUsd: bigint;
+  cumulativeNativeTokenRewards: bigint;
+  cumulativeNativeTokenRewardsUsd: bigint;
 }> & {
   gmxAprForEsGmx: bigint;
   gmxAprForNativeToken: bigint;
 };
 
-export function getProcessedData(
+export function getStakingProcessedData(
   balanceData: Partial<Record<"glp" | "gmx" | "esGmx" | "stakedGmxTracker", bigint>> | undefined,
   supplyData: Partial<Record<"gmx" | "esGmx" | "glp" | "stakedGmxTracker", bigint>> | undefined,
   depositBalanceData:
@@ -1099,7 +1106,7 @@ export function getProcessedData(
   stakedGmxSupply: bigint | undefined,
   gmxPrice: bigint | undefined,
   gmxSupply: string | undefined
-): ProcessedData | undefined {
+): StakingProcessedData | undefined {
   if (
     !balanceData ||
     !supplyData ||
@@ -1230,6 +1237,29 @@ export function getProcessedData(
   data.totalNativeTokenRewards = data.feeGmxTrackerRewards + data.feeGlpTrackerRewards;
   data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd + data.feeGlpTrackerRewardsUsd;
 
+  const cumulativeEsGmxRewards =
+    stakingData.stakedGmxTracker.cumulativeRewards + stakingData.stakedGlpTracker.cumulativeRewards;
+  const cumulativeEsGmxRewardsUsd = mulDiv(cumulativeEsGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
+
+  const cumulativeGmxRewards =
+    stakingData.extendedGmxTracker.cumulativeRewards + vestingData.gmxVesterClaimSum + vestingData.glpVesterClaimSum;
+  const cumulativeGmxRewardsUsd = mulDiv(cumulativeGmxRewards, gmxPrice, expandDecimals(1, 18)) ?? 0n;
+
+  const cumulativeNativeTokenRewards =
+    stakingData.feeGmxTracker.cumulativeRewards + stakingData.feeGlpTracker.cumulativeRewards;
+  const cumulativeNativeTokenRewardsUsd =
+    mulDiv(cumulativeNativeTokenRewards, nativeTokenPrice, expandDecimals(1, 18)) ?? 0n;
+
+  data.cumulativeEsGmxRewards = cumulativeEsGmxRewards;
+  data.cumulativeEsGmxRewardsUsd = cumulativeEsGmxRewardsUsd;
+  data.cumulativeGmxRewards = cumulativeGmxRewards;
+  data.cumulativeGmxRewardsUsd = cumulativeGmxRewardsUsd;
+  data.cumulativeNativeTokenRewards = cumulativeNativeTokenRewards;
+  data.cumulativeNativeTokenRewardsUsd = cumulativeNativeTokenRewardsUsd;
+
+  data.cumulativeTotalRewardsUsd =
+    cumulativeEsGmxRewardsUsd + cumulativeGmxRewardsUsd + cumulativeNativeTokenRewardsUsd;
+
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalGmxRewardsUsd;
 
   data.avgGMXAprTotal = data.gmxAprTotal ? data.gmxAprTotal + (data.avgBoostAprForNativeToken ?? 0n) : undefined;
@@ -1283,7 +1313,7 @@ export function getTradePageUrl() {
 
 // Resolves all images in the folder that match the pattern and store them as `fileName -> path` pairs
 const imageStaticMap = mapKeys(
-  import.meta.glob("img/*.*", {
+  import.meta.glob("img/**/*.*", {
     query: "?url",
     import: "default",
     eager: true,
@@ -1292,14 +1322,22 @@ const imageStaticMap = mapKeys(
 );
 
 export function importImage(name) {
-  if (name in imageStaticMap) {
-    return imageStaticMap[name] as string;
+  const sizeSuffixRegex = /_(?:24|40)\.svg$/;
+  const candidates = sizeSuffixRegex.test(name) ? [name.replace(sizeSuffixRegex, ".svg"), name] : [name];
+
+  for (const candidate of candidates) {
+    if (candidate in imageStaticMap) {
+      return imageStaticMap[candidate] as string;
+    }
   }
 
-  const pngName = name.replace(/_\d+\.svg$/, ".png");
-  if (pngName in imageStaticMap) {
-    return imageStaticMap[pngName] as string;
+  for (const candidate of candidates) {
+    const pngCandidate = candidate.replace(/\.svg$/, ".png");
+    if (pngCandidate in imageStaticMap) {
+      return imageStaticMap[pngCandidate] as string;
+    }
   }
+
   throw new Error(`Image ${name} not found`);
 }
 

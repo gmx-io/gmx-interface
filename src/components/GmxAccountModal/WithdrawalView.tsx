@@ -869,7 +869,7 @@ export const WithdrawalView = () => {
             button={
               selectedTokenAddress && selectedToken ? (
                 <div className="flex items-center gap-8">
-                  <TokenIcon symbol={selectedToken.symbol} displaySize={20} importSize={40} />
+                  <TokenIcon symbol={selectedToken.symbol} displaySize={20} />
                   <span>{selectedToken.symbol}</span>
                 </div>
               ) : undefined
@@ -997,50 +997,52 @@ export const WithdrawalView = () => {
             !errors.isOutOfTokenError.isGasPaymentToken &&
             isOutOfTokenErrorToken !== undefined && (
               <AlertInfoCard type="error" className="my-4">
-                <Trans>
-                  Withdrawing requires{" "}
-                  <Amount
-                    amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
-                    decimals={isOutOfTokenErrorToken.decimals}
-                    isStable={isOutOfTokenErrorToken.isStable}
-                    symbol={isOutOfTokenErrorToken.symbol}
-                  />{" "}
-                  while you have{" "}
-                  <Amount
-                    amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
-                    decimals={isOutOfTokenErrorToken.decimals}
-                    isStable={isOutOfTokenErrorToken.isStable}
-                    symbol={isOutOfTokenErrorToken.symbol}
-                  />
-                  . Please{" "}
-                  <Button
-                    variant="link"
-                    onClick={() => {
-                      setIsVisibleOrView(false);
-                      history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
-                    }}
-                  >
-                    swap
-                  </Button>{" "}
-                  or{" "}
-                  <Button
-                    variant="link"
-                    onClick={() => {
-                      setDepositViewTokenAddress(
-                        convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native")
-                      );
-                      if (errors?.isOutOfTokenError?.requiredAmount !== undefined) {
-                        setDepositViewTokenInputValue(
-                          formatAmountFree(errors.isOutOfTokenError.requiredAmount, isOutOfTokenErrorToken.decimals)
+                <div>
+                  <Trans>
+                    Withdrawing requires{" "}
+                    <Amount
+                      amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
+                      decimals={isOutOfTokenErrorToken.decimals}
+                      isStable={isOutOfTokenErrorToken.isStable}
+                      symbol={isOutOfTokenErrorToken.symbol}
+                    />{" "}
+                    while you have{" "}
+                    <Amount
+                      amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
+                      decimals={isOutOfTokenErrorToken.decimals}
+                      isStable={isOutOfTokenErrorToken.isStable}
+                      symbol={isOutOfTokenErrorToken.symbol}
+                    />
+                    . Please{" "}
+                    <span
+                      className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+                      onClick={() => {
+                        setIsVisibleOrView(false);
+                        history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
+                      }}
+                    >
+                      swap
+                    </span>{" "}
+                    or{" "}
+                    <span
+                      className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+                      onClick={() => {
+                        setDepositViewTokenAddress(
+                          convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native")
                         );
-                      }
-                      setIsVisibleOrView("deposit");
-                    }}
-                  >
-                    deposit
-                  </Button>{" "}
-                  more {isOutOfTokenErrorToken?.symbol} to your GMX account.
-                </Trans>
+                        if (errors?.isOutOfTokenError?.requiredAmount !== undefined) {
+                          setDepositViewTokenInputValue(
+                            formatAmountFree(errors.isOutOfTokenError.requiredAmount, isOutOfTokenErrorToken.decimals)
+                          );
+                        }
+                        setIsVisibleOrView("deposit");
+                      }}
+                    >
+                      deposit
+                    </span>{" "}
+                    more {isOutOfTokenErrorToken?.symbol} to your GMX account.
+                  </Trans>
+                </div>
               </AlertInfoCard>
             )}
 
@@ -1141,7 +1143,7 @@ function WithdrawAssetItem({ option }: { option: TokenData }) {
   return (
     <div className="flex items-center justify-between gap-8">
       <div className="flex gap-8">
-        <TokenIcon symbol={option.symbol} displaySize={20} importSize={40} />
+        <TokenIcon symbol={option.symbol} displaySize={20} />
         <span>
           {option.symbol} <span className="text-body-small text-typography-secondary">{option.name}</span>
         </span>

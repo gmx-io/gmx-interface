@@ -1,31 +1,23 @@
 import { gql } from "@apollo/client";
 import merge from "lodash/merge";
 import { useMemo } from "react";
+import { SWRConfiguration } from "swr";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { MarketsInfoData } from "domain/synthetics/markets/types";
-import {
-  OrderType,
-  isIncreaseOrderType,
-  isLimitOrderType,
-  isSwapOrderType,
-  isTriggerDecreaseOrderType,
-} from "domain/synthetics/orders";
-import { TokensData } from "domain/synthetics/tokens";
-import { getSwapPathOutputAddresses } from "domain/synthetics/trade/utils";
+import { OrderType } from "domain/synthetics/orders";
 import { definedOrThrow } from "lib/guards";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getSubsquidGraphClient } from "lib/subgraph";
-import { getWrappedToken } from "sdk/configs/tokens";
 import { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
-import { PositionTradeAction, TradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import { TradeAction, TradeActionType } from "sdk/types/tradeHistory";
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
-import { createRawTradeActionTransformer } from "sdk/utils/tradeHistory";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
+
+import { processRawTradeActions } from "./processTradeActions";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
@@ -43,6 +35,7 @@ export function useTradeHistory(
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
+    refreshInterval?: number;
     orderEventCombinations?: {
       eventName?: TradeActionType;
       orderType?: OrderType[];
@@ -59,6 +52,7 @@ export function useTradeHistory(
     toTxTimestamp,
     marketsDirectionsFilter,
     orderEventCombinations,
+    refreshInterval,
   } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
@@ -84,6 +78,12 @@ export function useTradeHistory(
     return null;
   };
 
+  const swrParams: SWRConfiguration = {};
+  // SWR resets global options if pass undefined explicitly
+  if (refreshInterval) {
+    swrParams.refreshInterval = refreshInterval;
+  }
+
   const {
     data,
     error,
@@ -93,7 +93,7 @@ export function useTradeHistory(
     fetcher: async (key) => {
       const pageIndex = key.at(-2) as number;
 
-      return await fetchTradeActions({
+      const actions = await fetchRawTradeActions({
         chainId,
         pageIndex,
         pageSize,
@@ -103,20 +103,28 @@ export function useTradeHistory(
         fromTxTimestamp,
         toTxTimestamp,
         orderEventCombinations,
-        marketsInfoData,
-        tokensData,
         showDebugValues,
       });
+
+      return actions;
     },
+    ...swrParams,
   });
 
   const hasPopulatedData = data !== undefined && data.every((p) => p !== undefined);
   const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
   const tradeActions = useMemo(() => {
-    const allData = data?.flat().filter(Boolean) as TradeAction[];
-    return allData;
-  }, [data]);
+    const allRawData = data?.flat().filter(Boolean) as SubsquidTradeAction[] | undefined;
+
+    return processRawTradeActions({
+      chainId,
+      rawActions: allRawData,
+      marketsInfoData,
+      tokensData,
+      marketsDirectionsFilter: marketsDirectionsFilter || EMPTY_ARRAY,
+    });
+  }, [data, marketsInfoData, tokensData, marketsDirectionsFilter, chainId]);
 
   return {
     tradeActions,
@@ -126,7 +134,7 @@ export function useTradeHistory(
   };
 }
 
-export async function fetchTradeActions({
+export async function fetchRawTradeActions({
   chainId,
   pageIndex,
   pageSize,
@@ -136,8 +144,6 @@ export async function fetchTradeActions({
   fromTxTimestamp,
   toTxTimestamp,
   orderEventCombinations,
-  marketsInfoData,
-  tokensData,
   showDebugValues,
 }: {
   chainId: number;
@@ -156,10 +162,8 @@ export async function fetchTradeActions({
         isTwap?: boolean | undefined;
       }[]
     | undefined;
-  marketsInfoData: MarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
   showDebugValues?: boolean;
-}): Promise<TradeAction[] | undefined> {
+}): Promise<SubsquidTradeAction[] | undefined> {
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
 
@@ -325,6 +329,7 @@ export async function fetchTradeActions({
 
             initialCollateralDeltaAmount
             sizeDeltaUsd
+            sizeDeltaInTokens
             triggerPrice
             acceptablePrice
             executionPrice
@@ -368,86 +373,5 @@ export async function fetchTradeActions({
 
   const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
 
-  if (!marketsInfoData || !tokensData) {
-    return undefined;
-  }
-
-  const wrappedToken = getWrappedToken(chainId);
-
-  const transformer = createRawTradeActionTransformer(marketsInfoData, wrappedToken, tokensData);
-
-  let tradeActions = rawTradeActions.map(transformer).filter(Boolean) as TradeAction[];
-
-  const collateralFilterTree: {
-    [direction in "long" | "short"]: {
-      [marketAddress: string]: {
-        [collateralAddress: string]: boolean;
-      };
-    };
-  } = {
-    long: {},
-    short: {},
-  };
-  let hasCollateralFilter = false;
-
-  marketsDirectionsFilter.forEach((filter) => {
-    if (filter.direction === "any" || filter.direction === "swap" || !filter.collateralAddress) {
-      return;
-    }
-
-    if (!collateralFilterTree[filter.direction]) {
-      collateralFilterTree[filter.direction] = {};
-    }
-
-    if (!collateralFilterTree[filter.direction][filter.marketAddress]) {
-      collateralFilterTree[filter.direction][filter.marketAddress] = {};
-    }
-
-    hasCollateralFilter = true;
-    collateralFilterTree[filter.direction][filter.marketAddress][filter.collateralAddress] = true;
-  });
-
-  // Filter out trade actions that do not match the collateral filter
-  // We do this on the client side because the collateral filtering is too complex to be done in the graphql query
-  if (hasCollateralFilter) {
-    tradeActions = tradeActions.filter((tradeAction) => {
-      // All necessary filters for swaps are already applied in the graphql query
-      if (isSwapOrderType(tradeAction.orderType)) {
-        return true;
-      }
-
-      const positionTradeAction = tradeAction as PositionTradeAction;
-
-      let collateralMatch = true;
-
-      const desiredCollateralAddresses =
-        collateralFilterTree[positionTradeAction.isLong ? "long" : "short"]?.[positionTradeAction.marketAddress];
-
-      if (isLimitOrderType(tradeAction.orderType)) {
-        const wrappedToken = getWrappedToken(chainId);
-
-        if (!marketsInfoData) {
-          collateralMatch = true;
-        } else {
-          const { outTokenAddress } = getSwapPathOutputAddresses({
-            marketsInfoData,
-            initialCollateralAddress: positionTradeAction.initialCollateralTokenAddress,
-            isIncrease: isIncreaseOrderType(tradeAction.orderType),
-            shouldUnwrapNativeToken: positionTradeAction.shouldUnwrapNativeToken,
-            swapPath: tradeAction.swapPath,
-            wrappedNativeTokenAddress: wrappedToken.address,
-          });
-
-          collateralMatch =
-            outTokenAddress !== undefined && Boolean(desiredCollateralAddresses?.[outTokenAddress as Address]);
-        }
-      } else if (isTriggerDecreaseOrderType(tradeAction.orderType)) {
-        collateralMatch = Boolean(desiredCollateralAddresses?.[positionTradeAction.initialCollateralTokenAddress]);
-      }
-
-      return collateralMatch;
-    });
-  }
-
-  return tradeActions;
+  return rawTradeActions;
 }

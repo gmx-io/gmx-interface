@@ -43,8 +43,13 @@ export function DisplaySettings() {
               renderContent={() => (
                 <div>
                   <Trans>
-                    Technically, net price impact breaks down into stored price impact (for increase orders) and close price impact (for decrease orders). This setting shows both in the net value tooltip and close modal execution details, plus the stored price impact for increase orders.{" "}
-                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2#price-impact-and-price-impact-rebates" newTab>
+                    Technically, net price impact breaks down into stored price impact (for increase orders) and close
+                    price impact (for decrease orders). This setting shows both in the net value tooltip and close modal
+                    execution details, plus the stored price impact for increase orders.{" "}
+                    <ExternalLink
+                      href="https://docs.gmx.io/docs/trading/v2#price-impact-and-price-impact-rebates"
+                      newTab
+                    >
                       Read more
                     </ExternalLink>
                     .

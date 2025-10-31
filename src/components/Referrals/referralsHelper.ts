@@ -11,8 +11,21 @@ import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
+export const CREATE_REFERRAL_CODE_QUERY_PARAM = "createReferralCode";
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
+
+export function getReferralsPageUrlForCreateCode(referralCode: string) {
+  const trimmedCode = referralCode.trim();
+  const baseUrl = `${getRootUrl()}/#/referrals`;
+
+  if (!trimmedCode) {
+    return baseUrl;
+  }
+
+  const encodedCode = encodeURIComponent(trimmedCode);
+  return `${baseUrl}?${CREATE_REFERRAL_CODE_QUERY_PARAM}=${encodedCode}`;
+}
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
