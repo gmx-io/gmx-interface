@@ -186,12 +186,12 @@ export function AffiliateCodeForm({
     };
   } else if (referralCodeCheckStatus === "checking") {
     buttonState = {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   } else if (isProcessing) {
     buttonState = {
-      text: t`Creating`,
+      text: t`Creating...`,
       disabled: true,
     };
   } else {

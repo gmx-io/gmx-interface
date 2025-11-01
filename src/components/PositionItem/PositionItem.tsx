@@ -271,7 +271,7 @@ export function PositionItem(p: Props) {
                   })}
                 />
                 <StatsTooltipRow
-                  label={t`Accrued Positive Funding Fee`}
+                  label={t`Positive Funding Fee`}
                   showDollar={false}
                   value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
                   valueClassName="numbers"

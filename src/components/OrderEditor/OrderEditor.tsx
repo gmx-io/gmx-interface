@@ -375,7 +375,7 @@ export function OrderEditor(p: Props) {
 
   function getError() {
     if (isSubmitting) {
-      return t`Updating order`;
+      return t`Updating order...`;
     }
 
     if (isSwapOrderType(p.order.orderType)) {

@@ -87,6 +87,7 @@ import { TradeMode } from "sdk/types/trade";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
@@ -1007,8 +1008,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isSwap && isLimit && !isTwap && (
                   <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                     <Trans>
-                      The actual execution price may differ from the set limit price due to fees and price impact. This
-                      ensures that you receive at least the minimum receive amount.
+                      The execution price may differ from the set limit price due to fees and price impact. This
+                      ensures that you receive at least the minimum receive amount. <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>Read more</ExternalLink>.
                     </Trans>
                   </AlertInfoCard>
                 )}

@@ -621,7 +621,7 @@ function getOperationMessage(
       case "submitted": {
         return (
           <div>
-            {t`Updating ${orderText}.`}
+            {t`Updating ${orderText}...`}
             {lastActionsMsg && <br />}
             {lastActionsMsg}
           </div>
@@ -645,7 +645,7 @@ function getOperationMessage(
       case "submitted": {
         return (
           <div>
-            {t`Cancelling ${orderText}.`}
+            {t`Cancelling ${orderText}...`}
             {lastActionsMsg && <br />}
             {lastActionsMsg}
           </div>
