@@ -45,15 +45,18 @@ export default function ShareClosedPosition({
     pendingFundingFeesUsd: 0n,
   });
 
-  const pnlAfterFeesPercentage = collateralUsd != 0n ? getBasisPoints(tradeAction.pnlUsd ?? 0n, collateralUsd) : 0n;
+  const pnlUsd = tradeAction.pnlUsd ?? 0n;
+  const pnlAfterFeesPercentage = collateralUsd != 0n && pnlUsd != 0n ? getBasisPoints(pnlUsd, collateralUsd) : 0n;
 
   const markPrice = getTokenPriceByTradeAction(tradeAction);
 
-  const entryPrice = getEntryPrice({
-    sizeInTokens: tradeAction.sizeDeltaInTokens ?? 0n,
-    sizeInUsd: tradeAction.sizeDeltaUsd ?? 0n,
-    indexToken: tradeAction.marketInfo.indexToken,
-  });
+  const entryPrice = tradeAction.sizeDeltaInTokens
+    ? getEntryPrice({
+        sizeInTokens: tradeAction.sizeDeltaInTokens,
+        sizeInUsd: tradeAction.sizeDeltaUsd,
+        indexToken: tradeAction.marketInfo.indexToken,
+      })
+    : 0n;
 
   return (
     <PositionShare
