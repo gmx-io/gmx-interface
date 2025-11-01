@@ -5026,6 +5026,11 @@ msgstr "Perpie"
 msgid "Supported by"
 msgstr "지원"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Use a TWAP order"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
 msgstr "거래 확인"
@@ -6180,6 +6185,11 @@ msgstr "상위 포지션"
 msgid "Pools"
 msgstr "풀"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "for lower net price impact."
+msgstr ""
+
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
 msgstr "볼트"
@@ -6963,6 +6973,10 @@ msgstr "오류 발생. 다시 시도하세요"
 #: src/components/Referrals/referralsHelper.ts
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "문자, 숫자 및 언더스코어만 허용됩니다."
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#~ msgid "Use a TWAP order for lower net price impact."
+#~ msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"

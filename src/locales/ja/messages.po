@@ -5026,6 +5026,11 @@ msgstr "Perpie"
 msgid "Supported by"
 msgstr "サポート"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Use a TWAP order"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
 msgstr "取引確認"
@@ -6180,6 +6185,11 @@ msgstr "トップポジション"
 msgid "Pools"
 msgstr "プール"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "for lower net price impact."
+msgstr ""
+
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
 msgstr "ボールト"
@@ -6963,6 +6973,10 @@ msgstr "エラーが発生しました。再度お試しください"
 #: src/components/Referrals/referralsHelper.ts
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "文字、数字、アンダースコアのみ許可されます。"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#~ msgid "Use a TWAP order for lower net price impact."
+#~ msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"
