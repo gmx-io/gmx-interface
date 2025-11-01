@@ -3025,7 +3025,7 @@ msgstr "Seleccionar Idioma"
 
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 msgid "Net price impact is the price impact for your position. <0>Read more</0>."
-msgstr ""
+msgstr "El impacto neto en el precio es el impacto del precio en su posición. <0>Leer más</0>."
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"

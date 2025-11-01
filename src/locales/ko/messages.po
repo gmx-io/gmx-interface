@@ -3025,7 +3025,7 @@ msgstr "언어 선택"
 
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 msgid "Net price impact is the price impact for your position. <0>Read more</0>."
-msgstr ""
+msgstr "순 가격 영향은 귀하의 포지션에 대한 가격 영향입니다. <0>자세히 보기</0>."
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
@@ -3185,7 +3185,7 @@ msgstr "Defi Llama"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX  Account"
-msgstr ""
+msgstr "GMX  계정"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last Rebalance"
