@@ -95,8 +95,8 @@ export function useShareSuccessClosedPosition({
       );
 
       if (
-        typeof tradeAction.pnlUsd === "undefined" ||
-        typeof collateralUsd === "undefined" ||
+        tradeAction.pnlUsd === undefined ||
+        collateralUsd === undefined ||
         collateralUsd === 0n ||
         tradeAction.pnlUsd === 0n
       ) {
