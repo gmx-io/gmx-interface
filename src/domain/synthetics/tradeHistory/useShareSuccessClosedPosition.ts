@@ -88,14 +88,22 @@ export function useShareSuccessClosedPosition({
         return true;
       }
 
-      const collateralUsd =
-        convertToUsd(
-          tradeAction.initialCollateralDeltaAmount,
-          tradeAction.initialCollateralToken.decimals,
-          tradeAction.initialCollateralToken.prices.minPrice
-        ) ?? 0n;
+      const collateralUsd = convertToUsd(
+        tradeAction.initialCollateralDeltaAmount,
+        tradeAction.initialCollateralToken.decimals,
+        tradeAction.initialCollateralToken.prices.minPrice
+      );
 
-      const pnlAfterFeesBps = getBasisPoints(tradeAction.pnlUsd ?? 0n, collateralUsd);
+      if (
+        typeof tradeAction.pnlUsd === "undefined" ||
+        typeof collateralUsd === "undefined" ||
+        collateralUsd === 0n ||
+        tradeAction.pnlUsd === 0n
+      ) {
+        return false;
+      }
+
+      const pnlAfterFeesBps = getBasisPoints(tradeAction.pnlUsd, collateralUsd);
 
       return pnlAfterFeesBps >= POSITION_SHARE_MIN_PNL_THRESHOLD_BPS;
     },
