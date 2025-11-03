@@ -7021,6 +7021,10 @@ msgstr "Exchange perpétuel décentralisé | GMX"
 msgid "No loss of fund ownership"
 msgstr "Aucune perte de propriété des fonds"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation.<0/><1/>{suggestText}<2/><3/><4>View transaction details.</4>"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
 msgid "Referral Terms"
@@ -7836,8 +7840,8 @@ msgid "Request Deposit"
 msgstr "Demander un dépôt"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-msgstr ""
+#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
+#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"

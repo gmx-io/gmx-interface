@@ -7021,6 +7021,10 @@ msgstr "分散型永久取引所 | GMX"
 msgid "No loss of fund ownership"
 msgstr "資金所有権の損失なし"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation.<0/><1/>{suggestText}<2/><3/><4>View transaction details.</4>"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
 msgid "Referral Terms"
@@ -7836,8 +7840,8 @@ msgid "Request Deposit"
 msgstr "入金リクエスト"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-msgstr ""
+#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
+#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"
