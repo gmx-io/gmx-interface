@@ -359,14 +359,14 @@ export function getInsufficientExecutionFeeToastContent({
   const suggestText = shouldOfferExpress ? (
     <>
       Please{" "}
-      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         enable Express trading
       </div>{" "}
       under settings, which should offer a better experience.
       <br />
       <br />
       Otherwise, try increasing the max network fee buffer {bufferText}in{" "}
-      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         settings
       </div>
       .
@@ -375,7 +375,7 @@ export function getInsufficientExecutionFeeToastContent({
     <>
       Please try increasing the max network fee buffer to {formatPercentage(requiredBufferBps, { displayDecimals: 0 })}{" "}
       in{" "}
-      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         settings
       </div>
       .
@@ -387,10 +387,11 @@ export function getInsufficientExecutionFeeToastContent({
       <Trans>
         Transaction failed due to execution fee validation.
         <br />
-        <ExternalLink href={txUrl}>View</ExternalLink>.
-        <br />
         <br />
         {suggestText}
+        <br />
+        <br />
+        <ExternalLink href={txUrl}>View transaction details.</ExternalLink>
       </Trans>
       <br />
       <br />

@@ -716,6 +716,10 @@ msgstr "高交换价格影响"
 msgid "Proportional Stored Impact"
 msgstr "比例存储影响"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "to {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
 msgstr "平均仓位规模。"
@@ -5822,10 +5826,10 @@ msgid "Referral code created."
 msgstr "推荐码已创建。"
 
 #: src/components/Errors/errorToasts.tsx
-msgid ""
-"to\n"
-"{0}"
-msgstr ""
+#~ msgid ""
+#~ "to\n"
+#~ "{0}"
+#~ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"

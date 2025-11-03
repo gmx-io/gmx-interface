@@ -716,6 +716,10 @@ msgstr "Высокое влияние цены свопа"
 msgid "Proportional Stored Impact"
 msgstr "Пропорциональное хранимое влияние"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "to {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
 msgstr "Средний размер позиции."
@@ -5822,10 +5826,10 @@ msgid "Referral code created."
 msgstr "Реферальный код создан."
 
 #: src/components/Errors/errorToasts.tsx
-msgid ""
-"to\n"
-"{0}"
-msgstr ""
+#~ msgid ""
+#~ "to\n"
+#~ "{0}"
+#~ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"

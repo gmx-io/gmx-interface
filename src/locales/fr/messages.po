@@ -716,6 +716,10 @@ msgstr "Impact de prix d'échange élevé"
 msgid "Proportional Stored Impact"
 msgstr "Impact Stocké Proportionnel"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "to {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
 msgstr "Taille moyenne de position."
@@ -5822,10 +5826,10 @@ msgid "Referral code created."
 msgstr "Code de parrainage créé."
 
 #: src/components/Errors/errorToasts.tsx
-msgid ""
-"to\n"
-"{0}"
-msgstr ""
+#~ msgid ""
+#~ "to\n"
+#~ "{0}"
+#~ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"

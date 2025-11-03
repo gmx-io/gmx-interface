@@ -716,6 +716,10 @@ msgstr "높은 스왑 가격 영향"
 msgid "Proportional Stored Impact"
 msgstr "비례 저장 영향"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "to {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
 msgstr "평균 포지션 크기."
@@ -5822,10 +5826,10 @@ msgid "Referral code created."
 msgstr "추천 코드 생성됨."
 
 #: src/components/Errors/errorToasts.tsx
-msgid ""
-"to\n"
-"{0}"
-msgstr ""
+#~ msgid ""
+#~ "to\n"
+#~ "{0}"
+#~ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"

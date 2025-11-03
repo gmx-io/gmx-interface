@@ -716,6 +716,10 @@ msgstr "High swap price impact"
 msgid "Proportional Stored Impact"
 msgstr "Proportional Stored Impact"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "to {0}"
+msgstr "to {0}"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
 msgstr "Average position size."
@@ -5822,12 +5826,12 @@ msgid "Referral code created."
 msgstr "Referral code created."
 
 #: src/components/Errors/errorToasts.tsx
-msgid ""
-"to\n"
-"{0}"
-msgstr ""
-"to\n"
-"{0}"
+#~ msgid ""
+#~ "to\n"
+#~ "{0}"
+#~ msgstr ""
+#~ "to\n"
+#~ "{0}"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
