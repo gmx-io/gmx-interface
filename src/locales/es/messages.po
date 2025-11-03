@@ -145,6 +145,10 @@ msgstr "stop loss"
 msgid "Type"
 msgstr "Tipo"
 
+#: src/components/Errors/errorToasts.tsx
+msgid ""
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
@@ -354,8 +358,8 @@ msgid "Stop market price above mark price"
 msgstr "Precio de mercado stop por encima del precio de referencia"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-msgstr "Transacción fallida debido a validación de tarifa de ejecución. <0>Ver</0>.<1/><2/>{suggestText}"
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
+#~ msgstr "Transacción fallida debido a validación de tarifa de ejecución. <0>Ver</0>.<1/><2/>{suggestText}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -5817,6 +5821,12 @@ msgstr "Depositar USDC o ETH"
 msgid "Referral code created."
 msgstr "Código de referencia creado."
 
+#: src/components/Errors/errorToasts.tsx
+msgid ""
+"to\n"
+"{0}"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Notificaciones"
@@ -7820,6 +7830,10 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Solicitar Depósito"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
+msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"
