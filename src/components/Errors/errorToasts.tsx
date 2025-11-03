@@ -353,10 +353,8 @@ export function getInsufficientExecutionFeeToastContent({
     gasLimit: estimatedExecutionGasLimit,
   });
 
-  const bufferText = requiredBufferBps
-    ? t`to
-      ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })}`
-    : t``;
+  const bufferText =
+    requiredBufferBps !== undefined ? t`to ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })} ` : t``;
 
   const suggestText = shouldOfferExpress ? (
     <>
@@ -367,7 +365,7 @@ export function getInsufficientExecutionFeeToastContent({
       under settings, which should offer a better experience.
       <br />
       <br />
-      Otherwise, try increasing the max network fee buffer {bufferText} in{" "}
+      Otherwise, try increasing the max network fee buffer {bufferText}in{" "}
       <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         settings
       </div>
