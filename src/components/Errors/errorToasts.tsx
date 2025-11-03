@@ -353,6 +353,11 @@ export function getInsufficientExecutionFeeToastContent({
     gasLimit: estimatedExecutionGasLimit,
   });
 
+  const bufferText = requiredBufferBps
+    ? t`to
+      ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })}`
+    : t``;
+
   const suggestText = shouldOfferExpress ? (
     <>
       Please{" "}
@@ -362,8 +367,7 @@ export function getInsufficientExecutionFeeToastContent({
       under settings, which should offer a better experience.
       <br />
       <br />
-      Otherwise, try increasing the max network fee buffer to{" "}
-      {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
+      Otherwise, try increasing the max network fee buffer {bufferText} in{" "}
       <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         settings
       </div>
@@ -383,7 +387,9 @@ export function getInsufficientExecutionFeeToastContent({
   return (
     <div>
       <Trans>
-        Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
+        Transaction failed due to execution fee validation.
+        <br />
+        <ExternalLink href={txUrl}>View</ExternalLink>.
         <br />
         <br />
         {suggestText}

@@ -44,10 +44,18 @@ export function getMinimumExecutionFeeBufferBps(p: {
 }) {
   const { minExecutionFee, estimatedExecutionFee, currentBufferBps, premium, gasLimit } = p;
 
+  if (gasLimit === 0n || currentBufferBps === 0n) {
+    return undefined;
+  }
+
   const estimatedGasPriceWithBuffer = estimatedExecutionFee / gasLimit - premium;
 
   const baseGasPrice =
     (estimatedGasPriceWithBuffer * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT + currentBufferBps);
+
+  if (baseGasPrice === 0n) {
+    return undefined;
+  }
 
   // Calculate target gas price (without premium)
   const targetGasPrice = minExecutionFee / gasLimit - premium;
