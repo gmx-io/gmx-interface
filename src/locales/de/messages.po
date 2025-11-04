@@ -1163,6 +1163,7 @@ msgstr "WARNUNG: Diese Position weist nach Abzug der Leihgebühren einen geringe
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
 #: src/components/Glp/GlpSwap.jsx
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/BuyGlp/BuyGlp.jsx
 #: src/pages/Stake/GlpCard.tsx
 msgid "Sell GLP"
@@ -3807,8 +3808,8 @@ msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for 
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
-msgid "Redeem GLP"
-msgstr ""
+#~ msgid "Redeem GLP"
+#~ msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "We value your experience as GMX Liquidity Provider and invite you to participate in an anonymous one-on-one chat."
