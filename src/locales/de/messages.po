@@ -1436,6 +1436,7 @@ msgstr "Unzureichende Empfangs-Token-Liquidität"
 msgid "GMX Announcements and Updates"
 msgstr "GMX-Ankündigungen und Updates"
 
+#: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in Leverage Display"
 msgstr "PnL in Hebelanzeige einbeziehen"

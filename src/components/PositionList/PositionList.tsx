@@ -153,7 +153,8 @@ export function PositionList(p: Props) {
           entryPrice={positionToShare.entryPrice}
           indexToken={positionToShare.indexToken}
           isLong={positionToShare.isLong}
-          leverage={positionToShare.leverageWithPnl}
+          leverageWithoutPnl={positionToShare.leverageWithoutPnl}
+          leverageWithPnl={positionToShare.leverageWithPnl}
           markPrice={positionToShare.markPrice}
           account={positionToShare.account}
           pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}

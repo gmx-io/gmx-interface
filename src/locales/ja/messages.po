@@ -1436,6 +1436,7 @@ msgstr "受け取りトークン流動性不足"
 msgid "GMX Announcements and Updates"
 msgstr "GMXの告知と最新情報"
 
+#: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in Leverage Display"
 msgstr "レバレッジ表示にPnLを含める"

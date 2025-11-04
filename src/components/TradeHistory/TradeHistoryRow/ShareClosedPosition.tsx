@@ -37,16 +37,25 @@ export default function ShareClosedPosition({
       tradeAction.initialCollateralToken.prices.minPrice
     ) ?? 0n;
 
-  const leverage = getLeverage({
-    sizeInUsd: tradeAction.sizeDeltaUsd ?? 0n,
-    collateralUsd: collateralUsd,
-    pnl: 0n,
-    pendingBorrowingFeesUsd: 0n,
-    pendingFundingFeesUsd: 0n,
-  });
-
   const pnlUsd = tradeAction.pnlUsd ?? 0n;
   const pnlAfterFeesPercentage = collateralUsd != 0n && pnlUsd != 0n ? getBasisPoints(pnlUsd, collateralUsd) : 0n;
+
+  const getLeverageProps = {
+    sizeInUsd: tradeAction.sizeDeltaUsd ?? 0n,
+    collateralUsd: collateralUsd,
+    pendingBorrowingFeesUsd: 0n,
+    pendingFundingFeesUsd: 0n,
+  };
+
+  const leverageWithoutPnl = getLeverage({
+    ...getLeverageProps,
+    pnl: 0n,
+  });
+
+  const leverageWithPnl = getLeverage({
+    ...getLeverageProps,
+    pnl: pnlUsd,
+  });
 
   const markPrice = getTokenPriceByTradeAction(tradeAction);
 
@@ -63,7 +72,8 @@ export default function ShareClosedPosition({
       entryPrice={entryPrice}
       indexToken={tradeAction.marketInfo.indexToken}
       isLong={tradeAction.isLong}
-      leverage={leverage}
+      leverageWithPnl={leverageWithPnl}
+      leverageWithoutPnl={leverageWithoutPnl}
       markPrice={markPrice ?? 0n}
       pnlAfterFeesPercentage={pnlAfterFeesPercentage}
       chainId={chainId}
