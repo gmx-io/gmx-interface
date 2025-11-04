@@ -47,7 +47,7 @@ export default function ShareClosedPosition({
     pendingFundingFeesUsd: 0n,
   };
 
-  const leverage = getLeverage({
+  const leverageWithoutPnl = getLeverage({
     ...getLeverageProps,
     pnl: 0n,
   });
@@ -72,8 +72,8 @@ export default function ShareClosedPosition({
       entryPrice={entryPrice}
       indexToken={tradeAction.marketInfo.indexToken}
       isLong={tradeAction.isLong}
-      leverage={leverage}
       leverageWithPnl={leverageWithPnl}
+      leverageWithoutPnl={leverageWithoutPnl}
       markPrice={markPrice ?? 0n}
       pnlAfterFeesPercentage={pnlAfterFeesPercentage}
       chainId={chainId}

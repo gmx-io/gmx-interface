@@ -47,8 +47,8 @@ type Props = {
   entryPrice: bigint | undefined;
   indexToken: Token;
   isLong: boolean;
-  leverage: bigint | undefined;
   leverageWithPnl: bigint | undefined;
+  leverageWithoutPnl: bigint | undefined;
   markPrice: bigint;
   pnlAfterFeesPercentage: bigint;
   pnlAfterFeesUsd: bigint;
@@ -66,7 +66,7 @@ function PositionShare({
   entryPrice,
   indexToken,
   isLong,
-  leverage: leverageWithoutPnl,
+  leverageWithoutPnl,
   leverageWithPnl,
   markPrice,
   pnlAfterFeesPercentage,
@@ -101,8 +101,6 @@ function PositionShare({
   }, [createdReferralCode, userAffiliateCode]);
   const hasReferralCode = Boolean(shareAffiliateCode?.code);
 
-  const leverage = isPnlInLeverage ? leverageWithPnl : leverageWithoutPnl;
-
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
 
   const tweetLink = getTwitterIntentURL(
@@ -117,8 +115,8 @@ function PositionShare({
     entryPrice: bigint | undefined;
     indexToken: Token;
     isLong: boolean;
-    leverage: bigint | undefined;
     leverageWithPnl: bigint | undefined;
+    leverageWithoutPnl: bigint | undefined;
     markPrice: bigint;
     pnlAfterFeesPercentage: bigint;
     pnlAfterFeesUsd: bigint;
@@ -130,8 +128,8 @@ function PositionShare({
         entryPrice,
         indexToken,
         isLong,
-        leverage,
         leverageWithPnl,
+        leverageWithoutPnl,
         markPrice,
         pnlAfterFeesPercentage,
         pnlAfterFeesUsd,
@@ -142,8 +140,8 @@ function PositionShare({
     entryPrice,
     indexToken,
     isLong,
-    leverage,
     leverageWithPnl,
+    leverageWithoutPnl,
     markPrice,
     pnlAfterFeesPercentage,
     pnlAfterFeesUsd,
@@ -309,7 +307,7 @@ function PositionShare({
               entryPrice={cachedPositionData.entryPrice}
               indexToken={cachedPositionData.indexToken}
               isLong={cachedPositionData.isLong}
-              leverage={isPnlInLeverage ? cachedPositionData.leverageWithPnl : cachedPositionData.leverage}
+              leverage={isPnlInLeverage ? cachedPositionData.leverageWithPnl : cachedPositionData.leverageWithoutPnl}
               markPrice={cachedPositionData.markPrice}
               pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
               pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
