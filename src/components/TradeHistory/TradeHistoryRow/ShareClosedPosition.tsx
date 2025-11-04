@@ -1,4 +1,3 @@
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getBasisPoints } from "lib/numbers";
@@ -30,7 +29,6 @@ export default function ShareClosedPosition({
   shareSource,
 }: ShareClosedPositionProps) {
   const { chainId } = useChainId();
-  const { isPnlInLeverage } = useSettings();
 
   const collateralUsd =
     convertToUsd(
@@ -42,12 +40,21 @@ export default function ShareClosedPosition({
   const pnlUsd = tradeAction.pnlUsd ?? 0n;
   const pnlAfterFeesPercentage = collateralUsd != 0n && pnlUsd != 0n ? getBasisPoints(pnlUsd, collateralUsd) : 0n;
 
-  const leverage = getLeverage({
+  const getLeverageProps = {
     sizeInUsd: tradeAction.sizeDeltaUsd ?? 0n,
     collateralUsd: collateralUsd,
-    pnl: isPnlInLeverage ? pnlUsd : 0n,
     pendingBorrowingFeesUsd: 0n,
     pendingFundingFeesUsd: 0n,
+  };
+
+  const leverage = getLeverage({
+    ...getLeverageProps,
+    pnl: 0n,
+  });
+
+  const leverageWithPnl = getLeverage({
+    ...getLeverageProps,
+    pnl: pnlUsd,
   });
 
   const markPrice = getTokenPriceByTradeAction(tradeAction);
@@ -66,6 +73,7 @@ export default function ShareClosedPosition({
       indexToken={tradeAction.marketInfo.indexToken}
       isLong={tradeAction.isLong}
       leverage={leverage}
+      leverageWithPnl={leverageWithPnl}
       markPrice={markPrice ?? 0n}
       pnlAfterFeesPercentage={pnlAfterFeesPercentage}
       chainId={chainId}
