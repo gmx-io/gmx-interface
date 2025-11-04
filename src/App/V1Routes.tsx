@@ -14,6 +14,7 @@ import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
+import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import BuyGlp from "pages/BuyGlp/BuyGlp";
@@ -89,6 +90,9 @@ export function V1Routes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/begin_account_transfer">
         <BeginAccountTransfer />
+      </Route>
+      <Route exact path="/complete_account_transfer/:sender/:receiver">
+        <CompleteAccountTransfer />
       </Route>
       <Route exact path="/actions/:v/:account">
         {({ match }) => (
