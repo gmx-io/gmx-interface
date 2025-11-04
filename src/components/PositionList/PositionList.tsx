@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { memo, useCallback, useState } from "react";
 import { useMedia } from "react-use";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -38,6 +39,7 @@ export function PositionList(p: Props) {
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
   const positions = useSelector(selectPositionsInfoDataSortedByMarket);
+  const { isPnlInLeverage } = useSettings();
 
   const handleSharePositionClick = useCallback((positionKey: string) => {
     userAnalytics.pushEvent<SharePositionClickEvent>({
@@ -153,7 +155,7 @@ export function PositionList(p: Props) {
           entryPrice={positionToShare.entryPrice}
           indexToken={positionToShare.indexToken}
           isLong={positionToShare.isLong}
-          leverage={positionToShare.leverageWithPnl}
+          leverage={isPnlInLeverage ? positionToShare.leverageWithPnl : positionToShare.leverage}
           markPrice={positionToShare.markPrice}
           account={positionToShare.account}
           pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
