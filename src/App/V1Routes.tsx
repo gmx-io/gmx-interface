@@ -17,6 +17,7 @@ import { VERSION_QUERY_PARAM } from "pages/AccountDashboard/constants";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
 import BuyGlp from "pages/BuyGlp/BuyGlp";
+import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import { Exchange } from "pages/Exchange/Exchange";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
@@ -89,6 +90,9 @@ export function V1Routes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/begin_account_transfer">
         <BeginAccountTransfer />
+      </Route>
+      <Route exact path="/complete_account_transfer/:sender/:receiver">
+        <CompleteAccountTransfer />
       </Route>
       <Route exact path="/actions/:v/:account">
         {({ match }) => (
