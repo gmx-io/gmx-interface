@@ -101,10 +101,6 @@ msgstr ""
 msgid "Approval signed"
 msgstr ""
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr ""
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr ""
@@ -1091,6 +1087,10 @@ msgstr ""
 msgid "Start Earning"
 msgstr ""
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr ""
@@ -1433,10 +1433,6 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr ""
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High impact on collateral"
-#~ msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -3527,11 +3523,6 @@ msgstr ""
 msgid "Failed TWAP Part"
 msgstr ""
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#~ msgid "Impact+Fees"
-#~ msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr ""
@@ -4124,10 +4115,6 @@ msgstr ""
 msgid "Take Profit / Stop Loss"
 msgstr ""
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-#~ msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr ""
@@ -4258,10 +4245,6 @@ msgstr ""
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr ""
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High price impact"
-#~ msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -6973,10 +6956,6 @@ msgstr ""
 #: src/components/Referrals/referralsHelper.ts
 msgid "Only letters, numbers and underscores are allowed."
 msgstr ""
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Use a TWAP order for lower net price impact."
-#~ msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"

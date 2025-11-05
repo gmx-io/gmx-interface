@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Одобрение подписано"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "Оставить отзыв"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Ежедневный убыток"
@@ -1091,6 +1087,10 @@ msgstr "Экспресс"
 msgid "Start Earning"
 msgstr "Начать зарабатывать"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "Поскольку залог вашей позиции в {symbol}, с начальной стоимостью выше размера длинной позиции {indexName}, стоимость залога покроет любую отрицательную PnL, поэтому цены ликвидации нет."
@@ -1433,10 +1433,6 @@ msgstr "V2 Avalanche Fuji"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr "Ордер исполнен"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High impact on collateral"
-#~ msgstr "Высокое влияние на коллатераль"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -3527,11 +3523,6 @@ msgstr "Купить GLV"
 msgid "Failed TWAP Part"
 msgstr "Неудачная Часть TWAP"
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#~ msgid "Impact+Fees"
-#~ msgstr "Влияние+Комиссии"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr "TP - Шорт Уменьш."
@@ -4124,10 +4115,6 @@ msgstr "Накопленные возмещения влияния цены. О�
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-#~ msgstr "Сэкономьте {0} на влиянии цены и комиссиях, <0>переключившись на пул {1}</0>"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "Недостаточно {0} на вашем аккаунте в {networkName} для отправки этой транзакции.<0/><1/><2>Купить или Перевести {1} в {networkName}</2>"
@@ -4258,10 +4245,6 @@ msgstr "Вы установили высокое допустимое сколь
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "Создать Реферальный Код"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High price impact"
-#~ msgstr "Высокое влияние цены"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -6974,10 +6957,6 @@ msgstr "Произошла ошибка. Попробуйте снова"
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Допускаются только буквы, цифры и подчеркивания."
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Use a TWAP order for lower net price impact."
-#~ msgstr ""
-
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"
 msgstr "Высокая сетевая комиссия TWAP"
@@ -7714,10 +7693,6 @@ msgstr "Невозможно подписать сообщение со смар
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "Эта позиция может быть ликвидирована, исключая любое движение цены, из-за ставок комиссий за финансирование и заем, снижающих залог позиции со временем."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
-#~ msgstr "Gemini Wallet не поддерживается для Express или One-Click торговли."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Genehmigung unterzeichnet"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "Feedback hinterlassen"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Täglicher Verlust"
@@ -1091,6 +1087,10 @@ msgstr "Express"
 msgid "Start Earning"
 msgstr "Beginnen Sie zu verdienen"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "Da dein Positionskollateral in {symbol} ist, mit einem anfänglichen Wert höher als die {indexName}-Long-Positionsgröße, wird der Kollateralwert jeden negativen Gewinn/Verlust abdecken, daher gibt es keinen Liquidationspreis."
@@ -1433,10 +1433,6 @@ msgstr "V2 Avalanche Fuji"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr "Order ausgeführt"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High impact on collateral"
-#~ msgstr "Hohe Auswirkung auf Collateral"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -3527,11 +3523,6 @@ msgstr "GLV kaufen"
 msgid "Failed TWAP Part"
 msgstr "Fehlgeschlagener TWAP-Teil"
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#~ msgid "Impact+Fees"
-#~ msgstr "Impact+Gebühren"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr "TP - Short Verringerung"
@@ -4124,10 +4115,6 @@ msgstr "Angefallene Preisauswirkungs-Rabatte. Sie werden nach 5 Tagen einlösbar
 msgid "Take Profit / Stop Loss"
 msgstr "Take-Profit / Stop-Loss"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-#~ msgstr "Sparen Sie {0} an Preisauswirkung und Gebühren durch <0>Wechseln zum {1}-Pool</0>"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "Es gibt nicht genügend {0} in deinem Konto auf {networkName}, um diese Transaktion zu senden.<0/><1/><2>Kaufe oder transferiere {1} zu {networkName}</2>"
@@ -4258,10 +4245,6 @@ msgstr "Du hast ein hohes zulässiges Slippage gesetzt. Der aktuelle Tauschimpac
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "Referral-Code erstellen"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High price impact"
-#~ msgstr "Hohe Preisauswirkung"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -6974,10 +6957,6 @@ msgstr "Fehler aufgetreten. Bitte erneut versuchen"
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Nur Buchstaben, Zahlen und Unterstriche erlaubt."
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Use a TWAP order for lower net price impact."
-#~ msgstr ""
-
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"
 msgstr "Hohe TWAP-Netzwerkgebühr"
@@ -7714,10 +7693,6 @@ msgstr "Nachricht mit Smart-Account kann nicht unterschrieben werden"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "Diese Position könnte liquidiert werden, ausgenommen Preisbewegungen, aufgrund von Finanzierungs- und Leihgebührensätzen, die das Kollateral der Position im Laufe der Zeit reduzieren."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
-#~ msgstr "Gemini Wallet wird für Express- oder One-Click-Trading nicht unterstützt."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

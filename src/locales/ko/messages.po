@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "승인 서명 완료"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "피드백 남기기"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "일일 손실"
@@ -1091,6 +1087,10 @@ msgstr "익스프레스"
 msgid "Start Earning"
 msgstr "수익 벌기 시작"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "포지션 담보가 {symbol}이고 초기 가치가 {indexName} 롱 포지션 크기보다 높으므로, 담보 가치가 음의 PnL을 커버하여 청산 가격이 없습니다."
@@ -1433,10 +1433,6 @@ msgstr "V2 Avalanche Fuji"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr "주문 실행됨"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High impact on collateral"
-#~ msgstr "담보에 높은 영향"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -3527,11 +3523,6 @@ msgstr "GLV 구매"
 msgid "Failed TWAP Part"
 msgstr "TWAP 부분 실패"
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#~ msgid "Impact+Fees"
-#~ msgstr "영향+수수료"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr "TP - 숏 감소"
@@ -4124,10 +4115,6 @@ msgstr "축적된 가격 영향 리베이트. 5일 후 청구 가능합니다.<0
 msgid "Take Profit / Stop Loss"
 msgstr "이익 실현 / 손절"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-#~ msgstr "<0>{1} 풀로 전환</0>하여 가격 영향 및 수수료에서 {0} 절약"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "{networkName} 계정에 트랜잭션을 보낼 {0}이 부족합니다.<0/><1/><2>{1} 구매 또는 {networkName}로 이전</2>"
@@ -4258,10 +4245,6 @@ msgstr "높은 허용 슬리피지를 설정했습니다. 수수료를 포함한
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "추천 코드 생성"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High price impact"
-#~ msgstr "높은 가격 영향"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -6974,10 +6957,6 @@ msgstr "오류 발생. 다시 시도하세요"
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "문자, 숫자 및 언더스코어만 허용됩니다."
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Use a TWAP order for lower net price impact."
-#~ msgstr ""
-
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"
 msgstr "높은 TWAP 네트워크 수수료"
@@ -7714,10 +7693,6 @@ msgstr "스마트 계정으로 메시지 서명 불가"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "자금 및 대출 수수료율로 인해 가격 움직임 제외 포지션 담보 감소로 청산될 수 있음."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
-#~ msgstr "Gemini 지갑은 익스프레스 또는 원클릭 거래를 지원하지 않습니다."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

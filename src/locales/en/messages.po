@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Approval signed"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "Leave Feedback"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Daily Loss"
@@ -1091,6 +1087,10 @@ msgstr "Express"
 msgid "Start Earning"
 msgstr "Start Earning"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
@@ -1232,10 +1232,6 @@ msgstr "Failed"
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Simulate Tickers Errors"
-#~ msgstr "Simulate Tickers Errors 9a4580fde34e0f9ed7e7ac2bdff4d2275f227f20"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
@@ -1437,10 +1433,6 @@ msgstr "V2 Avalanche Fuji"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr "Order executed"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High impact on collateral"
-#~ msgstr "High impact on collateral"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -3531,11 +3523,6 @@ msgstr "Buy GLV"
 msgid "Failed TWAP Part"
 msgstr "Failed TWAP Part"
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#~ msgid "Impact+Fees"
-#~ msgstr "Impact+Fees"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr "TP - Short Dec."
@@ -4128,10 +4115,6 @@ msgstr "Accrued price impact rebates. They will become claimable after 5 days.<0
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-#~ msgstr "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
@@ -4262,10 +4245,6 @@ msgstr "You have set a high allowed slippage. The current swap impact including 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "Create Referral Code"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High price impact"
-#~ msgstr "High price impact"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -6977,10 +6956,6 @@ msgstr "Error occurred. Please try again"
 #: src/components/Referrals/referralsHelper.ts
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Use a TWAP order for lower net price impact."
-#~ msgstr "Use a TWAP order for lower net price impact."
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"

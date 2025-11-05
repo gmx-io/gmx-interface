@@ -101,10 +101,6 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "承認署名完了"
 
-#: src/components/Footer/Footer.tsx
-#~ msgid "Leave Feedback"
-#~ msgstr "フィードバックを残す"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "1日あたりの損失"
@@ -1091,6 +1087,10 @@ msgstr "エクスプレス"
 msgid "Start Earning"
 msgstr "稼ぎ始めましょう"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "ポジションの担保が{symbol}であり、初期価値が{indexName}ロングポジションサイズより高いため、担保価値は負のPnLをカバーし、清算価格はありません。"
@@ -1433,10 +1433,6 @@ msgstr "V2 Avalanche Fuji"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr "注文執行済"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High impact on collateral"
-#~ msgstr "担保への高い影響"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
@@ -3527,11 +3523,6 @@ msgstr "GLVを購入"
 msgid "Failed TWAP Part"
 msgstr "TWAPパートに失敗"
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#~ msgid "Impact+Fees"
-#~ msgstr "インパクト+手数料"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr "TP - ショート減少"
@@ -4124,10 +4115,6 @@ msgstr "蓄積された価格影響リベート。5日後に請求可能にな�
 msgid "Take Profit / Stop Loss"
 msgstr "テイクプロフィット / ストップロス"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#~ msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-#~ msgstr "<0>{1}プールに切り替えて</0>価格影響と手数料で{0}を節約"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "{networkName}のアカウントにこの取引を送信するための{0}が十分にありません。<0/><1/><2>{1}を購入または{networkName}に転送</2>"
@@ -4258,10 +4245,6 @@ msgstr "高い許容スリッページを設定しました。手数料を含む
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "紹介コード作成"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-#~ msgid "High price impact"
-#~ msgstr "高い価格影響"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -6974,10 +6957,6 @@ msgstr "エラーが発生しました。再度お試しください"
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "文字、数字、アンダースコアのみ許可されます。"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Use a TWAP order for lower net price impact."
-#~ msgstr ""
-
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"
 msgstr "高いTWAPネットワーク手数料"
@@ -7714,10 +7693,6 @@ msgstr "スマートアカウントでメッセージに署名できません"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates reducing the position's collateral over time."
 msgstr "価格変動を除き、ファンディングおよび借入手数料レートによりポジション担保が時間とともに減少するため、このポジションは清算される可能性があります。"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Gemini Wallet is not supported for Express or One-Click trading."
-#~ msgstr "Gemini Walletはエクスプレスまたはワンクリック取引をサポートしていません。"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
