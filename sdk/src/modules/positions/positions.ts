@@ -333,7 +333,7 @@ export class Positions extends Module {
       });
   }
 
-  private async getUserRefferalCode() {
+  private async getUserReferralCode() {
     if (this.chainId === BOTANIX) {
       return {
         attachedOnChain: false,
@@ -455,7 +455,7 @@ export class Positions extends Module {
 
   private async getUserReferralInfo(): Promise<UserReferralInfo | undefined> {
     const { userReferralCode, userReferralCodeString, attachedOnChain, referralCodeForTxn } =
-      await this.getUserRefferalCode();
+      await this.getUserReferralCode();
 
     const codeOwner = await this.getCodeOwner(userReferralCodeString);
     const tierId = await this.getAffiliateTier();
@@ -643,6 +643,14 @@ export class Positions extends Module {
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
+      const leverageWithoutPnl = getLeverage({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: collateralUsd,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: pendingFundingFeesUsd,
+        pnl: undefined,
+      });
+
       const leverageWithPnl = getLeverage({
         sizeInUsd: position.sizeInUsd,
         collateralUsd: collateralUsd,
@@ -693,6 +701,7 @@ export class Positions extends Module {
         hasLowCollateral,
         leverage,
         leverageWithPnl,
+        leverageWithoutPnl,
         pnl,
         pnlPercentage,
         pnlAfterFees,

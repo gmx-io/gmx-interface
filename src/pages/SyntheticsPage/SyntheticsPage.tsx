@@ -38,6 +38,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
+import { useShareSuccessClosedPosition } from "domain/synthetics/tradeHistory/useShareSuccessClosedPosition";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -73,6 +74,7 @@ import Tabs from "components/Tabs/Tabs";
 import { useIsCurtainOpen } from "components/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/TradeHistory/TradeHistory";
+import ShareClosedPosition from "components/TradeHistory/TradeHistoryRow/ShareClosedPosition";
 import { Chart } from "components/TVChart/Chart";
 import ChartHeader from "components/TVChart/ChartHeader";
 
@@ -96,6 +98,15 @@ export function SyntheticsPage(p: Props) {
   const { account } = useWallet();
   const calcSelector = useCalcSelector();
   const { setPendingTxns } = usePendingTxns();
+
+  const {
+    tradeAction: shareSuccessTradeAction,
+    isShareModalOpen: isShareSuccessModalOpen,
+    setIsShareModalOpen: setIsShareSuccessModalOpen,
+    doNotShowAgain: shareSuccessDoNotShowAgain,
+    onDoNotShowAgainChange: handleShareSuccessDoNotShowAgainChange,
+    onShareAction: handleShareSuccessShareAction,
+  } = useShareSuccessClosedPosition({ chainId, account });
 
   useExternalSwapHandler();
 
@@ -474,6 +485,17 @@ export function SyntheticsPage(p: Props) {
       </div>
       <PositionSeller />
       <PositionEditor />
+      {shareSuccessTradeAction ? (
+        <ShareClosedPosition
+          tradeAction={shareSuccessTradeAction}
+          isShareModalOpen={isShareSuccessModalOpen}
+          setIsShareModalOpen={setIsShareSuccessModalOpen}
+          doNotShowAgain={shareSuccessDoNotShowAgain}
+          onDoNotShowAgainChange={handleShareSuccessDoNotShowAgainChange}
+          onShareAction={handleShareSuccessShareAction}
+          shareSource="auto-prompt"
+        />
+      ) : null}
       <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
     </AppPageLayout>

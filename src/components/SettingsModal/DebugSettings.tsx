@@ -30,6 +30,13 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Disable Validation for Testing</Trans>
         </ToggleSwitch>
 
+        <ToggleSwitch
+          isChecked={settings.shouldDisableShareModalPnlCheck}
+          setIsChecked={settings.setShouldDisableShareModalPnlCheck}
+        >
+          <Trans>Disable Share Modal PnL Check</Trans>
+        </ToggleSwitch>
+
         <AbFlagSettings />
 
         <DebugSwapsSettings />

@@ -124,7 +124,7 @@ export default function EarnProductCard({
     >
       <div className={cx("relative flex flex-col gap-16", { "max-h-[136px] overflow-hidden": shouldCollapse })}>
         <div className="flex items-start justify-between gap-12">
-          <TokenIcon symbol={content.tokenSymbol} displaySize={40} importSize={40} className="!rounded-0" />
+          <TokenIcon symbol={content.tokenSymbol} displaySize={40} className="!rounded-0" />
           <Badge className="!bg-fill-accent">{content.badge}</Badge>
         </div>
 

@@ -4,7 +4,7 @@ import { useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -34,7 +34,6 @@ export function PositionList(p: Props) {
   const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions } = p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
-  const account = useSelector(selectAccount);
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
@@ -148,16 +147,19 @@ export function PositionList(p: Props) {
       {positionToShare && (
         <PositionShare
           key={positionToShare.key}
+          pnlAfterFeesUsd={positionToShare.pnlAfterFees}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           entryPrice={positionToShare.entryPrice}
           indexToken={positionToShare.indexToken}
           isLong={positionToShare.isLong}
-          leverage={positionToShare.leverageWithPnl}
+          leverageWithoutPnl={positionToShare.leverageWithoutPnl}
+          leverageWithPnl={positionToShare.leverageWithPnl}
           markPrice={positionToShare.markPrice}
+          account={positionToShare.account}
           pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
           chainId={chainId}
-          account={account}
+          shareSource="positions-list"
         />
       )}
       <OrderEditorContainer />
@@ -220,8 +222,8 @@ const PositionItemWrapper = memo(
         showPnlAfterFees={showPnlAfterFees}
         isLarge={isLarge}
         hideActions={hideActions}
-        onShareClick={handleShareClick}
         onCancelOrder={handleCancelOrder}
+        onShareClick={handleShareClick}
       />
     );
   }

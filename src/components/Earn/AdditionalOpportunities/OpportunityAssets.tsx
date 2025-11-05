@@ -108,7 +108,7 @@ function OpportunityTokenIcon({
             getNormalizedTokenSymbol(marketInfo.shortToken.symbol)
           : getNormalizedTokenSymbol(marketInfo.indexToken.symbol);
 
-        return <TokenIcon importSize={24} displaySize={displaySize} symbol={iconSymbol} className={className} />;
+        return <TokenIcon displaySize={displaySize} symbol={iconSymbol} className={className} />;
       }
 
       return null;
@@ -125,7 +125,7 @@ function OpportunityTokenIcon({
         return <div className="size-24 rounded-full bg-slate-800" />;
       }
 
-      return <TokenIcon importSize={24} displaySize={displaySize} symbol={symbol} className={className} />;
+      return <TokenIcon displaySize={displaySize} symbol={symbol} className={className} />;
     }
     default:
       mustNeverExist(asset);

@@ -86,6 +86,7 @@ export function mockPositionInfo(
       pendingBorrowingFeesUsd: 0n,
     }),
     leverageWithPnl: 0n,
+    leverageWithoutPnl: 0n,
     pnl: 0n,
     pnlPercentage: 0n,
     pnlAfterFees: 0n,
