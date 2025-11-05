@@ -145,6 +145,10 @@ msgstr "ストップロス"
 msgid "Type"
 msgstr "タイプ"
 
+#: src/components/Errors/errorToasts.tsx
+msgid ""
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
@@ -354,8 +358,8 @@ msgid "Stop market price above mark price"
 msgstr "ストップ市場価格がマーク価格を上回っています"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-msgstr "実行手数料検証のため取引が失敗しました。<0>表示</0>.<1/><2/>{suggestText}"
+#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
+#~ msgstr "実行手数料検証のため取引が失敗しました。<0>表示</0>.<1/><2/>{suggestText}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -711,6 +715,10 @@ msgstr "高いスワップ価格影響"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional Stored Impact"
 msgstr "比例保存影響"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "to {0}"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
@@ -1428,6 +1436,7 @@ msgstr "受け取りトークン流動性不足"
 msgid "GMX Announcements and Updates"
 msgstr "GMXの告知と最新情報"
 
+#: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in Leverage Display"
 msgstr "レバレッジ表示にPnLを含める"
@@ -5817,6 +5826,12 @@ msgstr "USDCまたはETHを入金"
 msgid "Referral code created."
 msgstr "リファラルコードが作成されました。"
 
+#: src/components/Errors/errorToasts.tsx
+#~ msgid ""
+#~ "to\n"
+#~ "{0}"
+#~ msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "通知"
@@ -7007,6 +7022,10 @@ msgstr "分散型永久取引所 | GMX"
 msgid "No loss of fund ownership"
 msgstr "資金所有権の損失なし"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation.<0/><1/>{suggestText}<2/><3/><4>View transaction details.</4>"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
 msgid "Referral Terms"
@@ -7820,6 +7839,10 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "入金リクエスト"
+
+#: src/components/Errors/errorToasts.tsx
+#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
+#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"

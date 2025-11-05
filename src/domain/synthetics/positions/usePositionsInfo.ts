@@ -212,6 +212,14 @@ export function usePositionsInfoRequest(
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
+      const leverageWithoutPnl = getLeverage({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: collateralUsd,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: pendingFundingFeesUsd,
+        pnl: undefined,
+      });
+
       const maxAllowedLeverage = marketInfo
         ? getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor)
         : undefined;
@@ -259,6 +267,7 @@ export function usePositionsInfoRequest(
         hasLowCollateral,
         leverage,
         leverageWithPnl,
+        leverageWithoutPnl,
         pnl,
         pnlPercentage,
         pnlAfterFees,
