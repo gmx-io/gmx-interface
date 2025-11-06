@@ -12,11 +12,10 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
-import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import EventToast from "./EventToast";
 
-const AL16Z_MARKET_ADDRESS = getTokenBySymbol(ARBITRUM, "AI16Z").address;
+const AL16Z_MARKET_ADDRESS = "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169";
 
 function useEventToast() {
   const isHome = isHomeSite();
