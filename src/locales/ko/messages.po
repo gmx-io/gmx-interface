@@ -357,10 +357,6 @@ msgstr "{updateOrdersCount} TP/SL 주문 업데이트 완료"
 msgid "Stop market price above mark price"
 msgstr "스탑 마켓 가격이 마크 가격 초과"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-#~ msgstr "실행 수수료 검증으로 인해 거래가 실패했습니다. <0>보기</0>.<1/><2/>{suggestText}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "트레이더에 의해 토큰이 예약되어 풀 GM: {0} [{1}]의 판매 상한에 도달했습니다. 다른 풀을 선택하거나 판매 크기를 줄이거나 여러 풀에서 인출을 분할하세요."
@@ -5826,12 +5822,6 @@ msgstr "USDC 또는 ETH 입금"
 msgid "Referral code created."
 msgstr "추천 코드 생성됨."
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid ""
-#~ "to\n"
-#~ "{0}"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "알림"
@@ -7831,10 +7821,6 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "입금 요청"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"

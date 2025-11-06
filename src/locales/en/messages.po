@@ -357,10 +357,6 @@ msgstr "{updateOrdersCount} TP/SL order(s) updated"
 msgid "Stop market price above mark price"
 msgstr "Stop market price above mark price"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-#~ msgstr "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -5826,14 +5822,6 @@ msgstr "Deposit USDC or ETH"
 msgid "Referral code created."
 msgstr "Referral code created."
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid ""
-#~ "to\n"
-#~ "{0}"
-#~ msgstr ""
-#~ "to\n"
-#~ "{0}"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Notifications"
@@ -7833,10 +7821,6 @@ msgstr "Remind me later"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Request Deposit"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-#~ msgstr "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"

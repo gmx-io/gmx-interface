@@ -357,10 +357,6 @@ msgstr "{updateOrdersCount} 个 TP/SL 订单已更新"
 msgid "Stop market price above mark price"
 msgstr "止损市场价格高于标记价格"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-#~ msgstr "由于执行费用验证，交易失败。<0>查看</0>。<1/><2/>{suggestText}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "池 GM: {0} [{1}] 的可售上限已达到，因为代币已被交易者保留。请选择不同的池、减少售卖规模，或从多个池拆分提款。"
@@ -5826,12 +5822,6 @@ msgstr "存入 USDC 或 ETH"
 msgid "Referral code created."
 msgstr "推荐码已创建。"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid ""
-#~ "to\n"
-#~ "{0}"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "通知"
@@ -7831,10 +7821,6 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "请求存款"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"
