@@ -62,6 +62,7 @@ import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { throttleLog } from "lib/logging";
 import {
   calculateDisplayDecimals,
@@ -965,6 +966,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 
+  const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
+    "limit-price-warning-hidden",
+    false
+  );
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 py-12 pb-16">
@@ -1004,8 +1010,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             {showSectionBetweenInputsAndButton && (
               <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
-                {isSwap && isLimit && !isTwap && (
-                  <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
+                {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+                  <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
                     <Trans>
                       The actual execution price may differ from the set limit price due to fees and price impact. This
                       ensures that you receive at least the minimum receive amount.
