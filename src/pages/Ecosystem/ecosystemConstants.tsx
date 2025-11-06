@@ -495,6 +495,13 @@ export const integrations: EcosystemGmxPage[] = [
     about: msg`Lending and Borrowing`,
     chainIds: [ARBITRUM],
   },
+  {
+    title: msg`Toros`,
+    link: "https://x.com/torosfinance/",
+    linkLabel: "x.com",
+    about: msg`Leveraged tokens with protection`,
+    chainIds: [ARBITRUM],
+  },
 ];
 
 type EcosystemTelegramGroup = {

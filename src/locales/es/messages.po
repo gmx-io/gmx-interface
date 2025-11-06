@@ -357,10 +357,6 @@ msgstr "{updateOrdersCount} orden(es) TP/SL actualizada(s)"
 msgid "Stop market price above mark price"
 msgstr "Precio de mercado stop por encima del precio de referencia"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-#~ msgstr "Transacción fallida debido a validación de tarifa de ejecución. <0>Ver</0>.<1/><2/>{suggestText}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "Se ha alcanzado el límite vendible para la reserva GM: {0} [{1}], ya que los tokens están reservados por traders. Por favor, elige una reserva diferente, reduce el tamaño de venta o divide tu retiro en múltiples reservas."
@@ -3458,10 +3454,6 @@ msgstr "Traders Referidos en Avalanche"
 msgid "Funding Fees"
 msgstr "Comisiones de Financiación"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "No deposit in progress"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Approval failed"
@@ -3866,6 +3858,10 @@ msgstr "Error preparando transacción. Proveedor no definido"
 msgid "Insufficient liquidity in GM Pool"
 msgstr "Liquidez insuficiente en Reserva GM"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Leveraged tokens with protection"
+msgstr ""
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Failed to claim funds"
 msgstr "Falló la reclamación de fondos"
@@ -3979,6 +3975,10 @@ msgstr "Simulación de ejecución de orden fallida."
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "Soporte para"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Toros"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid Transfer Addresses: Please check the url."
@@ -4465,10 +4465,6 @@ msgstr "Nonce de aprobación One-Click caducado. Por favor, firma una nueva apro
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Pending {tokenSymbol} approval"
 msgstr ""
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Back to GMX Account"
-#~ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -5826,12 +5822,6 @@ msgstr "Depositar USDC o ETH"
 msgid "Referral code created."
 msgstr "Código de referencia creado."
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid ""
-#~ "to\n"
-#~ "{0}"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Notificaciones"
@@ -5997,10 +5987,6 @@ msgstr "Vault GMX"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Start a deposit"
-#~ msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr "Minuto(s)"
@@ -6078,10 +6064,6 @@ msgstr "Ejecutar Stop Market"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "Volumen negociado por esta cuenta con un código de referido activo."
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "This view is only available for deposits"
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -7839,10 +7821,6 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Solicitar Depósito"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"
