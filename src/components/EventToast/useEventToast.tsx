@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useLocalStorage } from "react-use";
 
 import { ARBITRUM } from "config/chains";
-import { appEventsData, homeEventsData, MKR_USD_DELISTING_EVENT_ID } from "config/events";
+import { AL16Z_DELISTING_EVENT_ID, appEventsData, homeEventsData } from "config/events";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { usePositions } from "domain/synthetics/positions";
@@ -12,10 +12,11 @@ import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { isHomeSite } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import EventToast from "./EventToast";
 
-const MKR_USD_MARKET_ADDRESS = "0x2aE5c5Cd4843cf588AA8D1289894318130acc823";
+const AL16Z_MARKET_ADDRESS = getTokenBySymbol(ARBITRUM, "AI16Z").address;
 
 function useEventToast() {
   const isHome = isHomeSite();
@@ -45,9 +46,9 @@ function useEventToast() {
     account: account,
   });
 
-  const hasMKRPosition = useMemo(() => {
+  const hasAl16ZPosition = useMemo(() => {
     return Object.values(positions.positionsData ?? {}).some(
-      (position) => position.marketAddress === MKR_USD_MARKET_ADDRESS
+      (position) => position.marketAddress === AL16Z_MARKET_ADDRESS
     );
   }, [positions.positionsData]);
 
@@ -63,7 +64,7 @@ function useEventToast() {
     const eventsData = isHome ? homeEventsData : appEventsData;
 
     eventsData
-      .filter((event) => event.id !== MKR_USD_DELISTING_EVENT_ID || hasMKRPosition)
+      .filter((event) => event.id !== AL16Z_DELISTING_EVENT_ID || hasAl16ZPosition)
       .filter((event) => event.isActive)
       .filter(
         (event) => !event.startDate || !isFuture(parse(event.startDate + ", +00", "d MMM yyyy, H:mm, x", new Date()))
@@ -100,7 +101,7 @@ function useEventToast() {
     isAdaptiveFundingActiveSomeMarkets,
     isAdaptiveFundingActiveAllMarkets,
     arbIncentiveStats,
-    hasMKRPosition,
+    hasAl16ZPosition,
   ]);
 }
 
