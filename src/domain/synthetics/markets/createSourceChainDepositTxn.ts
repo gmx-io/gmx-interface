@@ -9,10 +9,8 @@ import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateDepositParams, RawCreateDepositParams } from "domain/synthetics/markets";
-import { sendWalletTransaction } from "lib/transactions";
+import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
-
-import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 import { estimateSourceChainDepositFees, SourceChainDepositFees } from "./feeEstimation/estimateSourceChainDepositFees";
 import { signCreateDeposit } from "./signCreateDeposit";
@@ -44,7 +42,7 @@ export async function createSourceChainDepositTxn({
       fees?: undefined;
       globalExpressParams: GlobalExpressParams;
     }
-)) {
+)): Promise<WalletTxnResult> {
   const ensuredFees = fees
     ? fees
     : await estimateSourceChainDepositFees({
@@ -100,29 +98,29 @@ export async function createSourceChainDepositTxn({
     value += tokenAmount;
   }
 
-  try {
-    const txnResult = await sendWalletTransaction({
-      chainId: srcChainId!,
-      to: sourceChainTokenId.stargate,
-      signer,
-      gasLimit: ensuredFees.txnEstimatedGasLimit,
-      gasPriceData:
-        globalExpressParams?.gasPrice !== undefined
-          ? {
-              gasPrice: globalExpressParams.gasPrice,
-            }
-          : undefined,
-      callData: encodeFunctionData({
-        abi: IStargateAbi,
-        functionName: "sendToken",
-        args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), params.addresses.receiver],
-      }),
-      value,
-      msg: t`Sent deposit transaction`,
-    });
+  // try {
+  const txnResult = await sendWalletTransaction({
+    chainId: srcChainId!,
+    to: sourceChainTokenId.stargate,
+    signer,
+    gasLimit: ensuredFees.txnEstimatedGasLimit,
+    gasPriceData:
+      globalExpressParams?.gasPrice !== undefined
+        ? {
+            gasPrice: globalExpressParams.gasPrice,
+          }
+        : undefined,
+    callData: encodeFunctionData({
+      abi: IStargateAbi,
+      functionName: "sendToken",
+      args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), params.addresses.receiver],
+    }),
+    value,
+    msg: t`Sent deposit transaction`,
+  });
 
-    await txnResult.wait();
-  } catch (error) {
-    toastCustomOrStargateError(chainId, error);
-  }
+  return txnResult;
+  // } catch (error) {
+  //   toastCustomOrStargateError(chainId, error);
+  // }
 }

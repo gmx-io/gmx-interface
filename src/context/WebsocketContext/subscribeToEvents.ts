@@ -48,7 +48,7 @@ const MULTICHAIN_TRANSFER_IN_HASH = ethers.id("MultichainTransferIn");
 
 const OFT_SENT_HASH = ethers.id("OFTSent(bytes32,uint32,address,uint256,uint256)");
 const OFT_RECEIVED_HASH = ethers.id("OFTReceived(bytes32,uint32,address,uint256)");
-const COMPOSE_DELIVERED_HASH = ethers.id("ComposeDelivered(address,address,bytes32,uint16)");
+export const COMPOSE_DELIVERED_HASH = ethers.id("ComposeDelivered(address,address,bytes32,uint16)");
 
 export const OFT_SENT_ABI = [
   {

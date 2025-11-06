@@ -20,6 +20,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { getRawRelayerParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express";
@@ -41,7 +42,6 @@ import type { IStargate } from "typechain-types-stargate";
 
 import Button from "components/Button/Button";
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
-import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";

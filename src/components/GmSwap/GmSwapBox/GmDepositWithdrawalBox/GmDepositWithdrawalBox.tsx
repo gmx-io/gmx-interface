@@ -511,6 +511,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;
 
   const marketTokenMaxDetails = useMaxAvailableAmount({
+    // TODO make glv balances work on source chain
     fromToken: marketOrGlvTokenData,
     fromTokenAmount: marketOrGlvTokenAmount,
     fromTokenInputValue: marketOrGlvTokenInputValue,

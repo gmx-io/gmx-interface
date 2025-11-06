@@ -13,11 +13,11 @@ import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { ERC20Address, getTokenData, Token, TokenBalanceType } from "domain/tokens";
+import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import { convertTokenAddress, getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { isMarketTokenAddress } from "sdk/utils/markets";
 
 import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
@@ -212,7 +212,7 @@ export const selectPoolsDetailsLongTokenAddress = createSelector((q): ERC20Addre
     return undefined;
   }
 
-  if (MARKETS[chainId][glvOrMarketAddress]) {
+  if (isMarketTokenAddress(chainId, glvOrMarketAddress)) {
     return MARKETS[chainId][glvOrMarketAddress].longTokenAddress as ERC20Address;
   }
 
@@ -233,7 +233,7 @@ export const selectPoolsDetailsShortTokenAddress = createSelector((q) => {
     return undefined;
   }
 
-  if (MARKETS[chainId][glvOrMarketAddress]) {
+  if (isMarketTokenAddress(chainId, glvOrMarketAddress)) {
     return MARKETS[chainId][glvOrMarketAddress].shortTokenAddress;
   }
 
@@ -377,8 +377,8 @@ export const selectPoolsDetailsFirstToken = createSelector((q): Token | undefine
     return undefined;
   }
 
-  if (MARKETS[chainId][firstTokenAddress]) {
-    return getToken(chainId, GM_STUB_ADDRESS);
+  if (isMarketTokenAddress(chainId, firstTokenAddress)) {
+    return getGmToken(chainId, firstTokenAddress);
   }
 
   return getToken(chainId, firstTokenAddress);
@@ -391,8 +391,8 @@ export const selectPoolsDetailsSecondToken = createSelector((q): Token | undefin
     return undefined;
   }
 
-  if (MARKETS[chainId][secondTokenAddress]) {
-    return getToken(chainId, GM_STUB_ADDRESS);
+  if (isMarketTokenAddress(chainId, secondTokenAddress)) {
+    return getGmToken(chainId, secondTokenAddress);
   }
 
   return getToken(chainId, secondTokenAddress);

@@ -110,20 +110,6 @@ export const selectPoolsDetailsParams = createSelector((q) => {
 
   const glvInfo = isGlv ? glvOrMarketInfo : undefined;
 
-  // const marketToken = useMemo(() => {
-  //   return getTokenData(marketsInfoData, marketInfo?.marketTokenAddress);
-  // }, [marketInfo, marketsInfoData]);
-
-  // const marketTokenAddress = marketToken?.address || marketInfo?.marketTokenAddress;
-
-  // const shouldUnwrapNativeToken =
-  //   (longTokenInputState?.address === zeroAddress &&
-  //     longTokenInputState?.amount !== undefined &&
-  //     longTokenInputState?.amount > 0n) ||
-  //   (shortTokenInputState?.address === zeroAddress &&
-  //     shortTokenInputState?.amount !== undefined &&
-  //     shortTokenInputState?.amount > 0n);
-
   const wrappedTokenAddress = getWrappedToken(chainId);
 
   const shouldUnwrapNativeToken =
@@ -147,13 +133,13 @@ export const selectPoolsDetailsParams = createSelector((q) => {
 
     if (paySource === "sourceChain") {
       if (!srcChainId) {
-        throw new Error("Source chain ID is required");
+        return undefined;
       }
 
       const multichainTokenConfig = getMultichainTokenId(chainId, marketOrGlvTokenAddress);
 
       if (!multichainTokenConfig) {
-        throw new Error("Multichain token config not found");
+        return undefined;
       }
 
       const actionHash = CodecUiHelper.encodeMultichainActionData({
@@ -165,7 +151,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
           providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
           minAmountOut: minMarketTokens,
           secondaryProvider: zeroAddress,
-          secondaryProviderData: zeroAddress,
+          secondaryProviderData: "0x",
           secondaryMinAmountOut: 0n,
         },
       });
@@ -208,14 +194,12 @@ export const selectPoolsDetailsParams = createSelector((q) => {
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
       if (!srcChainId) {
-        // throw new Error("Source chain ID is required");
         return undefined;
       }
 
       const tokenId = getMultichainTokenId(chainId, glvTokenAddress);
 
       if (!tokenId) {
-        // throw new Error("Token ID not found");
         return undefined;
       }
 
@@ -228,7 +212,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
           provider: tokenId.stargate,
           providerData: numberToHex(CHAIN_ID_TO_ENDPOINT_ID[srcChainId], { size: 32 }),
           secondaryProvider: zeroAddress,
-          secondaryProviderData: zeroAddress,
+          secondaryProviderData: "0x",
           secondaryMinAmountOut: 0n,
         },
       });
@@ -271,26 +255,35 @@ export const selectPoolsDetailsParams = createSelector((q) => {
       return undefined;
     }
 
-    const longOftProvider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, longTokenAddress, "native"));
-    const shortOftProvider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, shortTokenAddress, "native"));
     let dataList: string[] = EMPTY_ARRAY;
 
     if (paySource === "sourceChain") {
       if (!srcChainId) {
-        throw new Error("Source chain ID is required");
+        return undefined;
       }
 
-      const provider = longOftProvider ?? shortOftProvider;
+      const withdrawalAmounts = amounts as WithdrawalAmounts;
+      const longTokenAmount = withdrawalAmounts.longTokenAmount;
+      const shortTokenAmount = withdrawalAmounts.shortTokenAmount;
+
+      const longOftProvider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, longTokenAddress, "native"));
+      const shortOftProvider = getStargatePoolAddress(
+        chainId,
+        convertTokenAddress(chainId, shortTokenAddress, "native")
+      );
+
+      const provider = longTokenAmount > 0n ? longOftProvider : shortTokenAmount > 0n ? shortOftProvider : undefined;
 
       if (!provider) {
-        throw new Error("Provider not found");
+        return undefined;
       }
 
-      const secondaryProvider = provider === shortOftProvider ? undefined : shortTokenAddress;
+      const secondaryProvider =
+        provider === shortOftProvider ? undefined : shortTokenAmount > 0n ? shortOftProvider : undefined;
 
       const dstEid = getLayerZeroEndpointId(srcChainId);
       if (!dstEid) {
-        throw new Error("Destination endpoint ID not found");
+        return undefined;
       }
 
       const providerData = numberToHex(dstEid, { size: 32 });
@@ -356,7 +349,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
       if (!srcChainId) {
-        throw new Error("Source chain ID is required");
+        return undefined;
       }
 
       const firstOftProvider = getStargatePoolAddress(
@@ -371,7 +364,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
       const provider = isPair ? firstOftProvider : secondOftProvider;
 
       if (!provider) {
-        throw new Error("Provider not found");
+        return undefined;
       }
 
       const secondaryProvider = isPair ? secondOftProvider : undefined;
@@ -379,7 +372,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
       const dstEid = getLayerZeroEndpointId(srcChainId);
 
       if (!dstEid) {
-        throw new Error("Destination endpoint ID not found");
+        return undefined;
       }
 
       const providerData = numberToHex(dstEid, { size: 32 });

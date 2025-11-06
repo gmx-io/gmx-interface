@@ -1,8 +1,11 @@
+import { zeroAddress } from "viem";
+
+import { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR } from "configs/factors";
 import { MARKETS, MarketConfig } from "configs/markets";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
-import { Token, TokenPrices, TokensData } from "types/tokens";
+import { NativeTokenSupportedAddress, Token, TokenPrices, TokensData } from "types/tokens";
 
 import { applyFactor, PRECISION } from "./numbers";
 import { getByKey } from "./objects";
@@ -238,7 +241,10 @@ export function isMarketTokenAddress(chainId: number, marketTokenAddress: string
   return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
 }
 
-export function getMarketIndexTokenAddress(chainId: number, marketTokenAddress: string): string | undefined {
+export function getMarketIndexTokenAddress(
+  chainId: number,
+  marketTokenAddress: string
+): NativeTokenSupportedAddress | undefined {
   return convertTokenAddress(chainId, MARKETS[chainId]?.[marketTokenAddress]?.indexTokenAddress, "native");
 }
 
@@ -276,4 +282,8 @@ export function getMarketShortTokenSymbol(chainId: number, marketTokenAddress: s
   }
 
   return getToken(chainId, convertTokenAddress(chainId, shortTokenAddress, "native")).symbol;
+}
+
+export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
+  return MARKETS[chainId as ContractsChainId]?.[marketTokenAddress]?.indexTokenAddress === zeroAddress;
 }

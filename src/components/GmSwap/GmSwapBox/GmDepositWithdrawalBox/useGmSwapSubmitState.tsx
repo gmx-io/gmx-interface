@@ -3,6 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
 import {
+  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
@@ -12,6 +13,7 @@ import {
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
+  selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSelectedMarketForGlv,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
@@ -89,6 +91,7 @@ export const useGmSwapSubmitState = ({
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketForGlv);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
@@ -150,6 +153,9 @@ export const useGmSwapSubmitState = ({
     isDeposit,
     marketInfo,
     glvInfo,
+    // longToken: getTokenData(tokensData, firstTokenAddress),
+    // shortToken: getTokenData(tokensData, secondTokenAddress),
+    // TODO MLTCH make native token work
     longToken: getTokenData(tokensData, longTokenAddress),
     shortToken: getTokenData(tokensData, shortTokenAddress),
     glvToken,

@@ -94,6 +94,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
       data-qa="token-icon"
       className={sub ? containerClassName : classNames}
       src={importImage(iconPath)}
+      // TODO Remove alt as it shows during loading
       alt={symbol}
       width={displaySize}
       height={displaySize}

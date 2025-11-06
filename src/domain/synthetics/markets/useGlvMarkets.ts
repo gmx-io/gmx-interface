@@ -23,6 +23,8 @@ import { expandDecimals } from "lib/numbers";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
+import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
+
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
 import { convertToContractTokenPrices, getBalanceTypeFromSrcChainId } from "../tokens";
 import { TokenData, TokensData } from "../tokens/types";
@@ -49,16 +51,25 @@ type GlvsRequestConfig = MulticallRequestConfig<{
 
 export function useGlvMarketsInfo(
   enabled: boolean,
-  deps: {
+  params: {
     marketsInfoData: MarketsInfoData | undefined;
     tokensData: TokensData | undefined;
     chainId: ContractsChainId;
     srcChainId: SourceChainId | undefined;
     account: string | undefined;
+    withMultichainBalances?: boolean;
   }
 ) {
+  const { marketsInfoData, tokensData, chainId, account, srcChainId, withMultichainBalances = false } = params;
+
   const { websocketTokenBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
-  const { marketsInfoData, tokensData, chainId, account, srcChainId } = deps;
+  // TODO MLTCH: use updated tokens balances hook
+  const glvTokensMultichainBalancesResult = useMultichainMarketTokensBalancesRequest({
+    chainId,
+    account,
+    enabled: enabled && withMultichainBalances && srcChainId !== undefined,
+    specificChainId: srcChainId,
+  });
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
   const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
@@ -247,6 +258,7 @@ export function useGlvMarketsInfo(
         return request;
       },
       parseResponse({ data }) {
+        // todo move hard cals outside parseResponse
         if (!glvs || !marketsInfoData || !tokensData) {
           return undefined;
         }
@@ -344,6 +356,9 @@ export function useGlvMarketsInfo(
       },
     }
   );
+
+  // TODO MLTCH: use updated tokens balances hook
+  // useUpdatedTokensBalances()
 
   const updatedGlvData = useMemo(() => {
     if (!glvData) {

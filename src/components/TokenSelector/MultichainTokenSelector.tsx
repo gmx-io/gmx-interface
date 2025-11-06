@@ -154,14 +154,14 @@ export function MultichainTokenSelector({
       if (srcChainId === undefined) {
         setActiveFilter("pay");
       } else {
-        if (isGmxAccountEmpty) {
+        if (isGmxAccountEmpty && !includeMultichainTokensInPay) {
           setActiveFilter("deposit");
         } else {
           setActiveFilter("pay");
         }
       }
     }
-  }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
+  }, [includeMultichainTokensInPay, isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
 
   const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
     return [

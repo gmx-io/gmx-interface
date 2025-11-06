@@ -9,12 +9,10 @@ import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateGlvWithdrawalParams, RawCreateGlvWithdrawalParams } from "domain/synthetics/markets";
-import { sendWalletTransaction } from "lib/transactions";
+import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import { ISigner } from "lib/transactions/iSigner";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
-
-import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 import {
   estimateSourceChainGlvWithdrawalFees,
@@ -56,7 +54,7 @@ export async function createSourceChainGlvWithdrawalTxn({
       globalExpressParams: GlobalExpressParams;
       marketsCount: bigint;
     }
-)) {
+)): Promise<WalletTxnResult> {
   const account = params.addresses.receiver;
   const glvTokenAddress = params.addresses.glv;
 
@@ -115,22 +113,18 @@ export async function createSourceChainGlvWithdrawalTxn({
     throw new Error("Token ID not found");
   }
 
-  try {
-    const txnResult = await sendWalletTransaction({
-      chainId: srcChainId!,
-      to: sourceChainTokenId.stargate,
-      signer,
-      callData: encodeFunctionData({
-        abi: abis.IStargate,
-        functionName: "send",
-        args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), account],
-      }),
-      value: ensuredFees.txnEstimatedNativeFee,
-      msg: t`Sent withdrawal transaction`,
-    });
+  const txnResult = await sendWalletTransaction({
+    chainId: srcChainId!,
+    to: sourceChainTokenId.stargate,
+    signer,
+    callData: encodeFunctionData({
+      abi: abis.IStargate,
+      functionName: "send",
+      args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), account],
+    }),
+    value: ensuredFees.txnEstimatedNativeFee,
+    msg: t`Sent withdrawal transaction`,
+  });
 
-    await txnResult.wait();
-  } catch (error) {
-    toastCustomOrStargateError(chainId, error);
-  }
+  return txnResult;
 }

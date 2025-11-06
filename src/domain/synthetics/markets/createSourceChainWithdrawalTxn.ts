@@ -9,11 +9,9 @@ import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateWithdrawalParams, RawCreateWithdrawalParams } from "domain/synthetics/markets";
-import { sendWalletTransaction } from "lib/transactions";
+import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
-
-import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 import {
   estimateSourceChainWithdrawalFees,
@@ -52,7 +50,7 @@ export async function createSourceChainWithdrawalTxn({
       outputShortTokenAddress: string;
       globalExpressParams: GlobalExpressParams;
     }
-)) {
+)): Promise<WalletTxnResult> {
   const account = params.addresses.receiver;
   const marketTokenAddress = params.addresses.market;
 
@@ -114,22 +112,18 @@ export async function createSourceChainWithdrawalTxn({
     value += tokenAmount;
   }
 
-  try {
-    const txnResult = await sendWalletTransaction({
-      chainId: srcChainId!,
-      to: sourceChainTokenId.stargate,
-      signer,
-      callData: encodeFunctionData({
-        abi: abis.IStargate,
-        functionName: "send",
-        args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), account],
-      }),
-      value,
-      msg: t`Sent withdrawal transaction`,
-    });
-
-    await txnResult.wait();
-  } catch (error) {
-    toastCustomOrStargateError(chainId, error);
-  }
+  // try {
+  const txnResult = await sendWalletTransaction({
+    chainId: srcChainId!,
+    to: sourceChainTokenId.stargate,
+    signer,
+    callData: encodeFunctionData({
+      abi: abis.IStargate,
+      functionName: "send",
+      args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), account],
+    }),
+    value,
+    msg: t`Sent withdrawal transaction`,
+  });
+  return txnResult;
 }

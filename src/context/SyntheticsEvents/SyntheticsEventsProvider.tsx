@@ -15,6 +15,8 @@ import {
   subscribeToV2Events,
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
+import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -1138,6 +1140,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     hasPageLostFocus,
   });
 
+  const [multichainTransferProgress, setMultichainTransferProgress] = useState<MultichainTransferProgress | undefined>(
+    undefined
+  );
+
+  useMultichainTransferProgressView(multichainTransferProgress);
+
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
       orderStatuses,
@@ -1154,6 +1162,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setPendingExpressTxn: (params: PendingExpressTxnParams) => {
         setPendingExpressTxnParams((old) => setByKey(old, params.key, params));
       },
+      setMultichainTransferProgress,
       updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => {
         setPendingExpressTxnParams((old) => {
           if (!params.key) {

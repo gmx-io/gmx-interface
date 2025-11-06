@@ -46,6 +46,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
@@ -96,7 +97,6 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { InsufficientWntBanner } from "./InsufficientWntBanner";
-import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
 const USD_GAS_TOKEN_BUFFER_MAINNET = expandDecimals(4, USD_DECIMALS);

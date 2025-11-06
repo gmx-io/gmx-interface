@@ -32,7 +32,7 @@ export type ISignerEstimateGasParams = ISignerSendTransactionParams & {
 };
 
 export type ISignerSendTransactionResult = {
-  hash: string;
+  hash: string | undefined;
   wait: () => Promise<
     | {
         blockNumber: number;

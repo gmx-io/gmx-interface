@@ -6,14 +6,13 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, IStargateAbi } from "config/multichain";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { GlobalExpressParams } from "domain/synthetics/express";
 import { sendWalletTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { IStargate, IStargate__factory } from "typechain-types-stargate";
-
-import { toastCustomOrStargateError } from "components/GmxAccountModal/toastCustomOrStargateError";
 
 export async function createBridgeInTxn({
   chainId,

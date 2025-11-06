@@ -16,11 +16,14 @@ import { selectExpressGlobalParams } from "context/SyntheticsStateContext/select
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { GlvSellTask, GmSellTask } from "domain/multichain/progress/GmOrGlvSellProgress";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { TransferRequests } from "domain/multichain/types";
 import {
   CreateGlvWithdrawalParams,
   CreateWithdrawalParams,
   createWithdrawalTxn,
+  RawCreateGlvWithdrawalParams,
   RawCreateWithdrawalParams,
 } from "domain/synthetics/markets";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
@@ -43,6 +46,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
+import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 
 import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
 import type { UseLpTransactionProps } from "./useLpTransactions";
@@ -197,6 +201,8 @@ export const useWithdrawalTransactions = ({
     marketTokenUsd,
   ]);
 
+  const { setMultichainTransferProgress } = useSyntheticsEvents();
+
   const onCreateGlvWithdrawal = useCallback(
     async function onCreateWithdrawal() {
       if (!isWithdrawal) {
@@ -234,10 +240,25 @@ export const useWithdrawalTransactions = ({
           srcChainId,
           signer,
           transferRequests,
-          params: params as CreateGlvWithdrawalParams,
+          params: rawParams as CreateGlvWithdrawalParams,
           tokenAmount: glvTokenAmount!,
           fees: technicalFees as SourceChainGlvWithdrawalFees,
-        });
+        })
+          .then((res) => {
+            if (res.transactionHash) {
+              setMultichainTransferProgress(
+                new GlvSellTask(
+                  srcChainId!,
+                  res.transactionHash,
+                  getGlvToken(chainId, (rawParams as RawCreateGlvWithdrawalParams).addresses.glv),
+                  glvTokenAmount!
+                )
+              );
+            }
+          })
+          .catch((error) => {
+            throw toastCustomOrStargateError(chainId, error);
+          });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = await multichainWithdrawalExpressTxnParams.promise;
         if (!expressTxnParams) {
@@ -289,8 +310,10 @@ export const useWithdrawalTransactions = ({
       chainId,
       srcChainId,
       globalExpressParams,
+      rawParams,
       glvTokenAmount,
       technicalFees,
+      setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.promise,
       setPendingTxns,
       setPendingWithdrawal,
@@ -338,6 +361,17 @@ export const useWithdrawalTransactions = ({
           transferRequests,
           params: rawParams as RawCreateWithdrawalParams,
           tokenAmount: marketTokenAmount!,
+        }).then((res) => {
+          if (res.transactionHash) {
+            setMultichainTransferProgress(
+              new GmSellTask(
+                srcChainId,
+                res.transactionHash,
+                getGmToken(chainId, (rawParams as RawCreateWithdrawalParams).addresses.market),
+                marketTokenAmount!
+              )
+            );
+          }
         });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = await multichainWithdrawalExpressTxnParams.promise;
@@ -372,7 +406,8 @@ export const useWithdrawalTransactions = ({
 
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .catch(makeTxnErrorMetricsHandler(metricData.metricId));
+        .catch(makeTxnErrorMetricsHandler(metricData.metricId))
+        .catch((error) => toastCustomOrStargateError(chainId, error));
     },
     [
       isWithdrawal,
@@ -394,6 +429,7 @@ export const useWithdrawalTransactions = ({
       technicalFees,
       rawParams,
       marketTokenAmount,
+      setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.promise,
       shouldDisableValidation,
       setPendingTxns,

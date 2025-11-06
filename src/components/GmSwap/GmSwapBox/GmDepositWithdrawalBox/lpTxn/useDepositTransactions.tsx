@@ -21,6 +21,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { GlvBuyTask, GmBuyTask } from "domain/multichain/progress/GmOrGlvBuyProgress";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { TransferRequests } from "domain/multichain/types";
 import {
   CreateDepositParams,
@@ -50,6 +52,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
+import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
@@ -239,6 +242,8 @@ export const useDepositTransactions = ({
     shortTokenAmount,
   ]);
 
+  const { setMultichainTransferProgress } = useSyntheticsEvents();
+
   const onCreateGmDeposit = useCallback(
     async function onCreateGmDeposit() {
       if (!isDeposit) {
@@ -268,7 +273,8 @@ export const useDepositTransactions = ({
           throw new Error("Technical fees are not set");
         }
 
-        const tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
+        let tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
+        tokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
         promise = createSourceChainDepositTxn({
@@ -280,7 +286,22 @@ export const useDepositTransactions = ({
           tokenAddress,
           tokenAmount,
           fees: technicalFees as SourceChainDepositFees,
-        });
+        })
+          .then((res) => {
+            if (res.transactionHash) {
+              setMultichainTransferProgress(
+                new GmBuyTask(
+                  srcChainId!,
+                  res.transactionHash,
+                  getGmToken(chainId, (rawParams as RawCreateDepositParams).addresses.market),
+                  tokenAmount
+                )
+              );
+            }
+          })
+          .catch((error) => {
+            throw toastCustomOrStargateError(chainId, error);
+          });
       } else if (paySource === "gmxAccount") {
         promise = createMultichainDepositTxn({
           chainId,
@@ -331,6 +352,7 @@ export const useDepositTransactions = ({
       longTokenAddress,
       shortTokenAddress,
       srcChainId,
+      setMultichainTransferProgress,
       multichainDepositExpressTxnParams,
       params,
       blockTimestampData,
@@ -339,10 +361,6 @@ export const useDepositTransactions = ({
       setPendingDeposit,
     ]
   );
-
-  // TODO MLTCH make it pretty
-  // const tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
-  // const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
   const onCreateGlvDeposit = useCallback(
     async function onCreateGlvDeposit() {
@@ -389,7 +407,22 @@ export const useDepositTransactions = ({
           tokenAddress,
           tokenAmount,
           fees: technicalFees as SourceChainGlvDepositFees,
-        });
+        })
+          .then((res) => {
+            if (res.transactionHash) {
+              setMultichainTransferProgress(
+                new GlvBuyTask(
+                  srcChainId!,
+                  res.transactionHash,
+                  getGlvToken(chainId, (rawParams as RawCreateGlvDepositParams).addresses.glv),
+                  tokenAmount
+                )
+              );
+            }
+          })
+          .catch((error) => {
+            throw toastCustomOrStargateError(chainId, error);
+          });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = await multichainDepositExpressTxnParams.promise;
         if (!expressTxnParams) {
@@ -450,6 +483,7 @@ export const useDepositTransactions = ({
       srcChainId,
       tokenAddress,
       tokenAmount,
+      setMultichainTransferProgress,
       multichainDepositExpressTxnParams.promise,
       params,
       longTokenAddress,

@@ -8,7 +8,7 @@ import { getContract } from "./contracts";
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
 
 export const GM_STUB_ADDRESS = "<GM-ADDRESS>";
-const GLV_STUB_ADDRESS = "<GLV-ADDRESS>";
+export const GLV_STUB_ADDRESS = "<GLV-ADDRESS>";
 const GMX_STUB_ADDRESS = "<GMX-ADDRESS>";
 const ESGMX_STUB_ADDRESS = "<ESGMX-ADDRESS>";
 const GLP_STUB_ADDRESS = "<GLP-ADDRESS>";

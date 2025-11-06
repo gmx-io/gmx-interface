@@ -12,7 +12,7 @@ import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 export type WalletTxnCtx = {};
 
 export type WalletTxnResult = {
-  transactionHash: string;
+  transactionHash: string | undefined;
   wait: () => Promise<TransactionWaiterResult>;
 };
 
@@ -40,7 +40,7 @@ export async function sendWalletTransaction({
   msg?: string;
   runSimulation?: () => Promise<void>;
   callback?: TxnCallback<WalletTxnCtx>;
-}) {
+}): Promise<WalletTxnResult> {
   const from = signer.address;
   const eventBuilder = new TxnEventBuilder<WalletTxnCtx>({});
 
@@ -111,6 +111,10 @@ export async function sendWalletTransaction({
       });
     });
 
+    if (!res.hash) {
+      throw new Error("Transaction hash is not defined");
+    }
+
     callback?.(
       eventBuilder.Sent({
         type: "wallet",
@@ -129,7 +133,10 @@ export async function sendWalletTransaction({
   }
 }
 
-function makeWalletTxnResultWaiter(hash: string, txn: ISignerSendTransactionResult) {
+function makeWalletTxnResultWaiter(
+  hash: string,
+  txn: ISignerSendTransactionResult
+): () => Promise<TransactionWaiterResult> {
   return async () => {
     const receipt = await txn.wait();
     return {

@@ -1,5 +1,6 @@
+import { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
-import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { GLV_STUB_ADDRESS, getToken, NATIVE_TOKEN_ADDRESS, GM_STUB_ADDRESS } from "configs/tokens";
 import {
   ContractPrice,
   Token,
@@ -246,4 +247,22 @@ export function getTokensRatioByPrice(p: {
   const ratio = (largestPrice * PRECISION) / smallestPrice;
 
   return { ratio, largestToken, smallestToken };
+}
+
+export function getGmToken(chainId: ContractsChainId, marketTokenAddress: string): Token {
+  const stubToken = getToken(chainId, GM_STUB_ADDRESS);
+
+  return {
+    ...stubToken,
+    address: marketTokenAddress,
+  };
+}
+
+export function getGlvToken(chainId: ContractsChainId, glvTokenAddress: string): Token {
+  const stubToken = getToken(chainId, GLV_STUB_ADDRESS);
+
+  return {
+    ...stubToken,
+    address: glvTokenAddress,
+  };
 }

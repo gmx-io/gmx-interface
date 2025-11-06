@@ -1,0 +1,80 @@
+/* eslint-disable @typescript-eslint/no-namespace */
+import { Token } from "domain/tokens";
+
+import { Operation } from "components/GmSwap/GmSwapBox/types";
+
+import { LongCrossChainTask } from "./LongCrossChainTask";
+
+class BridgeInFailed extends Error {
+  readonly name = "BridgeInFailed";
+  readonly chainId: number;
+  readonly creationTx: string | undefined;
+  constructor({ chainId, creationTx }: { chainId: number; creationTx?: string }) {
+    super("Bridge in failed");
+    this.chainId = chainId;
+    this.creationTx = creationTx;
+  }
+}
+
+class ConversionFailed extends Error {
+  readonly name = "ConversionFailed";
+  readonly chainId: number;
+  readonly operation: Operation;
+  readonly creationTx: string | undefined;
+  readonly executionTx: string | undefined;
+  readonly operationKey: string | undefined;
+  constructor({
+    chainId,
+    operation,
+    creationTx,
+    executionTx,
+    operationKey,
+  }: {
+    chainId: number;
+    operation: Operation;
+    creationTx?: string;
+    executionTx?: string;
+    operationKey?: string;
+  }) {
+    super("Conversion failed");
+    this.chainId = chainId;
+    this.operation = operation;
+    this.creationTx = creationTx;
+    this.executionTx = executionTx;
+    this.operationKey = operationKey;
+  }
+}
+class BridgeOutFailed extends Error {
+  readonly name = "BridgeOutFailed";
+  readonly chainId: number;
+  readonly executionTx: string | undefined;
+  constructor({ chainId, executionTx }: { chainId: number; executionTx?: string }) {
+    super("Bridge out failed");
+    this.chainId = chainId;
+    this.executionTx = executionTx;
+  }
+}
+
+type MultichainTransferError = BridgeInFailed | ConversionFailed | BridgeOutFailed;
+
+const MultichainTransferError = {
+  BridgeInFailed,
+  ConversionFailed,
+  BridgeOutFailed,
+} as const;
+
+export abstract class MultichainTransferProgress<
+  Step extends string | "finished" = "finished",
+  Group extends string | undefined = undefined,
+> extends LongCrossChainTask<Step, Group, MultichainTransferError> {
+  static readonly errors = MultichainTransferError;
+  //  type errors = MultichainTransferError;
+
+  abstract readonly operation: Operation;
+  abstract readonly token: Token;
+  abstract readonly amount: bigint;
+}
+
+export namespace MultichainTransferProgress {
+  export type errors = MultichainTransferError;
+}
