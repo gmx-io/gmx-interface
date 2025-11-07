@@ -2885,6 +2885,10 @@ msgstr "マーケット"
 msgid "Enter referral code"
 msgstr "リファラルコードを入力"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr "ルールを読む"
@@ -5114,6 +5118,10 @@ msgstr "友人や同僚に当サービスをおすすめする可能性はどれ
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable External Swaps"
 msgstr "外部スワップを有効化"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -7538,6 +7546,10 @@ msgstr "不明な注文"
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
 msgstr "現在GMXにオープンポジションなし"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
+msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."

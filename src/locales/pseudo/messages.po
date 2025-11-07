@@ -2885,6 +2885,10 @@ msgstr ""
 msgid "Enter referral code"
 msgstr ""
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr ""
@@ -5113,6 +5117,10 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable External Swaps"
+msgstr ""
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7537,6 +7545,10 @@ msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
+msgstr ""
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
 msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
