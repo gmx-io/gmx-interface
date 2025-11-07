@@ -248,7 +248,13 @@ export function MultichainTokenSelector({
   );
 }
 
-type DisplayAvailableToTradeToken = TokenData & { balance: bigint; balanceUsd: bigint; chainId: AnyChainId | 0 };
+type DisplayAvailableToTradeToken = TokenData & {
+  balance: bigint;
+  balanceUsd: bigint;
+  chainId: AnyChainId | 0;
+  // TODO MLTCH maybe move it in TokenData
+  sourceChainDecimals?: number;
+};
 function useAvailableToTradeTokenList({
   chainId,
   activeFilter,
@@ -277,12 +283,13 @@ function useAvailableToTradeTokenList({
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
       if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
+        const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
         concatenatedTokens.push({
           ...token,
           balanceType: TokenBalanceType.GmxAccount,
           chainId: 0,
           balance: token.gmxAccountBalance,
-          balanceUsd: 0n,
+          balanceUsd,
         });
       }
       if (token.walletBalance !== undefined && srcChainId === undefined) {
@@ -445,7 +452,7 @@ function AvailableToTradeTokenList({
             <div className="text-right">
               <div className="text-body-large">
                 {token.balance > 0n &&
-                  formatBalanceAmount(token.balance, token.decimals, undefined, {
+                  formatBalanceAmount(token.balance, token.sourceChainDecimals ?? token.decimals, undefined, {
                     isStable: token.isStable,
                   })}
                 {token.balance == 0n && "-"}
