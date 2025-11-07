@@ -267,9 +267,7 @@ export function ParseTransactionPage() {
                 )}
               </>
             ) : (
-              <div className="text-body-medium text-typography-secondary">
-                No executed or cancelled transaction found yet.
-              </div>
+              <div className="text-body-medium text-typography-secondary">No connected order events found yet.</div>
             )}
           </div>
         ) : null}
