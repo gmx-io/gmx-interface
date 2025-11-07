@@ -15,6 +15,7 @@ export async function stargateTransferFees({
   disableOverrides = false,
   useSendToken = false,
   additionalValue = 0n,
+  account = RANDOM_WALLET.address,
 }: {
   chainId: SettlementChainId | SourceChainId;
   /**
@@ -38,6 +39,7 @@ export async function stargateTransferFees({
    * Additional value to add to nativeFee (e.g., for native token transfers)
    */
   additionalValue?: bigint;
+  account?: string;
 }) {
   const client = getPublicClientWithRpc(chainId);
 
@@ -64,14 +66,14 @@ export async function stargateTransferFees({
       address: stargateAddress,
       abi: abis.IStargate,
       functionName: useSendToken ? "sendToken" : "send",
-      account: RANDOM_WALLET.address,
-      args: [sendParams, quoteSend, RANDOM_WALLET.address],
+      account: account,
+      args: [sendParams, quoteSend, account],
       value,
       stateOverride: disableOverrides
         ? undefined
         : [
             {
-              address: RANDOM_WALLET.address,
+              address: account,
               balance: maxUint256,
             },
             {

@@ -284,7 +284,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
 
-  const params = useSelector(selectPoolsDetailsParams);
+  const rawParams = useSelector(selectPoolsDetailsParams);
 
   const prevPaySource = usePrevious(paySource);
   const prevOperation = usePrevious(operation);
@@ -299,7 +299,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         }
         if (p.params.operation === Operation.Deposit) {
           if (p.params.isGlv) {
-            const castedParams = p.params.params as RawCreateGlvDepositParams;
+            const castedParams = p.params.rawParams as RawCreateGlvDepositParams;
             return estimatePureLpActionExecutionFee({
               action: {
                 operation: Operation.Deposit,
@@ -314,7 +314,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               globalExpressParams: p.params.globalExpressParams,
             });
           } else {
-            const castedParams = p.params.params as RawCreateDepositParams;
+            const castedParams = p.params.rawParams as RawCreateDepositParams;
             return estimatePureLpActionExecutionFee({
               action: {
                 operation: Operation.Deposit,
@@ -329,7 +329,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           }
         } else if (p.params.operation === Operation.Withdrawal) {
           if (p.params.isGlv) {
-            const castedParams = p.params.params as RawCreateGlvWithdrawalParams;
+            const castedParams = p.params.rawParams as RawCreateGlvWithdrawalParams;
             return estimatePureLpActionExecutionFee({
               action: {
                 operation: Operation.Withdrawal,
@@ -343,7 +343,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               globalExpressParams: p.params.globalExpressParams,
             });
           }
-          const castedParams = p.params.params as RawCreateWithdrawalParams;
+
+          const castedParams = p.params.rawParams as RawCreateWithdrawalParams;
           return estimatePureLpActionExecutionFee({
             action: {
               operation: Operation.Withdrawal,
@@ -363,7 +364,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
         }
         if (p.params.operation === Operation.Deposit) {
           if (p.params.isGlv) {
-            const castedParams = p.params.params as RawCreateGlvDepositParams;
+            const castedParams = p.params.rawParams as RawCreateGlvDepositParams;
             return await estimateSourceChainGlvDepositFees({
               chainId: p.params.chainId as SettlementChainId,
               srcChainId: p.params.srcChainId as SourceChainId,
@@ -374,7 +375,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               glvMarketCount: BigInt(p.params.glvInfo!.markets.length),
             });
           } else {
-            const castedParams = p.params.params as RawCreateDepositParams;
+            const castedParams = p.params.rawParams as RawCreateDepositParams;
             return await estimateSourceChainDepositFees({
               chainId: p.params.chainId as SettlementChainId,
               srcChainId: p.params.srcChainId as SourceChainId,
@@ -386,7 +387,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           }
         } else if (p.params.operation === Operation.Withdrawal) {
           if (p.params.isGlv) {
-            const castedParams = p.params.params as RawCreateGlvWithdrawalParams;
+            const castedParams = p.params.rawParams as RawCreateGlvWithdrawalParams;
             const glvWithdrawalAmounts = p.params.amounts as WithdrawalAmounts;
             const outputLongTokenAddress =
               glvWithdrawalAmounts.longTokenSwapPathStats?.tokenOutAddress ?? glvInfo!.longTokenAddress;
@@ -405,7 +406,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
               outputShortTokenAddress,
             });
           } else {
-            const castedParams = p.params.params as RawCreateWithdrawalParams;
+            const castedParams = p.params.rawParams as RawCreateWithdrawalParams;
             if (!p.params.amounts) {
               // throw new Error("Amounts are not defined");
               return undefined;
@@ -415,16 +416,16 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
             const outputLongTokenAddress =
               gmWithdrawalAmounts.longTokenSwapPathStats?.tokenOutAddress ??
-              MARKETS[p.params.chainId][p.params.params.addresses.market].longTokenAddress;
+              MARKETS[p.params.chainId][p.params.rawParams.addresses.market].longTokenAddress;
             const outputShortTokenAddress =
               gmWithdrawalAmounts.shortTokenSwapPathStats?.tokenOutAddress ??
-              MARKETS[p.params.chainId][p.params.params.addresses.market].shortTokenAddress;
+              MARKETS[p.params.chainId][p.params.rawParams.addresses.market].shortTokenAddress;
 
             return await estimateSourceChainWithdrawalFees({
               chainId: p.params.chainId as SettlementChainId,
               srcChainId: p.params.srcChainId as SourceChainId,
               params: castedParams,
-              tokenAddress: p.params.params.addresses.market,
+              tokenAddress: p.params.rawParams.addresses.market,
               tokenAmount: p.params.marketTokenAmount,
               globalExpressParams: p.params.globalExpressParams,
               outputLongTokenAddress,
@@ -436,11 +437,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     },
     {
       params:
-        globalExpressParams && params
+        globalExpressParams && rawParams
           ? {
               chainId,
               globalExpressParams,
-              params,
+              rawParams,
               isGlv,
               glvInfo,
               paySource,

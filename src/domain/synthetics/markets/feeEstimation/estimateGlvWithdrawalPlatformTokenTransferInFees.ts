@@ -97,7 +97,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
   const transferRequests = getTransferRequests([
     {
       to: vaultAddress,
-      token: params.addresses.market,
+      token: params.addresses.glv,
       amount: marketTokenAmount,
     },
   ]);
@@ -131,7 +131,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     chainId,
     account: RANDOM_WALLET.address,
     srcChainId,
-    tokenAddress: params.addresses.market,
+    tokenAddress: params.addresses.glv,
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
   });
 
@@ -147,7 +147,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     composeGas,
   });
 
-  const tokenId = getMappedTokenId(chainId, params.addresses.market, srcChainId);
+  const tokenId = getMappedTokenId(chainId, params.addresses.glv, srcChainId);
 
   if (!tokenId) {
     throw new Error("Token ID not found");
@@ -158,8 +158,9 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
       chainId: srcChainId,
       stargateAddress: tokenId.stargate,
       sendParams: returnTransferSendParams,
-      tokenAddress: params.addresses.market,
+      tokenAddress: params.addresses.glv,
       disableOverrides: true,
+      account: params.addresses.receiver,
     });
 
   return {

@@ -51,7 +51,14 @@ import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
 import { selectDepositWithdrawalAmounts } from "../selectDepositWithdrawalAmounts";
 
-export const selectPoolsDetailsParams = createSelector((q) => {
+type PoolsDetailsParams =
+  | RawCreateDepositParams
+  | RawCreateGlvDepositParams
+  | RawCreateWithdrawalParams
+  | RawCreateGlvWithdrawalParams
+  | undefined;
+
+export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams => {
   const account = q(selectAccount);
 
   // Early return if no account
@@ -83,7 +90,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
 
   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
   const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);
-  const { isPair, isDeposit, isWithdrawal } = q(selectPoolsDetailsFlags);
+  const { isDeposit, isWithdrawal } = q(selectPoolsDetailsFlags);
   const isMarketTokenDeposit = q(selectPoolsDetailsIsMarketTokenDeposit);
 
   const marketOrGlvTokenAmount = q(selectPoolsDetailsMarketOrGlvTokenAmount);
@@ -339,8 +346,7 @@ export const selectPoolsDetailsParams = createSelector((q) => {
 
   //#region GLV Withdrawal
   if (isWithdrawal && isGlv) {
-    // Raw GLV Withdrawal Params
-    if (!firstTokenAddress || !secondTokenAddress) {
+    if (!longTokenAddress || !shortTokenAddress) {
       return undefined;
     }
 
@@ -352,22 +358,24 @@ export const selectPoolsDetailsParams = createSelector((q) => {
         return undefined;
       }
 
-      const firstOftProvider = getStargatePoolAddress(
+      const withdrawalAmounts = amounts as WithdrawalAmounts;
+      const longTokenAmount = withdrawalAmounts.longTokenAmount;
+      const shortTokenAmount = withdrawalAmounts.shortTokenAmount;
+
+      const longOftProvider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, longTokenAddress, "native"));
+      const shortOftProvider = getStargatePoolAddress(
         chainId,
-        convertTokenAddress(chainId, firstTokenAddress, "native")
-      );
-      const secondOftProvider = getStargatePoolAddress(
-        chainId,
-        convertTokenAddress(chainId, secondTokenAddress, "native")
+        convertTokenAddress(chainId, shortTokenAddress, "native")
       );
 
-      const provider = isPair ? firstOftProvider : secondOftProvider;
+      const provider = longTokenAmount > 0n ? longOftProvider : shortTokenAmount > 0n ? shortOftProvider : undefined;
 
       if (!provider) {
         return undefined;
       }
 
-      const secondaryProvider = isPair ? secondOftProvider : undefined;
+      const secondaryProvider =
+        provider === shortOftProvider ? undefined : shortTokenAmount > 0n ? shortOftProvider : undefined;
 
       const dstEid = getLayerZeroEndpointId(srcChainId);
 
