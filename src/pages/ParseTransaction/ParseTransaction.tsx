@@ -25,6 +25,7 @@ import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
+import { defined } from "lib/guards";
 import { formatFactor, formatUsd } from "lib/numbers";
 import { ParseTransactionEvent, parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
@@ -60,11 +61,30 @@ import {
   formatSwapPath,
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
-import { useOrderTransactionDetails } from "./useOrderTransactionDetails";
+import { OrderTransactionsSummary, useOrderTransactions } from "./useOrderTransactions";
 
 const NETWORKS = mapValues(invert(CHAIN_SLUGS_MAP), Number) as Record<string, ContractsChainId>;
 
 type OrderLifecycleTxnType = "created" | "executed" | "cancelled";
+
+const ORDER_EVENT_NAMES = ["OrderCreated", "OrderExecuted", "OrderCancelled", "OrderUpdated"];
+
+type TransactionOrderEvent = {
+  orderKey: string;
+  eventName: string;
+};
+
+type OrderLifecycleTarget = {
+  type: OrderLifecycleTxnType;
+  hash: string;
+};
+
+type OrderLifecycleEntry = {
+  orderKey: string;
+  events: TransactionOrderEvent[];
+  transactions?: OrderTransactionsSummary;
+  lifecycleTarget: OrderLifecycleTarget | null;
+};
 
 const getLabelByOrderLifecycleTxnType = (type: OrderLifecycleTxnType) => {
   switch (type) {
@@ -120,62 +140,104 @@ export function ParseTransactionPage() {
     glvData,
   });
 
-  const orderKey = useMemo(() => {
+  const orderEvents = useMemo<TransactionOrderEvent[]>(() => {
     if (!primaryEvents?.length) {
-      return undefined;
+      return [];
     }
 
-    const orderEvent = primaryEvents.find(
-      (event) => event.name === "OrderCreated" || event.name === "OrderCancelled" || event.name === "OrderExecuted"
-    );
+    return primaryEvents
+      .map((event) => {
+        if (!ORDER_EVENT_NAMES.includes(event.name)) {
+          return null;
+        }
 
-    const key = orderEvent?.values?.find((value) => value.item === "key")?.value;
+        const keyValue = event.values.find((value) => value.item === "key")?.value;
 
-    return typeof key === "string" ? key : undefined;
+        if (typeof keyValue !== "string") {
+          return null;
+        }
+
+        return {
+          orderKey: keyValue,
+          eventName: event.name,
+        };
+      })
+      .filter((value): value is TransactionOrderEvent => Boolean(value));
   }, [primaryEvents]);
 
+  const orderKeys = useMemo(() => Array.from(new Set(orderEvents.map((event) => event.orderKey))), [orderEvents]);
+
   const {
-    orderTransactions,
+    orderTransactionsMap,
     isLoading: isOrderTransactionsLoading,
     error: orderTransactionsError,
-  } = useOrderTransactionDetails(chainId, orderKey);
+  } = useOrderTransactions(chainId, orderKeys);
 
-  const orderLifecycleTarget = useMemo(() => {
-    if (!orderTransactions) {
-      return null;
-    }
+  const orderLifecycleEntries = useMemo<OrderLifecycleEntry[]>(() => {
+    return orderKeys.map((orderKey) => {
+      const relatedEvents = orderEvents.filter((event) => event.orderKey === orderKey);
+      const transactions = orderTransactionsMap[orderKey];
 
-    if (orderTransactions.executedTxnHash && orderTransactions.executedTxnHash !== txHash) {
-      return { type: "executed" as const, hash: orderTransactions.executedTxnHash };
-    }
+      let lifecycleTarget: OrderLifecycleTarget | null = null;
 
-    if (orderTransactions.cancelledTxnHash && orderTransactions.cancelledTxnHash !== txHash) {
-      return { type: "cancelled" as const, hash: orderTransactions.cancelledTxnHash };
-    }
+      if (transactions?.executedTxnHash && transactions.executedTxnHash !== txHash) {
+        lifecycleTarget = {
+          type: "executed",
+          hash: transactions.executedTxnHash,
+        };
+      }
+      if (transactions?.cancelledTxnHash && transactions.cancelledTxnHash !== txHash) {
+        lifecycleTarget = {
+          type: "cancelled",
+          hash: transactions.cancelledTxnHash,
+        };
+      }
+      if (transactions?.createdTxnHash && transactions.createdTxnHash !== txHash) {
+        lifecycleTarget = {
+          type: "created",
+          hash: transactions.createdTxnHash,
+        };
+      }
 
-    if (orderTransactions.createdTxnHash && orderTransactions.createdTxnHash !== txHash) {
-      return { type: "created" as const, hash: orderTransactions.createdTxnHash };
-    }
+      return {
+        orderKey,
+        events: relatedEvents,
+        transactions,
+        lifecycleTarget,
+      };
+    });
+  }, [orderKeys, orderEvents, orderTransactionsMap, txHash]);
 
-    return null;
-  }, [orderTransactions, txHash]);
+  const lifecycleHashes = useMemo(
+    () => orderLifecycleEntries.map((target) => target.lifecycleTarget?.hash).filter(defined),
+    [orderLifecycleEntries]
+  );
 
   const {
-    data: orderLifecycleEvents,
+    data: orderLifecycleEventsMap,
     isLoading: isOrderLifecycleEventsLoading,
     error: orderLifecycleEventsError,
   } = useSWR(
-    orderLifecycleTarget?.hash ? [chainId, "orderLifecycle", orderLifecycleTarget.hash] : null,
-    async ([, , hash]) => {
-      try {
-        return await parseTxEvents(client as PublicClient, hash as Hash);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        throw e;
-      }
+    lifecycleHashes.length ? ([chainId, "orderLifecycle", lifecycleHashes] as const) : null,
+    async ([, , hashes]) => {
+      const entries = await Promise.all(
+        hashes.map(async (hash) => {
+          try {
+            const events = await parseTxEvents(client as PublicClient, hash as Hash);
+            return [hash, events] as const;
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e);
+            throw e;
+          }
+        })
+      );
+
+      return Object.fromEntries(entries);
     }
   );
+
+  const orderLifecycleEventsByHash = orderLifecycleEventsMap ?? {};
 
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
@@ -224,50 +286,65 @@ export function ParseTransactionPage() {
             />
           </tbody>
         </Table>
-        {orderKey ? (
+        {orderLifecycleEntries.length ? (
           <div className="mt-32">
             <h2 className="text-body-large mb-12">Order lifecycle</h2>
-            <div className="text-body-medium mb-16">Order key: {orderKey}</div>
             {isOrderTransactionsLoading ? (
               <Loader />
             ) : orderTransactionsError ? (
               <div className="text-body-medium text-red-400">
                 Failed to load order data: {orderTransactionsError.message}
               </div>
-            ) : orderLifecycleTarget ? (
-              <>
-                <div className="text-body-medium mb-16">
-                  {getLabelByOrderLifecycleTxnType(orderLifecycleTarget.type)} transaction:{" "}
-                  <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](orderLifecycleTarget.hash)}>
-                    {orderLifecycleTarget.hash}
-                  </ExternalLink>
-                </div>
-                {isOrderLifecycleEventsLoading ? (
-                  <Loader />
-                ) : orderLifecycleEventsError ? (
-                  <div className="text-body-medium text-red-400">
-                    Failed to parse related transaction: {orderLifecycleEventsError.message}
-                  </div>
-                ) : (
-                  <Table className="mb-12 ">
-                    <tbody>
-                      <ParseTransactionEvents
-                        events={orderLifecycleEvents}
-                        keyPrefix="orderLifecycle"
-                        network={network}
-                        chainId={chainId}
-                        tokensData={tokensData}
-                        marketsInfoData={marketsInfoData}
-                        glvData={glvData}
-                        marketTokensData={marketTokensData}
-                        copyToClipboard={copyToClipboard}
-                      />
-                    </tbody>
-                  </Table>
-                )}
-              </>
             ) : (
-              <div className="text-body-medium text-typography-secondary">No connected order events found yet.</div>
+              orderLifecycleEntries.map((entry) => {
+                const lifecycleTarget = entry.lifecycleTarget;
+                const lifecycleEvents = lifecycleTarget ? orderLifecycleEventsByHash[lifecycleTarget.hash] : undefined;
+
+                return (
+                  <div key={entry.orderKey} className="mb-24 last:mb-0">
+                    <div className="text-body-medium mb-8">Order key: {entry.orderKey}</div>
+                    {!entry.transactions ? (
+                      <div className="text-body-medium text-typography-secondary">Order data is not available yet.</div>
+                    ) : lifecycleTarget ? (
+                      isOrderLifecycleEventsLoading ? (
+                        <Loader />
+                      ) : orderLifecycleEventsError ? (
+                        <div className="text-body-medium text-red-400">
+                          Failed to parse related transaction: {orderLifecycleEventsError.message}
+                        </div>
+                      ) : (
+                        <>
+                          <div className="text-body-medium mb-16">
+                            {getLabelByOrderLifecycleTxnType(lifecycleTarget.type)} transaction:{" "}
+                            <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](lifecycleTarget.hash)}>
+                              {lifecycleTarget.hash}
+                            </ExternalLink>
+                          </div>
+                          <Table className="mb-12 ">
+                            <tbody>
+                              <ParseTransactionEvents
+                                events={lifecycleEvents}
+                                keyPrefix={`orderLifecycle-${entry.orderKey}`}
+                                network={network}
+                                chainId={chainId}
+                                tokensData={tokensData}
+                                marketsInfoData={marketsInfoData}
+                                glvData={glvData}
+                                marketTokensData={marketTokensData}
+                                copyToClipboard={copyToClipboard}
+                              />
+                            </tbody>
+                          </Table>
+                        </>
+                      )
+                    ) : (
+                      <div className="text-body-medium text-typography-secondary">
+                        No executed or cancelled transaction found yet.
+                      </div>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         ) : null}
