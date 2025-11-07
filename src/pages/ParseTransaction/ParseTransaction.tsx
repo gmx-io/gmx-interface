@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
@@ -57,9 +58,22 @@ import {
   formatSwapPath,
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
-import { useRelatedTradeHistory } from "./useRelatedTradeHistory";
+import { useOrderTransactionDetails } from "./useOrderTransactionDetails";
 
 const NETWORKS = mapValues(invert(CHAIN_SLUGS_MAP), Number) as Record<string, ContractsChainId>;
+
+type OrderLifecycleTxnType = "created" | "executed" | "cancelled";
+
+const getLabelByOrderLifecycleTxnType = (type: OrderLifecycleTxnType) => {
+  switch (type) {
+    case "created":
+      return t`Created`;
+    case "executed":
+      return t`Executed`;
+    case "cancelled":
+      return t`Cancelled`;
+  }
+};
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
@@ -78,45 +92,15 @@ export function ParseTransactionPage() {
     data,
     isLoading: isPrimaryTxLoading,
     error,
-  } = useSWR(
-    txHash ? [chainId, "transaction", txHash] as const : null,
-    async ([, , hash]) => {
-      try {
-        return await parseTxEvents(client as PublicClient, hash as Hash);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        throw e;
-      }
+  } = useSWR(txHash ? ([chainId, "transaction", txHash] as const) : null, async ([, , hash]) => {
+    try {
+      return await parseTxEvents(client as PublicClient, hash as Hash);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      throw e;
     }
-  );
-
-  const {
-    primaryAction,
-    executedAction,
-    isLoading: isTradeHistoryLoading,
-    error: tradeHistoryError,
-  } = useRelatedTradeHistory(chainId, txHash);
-
-  const relatedExecutionTxHash =
-    executedAction && txHash && executedAction.transactionHash !== txHash ? executedAction.transactionHash : undefined;
-
-  const {
-    data: executedEvents,
-    isLoading: isExecutedEventsLoading,
-    error: executedEventsError,
-  } = useSWR(
-    relatedExecutionTxHash ? [chainId, "relatedExecution", relatedExecutionTxHash] : null,
-    async ([, , hash]) => {
-      try {
-        return await parseTxEvents(client as PublicClient, hash as Hash);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        throw e;
-      }
-    }
-  );
+  });
 
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
@@ -198,6 +182,64 @@ export function ParseTransactionPage() {
     [chainId, copyToClipboard, glvData, marketTokensData, marketsInfoData, network, tokensData]
   );
 
+  const orderKey = useMemo(() => {
+    if (!data?.length) {
+      return undefined;
+    }
+
+    const orderCreatedEvent = data.find((event) => event.name === "OrderCreated");
+    if (!orderCreatedEvent) {
+      return undefined;
+    }
+
+    const keyEntry = orderCreatedEvent.values.find((value) => value.item === "key");
+
+    return typeof keyEntry?.value === "string" ? keyEntry.value : undefined;
+  }, [data]);
+
+  const {
+    orderTransactions,
+    isLoading: isOrderTransactionsLoading,
+    error: orderTransactionsError,
+  } = useOrderTransactionDetails(chainId, orderKey);
+
+  const orderLifecycleTarget = useMemo(() => {
+    if (!orderTransactions) {
+      return null;
+    }
+
+    if (orderTransactions.executedTxnHash && orderTransactions.executedTxnHash !== txHash) {
+      return { type: "executed" as const, hash: orderTransactions.executedTxnHash };
+    }
+
+    if (orderTransactions.cancelledTxnHash && orderTransactions.cancelledTxnHash !== txHash) {
+      return { type: "cancelled" as const, hash: orderTransactions.cancelledTxnHash };
+    }
+
+    if (orderTransactions.createdTxnHash && orderTransactions.createdTxnHash !== txHash) {
+      return { type: "created" as const, hash: orderTransactions.createdTxnHash };
+    }
+
+    return null;
+  }, [orderTransactions, txHash]);
+
+  const {
+    data: orderLifecycleEvents,
+    isLoading: isOrderLifecycleEventsLoading,
+    error: orderLifecycleEventsError,
+  } = useSWR(
+    orderLifecycleTarget?.hash ? [chainId, "orderLifecycle", orderLifecycleTarget.hash] : null,
+    async ([, , hash]) => {
+      try {
+        return await parseTxEvents(client as PublicClient, hash as Hash);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        throw e;
+      }
+    }
+  );
+
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
@@ -233,33 +275,41 @@ export function ParseTransactionPage() {
         <Table className="mb-12 ">
           <tbody>{renderEvents(data, "primary")}</tbody>
         </Table>
-        {tradeHistoryError ? (
-          <div className="text-body-medium text-red-400">
-            Failed to load related trade data: {tradeHistoryError.message}
-          </div>
-        ) : null}
-        {relatedExecutionTxHash ? (
+        {orderKey ? (
           <div className="mt-32">
-            <h2 className="text-body-large mb-12">
-              Related execution:{" "}
-              <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](relatedExecutionTxHash)}>
-                {relatedExecutionTxHash}
-              </ExternalLink>
-            </h2>
-            <div className="text-body-medium mb-16">
-              Order key: {executedAction?.orderKey ?? primaryAction?.orderKey ?? "n/a"}
-            </div>
-            {isExecutedEventsLoading || isTradeHistoryLoading ? (
+            <h2 className="text-body-large mb-12">Order lifecycle</h2>
+            <div className="text-body-medium mb-16">Order key: {orderKey}</div>
+            {isOrderTransactionsLoading ? (
               <Loader />
-            ) : executedEventsError ? (
+            ) : orderTransactionsError ? (
               <div className="text-body-medium text-red-400">
-                Failed to parse related transaction: {executedEventsError.message}
+                Failed to load order data: {orderTransactionsError.message}
               </div>
-            ) : executedEvents ? (
-              <Table className="mb-12 ">
-                <tbody>{renderEvents(executedEvents, "executed")}</tbody>
-              </Table>
-            ) : null}
+            ) : orderLifecycleTarget ? (
+              <>
+                <div className="text-body-medium mb-16">
+                  {getLabelByOrderLifecycleTxnType(orderLifecycleTarget.type)} transaction:{" "}
+                  <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](orderLifecycleTarget.hash)}>
+                    {orderLifecycleTarget.hash}
+                  </ExternalLink>
+                </div>
+                {isOrderLifecycleEventsLoading ? (
+                  <Loader />
+                ) : orderLifecycleEventsError ? (
+                  <div className="text-body-medium text-red-400">
+                    Failed to parse related transaction: {orderLifecycleEventsError.message}
+                  </div>
+                ) : (
+                  <Table className="mb-12 ">
+                    <tbody>{renderEvents(orderLifecycleEvents, "orderLifecycle")}</tbody>
+                  </Table>
+                )}
+              </>
+            ) : (
+              <div className="text-body-medium text-typography-secondary">
+                No executed or cancelled transaction found yet.
+              </div>
+            )}
           </div>
         ) : null}
       </div>
