@@ -62,7 +62,6 @@ import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { throttleLog } from "lib/logging";
 import {
   calculateDisplayDecimals,
@@ -199,6 +198,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     numberOfParts,
     setNumberOfParts,
     setDuration,
+    limitPriceWarningHidden,
+    setLimitPriceWarningHidden,
   } = useSelector(selectTradeboxState);
 
   const fromToken = useSelector(selectTradeboxFromToken);
@@ -965,11 +966,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         : modeToOptions(mode)
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
-
-  const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
-    "limit-price-warning-hidden",
-    false
-  );
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
