@@ -18,8 +18,15 @@ import {
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokenBalanceType } from "domain/tokens";
 import { GM_DECIMALS } from "lib/legacy";
-import { ContractCallConfig, ContractCallsConfig, MulticallRequestConfig, useMulticall } from "lib/multicall";
+import {
+  ContractCallConfig,
+  ContractCallsConfig,
+  MulticallRequestConfig,
+  MulticallResult,
+  useMulticall,
+} from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -63,13 +70,6 @@ export function useGlvMarketsInfo(
   const { marketsInfoData, tokensData, chainId, account, srcChainId, withMultichainBalances = false } = params;
 
   const { websocketTokenBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
-  // TODO MLTCH: use updated tokens balances hook
-  const glvTokensMultichainBalancesResult = useMultichainMarketTokensBalancesRequest({
-    chainId,
-    account,
-    enabled: enabled && withMultichainBalances && srcChainId !== undefined,
-    specificChainId: srcChainId,
-  });
 
   const dataStoreAddress = enabled ? getContract(chainId, "DataStore") : "";
   const glvReaderAddress = enabled ? getContract(chainId, "GlvReader") : "";
@@ -101,6 +101,14 @@ export function useGlvMarketsInfo(
     }
   );
 
+  const glvTokensMultichainBalancesResult = useMultichainMarketTokensBalancesRequest({
+    chainId,
+    account,
+    enabled: enabled && withMultichainBalances && srcChainId !== undefined && Boolean(glvList?.length),
+    specificChainId: srcChainId,
+    overridePlatformTokens: glvList?.map(({ glv }) => glv.glvToken) ?? EMPTY_ARRAY,
+  });
+
   const glvs = useMemo(() => {
     return glvList?.map(({ glv, markets }) => ({
       glv,
@@ -110,7 +118,7 @@ export function useGlvMarketsInfo(
 
   const shouldRequest = enabled && marketsInfoData && tokensData && glvs && glvs.length > 0;
 
-  const { data: glvData, isLoading: isLoadingGlvsInfo } = useMulticall<{}, GlvInfoData | undefined>(
+  const { data: glvRawData, isLoading: isLoadingGlvsInfo } = useMulticall<any, MulticallResult<any>["data"]>(
     chainId,
     "useGlvMarketsInfos",
     {
@@ -259,103 +267,126 @@ export function useGlvMarketsInfo(
       },
       parseResponse({ data }) {
         // todo move hard cals outside parseResponse
-        if (!glvs || !marketsInfoData || !tokensData) {
-          return undefined;
+
+        if (glvs?.length) {
+          const glvTokens = glvs.map(({ glv }) => glv.glvToken);
+          resetTokensBalancesUpdates(glvTokens, TokenBalanceType.Wallet);
         }
 
-        const result: GlvInfoData = {};
-        glvs.forEach(({ glv, markets }) => {
-          const pricesMax = data[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues;
-          const pricesMin = data[glv.glvToken + "-prices"].glvTokenPriceMin.returnValues;
-          const [valueMax] = data[glv.glvToken + "-glvValue"].glvValueMax.returnValues;
-          const [valueMin] = data[glv.glvToken + "-glvValue"].glvValueMin.returnValues;
-          const [priceMin, , totalSupply] = pricesMin;
-          const [priceMax] = pricesMax;
-
-          const glvName = getGlvMarketName(chainId, glv.glvToken);
-
-          const tokenConfig = getTokenBySymbol(chainId, "GLV");
-
-          const walletBalance: bigint | undefined = data[glv.glvToken + "-tokenData"].balance?.returnValues[0];
-          const gmxAccountBalance: bigint | undefined =
-            data[glv.glvToken + "-gmxAccountData"]?.balance?.returnValues[0];
-          const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
-
-          const contractSymbol = data[glv.glvToken + "-tokenData"].symbol.returnValues[0];
-
-          const glvToken: TokenData & {
-            contractSymbol: string;
-          } = {
-            ...tokenConfig,
-            address: glv.glvToken,
-            prices: {
-              minPrice: priceMin,
-              maxPrice: priceMax,
-            },
-            totalSupply,
-            balanceType: getBalanceTypeFromSrcChainId(srcChainId),
-            balance,
-            gmxAccountBalance,
-            walletBalance,
-            contractSymbol,
-          };
-
-          result[glv.glvToken] = {
-            ...glv,
-            ...data[glv.glvToken + "-info"].returnValues,
-            shiftLastExecutedAt: data[glv.glvToken + "-info"].glvShiftLastExecutedAt.returnValues[0],
-            shiftMinInterval: data[glv.glvToken + "-info"].glvShiftMinInterval.returnValues[0],
-            isGlv: true,
-            glvToken: glvToken,
-            glvTokenAddress: glv.glvToken,
-            longToken: tokensData[glv.longToken],
-            shortToken: tokensData[glv.shortToken],
-            isSpotOnly: false,
-            longTokenAddress: glv.longToken,
-            shortTokenAddress: glv.shortToken,
-            totalSupply,
-            poolValueMax: valueMax,
-            poolValueMin: valueMin,
-            name: glvName,
-            isDisabled: markets.every(
-              (market) => data[glv.glvToken + "-" + market + "-info"].isGlvDisabled.returnValues[0]
-            ),
-            markets: markets
-              .map((market) => {
-                const marketData = data[glv.glvToken + "-" + market + "-info"];
-                const marketBalance = data[glv.glvToken + "-" + market + "-gm-balance"].balance.returnValues[0];
-
-                let maxMarketTokenBalanceUsd = marketData.maxMarketTokenBalanceUsd.returnValues[0];
-                let glvMaxMarketTokenBalanceAmount = marketData.glvMaxMarketTokenBalanceAmount.returnValues[0];
-
-                if (maxMarketTokenBalanceUsd === 0n) {
-                  maxMarketTokenBalanceUsd = expandDecimals(1_000_000_000, USD_DECIMALS);
-                }
-
-                if (glvMaxMarketTokenBalanceAmount === 0n) {
-                  glvMaxMarketTokenBalanceAmount = expandDecimals(1_000_000_000, GM_DECIMALS);
-                }
-
-                return {
-                  address: market,
-                  isDisabled: marketData.isGlvDisabled.returnValues[0],
-                  maxMarketTokenBalanceUsd,
-                  glvMaxMarketTokenBalanceAmount,
-                  gmBalance: marketBalance,
-                };
-              })
-              .sort((a, b) => {
-                return a.gmBalance > b.gmBalance ? -1 : 1;
-              }),
-          };
-        });
-
-        resetTokensBalancesUpdates(Object.keys(result), TokenBalanceType.Wallet);
-
-        return result;
+        return data;
       },
     }
   );
+
+  const glvData = useMemo((): GlvInfoData | undefined => {
+    if (!glvs || !marketsInfoData || !tokensData || !glvRawData) {
+      return undefined;
+    }
+
+    const result: GlvInfoData = {};
+    glvs.forEach(({ glv, markets }) => {
+      const pricesMax = glvRawData[glv.glvToken + "-prices"].glvTokenPriceMax.returnValues as [bigint, bigint, bigint];
+      const pricesMin = glvRawData[glv.glvToken + "-prices"].glvTokenPriceMin.returnValues as [bigint, bigint, bigint];
+      const [valueMax] = glvRawData[glv.glvToken + "-glvValue"].glvValueMax.returnValues as [bigint, bigint, bigint];
+      const [valueMin] = glvRawData[glv.glvToken + "-glvValue"].glvValueMin.returnValues as [bigint, bigint, bigint];
+      const [priceMin, , totalSupply] = pricesMin;
+      const [priceMax] = pricesMax;
+
+      const glvName = getGlvMarketName(chainId, glv.glvToken)!;
+
+      const tokenConfig = getTokenBySymbol(chainId, "GLV");
+
+      const walletBalance: bigint | undefined = glvRawData[glv.glvToken + "-tokenData"].balance?.returnValues[0];
+      const gmxAccountBalance: bigint | undefined =
+        glvRawData[glv.glvToken + "-gmxAccountData"]?.balance?.returnValues[0];
+      const sourceChainBalance = withMultichainBalances
+        ? glvTokensMultichainBalancesResult.tokenBalances[glv.glvToken]
+        : undefined;
+
+      const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
+
+      const contractSymbol = glvRawData[glv.glvToken + "-tokenData"].symbol.returnValues[0];
+
+      const glvToken: TokenData & {
+        contractSymbol: string;
+      } = {
+        ...tokenConfig,
+        address: glv.glvToken,
+        prices: {
+          minPrice: priceMin,
+          maxPrice: priceMax,
+        },
+        totalSupply,
+        balanceType: getBalanceTypeFromSrcChainId(srcChainId),
+        balance,
+        gmxAccountBalance,
+        sourceChainBalance,
+        walletBalance,
+        contractSymbol,
+      };
+
+      result[glv.glvToken] = {
+        ...glv,
+        ...glvRawData[glv.glvToken + "-info"].returnValues,
+        shiftLastExecutedAt: glvRawData[glv.glvToken + "-info"].glvShiftLastExecutedAt.returnValues[0],
+        shiftMinInterval: glvRawData[glv.glvToken + "-info"].glvShiftMinInterval.returnValues[0],
+        isGlv: true,
+        glvToken: glvToken,
+        glvTokenAddress: glv.glvToken,
+        longToken: tokensData[glv.longToken],
+        shortToken: tokensData[glv.shortToken],
+        isSpotOnly: false,
+        longTokenAddress: glv.longToken,
+        shortTokenAddress: glv.shortToken,
+        isSameCollaterals: glv.longToken === glv.shortToken,
+        data: "",
+        poolValueMax: valueMax,
+        poolValueMin: valueMin,
+        name: glvName,
+        isDisabled: markets.every(
+          (market) => glvRawData[glv.glvToken + "-" + market + "-info"].isGlvDisabled.returnValues[0]
+        ),
+        markets: markets
+          .map((market) => {
+            const marketData = glvRawData[glv.glvToken + "-" + market + "-info"];
+            const marketBalance = glvRawData[glv.glvToken + "-" + market + "-gm-balance"].balance.returnValues[0];
+
+            let maxMarketTokenBalanceUsd = marketData.maxMarketTokenBalanceUsd.returnValues[0];
+            let glvMaxMarketTokenBalanceAmount = marketData.glvMaxMarketTokenBalanceAmount.returnValues[0];
+
+            if (maxMarketTokenBalanceUsd === 0n) {
+              maxMarketTokenBalanceUsd = expandDecimals(1_000_000_000, USD_DECIMALS);
+            }
+
+            if (glvMaxMarketTokenBalanceAmount === 0n) {
+              glvMaxMarketTokenBalanceAmount = expandDecimals(1_000_000_000, GM_DECIMALS);
+            }
+
+            return {
+              address: market,
+              isDisabled: marketData.isGlvDisabled.returnValues[0],
+              maxMarketTokenBalanceUsd,
+              glvMaxMarketTokenBalanceAmount,
+              gmBalance: marketBalance,
+            };
+          })
+          .sort((a, b) => {
+            return a.gmBalance > b.gmBalance ? -1 : 1;
+          }),
+      };
+    });
+
+    return result;
+  }, [
+    chainId,
+    glvRawData,
+    glvTokensMultichainBalancesResult.tokenBalances,
+    glvs,
+    marketsInfoData,
+    srcChainId,
+    tokensData,
+    withMultichainBalances,
+  ]);
 
   // TODO MLTCH: use updated tokens balances hook
   // useUpdatedTokensBalances()

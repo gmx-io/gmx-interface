@@ -337,16 +337,19 @@ export function useMultichainMarketTokensBalancesRequest({
   account,
   enabled,
   specificChainId,
+  overridePlatformTokens,
 }: {
   chainId: ContractsChainId;
   account: string | undefined;
   enabled: boolean;
   specificChainId: SourceChainId | undefined;
+  overridePlatformTokens?: string[];
 }): {
   tokenBalances: Record<string, bigint>;
   isLoading: boolean;
 } {
-  const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
+  const platformTokens =
+    overridePlatformTokens ?? (MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined);
 
   const { data: balancesResult } = useSWRSubscription(
     account && platformTokens?.length && enabled && specificChainId !== undefined

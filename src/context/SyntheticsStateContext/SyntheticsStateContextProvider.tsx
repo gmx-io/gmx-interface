@@ -202,6 +202,7 @@ export function SyntheticsStateContextProvider({
     chainId,
     account,
     srcChainId,
+    withMultichainBalances: pageType === "pools",
   });
 
   const { marketTokensData: depositMarketTokensData, progressiveMarketTokensData: progressiveDepositMarketTokensData } =

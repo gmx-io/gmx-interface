@@ -44,6 +44,7 @@ export type GlvInfo = {
   poolValueMax: bigint;
   poolValueMin: bigint;
   data: string;
+  isGlv: true;
 };
 
 export interface GlvMarket {
