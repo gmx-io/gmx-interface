@@ -57,6 +57,7 @@ import {
   formatSwapPath,
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
+import { useRelatedTradeHistory } from "./useRelatedTradeHistory";
 
 const NETWORKS = mapValues(invert(CHAIN_SLUGS_MAP), Number) as Record<string, ContractsChainId>;
 
@@ -71,15 +72,51 @@ export function ParseTransactionPage() {
     chainId,
   });
 
-  const { data, isLoading, error } = useSWR([chainId, tx], async function fetchTransaction() {
-    try {
-      return await parseTxEvents(client as PublicClient, tx as Hash);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(e);
-      throw e;
+  const txHash = typeof tx === "string" && isHash(tx) ? (tx as Hash) : undefined;
+
+  const {
+    data,
+    isLoading: isPrimaryTxLoading,
+    error,
+  } = useSWR(
+    txHash ? [chainId, "transaction", txHash] as const : null,
+    async ([, , hash]) => {
+      try {
+        return await parseTxEvents(client as PublicClient, hash as Hash);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        throw e;
+      }
     }
-  });
+  );
+
+  const {
+    primaryAction,
+    executedAction,
+    isLoading: isTradeHistoryLoading,
+    error: tradeHistoryError,
+  } = useRelatedTradeHistory(chainId, txHash);
+
+  const relatedExecutionTxHash =
+    executedAction && txHash && executedAction.transactionHash !== txHash ? executedAction.transactionHash : undefined;
+
+  const {
+    data: executedEvents,
+    isLoading: isExecutedEventsLoading,
+    error: executedEventsError,
+  } = useSWR(
+    relatedExecutionTxHash ? [chainId, "relatedExecution", relatedExecutionTxHash] : null,
+    async ([, , hash]) => {
+      try {
+        return await parseTxEvents(client as PublicClient, hash as Hash);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        throw e;
+      }
+    }
+  );
 
   const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
@@ -97,6 +134,70 @@ export function ParseTransactionPage() {
     glvData,
   });
 
+  const renderEvents = useCallback(
+    (events: Awaited<ReturnType<typeof parseTxEvents>> | undefined, keyPrefix: string) => {
+      if (!events?.length) {
+        return (
+          <TableTr key={`empty-${keyPrefix}`}>
+            <TableTd className="!text-center font-medium" colSpan={3}>
+              No events
+            </TableTd>
+          </TableTr>
+        );
+      }
+
+      return events.map((event) => (
+        <Fragment key={`${keyPrefix}-${event.key}`}>
+          <TableTr>
+            <TableTd className="w-[25rem] font-medium">Name</TableTd>
+            <TableTd className="group !text-left" colSpan={2}>
+              <div className="flex flex-row items-center justify-between gap-8">
+                <span className="flex flex-row items-center gap-8 whitespace-nowrap">
+                  {event.log}: {event.name}
+                  <CopyButton value={event.name} />
+                </span>
+                <span>LogIndex: {event.logIndex}</span>
+              </div>
+            </TableTd>
+          </TableTr>
+          <TableTr>
+            <TableTd className="w-[25rem] font-medium">Topics</TableTd>
+            <TableTd className="group !text-left" colSpan={3}>
+              {event.topics.length > 0
+                ? event.topics.map((t) => (
+                    <div className="mb-4 flex flex-row items-center gap-8" key={`${keyPrefix}-${event.name}-${t}`}>
+                      {t}
+                      <CopyButton value={t} />
+                    </div>
+                  ))
+                : "No topics"}
+            </TableTd>
+          </TableTr>
+          {event.values.map((value) => (
+            <LogEntryComponent
+              name={event.name}
+              key={`${keyPrefix}-${event.key}-${value.item}`}
+              {...value}
+              network={network}
+              chainId={chainId}
+              entries={event.values}
+              tokensData={tokensData}
+              marketsInfoData={marketsInfoData}
+              glvData={glvData}
+              marketTokensData={marketTokensData}
+              copyToClipboard={copyToClipboard}
+              allEvents={events}
+            />
+          ))}
+          <TableTr>
+            <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
+          </TableTr>
+        </Fragment>
+      ));
+    },
+    [chainId, copyToClipboard, glvData, marketTokensData, marketsInfoData, network, tokensData]
+  );
+
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
@@ -105,7 +206,7 @@ export function ParseTransactionPage() {
     );
   }
 
-  if (!tx || !isHash(tx)) {
+  if (!txHash) {
     return <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">Invalid transaction</div>;
   }
 
@@ -115,7 +216,7 @@ export function ParseTransactionPage() {
     );
   }
 
-  if (isLoading || !data) {
+  if (isPrimaryTxLoading || !data) {
     return (
       <div className="mt-32">
         <Loader />
@@ -127,70 +228,40 @@ export function ParseTransactionPage() {
     <AppPageLayout>
       <div className="mx-auto max-w-[1280px] pt-24">
         <h1 className="text-body-large mb-24">
-          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](tx)}>{tx}</ExternalLink>
+          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>
         </h1>
         <Table className="mb-12 ">
-          <tbody>
-            {data.length ? (
-              data.map((event) => {
-                return (
-                  <Fragment key={event.key}>
-                    <TableTr>
-                      <TableTd className="w-[25rem] font-medium">Name</TableTd>
-                      <TableTd className="group !text-left" colSpan={2}>
-                        <div className="flex flex-row items-center justify-between gap-8">
-                          <span className="flex flex-row items-center gap-8 whitespace-nowrap">
-                            {event.log}: {event.name}
-                            <CopyButton value={event.name} />
-                          </span>
-                          <span>LogIndex: {event.logIndex}</span>
-                        </div>
-                      </TableTd>
-                    </TableTr>
-                    <TableTr>
-                      <TableTd className="w-[25rem] font-medium">Topics</TableTd>
-                      <TableTd className="group !text-left" colSpan={3}>
-                        {event.topics.length > 0
-                          ? event.topics.map((t) => (
-                              <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
-                                {t}
-                                <CopyButton value={t} />
-                              </div>
-                            ))
-                          : "No topics"}
-                      </TableTd>
-                    </TableTr>
-                    {event.values.map((value) => (
-                      <LogEntryComponent
-                        name={event.name}
-                        key={value.item}
-                        {...value}
-                        network={network}
-                        chainId={chainId}
-                        entries={event.values}
-                        tokensData={tokensData}
-                        marketsInfoData={marketsInfoData}
-                        glvData={glvData}
-                        marketTokensData={marketTokensData}
-                        copyToClipboard={copyToClipboard}
-                        allEvents={data}
-                      />
-                    ))}
-                    <TableTr>
-                      <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
-                    </TableTr>
-                  </Fragment>
-                );
-              })
-            ) : (
-              <TableTr>
-                <TableTd className="!text-center font-medium" colSpan={3}>
-                  No events
-                </TableTd>
-              </TableTr>
-            )}
-          </tbody>
+          <tbody>{renderEvents(data, "primary")}</tbody>
         </Table>
+        {tradeHistoryError ? (
+          <div className="text-body-medium text-red-400">
+            Failed to load related trade data: {tradeHistoryError.message}
+          </div>
+        ) : null}
+        {relatedExecutionTxHash ? (
+          <div className="mt-32">
+            <h2 className="text-body-large mb-12">
+              Related execution:{" "}
+              <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](relatedExecutionTxHash)}>
+                {relatedExecutionTxHash}
+              </ExternalLink>
+            </h2>
+            <div className="text-body-medium mb-16">
+              Order key: {executedAction?.orderKey ?? primaryAction?.orderKey ?? "n/a"}
+            </div>
+            {isExecutedEventsLoading || isTradeHistoryLoading ? (
+              <Loader />
+            ) : executedEventsError ? (
+              <div className="text-body-medium text-red-400">
+                Failed to parse related transaction: {executedEventsError.message}
+              </div>
+            ) : executedEvents ? (
+              <Table className="mb-12 ">
+                <tbody>{renderEvents(executedEvents, "executed")}</tbody>
+              </Table>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </AppPageLayout>
   );
