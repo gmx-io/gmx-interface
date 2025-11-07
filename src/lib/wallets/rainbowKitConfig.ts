@@ -79,13 +79,25 @@ export const getRainbowKitConfig = once(() =>
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
 export function getPublicClientWithRpc(chainId: number): PublicClient {
-  const primaryRpcUrl = getCurrentRpcUrls(chainId).primary;
+  const primaryRpcUrl =
+    import.meta.env.MODE === "test" ? getFallbackRpcUrl(chainId, false) : getCurrentRpcUrls(chainId).primary;
   const key = `chainId:${chainId}-rpcUrl:${primaryRpcUrl}`;
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
   }
   const publicClient = createPublicClient({
-    transport: http(primaryRpcUrl),
+    transport: http(
+      primaryRpcUrl,
+      import.meta.env.MODE === "test"
+        ? {
+            fetchOptions: {
+              headers: {
+                Origin: "http://localhost:3010",
+              },
+            },
+          }
+        : undefined
+    ),
     chain: getViemChain(chainId),
   });
   PUBLIC_CLIENTS_CACHE.set(key, publicClient);
