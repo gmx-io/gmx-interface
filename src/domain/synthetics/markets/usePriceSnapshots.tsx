@@ -2,9 +2,9 @@ import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { getSubsquidGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { Price } from "sdk/types/subsquid";
-import { queryPaginated } from "sdk/utils/subgraph";
+import { queryPaginated } from "sdk/utils/indexers";
 
 import { Period } from "./usePoolsTimeRange";
 

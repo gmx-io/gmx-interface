@@ -5,7 +5,7 @@ import type { Address } from "viem";
 
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getSubsquidGraphClient } from "lib/subgraph/clients";
+import { getSubsquidGraphClient } from "lib/indexers/clients";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { getByKey } from "sdk/utils/objects";
 

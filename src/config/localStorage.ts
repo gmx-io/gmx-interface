@@ -94,7 +94,7 @@ export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
 export const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
-export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
+export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
