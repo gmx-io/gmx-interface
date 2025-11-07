@@ -12,6 +12,7 @@ export async function getOrWaitLogs<T extends AbiEvent>(
     address,
     args,
     finish = () => true,
+    abortSignal,
   }: {
     chainId: number;
     fromBlock: bigint;
@@ -19,6 +20,7 @@ export async function getOrWaitLogs<T extends AbiEvent>(
     address?: string | string[];
     args: MaybeExtractEventArgsFromAbi<[T], T["name"]>;
     finish?: (logs: GetLogsReturnType<T>) => boolean;
+    abortSignal?: AbortSignal;
   } // todo add timeout
 ): Promise<GetLogsReturnType<T>> {
   const logs = await getLogs(getPublicClientWithRpc(chainId), {
@@ -30,6 +32,10 @@ export async function getOrWaitLogs<T extends AbiEvent>(
 
   if (logs.length) {
     return logs as unknown as GetLogsReturnType<T>;
+  }
+
+  if (abortSignal?.aborted) {
+    return [];
   }
 
   const { promise, resolve, reject } = Promise.withResolvers<GetLogsReturnType<T>>();
@@ -54,6 +60,11 @@ export async function getOrWaitLogs<T extends AbiEvent>(
     onError: (error) => {
       reject(error);
     },
+  });
+
+  abortSignal?.addEventListener("abort", () => {
+    unsub();
+    reject(new Error("Abort signal received"));
   });
 
   return promise;

@@ -25,9 +25,7 @@ import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "dom
 import {
   TokenData,
   TokensRatio,
-  convertToTokenAmount,
   convertToUsd,
-  getIsEquivalentTokens,
   getIsStake,
   getIsUnstake,
   getIsUnwrap,
@@ -55,6 +53,7 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { TokenBalanceType } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import { selectIsExpressTransactionAvailable } from "../expressSelectors";

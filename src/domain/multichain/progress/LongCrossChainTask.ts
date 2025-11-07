@@ -25,7 +25,7 @@ export function isStringEqualInsensitive(a: string, b: string): boolean {
   return a.toLowerCase() === b.toLowerCase();
 }
 
-const DEBUG = true;
+const DEBUG = false;
 
 // eslint-disable-next-line no-console
 export const debugLog = DEBUG ? (...args: any[]) => console.log("[LongCrossChainTask]", ...args) : noop;

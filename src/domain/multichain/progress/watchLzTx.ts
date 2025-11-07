@@ -35,6 +35,10 @@ export async function watchLzTxRpc(
   const sourceTx = await getPublicClientWithRpc(chainId).getTransactionReceipt({ hash: txHash });
   const sourceBlock = await getPublicClientWithRpc(chainId).getBlock({ blockHash: sourceTx.blockHash });
 
+  if (abortSignal?.aborted) {
+    return;
+  }
+
   debugLog("[watchLzTxRpc] fetched source chain logs", sourceChainLogs.length);
   const topics = encodeEventTopics({
     abi: abis.IStargate,
@@ -83,6 +87,9 @@ export async function watchLzTxRpc(
   ]);
 
   const destinationOldBlock = await getBlockNumberBeforeTimestamp(destinationChainId, sourceBlock.timestamp);
+  if (abortSignal?.aborted) {
+    return;
+  }
 
   const oftReceivedLogs = await getOrWaitLogs({
     chainId: destinationChainId,
@@ -92,6 +99,9 @@ export async function watchLzTxRpc(
       guid: oftSentEvent.args.guid,
     },
   });
+  if (abortSignal?.aborted) {
+    return;
+  }
 
   if (oftReceivedLogs.length === 0) {
     debugLog("[watchLzTxRpc] no OFTReceived logs found");
@@ -124,7 +134,11 @@ export async function watchLzTxRpc(
       event: COMPOSE_DELIVERED_ABI[0],
       args: {},
       finish: (logs) => logs.some((log) => log.args.guid === guid),
+      abortSignal,
     });
+    if (abortSignal?.aborted) {
+      return;
+    }
 
     debugLog("[watchLzTxRpc] got LZ compose logs", lzComposeLogs);
 
@@ -146,47 +160,6 @@ export async function watchLzTxRpc(
     } else {
       debugLog("[watchLzTxRpc] no LZ compose event found");
     }
-
-    // const unwatchLzComposeEvent = watchEvent(getPublicClientWithRpc(destinationChainId), {
-    //   fromBlock: oftReceivedLogs[0].blockNumber,
-    //   event: COMPOSE_DELIVERED_ABI[0],
-    //   onLogs: (logs) => {
-    //     debugLog("[watchLzTxRpc] got LZ compose event logs", logs);
-    //     for (const log of logs) {
-    //       try {
-    //         const args = decodeEventLog({
-    //           abi: COMPOSE_DELIVERED_ABI,
-    //           eventName: "ComposeDelivered",
-    //           topics: log.topics,
-    //           data: log.data,
-    //         }).args;
-
-    //         if (args.guid === guid) {
-    //           debugLog("[watchLzTxRpc] got LZ compose event", log);
-    //           onUpdate([
-    //             {
-    //               guid,
-    //               source: "confirmed",
-    //               sourceTx: txHash,
-    //               destination: "confirmed",
-    //               destinationTx: log.transactionHash,
-    //               destinationChainId,
-    //               lz: "confirmed",
-    //               lzTx: log.transactionHash,
-    //             },
-    //           ]);
-    //           unwatchLzComposeEvent();
-    //         }
-    //       } catch (error) {
-    //         debugLog("[watchLzTxRpc] error decoding LZ compose event", error);
-    //       }
-    //     }
-    //   },
-    //   onError: (error) => {
-    //     debugLog("[watchLzTxRpc] error watching LZ compose event", error);
-    //     unwatchLzComposeEvent();
-    //   },
-    // });
   } else {
     debugLog("[watchLzTxRpc] no LZ compose event needed");
   }
@@ -212,15 +185,26 @@ export async function watchLzTxApi(
     throw error;
   });
 
+  if (abortSignal?.aborted) {
+    return;
+  }
+
   debugLog("[watchLzTxApi] got first result");
   if (result.error) {
     debugLog("[watchLzTxApi] first result error, waiting for transaction receipt");
+
+    const abortPromise = new Promise((_resolve, reject) => {
+      abortSignal?.addEventListener("abort", () => {
+        reject(new Error("Abort signal received"));
+      });
+    });
 
     await Promise.race([
       getPublicClientWithRpc(chainId).waitForTransactionReceipt({
         hash: txHash,
       }),
       sleep(60000).then(() => Promise.reject(new Error("Transaction not found during await tx receipt"))),
+      abortPromise,
     ]);
 
     debugLog("[watchLzTxApi] refetching tx");
@@ -235,6 +219,7 @@ export async function watchLzTxApi(
       {
         retryCount: 10,
         delay: 10000,
+        shouldRetry: () => !abortSignal?.aborted,
       }
     );
   }
@@ -253,8 +238,14 @@ export async function watchLzTxApi(
   debugLog("[watchLzTxApi] isInProgress", isInProgress);
   while (isInProgress) {
     await sleep(10000);
+    if (abortSignal?.aborted) {
+      return;
+    }
 
     result = await fetchTx();
+    if (abortSignal?.aborted) {
+      return;
+    }
     const operations = result.data?.data;
 
     if (!operations) {

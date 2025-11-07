@@ -3,7 +3,6 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
 import {
-  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
@@ -13,7 +12,6 @@ import {
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSelectedMarketForGlv,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
