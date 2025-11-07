@@ -333,7 +333,14 @@ export const selectTradeboxSetKeepLeverage = (s: SyntheticsState) => s.tradebox.
 export const selectTradeboxSetCollateralAddress = (s: SyntheticsState) => s.tradebox.setCollateralAddress;
 export const selectTradeboxAdvancedOptions = (s: SyntheticsState) => s.tradebox.advancedOptions;
 export const selectTradeboxSetAdvancedOptions = (s: SyntheticsState) => s.tradebox.setAdvancedOptions;
-export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.allowedSlippage;
+export const selectTradeboxAllowedSlippage = (s: SyntheticsState) => {
+  const tradeFlags = selectTradeboxTradeFlags(s);
+  if (tradeFlags.isSwap && tradeFlags.isLimit) {
+    return 0;
+  }
+
+  return s.tradebox.allowedSlippage;
+};
 export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradebox.setAllowedSlippage;
 export const selectTradeboxTokensAllowance = (s: SyntheticsState) => s.tradebox.tokensAllowance;
 export const selectTradeBoxTokensAllowanceLoaded = (s: SyntheticsState) => s.tradebox.tokensAllowance.isLoaded;
