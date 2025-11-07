@@ -218,6 +218,10 @@ msgstr "请注意，在极少数情况下，订单可能无法执行，例如，
 msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
 msgstr "向特定 GMX 市场提供流动性的资金池，支持 <0/> 单资产和原生资产选项。"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "In progress"
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
@@ -866,6 +870,10 @@ msgstr ""
 msgid "Code already taken"
 msgstr "代码已被使用"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM tokens were bought successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or go to the ETH/USDC pool to manually withdraw your GM tokens."
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "SL - Short Dec."
 msgstr "止损 - 空头减少"
@@ -1007,6 +1015,10 @@ msgstr "最大网络费用被高估，包括设置下的缓冲。执行后，任
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
 msgstr "TVL (供应)"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy GM operation failed. Your funds are safe and remain in your wallet."
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -1156,6 +1168,7 @@ msgid "1inch"
 msgstr "1inch"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copied"
 msgstr "已复制"
 
@@ -1822,6 +1835,10 @@ msgstr "已提取。"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
 msgstr "累积盈亏"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to execute conversion"
+msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -3467,10 +3484,6 @@ msgstr "在 Avalanche 上推荐的交易者"
 msgid "Funding Fees"
 msgstr "资金费用"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "No deposit in progress"
-#~ msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3820,6 +3833,10 @@ msgstr "输入价格"
 msgid "Failed Market Increase"
 msgstr "市场增加失败"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to create conversion"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -4106,6 +4123,10 @@ msgstr "创建者"
 msgid "Derivatives Portfolio Tracker"
 msgstr "衍生品投资组合跟踪器"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buying error"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
 msgstr "创建限价"
@@ -4376,6 +4397,10 @@ msgstr "没有交易符合选定筛选条件"
 msgid "Decreased"
 msgstr "已减少"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Selling"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr ""
@@ -4480,10 +4505,6 @@ msgstr "一键批准 nonce 已过期。请签署新的批准。"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Pending {tokenSymbol} approval"
 msgstr ""
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Back to GMX Account"
-#~ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -4671,6 +4692,10 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell GM operation failed. Your funds are safe and remain in your wallet."
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -5684,6 +5709,10 @@ msgstr "tBTC LP 激励"
 msgid "of open fee"
 msgstr "开仓费用"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
 msgstr "订单错误。此市场价格当前波动，请在执行详情部分 <0>增加允许滑点</0> 后重试。"
@@ -6013,10 +6042,6 @@ msgstr "GMX 金库"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Start a deposit"
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "{0} Balance"
 msgstr ""
@@ -6098,10 +6123,6 @@ msgstr "执行止损市价单"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "此账户使用活跃推荐代码的交易量。"
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "This view is only available for deposits"
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -6656,6 +6677,10 @@ msgstr "购买或转移 {nativeTokenSymbol} 到 {chainName}"
 msgid "Freeze"
 msgstr "冻结"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to bridge in"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "领取完成！"
@@ -6709,6 +6734,10 @@ msgstr "选择支付代币"
 #: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "可用流动性将是储备和未平仓利息的最大值与当前值之间差额的较小值。"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buying"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -7041,6 +7070,10 @@ msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
 msgid "Buy"
 msgstr "购买"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Copy technical details"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT ID"
 msgstr "NFT ID"
@@ -7056,6 +7089,10 @@ msgstr "去中心化永续交易所 | GMX"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "无资金所有权损失"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Completed"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
@@ -7461,6 +7498,10 @@ msgstr "执行价格"
 msgid "No pools matched"
 msgstr "没有匹配的资金池"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to bridge out"
+msgstr ""
+
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "Claims History"
 msgstr "申领历史"
@@ -7646,6 +7687,10 @@ msgstr "剩余抵押品低于 {0} USD"
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "触发"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Elapsed time"
+msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
@@ -8103,6 +8148,14 @@ msgstr "您的旧版 1CT 子账户中剩余 {balanceFormatted}。"
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr "平仓交易的价格影响返利可在申领标签下申领。<0>阅读更多</0>"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually buy your GM tokens."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
+msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually sell your GM tokens."
 msgstr ""

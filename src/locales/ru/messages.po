@@ -218,6 +218,10 @@ msgstr "Обратите внимание, что могут быть редки
 msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
 msgstr "Пулы, предоставляющие ликвидность конкретным рынкам GMX, поддерживающие <0/> опции с одним активом и нативными активами."
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "In progress"
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
@@ -866,6 +870,10 @@ msgstr ""
 msgid "Code already taken"
 msgstr "Код уже занят"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM tokens were bought successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or go to the ETH/USDC pool to manually withdraw your GM tokens."
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "SL - Short Dec."
 msgstr "SL - Уменьшение шорта"
@@ -1007,6 +1015,10 @@ msgstr "Максимальная сетевая комиссия переоце�
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
 msgstr "TVL (Поставка)"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy GM operation failed. Your funds are safe and remain in your wallet."
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -1156,6 +1168,7 @@ msgid "1inch"
 msgstr "1inch"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copied"
 msgstr "Скопировано"
 
@@ -1822,6 +1835,10 @@ msgstr "Выведено."
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
 msgstr "Кумулятивная PnL"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to execute conversion"
+msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -3467,10 +3484,6 @@ msgstr "Трейдеры, Привлечённые на Avalanche"
 msgid "Funding Fees"
 msgstr "Комиссии за Финансирование"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "No deposit in progress"
-#~ msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3820,6 +3833,10 @@ msgstr "Введите цену"
 msgid "Failed Market Increase"
 msgstr "Неудачное Рыночное Увеличение"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to create conversion"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -4106,6 +4123,10 @@ msgstr "Создатель"
 msgid "Derivatives Portfolio Tracker"
 msgstr "Трекер Портфеля Деривативов"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buying error"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
 msgstr "Создать Лимит"
@@ -4376,6 +4397,10 @@ msgstr "Нет сделок, соответствующих выбранным �
 msgid "Decreased"
 msgstr "Уменьшено"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Selling"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr ""
@@ -4480,10 +4505,6 @@ msgstr "Нонс одобрения One-Click истек. Пожалуйста, 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Pending {tokenSymbol} approval"
 msgstr ""
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Back to GMX Account"
-#~ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -4671,6 +4692,10 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell GM operation failed. Your funds are safe and remain in your wallet."
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -5684,6 +5709,10 @@ msgstr "Стимулы LP tBTC"
 msgid "of open fee"
 msgstr "от комиссии открытия"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
 msgstr "Ошибка ордера. Цены сейчас волатильны для этого рынка, попробуйте снова, <0>увеличив разрешенный slippage</0> в разделе деталей исполнения."
@@ -6013,10 +6042,6 @@ msgstr "Хранилище GMX"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Start a deposit"
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "{0} Balance"
 msgstr ""
@@ -6098,10 +6123,6 @@ msgstr "Выполнить стоп-маркет"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "Объем торгов этого аккаунта с активным реферальным кодом."
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "This view is only available for deposits"
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -6656,6 +6677,10 @@ msgstr "Купить или перевести {nativeTokenSymbol} в {chainName
 msgid "Freeze"
 msgstr "Заморозить"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to bridge in"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "Заявка выполнена!"
@@ -6709,6 +6734,10 @@ msgstr "Выберите токен для оплаты"
 #: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "Доступная ликвидность будет меньшей из разниц между максимальным значением и текущим значением как для резерва, так и для открытого интереса."
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buying"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -7041,6 +7070,10 @@ msgstr "Размер ордера больше позиции, будет исп
 msgid "Buy"
 msgstr "Купить"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Copy technical details"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT ID"
 msgstr "ID NFT"
@@ -7056,6 +7089,10 @@ msgstr "Децентрализованная биржа перпетuals | GMX"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "Нет потери владения средствами"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Completed"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
@@ -7461,6 +7498,10 @@ msgstr "Цена исполнения"
 msgid "No pools matched"
 msgstr "Нет совпадающих пулов"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to bridge out"
+msgstr ""
+
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "Claims History"
 msgstr "История клеймов"
@@ -7646,6 +7687,10 @@ msgstr "Оставшийся залог ниже {0} USD"
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "триггер"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Elapsed time"
+msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
@@ -8103,6 +8148,14 @@ msgstr "У вас осталось {balanceFormatted} в старой верси
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr "Возмещения влияния цены для закрытия сделок клеймабельны во вкладке клеймов. <0>Подробнее</0>"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually buy your GM tokens."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
+msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually sell your GM tokens."
 msgstr ""

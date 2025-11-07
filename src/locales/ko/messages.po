@@ -218,6 +218,10 @@ msgstr "주문이 실행되지 않을 수 있는 드문 경우가 있을 수 있
 msgid "Pools providing liquidity to specific GMX markets, supporting <0/> single-asset and native asset options."
 msgstr "특정 GMX 시장에 유동성을 제공하는 풀, <0/> 단일 자산 및 네이티브 자산 옵션을 지원합니다."
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "In progress"
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
@@ -866,6 +870,10 @@ msgstr ""
 msgid "Code already taken"
 msgstr "이미 사용된 코드입니다"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM tokens were bought successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or go to the ETH/USDC pool to manually withdraw your GM tokens."
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "SL - Short Dec."
 msgstr "SL - 숏 감소"
@@ -1007,6 +1015,10 @@ msgstr "최대 네트워크 수수료는 설정 아래 버퍼를 포함해 과�
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
 msgstr "TVL (공급)"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy GM operation failed. Your funds are safe and remain in your wallet."
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -1156,6 +1168,7 @@ msgid "1inch"
 msgstr "1inch"
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copied"
 msgstr "복사됨"
 
@@ -1822,6 +1835,10 @@ msgstr "출금됨."
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL"
 msgstr "누적 PnL"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to execute conversion"
+msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -3467,10 +3484,6 @@ msgstr "Avalanche에서 추천된 거래자"
 msgid "Funding Fees"
 msgstr "자금 수수료"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "No deposit in progress"
-#~ msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3820,6 +3833,10 @@ msgstr "가격 입력"
 msgid "Failed Market Increase"
 msgstr "시장 증가 실패"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to create conversion"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -4106,6 +4123,10 @@ msgstr "제작자"
 msgid "Derivatives Portfolio Tracker"
 msgstr "파생상품 포트폴리오 트래커"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buying error"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
 msgstr "지정가 생성"
@@ -4376,6 +4397,10 @@ msgstr "선택한 필터와 일치하는 거래가 없습니다"
 msgid "Decreased"
 msgstr "감소 완료"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Selling"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr ""
@@ -4480,10 +4505,6 @@ msgstr "원클릭 승인 논스가 만료되었습니다. 새로운 승인을 �
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Pending {tokenSymbol} approval"
 msgstr ""
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Back to GMX Account"
-#~ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -4671,6 +4692,10 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell GM operation failed. Your funds are safe and remain in your wallet."
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -5684,6 +5709,10 @@ msgstr "tBTC LP 인센티브"
 msgid "of open fee"
 msgstr "개설 수수료의"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
 msgstr "주문 오류. 이 시장의 가격이 현재 변동적입니다. 실행 세부 섹션에서 <0>허용 슬리피지 증가</0>로 다시 시도하세요."
@@ -6013,10 +6042,6 @@ msgstr "GMX 볼트"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Start a deposit"
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "{0} Balance"
 msgstr ""
@@ -6098,10 +6123,6 @@ msgstr "스톱 마켓 실행"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "활성 추천 코드로 이 계정의 거래량."
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "This view is only available for deposits"
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -6656,6 +6677,10 @@ msgstr "{nativeTokenSymbol}을 {chainName}으로 구매 또는 전송"
 msgid "Freeze"
 msgstr "동결"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to bridge in"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "수령 완료!"
@@ -6709,6 +6734,10 @@ msgstr "지불 토큰 선택"
 #: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
 msgstr "사용 가능한 유동성은 예비금과 미결제약정의 최대값과 현재값 차이 중 작은 값입니다."
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buying"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
@@ -7041,6 +7070,10 @@ msgstr "주문 크기가 포지션보다 큽니다. 포지션 증가 시에만 �
 msgid "Buy"
 msgstr "구매"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Copy technical details"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "NFT ID"
 msgstr "NFT ID"
@@ -7056,6 +7089,10 @@ msgstr "탈중앙화 퍼페추얼 거래소 | GMX"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "자금 소유권 손실 없음"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Completed"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
@@ -7461,6 +7498,10 @@ msgstr "실행 가격"
 msgid "No pools matched"
 msgstr "일치하는 풀 없음"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Failed to bridge out"
+msgstr ""
+
 #: src/components/Claims/ClaimsHistory.tsx
 msgid "Claims History"
 msgstr "청구 내역"
@@ -7646,6 +7687,10 @@ msgstr "잔여 담보 {0} USD 미만"
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "트리거"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Elapsed time"
+msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
@@ -8103,6 +8148,14 @@ msgstr "구 버전 1CT 서브계정에 {balanceFormatted} 남음."
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr "종료 거래의 가격 영향 리베이트는 청구 탭에서 청구 가능합니다. <0>더 읽기</0>"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually buy your GM tokens."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
+msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually sell your GM tokens."
 msgstr ""
