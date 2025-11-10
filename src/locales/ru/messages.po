@@ -357,10 +357,6 @@ msgstr "{updateOrdersCount} TP/SL ордеров обновлено"
 msgid "Stop market price above mark price"
 msgstr "Цена стоп-рынка выше рыночной цены"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-#~ msgstr "Транзакция не удалась из-за проверки комиссии за исполнение. <0>Просмотр</0>.<1/><2/>{suggestText}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "Достигнута продаваемая емкость для пула GM: {0} [{1}], поскольку токены зарезервированы трейдерами. Пожалуйста, выберите другой пул, уменьшите размер продажи или разделите вывод из нескольких пулов."
@@ -3458,10 +3454,6 @@ msgstr "Трейдеры, Привлечённые на Avalanche"
 msgid "Funding Fees"
 msgstr "Комиссии за Финансирование"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "No deposit in progress"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Approval failed"
@@ -3866,6 +3858,10 @@ msgstr "Ошибка подготовки транзакции. Провайде
 msgid "Insufficient liquidity in GM Pool"
 msgstr "Недостаточно ликвидности в Пуле GM"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Leveraged tokens with protection"
+msgstr ""
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Failed to claim funds"
 msgstr "Не удалось клеймить средства"
@@ -3979,6 +3975,10 @@ msgstr "Симуляция выполнения ордера не удалась
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "Поддержка для"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Toros"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid Transfer Addresses: Please check the url."
@@ -4465,10 +4465,6 @@ msgstr "Нонс одобрения One-Click истек. Пожалуйста, 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Pending {tokenSymbol} approval"
 msgstr ""
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Back to GMX Account"
-#~ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -5826,12 +5822,6 @@ msgstr "Внести USDC или ETH"
 msgid "Referral code created."
 msgstr "Реферальный код создан."
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid ""
-#~ "to\n"
-#~ "{0}"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Уведомления"
@@ -5997,10 +5987,6 @@ msgstr "Хранилище GMX"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Start a deposit"
-#~ msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr "Минута(ы)"
@@ -6078,10 +6064,6 @@ msgstr "Выполнить стоп-маркет"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "Объем торгов этого аккаунта с активным реферальным кодом."
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "This view is only available for deposits"
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -7839,10 +7821,6 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "Запрос на депозит"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"
