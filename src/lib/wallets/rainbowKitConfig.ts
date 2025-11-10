@@ -79,6 +79,7 @@ export const getRainbowKitConfig = once(() =>
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
 export function getPublicClientWithRpc(chainId: number): PublicClient {
+  // TODO MLTCH DO NOT FORGET TO ADD TESTING KEY TO GITHUB SECRETS
   const primaryRpcUrl =
     import.meta.env.MODE === "test" ? getTestingRpcUrl(chainId) : getCurrentRpcUrls(chainId).primary;
   const key = `chainId:${chainId}-rpcUrl:${primaryRpcUrl}`;

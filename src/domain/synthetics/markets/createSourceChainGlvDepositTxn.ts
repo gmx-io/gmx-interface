@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId, IStargateAbi } from "config/multichain";
+import { getMappedTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
@@ -11,6 +11,7 @@ import { GlobalExpressParams } from "domain/synthetics/express";
 import type { CreateGlvDepositParams, RawCreateGlvDepositParams } from "domain/synthetics/markets";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
+import { abis } from "sdk/abis";
 
 import {
   estimateSourceChainGlvDepositFees,
@@ -89,6 +90,7 @@ export async function createSourceChainGlvDepositTxn({
     amountLD: tokenAmount,
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
+    isManualGas: params.isMarketTokenDeposit ? true : false,
     action,
   });
 
@@ -109,12 +111,13 @@ export async function createSourceChainGlvDepositTxn({
     to: sourceChainTokenId.stargate,
     signer,
     callData: encodeFunctionData({
-      abi: IStargateAbi,
-      functionName: "sendToken",
+      abi: abis.IStargate,
+      functionName: params.isMarketTokenDeposit ? "send" : "sendToken",
       args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), params.addresses.receiver],
     }),
     value,
     msg: t`Sent deposit transaction`,
+    gasLimit: ensuredFees.txnEstimatedGasLimit,
   });
 
   return txnResult;

@@ -16,7 +16,7 @@ import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { getRawRelayerParams, GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express";
-import { convertToUsd, getMidPrice } from "../../tokens";
+import { convertToUsd, getGmToken, getMidPrice } from "../../tokens";
 import { signCreateGlvDeposit } from "../signCreateGlvDeposit";
 import { CreateGlvDepositParams, RawCreateGlvDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
@@ -73,6 +73,7 @@ export async function estimateSourceChainGlvDepositFees({
   globalExpressParams: GlobalExpressParams;
   glvMarketCount: bigint;
 }): Promise<SourceChainGlvDepositFees> {
+  // debugger;
   const {
     platformTokenReturnTransferGasLimit: returnGmTransferGasLimit,
     platformTokenReturnTransferNativeFee: returnGmTransferNativeFee,
@@ -157,22 +158,35 @@ async function estimateSourceChainGlvDepositInitialTxFees({
 }> {
   const settlementWrappedTokenData = globalExpressParams.tokensData[getWrappedToken(chainId).address];
   const marketConfig = MARKETS[chainId][params.addresses.market];
-  if (marketConfig.longTokenAddress !== tokenAddress && marketConfig.shortTokenAddress !== tokenAddress) {
-    throw new Error("Token address not found in market config");
+
+  const isValidMarketTokenDeposit = tokenAddress === params.addresses.market;
+  const isValidSideTokenDeposit =
+    marketConfig.longTokenAddress === tokenAddress || marketConfig.shortTokenAddress === tokenAddress;
+  if (!isValidMarketTokenDeposit && !isValidSideTokenDeposit) {
+    const errorMessage = `Invalid token address for GLV deposit. Market config: ${JSON.stringify(marketConfig)}, token address: ${tokenAddress}`;
+    // eslint-disable-next-line no-console
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
-  const initialToken = getToken(chainId, tokenAddress);
+  const initialToken = isValidMarketTokenDeposit
+    ? getGmToken(chainId, params.addresses.market)
+    : getToken(chainId, tokenAddress);
   const sourceChainTokenId = getMappedTokenId(chainId, tokenAddress, srcChainId);
 
   if (!sourceChainTokenId) {
-    throw new Error("Source chain token ID not found");
+    const errorMessage = `Source chain token ID not found. Token address: ${tokenAddress}, source chain ID: ${srcChainId}`;
+    // eslint-disable-next-line no-console
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
   // How much will take to send back the GM to source chain
+  // pay in gas payment token
 
   const feeSwapStrategy = buildReverseSwapStrategy({
     chainId,
     amountOut: fullWntFee,
-    tokenIn: globalExpressParams.tokensData[tokenAddress],
+    tokenIn: globalExpressParams.gasPaymentToken,
     tokenOut: settlementWrappedTokenData,
     marketsInfoData: globalExpressParams.marketsInfoData,
     swapOptimizationOrder: ["length"],
@@ -210,10 +224,18 @@ async function estimateSourceChainGlvDepositInitialTxFees({
       token: params.addresses.initialShortToken,
       amount: params.addresses.initialShortToken === tokenAddress ? tokenAmount : 0n,
     },
+    {
+      to: vaultAddress,
+      token: params.addresses.market,
+      amount: isValidMarketTokenDeposit ? tokenAmount : 0n,
+    },
   ]);
 
   if (!transferRequests) {
-    throw new Error("Transfer requests not found");
+    const errorMessage = `Transfer requests not found. Token address: ${tokenAddress}, source chain ID: ${srcChainId}`;
+    // eslint-disable-next-line no-console
+    console.error(errorMessage);
+    throw new Error(errorMessage);
   }
 
   const signature = await signCreateGlvDeposit({
@@ -241,10 +263,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     chainId,
     account: RANDOM_WALLET.address,
     srcChainId,
-    tokenAddress:
-      params.addresses.initialLongToken === tokenAddress
-        ? params.addresses.initialLongToken
-        : params.addresses.initialShortToken,
+    tokenAddress,
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
   });
 
@@ -252,9 +271,10 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     dstChainId: chainId,
     account: RANDOM_WALLET.address,
     srcChainId,
-    amountLD: expandDecimals(1, initialToken.decimals),
+    amountLD: expandDecimals(1, initialToken.decimals) / 10n,
     composeGas: initialComposeGas,
     isToGmx: true,
+    isManualGas: params.isMarketTokenDeposit ? true : false,
     action,
   });
 
@@ -267,7 +287,9 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     stargateAddress: sourceChainTokenId.stargate,
     sendParams,
     tokenAddress: sourceChainTokenId.address,
-    useSendToken: true,
+    useSendToken: isValidMarketTokenDeposit ? false : true,
+    disableOverrides: isValidMarketTokenDeposit ? true : false,
+    account: params.addresses.receiver,
   });
 
   return {

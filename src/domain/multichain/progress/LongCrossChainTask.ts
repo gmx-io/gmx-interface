@@ -53,10 +53,15 @@ export abstract class LongCrossChainTask<
     public readonly sourceChainId: number,
     public readonly settlementChainId: number
   ) {
+    this.resolversRegistry["finished"] = Promise.withResolvers<void>();
+    // TODO MLTCH add steps when managers say to show steps
     // Defer initialization to next tick to allow subclass properties (steps, groups, etc.)
     // to be initialized before we access them
     queueMicrotask(() => {
       for (const name of this.steps) {
+        if (name === "finished") {
+          continue;
+        }
         this.resolversRegistry[name] = Promise.withResolvers<void>();
       }
 
@@ -104,69 +109,6 @@ export abstract class LongCrossChainTask<
       this.finishTimestamp = Date.now();
     }
     this.resolversRegistry[name]?.reject(reason);
-  }
-
-  // Dynamic grouped steps API
-  protected addDynamic(group: Group, id: string): void {
-    const key = group as unknown as string;
-    let groupMap = this.dynamicGroups[key];
-    if (!groupMap) {
-      groupMap = {};
-      this.dynamicGroups[key] = groupMap;
-    }
-    if (!groupMap[id]) {
-      groupMap[id] = Promise.withResolvers<void>();
-    }
-  }
-
-  protected resolveDynamic(group: Group, id: string) {
-    const key = group as unknown as string;
-    const groupMap = this.dynamicGroups[key];
-    const resolver = groupMap?.[id];
-    resolver?.resolve();
-  }
-
-  protected rejectDynamic(group: Group, id: string, reason?: unknown) {
-    const key = group as unknown as string;
-    const groupMap = this.dynamicGroups[key];
-    const resolver = groupMap?.[id];
-    resolver?.reject(reason);
-  }
-
-  // TODO remove unused function
-  public getDynamicGroup(group: Group): Record<string, Promise<void>> {
-    const out: Record<string, Promise<void>> = {};
-    const key = group as NonNullable<Group>;
-    const groupMap = this.dynamicGroups[key];
-    if (!groupMap) {
-      return out;
-    }
-    for (const [id, r] of Object.entries(groupMap)) {
-      out[id] = r.promise;
-    }
-    return out;
-  }
-
-  public async waitForAny(group: Group): Promise<{ id: string }> {
-    const key = group as NonNullable<Group>;
-    const groupMap = this.dynamicGroups[key];
-    const entries = groupMap ? Object.entries(groupMap) : [];
-    if (entries.length === 0) throw new Error(`No steps in group ${group}`);
-    return await new Promise((resolve) => {
-      for (const [id, r] of entries) {
-        r.promise.then(() => resolve({ id }));
-      }
-    });
-  }
-
-  public async waitForAll(group: Group): Promise<void> {
-    const key = group as NonNullable<Group>;
-    const groupMap = this.dynamicGroups[key];
-    const values = groupMap ? Object.values(groupMap) : [];
-    if (values.length === 0) {
-      return;
-    }
-    await Promise.all(values.map((r) => r.promise));
   }
 }
 

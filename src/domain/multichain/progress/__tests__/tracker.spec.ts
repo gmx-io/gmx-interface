@@ -1,12 +1,13 @@
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET, SOURCE_SEPOLIA } from "config/chains";
 import { getGlvToken, getGmToken } from "domain/tokens";
 import { expandDecimals } from "lib/numbers";
 
+import { GlvBuyTask } from "../GmOrGlvBuyProgress";
 import { GlvSellTask, GmSellTask } from "../GmOrGlvSellProgress";
+import { BridgeInFailed } from "../MultichainTransferProgress";
 
-// TODO add test for each progress task
 describe.concurrent("GmSellTask", () => {
   it("gm sell", { timeout: 30_000 }, async () => {
     const sourceChainId = SOURCE_SEPOLIA;
@@ -16,11 +17,11 @@ describe.concurrent("GmSellTask", () => {
     const amount = expandDecimals(1, 18);
 
     const progress = new GmSellTask({
+      settlementChainId,
       sourceChainId,
       initialTxHash,
       token,
       amount,
-      settlementChainId,
     });
 
     await progress.getStepPromise("finished");
@@ -34,6 +35,66 @@ describe.concurrent("GmSellTask", () => {
     const amount = expandDecimals(1, 18);
 
     const progress = new GlvSellTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+    });
+
+    await progress.getStepPromise("finished");
+  });
+
+  it("recovered market token glv buy", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_BASE_MAINNET;
+    const settlementChainId = ARBITRUM;
+    const initialTxHash = "0xebbb4240344068f4f3260bfbefea4b83732d935e8357ab24582ea59c03fd4d50";
+    const token = getGlvToken(ARBITRUM, "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9");
+    const amount = expandDecimals(1, 18);
+
+    const progress = new GlvBuyTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+    });
+
+    await progress.getStepPromise("finished");
+  });
+
+  it("sepolia reverted glv buy", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_SEPOLIA;
+    const settlementChainId = ARBITRUM;
+    const initialTxHash = "0xb065aa691f70edf8e47317cd7748abe85358a1807445679b981b049a1259bcf9";
+    const token = getGlvToken(ARBITRUM, "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9");
+    const amount = expandDecimals(1, 18);
+
+    const progress = new GlvBuyTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+    });
+
+    expect(progress.getStepPromise("finished")).rejects.toThrowError(
+      new BridgeInFailed({
+        chainId: sourceChainId,
+        creationTx: initialTxHash,
+        fundsLeftIn: "source",
+      })
+    );
+  });
+
+  it("sepolia glv market buy", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_SEPOLIA;
+    const settlementChainId = ARBITRUM_SEPOLIA;
+    const initialTxHash = "0x29576bb08a500f07795d0281d5aec08f0df641d2976e3accf0436d2b3126c2aa";
+    const token = getGlvToken(ARBITRUM_SEPOLIA, "0xAb3567e55c205c62B141967145F37b7695a9F854");
+    const amount = expandDecimals(1, 18);
+
+    const progress = new GlvBuyTask({
       sourceChainId,
       initialTxHash,
       token,

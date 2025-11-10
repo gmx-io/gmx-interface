@@ -33,19 +33,12 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
     initialTxHash: string;
     token: Token;
     amount: bigint;
+    // inputToken: Token;
     settlementChainId: number;
   }) {
-    super({
-      sourceChainId: params.sourceChainId,
-      initialTxHash: params.initialTxHash,
-      token: params.token,
-      amount: params.amount,
-      settlementChainId: params.settlementChainId,
-    });
-
+    super(params);
     debugLog("GmOrGlvBuyProgress constructor", this.sourceChainId, this.initialTxHash);
   }
-
   protected override async start() {
     debugLog("start GmOrGlvBuyProgress");
     await this.watchInitialTransfer();
@@ -58,33 +51,74 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
 
     debugLog("watchInitialTransfer", this.sourceChainId, this.initialTxHash);
 
-    await watchLzTx(this.sourceChainId, this.initialTxHash, true, (lzStatuses) => {
-      debugLog("lzStatuses", lzStatuses);
-      const lzStatus = lzStatuses.at(0);
+    await watchLzTx({
+      chainId: this.sourceChainId,
+      txHash: this.initialTxHash,
+      withLzCompose: true,
+      onUpdate: (lzStatuses) => {
+        debugLog("lzStatuses", lzStatuses);
+        const lzStatus = lzStatuses.at(0);
 
-      if (lzStatus?.source === "confirmed") {
-        debugLog("sendBridgeIn", lzStatuses);
-      }
-
-      debugLog("lzStatus", lzStatus);
-      if (lzStatus?.destination === "confirmed" && lzStatus?.lz === "confirmed") {
-        debugLog("topUpResolvers.resolve", lzStatus);
-
-        const dstChainId = lzStatus?.destinationChainId;
-
-        if (!dstChainId) {
-          debugLog("dstChainId not found");
+        if (lzStatus?.source === "failed") {
+          this.reject(
+            "finished",
+            new MultichainTransferProgress.errors.BridgeInFailed({
+              chainId: this.sourceChainId,
+              creationTx: this.initialTxHash,
+              fundsLeftIn: "source",
+            })
+          );
           return;
         }
 
-        const composeTxs = lzStatus?.lzTx;
-        if (composeTxs) {
-          debugLog("watchComposeTx", dstChainId, composeTxs);
-          this.watchComposeTx(dstChainId, composeTxs);
+        if (lzStatus?.destination === "failed") {
+          this.reject(
+            "finished",
+            new MultichainTransferProgress.errors.BridgeInFailed({
+              chainId: this.sourceChainId,
+              creationTx: this.initialTxHash,
+              fundsLeftIn: "lz",
+            })
+          );
+          return;
         }
-      } else {
-        debugLog("lz not successfull or not found", lzStatus?.destination);
-      }
+
+        if (lzStatus?.lz === "failed") {
+          this.reject(
+            "finished",
+            new MultichainTransferProgress.errors.BridgeInFailed({
+              chainId: this.sourceChainId,
+              creationTx: this.initialTxHash,
+              fundsLeftIn: "gmx-lz",
+            })
+          );
+          return;
+        }
+
+        if (lzStatus?.source === "confirmed") {
+          debugLog("sendBridgeIn", lzStatuses);
+        }
+
+        debugLog("lzStatus", lzStatus);
+        if (lzStatus?.destination === "confirmed" && lzStatus?.lz === "confirmed") {
+          debugLog("topUpResolvers.resolve", lzStatus);
+
+          const dstChainId = lzStatus?.destinationChainId;
+
+          if (!dstChainId) {
+            debugLog("dstChainId not found");
+            return;
+          }
+
+          const composeTxs = lzStatus?.lzTx;
+          if (composeTxs) {
+            debugLog("watchComposeTx", dstChainId, composeTxs);
+            this.watchComposeTx(dstChainId, composeTxs);
+          }
+        } else {
+          debugLog("lz not successfull or not found", lzStatus?.destination);
+        }
+      },
     }).catch((error: unknown) => {
       debugLog("watchInitialTransfer error", error);
       this.reject(
@@ -92,6 +126,7 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
         new MultichainTransferProgress.errors.BridgeInFailed({
           chainId: this.sourceChainId,
           creationTx: this.initialTxHash,
+          fundsLeftIn: "unknown",
         })
       );
     });
@@ -114,11 +149,40 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       },
     });
 
+    // MultichainBridgeActionFailed
+
+    const multichainBridgeActionFailedTopicFilter = encodeEventTopics({
+      abi: abis.EventEmitter,
+      eventName: "EventLog1",
+      args: {
+        eventNameHash: "MultichainBridgeActionFailed",
+      },
+    });
+
     const depositCreatedLog = logs.find(
       (log) =>
         isStringEqualInsensitive(log.address, getContract(chainId as ContractsChainId, "EventEmitter")) &&
         matchLogRequest(topics, log.topics)
     );
+
+    const multichainBridgeActionFailedLog = logs.find(
+      (log) =>
+        isStringEqualInsensitive(log.address, getContract(chainId as ContractsChainId, "EventEmitter")) &&
+        matchLogRequest(multichainBridgeActionFailedTopicFilter, log.topics)
+    );
+
+    if (multichainBridgeActionFailedLog) {
+      debugLog("multichainBridgeActionFailedLog found", multichainBridgeActionFailedLog);
+      this.reject(
+        "finished",
+        new MultichainTransferProgress.errors.ConversionFailed({
+          chainId,
+          operation: Operation.Deposit,
+          creationTx: txHash,
+        })
+      );
+      return;
+    }
 
     if (!depositCreatedLog) {
       debugLog(
@@ -130,7 +194,8 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
               matchLogRequest(topics, log.topics)
           )
           .map((log) => log.address),
-        getContract(chainId as ContractsChainId, "EventEmitter")
+        getContract(chainId as ContractsChainId, "EventEmitter"),
+        txHash
       );
       return;
     }
@@ -258,16 +323,21 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       return;
     }
 
-    await watchLzTx(chainId, txHash, false, (lzStatuses) => {
-      for (const lzStatus of lzStatuses) {
-        if (!lzStatus.guid) {
-          continue;
-        }
+    await watchLzTx({
+      chainId,
+      txHash,
+      withLzCompose: false,
+      onUpdate: (lzStatuses) => {
+        for (const lzStatus of lzStatuses) {
+          if (!lzStatus.guid) {
+            continue;
+          }
 
-        if (lzStatus.destination === "confirmed") {
-          debugLog("resolve receiveBridgeOut", lzStatus.guid);
+          if (lzStatus.destination === "confirmed") {
+            debugLog("resolve receiveBridgeOut", lzStatus.guid);
+          }
         }
-      }
+      },
     }).catch((error) => {
       debugLog("watchReturnTransits error", error);
       this.reject("finished", new MultichainTransferProgress.errors.BridgeOutFailed({ chainId, executionTx: txHash }));

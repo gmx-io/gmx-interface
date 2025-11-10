@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET } from "sdk/configs/chains";
 
 import { getBlockNumberBeforeTimestamp } from "../getBlockNumberByTimestamp";
-import { watchLzTxApi, watchLzTxRpc, type LzStatus } from "../watchLzTx";
+import { LzTxFailedError, watchLzTxApi, watchLzTxRpc, type LzStatus } from "../watchLzTx";
 
 describe("getBlockNumberByTimestamp", () => {
   it("should return the block number for a given timestamp", async () => {
@@ -50,14 +50,12 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
       lastUpdateCall = data;
     };
 
-    await watchLzTxRpc(SOURCE_BASE_MAINNET, TX_HASH, onUpdate, true);
+    await watchLzTxRpc({ chainId: SOURCE_BASE_MAINNET, txHash: TX_HASH, onUpdate, withLzCompose: true });
 
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
   }, 30_000);
 });
 
-// prod glv buy
-// 0xad92d1f23344ef580d57cffe75000938842b552c76744f4695efa4def34c88f6
 describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
   const TX_HASH = "0xad92d1f23344ef580d57cffe75000938842b552c76744f4695efa4def34c88f6";
 
@@ -91,8 +89,39 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
       lastUpdateCall = data;
     };
 
-    await watchLzTxRpc(SOURCE_BASE_MAINNET, TX_HASH, onUpdate, true);
+    await watchLzTxRpc({ chainId: SOURCE_BASE_MAINNET, txHash: TX_HASH, onUpdate, withLzCompose: true });
 
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
   }, 30_000);
+});
+
+describe("watchLzTx reverted", () => {
+  it("watchLzTxRpc", async () => {
+    const TX_HASH = "0xf81f005c3d9027f2c0540abe3aa7eed88a3b7cca977dfed9bb2469bf3ee5d46d";
+    const SOURCE_CHAIN_ID = SOURCE_BASE_MAINNET;
+
+    const EXPECTED_FINAL_UPDATE_CALL: LzStatus[] = [
+      {
+        sourceTx: TX_HASH,
+        destination: "failed",
+        destinationChainId: undefined,
+        destinationTx: undefined,
+        guid: undefined,
+        lz: "failed",
+        lzTx: undefined,
+        source: "failed",
+      },
+    ];
+    let lastUpdateCall: LzStatus[] = [];
+
+    const onUpdate = (data: LzStatus[]) => {
+      lastUpdateCall = data;
+    };
+
+    const promise = watchLzTxRpc({ chainId: SOURCE_CHAIN_ID, txHash: TX_HASH, onUpdate, withLzCompose: true });
+
+    await expect(promise).rejects.toThrowError(LzTxFailedError);
+
+    expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
+  });
 });

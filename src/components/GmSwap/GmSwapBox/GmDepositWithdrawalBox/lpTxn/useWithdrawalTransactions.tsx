@@ -46,8 +46,10 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
+import { WithdrawalAmounts } from "sdk/types/trade";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 
+import { selectDepositWithdrawalAmounts } from "../selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdrawalExpressTxnParams";
@@ -76,6 +78,7 @@ export const useWithdrawalTransactions = ({
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const { isWithdrawal } = useSelector(selectPoolsDetailsFlags);
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
 
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
@@ -246,12 +249,22 @@ export const useWithdrawalTransactions = ({
         })
           .then((res) => {
             if (res.transactionHash) {
+              // const someOutAddress =
+              //   (amounts as WithdrawalAmounts).longTokenSwapPathStats?.tokenOutAddress ||
+              //   (amounts as WithdrawalAmounts).shortTokenSwapPathStats?.tokenOutAddress;
+
+              // if (!someOutAddress) {
+              //   console.error("No output address found");
+              //   return;
+              // }
+
               setMultichainTransferProgress(
                 new GlvSellTask({
                   sourceChainId: srcChainId!,
                   initialTxHash: res.transactionHash,
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvWithdrawalParams).addresses.glv),
-                  amount: glvTokenAmount!,
+                  amount: (amounts as WithdrawalAmounts).glvTokenAmount,
+                  // outputToken: getToken(chainId, someOutAddress),
                   settlementChainId: chainId,
                 })
               );
@@ -314,6 +327,7 @@ export const useWithdrawalTransactions = ({
       rawParams,
       glvTokenAmount,
       technicalFees,
+      amounts,
       setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.promise,
       setPendingTxns,
@@ -364,12 +378,23 @@ export const useWithdrawalTransactions = ({
           tokenAmount: marketTokenAmount!,
         }).then((res) => {
           if (res.transactionHash) {
+            // const someOutAddress =
+            //   (amounts as WithdrawalAmounts).longTokenSwapPathStats?.tokenOutAddress ||
+            //   (amounts as WithdrawalAmounts).shortTokenSwapPathStats?.tokenOutAddress;
+
+            // if (!someOutAddress) {
+            //   console.error("No output address found");
+            //   return;
+            // }
+
             setMultichainTransferProgress(
               new GmSellTask({
                 sourceChainId: srcChainId,
                 initialTxHash: res.transactionHash,
+                // outputToken: getToken(chainId, someOutAddress),
+                // outputAmount: (amounts as WithdrawalAmounts).marketTokenAmount,
                 token: getGmToken(chainId, (rawParams as RawCreateWithdrawalParams).addresses.market),
-                amount: marketTokenAmount!,
+                amount: (amounts as WithdrawalAmounts).marketTokenAmount,
                 settlementChainId: chainId,
               })
             );
@@ -431,6 +456,7 @@ export const useWithdrawalTransactions = ({
       technicalFees,
       rawParams,
       marketTokenAmount,
+      amounts,
       setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.promise,
       shouldDisableValidation,

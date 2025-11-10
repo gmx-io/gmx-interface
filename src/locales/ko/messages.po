@@ -874,10 +874,6 @@ msgstr ""
 msgid "Code already taken"
 msgstr "이미 사용된 코드입니다"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "GM tokens were bought successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or go to the ETH/USDC pool to manually withdraw your GM tokens."
-msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 msgid "SL - Short Dec."
 msgstr "SL - 숏 감소"
@@ -1019,10 +1015,6 @@ msgstr "최대 네트워크 수수료는 설정 아래 버퍼를 포함해 과�
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
 msgstr "TVL (공급)"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Buy GM operation failed. Your funds are safe and remain in your wallet."
-msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
@@ -2592,6 +2584,10 @@ msgstr "충분한 유동성이 있고 실행 가격이 최소 수령액을 보�
 msgid "Increase Size (Limit)"
 msgstr "크기 증가 (지정가)"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Your funds are safe and remain in layerzero on the destination chain. You can try retrying the receive tx in LayerZero Scan or ask support for help."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "The order may not execute at the desired {priceText} as its acceptable price impact is set to {formattedOrderAcceptablePriceImpact}, which is lower than the current market price impact of {formattedCurrentAcceptablePriceImpact}. It can be edited using the \"Edit\" button."
 msgstr "허용 가격 영향이 {formattedOrderAcceptablePriceImpact}로 설정되어 현재 시장 가격 영향 {formattedCurrentAcceptablePriceImpact}보다 낮아 원하는 {priceText}에서 주문이 실행되지 않을 수 있습니다. \"편집\" 버튼으로 수정할 수 있습니다."
@@ -3449,6 +3445,10 @@ msgstr "포지션 가격 영향 수수료 청구 실패"
 msgid "Withdraw"
 msgstr "인출"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy {gmOrGlvLabel} operation failed."
+msgstr ""
+
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of days before reauthorization is required."
 msgstr "재승인이 필요한 최대 일수."
@@ -4018,6 +4018,10 @@ msgstr "시장 거래자 PnL 노출"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "최적"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} tokens were bought successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or go to the{indexName} pool to manually withdraw your GM tokens."
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4623,6 +4627,10 @@ msgstr ""
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr "보너스 리베이트는 추정치이며 개설 수수료의 최대 {0}%일 수 있습니다. 이는 {incentivesTokenTitle} 토큰으로 비례 배분되어 에어드랍됩니다. <0><1>더 읽기</1>.</0>"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>The order will be executed when the oracle price is {0} {1}.</0><1/><2>Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and no oracle reports are produced or if the price impact exceeds your acceptable price.</2>"
 msgstr "<0>오라클 가격이 {0} {1}일 때 주문이 실행됩니다.</0><1/><2>체인이 다운되어 오라클 보고서가 생성되지 않거나 가격 영향이 허용 가능한 가격을 초과하는 경우와 같이 주문이 실행되지 않을 수 있는 드문 경우가 있을 수 있습니다.</2>"
@@ -4720,10 +4728,6 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Sell GM operation failed. Your funds are safe and remain in your wallet."
-msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -4903,6 +4907,10 @@ msgstr "현재 상한 순 가격 영향을 포함한 주문 예상 종가."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect Account"
+msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually buy your {gmOrGlvLabel} tokens."
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5394,6 +5402,7 @@ msgid "Receiver Address"
 msgstr "수령 주소"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "부터"
@@ -5638,6 +5647,10 @@ msgstr "Powered by"
 msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr "{nativeTokenSymbol}을 {chainName}으로 전송할 옵션이 없습니다."
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell {gmOrGlvLabel} operation failed."
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
 msgstr "이 TWAP 주문은 {3} 시장에 대해 다음 {2} 동안 {1}씩 {numberOfParts} {0} {type} 주문을 실행합니다."
@@ -5745,10 +5758,6 @@ msgstr "tBTC LP 인센티브"
 msgid "of open fee"
 msgstr "개설 수수료의"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "GM tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
-msgstr ""
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
 msgstr "주문 오류. 이 시장의 가격이 현재 변동적입니다. 실행 세부 섹션에서 <0>허용 슬리피지 증가</0>로 다시 시도하세요."
@@ -5830,6 +5839,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
 msgstr "생성"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Your funds are safe ask support for help."
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -6705,6 +6718,10 @@ msgstr "출금 실패"
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "GMX 추천 프로그램을 통해 수수료 할인과 리베이트를 받으세요.<0/>자세한 정보는 <1>추천 프로그램 세부 사항</1>을 읽어주세요."
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
 msgstr "{nativeTokenSymbol}을 {chainName}으로 구매 또는 전송"
@@ -7144,6 +7161,10 @@ msgstr "수수료 APY"
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "GMX 위에 빌드하거나 DeFi 앱에 통합할 수 있나요?"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Your funds are safe and remain in your wallet."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7214,6 +7235,10 @@ msgstr "365일 추정은 과거 {daysConsidered}일 APY를 기반으로 합니�
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Swap Part"
 msgstr "TWAP 스왑 파트 실패"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Your funds are safe and remain in GMX contracts on the destination chain. You can try retrying the compose tx in LayerZero Scan or ask support for help."
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "The mark price has changed, consider increasing your allowed slippage."
@@ -8197,14 +8222,6 @@ msgstr "구 버전 1CT 서브계정에 {balanceFormatted} 남음."
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr "종료 거래의 가격 영향 리베이트는 청구 탭에서 청구 가능합니다. <0>더 읽기</0>"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Buy GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually buy your GM tokens."
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
-msgstr ""
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Sell GM operation failed. Your funds are safe and currently stored in your GMX account. You can try again or go to the ETH/USDC pool to manually sell your GM tokens."
 msgstr ""

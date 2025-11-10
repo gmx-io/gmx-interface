@@ -2,12 +2,12 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { memo, ReactNode, useEffect, useMemo, useState } from "react";
 
-import type { AnyChainId, ContractsChainId, SourceChainId } from "config/chains";
+import { getChainName, type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, type Token, type TokenData, type TokensData } from "domain/tokens";
-import { stripBlacklistedWords } from "domain/tokens/utils";
+import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -234,7 +234,12 @@ export function MultichainTokenSelector({
           </span>
         ) : (
           <span className="inline-flex items-center">
-            <TokenIcon symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)} className="mr-4" displaySize={20} />
+            <TokenIcon
+              symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)}
+              className="mr-4"
+              displaySize={20}
+              chainIdBadge={payChainId}
+            />
 
             {getMarketIndexName({
               indexToken: getMarketIndexToken(chainId, tokenAddress)!,
@@ -300,6 +305,18 @@ function useAvailableToTradeTokenList({
           balanceUsd,
           balanceType: TokenBalanceType.Wallet,
           chainId,
+        });
+      }
+
+      if (token.sourceChainBalance !== undefined && srcChainId !== undefined) {
+        // TODO MLTCH: use sourceChainDecimals or put sourceChainBalance in normal decimals
+        const balanceUsd = convertToUsd(token.sourceChainBalance, token.decimals, getMidPrice(token.prices)) ?? 0n;
+        concatenatedTokens.push({
+          ...token,
+          balance: token.sourceChainBalance,
+          balanceUsd,
+          balanceType: TokenBalanceType.SourceChain,
+          chainId: srcChainId,
         });
       }
     }
@@ -423,19 +440,24 @@ function AvailableToTradeTokenList({
                     }
                   />
 
-                  <div className="text-body-large">
-                    GM:{" "}
-                    {getMarketIndexName({
-                      indexToken: getMarketIndexToken(chainId, token.address)!,
-                      isSpotOnly: false,
-                    })}{" "}
-                    <span className="text-accent">
-                      [
-                      {getMarketPoolName({
-                        longToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.longTokenAddress),
-                        shortToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.shortTokenAddress),
-                      })}
-                      ]
+                  <div>
+                    <div className="text-body-large">
+                      GM:{" "}
+                      {getMarketIndexName({
+                        indexToken: getMarketIndexToken(chainId, token.address)!,
+                        isSpotOnly: false,
+                      })}{" "}
+                      <span className="text-accent">
+                        [
+                        {getMarketPoolName({
+                          longToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.longTokenAddress),
+                          shortToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.shortTokenAddress),
+                        })}
+                        ]
+                      </span>
+                    </div>
+                    <span className="text-body-small text-typography-secondary">
+                      <Trans>From</Trans> {token.chainId === 0 ? "GMX Account" : getChainName(token.chainId)}
                     </span>
                   </div>
                 </>

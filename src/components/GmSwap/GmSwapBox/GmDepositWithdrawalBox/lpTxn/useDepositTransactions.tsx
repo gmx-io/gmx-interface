@@ -6,8 +6,10 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
+  selectPoolsDetailsMarketTokenAddress,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSelectedMarketForGlv,
@@ -91,6 +93,8 @@ export const useDepositTransactions = ({
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const paySource = useSelector(selectPoolsDetailsPaySource);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketForGlv);
+  const isMarketTokenDeposit = useSelector(selectPoolsDetailsIsMarketTokenDeposit);
+  const marketTokenAddress = useSelector(selectPoolsDetailsMarketTokenAddress);
 
   const initialLongTokenAddress = longTokenAddress
     ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
@@ -113,8 +117,18 @@ export const useDepositTransactions = ({
 
     const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
 
+    if (isMarketTokenDeposit) {
+      return getTransferRequests([
+        {
+          to: vaultAddress,
+          token: marketTokenAddress,
+          amount: marketTokenAmount,
+        },
+      ]);
+    }
+
     if (paySource === "sourceChain") {
-      const tokenAddress =
+      let tokenAddress =
         longTokenAmount !== undefined && longTokenAmount > 0n ? initialLongTokenAddress : initialShortTokenAddress;
 
       const estimatedReceivedAmount =
@@ -145,21 +159,21 @@ export const useDepositTransactions = ({
       },
     ]);
   }, [
-    chainId,
-    initialLongTokenAddress,
-    initialShortTokenAddress,
     isDeposit,
     isGlv,
-    longTokenAmount,
+    chainId,
     paySource,
+    initialLongTokenAddress,
+    longTokenAmount,
+    initialShortTokenAddress,
     shortTokenAmount,
+    isMarketTokenDeposit,
     technicalFees,
+    marketTokenAddress,
+    marketTokenAmount,
   ]);
 
   const rawParams = useSelector(selectPoolsDetailsParams);
-
-  const tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
-  const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
   const params = useMemo((): CreateDepositParams | CreateGlvDepositParams | undefined => {
     if (!rawParams || !technicalFees || !isDeposit) {
@@ -294,7 +308,8 @@ export const useDepositTransactions = ({
                   sourceChainId: srcChainId!,
                   initialTxHash: res.transactionHash,
                   token: getGmToken(chainId, (rawParams as RawCreateDepositParams).addresses.market),
-                  amount: tokenAmount,
+                  amount: marketTokenAmount!,
+                  // inputToken: getToken(chainId, tokenAddress),
                   settlementChainId: chainId,
                 })
               );
@@ -354,6 +369,7 @@ export const useDepositTransactions = ({
       shortTokenAddress,
       srcChainId,
       setMultichainTransferProgress,
+      marketTokenAmount,
       multichainDepositExpressTxnParams,
       params,
       blockTimestampData,
@@ -399,6 +415,23 @@ export const useDepositTransactions = ({
           throw new Error("Technical fees are not set");
         }
 
+        let tokenAddress: string;
+        let tokenAmount: bigint;
+        if ((rawParams as RawCreateGlvDepositParams).isMarketTokenDeposit) {
+          tokenAddress = (rawParams as RawCreateGlvDepositParams).addresses.market;
+          tokenAmount = marketTokenAmount!;
+        } else {
+          tokenAddress = longTokenAddress!;
+          tokenAmount = longTokenAmount!;
+        }
+        if (longTokenAmount! > 0n) {
+          tokenAddress = longTokenAddress!;
+          tokenAmount = longTokenAmount!;
+        } else if (shortTokenAmount! > 0n) {
+          tokenAddress = shortTokenAddress!;
+          tokenAmount = shortTokenAmount!;
+        }
+
         promise = createSourceChainGlvDepositTxn({
           chainId: chainId as SettlementChainId,
           srcChainId: srcChainId!,
@@ -416,7 +449,10 @@ export const useDepositTransactions = ({
                   sourceChainId: srcChainId!,
                   initialTxHash: res.transactionHash,
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvDepositParams).addresses.glv),
-                  amount: tokenAmount,
+                  amount: glvTokenAmount!,
+                  // inputToken: isMarketTokenAddress(chainId, tokenAddress)
+                  //   ? getGmToken(chainId, tokenAddress)
+                  //   : getToken(chainId, tokenAddress),
                   settlementChainId: chainId,
                 })
               );
@@ -483,13 +519,12 @@ export const useDepositTransactions = ({
       shortTokenAmount,
       technicalFees,
       srcChainId,
-      tokenAddress,
-      tokenAmount,
-      setMultichainTransferProgress,
-      multichainDepositExpressTxnParams.promise,
-      params,
       longTokenAddress,
       shortTokenAddress,
+      setMultichainTransferProgress,
+      glvTokenAmount,
+      multichainDepositExpressTxnParams.promise,
+      params,
       shouldDisableValidation,
       blockTimestampData,
       setPendingTxns,

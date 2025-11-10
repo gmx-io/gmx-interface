@@ -11,7 +11,6 @@ import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
-import { SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 import {
   getIsSpotOnlyMarket,
   getMarketIndexName,
@@ -161,9 +160,24 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
     task.token.symbol,
   ]);
 
+  useEffect(() => {
+    if (finishedState === "error") {
+      setIsOpen(true);
+    }
+  }, [finishedState]);
+
   const elapsedTime = task.finishTimestamp
     ? formatElapsedTime(Math.floor((task.finishTimestamp - task.startTimestamp) / 1000))
     : undefined;
+
+  const indexName = task.isGlv
+    ? "GLV"
+    : getMarketIndexName({
+        indexToken: getMarketIndexToken(chainId, task.token.address)!,
+        isSpotOnly: getIsSpotOnlyMarket(chainId, task.token.address),
+      });
+
+  const gmOrGlvLabel = task.isGlv ? "GLV" : "GM";
 
   return (
     <div className="text-body-medium flex flex-col font-medium">
@@ -279,8 +293,8 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                   valueClassName="flex items-center gap-4"
                   value={
                     <>
-                      {getChainName(SOURCE_BASE_MAINNET)}
-                      <img src={getChainIcon(SOURCE_BASE_MAINNET)} className="size-16" />
+                      {getChainName(task.sourceChainId)}
+                      <img src={getChainIcon(task.sourceChainId)} className="size-16" />
                     </>
                   }
                 />
@@ -353,8 +367,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                             finishedError.creationTx ? (
                               <ExternalLink
                                 href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
+                                variant="icon"
                               >
-                                <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                                {shortenAddressOrEns(finishedError.creationTx, 11)}
                               </ExternalLink>
                             ) : (
                               "N/A"
@@ -368,8 +383,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                             finishedError.executionTx ? (
                               <ExternalLink
                                 href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
+                                variant="icon"
                               >
-                                <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                                {shortenAddressOrEns(finishedError.executionTx, 11)}
                               </ExternalLink>
                             ) : (
                               "N/A"
@@ -379,37 +395,63 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                       </>
                     )}
                     <ColorfulBanner color="red" className="text-red-100">
-                      {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed &&
-                        (task.operation === Operation.Deposit ? (
-                          <Trans>Buy GM operation failed. Your funds are safe and remain in your wallet.</Trans>
-                        ) : (
-                          <Trans>Sell GM operation failed. Your funds are safe and remain in your wallet.</Trans>
-                        ))}
+                      {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed && (
+                        <>
+                          {task.operation === Operation.Deposit ? (
+                            <Trans>Buy {gmOrGlvLabel} operation failed.</Trans>
+                          ) : (
+                            <Trans>Sell {gmOrGlvLabel} operation failed.</Trans>
+                          )}
+                          {finishedError.fundsLeftIn === "source" && (
+                            <Trans> Your funds are safe and remain in your wallet.</Trans>
+                          )}
+                          {finishedError.fundsLeftIn === "lz" && (
+                            <Trans>
+                              {" "}
+                              Your funds are safe and remain in layerzero on the destination chain. You can try retrying
+                              the receive tx in LayerZero Scan or ask support for help.
+                            </Trans>
+                          )}
+                          {finishedError.fundsLeftIn === "gmx-lz" && (
+                            <Trans>
+                              {" "}
+                              Your funds are safe and remain in GMX contracts on the destination chain. You can try
+                              retrying the compose tx in LayerZero Scan or ask support for help.
+                            </Trans>
+                          )}
+                          {finishedError.fundsLeftIn === "unknown" && (
+                            <Trans> Your funds are safe ask support for help.</Trans>
+                          )}
+                        </>
+                      )}
+
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            GM tokens were bought successfully, but the bridge to Base failed. Your funds are safe and
-                            currently stored in your GMX account. You can retry the bridge or go to the ETH/USDC pool to
-                            manually withdraw your GM tokens.
+                            {gmOrGlvLabel} tokens were bought successfully, but the bridge to Base failed. Your funds
+                            are safe and currently stored in your GMX account. You can retry the bridge or go to the
+                            {indexName} pool to manually withdraw your GM tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            GM tokens were sold successfully, but the bridge to Base failed. Your funds are safe and
-                            currently stored in your GMX account. You can retry the bridge or open GMX account modal to
-                            manually withdraw your tokens.
+                            {gmOrGlvLabel} tokens were sold successfully, but the bridge to Base failed. Your funds are
+                            safe and currently stored in your GMX account. You can retry the bridge or open GMX account
+                            modal to manually withdraw your tokens.
                           </Trans>
                         ))}
 
                       {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            Buy GM operation failed. Your funds are safe and currently stored in your GMX account. You
-                            can try again or go to the ETH/USDC pool to manually buy your GM tokens.
+                            Buy {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX
+                            account. You can switch to settlement chain and go to the {indexName} pool to manually buy
+                            your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            Sell GM operation failed. Your funds are safe and currently stored in your GMX account. You
-                            can try again or go to the ETH/USDC pool to manually sell your GM tokens.
+                            Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX
+                            account. You can switch to settlement chain and go to the {indexName} pool to manually sell
+                            your {gmOrGlvLabel} tokens.
                           </Trans>
                         ))}
                     </ColorfulBanner>

@@ -5,14 +5,27 @@ import { Operation } from "components/GmSwap/GmSwapBox/types";
 
 import { LongCrossChainTask } from "./LongCrossChainTask";
 
-class BridgeInFailed extends Error {
+type FundsLeftIn = "source" | "lz" | "gmx-lz" | "unknown";
+
+export class BridgeInFailed extends Error {
   readonly name = "BridgeInFailed";
   readonly chainId: number;
   readonly creationTx: string | undefined;
-  constructor({ chainId, creationTx }: { chainId: number; creationTx?: string }) {
+  readonly fundsLeftIn: FundsLeftIn;
+
+  constructor({
+    chainId,
+    creationTx,
+    fundsLeftIn,
+  }: {
+    chainId: number;
+    creationTx?: string;
+    fundsLeftIn: FundsLeftIn;
+  }) {
     super("Bridge in failed");
     this.chainId = chainId;
     this.creationTx = creationTx;
+    this.fundsLeftIn = fundsLeftIn;
   }
 }
 
@@ -68,7 +81,7 @@ export abstract class MultichainTransferProgress<
   Group extends string | undefined = undefined,
 > extends LongCrossChainTask<Step, Group, MultichainTransferError> {
   static readonly errors = MultichainTransferError;
-
+  abstract readonly isGlv: boolean;
   abstract readonly operation: Operation;
   readonly token: Token;
   readonly amount: bigint;

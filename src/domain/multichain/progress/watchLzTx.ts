@@ -10,7 +10,7 @@ import { layerZeroApi } from ".";
 import { paths } from "./gen";
 import { getBlockNumberBeforeTimestamp } from "./getBlockNumberByTimestamp";
 import { getOrWaitLogs } from "./getOrWaitLogs";
-import { debugLog, fetchLogs, matchLogRequest, testFetch } from "./LongCrossChainTask";
+import { debugLog, matchLogRequest, testFetch } from "./LongCrossChainTask";
 
 export type LzStatus = {
   guid: string | undefined;
@@ -23,19 +23,49 @@ export type LzStatus = {
   lzTx?: string;
 };
 
-export async function watchLzTxRpc(
-  chainId: number,
-  txHash: string,
-  onUpdate: (data: LzStatus[]) => void,
-  withLzCompose: boolean,
-  abortSignal?: AbortSignal
-): Promise<void> {
+// TODO: add lz receive alert listening
+export async function watchLzTxRpc({
+  chainId,
+  txHash,
+  onUpdate,
+  withLzCompose,
+  abortSignal,
+}: {
+  chainId: number;
+  txHash: string;
+  onUpdate: (data: LzStatus[]) => void;
+  withLzCompose: boolean;
+  abortSignal?: AbortSignal;
+}): Promise<void> {
   debugLog("[watchLzTxRpc] fetching source chain logs", chainId, txHash);
-  const sourceChainLogs = await fetchLogs(chainId, txHash);
-  const sourceTx = await getPublicClientWithRpc(chainId).getTransactionReceipt({ hash: txHash });
+  const sourceTx = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({ hash: txHash });
+  debugLog("[watchLzTxRpc] status", sourceTx.status);
+
+  if (sourceTx.status === "reverted") {
+    debugLog("[watchLzTxRpc] source tx reverted");
+    onUpdate([
+      {
+        guid: undefined,
+        source: "failed",
+        sourceTx: txHash,
+        destination: "failed",
+        lz: "failed",
+        lzTx: undefined,
+        destinationChainId: undefined,
+        destinationTx: undefined,
+      },
+    ]);
+
+    throw new LzTxFailedError();
+  }
+
   const sourceBlock = await getPublicClientWithRpc(chainId).getBlock({ blockHash: sourceTx.blockHash });
+  debugLog("loading logs");
+  // const sourceChainLogs = await fetchLogs(chainId, txHash);
+  const sourceChainLogs = sourceTx.logs;
 
   if (abortSignal?.aborted) {
+    debugLog("[watchLzTxRpc] abort signal received");
     return;
   }
 
@@ -88,6 +118,7 @@ export async function watchLzTxRpc(
 
   const destinationOldBlock = await getBlockNumberBeforeTimestamp(destinationChainId, sourceBlock.timestamp);
   if (abortSignal?.aborted) {
+    debugLog("[watchLzTxRpc] abort signal received");
     return;
   }
 
@@ -100,6 +131,7 @@ export async function watchLzTxRpc(
     },
   });
   if (abortSignal?.aborted) {
+    debugLog("[watchLzTxRpc] abort signal received");
     return;
   }
 
@@ -137,6 +169,7 @@ export async function watchLzTxRpc(
       abortSignal,
     });
     if (abortSignal?.aborted) {
+      debugLog("[watchLzTxRpc] abort signal received");
       return;
     }
 
@@ -165,6 +198,13 @@ export async function watchLzTxRpc(
   }
 }
 
+export class LzTxFailedError extends Error {
+  constructor() {
+    super("LZ TX failed");
+    this.name = "LzTxFailedError";
+  }
+}
+
 export async function watchLzTxApi(
   chainId: number,
   txHash: string,
@@ -186,6 +226,7 @@ export async function watchLzTxApi(
   });
 
   if (abortSignal?.aborted) {
+    debugLog("[watchLzTxApi] abort signal received");
     return;
   }
 
@@ -233,17 +274,23 @@ export async function watchLzTxApi(
 
   debugLog("[watchLzTxApi] found operations, first onUpdate");
   onUpdate(operations.map(getLzStatusFromApiResponse));
+  if (isLzTxFailed(operations.map(getLzStatusFromApiResponse))) {
+    debugLog("[watchLzTxApi] LZ TX failed");
+    throw new LzTxFailedError();
+  }
 
   let isInProgress = isLzTxInProgress(operations.map(getLzStatusFromApiResponse));
   debugLog("[watchLzTxApi] isInProgress", isInProgress);
   while (isInProgress) {
     await sleep(10000);
     if (abortSignal?.aborted) {
+      debugLog("[watchLzTxApi] abort signal received");
       return;
     }
 
     result = await fetchTx();
     if (abortSignal?.aborted) {
+      debugLog("[watchLzTxApi] abort signal received");
       return;
     }
     const operations = result.data?.data;
@@ -256,15 +303,24 @@ export async function watchLzTxApi(
     debugLog("[watchLzTxApi] isInProgress after sleep", isInProgress);
     debugLog("[watchLzTxApi] onUpdate");
     onUpdate(operations.map(getLzStatusFromApiResponse));
+    if (isLzTxFailed(operations.map(getLzStatusFromApiResponse))) {
+      debugLog("[watchLzTxApi] LZ TX failed, returning");
+      throw new LzTxFailedError();
+    }
   }
 }
 
-export async function watchLzTx(
-  chainId: number,
-  txHash: string,
-  withLzCompose: boolean,
-  onUpdate: (data: LzStatus[]) => void
-): Promise<void> {
+export async function watchLzTx({
+  chainId,
+  txHash,
+  withLzCompose,
+  onUpdate,
+}: {
+  chainId: number;
+  txHash: string;
+  withLzCompose: boolean;
+  onUpdate: (data: LzStatus[]) => void;
+}): Promise<void> {
   let initState: LzStatus[] = [];
   const abortController = new AbortController();
 
@@ -295,16 +351,34 @@ export async function watchLzTx(
   const { promise, resolve, reject } = Promise.withResolvers<void>();
 
   Promise.allSettled([
-    watchLzTxApi(chainId, txHash, handleUpdate, abortController.signal).then(() => {
-      debugLog("[watchLzTx] watchLzTxApi completed");
-      abortController.abort();
-      resolve();
-    }),
-    watchLzTxRpc(chainId, txHash, handleUpdate, withLzCompose, abortController.signal).then(() => {
-      debugLog("[watchLzTx] watchLzTxRpc completed");
-      abortController.abort();
-      resolve();
-    }),
+    watchLzTxApi(chainId, txHash, handleUpdate, abortController.signal).then(
+      () => {
+        debugLog("[watchLzTx] watchLzTxApi completed");
+        abortController.abort();
+        resolve();
+      },
+      (error) => {
+        if (error instanceof LzTxFailedError) {
+          abortController.abort();
+        }
+        resolve();
+        debugLog("[watchLzTx] watchLzTxApi failed", error);
+      }
+    ),
+    watchLzTxRpc({ chainId, txHash, onUpdate: handleUpdate, withLzCompose, abortSignal: abortController.signal }).then(
+      () => {
+        debugLog("[watchLzTx] watchLzTxRpc completed");
+        abortController.abort();
+        resolve();
+      },
+      (error) => {
+        if (error instanceof LzTxFailedError) {
+          abortController.abort();
+        }
+        resolve();
+        debugLog("[watchLzTx] watchLzTxRpc failed", error);
+      }
+    ),
   ]).then((res) => {
     if (res.every((r) => r.status === "rejected")) {
       reject(new Error("All watchLzTxApi and watchLzTxRpc failed"));
@@ -359,32 +433,40 @@ function getLzStatusFromApiResponse(
   }
 
   let destinationStatus: "pending" | "confirmed" | "failed";
-  if (operation.destination?.status === "SUCCEEDED") {
-    destinationStatus = "confirmed";
-  } else if (operation.destination?.status === "VALIDATING_TX" || operation.destination?.status === "WAITING") {
-    destinationStatus = "pending";
-  } else {
+  if (sourceStatus === "failed") {
     destinationStatus = "failed";
+  } else {
+    if (operation.destination?.status === "SUCCEEDED") {
+      destinationStatus = "confirmed";
+    } else if (operation.destination?.status === "VALIDATING_TX" || operation.destination?.status === "WAITING") {
+      destinationStatus = "pending";
+    } else {
+      destinationStatus = "failed";
+    }
   }
 
   let lzStatus: "pending" | "confirmed" | "failed" | undefined = undefined;
-  if (
-    operation.destination &&
-    "lzCompose" in operation.destination &&
-    operation.destination.lzCompose &&
-    operation.destination.lzCompose.status &&
-    operation.destination.lzCompose.status !== "N/A"
-  ) {
-    if (operation.destination.lzCompose.status === "SUCCEEDED") {
-      lzStatus = "confirmed";
-    } else if (
-      operation.destination.lzCompose.status === "VALIDATING_TX" ||
-      operation.destination.lzCompose.status === "WAITING" ||
-      operation.destination.lzCompose.status === "WAITING_FOR_COMPOSE_SENT_EVENT"
+  if (destinationStatus === "failed") {
+    lzStatus = "failed";
+  } else {
+    if (
+      operation.destination &&
+      "lzCompose" in operation.destination &&
+      operation.destination.lzCompose &&
+      operation.destination.lzCompose.status &&
+      operation.destination.lzCompose.status !== "N/A"
     ) {
-      lzStatus = "pending";
-    } else {
-      lzStatus = "failed";
+      if (operation.destination.lzCompose.status === "SUCCEEDED") {
+        lzStatus = "confirmed";
+      } else if (
+        operation.destination.lzCompose.status === "VALIDATING_TX" ||
+        operation.destination.lzCompose.status === "WAITING" ||
+        operation.destination.lzCompose.status === "WAITING_FOR_COMPOSE_SENT_EVENT"
+      ) {
+        lzStatus = "pending";
+      } else {
+        lzStatus = "failed";
+      }
     }
   }
 
@@ -408,5 +490,11 @@ function getLzStatusFromApiResponse(
 function isLzTxInProgress(data: LzStatus[]) {
   return data.some(
     (operation) => operation.lz === "pending" || operation.destination === "pending" || operation.source === "pending"
+  );
+}
+
+function isLzTxFailed(data: LzStatus[]) {
+  return data.some(
+    (operation) => operation.lz === "failed" || operation.destination === "failed" || operation.source === "failed"
   );
 }

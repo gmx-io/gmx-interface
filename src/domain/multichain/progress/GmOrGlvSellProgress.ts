@@ -35,13 +35,7 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
     amount: bigint;
     settlementChainId: number;
   }) {
-    super({
-      sourceChainId: params.sourceChainId,
-      initialTxHash: params.initialTxHash,
-      token: params.token,
-      amount: params.amount,
-      settlementChainId: params.settlementChainId,
-    });
+    super(params);
     debugLog("GmOrGlvSellProgress constructor", this.sourceChainId, this.initialTxHash);
   }
 
@@ -57,29 +51,70 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
 
     debugLog("watchInitialTransfer", this.sourceChainId, this.initialTxHash);
 
-    await watchLzTx(this.sourceChainId, this.initialTxHash, true, (operations) => {
-      const operation = operations.at(0);
+    await watchLzTx({
+      chainId: this.sourceChainId,
+      txHash: this.initialTxHash,
+      withLzCompose: true,
+      onUpdate: (operations) => {
+        const operation = operations.at(0);
 
-      if (operation?.source === "confirmed") {
-        debugLog("sendBridgeIn");
-      }
-
-      if (operation?.destination === "confirmed" && operation?.lz === "confirmed") {
-        debugLog("gmTopUpResolvers.resolve");
-
-        const dstChainId = operation.destinationChainId;
-        if (!dstChainId) {
-          debugLog("dstChainId not found");
+        if (operation?.source === "failed") {
+          this.reject(
+            "finished",
+            new MultichainTransferProgress.errors.BridgeInFailed({
+              chainId: this.sourceChainId,
+              creationTx: this.initialTxHash,
+              fundsLeftIn: "source",
+            })
+          );
           return;
         }
 
-        const composeTx = operation.lzTx;
-        if (composeTx) {
-          this.watchComposeTx(dstChainId, composeTx);
+        if (operation?.destination === "failed") {
+          this.reject(
+            "finished",
+            new MultichainTransferProgress.errors.BridgeInFailed({
+              chainId: this.sourceChainId,
+              creationTx: this.initialTxHash,
+              fundsLeftIn: "lz",
+            })
+          );
+          return;
         }
-      } else {
-        debugLog("lz not successfull or not found", operation?.destination);
-      }
+
+        if (operation?.lz === "failed") {
+          this.reject(
+            "finished",
+            new MultichainTransferProgress.errors.BridgeInFailed({
+              chainId: this.sourceChainId,
+              creationTx: this.initialTxHash,
+              fundsLeftIn: "gmx-lz",
+            })
+          );
+          return;
+        }
+
+        if (operation?.source === "confirmed") {
+          debugLog("sendBridgeIn");
+        }
+
+        if (operation?.destination === "confirmed" && operation?.lz === "confirmed") {
+          debugLog("gmTopUpResolvers.resolve");
+
+          const dstChainId = operation.destinationChainId;
+          if (!dstChainId) {
+            debugLog("dstChainId not found");
+            return;
+          }
+
+          const composeTx = operation.lzTx;
+          if (composeTx) {
+            this.watchComposeTx(dstChainId, composeTx);
+          }
+        } else {
+          debugLog("lz not successfull or not found", operation?.destination);
+        }
+      },
     }).catch((error: unknown) => {
       debugLog("watchInitialTransfer error", error);
       this.reject(
@@ -87,6 +122,7 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
         new MultichainTransferProgress.errors.BridgeInFailed({
           chainId: this.sourceChainId,
           creationTx: this.initialTxHash,
+          fundsLeftIn: "unknown",
         })
       );
     });
@@ -253,16 +289,21 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
       return;
     }
 
-    await watchLzTx(chainId, txHash, true, (operations) => {
-      for (const operation of operations) {
-        if (!operation.guid) {
-          continue;
-        }
+    await watchLzTx({
+      chainId,
+      txHash,
+      withLzCompose: false,
+      onUpdate: (operations) => {
+        for (const operation of operations) {
+          if (!operation.guid) {
+            continue;
+          }
 
-        if (operation.destination === "confirmed") {
-          debugLog("resolve receiveBridgeOut", operation.guid);
+          if (operation.destination === "confirmed") {
+            debugLog("resolve receiveBridgeOut", operation.guid);
+          }
         }
-      }
+      },
     }).catch((error) => {
       debugLog("watchReturnTransits error", error);
       this.reject("finished", new MultichainTransferProgress.errors.BridgeOutFailed({ chainId, executionTx: txHash }));
