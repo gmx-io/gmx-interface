@@ -15,7 +15,7 @@ import once from "lodash/once";
 import { createPublicClient, http, PublicClient } from "viem";
 import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
-import { botanix, getFallbackRpcUrl, getViemChain } from "config/chains";
+import { botanix, getFallbackRpcUrl, getTestingRpcUrl, getViemChain } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { LRUCache } from "sdk/utils/LruCache";
@@ -80,7 +80,7 @@ const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
 export function getPublicClientWithRpc(chainId: number): PublicClient {
   const primaryRpcUrl =
-    import.meta.env.MODE === "test" ? getFallbackRpcUrl(chainId, false) : getCurrentRpcUrls(chainId).primary;
+    import.meta.env.MODE === "test" ? getTestingRpcUrl(chainId) : getCurrentRpcUrls(chainId).primary;
   const key = `chainId:${chainId}-rpcUrl:${primaryRpcUrl}`;
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
