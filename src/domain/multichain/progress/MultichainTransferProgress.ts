@@ -68,11 +68,23 @@ export abstract class MultichainTransferProgress<
   Group extends string | undefined = undefined,
 > extends LongCrossChainTask<Step, Group, MultichainTransferError> {
   static readonly errors = MultichainTransferError;
-  //  type errors = MultichainTransferError;
 
   abstract readonly operation: Operation;
-  abstract readonly token: Token;
-  abstract readonly amount: bigint;
+  readonly token: Token;
+  readonly amount: bigint;
+
+  constructor(params: {
+    sourceChainId: number;
+    initialTxHash: string;
+    token: Token;
+    amount: bigint;
+    settlementChainId: number;
+  }) {
+    super(params.initialTxHash, params.sourceChainId, params.settlementChainId);
+
+    this.token = params.token;
+    this.amount = params.amount;
+  }
 }
 
 export namespace MultichainTransferProgress {

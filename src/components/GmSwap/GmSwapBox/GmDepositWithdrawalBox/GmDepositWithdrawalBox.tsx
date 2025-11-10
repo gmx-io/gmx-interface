@@ -64,6 +64,7 @@ import {
   getGlvOrMarketAddress,
   getMarketIndexName,
   getTokenPoolType,
+  isMarketTokenAddress,
 } from "domain/synthetics/markets/utils";
 import { convertToUsd, getMidPrice, getTokenData } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -215,6 +216,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       }
 
       if (glvInfo && !isPair && isDeposit) {
+        // if (paySource === "settlementChain" || paySource === "gmxAccount") {
         result.push(
           ...glvInfo.markets
             .map((m) => {
@@ -236,6 +238,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             })
             .filter(Boolean as unknown as FilterOutFalsy)
         );
+        // }
 
         return result;
       }
@@ -789,7 +792,9 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                       payChainId={paySource === "gmxAccount" ? 0 : paySource === "sourceChain" ? srcChainId : undefined}
                       tokensData={availableTokensData}
                       onSelectTokenAddress={async (tokenAddress, isGmxAccount, newSrcChainId) => {
-                        if (newSrcChainId !== srcChainId && newSrcChainId !== undefined) {
+                        if (isMarketTokenAddress(chainId, firstTokenAddress)) {
+                          await switchNetwork(chainId, true);
+                        } else if (newSrcChainId !== srcChainId && newSrcChainId !== undefined) {
                           await switchNetwork(newSrcChainId, true);
                         }
 

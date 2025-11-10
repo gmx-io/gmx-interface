@@ -1,12 +1,17 @@
 import { Trans } from "@lingui/macro";
 import { getAccount } from "@wagmi/core";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { useCopyToClipboard } from "react-use";
 
+import { getChainName } from "config/chains";
+import { getChainIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
+import { shortenAddressOrEns } from "lib/wallets";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 import {
   getIsSpotOnlyMarket,
   getMarketIndexName,
@@ -18,6 +23,7 @@ import { formatTokenAmount } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { EXPAND_ANIMATION_VARIANTS } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -25,6 +31,8 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import AttentionIcon from "img/ic_attention.svg?react";
 import CheckIcon from "img/ic_check.svg?react";
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import ChevronUpIcon from "img/ic_chevron_up.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
 import ExternalLinkIcon from "img/ic_new_link_20.svg?react";
 import SpinnerBlueSrc from "img/ic_spinner_blue.svg";
@@ -73,7 +81,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
     if (!task) {
       return undefined;
     }
-    return `${TOAST_ID_PREFIX}${task.id}`;
+    return `${TOAST_ID_PREFIX}${task.initialTxHash}`;
   }, [task]);
 
   useEffect(() => {
@@ -117,21 +125,12 @@ type Props = {
   task: MultichainTransferProgress;
   finishedState: PromiseState;
   finishedError: MultichainTransferProgress.errors | undefined;
+  closeToast?: () => void;
 };
-function ToastContent({ chainId, task, finishedState, finishedError }: Props) {
+function ToastContent({ chainId, task, finishedState, finishedError, closeToast }: Props) {
   const [isCopied, setIsCopied] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
-
-  const elapsedTimeFormatted = formatElapsedTime(elapsedSeconds);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const endTimeStamp = task.finishTimestamp ? task.finishTimestamp : Date.now();
-      setElapsedSeconds(Math.floor((endTimeStamp - task.startTimestamp) / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [task.finishTimestamp, task.startTimestamp]);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleCopy = useCallback(() => {
     copyToClipboard(
@@ -142,7 +141,7 @@ function ToastContent({ chainId, task, finishedState, finishedError }: Props) {
           currentSettlementChainId: chainId,
           tokenSymbol: task.token.symbol,
           tokenAddress: task.token.address,
-          initialTx: task.id,
+          initialTx: task.initialTxHash,
           error: finishedError,
           account: getAccount(getRainbowKitConfig()).address,
         },
@@ -156,15 +155,19 @@ function ToastContent({ chainId, task, finishedState, finishedError }: Props) {
     copyToClipboard,
     finishedError,
     task.amount,
-    task.id,
+    task.initialTxHash,
     task.operation,
     task.token.address,
     task.token.symbol,
   ]);
 
+  const elapsedTime = task.finishTimestamp
+    ? formatElapsedTime(Math.floor((task.finishTimestamp - task.startTimestamp) / 1000))
+    : undefined;
+
   return (
     <div className="text-body-medium flex flex-col font-medium">
-      <div className="flex items-center justify-between gap-12 px-16 py-12">
+      <div className="flex items-center justify-between gap-12 p-16">
         <div className="flex items-center gap-4">
           <TokenIcon
             symbol={
@@ -216,113 +219,214 @@ function ToastContent({ chainId, task, finishedState, finishedError }: Props) {
         </div>
       </div>
 
-      {finishedError && (
-        <>
-          <hr className="border-t-1/2 border-slate-600" />
-          <div className="flex flex-col gap-12 px-16 py-12">
-            <SyntheticsInfoRow label={<Trans>Elapsed time</Trans>} value={elapsedTimeFormatted} />
-            {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed && (
-              <SyntheticsInfoRow
-                label={<Trans>Failed to bridge in</Trans>}
-                valueClassName="flex items-center"
-                value={
-                  finishedError.creationTx ? (
-                    <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}>
-                      <ExternalLinkIcon className="size-16 text-typography-secondary" />
-                    </ExternalLink>
-                  ) : (
-                    "N/A"
-                  )
-                }
-              />
-            )}
-            {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed && (
-              <SyntheticsInfoRow
-                label={<Trans>Failed to bridge out</Trans>}
-                valueClassName="flex items-center"
-                value={
-                  finishedError.executionTx ? (
-                    <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}>
-                      <ExternalLinkIcon className="size-16 text-typography-secondary" />
-                    </ExternalLink>
-                  ) : (
-                    "N/A"
-                  )
-                }
-              />
-            )}
-            {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed && (
-              <>
+      <>
+        <hr className="border-t-1/2 border-slate-600" />
+        <div className="flex flex-col gap-12 p-16">
+          <SyntheticsInfoRow
+            onClick={() => setIsOpen(!isOpen)}
+            className="group"
+            label={
+              <div className="flex items-center gap-4 group-gmx-hover:text-blue-300">
+                {isOpen ? (
+                  <>
+                    <Trans>Less Details</Trans>
+                    <ChevronUpIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
+                  </>
+                ) : (
+                  <>
+                    <Trans>More Details</Trans>
+                    <ChevronDownIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
+                  </>
+                )}
+              </div>
+            }
+            valueClassName="text-typography-secondary group-gmx-hover:text-blue-300"
+            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Est. time: ~5 min</Trans>}
+          />
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                variants={EXPAND_ANIMATION_VARIANTS}
+                initial="collapsed"
+                animate="expanded"
+                exit="exit"
+                className="flex flex-col gap-12"
+              >
                 <SyntheticsInfoRow
-                  label={<Trans>Failed to create conversion</Trans>}
-                  valueClassName="flex items-center"
-                  value={
-                    finishedError.creationTx ? (
-                      <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}>
-                        <ExternalLinkIcon className="size-16 text-typography-secondary" />
-                      </ExternalLink>
+                  label={
+                    task.operation === Operation.Deposit ? (
+                      <Trans>Funds Bridging to</Trans>
                     ) : (
-                      "N/A"
+                      <Trans>GM Bridging to</Trans>
                     )
+                  }
+                  valueClassName="flex items-center gap-4"
+                  value={
+                    <>
+                      {getChainName(task.settlementChainId)}
+                      <img src={getChainIcon(task.settlementChainId)} className="size-16" />
+                    </>
                   }
                 />
                 <SyntheticsInfoRow
-                  label={<Trans>Failed to execute conversion</Trans>}
-                  valueClassName="flex items-center"
-                  value={
-                    finishedError.executionTx ? (
-                      <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}>
-                        <ExternalLinkIcon className="size-16 text-typography-secondary" />
-                      </ExternalLink>
+                  label={
+                    task.operation === Operation.Deposit ? (
+                      <Trans>GM withdrawing to</Trans>
                     ) : (
-                      "N/A"
+                      <Trans>Funds withdrawing to</Trans>
                     )
                   }
+                  valueClassName="flex items-center gap-4"
+                  value={
+                    <>
+                      {getChainName(SOURCE_BASE_MAINNET)}
+                      <img src={getChainIcon(SOURCE_BASE_MAINNET)} className="size-16" />
+                    </>
+                  }
                 />
-              </>
-            )}
-            <ColorfulBanner color="red" className="text-red-100">
-              {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed &&
-                (task.operation === Operation.Deposit ? (
-                  <Trans>Buy GM operation failed. Your funds are safe and remain in your wallet.</Trans>
-                ) : (
-                  <Trans>Sell GM operation failed. Your funds are safe and remain in your wallet.</Trans>
-                ))}
-              {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
-                (task.operation === Operation.Deposit ? (
-                  <Trans>
-                    GM tokens were bought successfully, but the bridge to Base failed. Your funds are safe and currently
-                    stored in your GMX account. You can retry the bridge or go to the ETH/USDC pool to manually withdraw
-                    your GM tokens.
-                  </Trans>
-                ) : (
-                  <Trans>
-                    GM tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently
-                    stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw
-                    your tokens.
-                  </Trans>
-                ))}
+                <SyntheticsInfoRow
+                  label={<Trans>Gas</Trans>}
+                  valueClassName="flex items-center"
+                  value={<Trans>$0.001</Trans>}
+                />
+                <SyntheticsInfoRow
+                  label={<Trans>Estimated time</Trans>}
+                  valueClassName="flex items-center"
+                  value={<Trans>~5 minutes</Trans>}
+                />
+                <SyntheticsInfoRow
+                  label={<Trans>Time elapsed</Trans>}
+                  valueClassName="flex items-center"
+                  value={elapsedTime}
+                />
+                <SyntheticsInfoRow
+                  label={<Trans>Bridge TX hash</Trans>}
+                  valueClassName="flex items-center"
+                  value={
+                    <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](task.initialTxHash)} variant="icon">
+                      {shortenAddressOrEns(task.initialTxHash, 11)}
+                    </ExternalLink>
+                  }
+                />
+                {finishedError && (
+                  <>
+                    {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed && (
+                      <SyntheticsInfoRow
+                        label={<Trans>Failed to bridge in</Trans>}
+                        valueClassName="flex items-center"
+                        value={
+                          finishedError.creationTx ? (
+                            <ExternalLink
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
+                            >
+                              <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                            </ExternalLink>
+                          ) : (
+                            "N/A"
+                          )
+                        }
+                      />
+                    )}
+                    {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed && (
+                      <SyntheticsInfoRow
+                        label={<Trans>Failed to bridge out</Trans>}
+                        valueClassName="flex items-center"
+                        value={
+                          finishedError.executionTx ? (
+                            <ExternalLink
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
+                            >
+                              <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                            </ExternalLink>
+                          ) : (
+                            "N/A"
+                          )
+                        }
+                      />
+                    )}
+                    {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed && (
+                      <>
+                        <SyntheticsInfoRow
+                          label={<Trans>Failed to create conversion</Trans>}
+                          valueClassName="flex items-center"
+                          value={
+                            finishedError.creationTx ? (
+                              <ExternalLink
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
+                              >
+                                <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                              </ExternalLink>
+                            ) : (
+                              "N/A"
+                            )
+                          }
+                        />
+                        <SyntheticsInfoRow
+                          label={<Trans>Failed to execute conversion</Trans>}
+                          valueClassName="flex items-center"
+                          value={
+                            finishedError.executionTx ? (
+                              <ExternalLink
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
+                              >
+                                <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                              </ExternalLink>
+                            ) : (
+                              "N/A"
+                            )
+                          }
+                        />
+                      </>
+                    )}
+                    <ColorfulBanner color="red" className="text-red-100">
+                      {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed &&
+                        (task.operation === Operation.Deposit ? (
+                          <Trans>Buy GM operation failed. Your funds are safe and remain in your wallet.</Trans>
+                        ) : (
+                          <Trans>Sell GM operation failed. Your funds are safe and remain in your wallet.</Trans>
+                        ))}
+                      {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
+                        (task.operation === Operation.Deposit ? (
+                          <Trans>
+                            GM tokens were bought successfully, but the bridge to Base failed. Your funds are safe and
+                            currently stored in your GMX account. You can retry the bridge or go to the ETH/USDC pool to
+                            manually withdraw your GM tokens.
+                          </Trans>
+                        ) : (
+                          <Trans>
+                            GM tokens were sold successfully, but the bridge to Base failed. Your funds are safe and
+                            currently stored in your GMX account. You can retry the bridge or open GMX account modal to
+                            manually withdraw your tokens.
+                          </Trans>
+                        ))}
 
-              {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed &&
-                (task.operation === Operation.Deposit ? (
-                  <Trans>
-                    Buy GM operation failed. Your funds are safe and currently stored in your GMX account. You can try
-                    again or go to the ETH/USDC pool to manually buy your GM tokens.
-                  </Trans>
-                ) : (
-                  <Trans>
-                    Sell GM operation failed. Your funds are safe and currently stored in your GMX account. You can try
-                    again or go to the ETH/USDC pool to manually sell your GM tokens.
-                  </Trans>
-                ))}
-            </ColorfulBanner>
-            <Button variant="secondary" onClick={handleCopy}>
-              <CopyIcon className="size-16" />
-              {isCopied ? <Trans>Copied</Trans> : <Trans>Copy technical details</Trans>}
-            </Button>
-          </div>
-        </>
-      )}
+                      {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed &&
+                        (task.operation === Operation.Deposit ? (
+                          <Trans>
+                            Buy GM operation failed. Your funds are safe and currently stored in your GMX account. You
+                            can try again or go to the ETH/USDC pool to manually buy your GM tokens.
+                          </Trans>
+                        ) : (
+                          <Trans>
+                            Sell GM operation failed. Your funds are safe and currently stored in your GMX account. You
+                            can try again or go to the ETH/USDC pool to manually sell your GM tokens.
+                          </Trans>
+                        ))}
+                    </ColorfulBanner>
+                    <Button variant="secondary" onClick={handleCopy}>
+                      <CopyIcon className="size-16" />
+                      {isCopied ? <Trans>Copied</Trans> : <Trans>Copy technical details</Trans>}
+                    </Button>
+                  </>
+                )}
+                <Button variant="secondary" onClick={closeToast}>
+                  <Trans>Close</Trans>
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </>
     </div>
   );
 }

@@ -28,14 +28,22 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
   override readonly groups = GM_OR_GLV_BUY_GROUPS;
   override readonly operation = Operation.Deposit;
 
-  constructor(
-    readonly initialChainId: number,
-    readonly initialTxHash: string,
-    readonly token: Token,
-    readonly amount: bigint
-  ) {
-    super(initialTxHash);
-    debugLog("GmOrGlvBuyProgress constructor", this.initialChainId, this.initialTxHash);
+  constructor(params: {
+    sourceChainId: number;
+    initialTxHash: string;
+    token: Token;
+    amount: bigint;
+    settlementChainId: number;
+  }) {
+    super({
+      sourceChainId: params.sourceChainId,
+      initialTxHash: params.initialTxHash,
+      token: params.token,
+      amount: params.amount,
+      settlementChainId: params.settlementChainId,
+    });
+
+    debugLog("GmOrGlvBuyProgress constructor", this.sourceChainId, this.initialTxHash);
   }
 
   protected override async start() {
@@ -48,9 +56,9 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       return;
     }
 
-    debugLog("watchInitialTransfer", this.initialChainId, this.initialTxHash);
+    debugLog("watchInitialTransfer", this.sourceChainId, this.initialTxHash);
 
-    await watchLzTx(this.initialChainId, this.initialTxHash, true, (lzStatuses) => {
+    await watchLzTx(this.sourceChainId, this.initialTxHash, true, (lzStatuses) => {
       debugLog("lzStatuses", lzStatuses);
       const lzStatus = lzStatuses.at(0);
 
@@ -82,7 +90,7 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       this.reject(
         "finished",
         new MultichainTransferProgress.errors.BridgeInFailed({
-          chainId: this.initialChainId,
+          chainId: this.sourceChainId,
           creationTx: this.initialTxHash,
         })
       );

@@ -28,14 +28,21 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
   override readonly groups = GM_OR_GLV_SELL_GROUPS;
   override readonly operation = Operation.Withdrawal;
 
-  constructor(
-    readonly initialChainId: number,
-    readonly initialTxHash: string,
-    readonly token: Token,
-    readonly amount: bigint
-  ) {
-    super(initialTxHash);
-    debugLog("GmOrGlvSellProgress constructor", this.initialChainId, this.initialTxHash);
+  constructor(params: {
+    sourceChainId: number;
+    initialTxHash: string;
+    token: Token;
+    amount: bigint;
+    settlementChainId: number;
+  }) {
+    super({
+      sourceChainId: params.sourceChainId,
+      initialTxHash: params.initialTxHash,
+      token: params.token,
+      amount: params.amount,
+      settlementChainId: params.settlementChainId,
+    });
+    debugLog("GmOrGlvSellProgress constructor", this.sourceChainId, this.initialTxHash);
   }
 
   protected override async start() {
@@ -48,9 +55,9 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
       return;
     }
 
-    debugLog("watchInitialTransfer", this.initialChainId, this.initialTxHash);
+    debugLog("watchInitialTransfer", this.sourceChainId, this.initialTxHash);
 
-    await watchLzTx(this.initialChainId, this.initialTxHash, true, (operations) => {
+    await watchLzTx(this.sourceChainId, this.initialTxHash, true, (operations) => {
       const operation = operations.at(0);
 
       if (operation?.source === "confirmed") {
@@ -78,7 +85,7 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
       this.reject(
         "finished",
         new MultichainTransferProgress.errors.BridgeInFailed({
-          chainId: this.initialChainId,
+          chainId: this.sourceChainId,
           creationTx: this.initialTxHash,
         })
       );

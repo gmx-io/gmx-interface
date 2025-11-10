@@ -121,6 +121,10 @@ msgstr "earns fees from providing liquidity to multiple GMX V2 markets"
 msgid "Create TWAP Swap"
 msgstr "Create TWAP Swap"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Estimated time"
+msgstr "Estimated time"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizer on Avalanche"
 msgstr "Yield Optimizer on Avalanche"
@@ -1933,6 +1937,10 @@ msgstr "Buying {symbol}..."
 msgid "Transaction hash"
 msgstr "Transaction hash"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Est. time: ~5 min"
+msgstr "Est. time: ~5 min"
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
@@ -2095,6 +2103,10 @@ msgstr "Subscribe"
 msgid "Decentralized Finance Dashboard"
 msgstr "Decentralized Finance Dashboard"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "More Details"
+msgstr "More Details"
+
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
@@ -2246,6 +2258,10 @@ msgstr "Native token cannot be approved"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} will be swapped to {1} on order execution."
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "~5 minutes"
+msgstr "~5 minutes"
 
 #. Button to clear the filter selection
 #: src/components/TableOptionsFilter/TableOptionsFilter.tsx
@@ -2758,6 +2774,10 @@ msgstr "Staking is only available on {chainNames} and {lastChainName}. Please sw
 msgid "Create Take Profit"
 msgstr "Create Take Profit"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM Bridging to"
+msgstr "GM Bridging to"
+
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "Can I sell my GLV if I want, and where?"
@@ -2994,6 +3014,10 @@ msgstr "Claim failed."
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders since the setting was enabled."
 msgstr "TP/SL orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders since the setting was enabled."
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Funds withdrawing to"
+msgstr "Funds withdrawing to"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
@@ -4067,6 +4091,10 @@ msgstr "You have an existing position with {0} as collateral. This action will n
 msgid "GMX Technical Announcements"
 msgstr "GMX Technical Announcements"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "$0.001"
+msgstr "$0.001"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "Failed Stop Market"
@@ -4861,6 +4889,10 @@ msgstr "Reliable GMX-powered transactions"
 msgid "Permit signing was cancelled"
 msgstr "Permit signing was cancelled"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Gas"
+msgstr "Gas"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
@@ -4968,6 +5000,10 @@ msgstr "buy"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQ."
 msgstr "AVAILABLE LIQ."
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Bridge TX hash"
+msgstr "Bridge TX hash"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
@@ -7319,6 +7355,10 @@ msgstr "GBC Kudai AI Agent"
 msgid "Earn fees from leverage trading, swaps, and spreads"
 msgstr "Earn fees from leverage trading, swaps, and spreads"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Time elapsed"
+msgstr "Time elapsed"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr "Increase Size (Stop Market)"
@@ -7404,6 +7444,10 @@ msgstr "Daily Profit"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
 msgstr "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Funds Bridging to"
+msgstr "Funds Bridging to"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -7688,10 +7732,6 @@ msgstr "Leftover collateral below {0} USD"
 msgid "trigger"
 msgstr "trigger"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Elapsed time"
-msgstr "Elapsed time"
-
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
@@ -7771,6 +7811,10 @@ msgstr "Frequency"
 msgid "Loading Express params"
 msgstr "Loading Express params"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM withdrawing to"
+msgstr "GM withdrawing to"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You have {0} tokens reserved for vesting."
 msgstr "You have {0} tokens reserved for vesting."
@@ -7823,6 +7867,10 @@ msgstr "GMX Market Token Price Chart"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top Addresses"
 msgstr "Top Addresses"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Less Details"
+msgstr "Less Details"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -8024,6 +8072,7 @@ msgstr "multiple asset classes"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Close"
 msgstr "Close"
 

@@ -247,12 +247,13 @@ export const useWithdrawalTransactions = ({
           .then((res) => {
             if (res.transactionHash) {
               setMultichainTransferProgress(
-                new GlvSellTask(
-                  srcChainId!,
-                  res.transactionHash,
-                  getGlvToken(chainId, (rawParams as RawCreateGlvWithdrawalParams).addresses.glv),
-                  glvTokenAmount!
-                )
+                new GlvSellTask({
+                  sourceChainId: srcChainId!,
+                  initialTxHash: res.transactionHash,
+                  token: getGlvToken(chainId, (rawParams as RawCreateGlvWithdrawalParams).addresses.glv),
+                  amount: glvTokenAmount!,
+                  settlementChainId: chainId,
+                })
               );
             }
           })
@@ -364,12 +365,13 @@ export const useWithdrawalTransactions = ({
         }).then((res) => {
           if (res.transactionHash) {
             setMultichainTransferProgress(
-              new GmSellTask(
-                srcChainId,
-                res.transactionHash,
-                getGmToken(chainId, (rawParams as RawCreateWithdrawalParams).addresses.market),
-                marketTokenAmount!
-              )
+              new GmSellTask({
+                sourceChainId: srcChainId,
+                initialTxHash: res.transactionHash,
+                token: getGmToken(chainId, (rawParams as RawCreateWithdrawalParams).addresses.market),
+                amount: marketTokenAmount!,
+                settlementChainId: chainId,
+              })
             );
           }
         });

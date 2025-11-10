@@ -240,6 +240,15 @@ export function getTestingRpcUrl(chainId: number): string {
 type AlchemyKeyPurpose = "fallback" | "largeAccount" | "express" | "testing";
 
 function getAlchemyKey(purpose: AlchemyKeyPurpose): string {
+  if (purpose === "testing") {
+    if (import.meta.env.MODE === "test") {
+      if (!import.meta.env.VITE_APP_ALCHEMY_TESTING_KEY) {
+        throw new Error("VITE_APP_ALCHEMY_TESTING_KEY is not set");
+      }
+    }
+    return import.meta.env.VITE_APP_ALCHEMY_TESTING_KEY;
+  }
+
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
     if (purpose === "fallback") {
       return "NnWkTZJp8dNKXlCIfJwej";
@@ -247,11 +256,6 @@ function getAlchemyKey(purpose: AlchemyKeyPurpose): string {
       return "UnfP5Io4K9X8UZnUnFy2a";
     } else if (purpose === "express") {
       return "vZoYuLP1GVpvE0wpgPKwC";
-    } else if (purpose === "testing") {
-      if (!import.meta.env.VITE_APP_ALCHEMY_TESTING_KEY) {
-        throw new Error("VITE_APP_ALCHEMY_TESTING_KEY is not set");
-      }
-      return import.meta.env.VITE_APP_ALCHEMY_TESTING_KEY;
     }
   }
 

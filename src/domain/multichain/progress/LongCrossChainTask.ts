@@ -48,7 +48,11 @@ export abstract class LongCrossChainTask<
   readonly startTimestamp = Date.now();
   finishTimestamp: number | undefined = undefined;
 
-  constructor(readonly id: string) {
+  constructor(
+    public readonly initialTxHash: string,
+    public readonly sourceChainId: number,
+    public readonly settlementChainId: number
+  ) {
     // Defer initialization to next tick to allow subclass properties (steps, groups, etc.)
     // to be initialized before we access them
     queueMicrotask(() => {

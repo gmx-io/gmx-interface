@@ -121,6 +121,10 @@ msgstr "여러 GMX V2 시장에 유동성을 제공하여 수수료를 벌어들
 msgid "Create TWAP Swap"
 msgstr "TWAP 스왑 생성"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Estimated time"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 일드 옵티마이저"
@@ -1933,6 +1937,10 @@ msgstr "{symbol} 구매 중..."
 msgid "Transaction hash"
 msgstr ""
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Est. time: ~5 min"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>여기서 <1>@GMX_IO</1>를 주시해야 합니다. DeFi 전체가 혼란스러운 가운데 GMX는 사용자, AUM, 거래량/수수료, 오픈 인터레스트 및 자본 활용에서 인상적인 지속 성과를 보여줍니다. Arbitrum에서 주요 자산 간 스왑 및 Arb 에어드랍 노출에 최적의 장소</0>"
@@ -2095,6 +2103,10 @@ msgstr "구독"
 msgid "Decentralized Finance Dashboard"
 msgstr "탈중앙화 금융 대시보드"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "More Details"
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
@@ -2246,6 +2258,10 @@ msgstr "네이티브 토큰을 승인할 수 없습니다"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0}이 주문 실행 시 {1}로 스왑됩니다."
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "~5 minutes"
+msgstr ""
 
 #. Button to clear the filter selection
 #: src/components/TableOptionsFilter/TableOptionsFilter.tsx
@@ -2758,6 +2774,10 @@ msgstr "스테이킹은 {chainNames} 및 {lastChainName}에서만 가능합니�
 msgid "Create Take Profit"
 msgstr "이익 실현 생성"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM Bridging to"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "GLV를 판매할 수 있나요? 어디서?"
@@ -2994,6 +3014,10 @@ msgstr "수령 실패"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders since the setting was enabled."
 msgstr "관련 포지션이 완전히 종료되면 TP/SL 주문이 자동 취소됩니다. 이는 설정 활성화 이후 새로 생성된 TP/SL 주문에만 영향을 미칩니다."
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Funds withdrawing to"
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
@@ -4067,6 +4091,10 @@ msgstr "{0}을 담보로 한 기존 포지션이 있습니다. 이 작업은 해
 msgid "GMX Technical Announcements"
 msgstr "GMX 기술 공지"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "$0.001"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "스탑 마켓 실패"
@@ -4861,6 +4889,10 @@ msgstr ""
 msgid "Permit signing was cancelled"
 msgstr "허가 서명이 취소되었습니다"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Gas"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak Optimizer"
@@ -4968,6 +5000,10 @@ msgstr "구매"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQ."
 msgstr "사용 가능 유동성"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Bridge TX hash"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
@@ -7319,6 +7355,10 @@ msgstr "GBC Kudai AI 에이전트"
 msgid "Earn fees from leverage trading, swaps, and spreads"
 msgstr ""
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Time elapsed"
+msgstr ""
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr "크기 증가 (스탑 마켓)"
@@ -7404,6 +7444,10 @@ msgstr "일일 이익"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
 msgstr "이 옵션을 사용하여 <0>{chainName}</0>에서 직접 {nativeTokenSymbol}을 구매할 수 있습니다:"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Funds Bridging to"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -7688,10 +7732,6 @@ msgstr "잔여 담보 {0} USD 미만"
 msgid "trigger"
 msgstr "트리거"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Elapsed time"
-msgstr ""
-
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
@@ -7771,6 +7811,10 @@ msgstr "빈도"
 msgid "Loading Express params"
 msgstr "익스프레스 매개변수 로딩 중"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM withdrawing to"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You have {0} tokens reserved for vesting."
 msgstr ""
@@ -7823,6 +7867,10 @@ msgstr "GMX 시장 토큰 가격 차트"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top Addresses"
 msgstr "상위 주소"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Less Details"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -8024,6 +8072,7 @@ msgstr "다중 자산 클래스"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Close"
 msgstr "종료"
 

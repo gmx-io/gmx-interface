@@ -290,12 +290,13 @@ export const useDepositTransactions = ({
           .then((res) => {
             if (res.transactionHash) {
               setMultichainTransferProgress(
-                new GmBuyTask(
-                  srcChainId!,
-                  res.transactionHash,
-                  getGmToken(chainId, (rawParams as RawCreateDepositParams).addresses.market),
-                  tokenAmount
-                )
+                new GmBuyTask({
+                  sourceChainId: srcChainId!,
+                  initialTxHash: res.transactionHash,
+                  token: getGmToken(chainId, (rawParams as RawCreateDepositParams).addresses.market),
+                  amount: tokenAmount,
+                  settlementChainId: chainId,
+                })
               );
             }
           })
@@ -411,12 +412,13 @@ export const useDepositTransactions = ({
           .then((res) => {
             if (res.transactionHash) {
               setMultichainTransferProgress(
-                new GlvBuyTask(
-                  srcChainId!,
-                  res.transactionHash,
-                  getGlvToken(chainId, (rawParams as RawCreateGlvDepositParams).addresses.glv),
-                  tokenAmount
-                )
+                new GlvBuyTask({
+                  sourceChainId: srcChainId!,
+                  initialTxHash: res.transactionHash,
+                  token: getGlvToken(chainId, (rawParams as RawCreateGlvDepositParams).addresses.glv),
+                  amount: tokenAmount,
+                  settlementChainId: chainId,
+                })
               );
             }
           })

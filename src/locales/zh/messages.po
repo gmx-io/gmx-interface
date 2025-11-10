@@ -121,6 +121,10 @@ msgstr "通过向多个 GMX V2 市场提供流动性赚取费用"
 msgid "Create TWAP Swap"
 msgstr "创建 TWAP 交换"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Estimated time"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 上的产量优化器"
@@ -1933,6 +1937,10 @@ msgstr "购买 {symbol}..."
 msgid "Transaction hash"
 msgstr ""
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Est. time: ~5 min"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>必须关注 <1>@GMX_IO</1>。虽然整个 DeFi 处于混乱中，但 GMX 在用户、AUM、交易量/费用、未平仓利息和资本利用率方面继续表现出令人印象深刻的持续性能。在 Arbitrum 上交换主要资产的最佳场所，并暴露于 Arb 空投</0>"
@@ -2095,6 +2103,10 @@ msgstr "订阅"
 msgid "Decentralized Finance Dashboard"
 msgstr "去中心化金融仪表板"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "More Details"
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
@@ -2246,6 +2258,10 @@ msgstr "原生代币无法批准"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "{0} will be swapped to {1} on order execution."
 msgstr "{0} 将在订单执行时交换为 {1}。"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "~5 minutes"
+msgstr ""
 
 #. Button to clear the filter selection
 #: src/components/TableOptionsFilter/TableOptionsFilter.tsx
@@ -2758,6 +2774,10 @@ msgstr "质押仅在 {chainNames} 和 {lastChainName} 上可用。请切换到 {
 msgid "Create Take Profit"
 msgstr "创建止盈"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM Bridging to"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "如果我想，我可以出售我的 GLV 吗？在哪里？"
@@ -2994,6 +3014,10 @@ msgstr "领取失败。"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders will be automatically cancelled when the associated position is completely closed. This will only affect newly created TP/SL orders since the setting was enabled."
 msgstr "当相关仓位完全平仓时，TP/SL 订单将自动取消。这仅影响启用设置后新创建的 TP/SL 订单。"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Funds withdrawing to"
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown Error"
@@ -4067,6 +4091,10 @@ msgstr "您有一个现有仓位以 {0} 作为抵押品。此操作不适用于�
 msgid "GMX Technical Announcements"
 msgstr "GMX 技术公告"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "$0.001"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "止损市价失败"
@@ -4861,6 +4889,10 @@ msgstr ""
 msgid "Permit signing was cancelled"
 msgstr "许可签名已取消"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Gas"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
 msgstr "Yield Yak 优化器"
@@ -4968,6 +5000,10 @@ msgstr "买入"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQ."
 msgstr "可用流动性"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Bridge TX hash"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
@@ -7319,6 +7355,10 @@ msgstr "GBC Kudai AI 代理"
 msgid "Earn fees from leverage trading, swaps, and spreads"
 msgstr ""
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Time elapsed"
+msgstr ""
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase Size (Stop Market)"
 msgstr "增加规模（止损市价）"
@@ -7404,6 +7444,10 @@ msgstr "每日利润"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy {nativeTokenSymbol} directly on <0>{chainName}</0> using these options:"
 msgstr "您可以使用这些选项直接在 <0>{chainName}</0> 上购买 {nativeTokenSymbol}："
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Funds Bridging to"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed"
@@ -7688,10 +7732,6 @@ msgstr "剩余抵押品低于 {0} USD"
 msgid "trigger"
 msgstr "触发"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Elapsed time"
-msgstr ""
-
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
@@ -7771,6 +7811,10 @@ msgstr "频率"
 msgid "Loading Express params"
 msgstr "加载快速参数"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "GM withdrawing to"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You have {0} tokens reserved for vesting."
 msgstr ""
@@ -7823,6 +7867,10 @@ msgstr "GMX 市场代币价格图表"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top Addresses"
 msgstr "顶级地址"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Less Details"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -8024,6 +8072,7 @@ msgstr "多个资产类别"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Close"
 msgstr "关闭"
 
