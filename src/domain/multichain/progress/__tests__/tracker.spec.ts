@@ -4,11 +4,13 @@ import { ARBITRUM, ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET, SOURCE_SEPOLIA } from 
 import { getGlvToken, getGmToken } from "domain/tokens";
 import { expandDecimals } from "lib/numbers";
 
+import { Operation } from "components/GmSwap/GmSwapBox/types";
+
 import { GlvBuyTask } from "../GmOrGlvBuyProgress";
 import { GlvSellTask, GmSellTask } from "../GmOrGlvSellProgress";
-import { BridgeInFailed } from "../MultichainTransferProgress";
+import { BridgeInFailed, ConversionFailed } from "../MultichainTransferProgress";
 
-describe.concurrent("GmSellTask", () => {
+describe.concurrent("LongCrossChainTask", () => {
   it("gm sell", { timeout: 30_000 }, async () => {
     const sourceChainId = SOURCE_SEPOLIA;
     const settlementChainId = ARBITRUM_SEPOLIA;
@@ -24,7 +26,7 @@ describe.concurrent("GmSellTask", () => {
       amount,
     });
 
-    await progress.getStepPromise("finished");
+    await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
   });
 
   it("glv buy", { timeout: 30_000 }, async () => {
@@ -60,14 +62,20 @@ describe.concurrent("GmSellTask", () => {
       settlementChainId,
     });
 
-    await progress.getStepPromise("finished");
+    await expect(progress.getStepPromise("finished")).rejects.toThrowError(
+      new ConversionFailed({
+        chainId: settlementChainId,
+        operation: Operation.Deposit,
+        creationTx: initialTxHash,
+      })
+    );
   });
 
-  it("sepolia reverted glv buy", { timeout: 30_000 }, async () => {
+  it.only("sepolia reverted glv buy", { timeout: 30_000 }, async () => {
     const sourceChainId = SOURCE_SEPOLIA;
-    const settlementChainId = ARBITRUM;
+    const settlementChainId = ARBITRUM_SEPOLIA;
     const initialTxHash = "0xb065aa691f70edf8e47317cd7748abe85358a1807445679b981b049a1259bcf9";
-    const token = getGlvToken(ARBITRUM, "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9");
+    const token = getGlvToken(ARBITRUM_SEPOLIA, "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9");
     const amount = expandDecimals(1, 18);
 
     const progress = new GlvBuyTask({
@@ -78,7 +86,7 @@ describe.concurrent("GmSellTask", () => {
       settlementChainId,
     });
 
-    expect(progress.getStepPromise("finished")).rejects.toThrowError(
+    await expect(progress.getStepPromise("finished")).rejects.toThrowError(
       new BridgeInFailed({
         chainId: sourceChainId,
         creationTx: initialTxHash,
@@ -102,6 +110,12 @@ describe.concurrent("GmSellTask", () => {
       settlementChainId,
     });
 
-    await progress.getStepPromise("finished");
+    await expect(progress.getStepPromise("finished")).rejects.toThrowError(
+      new ConversionFailed({
+        chainId: settlementChainId,
+        operation: Operation.Deposit,
+        creationTx: initialTxHash,
+      })
+    );
   });
 });

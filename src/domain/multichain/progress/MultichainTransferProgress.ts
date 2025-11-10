@@ -29,7 +29,7 @@ export class BridgeInFailed extends Error {
   }
 }
 
-class ConversionFailed extends Error {
+export class ConversionFailed extends Error {
   readonly name = "ConversionFailed";
   readonly chainId: number;
   readonly operation: Operation;

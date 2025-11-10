@@ -6,7 +6,7 @@ import { sleep } from "lib/sleep";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 
-import { layerZeroApi } from ".";
+import { getLzBaseUrl, layerZeroApi } from ".";
 import { paths } from "./gen";
 import { getBlockNumberBeforeTimestamp } from "./getBlockNumberByTimestamp";
 import { getOrWaitLogs } from "./getOrWaitLogs";
@@ -216,6 +216,7 @@ export async function watchLzTxApi(
       params: { path: { tx: txHash } },
       fetch: testFetch,
       signal: abortSignal,
+      baseUrl: getLzBaseUrl(chainId),
     });
 
   debugLog("[watchLzTxApi] fetching tx", chainId, txHash);
