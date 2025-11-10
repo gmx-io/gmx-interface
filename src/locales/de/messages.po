@@ -1651,6 +1651,10 @@ msgstr "WARNUNG: Diese Position weist nach Abzug der Gebühren einen geringen Be
 msgid "Enter a  price"
 msgstr "Preis eingeben"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "Die Nutzung hoher Hebelwirkung erhöht das Liquidationsrisiko."

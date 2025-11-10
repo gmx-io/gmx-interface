@@ -1651,6 +1651,10 @@ msgstr "警告：扣除费用后，此仓位抵押品金额较低，请存入更
 msgid "Enter a  price"
 msgstr "输入价格"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "使用高杠杆会增加清算风险。"

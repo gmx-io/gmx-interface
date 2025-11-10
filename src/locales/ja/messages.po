@@ -1651,6 +1651,10 @@ msgstr "警告: このポジションは手数料差引後の担保額が低い�
 msgid "Enter a  price"
 msgstr "価格を入力"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "高いレバレッジを使用すると清算リスクが増大します。"

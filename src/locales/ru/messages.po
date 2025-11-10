@@ -1651,6 +1651,10 @@ msgstr "ВНИМАНИЕ: Эта позиция имеет низкую сумм
 msgid "Enter a  price"
 msgstr "Введите цену"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "Использование высокого левериджа увеличивает риск ликвидации."

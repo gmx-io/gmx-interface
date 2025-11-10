@@ -1651,6 +1651,10 @@ msgstr "AVERTISSEMENT : Cette position a un montant de collatéral bas après d�
 msgid "Enter a  price"
 msgstr "Saisir un prix"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "L'utilisation d'un effet de levier élevé augmente le risque de liquidation."

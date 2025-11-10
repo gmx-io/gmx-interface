@@ -31,6 +31,7 @@ type GmGlvTokensAPRResult = {
   marketsTokensLidoAprData?: MarketTokensAPRData;
   marketsTokensApyData?: MarketTokensAPRData;
   avgMarketsApy?: bigint;
+  isLoading: boolean;
 };
 
 type SwrResult = {
@@ -272,7 +273,7 @@ export function useGmMarketsApy(
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
-  const { data } = useSWR(key, {
+  const { data, isLoading } = useSWR(key, {
     fetcher: async (): Promise<SwrResult> => {
       const apys = await oracleKeeperFetcher.fetchApys(period);
       const wstEthToken = getTokenBySymbolSafe(chainId, "wstETH");
@@ -347,5 +348,6 @@ export function useGmMarketsApy(
     glvTokensIncentiveAprData: marketsTokensIncentiveAprData.glvTokensAPRData,
     avgMarketsApy: data?.avgMarketsApy,
     marketsTokensApyData: data?.marketsTokensApyData,
+    isLoading,
   };
 }
