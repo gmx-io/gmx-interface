@@ -197,8 +197,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   // TODO MLTCH: remove dependecy from dynamic market info as this hook can more static
   const tokenOptions: (Token & { isMarketToken?: boolean })[] = useMemo(
     function getTokenOptions(): Token[] {
-      // const { longToken, shortToken } = marketInfo || {};
-
       if (!longTokenAddress || !shortTokenAddress) return [];
 
       const nativeToken = getNativeToken(chainId);
@@ -207,7 +205,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
       for (const sideTokeAddress of [longTokenAddress, shortTokenAddress]) {
         const sideToken = getToken(chainId, sideTokeAddress);
-        if (paySource === "sourceChain" && sideToken.isWrapped) {
+        if ((paySource === "sourceChain" && sideToken.isWrapped) || sideToken.isNative) {
           result.push(nativeToken);
         } else if (paySource !== "gmxAccount" && paySource !== "sourceChain" && sideToken.isWrapped) {
           result.push(sideToken, nativeToken);
@@ -217,9 +215,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       }
 
       if (glvInfo && !isPair && isDeposit) {
-        const options = [longTokenAddress, shortTokenAddress].map((address) => getToken(chainId, address));
-
-        options.push(
+        result.push(
           ...glvInfo.markets
             .map((m) => {
               const token = marketTokensData?.[m.address];
@@ -241,7 +237,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
             .filter(Boolean as unknown as FilterOutFalsy)
         );
 
-        return options;
+        return result;
       }
 
       return uniqBy(result, (token) => token.address);
