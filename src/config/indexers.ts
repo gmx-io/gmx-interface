@@ -24,7 +24,6 @@ const INDEXER_URLS = {
   },
 
   [AVALANCHE_FUJI]: {
-    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-fuji-referrals/synts-stats-230726124533-065cd0d/gn",
     syntheticsStats:
@@ -38,7 +37,8 @@ const INDEXER_URLS = {
 
   [BOTANIX]: {
     subsquid: "https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql",
-    stats: "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-botanix-stats/api",
+    stats:
+      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
   },
