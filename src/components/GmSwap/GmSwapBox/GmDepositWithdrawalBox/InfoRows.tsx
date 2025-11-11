@@ -50,8 +50,10 @@ export function InfoRows({
           value={
             isLoading ? (
               <SpinnerIcon className="spin size-15 text-white" />
-            ) : (
+            ) : fees?.logicalNetworkFee?.deltaUsd ? (
               formatDeltaUsd(fees?.logicalNetworkFee?.deltaUsd)
+            ) : (
+              "-"
             )
           }
         />

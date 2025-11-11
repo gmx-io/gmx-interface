@@ -926,7 +926,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           <div className="border-t border-slate-600 p-12">{submitButton}</div>
         </div>
 
-        <InfoRows fees={logicalFees} isLoading={!technicalFeesAsyncResult.data} isDeposit={isDeposit} />
+        <InfoRows fees={logicalFees} isLoading={technicalFeesAsyncResult.isLoading} isDeposit={isDeposit} />
       </form>
     </>
   );
