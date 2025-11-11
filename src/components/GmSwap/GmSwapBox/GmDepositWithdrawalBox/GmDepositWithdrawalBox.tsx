@@ -8,7 +8,7 @@ import { useAccount } from "wagmi";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { isSourceChain } from "config/multichain";
+import { isSourceChain, MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
 import {
   usePoolsDetailsFirstTokenAddress,
   usePoolsDetailsFirstTokenInputValue,
@@ -143,8 +143,6 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
 
   const { isDeposit, isWithdrawal, isPair, isSingle } = useSelector(selectPoolsDetailsFlags);
 
-  const tokenChainDataArray = useSelector(selectPoolsDetailsMultichainTokensArray);
-
   // #region State
   const operation = useSelector(selectPoolsDetailsOperation);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketForGlv);
@@ -172,6 +170,15 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
   const routerAddress = useMemo(() => getContract(chainId, "SyntheticsRouter"), [chainId]);
 
   const marketAndTradeTokensData = useSelector(selectPoolsDetailsMarketAndTradeTokensData);
+  const sourceChainTokenOptions = useSelector(selectPoolsDetailsMultichainTokensArray).filter(
+    (t) =>
+      longTokenAddress &&
+      shortTokenAddress &&
+      (t.address === longTokenAddress ||
+        t.address === shortTokenAddress ||
+        t.wrappedAddress === longTokenAddress ||
+        t.wrappedAddress === shortTokenAddress)
+  );
 
   let firstToken = getTokenData(marketAndTradeTokensData, firstTokenAddress);
   let firstTokenAmount = parseValue(firstTokenInputValue, firstToken?.decimals || 0);
@@ -706,6 +713,22 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
     onSelectedMarketForGlv,
     marketTokensData,
   });
+
+  const isMarketTransferrableToSourceChain = useMemo(() => {
+    return MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId].includes(selectedGlvOrMarketAddress);
+  }, [chainId, selectedGlvOrMarketAddress]);
+
+  useEffect(
+    function updatePaySource() {
+      if (paySource === "sourceChain") {
+        if (!isMarketTransferrableToSourceChain) {
+          setPaySource("gmxAccount");
+        }
+      }
+    },
+    [isMarketTransferrableToSourceChain, paySource, setPaySource]
+  );
+
   // #endregion
 
   // #region Render
@@ -803,8 +826,8 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
                         );
                         handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}
-                      multichainTokens={tokenChainDataArray}
-                      includeMultichainTokensInPay
+                      multichainTokens={sourceChainTokenOptions}
+                      includeMultichainTokensInPay={isMarketTransferrableToSourceChain}
                       onDepositTokenAddress={noop}
                     />
                   ) : isWithdrawal && firstTokenAddress && isSingle && tokenOptions.length > 1 ? (
