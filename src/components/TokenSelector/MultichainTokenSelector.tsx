@@ -14,6 +14,7 @@ import { searchBy } from "lib/searchBy";
 import { MARKETS } from "sdk/configs/markets";
 import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
 import {
+  getIsSpotOnlyMarket,
   getMarketIndexName,
   getMarketIndexToken,
   getMarketIndexTokenSymbol,
@@ -227,7 +228,7 @@ export function MultichainTokenSelector({
         className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
-        {!token.isPlatformToken ? (
+        {!token.isPlatformToken || token.isPlatformTradingToken ? (
           <span className="inline-flex items-center">
             <TokenIcon className="mr-4" symbol={token.symbol} displaySize={20} chainIdBadge={payChainId} />
             {token.symbol}
@@ -243,7 +244,7 @@ export function MultichainTokenSelector({
 
             {getMarketIndexName({
               indexToken: getMarketIndexToken(chainId, tokenAddress)!,
-              isSpotOnly: false,
+              isSpotOnly: getIsSpotOnlyMarket(chainId, tokenAddress),
             })}
           </span>
         )}
