@@ -3,7 +3,7 @@ import cx from "classnames";
 import { memo, ReactNode, useEffect, useMemo, useState } from "react";
 
 import { getChainName, type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
-import { isSourceChain } from "config/multichain";
+import { getSourceChainDecimals, isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, type Token, type TokenData, type TokensData } from "domain/tokens";
@@ -311,10 +311,18 @@ function useAvailableToTradeTokenList({
 
       if (token.sourceChainBalance !== undefined && srcChainId !== undefined) {
         // TODO MLTCH: use sourceChainDecimals or put sourceChainBalance in normal decimals
-        const balanceUsd = convertToUsd(token.sourceChainBalance, token.decimals, getMidPrice(token.prices)) ?? 0n;
+        const sourceChainDecimals = getSourceChainDecimals(srcChainId, token.address);
+
+        if (sourceChainDecimals === undefined) {
+          continue;
+        }
+
+        const balanceUsd = convertToUsd(token.sourceChainBalance, sourceChainDecimals, getMidPrice(token.prices))!;
+
         concatenatedTokens.push({
           ...token,
           balance: token.sourceChainBalance,
+          decimals: sourceChainDecimals,
           balanceUsd,
           balanceType: TokenBalanceType.SourceChain,
           chainId: srcChainId,
@@ -330,10 +338,12 @@ function useAvailableToTradeTokenList({
 
         const balanceUsd =
           convertToUsd(token.sourceChainBalance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
+
         concatenatedTokens.push({
           ...token,
           prices: token.sourceChainPrices,
           balance: token.sourceChainBalance,
+          decimals: token.sourceChainDecimals,
           balanceUsd,
           chainId: token.sourceChainId,
           balanceType: TokenBalanceType.SourceChain,
