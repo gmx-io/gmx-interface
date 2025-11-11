@@ -79,7 +79,7 @@ export function getGmxGraphClient(chainId: number) {
     return avalancheGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
     return null;
-  } else if (chainId === BOTANIX) {
+  } else if (chainId === BOTANIX || chainId === ARBITRUM_SEPOLIA) {
     return null;
   }
 
@@ -93,7 +93,7 @@ export function getReferralsGraphClient(chainId) {
     return avalancheReferralsGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
     return avalancheFujiReferralsGraphClient;
-  } else if (chainId === BOTANIX) {
+  } else if (chainId === BOTANIX || chainId === ARBITRUM_SEPOLIA) {
     return null;
   }
   throw new Error(`Unsupported chain ${chainId}`);

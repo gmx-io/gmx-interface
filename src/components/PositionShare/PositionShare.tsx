@@ -47,7 +47,8 @@ type Props = {
   entryPrice: bigint | undefined;
   indexToken: Token;
   isLong: boolean;
-  leverage: bigint | undefined;
+  leverageWithPnl: bigint | undefined;
+  leverageWithoutPnl: bigint | undefined;
   markPrice: bigint;
   pnlAfterFeesPercentage: bigint;
   pnlAfterFeesUsd: bigint;
@@ -65,7 +66,8 @@ function PositionShare({
   entryPrice,
   indexToken,
   isLong,
-  leverage,
+  leverageWithoutPnl,
+  leverageWithPnl,
   markPrice,
   pnlAfterFeesPercentage,
   pnlAfterFeesUsd,
@@ -82,6 +84,7 @@ function PositionShare({
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
+  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -112,7 +115,8 @@ function PositionShare({
     entryPrice: bigint | undefined;
     indexToken: Token;
     isLong: boolean;
-    leverage: bigint | undefined;
+    leverageWithPnl: bigint | undefined;
+    leverageWithoutPnl: bigint | undefined;
     markPrice: bigint;
     pnlAfterFeesPercentage: bigint;
     pnlAfterFeesUsd: bigint;
@@ -124,7 +128,8 @@ function PositionShare({
         entryPrice,
         indexToken,
         isLong,
-        leverage,
+        leverageWithPnl,
+        leverageWithoutPnl,
         markPrice,
         pnlAfterFeesPercentage,
         pnlAfterFeesUsd,
@@ -135,7 +140,8 @@ function PositionShare({
     entryPrice,
     indexToken,
     isLong,
-    leverage,
+    leverageWithPnl,
+    leverageWithoutPnl,
     markPrice,
     pnlAfterFeesPercentage,
     pnlAfterFeesUsd,
@@ -200,7 +206,7 @@ function PositionShare({
         }
       }
     })();
-  }, [shareAffiliateCode, sharePositionBgImg, showPnlAmounts, cachedPositionData]);
+  }, [shareAffiliateCode, sharePositionBgImg, showPnlAmounts, cachedPositionData, isPnlInLeverage]);
 
   const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
   const handleReferralCodeSuccess = useCallback(
@@ -301,7 +307,7 @@ function PositionShare({
               entryPrice={cachedPositionData.entryPrice}
               indexToken={cachedPositionData.indexToken}
               isLong={cachedPositionData.isLong}
-              leverage={cachedPositionData.leverage}
+              leverage={isPnlInLeverage ? cachedPositionData.leverageWithPnl : cachedPositionData.leverageWithoutPnl}
               markPrice={cachedPositionData.markPrice}
               pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
               pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
@@ -320,6 +326,12 @@ function PositionShare({
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
           <span className="text-14 font-medium text-typography-secondary">
             <Trans>Show PnL Amounts</Trans>
+          </span>
+        </ToggleSwitch>
+
+        <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
+          <span className="text-14 font-medium text-typography-secondary">
+            <Trans>Include PnL in Leverage Display</Trans>
           </span>
         </ToggleSwitch>
 

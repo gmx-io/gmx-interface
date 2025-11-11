@@ -153,6 +153,10 @@ msgstr "止损"
 msgid "Type"
 msgstr "类型"
 
+#: src/components/Errors/errorToasts.tsx
+msgid ""
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
@@ -369,10 +373,6 @@ msgstr "{updateOrdersCount} 个 TP/SL 订单已更新"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Stop market price above mark price"
 msgstr "止损市场价格高于标记价格"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-msgstr "由于执行费用验证，交易失败。<0>查看</0>。<1/><2/>{suggestText}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -728,6 +728,10 @@ msgstr "高交换价格影响"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional Stored Impact"
 msgstr "比例存储影响"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "to {0}"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size."
@@ -1450,6 +1454,7 @@ msgstr "接收代币流动性不足"
 msgid "GMX Announcements and Updates"
 msgstr "GMX 公告和更新"
 
+#: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in Leverage Display"
 msgstr "在杠杆显示中包含盈亏"
@@ -3922,6 +3927,10 @@ msgstr "准备交易错误。提供者未定义"
 msgid "Insufficient liquidity in GM Pool"
 msgstr "GM 池流动性不足"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Leveraged tokens with protection"
+msgstr ""
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Failed to claim funds"
 msgstr "申领资金失败"
@@ -4039,6 +4048,10 @@ msgstr "执行订单模拟失败。"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "支持"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Toros"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid Transfer Addresses: Please check the url."
@@ -7142,6 +7155,10 @@ msgstr "去中心化永续交易所 | GMX"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "无资金所有权损失"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Transaction failed due to execution fee validation.<0/><1/>{suggestText}<2/><3/><4>View transaction details.</4>"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Completed"
