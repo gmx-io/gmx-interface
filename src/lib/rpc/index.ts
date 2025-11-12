@@ -117,7 +117,9 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
     );
   }
 
-  throw new Error(`Unsupported websocket provider for chain id: ${chainId}`);
+  const castedChainId: never = chainId;
+
+  throw new Error(`Unsupported websocket provider for chain id: ${castedChainId}`);
 }
 
 export function getFallbackProvider(chainId: number) {
