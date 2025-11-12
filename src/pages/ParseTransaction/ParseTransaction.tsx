@@ -1,6 +1,4 @@
 import cx from "classnames";
-import invert from "lodash/invert";
-import mapValues from "lodash/mapValues";
 import { useCallback, useMemo, useState } from "react";
 import { Fragment } from "react/jsx-runtime";
 import { Link, useParams } from "react-router-dom";
@@ -9,7 +7,7 @@ import useSWR from "swr";
 import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { ARBITRUM, CHAIN_SLUGS_MAP, ContractsChainId, getExplorerUrl } from "config/chains";
+import { ARBITRUM, ContractsChainId, getChainIdBySlug, getChainSlug, getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
   getGlvDisplayName,
@@ -58,14 +56,12 @@ import {
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
 
-const NETWORKS = mapValues(invert(CHAIN_SLUGS_MAP), Number) as Record<string, ContractsChainId>;
-
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
   const [, copyToClipboard] = useCopyToClipboard();
 
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
-  const chainId = NETWORKS[network as string] ?? ARBITRUM;
+  const chainId = (getChainIdBySlug(network) as ContractsChainId) ?? ARBITRUM;
 
   const client = usePublicClient({
     chainId,
@@ -97,7 +93,7 @@ export function ParseTransactionPage() {
     glvData,
   });
 
-  if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
+  if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
         Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
@@ -377,7 +373,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (props.item === "trader" || props.item === "account" || props.item === "receiver") {
-    const network = CHAIN_SLUGS_MAP[props.chainId];
+    const network = getChainSlug(props.chainId as ContractsChainId);
     const explorerUrl = getExplorerUrl(props.chainId);
 
     value = (

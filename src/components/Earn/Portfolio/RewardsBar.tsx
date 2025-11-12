@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 
-import { BOTANIX, ContractsChainId, getConstant } from "config/chains";
+import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { UserEarningsData } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -25,7 +25,7 @@ export function RewardsBar({
   mutateProcessedData: () => void;
 }) {
   const { chainId, srcChainId } = useChainId();
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+  const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
 

@@ -1,7 +1,7 @@
 import { ethers, Provider, Signer } from "ethers";
 import { encodeFunctionData } from "viem";
 
-import type { ContractsChainId, SourceChainId } from "config/static/chains";
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import {
   estimateArbitraryRelayFee,
   getArbitraryRelayParamsAndPayload,

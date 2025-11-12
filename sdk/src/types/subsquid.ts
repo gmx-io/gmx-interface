@@ -860,6 +860,151 @@ export interface ClaimRefsConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface ClaimableAmount {
+  __typename?: "ClaimableAmount";
+  account: Scalars["String"]["output"];
+  amount: Scalars["BigInt"]["output"];
+  amountInUsd?: Maybe<Scalars["BigInt"]["output"]>;
+  distributionId: Scalars["BigInt"]["output"];
+  id: Scalars["String"]["output"];
+  token: Scalars["String"]["output"];
+}
+
+export interface ClaimableAmountEdge {
+  __typename?: "ClaimableAmountEdge";
+  cursor: Scalars["String"]["output"];
+  node: ClaimableAmount;
+}
+
+export enum ClaimableAmountOrderByInput {
+  account_ASC = "account_ASC",
+  account_ASC_NULLS_FIRST = "account_ASC_NULLS_FIRST",
+  account_ASC_NULLS_LAST = "account_ASC_NULLS_LAST",
+  account_DESC = "account_DESC",
+  account_DESC_NULLS_FIRST = "account_DESC_NULLS_FIRST",
+  account_DESC_NULLS_LAST = "account_DESC_NULLS_LAST",
+  amountInUsd_ASC = "amountInUsd_ASC",
+  amountInUsd_ASC_NULLS_FIRST = "amountInUsd_ASC_NULLS_FIRST",
+  amountInUsd_ASC_NULLS_LAST = "amountInUsd_ASC_NULLS_LAST",
+  amountInUsd_DESC = "amountInUsd_DESC",
+  amountInUsd_DESC_NULLS_FIRST = "amountInUsd_DESC_NULLS_FIRST",
+  amountInUsd_DESC_NULLS_LAST = "amountInUsd_DESC_NULLS_LAST",
+  amount_ASC = "amount_ASC",
+  amount_ASC_NULLS_FIRST = "amount_ASC_NULLS_FIRST",
+  amount_ASC_NULLS_LAST = "amount_ASC_NULLS_LAST",
+  amount_DESC = "amount_DESC",
+  amount_DESC_NULLS_FIRST = "amount_DESC_NULLS_FIRST",
+  amount_DESC_NULLS_LAST = "amount_DESC_NULLS_LAST",
+  distributionId_ASC = "distributionId_ASC",
+  distributionId_ASC_NULLS_FIRST = "distributionId_ASC_NULLS_FIRST",
+  distributionId_ASC_NULLS_LAST = "distributionId_ASC_NULLS_LAST",
+  distributionId_DESC = "distributionId_DESC",
+  distributionId_DESC_NULLS_FIRST = "distributionId_DESC_NULLS_FIRST",
+  distributionId_DESC_NULLS_LAST = "distributionId_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  token_ASC = "token_ASC",
+  token_ASC_NULLS_FIRST = "token_ASC_NULLS_FIRST",
+  token_ASC_NULLS_LAST = "token_ASC_NULLS_LAST",
+  token_DESC = "token_DESC",
+  token_DESC_NULLS_FIRST = "token_DESC_NULLS_FIRST",
+  token_DESC_NULLS_LAST = "token_DESC_NULLS_LAST",
+}
+
+export interface ClaimableAmountWhereInput {
+  AND?: InputMaybe<Array<ClaimableAmountWhereInput>>;
+  OR?: InputMaybe<Array<ClaimableAmountWhereInput>>;
+  account_contains?: InputMaybe<Scalars["String"]["input"]>;
+  account_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  account_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_eq?: InputMaybe<Scalars["String"]["input"]>;
+  account_gt?: InputMaybe<Scalars["String"]["input"]>;
+  account_gte?: InputMaybe<Scalars["String"]["input"]>;
+  account_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  account_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  account_lt?: InputMaybe<Scalars["String"]["input"]>;
+  account_lte?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  account_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  account_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  account_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  amountInUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amountInUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amountInUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amountInUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  amountInUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  amountInUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amountInUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amountInUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amountInUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  amount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amount_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  amount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  amount_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  amount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  distributionId_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  distributionId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  distributionId_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  distributionId_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  distributionId_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  distributionId_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  distributionId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  distributionId_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  distributionId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  token_contains?: InputMaybe<Scalars["String"]["input"]>;
+  token_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  token_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  token_eq?: InputMaybe<Scalars["String"]["input"]>;
+  token_gt?: InputMaybe<Scalars["String"]["input"]>;
+  token_gte?: InputMaybe<Scalars["String"]["input"]>;
+  token_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  token_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  token_lt?: InputMaybe<Scalars["String"]["input"]>;
+  token_lte?: InputMaybe<Scalars["String"]["input"]>;
+  token_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  token_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  token_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  token_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  token_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  token_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  token_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+}
+
+export interface ClaimableAmountsConnection {
+  __typename?: "ClaimableAmountsConnection";
+  edges: Array<ClaimableAmountEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface ClaimableCollateral {
   __typename?: "ClaimableCollateral";
   account: Scalars["String"]["output"];
@@ -7218,6 +7363,9 @@ export interface Query {
   claimRefById?: Maybe<ClaimRef>;
   claimRefs: Array<ClaimRef>;
   claimRefsConnection: ClaimRefsConnection;
+  claimableAmountById?: Maybe<ClaimableAmount>;
+  claimableAmounts: Array<ClaimableAmount>;
+  claimableAmountsConnection: ClaimableAmountsConnection;
   claimableCollateralById?: Maybe<ClaimableCollateral>;
   claimableCollateralGroupById?: Maybe<ClaimableCollateralGroup>;
   claimableCollateralGroups: Array<ClaimableCollateralGroup>;
@@ -7407,6 +7555,24 @@ export interface QueryclaimRefsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<ClaimRefOrderByInput>;
   where?: InputMaybe<ClaimRefWhereInput>;
+}
+
+export interface QueryclaimableAmountByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryclaimableAmountsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<ClaimableAmountOrderByInput>>;
+  where?: InputMaybe<ClaimableAmountWhereInput>;
+}
+
+export interface QueryclaimableAmountsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<ClaimableAmountOrderByInput>;
+  where?: InputMaybe<ClaimableAmountWhereInput>;
 }
 
 export interface QueryclaimableCollateralByIdArgs {

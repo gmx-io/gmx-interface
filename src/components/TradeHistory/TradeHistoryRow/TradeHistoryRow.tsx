@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
-import { CHAIN_SLUGS_MAP, getExplorerUrl } from "config/chains";
+import { getChainSlug, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -239,7 +239,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             <div className="flex flex-row items-center">
               {showDebugValues && (
                 <Link
-                  to={`/parsetx/${CHAIN_SLUGS_MAP[chainId]}/${tradeAction.transaction.hash}`}
+                  to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transaction.hash}`}
                   className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
                 >
                   Events

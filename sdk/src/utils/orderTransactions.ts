@@ -522,8 +522,8 @@ export function getBatchTotalExecutionFee({
   }
 
   const feeUsd = convertToUsd(feeTokenAmount, wnt.decimals, wnt.prices.maxPrice)!;
-  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
-  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
+  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
+  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
 
   return {
     feeTokenAmount,

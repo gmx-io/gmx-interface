@@ -1,232 +1,188 @@
-import { ethers } from "ethers";
 import sample from "lodash/sample";
 
+import { mustNeverExist } from "lib/types";
 import {
   AnyChainId,
+  ARBITRUM,
   ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
   BOTANIX,
   ContractsChainId,
+  ETH_MAINNET,
   CONTRACTS_CHAIN_IDS as SDK_CONTRACTS_CHAIN_IDS,
   CONTRACTS_CHAIN_IDS_DEV as SDK_CONTRACTS_CHAIN_IDS_DEV,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
+  SourceChainId,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./static/chains";
 
-export { CHAIN_NAMES_MAP, getChainName } from "sdk/configs/chains";
-export * from "./static/chains";
+export * from "sdk/configs/chains";
+export { getChainName } from "sdk/configs/chains";
 
-export const CONTRACTS_CHAIN_IDS = isDevelopment() ? SDK_CONTRACTS_CHAIN_IDS_DEV : SDK_CONTRACTS_CHAIN_IDS;
-
-const { parseEther } = ethers;
+export const CONTRACTS_CHAIN_IDS: readonly number[] = isDevelopment()
+  ? SDK_CONTRACTS_CHAIN_IDS_DEV
+  : SDK_CONTRACTS_CHAIN_IDS;
 
 export const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS;
 export const ENV_BOTANIX_RPC_URLS = import.meta.env.VITE_APP_BOTANIX_RPC_URLS;
 
-// TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM;
-export const CHAIN_ID = DEFAULT_CHAIN_ID;
-
-export const IS_NETWORK_DISABLED: Record<ContractsChainId, boolean> = {
-  [ARBITRUM]: false,
-  [AVALANCHE]: false,
-  [ARBITRUM_SEPOLIA]: false,
-  [AVALANCHE_FUJI]: false,
-  [BOTANIX]: false,
-};
-
-export const NETWORK_EXECUTION_TO_CREATE_FEE_FACTOR = {
-  [ARBITRUM]: 10n ** 29n * 5n,
-  [AVALANCHE]: 10n ** 29n * 35n,
-  [AVALANCHE_FUJI]: 10n ** 29n * 2n,
-} as const;
-
-const constants = {
-  [ARBITRUM]: {
-    nativeTokenSymbol: "ETH",
-    wrappedTokenSymbol: "WETH",
-    defaultCollateralSymbol: "USDC.e",
-    defaultFlagOrdersEnabled: false,
-    positionReaderPropsLength: 9,
-    v2: true,
-
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
-    // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
-  },
-
-  [AVALANCHE]: {
-    nativeTokenSymbol: "AVAX",
-    wrappedTokenSymbol: "WAVAX",
-    defaultCollateralSymbol: "USDC",
-    defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 9,
-    v2: true,
-
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
-  },
-
-  [AVALANCHE_FUJI]: {
-    nativeTokenSymbol: "AVAX",
-    wrappedTokenSymbol: "WAVAX",
-    defaultCollateralSymbol: "USDC",
-    defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 9,
-    v2: true,
-
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
-  },
-
-  [ARBITRUM_SEPOLIA]: {
-    nativeTokenSymbol: "ETH",
-    wrappedTokenSymbol: "WETH",
-    defaultCollateralSymbol: "USDC",
-    defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 9,
-    v2: true,
-
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
-  },
-  [BOTANIX]: {
-    nativeTokenSymbol: "BTC",
-    wrappedTokenSymbol: "PBTC",
-    defaultCollateralSymbol: "USDC.E",
-    defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 9,
-    v2: true,
-
-    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    // contract requires that execution fee be strictly greater than instead of gte
-    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
-  },
-} satisfies Record<ContractsChainId, Record<string, any>>;
-
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io", "gmxalt.io"];
 
-export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = {
-  [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
-  [ARBITRUM]: [
-    "https://arb1.arbitrum.io/rpc",
-    "https://arbitrum-one-rpc.publicnode.com",
-    // "https://1rpc.io/arb", has CORS issue
-    "https://arbitrum-one.public.blastapi.io",
-    // "https://arbitrum.drpc.org",
-    "https://rpc.ankr.com/arbitrum",
-  ],
-  [AVALANCHE]: [
-    "https://api.avax.network/ext/bc/C/rpc",
-    "https://avalanche-c-chain-rpc.publicnode.com",
-    "https://1rpc.io/avax/c",
-  ],
-  [AVALANCHE_FUJI]: [
-    "https://avalanche-fuji-c-chain.publicnode.com",
-    "https://api.avax-test.network/ext/bc/C/rpc",
-    // "https://ava-testnet.public.blastapi.io/v1/avax/fuji/public",
-    // "https://rpc.ankr.com/avalanche_fuji",
-  ],
-  [ARBITRUM_SEPOLIA]: [
-    "https://sepolia-rollup.arbitrum.io/rpc",
-    "https://arbitrum-sepolia.drpc.org",
-    "https://arbitrum-sepolia-rpc.publicnode.com",
-  ],
-  [SOURCE_BASE_MAINNET]: [
-    "https://mainnet.base.org",
-    "https://base.llamarpc.com",
-    "https://base-rpc.publicnode.com",
-    "https://base.drpc.org",
-  ],
-  [SOURCE_OPTIMISM_SEPOLIA]: [
-    "https://sepolia.optimism.io",
-    "https://optimism-sepolia.drpc.org",
-    "https://optimism-sepolia.therpc.io",
-  ],
-  [SOURCE_SEPOLIA]: ["https://sepolia.drpc.org"],
-  [BOTANIX]: [
-    // returns incorrect gas price
-    // "https://rpc.botanixlabs.com",
-    "https://rpc.ankr.com/botanix_mainnet",
-  ],
-  [SOURCE_BSC_MAINNET]: [
-    "https://bsc-dataseed.bnbchain.org",
-    "https://1rpc.io/bnb",
-    "https://bsc.drpc.org",
-    "https://bsc-rpc.publicnode.com",
-  ],
+export type RpcConfig = {
+  url: string;
+  isPublic: boolean;
+  purpose: string;
+  type: "http" | "ws";
 };
 
-export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
-  [ARBITRUM]: ENV_ARBITRUM_RPC_URLS ? JSON.parse(ENV_ARBITRUM_RPC_URLS) : [getAlchemyArbitrumHttpUrl("fallback")],
-  [AVALANCHE]: ENV_AVALANCHE_RPC_URLS ? JSON.parse(ENV_AVALANCHE_RPC_URLS) : [getAlchemyAvalancheHttpUrl("fallback")],
-  [AVALANCHE_FUJI]: [
-    "https://endpoints.omniatech.io/v1/avax/fuji/public",
-    "https://api.avax-test.network/ext/bc/C/rpc",
-    "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
-  ],
-  [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl("fallback")],
-  [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl("fallback")],
-  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("fallback")],
-  [SOURCE_OPTIMISM_SEPOLIA]: [getAlchemyOptimismSepoliaHttpUrl("fallback")],
-  [SOURCE_SEPOLIA]: [getAlchemySepoliaHttpUrl("fallback")],
-  [SOURCE_BSC_MAINNET]: [getAlchemyBscMainnetHttpUrl("fallback")],
+export type ContractChainRpcConfig = {
+  default: string[];
+  fallback: string[];
+  largeAccount: string[];
+  express: string[];
 };
 
-export const PRIVATE_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
-  [ARBITRUM]: [getAlchemyArbitrumHttpUrl("largeAccount")],
-  [AVALANCHE]: [getAlchemyAvalancheHttpUrl("largeAccount")],
-  [BOTANIX]: [getAlchemyBotanixHttpUrl("largeAccount")],
-  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("largeAccount")],
+export type SourceChainRpcConfig = {
+  default: string[];
+  fallback: string[];
+  largeAccount: string[];
 };
 
-export const EXPRESS_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
-  [ARBITRUM]: [getAlchemyArbitrumHttpUrl("express")],
-  [AVALANCHE]: [getAlchemyAvalancheHttpUrl("express")],
-  [BOTANIX]: [getAlchemyBotanixHttpUrl("express")],
-  [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("express")],
-  [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl("express")],
+const CONTRACTS_CHAIN_RPC_CONFIGS = {
+  [ARBITRUM]: {
+    default: [
+      "https://arb1.arbitrum.io/rpc",
+      "https://arbitrum-one-rpc.publicnode.com",
+      // "https://1rpc.io/arb", has CORS issue
+      "https://arbitrum-one.public.blastapi.io",
+      // "https://arbitrum.drpc.org",
+      "https://rpc.ankr.com/arbitrum",
+    ],
+    fallback: ENV_ARBITRUM_RPC_URLS
+      ? JSON.parse(ENV_ARBITRUM_RPC_URLS)
+      : [getAlchemyProvider(ARBITRUM, "http", "fallback").url],
+    largeAccount: [getAlchemyProvider(ARBITRUM, "http", "largeAccount").url],
+    express: [getAlchemyProvider(ARBITRUM, "http", "express").url],
+  },
+  [AVALANCHE]: {
+    default: ["https://api.avax.network/ext/bc/C/rpc"],
+    fallback: [getAlchemyProvider(AVALANCHE, "http", "fallback").url],
+    largeAccount: [getAlchemyProvider(AVALANCHE, "http", "largeAccount").url],
+    express: [getAlchemyProvider(AVALANCHE, "http", "express").url],
+  },
+  [AVALANCHE_FUJI]: {
+    default: ["https://avalanche-fuji-c-chain.publicnode.com", "https://api.avax-test.network/ext/bc/C/rpc"],
+    fallback: [
+      "https://endpoints.omniatech.io/v1/avax/fuji/public",
+      "https://api.avax-test.network/ext/bc/C/rpc",
+      "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
+    ],
+    largeAccount: [],
+    express: [],
+  },
+  [ARBITRUM_SEPOLIA]: {
+    default: [
+      "https://sepolia-rollup.arbitrum.io/rpc",
+      "https://arbitrum-sepolia.drpc.org",
+      "https://arbitrum-sepolia-rpc.publicnode.com",
+    ],
+    fallback: [getAlchemyProvider(ARBITRUM_SEPOLIA, "http", "fallback").url],
+    largeAccount: [],
+    express: [getAlchemyProvider(ARBITRUM_SEPOLIA, "http", "express").url],
+  },
+  [BOTANIX]: {
+    default: ["https://rpc.ankr.com/botanix_mainnet"],
+    fallback: ENV_BOTANIX_RPC_URLS
+      ? JSON.parse(ENV_BOTANIX_RPC_URLS)
+      : [getAlchemyProvider(BOTANIX, "http", "fallback").url],
+    largeAccount: [getAlchemyProvider(BOTANIX, "http", "largeAccount").url],
+    express: [getAlchemyProvider(BOTANIX, "http", "express").url],
+  },
+} as const satisfies Record<ContractsChainId, ContractChainRpcConfig>;
+
+const SOURCE_CHAIN_RPC_CONFIGS = {
+  [SOURCE_BASE_MAINNET]: {
+    default: [
+      "https://mainnet.base.org",
+      "https://base.llamarpc.com",
+      "https://base-rpc.publicnode.com",
+      "https://base.drpc.org",
+    ],
+    fallback: [getAlchemyProvider(SOURCE_BASE_MAINNET, "http", "fallback").url],
+    largeAccount: [getAlchemyProvider(SOURCE_BASE_MAINNET, "http", "largeAccount").url],
+  },
+  [SOURCE_OPTIMISM_SEPOLIA]: {
+    default: ["https://sepolia.optimism.io", "https://optimism-sepolia.drpc.org", "https://optimism-sepolia.therpc.io"],
+    fallback: [getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "http", "fallback").url],
+    largeAccount: [getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "http", "largeAccount").url],
+  },
+  [SOURCE_SEPOLIA]: {
+    default: ["https://sepolia.drpc.org"],
+    fallback: [getAlchemyProvider(SOURCE_SEPOLIA, "http", "fallback").url],
+    largeAccount: [getAlchemyProvider(SOURCE_SEPOLIA, "http", "largeAccount").url],
+  },
+  [SOURCE_BSC_MAINNET]: {
+    default: [
+      "https://bsc-dataseed.bnbchain.org",
+      "https://1rpc.io/bnb",
+      "https://bsc.drpc.org",
+      "https://bsc-rpc.publicnode.com",
+    ],
+    fallback: [getAlchemyProvider(SOURCE_BSC_MAINNET, "http", "fallback").url],
+    largeAccount: [getAlchemyProvider(SOURCE_BSC_MAINNET, "http", "largeAccount").url],
+  },
+} as const satisfies Record<SourceChainId, SourceChainRpcConfig>;
+
+export const ADDITIONAL_RPC_CONFIGS = {
+  [ETH_MAINNET]: {
+    default: ["https://rpc.ankr.com/eth"],
+  },
 };
 
-type ConstantName = keyof (typeof constants)[ContractsChainId];
-
-export const getConstant = <T extends ContractsChainId, K extends ConstantName>(
-  chainId: T,
-  key: K
-): (typeof constants)[T][K] => {
-  if (!constants[chainId]) {
-    throw new Error(`Unsupported chainId ${chainId}`);
-  }
-
-  if (!(key in constants[chainId])) {
-    throw new Error(`Key ${key} does not exist for chainId ${chainId}`);
-  }
-
-  return constants[chainId][key];
+const ALL_RPC_CONFIGS = {
+  ...CONTRACTS_CHAIN_RPC_CONFIGS,
+  ...SOURCE_CHAIN_RPC_CONFIGS,
+  ...ADDITIONAL_RPC_CONFIGS,
 };
+
+export function getRpcProviders(chainId: number, purpose: AlchemyKeyPurpose) {
+  const providers = ALL_RPC_CONFIGS[chainId][purpose];
+
+  return providers;
+}
 
 export function getFallbackRpcUrl(chainId: number, isLargeAccount: boolean): string {
-  return sample(isLargeAccount ? PRIVATE_RPC_PROVIDERS[chainId] : FALLBACK_PROVIDERS[chainId]);
+  const fallbackProviders = getRpcProviders(chainId as AnyChainId, isLargeAccount ? "largeAccount" : "fallback");
+  return sample(fallbackProviders);
+}
+
+export function getRandomOrDefaultRpcUrl(
+  chainId: number,
+  { isPublic, bannedUrls = [] }: { isPublic: boolean; bannedUrls?: string[] }
+): string {
+  const providers = getRpcProviders(chainId as AnyChainId, isPublic ? "default" : "largeAccount");
+  const filteredProviders = providers.filter((url) => !bannedUrls.includes(url));
+
+  let url = sample(filteredProviders);
+
+  if (!url) {
+    url = providers[0];
+  }
+
+  return url;
 }
 
 export function getExpressRpcUrl(chainId: number): string {
-  return sample(EXPRESS_RPC_PROVIDERS[chainId]);
+  return sample(getRpcProviders(chainId as AnyChainId, "express"));
 }
 
-type AlchemyKeyPurpose = "fallback" | "largeAccount" | "express";
+type AlchemyKeyPurpose = "fallback" | "largeAccount" | "express" | "default";
 
 function getAlchemyKey(purpose: AlchemyKeyPurpose) {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
@@ -240,6 +196,76 @@ function getAlchemyKey(purpose: AlchemyKeyPurpose) {
   }
 
   return "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+}
+
+export function getAlchemyProvider(
+  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI>,
+  type: "http" | "ws",
+  purpose: AlchemyKeyPurpose
+) {
+  let alchemyKey: string;
+
+  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
+    switch (purpose) {
+      case "fallback":
+        alchemyKey = "NnWkTZJp8dNKXlCIfJwej";
+        break;
+      case "largeAccount":
+        alchemyKey = "UnfP5Io4K9X8UZnUnFy2a";
+        break;
+      case "express":
+        alchemyKey = "vZoYuLP1GVpvE0wpgPKwC";
+        break;
+      case "default":
+        alchemyKey = "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+        break;
+      default:
+        mustNeverExist(purpose);
+        throw new Error(`Unsupported purpose: ${purpose}`);
+    }
+  } else {
+    alchemyKey = "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+  }
+
+  let baseUrl: string;
+  switch (chainId) {
+    case ARBITRUM:
+      baseUrl = `arb-mainnet.g.alchemy.com/v2`;
+      break;
+    case AVALANCHE:
+      baseUrl = `avax-mainnet.g.alchemy.com/v2`;
+      break;
+    case BOTANIX:
+      baseUrl = `botanix-mainnet.g.alchemy.com/v2`;
+      break;
+    case ARBITRUM_SEPOLIA:
+      baseUrl = `arb-sepolia.g.alchemy.com/v2`;
+      break;
+    case SOURCE_BASE_MAINNET:
+      baseUrl = `base-mainnet.g.alchemy.com/v2`;
+      break;
+    case SOURCE_OPTIMISM_SEPOLIA:
+      baseUrl = `opt-sepolia.g.alchemy.com/v2`;
+      break;
+    case SOURCE_SEPOLIA:
+      baseUrl = `eth-sepolia.g.alchemy.com/v2`;
+      break;
+    case SOURCE_BSC_MAINNET:
+      baseUrl = `bnb-mainnet.g.alchemy.com/v2`;
+      break;
+    default: {
+      mustNeverExist(chainId);
+      throw new Error(`Unsupported chainId: ${chainId}`);
+    }
+  }
+
+  const url = `${type}://${baseUrl}/${alchemyKey}`;
+
+  return {
+    url,
+    purpose,
+    type,
+  };
 }
 
 export function getAlchemyArbitrumHttpUrl(purpose: AlchemyKeyPurpose) {
@@ -300,35 +326,4 @@ export function getAlchemySepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
 
 export function getAlchemySepoliaWsUrl(purpose: AlchemyKeyPurpose) {
   return `wss://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
-}
-
-export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testnet"): string {
-  switch (chainId as AnyChainId | "layerzero" | "layerzero-testnet") {
-    case ARBITRUM:
-      return "https://arbiscan.io/";
-    case AVALANCHE:
-      return "https://snowtrace.io/";
-    case AVALANCHE_FUJI:
-      return "https://testnet.snowtrace.io/";
-    case ARBITRUM_SEPOLIA:
-      return "https://sepolia.arbiscan.io/";
-    case SOURCE_OPTIMISM_SEPOLIA:
-      return "https://sepolia-optimism.etherscan.io/";
-    case SOURCE_SEPOLIA:
-      return "https://sepolia.etherscan.io/";
-    case BOTANIX:
-      return "https://botanixscan.io/";
-    case SOURCE_BASE_MAINNET:
-      return "https://basescan.org/";
-    case SOURCE_BSC_MAINNET:
-      return "https://bscscan.com/";
-    case "layerzero":
-      return "https://layerzeroscan.com/";
-    case "layerzero-testnet":
-      return "https://testnet.layerzeroscan.com/";
-  }
-}
-
-export function getTokenExplorerUrl(chainId: number, tokenAddress: string) {
-  return `${getExplorerUrl(chainId)}token/${tokenAddress}`;
 }
