@@ -198,6 +198,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     numberOfParts,
     setNumberOfParts,
     setDuration,
+    limitPriceWarningHidden,
+    setLimitPriceWarningHidden,
   } = useSelector(selectTradeboxState);
 
   const fromToken = useSelector(selectTradeboxFromToken);
@@ -1004,8 +1006,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             {showSectionBetweenInputsAndButton && (
               <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
-                {isSwap && isLimit && !isTwap && (
-                  <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
+                {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+                  <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
                     <Trans>
                       The actual execution price may differ from the set limit price due to fees and price impact. This
                       ensures that you receive at least the minimum receive amount.
