@@ -61,12 +61,12 @@ export const selectCommonOrderParams = createSelector((q) => {
   const executionFee = q(selectTradeboxExecutionFee);
   const referralInfo = q(selectUserReferralInfo);
 
-  if (!signer || !executionFee) {
+  if (!executionFee) {
     return undefined;
   }
 
   return {
-    receiver: signer.address,
+    receiver: signer?.address,
     chainId,
     executionFeeAmount: executionFee.feeTokenAmount,
     executionGasLimit: executionFee.gasLimit,
