@@ -145,6 +145,10 @@ msgstr "止损"
 msgid "Type"
 msgstr "类型"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "esGMX Rewards:"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid ""
 msgstr ""

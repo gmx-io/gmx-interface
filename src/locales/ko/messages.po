@@ -145,6 +145,10 @@ msgstr "손절"
 msgid "Type"
 msgstr "타입"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "esGMX Rewards:"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid ""
 msgstr ""

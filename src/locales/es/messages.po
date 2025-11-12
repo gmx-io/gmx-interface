@@ -145,6 +145,10 @@ msgstr "stop loss"
 msgid "Type"
 msgstr "Tipo"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "esGMX Rewards:"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid ""
 msgstr ""
