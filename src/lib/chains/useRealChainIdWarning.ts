@@ -1,4 +1,4 @@
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { toast } from "react-toastify";
 
 import { useChainId as useDisplayedChainId } from "lib/chains";
@@ -24,21 +24,33 @@ export function useRealChainIdWarning() {
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
+  const showToastTimeout = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     if (!isConnectedToChainId && !isActive && isConnected) {
-      toast.error(getInvalidNetworkToastContent(displayedChainId), {
-        toastId: INVALID_NETWORK_TOAST_ID,
-        autoClose: false,
-        closeButton: false,
-        delay: 2000,
-      });
-    } else if ((isConnectedToChainId || !isConnected) && isActive) {
+      const timeout = setTimeout(
+        () =>
+          toast.error(getInvalidNetworkToastContent(displayedChainId), {
+            toastId: INVALID_NETWORK_TOAST_ID,
+            autoClose: false,
+            closeButton: false,
+          }),
+        2000
+      );
+      showToastTimeout.current = timeout;
+    } else if (isConnectedToChainId || !isConnected) {
+      if (showToastTimeout.current) {
+        clearTimeout(showToastTimeout.current);
+      }
       toast.dismiss(INVALID_NETWORK_TOAST_ID);
     }
   }, [displayedChainId, isActive, isConnected, isConnectedToChainId]);
 
   useEffect(() => {
     return () => {
+      if (showToastTimeout.current) {
+        clearTimeout(showToastTimeout.current);
+      }
       toast.dismiss(INVALID_NETWORK_TOAST_ID);
     };
   }, []);
