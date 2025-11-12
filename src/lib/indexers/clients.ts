@@ -7,7 +7,6 @@ export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 
 export const arbitrumGraphClient = createClient(ARBITRUM, "stats");
 export const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
-export const nissohGraphClient = createClient(ARBITRUM, "nissohVault");
 
 export const avalancheGraphClient = createClient(AVALANCHE, "stats");
 export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");

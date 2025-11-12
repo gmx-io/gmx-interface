@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 import type { Address } from "viem";
 
-import { getSubsquidGraphClient } from "lib/subgraph/clients";
+import { getSubsquidGraphClient } from "lib/indexers/clients";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getByKey } from "sdk/utils/objects";
 

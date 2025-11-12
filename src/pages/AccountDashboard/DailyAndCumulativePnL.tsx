@@ -23,9 +23,9 @@ import type { FromOldToNewArray } from "domain/tradingview/types";
 import { SECONDS_IN_DAY, formatDate, formatDateTime, toUtcDayStart } from "lib/dates";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { bigintToNumber, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getPositiveOrNegativeClass } from "lib/utils";
 

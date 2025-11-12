@@ -4,10 +4,10 @@ import useSWR from "swr";
 
 import { GMX_STATS_API_URL } from "config/backend";
 import { USD_DECIMALS } from "config/factors";
+import { chainlinkClient } from "lib/indexers/clients";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { sleep } from "lib/sleep";
-import { chainlinkClient } from "lib/subgraph/clients";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailableForToken } from "sdk/configs/tokens";
 
 import { FEED_ID_MAP } from "./constants";

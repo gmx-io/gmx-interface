@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { getSubgraphUrl } from "config/subgraph";
+import { getIndexerUrl } from "config/indexers";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
@@ -23,7 +23,7 @@ export function useIsFreshAccountForHighLeverageTrading() {
   const { data, isLoading } = useSWR<number>(account ? [chainId, account] : null, {
     refreshInterval: undefined,
     fetcher: () => {
-      const endpoint = getSubgraphUrl(chainId, "subsquid");
+      const endpoint = getIndexerUrl(chainId, "subsquid");
 
       if (!endpoint) {
         throw new Error("Subgraph endpoint not found");

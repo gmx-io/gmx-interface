@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
-import { getSubgraphUrl } from "config/subgraph";
+import { getIndexerUrl } from "config/indexers";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
@@ -94,7 +94,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
 
-  const subgraphUrl = getSubgraphUrl(chainId, "syntheticsStats");
+  const subgraphUrl = getIndexerUrl(chainId, "syntheticsStats");
   const marketAddresses = useMemo(
     () => Object.keys(marketsInfoData || {}).filter((address) => !marketsInfoData![address].isDisabled),
     [marketsInfoData]
