@@ -195,7 +195,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      isPermitSupported: true,
+      isPermitSupported: false,
+      isPermitDisabled: true,
     },
     {
       name: "Dogecoin",

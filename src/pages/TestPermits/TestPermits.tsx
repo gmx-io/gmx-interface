@@ -3,7 +3,11 @@ import { toast } from "react-toastify";
 import { encodeFunctionData } from "viem";
 
 import { getExplorerUrl } from "config/chains";
-import { createAndSignTokenPermit, getTokenPermitParams } from "domain/tokens/permitUtils";
+import {
+  createAndSignTokenPermit,
+  getTokenPermitParams,
+  validateTokenPermitSignature,
+} from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
@@ -68,6 +72,15 @@ export function TestPermits() {
       const value = MaxUint256;
 
       const { permit } = await createAndSignTokenPermit(chainId, signer, selectedToken.address, account, value);
+
+      const validationResult = await validateTokenPermitSignature(chainId, permit);
+
+      if (!validationResult.isValid) {
+        helperToast.error(`Permit validation error: ${validationResult.error?.errorMessage}`);
+        // eslint-disable-next-line no-console
+        console.error(validationResult);
+        return;
+      }
 
       setPermitData(permit);
       helperToast.success(`Permit signed successfully for ${selectedToken.symbol}`);
