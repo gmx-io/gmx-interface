@@ -336,6 +336,10 @@ function useAvailableToTradeTokenList({
           continue;
         }
 
+        if (concatenatedTokens.some((t) => t.address === token.address && t.chainId === token.sourceChainId)) {
+          continue;
+        }
+
         const balanceUsd =
           convertToUsd(token.sourceChainBalance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
 

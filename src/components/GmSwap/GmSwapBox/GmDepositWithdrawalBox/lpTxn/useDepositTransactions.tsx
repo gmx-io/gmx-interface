@@ -309,8 +309,8 @@ export const useDepositTransactions = ({
                   initialTxHash: res.transactionHash,
                   token: getGmToken(chainId, (rawParams as RawCreateDepositParams).addresses.market),
                   amount: marketTokenAmount!,
-                  // inputToken: getToken(chainId, tokenAddress),
                   settlementChainId: chainId,
+                  estimatedFeeUsd: (technicalFees as SourceChainDepositFees).relayFeeUsd,
                 })
               );
             }
@@ -450,10 +450,8 @@ export const useDepositTransactions = ({
                   initialTxHash: res.transactionHash,
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvDepositParams).addresses.glv),
                   amount: glvTokenAmount!,
-                  // inputToken: isMarketTokenAddress(chainId, tokenAddress)
-                  //   ? getGmToken(chainId, tokenAddress)
-                  //   : getToken(chainId, tokenAddress),
                   settlementChainId: chainId,
+                  estimatedFeeUsd: (technicalFees as SourceChainGlvDepositFees).relayFeeUsd,
                 })
               );
             }

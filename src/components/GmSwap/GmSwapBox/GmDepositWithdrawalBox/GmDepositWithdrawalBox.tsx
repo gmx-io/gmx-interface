@@ -214,7 +214,7 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
       for (const sideTokeAddress of [longTokenAddress, shortTokenAddress]) {
         const sideToken = getToken(chainId, sideTokeAddress);
         if ((paySource === "sourceChain" && sideToken.isWrapped) || sideToken.isNative) {
-          result.push(nativeToken);
+          result.push(nativeToken, sideToken);
         } else if (paySource !== "gmxAccount" && paySource !== "sourceChain" && sideToken.isWrapped) {
           result.push(sideToken, nativeToken);
         } else {
@@ -949,7 +949,11 @@ export function GmSwapBoxDepositWithdrawal(p: GmSwapBoxProps) {
           <div className="border-t border-slate-600 p-12">{submitButton}</div>
         </div>
 
-        <InfoRows fees={logicalFees} isLoading={technicalFeesAsyncResult.isLoading} isDeposit={isDeposit} />
+        <InfoRows
+          fees={logicalFees}
+          isLoading={firstTokenAmount === undefined ? false : !technicalFeesAsyncResult.data}
+          isDeposit={isDeposit}
+        />
       </form>
     </>
   );

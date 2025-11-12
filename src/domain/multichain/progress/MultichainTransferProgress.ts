@@ -85,6 +85,7 @@ export abstract class MultichainTransferProgress<
   abstract readonly operation: Operation;
   readonly token: Token;
   readonly amount: bigint;
+  readonly estimatedFeeUsd: bigint;
 
   constructor(params: {
     sourceChainId: number;
@@ -92,11 +93,13 @@ export abstract class MultichainTransferProgress<
     token: Token;
     amount: bigint;
     settlementChainId: number;
+    estimatedFeeUsd: bigint;
   }) {
     super(params.initialTxHash, params.sourceChainId, params.settlementChainId);
 
     this.token = params.token;
     this.amount = params.amount;
+    this.estimatedFeeUsd = params.estimatedFeeUsd;
   }
 }
 

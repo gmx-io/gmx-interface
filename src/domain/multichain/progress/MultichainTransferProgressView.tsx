@@ -18,7 +18,7 @@ import {
   getMarketIndexTokenSymbol,
   isMarketTokenAddress,
 } from "sdk/utils/markets";
-import { formatTokenAmount } from "sdk/utils/numbers";
+import { formatTokenAmount, formatUsd } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
@@ -166,9 +166,15 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
     }
   }, [finishedState]);
 
-  const elapsedTime = task.finishTimestamp
-    ? formatElapsedTime(Math.floor((task.finishTimestamp - task.startTimestamp) / 1000))
-    : undefined;
+  const [elapsedTime, setElapsedTime] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElapsedTime(
+        formatElapsedTime(Math.floor(((task.finishTimestamp || Date.now()) - task.startTimestamp) / 1000))
+      );
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [task.finishTimestamp, task.startTimestamp]);
 
   const indexName = task.isGlv
     ? "GLV"
@@ -301,7 +307,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={<Trans>Gas</Trans>}
                   valueClassName="flex items-center"
-                  value={<Trans>$0.001</Trans>}
+                  value={formatUsd(task.estimatedFeeUsd)}
                 />
                 <SyntheticsInfoRow
                   label={<Trans>Estimated time</Trans>}

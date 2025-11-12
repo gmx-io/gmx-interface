@@ -34,6 +34,7 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
     token: Token;
     amount: bigint;
     settlementChainId: number;
+    estimatedFeeUsd: bigint;
   }) {
     super(params);
     debugLog("GmOrGlvSellProgress constructor", this.sourceChainId, this.initialTxHash);

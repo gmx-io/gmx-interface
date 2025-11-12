@@ -249,23 +249,14 @@ export const useWithdrawalTransactions = ({
         })
           .then((res) => {
             if (res.transactionHash) {
-              // const someOutAddress =
-              //   (amounts as WithdrawalAmounts).longTokenSwapPathStats?.tokenOutAddress ||
-              //   (amounts as WithdrawalAmounts).shortTokenSwapPathStats?.tokenOutAddress;
-
-              // if (!someOutAddress) {
-              //   console.error("No output address found");
-              //   return;
-              // }
-
               setMultichainTransferProgress(
                 new GlvSellTask({
                   sourceChainId: srcChainId!,
                   initialTxHash: res.transactionHash,
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvWithdrawalParams).addresses.glv),
                   amount: (amounts as WithdrawalAmounts).glvTokenAmount,
-                  // outputToken: getToken(chainId, someOutAddress),
                   settlementChainId: chainId,
+                  estimatedFeeUsd: (technicalFees as SourceChainGlvWithdrawalFees).relayFeeUsd,
                 })
               );
             }
@@ -378,24 +369,14 @@ export const useWithdrawalTransactions = ({
           tokenAmount: marketTokenAmount!,
         }).then((res) => {
           if (res.transactionHash) {
-            // const someOutAddress =
-            //   (amounts as WithdrawalAmounts).longTokenSwapPathStats?.tokenOutAddress ||
-            //   (amounts as WithdrawalAmounts).shortTokenSwapPathStats?.tokenOutAddress;
-
-            // if (!someOutAddress) {
-            //   console.error("No output address found");
-            //   return;
-            // }
-
             setMultichainTransferProgress(
               new GmSellTask({
                 sourceChainId: srcChainId,
                 initialTxHash: res.transactionHash,
-                // outputToken: getToken(chainId, someOutAddress),
-                // outputAmount: (amounts as WithdrawalAmounts).marketTokenAmount,
                 token: getGmToken(chainId, (rawParams as RawCreateWithdrawalParams).addresses.market),
                 amount: (amounts as WithdrawalAmounts).marketTokenAmount,
                 settlementChainId: chainId,
+                estimatedFeeUsd: (technicalFees as SourceChainWithdrawalFees).relayFeeUsd,
               })
             );
           }

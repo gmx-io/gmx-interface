@@ -24,6 +24,7 @@ describe.concurrent("LongCrossChainTask", () => {
       initialTxHash,
       token,
       amount,
+      estimatedFeeUsd: 0n,
     });
 
     await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
@@ -42,6 +43,7 @@ describe.concurrent("LongCrossChainTask", () => {
       token,
       amount,
       settlementChainId,
+      estimatedFeeUsd: 0n,
     });
 
     await progress.getStepPromise("finished");
@@ -60,6 +62,7 @@ describe.concurrent("LongCrossChainTask", () => {
       token,
       amount,
       settlementChainId,
+      estimatedFeeUsd: 0n,
     });
 
     await expect(progress.getStepPromise("finished")).rejects.toThrowError(
@@ -84,6 +87,7 @@ describe.concurrent("LongCrossChainTask", () => {
       token,
       amount,
       settlementChainId,
+      estimatedFeeUsd: 0n,
     });
 
     await expect(progress.getStepPromise("finished")).rejects.toThrowError(
@@ -108,6 +112,7 @@ describe.concurrent("LongCrossChainTask", () => {
       token,
       amount,
       settlementChainId,
+      estimatedFeeUsd: 0n,
     });
 
     await expect(progress.getStepPromise("finished")).rejects.toThrowError(
