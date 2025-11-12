@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
+import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
-import { ContractsChainId } from "config/static/chains";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,

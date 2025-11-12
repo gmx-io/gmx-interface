@@ -8,7 +8,6 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
-  FALLBACK_PROVIDERS,
   getAlchemyArbitrumSepoliaWsUrl,
   getAlchemyArbitrumWsUrl,
   getAlchemyBaseMainnetWsUrl,
@@ -121,11 +120,11 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
 }
 
 export function getFallbackProvider(chainId: number) {
-  if (!FALLBACK_PROVIDERS[chainId]) {
+  const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
+
+  if (!providerUrl) {
     return;
   }
-
-  const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
 
   return new ethers.JsonRpcProvider(providerUrl, chainId, {
     staticNetwork: Network.from(chainId),
@@ -147,7 +146,7 @@ export function getExpressProvider(chainId: number): JsonRpcProvider | undefined
 export function useJsonRpcProvider(chainId: number | undefined, { isExpress = false }: { isExpress?: boolean } = {}) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
-  const { primary } = useCurrentRpcUrls(chainId);
+  const { primary } = useCurrentRpcUrls(chainId as AnyChainId);
   const rpcUrl = useMemo(
     () => (isExpress && chainId ? getExpressRpcUrl(chainId) : primary),
     [chainId, isExpress, primary]

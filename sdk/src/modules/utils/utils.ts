@@ -1,11 +1,11 @@
 import { withRetry } from "viem";
 
 import {
-  EXECUTION_FEE_CONFIG_V2,
-  GAS_LIMITS_STATIC_CONFIG,
-  GAS_PRICE_PREMIUM_MAP,
+  ContractsChainId,
+  getExecutionFeeConfig,
+  getGasPricePremium,
+  getMaxPriorityFeePerGas,
   getViemChain,
-  MAX_PRIORITY_FEE_PER_GAS_MAP,
 } from "configs/chains";
 import { getContract } from "configs/contracts";
 import {
@@ -25,10 +25,10 @@ import {
   uiFeeFactorKey,
   withdrawalGasLimitKey,
 } from "configs/dataStore";
+import { GAS_LIMITS_STATIC_CONFIG } from "configs/gasLimits";
 import type { GasLimitsConfig } from "types/fees";
 import { TokensData } from "types/tokens";
-import type { IncreasePositionAmounts } from "types/trade";
-import type { DecreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
+import type { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import {
@@ -238,7 +238,7 @@ export class Utils extends Module {
   }
 
   async getGasPrice() {
-    const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[this.chainId];
+    const executionFeeConfig = getExecutionFeeConfig(this.chainId);
 
     const feeData = await withRetry(
       () =>
@@ -258,16 +258,16 @@ export class Utils extends Module {
 
     let gasPrice = feeData.gasPrice ?? 0n;
 
-    if (executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
+    if (executionFeeConfig?.shouldUseMaxPriorityFeePerGas) {
       const maxPriorityFeePerGas = bigMath.max(
         feeData?.maxPriorityFeePerGas ?? 0n,
-        MAX_PRIORITY_FEE_PER_GAS_MAP[this.chainId] ?? 0n
+        getMaxPriorityFeePerGas(this.chainId as ContractsChainId) || 0n
       );
 
       gasPrice = gasPrice + maxPriorityFeePerGas;
     }
 
-    const premium = GAS_PRICE_PREMIUM_MAP[this.chainId] ?? 0n;
+    const premium = getGasPricePremium(this.chainId as ContractsChainId) || 0n;
     const price = gasPrice + premium;
 
     return price === undefined ? undefined : BigInt(gasPrice);

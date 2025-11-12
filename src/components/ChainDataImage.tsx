@@ -1,11 +1,11 @@
-import { CHAIN_NAMES_MAP } from "config/chains";
+import { ContractsChainId, getChainName } from "config/chains";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 
 export function ChainDataImage({ chainId }: { chainId?: number }) {
   const { chainId: currentChainId } = useChainId();
   chainId = chainId || currentChainId;
-  const chainName = CHAIN_NAMES_MAP[chainId];
+  const chainName = getChainName(chainId as ContractsChainId);
   const chainIcon = getIcon(chainId, "network");
 
   return (

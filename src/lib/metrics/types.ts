@@ -239,6 +239,14 @@ export type OrderCancelledEvent = {
   data: OrderMetricData & ErrorData;
 };
 
+// RPC tracking
+export type RpcFailureCounter = {
+  event: "rpcTracker.provider.failed";
+  data: {
+    rpcProvider: string;
+  };
+};
+
 // Multicall tracking
 export type MulticallTimeoutEvent = {
   event: "multicall.timeout";

@@ -11,8 +11,8 @@ import {
   zeroHash,
 } from "viem";
 
+import type { AnyChainId, ContractsChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
-import type { AnyChainId, ContractsChainId } from "config/static/chains";
 import type {
   SignedSubacсountApproval,
   Subaccount,

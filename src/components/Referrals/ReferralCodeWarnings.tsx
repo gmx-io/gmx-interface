@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import toPairs from "lodash/toPairs";
 import values from "lodash/values";
 
-import { CHAIN_NAMES_MAP } from "config/chains";
+import { ContractsChainId, getChainName } from "config/chains";
 import type { CodeOwnershipInfo } from "domain/referrals/types";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -22,13 +22,13 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
   const areSomeCodesNotTaken = values(allOwnersOnOtherChains).some((o) => !o.isTaken);
   const nonTakenNetworkNames = toPairs(allOwnersOnOtherChains)
     .filter(([, o]) => !o.isTaken)
-    .map(([chainId]) => CHAIN_NAMES_MAP[chainId])
+    .map(([chainId]) => getChainName(Number(chainId) as ContractsChainId))
     .join(", ");
 
   const areSomeCodesTakenByOthers = values(allOwnersOnOtherChains).some((o) => o.isTaken && !o.isTakenByCurrentUser);
   const takenNetworkNames = toPairs(allOwnersOnOtherChains)
     .filter(([, o]) => o.isTaken && !o.isTakenByCurrentUser)
-    .map(([chainId]) => CHAIN_NAMES_MAP[chainId])
+    .map(([chainId]) => getChainName(Number(chainId) as ContractsChainId))
     .join(", ");
 
   return (

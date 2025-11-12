@@ -12,6 +12,7 @@
     "build-home": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts",
     "build-home:analyze": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts --mode analyze",
     "build-app": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
+    "build-sdk": "cd ./sdk && yarn build",
     "test": "vitest",
     "test:ci": "vitest run",
     "lint": "node node_modules/.bin/eslint src",

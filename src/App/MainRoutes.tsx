@@ -29,6 +29,7 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import RpcDebug from "pages/RpcDebug/RpcDebug";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -217,6 +218,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/permits" key="permits">
           <TestPermits />
+        </Route>,
+        <Route exact path="/rpc-debug" key="rpc-debug">
+          <RpcDebug />
         </Route>,
       ]}
 

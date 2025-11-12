@@ -15,6 +15,7 @@ const abFlagsConfig = {
   testMultichain: 1,
   testSponsoredCall: 1,
   testExampleAb: 0,
+  testRpcFallbackUpdates: 0.3,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
