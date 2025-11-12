@@ -990,10 +990,11 @@ export async function signSetTraderReferralCode({
   return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }
 
-function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {
+function updateExpressOrdersAddresses(addresses: CreateOrderPayload["addresses"]) {
   return {
-    ...addressess,
-    uiFeeReceiver: setUiFeeReceiverIsExpress(addressess.uiFeeReceiver, true),
+    ...addresses,
+    receiver: addresses.receiver ?? zeroAddress,
+    uiFeeReceiver: setUiFeeReceiverIsExpress(addresses.uiFeeReceiver, true),
   };
 }
 
