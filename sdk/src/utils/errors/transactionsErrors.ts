@@ -14,6 +14,7 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
     { msg: "insufficient funds for gas" },
     { msg: "not enough funds for gas" },
     { msg: "failed to execute call with revert code InsufficientGasFunds" },
+    { msg: "insufficient funds for transfer" },
   ],
   [TxErrorType.UserDenied]: [
     { msg: "User denied transaction signature" },
