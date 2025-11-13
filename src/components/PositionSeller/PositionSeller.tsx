@@ -51,6 +51,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
 import { getApprovalRequirements } from "domain/synthetics/tokens";
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
+import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
@@ -90,6 +91,7 @@ import { getIsValidTwapParams } from "sdk/utils/twap";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
@@ -98,6 +100,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
@@ -241,9 +244,14 @@ export function PositionSeller() {
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
 
+  const twapRecommendation = getTwapRecommendation({
+    enabled: orderOption !== OrderOption.Twap && Boolean(position),
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+    priceImpactPrecise: fees?.decreasePositionPriceImpact?.precisePercentage,
+  });
+
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
-    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -911,61 +919,80 @@ export function PositionSeller() {
         <div className="w-full">
           {position && (
             <>
-              <div className="flex flex-col gap-2">
-                <BuyInputSection
-                  topLeftLabel={t`Close`}
-                  inputValue={closeUsdInputValue}
-                  onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                  bottomLeftValue={formatUsd(closeSizeUsd)}
-                  bottomRightLabel={t`Max`}
-                  bottomRightValue={formatUsd(maxCloseSize)}
-                  onClickMax={
-                    maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
-                      ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
-                      : undefined
-                  }
-                  showPercentSelector
-                  onPercentChange={(percentage) => {
-                    const formattedAmount = formatAmountFree(
-                      (maxCloseSize * BigInt(percentage)) / 100n,
-                      USD_DECIMALS,
-                      2
-                    );
-                    setCloseUsdInputValueRaw(formattedAmount);
-                  }}
-                  qa="amount-input"
-                >
-                  USD
-                </BuyInputSection>
-                {isTrigger && (
+              <div className="flex flex-col gap-4">
+                {twapRecommendation && (
+                  <ColorfulBanner color="blue" icon={InfoCircleIcon}>
+                    <div className="flex flex-col gap-8">
+                      <span>
+                        <span
+                          className="cursor-pointer font-medium text-blue-300"
+                          onClick={() => {
+                            handleSetOrderOption(OrderOption.Twap);
+                          }}
+                        >
+                          <Trans>Use a TWAP order</Trans>
+                        </span>{" "}
+                        <Trans> for lower net price impact.</Trans>
+                      </span>
+                    </div>
+                  </ColorfulBanner>
+                )}
+                <div className="flex flex-col gap-2">
                   <BuyInputSection
-                    topLeftLabel={t`Trigger Price`}
-                    topRightLabel={t`Mark`}
-                    topRightValue={formatUsd(markPrice, {
-                      displayDecimals: marketDecimals,
-                      visualMultiplier: toToken?.visualMultiplier,
-                    })}
-                    onClickTopRightLabel={() => {
-                      setTriggerPriceInputValueRaw(
-                        formatAmount(
-                          markPrice,
-                          USD_DECIMALS,
-                          calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
-                          undefined,
-                          undefined,
-                          toToken?.visualMultiplier
-                        )
+                    topLeftLabel={t`Close`}
+                    inputValue={closeUsdInputValue}
+                    onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                    bottomLeftValue={formatUsd(closeSizeUsd)}
+                    bottomRightLabel={t`Max`}
+                    bottomRightValue={formatUsd(maxCloseSize)}
+                    onClickMax={
+                      maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
+                        ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
+                        : undefined
+                    }
+                    showPercentSelector
+                    onPercentChange={(percentage) => {
+                      const formattedAmount = formatAmountFree(
+                        (maxCloseSize * BigInt(percentage)) / 100n,
+                        USD_DECIMALS,
+                        2
                       );
+                      setCloseUsdInputValueRaw(formattedAmount);
                     }}
-                    inputValue={triggerPriceInputValue}
-                    onInputValueChange={(e) => {
-                      setTriggerPriceInputValue(e.target.value);
-                    }}
-                    qa="trigger-input"
+                    qa="amount-input"
                   >
                     USD
                   </BuyInputSection>
-                )}
+                  {isTrigger && (
+                    <BuyInputSection
+                      topLeftLabel={t`Trigger Price`}
+                      topRightLabel={t`Mark`}
+                      topRightValue={formatUsd(markPrice, {
+                        displayDecimals: marketDecimals,
+                        visualMultiplier: toToken?.visualMultiplier,
+                      })}
+                      onClickTopRightLabel={() => {
+                        setTriggerPriceInputValueRaw(
+                          formatAmount(
+                            markPrice,
+                            USD_DECIMALS,
+                            calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
+                            undefined,
+                            undefined,
+                            toToken?.visualMultiplier
+                          )
+                        );
+                      }}
+                      inputValue={triggerPriceInputValue}
+                      onInputValueChange={(e) => {
+                        setTriggerPriceInputValue(e.target.value);
+                      }}
+                      qa="trigger-input"
+                    >
+                      USD
+                    </BuyInputSection>
+                  )}
+                </div>
               </div>
 
               {isTwap && (
@@ -987,8 +1014,6 @@ export function PositionSeller() {
                 {isTrigger && maxAutoCancelOrdersWarning}
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.collateralNetPriceImpact}
-                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}

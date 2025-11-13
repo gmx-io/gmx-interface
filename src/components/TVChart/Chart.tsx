@@ -9,7 +9,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { DepthChart } from "components/DepthChart/DepthChart";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tabs from "components/Tabs/Tabs";
 
 import { TVChart } from "./TVChart";
@@ -86,8 +88,24 @@ function DepthChartContainer() {
   }
 
   return (
-    <div className="h-full w-full pb-8 pl-16">
-      <DepthChart marketInfo={marketInfo} />
+    <div className="flex h-full w-full flex-col gap-8 p-8">
+      <ColorfulBanner color="blue">
+        <span>
+          <Trans>
+            This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades
+            actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution
+            price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed
+            open and close impacts but is capped at 0.5%.{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/v2#price-impact-and-price-impact-rebates" newTab>
+              Read more
+            </ExternalLink>
+            .
+          </Trans>
+        </span>
+      </ColorfulBanner>
+      <div className="w-full grow">
+        <DepthChart marketInfo={marketInfo} />
+      </div>
     </div>
   );
 }

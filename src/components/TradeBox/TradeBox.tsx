@@ -55,6 +55,7 @@ import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/e
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens";
+import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -87,6 +88,7 @@ import { TradeMode } from "sdk/types/trade";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
@@ -101,6 +103,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
+import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
@@ -202,6 +205,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setLimitPriceWarningHidden,
   } = useSelector(selectTradeboxState);
 
+  const isTwapModeAvailable = useMemo(
+    () =>
+      availableTradeModes.some((mode) =>
+        Array.isArray(mode) ? mode.some((nestedMode) => nestedMode === TradeMode.Twap) : mode === TradeMode.Twap
+      ),
+    [availableTradeModes]
+  );
+
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = getByKey(tokensData, toTokenAddress);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
@@ -237,7 +248,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
-    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -246,6 +256,20 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     tradeFlags,
     payUsd: fromUsd,
   });
+
+  const twapRecommendation = getTwapRecommendation(
+    isIncrease
+      ? {
+          enabled: isPosition && !isSwap && !isTwap && isTwapModeAvailable,
+          sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+          priceImpactPrecise: fees?.increasePositionPriceImpact?.precisePercentage,
+        }
+      : {
+          enabled: isPosition && isTrigger && !isTwap && isTwapModeAvailable,
+          sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+          priceImpactPrecise: fees?.decreasePositionPriceImpact?.precisePercentage,
+        }
+  );
 
   const { showHighLeverageWarning, dismissHighLeverageWarning } = useShowHighLeverageWarning();
 
@@ -1003,6 +1027,22 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
             </div>
 
+            {twapRecommendation && (
+              <ColorfulBanner color="blue" icon={InfoCircleIcon}>
+                <div className="flex flex-col gap-8">
+                  <span>
+                    <span
+                      className="cursor-pointer font-medium text-blue-300"
+                      onClick={() => onSelectTradeMode(TradeMode.Twap)}
+                    >
+                      <Trans>Use a TWAP order</Trans>
+                    </span>{" "}
+                    <Trans> for lower net price impact.</Trans>
+                  </span>
+                </div>
+              </ColorfulBanner>
+            )}
+
             {showSectionBetweenInputsAndButton && (
               <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
@@ -1103,8 +1143,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {priceImpactWarningState.shouldShowWarning && (
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.collateralNetPriceImpact}
-                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}

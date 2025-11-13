@@ -22,7 +22,7 @@ import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/s
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
-import { BN_ZERO, formatPercentage } from "lib/numbers";
+import { BN_ZERO } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getAnalyticsOrderTypeByTradeMode, userAnalytics } from "lib/userAnalytics";
 import {
@@ -358,12 +358,14 @@ export const useTradeboxPoolWarnings = () => {
 
     warning.push(
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
-        <Trans>
-          Save {formatPercentage(improvedOpenFeesDeltaBps)} in price impact and fees by{" "}
-          <ColorfulButtonLink color="blue" onClick={onSwitchPoolClick}>
-            switching to the {getMarketPoolName(minOpenFeesMarket)} pool
-          </ColorfulButtonLink>
-        </Trans>
+        <div>
+          <Trans>
+            <span className="cursor-pointer font-medium text-blue-300 underline" onClick={onSwitchPoolClick}>
+              Switch to the {getMarketPoolName(minOpenFeesMarket)} pool
+            </span>{" "}
+            for potentially lower net price impact
+          </Trans>
+        </div>
       </AlertInfoCard>
     );
   }
