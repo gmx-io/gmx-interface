@@ -4108,10 +4108,6 @@ msgstr "{0}을 담보로 한 기존 포지션이 있습니다. 이 작업은 해
 msgid "GMX Technical Announcements"
 msgstr "GMX 기술 공지"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "$0.001"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "스탑 마켓 실패"

@@ -4108,10 +4108,6 @@ msgstr "У вас есть существующая позиция с {0} как
 msgid "GMX Technical Announcements"
 msgstr "Технические Анонсы GMX"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "$0.001"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "Неудачный Стоп-Маркет"

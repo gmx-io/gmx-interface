@@ -4108,10 +4108,6 @@ msgstr ""
 msgid "GMX Technical Announcements"
 msgstr ""
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "$0.001"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr ""

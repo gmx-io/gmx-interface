@@ -4108,10 +4108,6 @@ msgstr "Vous avez une position existante avec {0} comme garantie. Cette action n
 msgid "GMX Technical Announcements"
 msgstr "Annonces techniques GMX"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "$0.001"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "Stop Market échoué"

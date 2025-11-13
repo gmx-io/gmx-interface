@@ -4108,10 +4108,6 @@ msgstr "您有一个现有仓位以 {0} 作为抵押品。此操作不适用于�
 msgid "GMX Technical Announcements"
 msgstr "GMX 技术公告"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "$0.001"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "止损市价失败"

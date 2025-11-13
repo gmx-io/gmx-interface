@@ -4108,10 +4108,6 @@ msgstr "既存のポジションに{0}を担保として持っています。こ
 msgid "GMX Technical Announcements"
 msgstr "GMX技術発表"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "$0.001"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "ストップマーケット失敗"

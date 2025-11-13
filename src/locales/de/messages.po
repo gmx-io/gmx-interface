@@ -4108,10 +4108,6 @@ msgstr "Sie haben eine bestehende Position mit {0} als Collateral. Diese Aktion 
 msgid "GMX Technical Announcements"
 msgstr "GMX Technische Ankündigungen"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "$0.001"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
 msgstr "Fehlgeschlagener Stop Market"
