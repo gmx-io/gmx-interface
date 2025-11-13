@@ -4,7 +4,7 @@ import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import { getMulticallBatchingLoggingEnabledKey } from "config/localStorage";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { fetchMultichainTokenBalances } from "./fetchMultichainTokenBalances";
+import { fetchMultichainTokenBalances } from "../fetchMultichainTokenBalances";
 
 const DEBUG = false;
 
