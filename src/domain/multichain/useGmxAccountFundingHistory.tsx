@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
 
-import { getSubgraphUrl } from "config/subgraph";
+import { getIndexerUrl } from "config/indexers";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
@@ -39,7 +39,7 @@ async function fetchGmxAccountFundingHistory(
     guid?: string;
   }
 ): Promise<MultichainFundingHistoryItem[]> {
-  const subsquidUrl = getSubgraphUrl(chainId, "subsquid");
+  const subsquidUrl = getIndexerUrl(chainId, "subsquid");
 
   if (!subsquidUrl) {
     throw new Error("No squid url");

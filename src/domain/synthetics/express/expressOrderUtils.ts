@@ -27,7 +27,6 @@ import {
   hashSubaccountApproval,
   SignedSubacсountApproval,
   Subaccount,
-  SubaccountValidations,
 } from "domain/synthetics/subaccount";
 import { convertToTokenAmount, SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
@@ -391,10 +390,7 @@ export async function estimateExpressParams({
     tokenPermits,
   });
 
-  if (
-    requireValidations &&
-    !getIsValidExpressParams({ chainId, gasPaymentValidations, subaccountValidations, isSponsoredCall })
-  ) {
+  if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations, isSponsoredCall })) {
     return undefined;
   }
 
@@ -419,19 +415,17 @@ export async function estimateExpressParams({
 export function getIsValidExpressParams({
   chainId,
   gasPaymentValidations,
-  subaccountValidations,
   isSponsoredCall,
 }: {
   chainId: number;
   isSponsoredCall: boolean;
   gasPaymentValidations: GasPaymentValidations;
-  subaccountValidations: SubaccountValidations | undefined;
 }): boolean {
   if (chainId === BOTANIX && !isSponsoredCall) {
     return false;
   }
 
-  return gasPaymentValidations.isValid && (!subaccountValidations || subaccountValidations.isValid);
+  return gasPaymentValidations.isValid;
 }
 
 export function getGasPaymentValidations({
@@ -996,10 +990,11 @@ export async function signSetTraderReferralCode({
   return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }
 
-function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {
+function updateExpressOrdersAddresses(addresses: CreateOrderPayload["addresses"]) {
   return {
-    ...addressess,
-    uiFeeReceiver: setUiFeeReceiverIsExpress(addressess.uiFeeReceiver, true),
+    ...addresses,
+    receiver: addresses.receiver ?? zeroAddress,
+    uiFeeReceiver: setUiFeeReceiverIsExpress(addresses.uiFeeReceiver, true),
   };
 }
 

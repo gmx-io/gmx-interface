@@ -3,7 +3,7 @@ import useSWR from "swr";
 
 import { getCurrentEpochStartedTimestamp } from "domain/stats";
 import { getWeekAgoTimestamp } from "domain/stats/getWeekAgoTimestamp";
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getSyntheticsGraphClient } from "lib/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const totalFeeQuery = gql`

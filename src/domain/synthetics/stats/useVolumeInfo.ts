@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getSyntheticsGraphClient } from "lib/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const query = gql`

@@ -1116,6 +1116,10 @@ msgstr ""
 msgid "Start Earning"
 msgstr ""
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr ""
@@ -1464,10 +1468,6 @@ msgstr ""
 msgid "Order executed"
 msgstr ""
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High impact on collateral"
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr ""
@@ -1653,6 +1653,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a  price"
+msgstr ""
+
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
 msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
@@ -2898,6 +2902,10 @@ msgstr ""
 msgid "Read the rules"
 msgstr ""
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High Net Price Impact"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Lev."
 msgstr ""
@@ -3579,11 +3587,6 @@ msgstr ""
 msgid "Failed TWAP Part"
 msgstr ""
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Impact+Fees"
-msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr ""
@@ -4185,10 +4188,6 @@ msgstr ""
 msgid "Take Profit / Stop Loss"
 msgstr ""
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr ""
@@ -4323,10 +4322,6 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
-msgstr ""
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High price impact"
 msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
@@ -4937,6 +4932,10 @@ msgstr ""
 msgid "Approval submitted! <0>View status.</0>"
 msgstr ""
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr ""
@@ -5102,6 +5101,11 @@ msgstr ""
 
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
+msgstr ""
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Use a TWAP order"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
@@ -5579,6 +5583,10 @@ msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
+msgstr ""
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to the {0} pool</0> for potentially lower net price impact"
 msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
@@ -6257,6 +6265,11 @@ msgstr ""
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
+msgstr ""
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "for lower net price impact."
 msgstr ""
 
 #: src/components/GmList/GlvList.tsx

@@ -118,7 +118,7 @@ const publicClient = createPublicClient({
 
 - RPC URLs - use your preferred RPC endpoint
 - [Current Oracle URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/oracleKeeper.ts#L5-L11)
-- [Current Subsquid/Subgraph URLs](https://github.com/gmx-io/gmx-interface/blob/master/src/config/subgraph.ts#L5) (the subgraph url corresponds to the `synthetics-stats` field)
+- [Current Subsquid URLs ](https://github.com/gmx-io/gmx-interface/blob/master/src/config/indexers.ts#L5)
 
 ### Customizing Token Data
 

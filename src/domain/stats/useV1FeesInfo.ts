@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { getGmxGraphClient } from "lib/subgraph/clients";
+import { getGmxGraphClient } from "lib/indexers/clients";
 import { sumBigInts } from "lib/sumBigInts";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
