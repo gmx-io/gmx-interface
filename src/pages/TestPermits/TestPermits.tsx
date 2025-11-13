@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, withRetry } from "viem";
 
 import { getExplorerUrl } from "config/chains";
 import {
@@ -10,6 +10,7 @@ import {
 } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { sleep } from "lib/sleep";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { getV2Tokens } from "sdk/configs/tokens";
@@ -39,28 +40,47 @@ export function TestPermits() {
   useEffect(() => {
     if (!signer?.provider || !account) return;
 
-    tokens.forEach((token) => {
-      if (onchainParams[token.address] || onchainLoading[token.address]) {
-        return;
-      }
-      setOnchainLoading((prev) => ({ ...prev, [token.address]: true }));
-      getTokenPermitParams(chainId, account, token.address, signer.provider)
-        .then((params) => {
+    fetchOnchainParams();
+
+    async function fetchOnchainParams() {
+      for (const token of tokens) {
+        if (onchainParams[token.address] || onchainLoading[token.address]) {
+          continue;
+        }
+
+        setOnchainLoading((prev) => ({ ...prev, [token.address]: true }));
+
+        try {
+          const params = await withRetry(
+            () => getTokenPermitParams(chainId, account!, token.address, signer!.provider!),
+            {
+              shouldRetry: ({ error }) => {
+                return !error?.message?.includes("Cannot decode zero data ");
+              },
+              retryCount: 3,
+              delay: 300,
+            }
+          );
+
           setOnchainParams((prev) => ({
             ...prev,
             [token.address]: { name: params.name, version: params.version, nonce: params.nonce, error: false },
           }));
-        })
-        .catch(() => {
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("Error fetching onchain params for token", token.symbol, token.address, error);
           setOnchainParams((prev) => ({
             ...prev,
             [token.address]: { error: true },
           }));
-        })
-        .finally(() => {
+        } finally {
           setOnchainLoading((prev) => ({ ...prev, [token.address]: false }));
-        });
-    });
+        }
+
+        await sleep(200);
+      }
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokens, signer, account, chainId]);
 
