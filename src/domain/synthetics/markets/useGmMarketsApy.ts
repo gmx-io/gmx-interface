@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import { getSubgraphUrl } from "config/subgraph";
+import { getIndexerUrl } from "config/indexers";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
@@ -262,7 +262,7 @@ export function useGmMarketsApy(
 
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
-  const subsquidUrl = getSubgraphUrl(chainId, "subsquid");
+  const subsquidUrl = getIndexerUrl(chainId, "subsquid");
 
   const key =
     marketAddresses.length && marketTokensData && subsquidUrl
