@@ -55,7 +55,7 @@ export function TestPermits() {
             () => getTokenPermitParams(chainId, account!, token.address, signer!.provider!),
             {
               shouldRetry: ({ error }) => {
-                return !error?.message?.includes("Cannot decode zero data ");
+                return Boolean(error.message && !error.message.includes("Cannot decode zero data "));
               },
               retryCount: 3,
               delay: 300,
@@ -67,8 +67,12 @@ export function TestPermits() {
             [token.address]: { name: params.name, version: params.version, nonce: params.nonce, error: false },
           }));
         } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error("Error fetching onchain params for token", token.symbol, token.address, error);
+          if (!error.message.includes("Cannot decode zero data ")) {
+            // eslint-disable-next-line no-console
+            console.error("Error fetching onchain params for token", token.symbol, token.address, error);
+            return;
+          }
+
           setOnchainParams((prev) => ({
             ...prev,
             [token.address]: { error: true },
