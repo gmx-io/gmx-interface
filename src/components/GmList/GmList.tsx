@@ -42,7 +42,9 @@ export type Props = {
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  apyLoading: boolean;
   performance: PerformanceData | undefined;
+  performanceLoading: boolean;
   performanceSnapshots: PerformanceSnapshotsData | undefined;
 };
 
@@ -52,7 +54,9 @@ export function GmList({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  apyLoading,
   performance,
+  performanceLoading,
   performanceSnapshots,
 }: Props) {
   const chainId = useSelector(selectChainId);
@@ -105,7 +109,9 @@ export function GmList({
         marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         marketsTokensLidoAprData={marketsTokensLidoAprData}
         glvTokensApyData={undefined}
+        apyLoading={apyLoading}
         performance={performance}
+        performanceLoading={performanceLoading}
         performanceSnapshots={performanceSnapshots}
         isFavorite={favoriteTokens.includes(token.address)}
         onFavoriteClick={toggleFavoriteToken}

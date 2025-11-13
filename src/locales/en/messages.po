@@ -1655,6 +1655,10 @@ msgstr "WARNING: This position has a low amount of collateral after deducting fe
 msgid "Enter a  price"
 msgstr "Enter a  price"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr "Not enough data available yet"
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "Using high leverage increases the risk of liquidation."

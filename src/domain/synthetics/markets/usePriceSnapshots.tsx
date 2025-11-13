@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
-
+import { SECONDS_IN_DAY } from "lib/dates";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { Price } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
@@ -9,9 +9,9 @@ import { queryPaginated } from "sdk/utils/indexers";
 import { Period } from "./usePoolsTimeRange";
 
 const PRICES_QUERY = gql`
-  query Prices($fromTimestamp: Int, $tokenAddresses: [String!], $limit: Int, $offset: Int) {
+  query Prices($fromTimestamp: Int, $tokenAddress: String!, $limit: Int, $offset: Int) {
     prices(
-      where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp, token_in: $tokenAddresses }
+      where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp, token_eq: $tokenAddress }
       orderBy: snapshotTimestamp_ASC
       limit: $limit
       offset: $offset
@@ -21,6 +21,14 @@ const PRICES_QUERY = gql`
       snapshotTimestamp
       token
       type
+    }
+  }
+`;
+
+const INITIAL_PRICES_QUERY = gql`
+  query InitialPrices($tokenAddress: String!) {
+    prices(where: { isSnapshot_eq: true, token_eq: $tokenAddress }, orderBy: snapshotTimestamp_ASC, limit: 1) {
+      snapshotTimestamp
     }
   }
 `;
@@ -42,14 +50,31 @@ export type PriceDataMapped = {
 export function usePriceSnapshots({
   chainId,
   period,
-  tokenAddresses,
+  marketOrGlvTokenAddress,
 }: {
   chainId: number;
   period: Period;
-  tokenAddresses?: string[];
+  marketOrGlvTokenAddress: string;
 }) {
-  const { data } = useSWR<PriceData | undefined>(
-    ["usePriceSnapshots", period.periodStart, period.periodEnd, tokenAddresses?.join(",")],
+  const { data: firstSnapshotTimestamp, isLoading: isLoadingFirstSnapshotTimestamp } = useSWR<number | undefined>(
+    ["usePriceFirstSnapshotTimestamp", chainId, marketOrGlvTokenAddress],
+    {
+      fetcher: async () => {
+        const client = getSubsquidGraphClient(chainId);
+        const res = await client?.query<PriceQuery>({
+          query: INITIAL_PRICES_QUERY,
+          variables: {
+            tokenAddress: marketOrGlvTokenAddress,
+          },
+        });
+
+        return res?.data?.prices?.[0]?.snapshotTimestamp;
+      },
+    }
+  );
+
+  const { data } = useSWR<PriceSnapshot[]>(
+    ["usePriceSnapshots", period.periodStart, period.periodEnd, marketOrGlvTokenAddress],
     {
       fetcher: async () => {
         const client = getSubsquidGraphClient(chainId);
@@ -60,7 +85,7 @@ export function usePriceSnapshots({
                 query: PRICES_QUERY,
                 variables: {
                   fromTimestamp: period.periodStart,
-                  tokenAddresses,
+                  tokenAddress: marketOrGlvTokenAddress,
                   limit,
                   offset,
                 },
@@ -69,61 +94,23 @@ export function usePriceSnapshots({
               .then((response) => response?.data?.prices || []) ?? []
         );
 
-        const pricesByToken = res.reduce(
-          (acc, price) => {
-            if (!acc[price.token]) {
-              acc[price.token] = [];
-            }
-
-            acc[price.token].push(price);
-            return acc;
-          },
-          {} as Record<string, PriceSnapshot[]>
-        );
-
-        return pricesByToken;
+        return res;
       },
     }
   );
 
-  const priceData = useMemo(() => {
-    return Object.entries(data || {}).reduce(
-      (acc, [token, prices]) => {
-        acc[token] = prices.reduce(
-          (acc, price) => {
-            // if snapshot price is already in the acc and new price is onchainFeed, skip
-            if (price.type === "onchainFeed" && acc[price.snapshotTimestamp]) {
-              return acc;
-            }
+  return useMemo(() => {
+    if (data === undefined || isLoadingFirstSnapshotTimestamp) {
+      return [];
+    }
 
-            acc[price.snapshotTimestamp] = price;
+    return data?.filter((price) => {
+      // omit first 3 days of data
+      if (!firstSnapshotTimestamp || price.snapshotTimestamp < firstSnapshotTimestamp + SECONDS_IN_DAY * 3) {
+        return false;
+      }
 
-            return acc;
-          },
-          {} as Record<number, PriceSnapshot>
-        );
-        return acc;
-      },
-      {} as Record<string, Record<number, PriceSnapshot>>
-    );
-  }, [data]);
-
-  const timestampsData = useMemo(() => {
-    return Object.entries(priceData).reduce(
-      (acc, [address, prices]) => {
-        const timestamps = Object.keys(prices)
-          .map(Number)
-          .sort((a, b) => a - b);
-        acc[address] = timestamps;
-        return acc;
-      },
-      {} as Record<string, number[]>
-    );
-  }, [priceData]);
-
-  return {
-    prices: data,
-    priceData,
-    timestampsData,
-  };
+      return true;
+    });
+  }, [data, firstSnapshotTimestamp, isLoadingFirstSnapshotTimestamp]);
 }

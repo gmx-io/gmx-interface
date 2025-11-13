@@ -28,9 +28,10 @@ export default function Pools() {
     glvTokensIncentiveAprData,
     marketsTokensLidoAprData,
     glvApyInfoData,
+    isLoading: apyLoading,
   } = useGmMarketsApy(chainId, srcChainId, { period: timeRange });
 
-  const { performance } = usePerformanceAnnualized({
+  const { performance, isLoading: performanceLoading } = usePerformanceAnnualized({
     chainId,
     period: timeRange,
   });
@@ -72,7 +73,9 @@ export default function Pools() {
             glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
             glvTokensApyData={glvApyInfoData}
+            apyLoading={apyLoading}
             performance={performance}
+            performanceLoading={performanceLoading}
             performanceSnapshots={performanceSnapshots}
           />
         )}
@@ -83,7 +86,9 @@ export default function Pools() {
           marketsTokensApyData={marketsTokensApyData}
           marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
           marketsTokensLidoAprData={marketsTokensLidoAprData}
+          apyLoading={apyLoading}
           performance={performance}
+          performanceLoading={performanceLoading}
           performanceSnapshots={performanceSnapshots}
         />
       </div>

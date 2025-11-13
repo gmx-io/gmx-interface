@@ -1655,6 +1655,10 @@ msgstr "ADVERTENCIA: Esta posición tiene una cantidad baja de garantía despué
 msgid "Enter a  price"
 msgstr "Introduce un precio"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "Usar alto apalancamiento aumenta el riesgo de liquidación."

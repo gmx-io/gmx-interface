@@ -1655,6 +1655,10 @@ msgstr "경고: 이 포지션은 수수료 차감 후 담보액이 낮습니다.
 msgid "Enter a  price"
 msgstr "가격 입력"
 
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
 msgstr "높은 레버리지를 사용하면 청산 위험이 증가합니다."
