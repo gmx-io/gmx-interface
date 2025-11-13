@@ -755,7 +755,7 @@ __metadata:
     typescript: 5.4.2
     typescript-transform-paths: 3.5.1
     universal-perf-hooks: 1.0.1
-    viem: 2.37.1
+    viem: 2.39.0
     vitest: 3.0.4
   languageName: unknown
   linkType: soft
@@ -1897,33 +1897,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abitype@npm:1.0.8":
-  version: 1.0.8
-  resolution: "abitype@npm:1.0.8"
+"abitype@npm:1.1.0, abitype@npm:^1.0.9":
+  version: 1.1.0
+  resolution: "abitype@npm:1.1.0"
   peerDependencies:
     typescript: ">=5.0.4"
-    zod: ^3 >=3.22.0
+    zod: ^3.22.0 || ^4.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
     zod:
       optional: true
-  checksum: 104bc2f6820ced8d2cb61521916f7f22c0981a846216f5b6144f69461265f7da137a4ae108bf4b84cd8743f2dd1e9fdadffc0f95371528e15a59e0a369e08438
-  languageName: node
-  linkType: hard
-
-"abitype@npm:^1.0.9":
-  version: 1.0.9
-  resolution: "abitype@npm:1.0.9"
-  peerDependencies:
-    typescript: ">=5.0.4"
-    zod: ^3 >=3.22.0
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-    zod:
-      optional: true
-  checksum: de56b97611f0dc6c842411c242344802456b2dd07202568bfdebea946d21a277e9d30a3ed62990e6e4ef85d7bd31d689baa3370250454046cc24aabe2178073a
+  checksum: 55f724d038a60cc5e4ce4913298f912f0c34c53e13240cd3b97b272f4122bdf4c84541d85d1e3bb36f6e8dab6685f232c69600718fad62ccc389bea3f63ed7e4
   languageName: node
   linkType: hard
 
@@ -4367,9 +4352,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ox@npm:0.9.3":
-  version: 0.9.3
-  resolution: "ox@npm:0.9.3"
+"ox@npm:0.9.6":
+  version: 0.9.6
+  resolution: "ox@npm:0.9.6"
   dependencies:
     "@adraffy/ens-normalize": ^1.11.0
     "@noble/ciphers": ^1.3.0
@@ -4384,7 +4369,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 742a15a3942fa66beac1d0e80ee9ed806c9c4898f950d7e879373eb7068b2b61e983b0f3ea95ec09f7e19637a7978d2cf44ab73ca51007827f5d690f2974910f
+  checksum: 5f5094502cab9b135f3de3dfe60691fc312a1e534b3a9ef03bd867bfe0921245360c78dcb59bb438f6d66316b7da29506da4b46633f48cd8f7c4f37f56a76e4c
   languageName: node
   linkType: hard
 
@@ -5497,45 +5482,45 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:2.37.1":
-  version: 2.37.1
-  resolution: "viem@npm:2.37.1"
+"viem@npm:2.39.0":
+  version: 2.39.0
+  resolution: "viem@npm:2.39.0"
   dependencies:
     "@noble/curves": 1.9.1
     "@noble/hashes": 1.8.0
     "@scure/bip32": 1.7.0
     "@scure/bip39": 1.6.0
-    abitype: 1.0.8
+    abitype: 1.1.0
     isows: 1.0.7
-    ox: 0.9.3
+    ox: 0.9.6
     ws: 8.18.3
   peerDependencies:
     typescript: ">=5.0.4"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: ea8bea4728c4ddc5af606564b8b3b34fd463614166e96445980ecba6bcd13d7cc30747c05a74fc44b1296fbff079e9e4a4e9a584dd3404c4f564a5c4e908a147
+  checksum: a6570b9f7c9bbd1c76bedbd8a7af9b7f8e25350d97135aba8a92de88c97e85e49671723597ece0e283d82649d3a8b3ef4f4ded11a002663f5a6466ac0ac1d209
   languageName: node
   linkType: hard
 
-"viem@patch:viem@npm:2.37.1#../.yarn/patches/viem-npm-2.37.1-7013552341::locator=%40gmx-io%2Fsdk%40workspace%3A.":
-  version: 2.37.1
-  resolution: "viem@patch:viem@npm%3A2.37.1#../.yarn/patches/viem-npm-2.37.1-7013552341::version=2.37.1&hash=410eea&locator=%40gmx-io%2Fsdk%40workspace%3A."
+"viem@patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd::locator=%40gmx-io%2Fsdk%40workspace%3A.":
+  version: 2.39.0
+  resolution: "viem@patch:viem@npm%3A2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd::version=2.39.0&hash=be7a5d&locator=%40gmx-io%2Fsdk%40workspace%3A."
   dependencies:
     "@noble/curves": 1.9.1
     "@noble/hashes": 1.8.0
     "@scure/bip32": 1.7.0
     "@scure/bip39": 1.6.0
-    abitype: 1.0.8
+    abitype: 1.1.0
     isows: 1.0.7
-    ox: 0.9.3
+    ox: 0.9.6
     ws: 8.18.3
   peerDependencies:
     typescript: ">=5.0.4"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 7f0c63f1f263c9af7bc437aa0a99503985733bb779578462c5c225098637fa0735abab219f9c0b6cbac593c977c4fd1f735f80536ab7d47cec60f6e25c124df4
+  checksum: cd517d51954aa87b4e0a96c65d9d12fd10cc1ecbb8a3080afa76bbccbd9634a45d9279592b8d109db5c06111fda778258e1a7ad14e45b2bb9897ee638020675e
   languageName: node
   linkType: hard
 
