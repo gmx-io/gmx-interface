@@ -38,7 +38,9 @@ export function TestPermits() {
   const tokens = getV2Tokens(chainId).filter((token) => !token.isNative);
 
   useEffect(() => {
-    if (!signer?.provider || !account) return;
+    if (!signer?.provider || !account) {
+      return;
+    }
 
     fetchOnchainParams();
 
@@ -57,8 +59,8 @@ export function TestPermits() {
               shouldRetry: ({ error }) => {
                 return Boolean(error.message && !error.message.includes("Cannot decode zero data "));
               },
-              retryCount: 3,
-              delay: 300,
+              retryCount: 5,
+              delay: 200,
             }
           );
 
@@ -86,7 +88,7 @@ export function TestPermits() {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokens, signer, account, chainId]);
+  }, [account, chainId, signer?.provider]);
 
   const handleSignPermit = async () => {
     if (!selectedToken || !account || !signer) return;
