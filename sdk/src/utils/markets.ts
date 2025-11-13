@@ -266,6 +266,22 @@ export function getMarketIndexTokenSymbol(chainId: number, marketTokenAddress: s
   return indexToken.symbol;
 }
 
+export function getMarketLongTokenAddress(chainId: number, marketTokenAddress: string): string {
+  return MARKETS[chainId][marketTokenAddress].longTokenAddress;
+}
+
+export function getMarketShortTokenAddress(chainId: number, marketTokenAddress: string): string {
+  return MARKETS[chainId][marketTokenAddress].shortTokenAddress;
+}
+
+export function getMarketLongToken(chainId: number, marketTokenAddress: string): Token {
+  return getToken(chainId, getMarketLongTokenAddress(chainId, marketTokenAddress))!;
+}
+
+export function getMarketShortToken(chainId: number, marketTokenAddress: string): Token {
+  return getToken(chainId, getMarketShortTokenAddress(chainId, marketTokenAddress))!;
+}
+
 export function getMarketLongTokenSymbol(chainId: number, marketTokenAddress: string): string {
   const longTokenAddress = MARKETS[chainId]?.[marketTokenAddress]?.longTokenAddress;
   if (!longTokenAddress) {

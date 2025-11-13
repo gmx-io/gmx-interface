@@ -7,6 +7,8 @@ import { useCopyToClipboard } from "react-use";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
+import { getGlvLongToken, getGlvShortToken } from "domain/synthetics/markets/glv";
+import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -16,6 +18,9 @@ import {
   getMarketIndexName,
   getMarketIndexToken,
   getMarketIndexTokenSymbol,
+  getMarketLongToken,
+  getMarketPoolName,
+  getMarketShortToken,
   isMarketTokenAddress,
 } from "sdk/utils/markets";
 import { formatTokenAmount, formatUsd } from "sdk/utils/numbers";
@@ -29,7 +34,7 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import AttentionIcon from "img/ic_attention.svg?react";
-import CheckIcon from "img/ic_check.svg?react";
+import CheckCircleIcon from "img/ic_check_circle.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import ChevronUpIcon from "img/ic_chevron_up.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
@@ -110,6 +115,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
           autoClose: false,
           closeButton: false,
           bodyClassName: "!p-0",
+          className: "!bg-[#161825] border-1/2 border-slate-600 !-ml-64",
           hideProgressBar: true,
         }
       );
@@ -184,6 +190,20 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
       });
 
   const gmOrGlvLabel = task.isGlv ? "GLV" : "GM";
+  let longToken: Token | undefined;
+  let shortToken: Token | undefined;
+  if (task.isGlv) {
+    longToken = getGlvLongToken(chainId, task.token.address);
+    shortToken = getGlvShortToken(chainId, task.token.address);
+  } else {
+    longToken = getMarketLongToken(chainId, task.token.address);
+    shortToken = getMarketShortToken(chainId, task.token.address);
+  }
+
+  const poolName = getMarketPoolName({
+    longToken,
+    shortToken,
+  });
 
   return (
     <div className="text-body-medium flex flex-col font-medium">
@@ -204,21 +224,21 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
             {formatTokenAmount(task.amount, task.token.decimals)}{" "}
             {isMarketTokenAddress(chainId, task.token.address) ? (
               <>
-                GM:{" "}
-                {getMarketIndexName({
-                  indexToken: getMarketIndexToken(chainId, task.token.address)!,
-                  isSpotOnly: getIsSpotOnlyMarket(chainId, task.token.address),
-                })}
+                GM: {indexName}
+                <span className="subtext">[{poolName}]</span>
               </>
             ) : (
-              task.token.symbol
+              <>
+                GLV
+                <span className="subtext">[{poolName}]</span>
+              </>
             )}
           </div>
         </div>
         <div className="text-typography-secondary">
           {finishedState === "pending" && (
             <div className="flex items-center gap-4">
-              <img src={SpinnerBlueSrc} alt="spinner" className="size-16 animate-spin" />
+              <img src={SpinnerBlueSrc} alt="spinner" className="size-16 shrink-0 animate-spin" />
               <div className="text-typography-secondary">
                 <Trans>In progress</Trans>
               </div>
@@ -226,13 +246,13 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           )}
           {finishedState === "completed" && (
             <div className="flex items-center gap-4 text-green-700">
-              <CheckIcon className="size-16" />
+              <CheckCircleIcon className="size-16 shrink-0" />
               <Trans>Completed</Trans>
             </div>
           )}
           {finishedState === "error" && (
             <div className="flex items-center gap-4 text-red-500">
-              <AttentionIcon className="size-16" />
+              <AttentionIcon className="size-16 shrink-0" />
               <Trans>Buying error</Trans>
             </div>
           )}
