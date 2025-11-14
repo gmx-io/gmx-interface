@@ -128,7 +128,7 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
     {
       className: "bg-[#ff00ff]",
       text: "Cumulative Realized Swap Impact",
-      value: (lastPoint! as any).cumulativeRealizedSwapImpact,
+      value: lastPoint!.cumulativeRealizedSwapImpact,
     },
     {
       className: "bg-[#00ffff]",
@@ -215,6 +215,8 @@ export type AccountPnlHistoryPointDebugFields = {
   cumulativeRealizedPnlFloat: number;
   cumulativeRealizedPriceImpact: bigint;
   cumulativeRealizedPriceImpactFloat: number;
+  cumulativeRealizedSwapImpact: bigint;
+  cumulativeRealizedSwapImpactFloat: number;
   startUnrealizedPnl: bigint;
   startUnrealizedFeesFloat: number;
   startUnrealizedFees: bigint;
