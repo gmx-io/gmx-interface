@@ -1,7 +1,7 @@
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { OrderType } from "domain/synthetics/orders";
+import { OrderType, SwapPricingType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { marketsInfoData2IndexTokenStatsMap } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import {
@@ -216,7 +216,11 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
 
 const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
 export const makeSelectFindSwapPath = createSelectorFactory(
-  (fromTokenAddress: string | undefined, toTokenAddress: string | undefined) => {
+  (
+    fromTokenAddress: string | undefined,
+    toTokenAddress: string | undefined,
+    swapPricingType: SwapPricingType | undefined = SwapPricingType.Swap
+  ) => {
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
@@ -229,7 +233,7 @@ export const makeSelectFindSwapPath = createSelectorFactory(
         fromTokenAddress,
         toTokenAddress,
         marketsInfoData,
-        isExpressFeeSwap: false,
+        swapPricingType,
         disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
         manualPath: _debugSwapMarketsConfig?.manualPath,
         gasEstimationParams,

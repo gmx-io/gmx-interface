@@ -3,11 +3,11 @@ import useSWR from "swr";
 
 import type { AnyChainId } from "config/chains";
 import { IStargateAbi } from "config/multichain";
+import { SendParam } from "domain/multichain/types";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { IStargate } from "typechain-types-stargate";
-import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
-import type { QuoteSend } from "./types";
+import type { MessagingFee } from "./types";
 
 export function useQuoteSend({
   sendParams,
@@ -17,7 +17,7 @@ export function useQuoteSend({
   toChainId,
   composeGas,
 }: {
-  sendParams: SendParamStruct | undefined;
+  sendParams: SendParam | undefined;
   fromStargateAddress: string | undefined;
   fromChainProvider: Provider | undefined;
   fromChainId: AnyChainId | undefined;
@@ -32,7 +32,7 @@ export function useQuoteSend({
     fromChainId !== undefined &&
     fromChainId !== toChainId;
 
-  const quoteSendQuery = useSWR<QuoteSend | undefined>(
+  const quoteSendQuery = useSWR<MessagingFee | undefined>(
     quoteSendCondition
       ? ["quoteSend", sendParams.dstEid, sendParams.to, sendParams.amountLD, fromStargateAddress, composeGas]
       : null,

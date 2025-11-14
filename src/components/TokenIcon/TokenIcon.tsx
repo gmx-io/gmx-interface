@@ -84,7 +84,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
         src={CHAIN_ID_TO_NETWORK_ICON[chainIdBadge]}
         width={size}
         height={size}
-        className={cx("absolute  z-10 box-content rounded-full bg-slate-900", offset)}
+        className={cx("absolute z-10 box-content rounded-full bg-slate-900", offset)}
       />
     );
   }
@@ -94,6 +94,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
       data-qa="token-icon"
       className={sub ? containerClassName : classNames}
       src={importImage(iconPath)}
+      // TODO Remove alt as it shows during loading
       alt={symbol}
       width={displaySize}
       height={displaySize}
@@ -105,7 +106,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
   }
 
   return (
-    <span className={cx("relative", className)}>
+    <span className={cx("relative shrink-0", className)}>
       {img}
       {sub}
     </span>

@@ -18,7 +18,8 @@ export type TokenPricesDataResult = {
   isPriceDataLoading: boolean;
 };
 
-export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
+export function useTokenRecentPricesRequest(chainId: number, params?: { enabled?: boolean }): TokenPricesDataResult {
+  const { enabled = true } = params ?? {};
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 
@@ -32,70 +33,73 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
   const pricesCacheRef = useRef<TokenPricesData>({});
   const pricesCacheUpdatedRef = useRef<{ [address: string]: number }>({});
 
-  const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
-    refreshInterval: refreshPricesInterval,
+  const { data, error, isLoading } = useSequentialTimedSWR(
+    enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null,
+    {
+      refreshInterval: refreshPricesInterval,
 
-    keepPreviousData: true,
+      keepPreviousData: true,
 
-    fetcher: async ([chainId]) => {
-      const result: TokenPricesData = {};
+      fetcher: async ([chainId]) => {
+        const result: TokenPricesData = {};
 
-      let priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
-        metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
-        return [];
-      });
+        let priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
+          metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
+          return [];
+        });
 
-      priceItems.forEach((priceItem) => {
-        let tokenConfig: Token;
+        priceItems.forEach((priceItem) => {
+          let tokenConfig: Token;
 
-        try {
-          tokenConfig = getToken(chainId, priceItem.tokenAddress);
-        } catch (e) {
-          // ignore unknown token errors
+          try {
+            tokenConfig = getToken(chainId, priceItem.tokenAddress);
+          } catch (e) {
+            // ignore unknown token errors
 
-          return;
+            return;
+          }
+
+          result[tokenConfig.address] = {
+            minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+            maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
+          };
+
+          // Update cache of new received tokens
+          pricesCacheRef.current[tokenConfig.address] = result[tokenConfig.address];
+          pricesCacheUpdatedRef.current[tokenConfig.address] = Date.now();
+        });
+
+        const hasPartialData = Object.keys(result).length < Object.keys(pricesCacheRef.current).length;
+
+        if (hasPartialData) {
+          // eslint-disable-next-line no-console
+          console.warn("tickersPartialData");
+          metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
+          registerOracleKeeperFailure(chainId, "tickers");
+
+          Object.keys(pricesCacheUpdatedRef.current).forEach((address) => {
+            const cacheUpdatedAt = pricesCacheUpdatedRef.current[address];
+            const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
+
+            if (!result[address] && canUseCache) {
+              result[address] = pricesCacheRef.current[address];
+            }
+          });
         }
 
-        result[tokenConfig.address] = {
-          minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
-          maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
+        const wrappedToken = getWrappedToken(chainId);
+
+        if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
+          result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
+        }
+
+        return {
+          pricesData: result,
+          updatedAt: Date.now(),
         };
-
-        // Update cache of new received tokens
-        pricesCacheRef.current[tokenConfig.address] = result[tokenConfig.address];
-        pricesCacheUpdatedRef.current[tokenConfig.address] = Date.now();
-      });
-
-      const hasPartialData = Object.keys(result).length < Object.keys(pricesCacheRef.current).length;
-
-      if (hasPartialData) {
-        // eslint-disable-next-line no-console
-        console.warn("tickersPartialData");
-        metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
-        registerOracleKeeperFailure(chainId, "tickers");
-
-        Object.keys(pricesCacheUpdatedRef.current).forEach((address) => {
-          const cacheUpdatedAt = pricesCacheUpdatedRef.current[address];
-          const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
-
-          if (!result[address] && canUseCache) {
-            result[address] = pricesCacheRef.current[address];
-          }
-        });
-      }
-
-      const wrappedToken = getWrappedToken(chainId);
-
-      if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
-        result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
-      }
-
-      return {
-        pricesData: result,
-        updatedAt: Date.now(),
-      };
-    },
-  });
+      },
+    }
+  );
 
   return {
     pricesData: data?.pricesData,

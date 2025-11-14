@@ -3,7 +3,7 @@ import { TaskState } from "@gelatonetwork/relay-sdk";
 import { ErrorLike } from "lib/errors";
 
 export type TransactionWaiterResult = {
-  relayStatus:
+  relayStatus?:
     | {
         taskId: string;
         taskState: TaskState;

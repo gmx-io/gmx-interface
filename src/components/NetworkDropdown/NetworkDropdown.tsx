@@ -168,6 +168,11 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
   );
 }
 
+/**
+ * This is needed because Fragment logs errors when passed props
+ */
+const NoopWrapper = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+
 function NetworkMenuItem({
   network,
   chainId,
@@ -178,7 +183,7 @@ function NetworkMenuItem({
   disabled?: boolean;
 }) {
   const { isConnected } = useAccount();
-  const Wrapper = disabled ? TooltipWithPortal : Fragment;
+  const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>

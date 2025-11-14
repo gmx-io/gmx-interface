@@ -7,6 +7,7 @@ import { ContractsChainId, getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import type { TokenData } from "domain/synthetics/tokens/types";
 import { formatBalanceAmount } from "lib/numbers";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 import { TableTd } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -70,9 +71,9 @@ function CollateralSelectorDesktop(props: Props) {
       <tbody>
         {props.options?.map((option) => (
           <CollateralListItemDesktop
-            key={`${option.address}-${option.isGmxAccount}`}
+            key={`${option.address}-${option.balanceType}`}
             onSelect={() => {
-              props.onSelect(option.address, Boolean(option.isGmxAccount));
+              props.onSelect(option.address, option.balanceType === TokenBalanceType.GmxAccount);
               close();
             }}
             chainId={props.chainId}
@@ -117,7 +118,13 @@ function CollateralListItemDesktop({
             <TokenIcon
               symbol={tokenData.symbol}
               displaySize={variant === "destination" ? 16 : 28}
-              chainIdBadge={variant === "destination" ? undefined : tokenData.isGmxAccount ? 0 : chainId}
+              chainIdBadge={
+                variant === "destination"
+                  ? undefined
+                  : tokenData.balanceType === TokenBalanceType.GmxAccount
+                    ? 0
+                    : chainId
+              }
             />
             {tokenData.symbol}
           </div>
@@ -127,11 +134,15 @@ function CollateralListItemDesktop({
               <ArrowRightIcon className="text-slate-100" />
               <div className="flex items-center gap-4">
                 <img
-                  src={getChainIcon(tokenData.isGmxAccount ? 0 : chainId)}
-                  alt={getChainName(tokenData.isGmxAccount ? 0 : chainId)}
+                  src={getChainIcon(tokenData.balanceType === TokenBalanceType.GmxAccount ? 0 : chainId)}
+                  alt={getChainName(tokenData.balanceType === TokenBalanceType.GmxAccount ? 0 : chainId)}
                   className="size-16"
                 />
-                {tokenData.isGmxAccount ? <Trans>GMX Balance</Trans> : getChainName(chainId)}
+                {tokenData.balanceType === TokenBalanceType.GmxAccount ? (
+                  <Trans>GMX Balance</Trans>
+                ) : (
+                  getChainName(chainId)
+                )}
               </div>
             </>
           )}
@@ -157,9 +168,9 @@ function CollateralSelectorMobile(props: Props) {
     <SelectorBaseMobileList>
       {props.options?.map((option) => (
         <CollateralListItemMobile
-          key={`${option.address}-${option.isGmxAccount}`}
+          key={`${option.address}-${option.balanceType}`}
           onSelect={() => {
-            props.onSelect(option.address, Boolean(option.isGmxAccount));
+            props.onSelect(option.address, option.balanceType === TokenBalanceType.GmxAccount);
             close();
           }}
           chainId={props.chainId}
@@ -196,7 +207,11 @@ function CollateralListItemMobile({
   return (
     <SelectorBaseMobileButton onSelect={handleSelect}>
       <div className="CollateralSelector-mobile-column-pool" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
-        <TokenIcon symbol={tokenData.symbol} displaySize={28} chainIdBadge={tokenData.isGmxAccount ? 0 : chainId} />
+        <TokenIcon
+          symbol={tokenData.symbol}
+          displaySize={28}
+          chainIdBadge={tokenData.balanceType === TokenBalanceType.GmxAccount ? 0 : chainId}
+        />
         <div>{tokenData.symbol}</div>
       </div>
       {variant === "balance" &&

@@ -10,6 +10,8 @@ import {
   GlvOrMarketInfo,
   MarketInfo,
 } from "domain/synthetics/markets";
+import { Token } from "domain/tokens";
+import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { TokenData, TokensData } from "../tokens";
@@ -127,4 +129,20 @@ export function isGlvInfo(market?: GlvOrMarketInfo): market is GlvInfo {
 
 export function isGlvEnabled(chainId: number) {
   return Object.keys(GLV_MARKETS[chainId] ?? {}).length > 0;
+}
+
+export function getGlvLongTokenAddress(chainId: number, address: string): string {
+  return GLV_MARKETS[chainId][address].longTokenAddress;
+}
+
+export function getGlvShortTokenAddress(chainId: number, address: string): string {
+  return GLV_MARKETS[chainId][address].shortTokenAddress;
+}
+
+export function getGlvLongToken(chainId: number, address: string): Token {
+  return getToken(chainId, getGlvLongTokenAddress(chainId, address));
+}
+
+export function getGlvShortToken(chainId: number, address: string): Token {
+  return getToken(chainId, getGlvShortTokenAddress(chainId, address));
 }

@@ -148,9 +148,11 @@ export type WithdrawalAmounts = {
   marketTokenAmount: bigint;
   marketTokenUsd: bigint;
   longTokenAmount: bigint;
+  longTokenSwapPathStats: SwapPathStats | undefined;
   shortTokenAmount: bigint;
   longTokenUsd: bigint;
   shortTokenUsd: bigint;
+  shortTokenSwapPathStats: SwapPathStats | undefined;
   glvTokenAmount: bigint;
   glvTokenUsd: bigint;
   swapFeeUsd: bigint;
@@ -346,6 +348,7 @@ export type GmSwapFees = {
   swapPriceImpact?: FeeItem;
   uiFee?: FeeItem;
   shiftFee?: FeeItem;
+  logicalNetworkFee?: FeeItem;
 };
 
 export type TradeSearchParams = {

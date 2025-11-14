@@ -2,15 +2,27 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { memo, ReactNode, useEffect, useMemo, useState } from "react";
 
-import type { ContractsChainId, SourceChainId } from "config/chains";
+import { getChainName, type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
+import { getSourceChainDecimals, isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
-import type { Token, TokenData, TokensData } from "domain/tokens";
-import { stripBlacklistedWords } from "domain/tokens/utils";
+import { TokenBalanceType, type Token, type TokenData, type TokensData } from "domain/tokens";
+import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { getToken } from "sdk/configs/tokens";
+import { MARKETS } from "sdk/configs/markets";
+import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
+import {
+  getIsSpotOnlyMarket,
+  getMarketIndexName,
+  getMarketIndexToken,
+  getMarketIndexTokenSymbol,
+  getMarketLongTokenSymbol,
+  getMarketPoolName,
+  getMarketShortTokenSymbol,
+  isMarketTokenAddress,
+} from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
@@ -33,17 +45,17 @@ type Props = {
   className?: string;
 
   tokenAddress: string;
-  isGmxAccount: boolean;
+  payChainId: AnyChainId | 0 | undefined;
 
   tokensData: TokensData | undefined;
-  selectedTokenLabel?: ReactNode | string;
 
-  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
+  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean, srcChainId: SourceChainId | undefined) => void;
   extendedSortSequence?: string[] | undefined;
 
   footerContent?: ReactNode;
   qa?: string;
   multichainTokens: TokenChainData[] | undefined;
+  includeMultichainTokensInPay?: boolean;
 
   onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
 
@@ -56,16 +68,16 @@ export function MultichainTokenSelector({
   chainId,
   srcChainId,
   tokensData,
-  selectedTokenLabel,
   extendedSortSequence,
   footerContent,
   qa,
   onSelectTokenAddress: propsOnSelectTokenAddress,
   tokenAddress,
-  isGmxAccount,
+  payChainId,
   className,
   label,
   multichainTokens,
+  includeMultichainTokensInPay,
   onDepositTokenAddress: propsOnDepositTokenAddress,
   isConnected,
   walletIconUrls,
@@ -73,11 +85,18 @@ export function MultichainTokenSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  let token: Token | undefined = getToken(chainId, tokenAddress);
+  let token: Token | undefined = isMarketTokenAddress(chainId, tokenAddress)
+    ? getToken(chainId, GM_STUB_ADDRESS)
+    : getToken(chainId, tokenAddress);
 
-  const onSelectTokenAddress = (tokenAddress: string, isGmxAccount: boolean) => {
+  const onSelectTokenAddress = (tokenAddress: string, _chainId: AnyChainId | 0) => {
     setIsModalVisible(false);
-    propsOnSelectTokenAddress(tokenAddress, isGmxAccount);
+    // TODO MLTCH: bad readability
+    propsOnSelectTokenAddress(
+      tokenAddress,
+      _chainId === 0,
+      _chainId !== chainId && _chainId !== 0 && isSourceChain(_chainId) ? _chainId : undefined
+    );
   };
 
   const onDepositTokenAddress = (tokenAddress: string, chainId: SourceChainId) => {
@@ -103,6 +122,9 @@ export function MultichainTokenSelector({
     searchKeyword,
     tokensData,
     extendedSortSequence,
+    chainId,
+    multichainTokens,
+    includeMultichainTokensInPay,
   });
   const multichainTokenList = useMultichainTokensList({
     searchKeyword,
@@ -116,7 +138,7 @@ export function MultichainTokenSelector({
       e.stopPropagation();
       if (activeFilter === "pay") {
         if (availableToTradeTokenList.length > 0) {
-          onSelectTokenAddress(availableToTradeTokenList[0].address, availableToTradeTokenList[0].isGmxAccount);
+          onSelectTokenAddress(availableToTradeTokenList[0].address, availableToTradeTokenList[0].chainId);
         }
       } else {
         if (multichainTokenList.length > 0) {
@@ -133,14 +155,14 @@ export function MultichainTokenSelector({
       if (srcChainId === undefined) {
         setActiveFilter("pay");
       } else {
-        if (isGmxAccountEmpty) {
+        if (isGmxAccountEmpty && !includeMultichainTokensInPay) {
           setActiveFilter("deposit");
         } else {
           setActiveFilter("pay");
         }
       }
     }
-  }, [isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
+  }, [includeMultichainTokensInPay, isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
 
   const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
     return [
@@ -190,9 +212,9 @@ export function MultichainTokenSelector({
           <>
             {activeFilter === "pay" && (
               <AvailableToTradeTokenList
+                chainId={chainId}
                 onSelectTokenAddress={onSelectTokenAddress}
                 tokens={availableToTradeTokenList}
-                chainId={chainId}
               />
             )}
             {activeFilter === "deposit" && multichainTokens && (
@@ -206,37 +228,57 @@ export function MultichainTokenSelector({
         className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
         onClick={() => setIsModalVisible(true)}
       >
-        {selectedTokenLabel || (
+        {!token.isPlatformToken || token.isPlatformTradingToken ? (
           <span className="inline-flex items-center">
-            <TokenIcon
-              className="mr-4"
-              symbol={token.symbol}
-              displaySize={20}
-              chainIdBadge={isGmxAccount ? 0 : undefined}
-            />
+            <TokenIcon className="mr-4" symbol={token.symbol} displaySize={20} chainIdBadge={payChainId} />
             {token.symbol}
           </span>
-        )}
+        ) : (
+          <span className="inline-flex items-center">
+            <TokenIcon
+              symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)}
+              className="mr-4"
+              displaySize={20}
+              chainIdBadge={payChainId}
+            />
 
+            {getMarketIndexName({
+              indexToken: getMarketIndexToken(chainId, tokenAddress)!,
+              isSpotOnly: getIsSpotOnlyMarket(chainId, tokenAddress),
+            })}
+          </span>
+        )}
         <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-[inherit]" />
       </div>
     </div>
   );
 }
 
-type DisplayAvailableToTradeToken = TokenData & { balance: bigint; balanceUsd: bigint; isGmxAccount: boolean };
+type DisplayAvailableToTradeToken = TokenData & {
+  balance: bigint;
+  balanceUsd: bigint;
+  chainId: AnyChainId | 0;
+  // TODO MLTCH maybe move it in TokenData
+  sourceChainDecimals?: number;
+};
 function useAvailableToTradeTokenList({
+  chainId,
   activeFilter,
   srcChainId,
   searchKeyword,
   tokensData,
+  multichainTokens,
   extendedSortSequence,
+  includeMultichainTokensInPay,
 }: {
+  chainId: ContractsChainId;
   activeFilter: "pay" | "deposit";
   srcChainId: SourceChainId | undefined;
   searchKeyword: string;
   tokensData: TokensData | undefined;
+  multichainTokens: TokenChainData[] | undefined;
   extendedSortSequence?: string[];
+  includeMultichainTokensInPay?: boolean;
 }) {
   return useMemo(() => {
     if (activeFilter !== "pay") {
@@ -247,10 +289,69 @@ function useAvailableToTradeTokenList({
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
       if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
-        concatenatedTokens.push({ ...token, isGmxAccount: true, balance: token.gmxAccountBalance, balanceUsd: 0n });
+        const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+        concatenatedTokens.push({
+          ...token,
+          balanceType: TokenBalanceType.GmxAccount,
+          chainId: 0,
+          balance: token.gmxAccountBalance,
+          balanceUsd,
+        });
       }
       if (token.walletBalance !== undefined && srcChainId === undefined) {
-        concatenatedTokens.push({ ...token, isGmxAccount: false, balance: token.walletBalance, balanceUsd: 0n });
+        const balanceUsd = convertToUsd(token.walletBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+        concatenatedTokens.push({
+          ...token,
+          balance: token.walletBalance,
+          balanceUsd,
+          balanceType: TokenBalanceType.Wallet,
+          chainId,
+        });
+      }
+
+      if (token.sourceChainBalance !== undefined && srcChainId !== undefined) {
+        // TODO MLTCH: use sourceChainDecimals or put sourceChainBalance in normal decimals
+        const sourceChainDecimals = getSourceChainDecimals(srcChainId, token.address);
+
+        if (sourceChainDecimals === undefined) {
+          continue;
+        }
+
+        const balanceUsd = convertToUsd(token.sourceChainBalance, sourceChainDecimals, getMidPrice(token.prices))!;
+
+        concatenatedTokens.push({
+          ...token,
+          balance: token.sourceChainBalance,
+          decimals: sourceChainDecimals,
+          balanceUsd,
+          balanceType: TokenBalanceType.SourceChain,
+          chainId: srcChainId,
+        });
+      }
+    }
+
+    if (includeMultichainTokensInPay && multichainTokens) {
+      for (const token of multichainTokens) {
+        if (token.sourceChainBalance === undefined || token.sourceChainPrices === undefined) {
+          continue;
+        }
+
+        if (concatenatedTokens.some((t) => t.address === token.address && t.chainId === token.sourceChainId)) {
+          continue;
+        }
+
+        const balanceUsd =
+          convertToUsd(token.sourceChainBalance, token.sourceChainDecimals, token.sourceChainPrices?.maxPrice) ?? 0n;
+
+        concatenatedTokens.push({
+          ...token,
+          prices: token.sourceChainPrices,
+          balance: token.sourceChainBalance,
+          decimals: token.sourceChainDecimals,
+          balanceUsd,
+          chainId: token.sourceChainId,
+          balanceType: TokenBalanceType.SourceChain,
+        });
       }
     }
 
@@ -276,13 +377,12 @@ function useAvailableToTradeTokenList({
     const tokensWithoutBalance: DisplayAvailableToTradeToken[] = [];
 
     for (const token of filteredTokens) {
-      const balance = token.isGmxAccount ? token.gmxAccountBalance : token.walletBalance;
+      const balance = token.balance;
 
       if (balance !== undefined && balance > 0n) {
-        const balanceUsd = convertToUsd(balance, token.decimals, token.prices.maxPrice) ?? 0n;
-        tokensWithBalance.push({ ...token, balanceUsd });
+        tokensWithBalance.push(token);
       } else {
-        tokensWithoutBalance.push({ ...token, balanceUsd: 0n });
+        tokensWithoutBalance.push(token);
       }
     }
 
@@ -309,7 +409,16 @@ function useAvailableToTradeTokenList({
     });
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
-  }, [activeFilter, searchKeyword, tokensData, srcChainId, extendedSortSequence]);
+  }, [
+    activeFilter,
+    includeMultichainTokensInPay,
+    multichainTokens,
+    searchKeyword,
+    tokensData,
+    srcChainId,
+    chainId,
+    extendedSortSequence,
+  ]);
 }
 
 function AvailableToTradeTokenList({
@@ -318,7 +427,7 @@ function AvailableToTradeTokenList({
   tokens,
 }: {
   chainId: ContractsChainId;
-  onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
+  onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | 0) => void;
   tokens: DisplayAvailableToTradeToken[];
 }) {
   return (
@@ -326,27 +435,61 @@ function AvailableToTradeTokenList({
       {tokens.map((token) => {
         return (
           <div
-            key={token.address + "_" + (token.isGmxAccount ? "gmx" : "settlement")}
+            key={`${token.address}_${token.chainId}`}
             className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
-            onClick={() => onSelectTokenAddress(token.address, token.isGmxAccount)}
+            onClick={() => onSelectTokenAddress(token.address, token.chainId)}
           >
             <div className="flex items-center gap-16">
-              <TokenIcon
-                symbol={token.symbol}
-                className="size-40"
-                displaySize={40}
-                chainIdBadge={token.isGmxAccount ? 0 : chainId}
-              />
+              {token.isPlatformToken && isMarketTokenAddress(chainId, token.address) ? (
+                <>
+                  <TokenIcon
+                    symbol={getMarketIndexTokenSymbol(chainId, token.address)}
+                    className="size-40"
+                    displaySize={40}
+                    chainIdBadge={token.chainId}
+                    badge={
+                      [
+                        getMarketLongTokenSymbol(chainId, token.address),
+                        getMarketShortTokenSymbol(chainId, token.address),
+                      ] as [string, string]
+                    }
+                  />
 
-              <div>
-                <div className="text-body-large">{token.symbol}</div>
-                <span className="text-body-small text-typography-secondary">{token.name}</span>
-              </div>
+                  <div>
+                    <div className="text-body-large">
+                      GM:{" "}
+                      {getMarketIndexName({
+                        indexToken: getMarketIndexToken(chainId, token.address)!,
+                        isSpotOnly: false,
+                      })}{" "}
+                      <span className="text-accent">
+                        [
+                        {getMarketPoolName({
+                          longToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.longTokenAddress),
+                          shortToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.shortTokenAddress),
+                        })}
+                        ]
+                      </span>
+                    </div>
+                    <span className="text-body-small text-typography-secondary">
+                      <Trans>From</Trans> {token.chainId === 0 ? "GMX Account" : getChainName(token.chainId)}
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <TokenIcon symbol={token.symbol} className="size-40" displaySize={40} chainIdBadge={token.chainId} />
+                  <div>
+                    <div className="text-body-large">{token.symbol}</div>
+                    <span className="text-body-small text-typography-secondary">{token.name}</span>
+                  </div>
+                </>
+              )}
             </div>
             <div className="text-right">
               <div className="text-body-large">
                 {token.balance > 0n &&
-                  formatBalanceAmount(token.balance, token.decimals, undefined, {
+                  formatBalanceAmount(token.balance, token.sourceChainDecimals ?? token.decimals, undefined, {
                     isStable: token.isStable,
                   })}
                 {token.balance == 0n && "-"}

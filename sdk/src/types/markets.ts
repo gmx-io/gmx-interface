@@ -109,6 +109,8 @@ export type MarketInfo = Market &
     swapImpactFactorPositive: bigint;
     swapImpactFactorNegative: bigint;
     swapImpactExponentFactor: bigint;
+    withdrawalFeeFactorBalanceWasImproved?: bigint;
+    withdrawalFeeFactorBalanceWasNotImproved?: bigint;
 
     borrowingFactorPerSecondForLongs: bigint;
     borrowingFactorPerSecondForShorts: bigint;

@@ -7,6 +7,7 @@ import {
   OrderType,
   PositionOrderInfo,
   SwapOrderInfo,
+  SwapPricingType,
   TwapOrderInfo,
 } from "types/orders";
 import { Token, TokensData } from "types/tokens";
@@ -135,7 +136,7 @@ export function getOrderInfo(p: {
       )!,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     const priceImpactAmount = convertToTokenAmount(
@@ -229,7 +230,7 @@ export function getOrderInfo(p: {
       )!,
       shouldUnwrapNativeToken: order.shouldUnwrapNativeToken,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     let triggerThresholdType;

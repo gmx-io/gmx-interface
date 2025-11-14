@@ -1,5 +1,7 @@
+import { ContractsChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { InfoTokens, SignedTokenPermit, Token, TokenInfo } from "domain/tokens";
+import { getMappedTokenId } from "config/multichain";
+import { InfoTokens, SignedTokenPermit, Token, TokenBalanceType, TokenInfo } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
@@ -116,4 +118,20 @@ export function adaptToV1TokenInfo(tokenData: TokenData): TokenInfo {
     minPrice: tokenData.prices?.minPrice,
     maxPrice: tokenData.prices?.maxPrice,
   };
+}
+
+export function getBalanceByBalanceType(tokenData: TokenData, tokenBalanceType: TokenBalanceType): bigint | undefined {
+  switch (tokenBalanceType) {
+    case TokenBalanceType.Wallet:
+      return tokenData.walletBalance;
+    case TokenBalanceType.GmxAccount:
+      return tokenData.gmxAccountBalance;
+    case TokenBalanceType.SourceChain:
+      return tokenData.sourceChainBalance;
+  }
+}
+
+export function getSourceChainDecimals(chainId: ContractsChainId, srcChainId: SourceChainId, tokenAddress: string) {
+  const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId as SourceChainId);
+  return tokenId?.decimals;
 }
