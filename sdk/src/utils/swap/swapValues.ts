@@ -183,7 +183,6 @@ export function getSwapAmountsByToValue(p: {
 
   let amountIn = swapStrategy.amountIn;
   let usdIn = swapStrategy.usdIn;
-  let minOutputAmount = 0n;
 
   if (isLimit) {
     if (!triggerRatio) {
@@ -214,14 +213,17 @@ export function getSwapAmountsByToValue(p: {
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, swapStrategy.priceIn)!;
   }
 
+  let minOutputAmount = amountOut;
+
   if (amountIn < 0) {
     amountIn = 0n;
     usdIn = 0n;
+    minOutputAmount = 0n;
   }
 
   return {
-    amountIn: swapStrategy.amountIn,
-    amountOut: swapStrategy.amountOut,
+    amountIn,
+    amountOut,
     usdIn,
     minOutputAmount,
     usdOut: swapStrategy.usdOut,
