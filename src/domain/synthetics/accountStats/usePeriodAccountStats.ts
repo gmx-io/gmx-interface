@@ -47,6 +47,7 @@ export function usePeriodAccountStats(
                 realizedFees
                 realizedPnl
                 realizedPriceImpact
+                realizedSwapImpact
                 startUnrealizedFees
                 startUnrealizedPnl
                 startUnrealizedPriceImpact
@@ -77,6 +78,7 @@ export function usePeriodAccountStats(
           realizedFees: BigInt(stats.realizedFees),
           realizedPnl: BigInt(stats.realizedPnl),
           realizedPriceImpact: BigInt(stats.realizedPriceImpact),
+          realizedSwapImpact: BigInt(stats.realizedSwapImpact),
           startUnrealizedFees: BigInt(stats.startUnrealizedFees),
           startUnrealizedPnl: BigInt(stats.startUnrealizedPnl),
           startUnrealizedPriceImpact: BigInt(stats.startUnrealizedPriceImpact),

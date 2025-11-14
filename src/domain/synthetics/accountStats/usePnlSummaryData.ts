@@ -26,6 +26,7 @@ export type PnlSummaryPointDebugFields = {
   realizedBasePnlUsd: bigint;
   realizedFeesUsd: bigint;
   realizedPriceImpactUsd: bigint;
+  realizedSwapImpactUsd: bigint;
   unrealizedBasePnlUsd: bigint;
   unrealizedFeesUsd: bigint;
   startUnrealizedBasePnlUsd: bigint;
@@ -71,6 +72,7 @@ export const DEBUG_QUERY = gql`
       realizedBasePnlUsd
       realizedFeesUsd
       realizedPriceImpactUsd
+      realizedSwapImpactUsd
       unrealizedBasePnlUsd
       unrealizedFeesUsd
       startUnrealizedBasePnlUsd
@@ -107,6 +109,7 @@ export function usePnlSummaryData(chainId: number, account: Address) {
           winsLossesRatioBps: row.winsLossesRatioBps ? BigInt(row.winsLossesRatioBps) : undefined,
           usedCapitalUsd: BigInt(row.usedCapitalUsd),
 
+          realizedSwapImpactUsd: row.realizedSwapImpactUsd !== undefined ? BigInt(row.realizedSwapImpactUsd) : 0n,
           realizedBasePnlUsd: row.realizedBasePnlUsd !== undefined ? BigInt(row.realizedBasePnlUsd) : 0n,
           realizedFeesUsd: row.realizedFeesUsd !== undefined ? BigInt(row.realizedFeesUsd) : 0n,
           realizedPriceImpactUsd: row.realizedPriceImpactUsd !== undefined ? BigInt(row.realizedPriceImpactUsd) : 0n,

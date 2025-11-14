@@ -336,6 +336,8 @@ export async function fetchRawTradeActions({
             minOutputAmount
             executionAmountOut
 
+            swapImpactUsd
+            collateralTotalCostAmount
             priceImpactUsd
             priceImpactDiffUsd
             positionFeeAmount
@@ -359,6 +361,7 @@ export async function fetchRawTradeActions({
             numberOfParts
             totalImpactUsd
             proportionalPendingImpactUsd
+            decreasePositionSwapType
 
             reason
             reasonBytes

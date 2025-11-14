@@ -3,13 +3,12 @@ import { getAddress } from "viem";
 import type { MarketsInfoData } from "types/markets";
 import type { TradeAction as SubsquidTradeAction } from "types/subsquid";
 import { Token, TokensData } from "types/tokens";
-import type { PositionTradeAction } from "types/tradeHistory";
-import type { SwapTradeAction } from "types/tradeHistory";
+import type { PositionTradeAction, SwapTradeAction } from "types/tradeHistory";
 
 import { getByKey } from "./objects";
-import { isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType, isSwapOrderType } from "./orders";
+import { isIncreaseOrderType, isSwapOrderType } from "./orders";
 import { getSwapPathOutputAddresses } from "./swap/swapStats";
-import { convertToUsd, parseContractPrice } from "./tokens";
+import { parseContractPrice } from "./tokens";
 import { TradeActionType } from "../types/tradeHistory";
 
 export function createRawTradeActionTransformer(
@@ -138,6 +137,7 @@ export function createRawTradeActionTransformer(
         orderType,
         orderKey: rawAction.orderKey,
         isLong: rawAction.isLong!,
+        pnlUsd: rawAction.pnlUsd ? BigInt(rawAction.pnlUsd) : undefined,
         basePnlUsd: rawAction.basePnlUsd ? BigInt(rawAction.basePnlUsd) : undefined,
 
         priceImpactDiffUsd: rawAction.priceImpactDiffUsd ? BigInt(rawAction.priceImpactDiffUsd) : undefined,
@@ -163,41 +163,9 @@ export function createRawTradeActionTransformer(
             : undefined,
       };
 
-      tradeAction.pnlUsd = getTradeActionPnlUsd(tradeAction);
-
       return tradeAction;
     }
   };
-}
-
-export function getTradeActionPnlUsd({
-  basePnlUsd,
-  borrowingFeeAmount,
-  fundingFeeAmount,
-  positionFeeAmount,
-  liquidationFeeAmount,
-  collateralTokenPriceMax,
-  initialCollateralToken,
-  totalImpactUsd = 0n,
-  orderType,
-}: PositionTradeAction): bigint | undefined {
-  if (
-    (!isDecreaseOrderType(orderType) && !isLiquidationOrderType(orderType)) ||
-    basePnlUsd === undefined ||
-    borrowingFeeAmount === undefined ||
-    fundingFeeAmount === undefined ||
-    positionFeeAmount === undefined ||
-    liquidationFeeAmount === undefined ||
-    collateralTokenPriceMax === undefined ||
-    initialCollateralToken === undefined
-  ) {
-    return undefined;
-  }
-
-  const feeTotalAmount = borrowingFeeAmount + fundingFeeAmount + positionFeeAmount + liquidationFeeAmount;
-  const feeUsd = convertToUsd(feeTotalAmount, initialCollateralToken.decimals, collateralTokenPriceMax)!;
-
-  return basePnlUsd - feeUsd + totalImpactUsd;
 }
 
 export function bigNumberify(n?: bigint | string | null | undefined) {

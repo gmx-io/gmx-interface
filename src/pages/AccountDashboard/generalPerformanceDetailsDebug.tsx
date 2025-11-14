@@ -53,6 +53,12 @@ export function GeneralPerformanceDetailsDebugTooltip({ row }: { row: PnlSummary
         textClassName={getPositiveOrNegativeClass(row.realizedPriceImpactUsd)}
         value={formatUsd(row.realizedPriceImpactUsd)}
       />
+      <StatsTooltipRow
+        label={t`Realized Swap Impact`}
+        showDollar={false}
+        textClassName={getPositiveOrNegativeClass(row.realizedSwapImpactUsd)}
+        value={formatUsd(row.realizedSwapImpactUsd)}
+      />
     </>
   );
 }
