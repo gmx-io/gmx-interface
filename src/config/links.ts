@@ -46,6 +46,7 @@ export const DOCS_LINKS = {
   fundingFees: "https://docs.gmx.io/docs/trading/v2/#funding-fees",
   adaptiveFunding: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
   borrowingFees: "https://docs.gmx.io/docs/trading/v2/#borrowing-fees",
+  priceImpact: "https://docs.gmx.io/docs/trading/v2#price-impact-and-price-impact-rebates",
 };
 
 export const ARBITRUM_INCENTIVES_V2_URL =

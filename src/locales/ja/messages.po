@@ -145,6 +145,10 @@ msgstr "ストップロス"
 msgid "Type"
 msgstr "タイプ"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "esGMX Rewards:"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid ""
 msgstr ""
@@ -356,10 +360,6 @@ msgstr "{updateOrdersCount}件のTP/SL注文が更新されました"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Stop market price above mark price"
 msgstr "ストップ市場価格がマーク価格を上回っています"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation. <0>View</0>.<1/><2/>{suggestText}"
-#~ msgstr "実行手数料検証のため取引が失敗しました。<0>表示</0>.<1/><2/>{suggestText}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -1116,6 +1116,10 @@ msgstr "エクスプレス"
 msgid "Start Earning"
 msgstr "稼ぎ始めましょう"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "ポジションの担保が{symbol}であり、初期価値が{indexName}ロングポジションサイズより高いため、担保価値は負のPnLをカバーし、清算価格はありません。"
@@ -1464,10 +1468,6 @@ msgstr "V2 Avalanche Fuji"
 msgid "Order executed"
 msgstr "注文執行済"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High impact on collateral"
-msgstr "担保への高い影響"
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "ロングポジションから{indexSymbol}をロングし、{collateralSymbol}担保から{collateralSymbol}をロングします。清算価格は{collateralSymbol}の価格に基づいて変動します。"
@@ -1654,6 +1654,10 @@ msgstr "警告: このポジションは手数料差引後の担保額が低い�
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a  price"
 msgstr "価格を入力"
+
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
@@ -2898,6 +2902,10 @@ msgstr "リファラルコードを入力"
 msgid "Read the rules"
 msgstr "ルールを読む"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High Net Price Impact"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Lev."
 msgstr "レバレッジ"
@@ -3458,10 +3466,6 @@ msgstr "Avalancheで紹介したトレーダー"
 msgid "Funding Fees"
 msgstr "ファンディング手数料"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "No deposit in progress"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Approval failed"
@@ -3582,11 +3586,6 @@ msgstr "GLVを購入"
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Part"
 msgstr "TWAPパートに失敗"
-
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Impact+Fees"
-msgstr "インパクト+手数料"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
@@ -3866,6 +3865,10 @@ msgstr "取引準備エラー。プロバイダーが定義されていません
 msgid "Insufficient liquidity in GM Pool"
 msgstr "GMプールの流動性が不足しています"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Leveraged tokens with protection"
+msgstr ""
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Failed to claim funds"
 msgstr "資金の請求に失敗しました"
@@ -3979,6 +3982,10 @@ msgstr "注文シミュレーション実行に失敗しました。"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Support for"
 msgstr "サポート"
+
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Toros"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Invalid Transfer Addresses: Please check the url."
@@ -4181,10 +4188,6 @@ msgstr "蓄積された価格影響リベート。5日後に請求可能にな�
 msgid "Take Profit / Stop Loss"
 msgstr "テイクプロフィット / ストップロス"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-msgstr "<0>{1}プールに切り替えて</0>価格影響と手数料で{0}を節約"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "{networkName}のアカウントにこの取引を送信するための{0}が十分にありません。<0/><1/><2>{1}を購入または{networkName}に転送</2>"
@@ -4320,10 +4323,6 @@ msgstr "高い許容スリッページを設定しました。手数料を含む
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "紹介コード作成"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High price impact"
-msgstr "高い価格影響"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -4465,10 +4464,6 @@ msgstr "ワンクリック承認のノンスが期限切れです。新規承認
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Pending {tokenSymbol} approval"
 msgstr ""
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Back to GMX Account"
-#~ msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -4937,6 +4932,10 @@ msgstr "未実現PnL開始"
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "承認が提出されました! <0>状況を確認する</0>"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "プールGM: {0} の{1} [{2}]での購入可能上限に達しました。購入サイズを減らすか、別のGMトークンを選択するか、GMトークンを別のプールにシフトして再試行してください。"
@@ -5103,6 +5102,11 @@ msgstr "Perpie"
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
 msgstr "サポート"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Use a TWAP order"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
@@ -5581,6 +5585,10 @@ msgstr "建玉"
 msgid "Failed to download trade history CSV."
 msgstr "取引履歴CSVのダウンロードに失敗。"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to the {0} pool</0> for potentially lower net price impact"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "市場"
@@ -5826,12 +5834,6 @@ msgstr "USDCまたはETHを入金"
 msgid "Referral code created."
 msgstr "リファラルコードが作成されました。"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid ""
-#~ "to\n"
-#~ "{0}"
-#~ msgstr ""
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "通知"
@@ -6002,10 +6004,6 @@ msgstr "GMXボールト"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "Start a deposit"
-#~ msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr "分"
@@ -6083,10 +6081,6 @@ msgstr "ストップマーケットを執行"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "有効な紹介コードを使ってこのアカウントでトレードされた取引高"
-
-#: src/components/GmxAccountModal/DepositStatusView.tsx
-#~ msgid "This view is only available for deposits"
-#~ msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized fees"
@@ -6277,6 +6271,11 @@ msgstr "トップポジション"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "プール"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "for lower net price impact."
+msgstr ""
 
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
@@ -7844,10 +7843,6 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Request Deposit"
 msgstr "入金リクエスト"
-
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Transaction failed due to execution fee validation.<0/><1>View</1>.<2/><3/>{suggestText}"
-#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"

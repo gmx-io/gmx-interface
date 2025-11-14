@@ -3,9 +3,9 @@ import { BigNumberish, ethers } from "ethers";
 import { useEffect, useState } from "react";
 
 import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
+import { getReferralsGraphClient, REFERRAL_SUPPORTED_CHAIN_IDS } from "lib/indexers";
 import { BN_ZERO } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { getReferralsGraphClient, REFERRAL_SUPPORTED_CHAIN_IDS } from "lib/subgraph";
 import { decodeReferralCode } from "sdk/utils/referrals";
 
 import {

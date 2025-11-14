@@ -3,8 +3,8 @@ import { useMemo } from "react";
 import type { Address } from "viem";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { getSubsquidGraphClient } from "lib/subgraph";
 
 export type PnlSummaryPoint = {
   bucketLabel: string;

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { Hash } from "viem";
 
-import { getReferralsGraphClient } from "lib/subgraph";
+import { getReferralsGraphClient } from "lib/indexers";
 import { decodeReferralCode } from "sdk/utils/referrals";
 
 import type { CodeOwnershipInfo } from "../types";

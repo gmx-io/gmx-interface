@@ -26,9 +26,25 @@ export type EventData = {
 
 export const homeEventsData: EventData[] = [];
 
-export const MKR_USD_DELISTING_EVENT_ID = "mkr-usd-delisting";
+export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
+  {
+    id: AL16Z_DELISTING_EVENT_ID,
+    isActive: true,
+    startDate: "06 Nov 2025, 08:00",
+    endDate: "06 Dec 2025, 08:00",
+    title: "AI16Z/USD delisting",
+    bodyText: (
+      <>
+        Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is
+        recommended.
+        <br />
+        <br />
+        The listing committee will evaluate the listing of ELIZAOS/USD.
+      </>
+    ),
+  },
   {
     id: "xaut0-avalanche-listing",
     isActive: true,
@@ -95,22 +111,6 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span>.
-      </>
-    ),
-  },
-  {
-    id: MKR_USD_DELISTING_EVENT_ID,
-    isActive: true,
-    startDate: "16 Sep 2025, 10:00",
-    endDate: "30 Sep 2025, 12:00",
-    title: "MKR/USD delisting",
-    bodyText: (
-      <>
-        Position opening for MKR/USD are no longer available. Existing positions remain open, but closing is
-        recommended.
-        <br />
-        <br />
-        The listing committee will evaluate listing SKY/USD.
       </>
     ),
   },

@@ -1,5 +1,5 @@
 import { MessageDescriptor } from "@lingui/core";
-import { msg, t } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import format from "date-fns/format";
 import { ReactNode, useEffect, useMemo, useState } from "react";
@@ -85,10 +85,6 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true, withGlv: true });
 
-  const tokenAddresses = useMemo(() => {
-    return [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address];
-  }, [glvOrMarketInfo.longTokenAddress, glvOrMarketInfo.shortTokenAddress, address]);
-
   const { performance } = usePerformanceAnnualized({
     chainId,
     period: timeRange,
@@ -101,10 +97,10 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
     address,
   });
 
-  const { prices } = usePriceSnapshots({
+  const priceSnapshots = usePriceSnapshots({
     chainId,
     period: convertPoolsTimeRangeToPeriod(timeRange),
-    tokenAddresses,
+    marketOrGlvTokenAddress: address,
   });
 
   const { aprSnapshots } = useAprSnapshots({
@@ -114,7 +110,6 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   });
 
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
-  const priceSnapshotsByAddress = prices?.[address] ?? EMPTY_ARRAY;
 
   const isMobile = usePoolsIsMobilePage();
 
@@ -183,7 +178,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
           </div>
           <GraphChart
             performanceSnapshots={performanceSnapshots[address] ?? EMPTY_ARRAY}
-            priceSnapshots={priceSnapshotsByAddress}
+            priceSnapshots={priceSnapshots}
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
           />
@@ -319,6 +314,16 @@ const GraphChart = ({
     }
   }, [performanceData, priceData, apyData, marketGraphType, prevMarketGraphType]);
 
+  if (data.length === 0) {
+    return (
+      <div className={cx("flex items-center justify-center", { "h-[260px]": isMobile, "h-[300px]": !isMobile })}>
+        <p className="text-body-medium text-typography-secondary">
+          <Trans>Not enough data available yet</Trans>
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <ResponsiveContainer height={isMobile ? 260 : 300} width="100%">
@@ -400,7 +405,7 @@ const GraphValue = ({
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className={cx("text-h2", valueClassName)}>{value ?? "..."}</span>
+      <span className={cx("text-h2", valueClassName)}>{value ?? "N/A"}</span>
       <span className="text-body-small text-typography-secondary">{label}</span>
     </div>
   );

@@ -1,12 +1,12 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-import { getSubgraphUrl } from "config/subgraph";
+import { getIndexerUrl } from "config/indexers";
 
 export function createClient(
   chainId: number,
-  subgraph: "stats" | "referrals" | "nissohVault" | "syntheticsStats" | "subsquid" | "chainLink"
+  indexer: "stats" | "referrals" | "syntheticsStats" | "subsquid" | "chainLink"
 ) {
-  const url = getSubgraphUrl(chainId, subgraph);
+  const url = getIndexerUrl(chainId, indexer);
   return new ApolloClient({
     uri: url,
     cache: new InMemoryCache(),

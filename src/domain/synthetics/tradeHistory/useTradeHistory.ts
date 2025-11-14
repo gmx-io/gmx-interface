@@ -9,11 +9,11 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { OrderType } from "domain/synthetics/orders";
 import { definedOrThrow } from "lib/guards";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
 import { TradeAction, TradeActionType } from "sdk/types/tradeHistory";
-import { GraphQlFilters, buildFiltersBody } from "sdk/utils/subgraph";
+import { GraphQlFilters, buildFiltersBody } from "sdk/utils/indexers";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 

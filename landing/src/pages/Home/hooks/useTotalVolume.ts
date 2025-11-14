@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
+import { getSyntheticsGraphClient } from "lib/indexers";
 import { getTotalVolumeSum } from "lib/legacy";
-import { getSyntheticsGraphClient } from "lib/subgraph";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
 const query = {
   query: gql`
