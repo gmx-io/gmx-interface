@@ -1,6 +1,7 @@
 import { HIGH_PRICE_IMPACT_BPS } from "configs/factors";
 import { FeeItem } from "types/fees";
 import { MarketInfo } from "types/markets";
+import { SwapPricingType } from "types/orders";
 import { SwapStats } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
@@ -13,12 +14,16 @@ export function getSwapFee(
   marketInfo: MarketInfo,
   swapAmount: bigint,
   balanceWasImproved: boolean,
-  isAtomicSwap: boolean
+  swapPricingType: SwapPricingType
 ) {
   let factor: bigint;
 
-  if (isAtomicSwap) {
+  if (swapPricingType === SwapPricingType.AtomicSwap) {
     factor = marketInfo.atomicSwapFeeFactor;
+  } else if (swapPricingType === SwapPricingType.Withdrawal) {
+    factor = balanceWasImproved
+      ? marketInfo.withdrawalFeeFactorBalanceWasImproved ?? marketInfo.swapFeeFactorForBalanceWasImproved
+      : marketInfo.withdrawalFeeFactorBalanceWasNotImproved ?? marketInfo.swapFeeFactorForBalanceWasNotImproved;
   } else {
     factor = balanceWasImproved
       ? marketInfo.swapFeeFactorForBalanceWasImproved

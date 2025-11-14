@@ -14,6 +14,7 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/tokens";
+import { SwapPricingType } from "sdk/types/orders";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
@@ -189,7 +190,7 @@ async function estimateSourceChainDepositInitialTxFees({
           marketsInfoData: globalExpressParams.marketsInfoData,
           swapOptimizationOrder: ["length"],
           externalSwapQuoteParams: undefined,
-          isAtomicSwap: true,
+          swapPricingType: SwapPricingType.AtomicSwap,
         });
 
   if (feeSwapStrategy && !feeSwapStrategy.swapPathStats) {

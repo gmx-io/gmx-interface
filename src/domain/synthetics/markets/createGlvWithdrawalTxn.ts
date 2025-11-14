@@ -96,7 +96,7 @@ export async function createGlvWithdrawalTxn({
         method: "simulateExecuteLatestGlvWithdrawal",
         errorTitle: t`Withdrawal error.`,
         value: wntAmount,
-        swapPricingType: SwapPricingType.TwoStep,
+        swapPricingType: SwapPricingType.Swap,
         metricId: metricId,
         blockTimestampData: blockTimestampData,
       })

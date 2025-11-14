@@ -94,6 +94,8 @@ export type MarketConfig = Pick<
   | "swapImpactFactorNegative"
   | "swapImpactExponentFactor"
   | "atomicSwapFeeFactor"
+  | "withdrawalFeeFactorBalanceWasImproved"
+  | "withdrawalFeeFactorBalanceWasNotImproved"
   | "virtualMarketId"
   | "virtualLongTokenId"
   | "virtualShortTokenId"
@@ -184,6 +186,8 @@ export type MarketConfigMulticallRequestConfig = MulticallRequestConfig<{
       | "swapImpactFactorPositive"
       | "swapImpactFactorNegative"
       | "swapImpactExponentFactor"
+      | "withdrawalFeeFactorBalanceWasImproved"
+      | "withdrawalFeeFactorBalanceWasNotImproved"
       | "virtualMarketId"
       | "virtualLongTokenId"
       | "virtualShortTokenId",

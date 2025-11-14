@@ -93,7 +93,7 @@ export async function createWithdrawalTxn({
         method: "simulateExecuteLatestWithdrawal",
         errorTitle: t`Withdrawal error.`,
         value: params.executionFee,
-        swapPricingType: SwapPricingType.TwoStep,
+        swapPricingType: SwapPricingType.Swap,
         metricId: metricId,
         blockTimestampData: blockTimestampData,
       })

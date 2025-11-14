@@ -2,6 +2,7 @@ import { maxUint256 } from "viem";
 
 import { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
+import { SwapPricingType } from "types/orders";
 import { TokensData } from "types/tokens";
 import {
   MarketEdge,
@@ -23,7 +24,10 @@ import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "uti
 
 import { getSwapStats } from "./swapStats";
 
-export const createSwapEstimator = (marketsInfoData: MarketsInfoData, isAtomicSwap: boolean): SwapEstimator => {
+export const createSwapEstimator = (
+  marketsInfoData: MarketsInfoData,
+  swapPricingType: SwapPricingType
+): SwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
     const marketInfo = marketsInfoData[e.marketAddress];
 
@@ -39,7 +43,7 @@ export const createSwapEstimator = (marketsInfoData: MarketsInfoData, isAtomicSw
       tokenInAddress: e.from,
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
-      isAtomicSwap,
+      swapPricingType,
     });
 
     const isOutLiquidity = swapStats?.isOutLiquidity;
@@ -73,9 +77,13 @@ export const createMarketEdgeLiquidityGetter = (marketsInfoData: MarketsInfoData
   };
 };
 
+/**
+  TODO MLTCH does naive estimator need to know about swap pricing type?
+  Its naive for a reason and i think it would work the same without knowing about it
+*/
 export const createNaiveSwapEstimator = (
   marketsInfoData: MarketsInfoData,
-  isAtomicSwap: boolean
+  swapPricingType: SwapPricingType
 ): NaiveSwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
     let marketInfo = marketsInfoData[e.marketAddress];
@@ -90,7 +98,7 @@ export const createNaiveSwapEstimator = (
       tokenInAddress: e.from,
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
-      isAtomicSwap,
+      swapPricingType,
     });
 
     const usdOut = swapStats?.usdOut;
