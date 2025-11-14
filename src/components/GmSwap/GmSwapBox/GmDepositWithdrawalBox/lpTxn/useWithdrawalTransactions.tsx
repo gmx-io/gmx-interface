@@ -6,11 +6,18 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsIsFirstBuy,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenData,
+  selectPoolsDetailsPaySource,
+  selectPoolsDetailsSelectedMarketAddressForGlv,
+  selectPoolsDetailsSelectedMarketInfoForGlv,
   selectPoolsDetailsShortTokenAddress,
+  selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
 } from "context/PoolsDetailsContext/selectors";
+import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -49,26 +56,13 @@ import { ExecutionFee } from "sdk/types/fees";
 import { WithdrawalAmounts } from "sdk/types/trade";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 
-import { selectDepositWithdrawalAmounts } from "../selectDepositWithdrawalAmounts";
-import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdrawalExpressTxnParams";
 
 export const useWithdrawalTransactions = ({
-  selectedMarketForGlv,
-  longTokenAmount,
-  shortTokenAmount,
-  marketTokenAmount,
-  marketTokenUsd,
-  glvTokenAmount,
-  glvTokenUsd,
-  isFirstBuy,
-  paySource,
   technicalFees,
-  selectedMarketInfoForGlv,
-  tokensData,
   shouldDisableValidation,
-}: UseLpTransactionProps) => {
+}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation">) => {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { setPendingWithdrawal } = useSyntheticsEvents();
@@ -79,6 +73,22 @@ export const useWithdrawalTransactions = ({
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const { isWithdrawal } = useSelector(selectPoolsDetailsFlags);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
+  const paySource = useSelector(selectPoolsDetailsPaySource);
+  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
+  const tokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+
+  const {
+    longTokenAmount = 0n,
+    shortTokenAmount = 0n,
+    glvTokenAmount = 0n,
+    glvTokenUsd = 0n,
+    marketTokenAmount = 0n,
+    marketTokenUsd = 0n,
+  } = amounts ?? {};
+
+  const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
+
+  const isFirstBuy = useSelector(selectPoolsDetailsIsFirstBuy);
 
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
@@ -218,8 +228,7 @@ export const useWithdrawalTransactions = ({
         !account ||
         !marketInfo ||
         !marketToken ||
-        longTokenAmount === undefined ||
-        shortTokenAmount === undefined ||
+        !amounts ||
         !transferRequests ||
         !tokensData ||
         !signer ||
@@ -304,8 +313,7 @@ export const useWithdrawalTransactions = ({
       account,
       marketInfo,
       marketToken,
-      longTokenAmount,
-      shortTokenAmount,
+      amounts,
       transferRequests,
       tokensData,
       signer,
@@ -318,7 +326,6 @@ export const useWithdrawalTransactions = ({
       rawParams,
       glvTokenAmount,
       technicalFees,
-      amounts,
       setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.promise,
       setPendingTxns,
@@ -339,8 +346,7 @@ export const useWithdrawalTransactions = ({
         !account ||
         !marketInfo ||
         !marketToken ||
-        longTokenAmount === undefined ||
-        shortTokenAmount === undefined ||
+        !amounts ||
         !transferRequests ||
         !tokensData ||
         !signer ||
@@ -423,8 +429,7 @@ export const useWithdrawalTransactions = ({
       account,
       marketInfo,
       marketToken,
-      longTokenAmount,
-      shortTokenAmount,
+      amounts,
       transferRequests,
       tokensData,
       signer,
@@ -437,7 +442,6 @@ export const useWithdrawalTransactions = ({
       technicalFees,
       rawParams,
       marketTokenAmount,
-      amounts,
       setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.promise,
       shouldDisableValidation,

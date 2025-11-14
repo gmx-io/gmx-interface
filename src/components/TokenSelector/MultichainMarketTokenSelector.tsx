@@ -116,7 +116,7 @@ export function MultichainMarketTokenSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <div className="mt-16">
+          <div className="pb-12">
             <ButtonRowScrollFadeContainer>
               <Tabs
                 options={NETWORKS_FILTER}
@@ -239,13 +239,12 @@ function AvailableToTradeTokenList({
         return (
           <div
             key={token.chainId ?? "settlement-chain"}
-            className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-16 py-8"
+            className="gmx-hover-gradient flex cursor-pointer items-center justify-between px-adaptive py-8"
             onClick={() => onSelectTokenAddress(token.chainId)}
           >
             <div className="text-body-large flex items-center gap-8">
               <TokenIcon symbol={token.symbol} className="size-40" displaySize={40} chainIdBadge={token.chainId} />
 
-              {/* <SelectedPoolLabel glvOrMarketInfo={marketInfo} /> */}
               {marketInfo && (
                 <div>
                   <div>

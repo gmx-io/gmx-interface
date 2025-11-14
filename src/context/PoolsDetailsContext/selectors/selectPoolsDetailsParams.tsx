@@ -20,7 +20,7 @@ import {
   selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSecondTokenAddress,
-  selectPoolsDetailsSelectedMarketForGlv,
+  selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
@@ -49,7 +49,7 @@ import { WithdrawalAmounts } from "sdk/types/trade";
 import { nowInSeconds } from "sdk/utils/time";
 import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
-import { selectDepositWithdrawalAmounts } from "../selectDepositWithdrawalAmounts";
+import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts";
 
 type PoolsDetailsParams =
   | RawCreateDepositParams
@@ -86,7 +86,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   const marketsInfoData = q(selectMarketsInfoData);
 
   const marketOrGlvTokenAddress = q(selectPoolsDetailsGlvOrMarketAddress);
-  const selectedMarketForGlv = q(selectPoolsDetailsSelectedMarketForGlv);
+  const selectedMarketForGlv = q(selectPoolsDetailsSelectedMarketAddressForGlv);
 
   const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
   const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);

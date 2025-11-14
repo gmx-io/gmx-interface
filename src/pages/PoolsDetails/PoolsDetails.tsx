@@ -2,11 +2,9 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import {
-  usePoolsDetailsGlvOrMarketAddress,
-  usePoolsDetailsMode,
-  usePoolsDetailsOperation,
-  usePoolsDetailsSelectedMarketForGlv,
-} from "context/PoolsDetailsContext/hooks";
+  selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsGlvOrMarketInfo,
+} from "context/PoolsDetailsContext/selectors";
 import {
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
@@ -15,14 +13,13 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getTokenData } from "domain/synthetics/tokens";
 import { getPageTitle } from "lib/legacy";
-import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
-import { GmSwapBox, GmSwapBoxProps } from "components/GmSwap/GmSwapBox/GmSwapBox";
+import { GmSwapBox } from "components/GmSwap/GmSwapBox/GmSwapBox";
 import { GmSwapBoxHeader } from "components/GmSwap/GmSwapBox/GmSwapBoxHeader";
 import Loader from "components/Loader/Loader";
 import { useCompositionData } from "components/MarketStats/hooks/useCompositionData";
@@ -37,16 +34,11 @@ import { PoolsDetailsCard } from "./PoolsDetailsCard";
 import { PoolsDetailsHeader } from "./PoolsDetailsHeader";
 
 export function PoolsDetails() {
+  const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
-  const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
-
-  const [operation, setOperation] = usePoolsDetailsOperation();
-  const [mode, setMode] = usePoolsDetailsMode();
-  const [glvOrMarketAddress, setGlvOrMarketAddress] = usePoolsDetailsGlvOrMarketAddress();
-  const [selectedMarketForGlv, setSelectedMarketForGlv] = usePoolsDetailsSelectedMarketForGlv();
-
-  const glvOrMarketInfo = getByKey(glvAndMarketsInfoData, glvOrMarketAddress);
+  const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
+  const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
 
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
 
@@ -113,17 +105,7 @@ export function PoolsDetails() {
                   </PoolsDetailsCard>
                 </div>
 
-                <PoolsDetailsGmSwapBox
-                  selectedGlvOrMarketAddress={glvOrMarketAddress}
-                  onSelectGlvOrMarket={setGlvOrMarketAddress}
-                  selectedMarketForGlv={selectedMarketForGlv}
-                  onSelectedMarketForGlv={setSelectedMarketForGlv}
-                  operation={operation}
-                  mode={mode}
-                  onSetMode={setMode}
-                  onSetOperation={setOperation}
-                  isInCurtain={isInCurtain}
-                />
+                <PoolsDetailsGmSwapBox isInCurtain={isInCurtain} />
               </div>
             </>
           ) : (
@@ -135,9 +117,7 @@ export function PoolsDetails() {
   );
 }
 
-const PoolsDetailsGmSwapBox = (props: GmSwapBoxProps & { isInCurtain: boolean }) => {
-  const { isInCurtain } = props;
-
+const PoolsDetailsGmSwapBox = ({ isInCurtain }: { isInCurtain: boolean }) => {
   if (!isInCurtain) {
     return (
       <div
@@ -146,15 +126,15 @@ const PoolsDetailsGmSwapBox = (props: GmSwapBoxProps & { isInCurtain: boolean })
           "w-full max-w-none": isInCurtain,
         })}
       >
-        <GmSwapBoxHeader {...props} />
-        <GmSwapBox {...props} />
+        <GmSwapBoxHeader isInCurtain={isInCurtain} />
+        <GmSwapBox />
       </div>
     );
   }
 
   return (
-    <Curtain header={<GmSwapBoxHeader {...props} isInCurtain />}>
-      <GmSwapBox {...props} />
+    <Curtain header={<GmSwapBoxHeader isInCurtain={isInCurtain} />}>
+      <GmSwapBox />
     </Curtain>
   );
 };

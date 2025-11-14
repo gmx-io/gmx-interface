@@ -69,12 +69,11 @@ export type PoolsDetailsState = {
   marketOrGlvTokenInputValue: string;
   isMarketForGlvSelectedManually: boolean;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
-  // marketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
   setGlvOrMarketAddress: (glvOrMarketAddress: string) => void;
-  setSelectedMarketForGlv: (marketAddress?: string) => void;
+  setSelectedMarketAddressForGlv: (marketAddress?: string) => void;
   setFocusedInput: (input: FocusedInput) => void;
   setPaySource: (source: GmPaySource) => void;
   setFirstTokenAddress: (address: ERC20Address | NativeTokenSupportedAddress | undefined) => void;
@@ -222,7 +221,7 @@ export function usePoolsDetailsState({
       setOperation,
       setMode,
       setGlvOrMarketAddress,
-      setSelectedMarketForGlv,
+      setSelectedMarketAddressForGlv: setSelectedMarketForGlv,
       setFocusedInput,
       setPaySource,
       setFirstTokenAddress,

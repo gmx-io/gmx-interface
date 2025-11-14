@@ -6,15 +6,20 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsIsFirstBuy,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenAddress,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsSelectedMarketForGlv,
+  selectPoolsDetailsSelectedMarketAddressForGlv,
+  selectPoolsDetailsSelectedMarketInfoForGlv,
   selectPoolsDetailsShortTokenAddress,
+  selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
 } from "context/PoolsDetailsContext/selectors";
+import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectBlockTimestampData,
@@ -57,25 +62,13 @@ import { ExecutionFee } from "sdk/types/fees";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
-import { selectPoolsDetailsParams } from "./selectPoolsDetailsParams";
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpressTxnParams";
 
 export const useDepositTransactions = ({
-  longTokenAmount,
-  shortTokenAmount,
-  glvTokenAmount,
-  glvTokenUsd,
-  marketTokenAmount,
-  marketTokenUsd,
   shouldDisableValidation,
-  tokensData,
   technicalFees,
-  // selectedMarketForGlv,
-  selectedMarketInfoForGlv,
-  isFirstBuy,
-  // paySource,
-}: UseLpTransactionProps): {
+}: Pick<UseLpTransactionProps, "shouldDisableValidation" | "technicalFees">): {
   onCreateDeposit: () => Promise<void>;
 } => {
   const chainId = useSelector(selectChainId);
@@ -92,9 +85,25 @@ export const useDepositTransactions = ({
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const paySource = useSelector(selectPoolsDetailsPaySource);
-  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketForGlv);
+  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
   const isMarketTokenDeposit = useSelector(selectPoolsDetailsIsMarketTokenDeposit);
   const marketTokenAddress = useSelector(selectPoolsDetailsMarketTokenAddress);
+
+  const tokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
+
+  const {
+    longTokenAmount = 0n,
+    shortTokenAmount = 0n,
+    glvTokenAmount = 0n,
+    glvTokenUsd = 0n,
+    marketTokenAmount = 0n,
+    marketTokenUsd = 0n,
+  } = amounts ?? {};
+
+  const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
+
+  const isFirstBuy = useSelector(selectPoolsDetailsIsFirstBuy);
 
   const initialLongTokenAddress = longTokenAddress
     ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
@@ -389,15 +398,7 @@ export const useDepositTransactions = ({
 
       sendOrderSubmittedMetric(metricData.metricId);
 
-      if (
-        !account ||
-        !marketInfo ||
-        marketTokenAmount === undefined ||
-        !tokensData ||
-        !signer ||
-        (isGlv && !rawParams) ||
-        !transferRequests
-      ) {
+      if (!account || !marketInfo || !amounts || !tokensData || !signer || (isGlv && !rawParams) || !transferRequests) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -505,6 +506,7 @@ export const useDepositTransactions = ({
       getDepositMetricData,
       account,
       marketInfo,
+      amounts,
       marketTokenAmount,
       tokensData,
       signer,

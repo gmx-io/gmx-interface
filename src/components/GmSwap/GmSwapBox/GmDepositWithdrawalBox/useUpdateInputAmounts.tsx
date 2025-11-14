@@ -22,7 +22,7 @@ import { Token } from "domain/tokens";
 import { formatAmountFree } from "lib/numbers";
 import { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
 
-import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts";
+import { selectDepositWithdrawalAmounts } from "../../../../context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 
 function formatTokenAmount(amount: bigint | undefined, decimals: number): string {
   if (amount === undefined || amount <= 0n) return "";
@@ -75,6 +75,10 @@ export function useUpdateInputAmounts() {
   const secondTokenWrappedAddress = secondToken?.wrappedAddress ?? secondToken?.address;
   const focusedInput = useSelector(selectPoolsDetailsFocusedInput);
 
+  useEffect(() => {
+    console.log({ focusedInput });
+  }, [focusedInput]);
+
   const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
   const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
   const setMarketOrGlvTokenInputValue = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
@@ -83,7 +87,7 @@ export function useUpdateInputAmounts() {
   const handleDepositInputUpdate = useCallback(() => {
     if (!amounts || !marketToken) return;
 
-    const isCollateralFocused = ["longCollateral", "shortCollateral"].includes(focusedInput);
+    const isCollateralFocused = ["first", "second"].includes(focusedInput);
 
     if (isCollateralFocused) {
       // Check if any input has value
@@ -193,9 +197,9 @@ export function useUpdateInputAmounts() {
           setInputValue: setSecondTokenInputValue,
         });
       }
-    } else if (["longCollateral", "shortCollateral"].includes(focusedInput)) {
+    } else if (["first", "second"].includes(focusedInput)) {
       // User entered collateral amount → calculate market token input
-      const isLongFocused = focusedInput === "longCollateral";
+      const isLongFocused = focusedInput === "first";
       const focusedAmount = isLongFocused ? amounts.longTokenAmount : amounts.shortTokenAmount;
 
       if (focusedAmount <= 0n) {

@@ -130,7 +130,7 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
     let strategy: "byMarketToken" | "byLongCollateral" | "byShortCollateral" | "byCollaterals" = "byMarketToken";
     if (focusedInput === "market") {
       strategy = "byMarketToken";
-    } else if (focusedInput === "longCollateral") {
+    } else if (focusedInput === "first") {
       strategy = "byLongCollateral";
     } else {
       strategy = "byShortCollateral";

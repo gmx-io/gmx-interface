@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
@@ -12,9 +12,9 @@ import {
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsSelectedMarketForGlv,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
+import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { ExecutionFee } from "domain/synthetics/fees";
@@ -27,13 +27,12 @@ import { getTokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
-import { GmSwapFees, WithdrawalAmounts } from "sdk/types/trade";
+import { GmSwapFees } from "sdk/types/trade";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { Operation } from "../types";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
-import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts";
 import { useTokensToApprove } from "./useTokensToApprove";
 
 interface Props {
@@ -87,7 +86,7 @@ export const useGmSwapSubmitState = ({
   const glvToken = glvInfo?.glvToken;
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
-  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketForGlv);
+
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
 
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
@@ -110,31 +109,9 @@ export const useGmSwapSubmitState = ({
     shortTokenUsd = 0n,
   } = amounts ?? {};
 
-  const isFirstBuy = Object.values(marketTokensData ?? {}).every((marketToken) => marketToken.balance === 0n);
-
   const { isSubmitting, onSubmit } = useLpTransactions({
-    // marketInfo,
-    // marketToken,
-    operation,
-    // longTokenAddress,
-    longTokenAmount,
-    // shortTokenAddress,
-    shortTokenAmount,
-    marketTokenAmount,
-    glvTokenAmount,
-    glvTokenUsd,
     shouldDisableValidation,
-    tokensData,
     technicalFees,
-    selectedMarketForGlv,
-    // glvInfo,
-    isMarketTokenDeposit,
-    // selectedMarketInfoForGlv,
-    marketTokenUsd,
-    isFirstBuy,
-    paySource,
-    longTokenSwapPath: (amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath,
-    shortTokenSwapPath: (amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath,
   });
 
   const onConnectAccount = useCallback(() => {
@@ -151,9 +128,6 @@ export const useGmSwapSubmitState = ({
     isDeposit,
     marketInfo,
     glvInfo,
-    // longToken: getTokenData(tokensData, firstTokenAddress),
-    // shortToken: getTokenData(tokensData, secondTokenAddress),
-    // TODO MLTCH make native token work
     longToken: getTokenData(tokensData, longTokenAddress),
     shortToken: getTokenData(tokensData, shortTokenAddress),
     glvToken,
@@ -205,12 +179,16 @@ export const useGmSwapSubmitState = ({
 
     if (isAllowanceLoading) {
       return {
-        text: t`Loading...`,
+        text: (
+          <>
+            <Trans>Loading</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
         disabled: true,
       };
     }
 
-    // console.log("error", error);
     if (error) {
       return {
         text: error,
@@ -223,8 +201,6 @@ export const useGmSwapSubmitState = ({
     }
 
     if (isApproving && tokensToApproveSymbols.length) {
-      // const tokenSymbol = getGmSwapBoxApproveTokenSymbol(tokensToApprove[0], tokensData, glvAndMarketsInfoData);
-
       return {
         text: (
           <>
@@ -253,6 +229,18 @@ export const useGmSwapSubmitState = ({
       };
     }
 
+    if (!technicalFees) {
+      return {
+        text: (
+          <>
+            <Trans>Loading</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     return {
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
@@ -260,6 +248,7 @@ export const useGmSwapSubmitState = ({
   }, [
     account,
     isAllowanceLoading,
+    technicalFees,
     error,
     isApproving,
     tokensToApproveSymbols,

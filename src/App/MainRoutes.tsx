@@ -122,9 +122,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
       <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-          {/* <PoolsDetailsContextProvider> */}
           <PoolsDetails />
-          {/* </PoolsDetailsContextProvider> */}
         </SyntheticsStateContextProvider>
       </Route>
 

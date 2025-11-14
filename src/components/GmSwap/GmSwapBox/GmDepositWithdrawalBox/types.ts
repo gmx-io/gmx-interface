@@ -10,4 +10,4 @@ export type TokenInputState = {
 /**
  * Focused input types for GM deposit/withdrawal box
  */
-export type FocusedInput = "market" | "longCollateral" | "shortCollateral";
+export type FocusedInput = "market" | "first" | "second";

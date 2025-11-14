@@ -1,34 +1,19 @@
 import { useCallback, useState } from "react";
 
+import { selectPoolsDetailsOperation } from "context/PoolsDetailsContext/selectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { ExecutionFee } from "domain/synthetics/fees";
-import type { MarketInfo } from "domain/synthetics/markets";
 import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
-import type { GmPaySource } from "domain/synthetics/markets/types";
-import type { TokensData } from "domain/synthetics/tokens";
 
 import { useDepositTransactions } from "./useDepositTransactions";
 import { useWithdrawalTransactions } from "./useWithdrawalTransactions";
 import { Operation } from "../../types";
 
 export interface UseLpTransactionProps {
-  operation: Operation;
-
-  marketTokenAmount: bigint | undefined;
-  marketTokenUsd: bigint | undefined;
-  longTokenAmount: bigint | undefined;
-  longTokenSwapPath: string[] | undefined;
-  shortTokenAmount: bigint | undefined;
-  shortTokenSwapPath: string[] | undefined;
-
-  glvTokenAmount: bigint | undefined;
-  glvTokenUsd: bigint | undefined;
-
   shouldDisableValidation?: boolean;
-
-  tokensData: TokensData | undefined;
   technicalFees:
     | ExecutionFee
     | SourceChainGlvDepositFees
@@ -36,11 +21,6 @@ export interface UseLpTransactionProps {
     | SourceChainWithdrawalFees
     | SourceChainGlvWithdrawalFees
     | undefined;
-  selectedMarketForGlv?: string;
-  selectedMarketInfoForGlv?: MarketInfo;
-  isMarketTokenDeposit?: boolean;
-  isFirstBuy: boolean;
-  paySource: GmPaySource;
 }
 
 export const useLpTransactions = (
@@ -49,13 +29,19 @@ export const useLpTransactions = (
   onSubmit: () => void;
   isSubmitting: boolean;
 } => {
-  const { operation } = props;
+  const operation = useSelector(selectPoolsDetailsOperation);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { onCreateDeposit } = useDepositTransactions(props);
+  const { onCreateDeposit } = useDepositTransactions({
+    shouldDisableValidation: props.shouldDisableValidation,
+    technicalFees: props.technicalFees,
+  });
 
-  const { onCreateWithdrawal } = useWithdrawalTransactions(props);
+  const { onCreateWithdrawal } = useWithdrawalTransactions({
+    shouldDisableValidation: props.shouldDisableValidation,
+    technicalFees: props.technicalFees,
+  });
 
   const onSubmit = useCallback(() => {
     setIsSubmitting(true);

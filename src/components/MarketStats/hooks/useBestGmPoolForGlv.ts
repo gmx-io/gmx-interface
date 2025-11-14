@@ -9,7 +9,8 @@ import {
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsLongTokenAmount,
-  selectPoolsDetailsSelectedMarketForGlv,
+  selectPoolsDetailsSelectedMarketAddressForGlv,
+  selectPoolsDetailsSetSelectedMarketAddressForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
@@ -31,13 +32,11 @@ export const useBestGmPoolAddressForGlv = ({
   uiFeeFactor,
   marketTokenAmount,
   marketTokensData,
-  onSelectedMarketForGlv,
 }: {
   uiFeeFactor: bigint;
   marketTokenAmount: bigint;
   marketTokensData: TokensData | undefined;
   fees: ReturnType<typeof useDepositWithdrawalFees>["logicalFees"];
-  onSelectedMarketForGlv?: (marketAddress?: string) => void;
 }) => {
   const { chainId, srcChainId } = useChainId();
 
@@ -57,7 +56,8 @@ export const useBestGmPoolAddressForGlv = ({
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAmount = useSelector(selectPoolsDetailsShortTokenAmount);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
-  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketForGlv);
+  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
+  const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
 
   const markets = useMemo(() => {
     if (!isEligible || !glvInfo) {
@@ -247,11 +247,11 @@ export const useBestGmPoolAddressForGlv = ({
       ((!selectedMarketForGlv && bestGmMarketAddress) || shouldSetBestGmMarket) &&
       bestGmMarketAddress !== selectedMarketForGlv
     ) {
-      onSelectedMarketForGlv?.(bestGmMarketAddress);
+      setSelectedMarketAddressForGlv(bestGmMarketAddress);
     }
   }, [
     bestGmMarketAddress,
-    onSelectedMarketForGlv,
+    setSelectedMarketAddressForGlv,
     selectedMarketForGlv,
     isMarketForGlvSelectedManually,
     marketTokenAmount,
