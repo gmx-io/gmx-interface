@@ -959,18 +959,22 @@ export const WithdrawalView = () => {
         <>
           {isAboveLimit && (
             <AlertInfoCard type="warning" className="my-4">
-              <Trans>
-                The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
-                <span className="numbers">{upperLimitFormatted}</span>.
-              </Trans>
+              <div>
+                <Trans>
+                  The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
+                  <span className="numbers">{upperLimitFormatted}</span>.
+                </Trans>
+              </div>
             </AlertInfoCard>
           )}
           {isBelowLimit && (
             <AlertInfoCard type="warning" className="my-4">
-              <Trans>
-                The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
-                <span className="numbers">{lowerLimitFormatted}</span>.
-              </Trans>
+              <div>
+                <Trans>
+                  The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
+                  <span className="numbers">{lowerLimitFormatted}</span>.
+                </Trans>
+              </div>
             </AlertInfoCard>
           )}
 
