@@ -461,30 +461,43 @@ export function getGasPaymentValidations({
   };
 }
 
+export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER = 5;
+const EXPRESS_DEFAULT_MIN_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER, USD_DECIMALS);
+
 export function getMinResidualGasPaymentTokenAmount({
   payTokenAddress,
   expressParams,
+  gasPaymentToken: rawGasPaymentToken,
+  gasPaymentTokenAmount: rawGasPaymentTokenAmount,
+  applyBuffer = true,
 }: {
   payTokenAddress: string | undefined;
-  expressParams: ExpressTxnParams | undefined;
+  expressParams?: ExpressTxnParams;
+  gasPaymentToken?: TokenData;
+  gasPaymentTokenAmount?: bigint;
+  applyBuffer?: boolean;
 }): bigint {
-  if (!expressParams || !payTokenAddress) {
+  const gasPaymentToken = rawGasPaymentToken ?? expressParams?.gasPaymentParams.gasPaymentToken;
+  const gasPaymentTokenAmount = rawGasPaymentTokenAmount ?? expressParams?.gasPaymentParams.gasPaymentTokenAmount;
+
+  if (!gasPaymentToken || gasPaymentTokenAmount === undefined || !payTokenAddress) {
     return 0n;
   }
 
-  if (payTokenAddress !== expressParams.gasPaymentParams.gasPaymentTokenAddress) {
+  if (payTokenAddress !== gasPaymentToken.address) {
     return 0n;
   }
-
-  const { gasPaymentToken, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
 
   const defaultMinResidualAmount = convertToTokenAmount(
-    expandDecimals(5, USD_DECIMALS),
+    EXPRESS_DEFAULT_MIN_RESIDUAL_USD,
     gasPaymentToken.decimals,
     gasPaymentToken.prices.minPrice
   )!;
 
-  const minResidualAmount = gasPaymentTokenAmount * 2n;
+  let minResidualAmount = defaultMinResidualAmount;
+  if (applyBuffer) {
+    minResidualAmount = gasPaymentTokenAmount * 2n;
+  }
 
   if (minResidualAmount > defaultMinResidualAmount) {
     return minResidualAmount;
