@@ -331,7 +331,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     if (!expressOrdersEnabled) {
       return {};
     }
-    if (submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
+    if (
+      submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined &&
+      // Submit button state may store previous gas payment token address, so we need to check if it matches the current gas payment token address
+      submitButtonState.expressParams.gasPaymentParams.gasPaymentTokenAddress === gasPaymentTokenAddress
+    ) {
       return {
         gasPaymentTokenAmountForMax: submitButtonState.expressParams.gasPaymentParams.gasPaymentTokenAmount,
         isGasPaymentTokenAmountForMaxApproximate: false,
@@ -363,10 +367,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }, [
     expressOrdersEnabled,
     submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount,
+    submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAddress,
+    gasPaymentTokenAddress,
     executionFee,
     gasPaymentTokenData,
     chainId,
-    gasPaymentTokenAddress,
   ]);
 
   const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
