@@ -4476,6 +4476,10 @@ msgstr ""
 msgid "Available Liquidity"
 msgstr "Доступная ликвидность"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient balance."
+msgstr "Токен оплаты газа переключен с {fromSymbol} на {toSymbol} из-за недостаточного баланса."
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx

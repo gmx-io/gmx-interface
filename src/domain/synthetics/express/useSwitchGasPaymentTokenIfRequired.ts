@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+import debounce from "lodash/debounce";
 import { useEffect } from "react";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -5,10 +7,19 @@ import { selectSetGasPaymentTokenAddress } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 
 import { ExpressTxnParams } from "./types";
+
+const notifyGasPaymentTokenSwitched = debounce(
+  ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
+    helperToast.info(t`Gas payment token switched from ${fromSymbol} to ${toSymbol} due to insufficient balance.`);
+  },
+  100,
+  { leading: false, trailing: true }
+);
 
 export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   expressParams,
@@ -65,7 +76,11 @@ function useSwitchGasPaymentTokenIfRequired({
         });
 
         if (anotherGasToken && anotherGasToken !== gasPaymentToken.address) {
+          const newTokenData = getByKey(tokensData, anotherGasToken);
           setGasPaymentTokenAddress(anotherGasToken);
+          if (newTokenData) {
+            notifyGasPaymentTokenSwitched({ fromSymbol: gasPaymentToken.symbol, toSymbol: newTokenData.symbol });
+          }
         }
       }
     },

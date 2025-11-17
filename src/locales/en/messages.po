@@ -4476,6 +4476,10 @@ msgstr "Pending {tokenSymbol} approval"
 msgid "Available Liquidity"
 msgstr "Available Liquidity"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient balance."
+msgstr "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient balance."
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
