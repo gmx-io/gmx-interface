@@ -4476,10 +4476,6 @@ msgstr ""
 msgid "Available Liquidity"
 msgstr "可用流动性"
 
-#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
-msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient balance."
-msgstr "由于余额不足，gas支付代币已从 {fromSymbol} 切换到 {toSymbol}。"
-
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -7619,6 +7615,10 @@ msgstr "地址已复制到您的剪贴板。"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "剩余抵押品低于 {0} USD"
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "由于 {fromSymbol} 余额不足，gas支付代币已从 {fromSymbol} 切换到 {toSymbol}。"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"

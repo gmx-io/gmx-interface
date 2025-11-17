@@ -4476,10 +4476,6 @@ msgstr ""
 msgid "Available Liquidity"
 msgstr ""
 
-#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
-msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient balance."
-msgstr ""
-
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -7618,6 +7614,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
+msgstr ""
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
 msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts

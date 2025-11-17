@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import debounce from "lodash/debounce";
 import { useEffect } from "react";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -13,13 +12,14 @@ import { getGasPaymentTokens } from "sdk/configs/express";
 
 import { ExpressTxnParams } from "./types";
 
-const notifyGasPaymentTokenSwitched = debounce(
-  ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
-    helperToast.info(t`Gas payment token switched from ${fromSymbol} to ${toSymbol} due to insufficient balance.`);
-  },
-  100,
-  { leading: false, trailing: true }
-);
+const notifyGasPaymentTokenSwitched = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
+  helperToast.info(
+    t`Gas payment token switched from ${fromSymbol} to ${toSymbol} due to insufficient ${fromSymbol} balance.`,
+    {
+      toastId: "gas-payment-token-switched",
+    }
+  );
+};
 
 export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   expressParams,

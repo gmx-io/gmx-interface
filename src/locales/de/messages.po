@@ -4476,10 +4476,6 @@ msgstr ""
 msgid "Available Liquidity"
 msgstr "Verfügbare Liquidität"
 
-#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
-msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient balance."
-msgstr "Gas-Zahlungstoken aufgrund unzureichender Balance von {fromSymbol} auf {toSymbol} gewechselt."
-
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -7619,6 +7615,10 @@ msgstr "Adresse in Ihre Zwischenablage kopiert."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "Verbleibendes Kollateral unter {0} USD"
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "Gas-Zahlungstoken aufgrund unzureichender {fromSymbol}-Balance von {fromSymbol} auf {toSymbol} gewechselt."
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
