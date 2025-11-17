@@ -1008,8 +1008,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isSwap && isLimit && !isTwap && (
                   <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
                     <Trans>
-                      The execution price may differ from the set limit price due to fees and price impact. This
-                      ensures that you receive at least the minimum receive amount. <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>Read more</ExternalLink>.
+                      The execution price may vary from your set limit price due to fees and price impact, 
+                      ensuring you receive the displayed minimum receive amount. <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>Read more</ExternalLink>.
                     </Trans>
                   </AlertInfoCard>
                 )}

@@ -35,7 +35,7 @@ export function BuyGmxModal({
           icon={<GmxRoundedWhiteIcon className="size-20" />}
           newTab={false}
         >
-          <Trans>Buy GMX directly</Trans>
+          <Trans>Buy on GMX directly</Trans>
         </BuyGmxModalButton>
         <div className="flex flex-col gap-8">
           <span className="text-14 font-medium text-typography-secondary">

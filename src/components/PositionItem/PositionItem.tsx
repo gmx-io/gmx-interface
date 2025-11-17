@@ -87,7 +87,7 @@ export function PositionItem(p: Props) {
         renderContent={() => (
           <div>
             <Trans>
-              Net value is the amount held in the position inclusive of PnL, fees and net price impact at close.
+              Net value is the amount held in the position inclusive of PnL, fees and net price impact.
             </Trans>
             <br />
             <br />
@@ -469,12 +469,11 @@ export function PositionItem(p: Props) {
 
                     <div>
                       <Trans>
-                        Click on the position to select it, then use the trade box to increase it or to set TP/SL
-                        orders.
+                        Click on the position to select it, then use the trade box to increase it.
                       </Trans>
                       <br />
                       <br />
-                      <Trans>Use the "Close" button to reduce your position.</Trans>
+                      <Trans>Use the "Close" button to reduce your position via market, TP/SL, or TWAP orders.</Trans>
                     </div>
 
                     {showDebugValues && (
