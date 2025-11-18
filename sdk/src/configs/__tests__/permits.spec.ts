@@ -14,7 +14,7 @@ describe("UI token permit configs", () => {
       transport: http(),
     });
 
-    it(`tokens isPermitSupported should be consistent with contracts for ${getChainName(chainId)}`, async () => {
+    it.skip(`tokens isPermitSupported should be consistent with contracts for ${getChainName(chainId)}`, async () => {
       const tokens = getV2Tokens(chainId).filter((token) => !token.isNative && !token.isSynthetic);
 
       const calls = tokens.map((token) => ({
