@@ -1,18 +1,16 @@
 import { t } from "@lingui/macro";
-import { Contract } from "ethers";
-import { encodeFunctionData, Hex, zeroAddress } from "viem";
+import { encodeFunctionData, zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId, IStargateAbi } from "config/multichain";
+import { getMappedTokenId } from "config/multichain";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
-import { GlobalExpressParams } from "domain/synthetics/express";
 import { sendWalletTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { IStargate, IStargate__factory } from "typechain-types-stargate";
+import { abis } from "sdk/abis";
 
 export async function createBridgeInTxn({
   chainId,
@@ -23,7 +21,6 @@ export async function createBridgeInTxn({
   tokenAmount,
 }: {
   chainId: SettlementChainId;
-  globalExpressParams: GlobalExpressParams;
   srcChainId: SourceChainId;
   signer: WalletSigner;
   account: string;
@@ -54,9 +51,12 @@ export async function createBridgeInTxn({
     throw new Error("Token ID not found");
   }
 
-  const iStargateInstance = new Contract(sourceChainTokenId.stargate, IStargateAbi, signer) as unknown as IStargate;
-
-  const quoteSend = await iStargateInstance.quoteSend(sendParams, false);
+  const quoteSend = await getPublicClientWithRpc(srcChainId).readContract({
+    address: sourceChainTokenId.stargate,
+    abi: abis.IStargate,
+    functionName: "quoteSend",
+    args: [sendParams, false],
+  });
 
   const value = quoteSend.nativeFee + (tokenAddress === zeroAddress ? tokenAmount : 0n);
 
@@ -66,9 +66,9 @@ export async function createBridgeInTxn({
       to: sourceChainTokenId.stargate,
       signer,
       callData: encodeFunctionData({
-        abi: IStargateAbi as unknown as typeof IStargate__factory.abi,
+        abi: abis.IStargate,
         functionName: "send",
-        args: [sendParams as any, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account as Hex],
+        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account],
       }),
       value,
       msg: t`Sent transfer in transaction`,

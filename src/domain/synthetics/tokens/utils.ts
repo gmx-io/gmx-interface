@@ -131,6 +131,7 @@ export function getBalanceByBalanceType(tokenData: TokenData, tokenBalanceType: 
   }
 }
 
+// TODO MLTCH move this to src/config/multichain.ts
 export function getSourceChainDecimals(chainId: ContractsChainId, srcChainId: SourceChainId, tokenAddress: string) {
   const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId as SourceChainId);
   return tokenId?.decimals;

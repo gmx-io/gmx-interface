@@ -261,7 +261,8 @@ export function useMultichainMarketTokenBalancesRequest(
   chainId: ContractsChainId,
   srcChainId: SourceChainId | undefined,
   account: string | undefined,
-  tokenAddress: string | undefined
+  tokenAddress: string | undefined,
+  enabled?: boolean
 ): {
   tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>>;
   totalBalance: bigint | undefined;
@@ -270,10 +271,13 @@ export function useMultichainMarketTokenBalancesRequest(
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: true,
+    enabled,
   });
 
   const { data: balancesResult } = useSWRSubscription(
-    account && tokenAddress ? ["multichain-market-token-balances", chainId, account, [tokenAddress], undefined] : null,
+    account && tokenAddress && enabled
+      ? ["multichain-market-token-balances", chainId, account, [tokenAddress], undefined]
+      : null,
     // TODO MLTCH optimistically update useSourceChainTokensDataRequest
     subscribeMultichainTokenBalances
   );

@@ -3450,6 +3450,7 @@ msgid "Claiming position price impact fees failed"
 msgstr "Einlösen von Positions-Preisauswirkungsgebühren fehlgeschlagen"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -3681,6 +3682,7 @@ msgstr "Deine Meinungen und Erfahrungen sind uns wichtig. Dein Feedback hilft un
 msgid "Estimated Time"
 msgstr "Geschätzte Zeit"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing"
 msgstr "Abheben"
@@ -3753,6 +3755,11 @@ msgstr "Vesting-Status"
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Market Groups</0><1>Net Open Interest</1>"
 msgstr "<0>Marktgruppen</0><1>Netto Open Interest</1>"
+
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeInModal.tsx
+msgid "Error submitting deposit"
+msgstr "Fehler beim Einzahlen"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed Liquidity"
@@ -5104,6 +5111,11 @@ msgstr "Versorgung"
 msgid "Positive Funding Fees"
 msgstr "Positive Funding-Gebühren"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "Error submitting withdrawal"
+msgstr "Fehler beim Abheben"
+
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
@@ -5116,6 +5128,10 @@ msgstr "Größe, $"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Close {0} {1}{2}"
 msgstr "{0} {1}{2} schließen"
+
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "Insufficient gas balance"
+msgstr "Unzureichender Gas-Saldo"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
@@ -5961,6 +5977,7 @@ msgstr "Eingezahlt."
 msgid "There may not be sufficient liquidity to execute your order when the min. receive is met."
 msgstr "Es könnte nicht ausreichend Liquidität geben, um Ihre Order auszuführen, wenn der Mindestempfang erfüllt ist."
 
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -6269,6 +6286,7 @@ msgid "Deactivate 1CT (One-Click Trading)"
 msgstr "1CT (One-Click-Trading) deaktivieren"
 
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6675,6 +6693,7 @@ msgstr "Tiefe"
 msgid "Layer 1"
 msgstr "Layer 1"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing"
@@ -8057,6 +8076,7 @@ msgstr ""
 msgid "Anonymous chat with GMX"
 msgstr "Anonymer Chat mit GMX"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -8240,6 +8260,9 @@ msgstr "Unterstützende Zusammensetzung"
 msgid "DeBank"
 msgstr "DeBank"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"

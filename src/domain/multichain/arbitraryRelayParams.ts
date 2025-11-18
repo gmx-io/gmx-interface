@@ -403,9 +403,7 @@ export function useArbitraryError(error: CustomError | Error | undefined):
 
   return useMemo(() => {
     if (!isCustomError(error)) {
-      return {
-        isOutOfTokenError: undefined,
-      };
+      return {};
     }
 
     const isInsufficientMultichainBalance = error.name === "InsufficientMultichainBalance";

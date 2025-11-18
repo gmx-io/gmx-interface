@@ -1,29 +1,35 @@
 import { t } from "@lingui/macro";
-import { useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
+import { getSourceChainDecimals } from "domain/synthetics/tokens/utils";
+import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
+import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { getMarketIndexName } from "sdk/utils/markets";
-import { formatAmountFree, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
+import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 export function BridgeInModal({
   isVisible,
@@ -36,16 +42,15 @@ export function BridgeInModal({
 }) {
   const { chainId, srcChainId } = useChainId();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
   const [bridgeInChain, setBridgeInChain] = useState<SourceChainId | undefined>(srcChainId);
   const [bridgeInInputValue, setBridgeInInputValue] = useState("");
+  const [isCreatingTxn, setIsCreatingTxn] = useState(false);
 
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const glvOrMarketAddress = glvOrMarketInfo ? getGlvOrMarketAddress(glvOrMarketInfo) : undefined;
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
   const isGlv = isGlvInfo(glvOrMarketInfo);
 
-  const marketTokenDecimals = isGlv ? glvOrMarketInfo?.glvToken.decimals : marketToken?.decimals;
   let marketTokenPrice: bigint | undefined = undefined;
   if (isGlv && glvOrMarketInfo?.glvToken.prices) {
     marketTokenPrice = getMidPrice(glvOrMarketInfo?.glvToken.prices);
@@ -54,16 +59,16 @@ export function BridgeInModal({
   }
 
   const bridgeInAmount = useMemo(() => {
-    return bridgeInInputValue && marketTokenDecimals !== undefined
-      ? parseValue(bridgeInInputValue, marketTokenDecimals)
+    return bridgeInInputValue && PLATFORM_TOKEN_DECIMALS !== undefined
+      ? parseValue(bridgeInInputValue, PLATFORM_TOKEN_DECIMALS)
       : undefined;
-  }, [bridgeInInputValue, marketTokenDecimals]);
+  }, [bridgeInInputValue]);
 
   const bridgeInUsd = useMemo(() => {
-    return bridgeInAmount !== undefined && marketTokenDecimals !== undefined
-      ? convertToUsd(bridgeInAmount, marketTokenDecimals, marketTokenPrice)
+    return bridgeInAmount !== undefined && PLATFORM_TOKEN_DECIMALS !== undefined
+      ? convertToUsd(bridgeInAmount, PLATFORM_TOKEN_DECIMALS, marketTokenPrice)
       : undefined;
-  }, [bridgeInAmount, marketTokenDecimals, marketTokenPrice]);
+  }, [bridgeInAmount, marketTokenPrice]);
 
   const glvOrGm = isGlv ? "GLV" : "GM";
   const { address: account } = useAccount();
@@ -72,7 +77,8 @@ export function BridgeInModal({
     chainId,
     srcChainId,
     account,
-    glvOrMarketAddress
+    glvOrMarketAddress,
+    isVisible
   );
 
   const sourceChainMarketTokenBalancesData: Partial<Record<0 | AnyChainId, bigint>> = useMemo(() => {
@@ -87,6 +93,11 @@ export function BridgeInModal({
     ? marketTokenBalancesData[bridgeInChain]
     : undefined;
 
+  const sourceChainDecimals =
+    bridgeInChain && glvOrMarketAddress
+      ? getSourceChainDecimals(chainId, bridgeInChain, glvOrMarketAddress)
+      : undefined;
+
   const gmxAccountMarketTokenBalance: bigint | undefined = marketTokenBalancesData[0];
 
   const nextGmxAccountMarketTokenBalance: bigint | undefined =
@@ -94,27 +105,86 @@ export function BridgeInModal({
       ? gmxAccountMarketTokenBalance + bridgeInAmount
       : undefined;
 
-  if (!glvOrMarketInfo) {
-    return null;
-  }
+  const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+    fromToken: marketToken,
+    fromTokenAmount: bridgeInAmount ?? 0n,
+    fromTokenInputValue: bridgeInInputValue,
+    nativeToken: undefined,
+    minResidualAmount: undefined,
+    isLoading: false,
+    srcChainId: bridgeInChain,
+    tokenBalanceType: TokenBalanceType.SourceChain,
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!account || !glvOrMarketAddress || bridgeInAmount === undefined || !bridgeInChain || !globalExpressParams) {
+    if (!account || !glvOrMarketAddress || bridgeInAmount === undefined || !bridgeInChain) {
+      helperToast.error(t`Error submitting deposit`);
       return;
     }
-    await wrapChainAction(bridgeInChain, setSettlementChainId, async (signer) => {
-      await createBridgeInTxn({
-        chainId: chainId as SettlementChainId,
-        srcChainId: bridgeInChain,
-        account,
-        tokenAddress: glvOrMarketAddress,
-        tokenAmount: bridgeInAmount,
-        signer,
-        globalExpressParams,
+    try {
+      setIsCreatingTxn(true);
+      await wrapChainAction(bridgeInChain, setSettlementChainId, async (signer) => {
+        await createBridgeInTxn({
+          chainId: chainId as SettlementChainId,
+          srcChainId: bridgeInChain,
+          account,
+          tokenAddress: glvOrMarketAddress,
+          tokenAmount: bridgeInAmount,
+          signer,
+        });
       });
-    });
+    } catch (error) {
+      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Error submitting deposit` });
+      helperToast.error(toastParams.errorContent, {
+        autoClose: toastParams.autoCloseToast,
+      });
+    } finally {
+      setIsCreatingTxn(false);
+    }
   };
+
+  const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
+    if (isCreatingTxn) {
+      return {
+        text: (
+          <>
+            {t`Depositing`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (!bridgeInInputValue) {
+      return {
+        text: t`Enter an amount`,
+        disabled: true,
+      };
+    }
+
+    if (
+      bridgeInChainMarketTokenBalance === undefined ||
+      bridgeInAmount === undefined ||
+      sourceChainDecimals === undefined ||
+      bridgeInAmount > adjustForDecimals(bridgeInChainMarketTokenBalance, sourceChainDecimals, PLATFORM_TOKEN_DECIMALS)
+    ) {
+      return {
+        text: t`Insufficient balance`,
+        disabled: true,
+      };
+    }
+
+    return {
+      text: t`Deposit`,
+      disabled: false,
+    };
+  }, [isCreatingTxn, bridgeInInputValue, bridgeInChainMarketTokenBalance, bridgeInAmount, sourceChainDecimals]);
+
+  if (!glvOrMarketInfo) {
+    return null;
+  }
 
   return (
     <SlideModal
@@ -128,18 +198,15 @@ export function BridgeInModal({
           inputValue={bridgeInInputValue}
           onInputValueChange={(e) => setBridgeInInputValue(e.target.value)}
           bottomLeftValue={formatUsd(bridgeInUsd)}
-          bottomRightValue={
-            bridgeInChainMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
-              ? formatBalanceAmount(bridgeInChainMarketTokenBalance, marketTokenDecimals)
+          bottomRightValue={formattedBalance}
+          bottomRightLabel={t`Available`}
+          onClickMax={
+            showClickMax
+              ? () => {
+                  setBridgeInInputValue(formattedMaxAvailableAmount);
+                }
               : undefined
           }
-          bottomRightLabel={t`Available`}
-          onClickMax={() => {
-            if (bridgeInChainMarketTokenBalance === undefined || marketTokenDecimals === undefined) {
-              return;
-            }
-            setBridgeInInputValue(formatAmountFree(bridgeInChainMarketTokenBalance, marketTokenDecimals));
-          }}
         >
           <MultichainMarketTokenSelector
             chainId={chainId}
@@ -156,21 +223,21 @@ export function BridgeInModal({
             tokenBalancesData={sourceChainMarketTokenBalancesData}
           />
         </BuyInputSection>
-        <Button className="w-full" type="submit" variant="primary-action">
-          Enter an amount
+        <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
+          {buttonState.text}
         </Button>
         <SyntheticsInfoRow
           label={t`GMX Account Balance`}
           value={
             <ValueTransition
               from={
-                gmxAccountMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
-                  ? formatBalanceAmount(gmxAccountMarketTokenBalance, marketTokenDecimals)
+                gmxAccountMarketTokenBalance !== undefined && PLATFORM_TOKEN_DECIMALS !== undefined
+                  ? formatBalanceAmount(gmxAccountMarketTokenBalance, PLATFORM_TOKEN_DECIMALS)
                   : undefined
               }
               to={
-                nextGmxAccountMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
-                  ? formatBalanceAmount(nextGmxAccountMarketTokenBalance, marketTokenDecimals)
+                nextGmxAccountMarketTokenBalance !== undefined && PLATFORM_TOKEN_DECIMALS !== undefined
+                  ? formatBalanceAmount(nextGmxAccountMarketTokenBalance, PLATFORM_TOKEN_DECIMALS)
                   : undefined
               }
             />
