@@ -201,7 +201,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
       coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
-      isPermitSupported: true,
+      isPermitSupported: false,
+      isPermitDisabled: true,
     },
     {
       name: "Dogecoin",
@@ -418,7 +419,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl:
         "https://assets.coingecko.com/coins/images/11224/standard/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
       coingeckoUrl: "https://www.coingecko.com/en/coins/tbtc",
-      isPermitSupported: true,
+      isPermitSupported: false,
       contractVersion: "1",
     },
     {
@@ -429,7 +430,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/37441/standard/eigen.jpg?1728023974",
       coingeckoUrl: "https://www.coingecko.com/en/coins/eigenlayer",
-      isPermitSupported: true,
+      isPermitSupported: false,
       contractVersion: "1",
     },
     {

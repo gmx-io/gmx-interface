@@ -8,11 +8,11 @@ import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContex
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { BN_ZERO, bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { getToken } from "sdk/configs/tokens";
-import { buildFiltersBody } from "sdk/utils/subgraph";
+import { buildFiltersBody } from "sdk/utils/indexers";
 
 import { ClaimAction, ClaimCollateralAction, ClaimFundingFeeAction, ClaimMarketItem, ClaimType } from "./types";
 

@@ -153,6 +153,10 @@ msgstr "止损"
 msgid "Type"
 msgstr "类型"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "esGMX Rewards:"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid ""
 msgstr ""
@@ -1129,6 +1133,10 @@ msgstr "快速"
 msgid "Start Earning"
 msgstr "开始赚取"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "由于您的仓位抵押品为 {symbol}，初始价值高于 {indexName} 多头仓位规模，抵押品价值将覆盖任何负盈亏，因此没有清算价格。"
@@ -1482,10 +1490,6 @@ msgstr "V2 Avalanche Fuji"
 msgid "Order executed"
 msgstr "订单已执行"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High impact on collateral"
-msgstr "对抵押品的高影响"
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "您将从多头仓位做多 {indexSymbol}，同时从 {collateralSymbol} 抵押品做多 {collateralSymbol}。清算价格将根据 {collateralSymbol} 的价格变化。"
@@ -1672,6 +1676,10 @@ msgstr "警告：扣除费用后，此仓位抵押品金额较低，请存入更
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a  price"
 msgstr "输入价格"
+
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
@@ -2944,6 +2952,10 @@ msgstr "输入推荐码"
 msgid "Read the rules"
 msgstr "阅读规则"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High Net Price Impact"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Lev."
 msgstr "杠杆"
@@ -3636,11 +3648,6 @@ msgstr "购买 GLV"
 msgid "Failed TWAP Part"
 msgstr "TWAP 部分失败"
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Impact+Fees"
-msgstr "影响+费用"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr "TP - 做空减少"
@@ -4258,10 +4265,6 @@ msgstr "累积的价格影响返利。5 天后可申领。<0/><1/><2>阅读更�
 msgid "Take Profit / Stop Loss"
 msgstr "止盈 / 止损"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-msgstr "通过 <0>切换到 {1} 资金池</0> 保存 {0} 的价格影响和费用"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "您的 {networkName} 账户中没有足够的 {0} 来发送此交易。<0/><1/><2>购买或转移 {1} 到 {networkName}</2>"
@@ -4397,10 +4400,6 @@ msgstr "您设置了高允许滑点。当前交换影响包括费用为 {0}。"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "创建推荐代码"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High price impact"
-msgstr "高价格影响"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -5029,6 +5028,10 @@ msgstr "起始未实现 PnL"
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "批准已提交！<0>查看状态。</0>"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "池 GM: {0} 在 {1} [{2}] 的可买入上限已达到。请减少买入大小、选择不同的 GM 代币，或将 GM 代币转移到不同的池并重试。"
@@ -5195,6 +5198,11 @@ msgstr "Perpie"
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
 msgstr "支持者"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Use a TWAP order"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
@@ -5683,6 +5691,10 @@ msgstr "未平仓合约"
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Failed to download trade history CSV."
 msgstr "下载交易历史 CSV 失败。"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to the {0} pool</0> for potentially lower net price impact"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
@@ -6371,6 +6383,11 @@ msgstr "最高头寸"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "池"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "for lower net price impact."
+msgstr ""
 
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"

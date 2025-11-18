@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { getSubsquidGraphClient } from "lib/indexers";
 import { metrics } from "lib/metrics";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { MarketInfo as SquidMarketInfo } from "sdk/types/subsquid";
-import { queryPaginated } from "sdk/utils/subgraph";
+import { queryPaginated } from "sdk/utils/indexers";
 
 import { FastMarketInfoData } from "..";
 

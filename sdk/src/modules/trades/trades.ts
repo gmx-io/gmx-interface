@@ -8,8 +8,8 @@ import { TradeAction as SubsquidTradeAction } from "types/subsquid";
 import { TokensData } from "types/tokens";
 import { PositionTradeAction, TradeAction, TradeActionType } from "types/tradeHistory";
 import graphqlFetcher from "utils/graphqlFetcher";
+import { GraphQlFilters, buildFiltersBody } from "utils/indexers";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
-import { GraphQlFilters, buildFiltersBody } from "utils/subgraph";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import { createRawTradeActionTransformer } from "utils/tradeHistory";
 

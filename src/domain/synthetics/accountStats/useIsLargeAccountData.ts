@@ -6,8 +6,8 @@ import useSWR from "swr";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { toUtcDayStart } from "lib/dates";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals } from "lib/numbers";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const LARGE_ACCOUNT_CHAINS = [ARBITRUM, AVALANCHE];

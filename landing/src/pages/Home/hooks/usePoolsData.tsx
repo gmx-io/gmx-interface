@@ -3,8 +3,8 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { PerformanceInfo, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
 import { MarketInfo } from "sdk/types/subsquid";
 
