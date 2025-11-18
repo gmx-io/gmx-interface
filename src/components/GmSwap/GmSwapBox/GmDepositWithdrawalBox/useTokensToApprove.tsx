@@ -19,6 +19,7 @@ import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/u
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvInfo, isMarketTokenAddress } from "domain/synthetics/markets";
+import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { getNeedTokenApprove, TokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
@@ -28,7 +29,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
-import { getToken } from "sdk/configs/tokens";
+import { getToken, isValidTokenSafe } from "sdk/configs/tokens";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
@@ -292,9 +293,20 @@ export const useTokensToApprove = ({
     ]
   );
 
-  const settlementChainTokensToApproveSymbols = settlementChainTokensToApprove.map((tokenAddress) =>
-    isMarketTokenAddress(chainId, tokenAddress) ? "GM" : getToken(chainId, tokenAddress).symbol
-  );
+  const settlementChainTokensToApproveSymbols = settlementChainTokensToApprove.map((tokenAddress) => {
+    if (isGlvAddress(chainId, tokenAddress)) {
+      return "GLV";
+    }
+    if (isMarketTokenAddress(chainId, tokenAddress)) {
+      return "GM";
+    }
+
+    if (isValidTokenSafe(chainId, tokenAddress)) {
+      return getToken(chainId, tokenAddress).symbol;
+    }
+
+    return "";
+  });
 
   const onApproveSettlementChain = () => {
     const tokenAddress = settlementChainTokensToApprove[0];
@@ -330,15 +342,7 @@ export const useTokensToApprove = ({
     });
   };
 
-  // useEffect(() => {
-  //   if (!multichainNeedTokenApprove && isApproving) {
-  //     setIsApproving(false);
-  //   }
-  // }, [isApproving, multichainNeedTokenApprove]);
   useEffect(() => {
-    // if (!settlementChainTokensToApprove.length && isApproving) {
-    //   setIsApproving(false);
-    // }
     if (paySource === "settlementChain" && !settlementChainTokensToApprove.length && isApproving) {
       setIsApproving(false);
     } else if (paySource === "sourceChain" && !multichainTokensToApproveSymbols.length && isApproving) {
@@ -347,10 +351,6 @@ export const useTokensToApprove = ({
   }, [isApproving, multichainTokensToApproveSymbols.length, paySource, settlementChainTokensToApprove.length]);
 
   return {
-    // tokensToApprove,
-    // payTokenAddresses,
-    // isAllowanceLoading,
-    // isAllowanceLoaded,
     isApproving,
     approve:
       paySource === "settlementChain"

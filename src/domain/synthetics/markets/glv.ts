@@ -131,6 +131,10 @@ export function isGlvEnabled(chainId: number) {
   return Object.keys(GLV_MARKETS[chainId] ?? {}).length > 0;
 }
 
+export function isGlvAddress(chainId: number, address: string): boolean {
+  return Boolean(GLV_MARKETS[chainId]?.[address]);
+}
+
 export function getGlvLongTokenAddress(chainId: number, address: string): string {
   return GLV_MARKETS[chainId][address].longTokenAddress;
 }
