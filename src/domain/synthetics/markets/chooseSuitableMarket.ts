@@ -108,7 +108,10 @@ export function chooseSuitableMarket({
       tradeType: TradeType.Swap,
     };
   }
-  const maxLiquidtyPool = preferredTradeType === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
+
+  const tradeTypeForPoolSelection =
+    preferredTradeType === "largestPosition" ? currentTradeType ?? TradeType.Long : preferredTradeType;
+  const maxLiquidtyPool = tradeTypeForPoolSelection === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
 
   if (preferredTradeType === "largestPosition" && positionsInfo) {
     let largestLongPositionOrOrder = getLargestRelatedExistingPositionOrOrder({
@@ -158,14 +161,14 @@ export function chooseSuitableMarket({
       collateralTokenAddress: largestPositionOrOrder?.collateralTokenAddress,
     };
   } else if (preferredTradeType === "largestPosition") {
-    if (!maxLongLiquidityPool) {
+    if (!maxLiquidtyPool) {
       return undefined;
     }
 
     return {
       indexTokenAddress,
-      marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
-      tradeType: TradeType.Long,
+      marketTokenAddress: maxLiquidtyPool.marketTokenAddress,
+      tradeType: currentTradeType ?? TradeType.Long,
     };
   }
 
