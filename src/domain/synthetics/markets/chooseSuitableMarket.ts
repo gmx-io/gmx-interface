@@ -72,7 +72,6 @@ export function getLargestRelatedExistingPositionOrOrder({
         marketAddress: order.marketAddress,
         collateralTokenAddress: order.initialCollateralTokenAddress,
       };
-      return;
     }
   });
 
@@ -111,7 +110,7 @@ export function chooseSuitableMarket({
 
   const tradeTypeForPoolSelection =
     preferredTradeType === "largestPosition" ? currentTradeType ?? TradeType.Long : preferredTradeType;
-  const maxLiquidtyPool = tradeTypeForPoolSelection === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
+  const maxLiquidityPool = tradeTypeForPoolSelection === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
 
   if (preferredTradeType === "largestPosition" && positionsInfo) {
     let largestLongPositionOrOrder = getLargestRelatedExistingPositionOrOrder({
@@ -129,7 +128,7 @@ export function chooseSuitableMarket({
     });
 
     if (!largestLongPositionOrOrder && !largestShortPositionOrOrder) {
-      let marketTokenAddress = maxLiquidtyPool?.marketTokenAddress;
+      let marketTokenAddress = maxLiquidityPool?.marketTokenAddress;
 
       if (!marketTokenAddress) {
         return undefined;
@@ -161,13 +160,13 @@ export function chooseSuitableMarket({
       collateralTokenAddress: largestPositionOrOrder?.collateralTokenAddress,
     };
   } else if (preferredTradeType === "largestPosition") {
-    if (!maxLiquidtyPool) {
+    if (!maxLiquidityPool) {
       return undefined;
     }
 
     return {
       indexTokenAddress,
-      marketTokenAddress: maxLiquidtyPool.marketTokenAddress,
+      marketTokenAddress: maxLiquidityPool.marketTokenAddress,
       tradeType: currentTradeType ?? TradeType.Long,
     };
   }
@@ -181,7 +180,7 @@ export function chooseSuitableMarket({
       indexTokenAddress,
     });
 
-  const marketAddress = largestPositionOrOrder?.marketAddress ?? maxLiquidtyPool?.marketTokenAddress;
+  const marketAddress = largestPositionOrOrder?.marketAddress ?? maxLiquidityPool?.marketTokenAddress;
 
   if (!marketAddress) {
     return undefined;
