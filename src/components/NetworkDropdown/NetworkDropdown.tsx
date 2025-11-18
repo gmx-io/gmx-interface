@@ -3,7 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import partition from "lodash/partition";
-import { Fragment, useMemo, useState } from "react";
+import { forwardRef, Fragment, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
@@ -171,7 +171,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
 /**
  * This is needed because Fragment logs errors when passed props
  */
-const NoopWrapper = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+const NoopWrapper = forwardRef<HTMLDivElement, { children: React.ReactNode }>(({ children }) => <>{children}</>);
 
 function NetworkMenuItem({
   network,

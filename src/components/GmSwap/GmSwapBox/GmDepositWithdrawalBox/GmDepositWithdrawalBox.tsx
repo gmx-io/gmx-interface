@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
-import { isSourceChain, MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
+import { isSettlementChain, isSourceChain, MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
 import {
   usePoolsDetailsFirstTokenAddress,
   usePoolsDetailsFirstTokenInputValue,
@@ -68,7 +68,6 @@ import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
-import { SettlementChainId } from "sdk/configs/chains";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -678,11 +677,11 @@ function useUpdatePaySourceForMultichain() {
   const [paySource, setPaySource] = usePoolsDetailsPaySource();
 
   const isMarketTransferrableToSourceChain = useMemo((): boolean => {
-    if (!selectedGlvOrMarketAddress) {
+    if (!selectedGlvOrMarketAddress || !isSettlementChain(chainId)) {
       return false;
     }
 
-    return MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId].includes(selectedGlvOrMarketAddress);
+    return MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId]?.includes(selectedGlvOrMarketAddress);
   }, [chainId, selectedGlvOrMarketAddress]);
 
   useEffect(

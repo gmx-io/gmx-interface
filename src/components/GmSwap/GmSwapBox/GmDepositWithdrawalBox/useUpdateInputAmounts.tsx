@@ -75,10 +75,6 @@ export function useUpdateInputAmounts() {
   const secondTokenWrappedAddress = secondToken?.wrappedAddress ?? secondToken?.address;
   const focusedInput = useSelector(selectPoolsDetailsFocusedInput);
 
-  useEffect(() => {
-    console.log({ focusedInput });
-  }, [focusedInput]);
-
   const setFirstTokenInputValue = useSelector(selectPoolsDetailsSetFirstTokenInputValue);
   const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
   const setMarketOrGlvTokenInputValue = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
