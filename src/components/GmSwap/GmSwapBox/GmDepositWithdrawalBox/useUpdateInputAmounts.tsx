@@ -17,12 +17,11 @@ import {
   selectPoolsDetailsSetSecondTokenInputValue,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
+import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
 import { formatAmountFree } from "lib/numbers";
 import { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
-
-import { selectDepositWithdrawalAmounts } from "../../../../context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 
 function formatTokenAmount(amount: bigint | undefined, decimals: number): string {
   if (amount === undefined || amount <= 0n) return "";

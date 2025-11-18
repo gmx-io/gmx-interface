@@ -3,8 +3,10 @@
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getToken } from "sdk/configs/tokens";
 
+import { Operation } from "components/GmSwap/GmSwapBox/types";
+
 import { estimateGlvWithdrawalPlatformTokenTransferInFees } from "./estimateGlvWithdrawalPlatformTokenTransferInFees";
-import { estimatePureGlvWithdrawalGasLimit } from "./estimatePureGlvWithdrawalGasLimit";
+import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
 import { estimateSourceChainWithdrawalReturnTokenTransferFees } from "./estimateSourceChainWithdrawalFees";
 import { GlobalExpressParams, RelayParamsPayload } from "../../express";
 import { convertToUsd, getMidPrice } from "../../tokens";
@@ -74,11 +76,18 @@ export async function estimateSourceChainGlvWithdrawalFees({
     outputShortTokenAddress,
   });
 
-  const keeperWithdrawalGasLimit = estimatePureGlvWithdrawalGasLimit({
-    params,
+  const swapPathCount = BigInt(params.addresses.longTokenSwapPath.length + params.addresses.shortTokenSwapPath.length);
+  const keeperWithdrawalGasLimit = estimatePureLpActionExecutionFee({
+    action: {
+      operation: Operation.Withdrawal,
+      isGlv: true,
+      marketsCount,
+      swapsCount: swapPathCount,
+    },
     chainId,
-    globalExpressParams,
-    marketsCount,
+    tokensData: globalExpressParams.tokensData,
+    gasPrice: globalExpressParams.gasPrice,
+    gasLimits: globalExpressParams.gasLimits,
   }).gasLimit;
   // Add actions gas
   const keeperGasLimit = keeperWithdrawalGasLimit + longTokenTransferGasLimit + shortTokenTransferGasLimit;

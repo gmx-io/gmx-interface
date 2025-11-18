@@ -16,12 +16,14 @@ import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { Operation } from "components/GmSwap/GmSwapBox/types";
+
 import { getRawRelayerParams, GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express";
 import { convertToUsd, getGmToken, getMidPrice } from "../../tokens";
 import { signCreateGlvDeposit } from "../signCreateGlvDeposit";
 import { CreateGlvDepositParams, RawCreateGlvDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
-import { estimatePureGlvDepositGasLimit } from "./estimatePureGlvDepositGasLimit";
+import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
 import { stargateTransferFees } from "./stargateTransferFees";
 
 export type SourceChainGlvDepositFees = {
@@ -84,11 +86,19 @@ export async function estimateSourceChainGlvDepositFees({
     marketOrGlvAddress: params.addresses.glv,
   });
 
-  const keeperDepositGasLimit = estimatePureGlvDepositGasLimit({
-    params,
+  const swapPathCount = BigInt(params.addresses.longTokenSwapPath.length + params.addresses.shortTokenSwapPath.length);
+  const keeperDepositGasLimit = estimatePureLpActionExecutionFee({
+    action: {
+      operation: Operation.Deposit,
+      isGlv: true,
+      marketsCount: glvMarketCount,
+      swapsCount: swapPathCount,
+      isMarketTokenDeposit: params.isMarketTokenDeposit,
+    },
     chainId,
-    globalExpressParams,
-    marketsCount: glvMarketCount,
+    tokensData: globalExpressParams.tokensData,
+    gasPrice: globalExpressParams.gasPrice,
+    gasLimits: globalExpressParams.gasLimits,
   }).gasLimit;
 
   // Add actions gas

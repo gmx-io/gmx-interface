@@ -1,4 +1,5 @@
-import type { GlobalExpressParams } from "domain/synthetics/express/types";
+import type { ExecutionFee, GasLimitsConfig } from "domain/synthetics/fees";
+import type { TokensData } from "domain/synthetics/tokens/types";
 import { ContractsChainId } from "sdk/configs/chains";
 import {
   estimateDepositOraclePriceCount,
@@ -13,8 +14,6 @@ import {
 } from "sdk/utils/fees";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
-
-import type { ExecutionFee } from "../../fees";
 
 export type PureAction =
   | { operation: Operation.Deposit; isGlv: false; swapsCount: bigint }
@@ -31,43 +30,40 @@ export type PureAction =
 export function estimatePureLpActionExecutionFee({
   action,
   chainId,
-  globalExpressParams,
+  tokensData,
+  gasPrice,
+  gasLimits,
 }: {
   action: PureAction;
   chainId: ContractsChainId;
-  globalExpressParams: GlobalExpressParams;
+  gasLimits: GasLimitsConfig;
+  tokensData: TokensData;
+  gasPrice: bigint;
 }): ExecutionFee {
   let gasLimit = 0n;
   let oraclePriceCount = 0n;
   if (action.operation === Operation.Deposit && action.isGlv === false) {
-    gasLimit = estimateExecuteDepositGasLimit(globalExpressParams.gasLimits, { swapsCount: action.swapsCount });
+    gasLimit = estimateExecuteDepositGasLimit(gasLimits, { swapsCount: action.swapsCount });
     oraclePriceCount = estimateDepositOraclePriceCount(action.swapsCount);
   } else if (action.operation === Operation.Withdrawal && action.isGlv === false) {
-    gasLimit = estimateExecuteWithdrawalGasLimit(globalExpressParams.gasLimits, { swapsCount: action.swapsCount });
+    gasLimit = estimateExecuteWithdrawalGasLimit(gasLimits, { swapsCount: action.swapsCount });
     oraclePriceCount = estimateWithdrawalOraclePriceCount(action.swapsCount);
   } else if (action.operation === Operation.Deposit && action.isGlv === true) {
-    gasLimit = estimateExecuteGlvDepositGasLimit(globalExpressParams.gasLimits, {
+    gasLimit = estimateExecuteGlvDepositGasLimit(gasLimits, {
       swapsCount: action.swapsCount,
       marketsCount: action.marketsCount,
       isMarketTokenDeposit: action.isMarketTokenDeposit,
     });
     oraclePriceCount = estimateGlvDepositOraclePriceCount(action.marketsCount, action.swapsCount);
   } else if (action.operation === Operation.Withdrawal && action.isGlv === true) {
-    gasLimit = estimateExecuteGlvWithdrawalGasLimit(globalExpressParams.gasLimits, {
+    gasLimit = estimateExecuteGlvWithdrawalGasLimit(gasLimits, {
       swapsCount: action.swapsCount,
       marketsCount: action.marketsCount,
     });
     oraclePriceCount = estimateGlvWithdrawalOraclePriceCount(action.marketsCount, action.swapsCount);
   }
 
-  const executionFee = getExecutionFee(
-    chainId,
-    globalExpressParams.gasLimits,
-    globalExpressParams.tokensData,
-    gasLimit,
-    globalExpressParams.gasPrice,
-    oraclePriceCount
-  );
+  const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount);
 
   if (!executionFee) throw new Error("Execution fee not found");
 

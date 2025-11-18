@@ -12,6 +12,11 @@ import {
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGasLimits,
+  selectGasPrice,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   RawCreateDepositParams,
@@ -52,6 +57,9 @@ export function useTechnicalFeesAsyncResult() {
   const prevIsPair = usePrevious(isPair);
   const forceRecalculate = prevPaySource !== paySource || prevOperation !== operation || prevIsPair !== isPair;
 
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
+  const tokensData = useSelector(selectTokensData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const rawParams = useSelector(selectPoolsDetailsParams);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
@@ -59,9 +67,6 @@ export function useTechnicalFeesAsyncResult() {
   return useThrottledAsync(
     async (p) => {
       if (p.params.paySource === "gmxAccount" || p.params.paySource === "settlementChain") {
-        if (!p.params.globalExpressParams) {
-          return undefined;
-        }
         if (p.params.operation === Operation.Deposit) {
           if (p.params.isGlv) {
             const castedParams = p.params.rawParams as RawCreateGlvDepositParams;
@@ -76,7 +81,9 @@ export function useTechnicalFeesAsyncResult() {
                 isMarketTokenDeposit: castedParams.isMarketTokenDeposit,
               },
               chainId: p.params.chainId,
-              globalExpressParams: p.params.globalExpressParams,
+              gasLimits: p.params.gasLimits,
+              tokensData: p.params.tokensData,
+              gasPrice: p.params.gasPrice,
             });
           } else {
             const castedParams = p.params.rawParams as RawCreateDepositParams;
@@ -89,7 +96,9 @@ export function useTechnicalFeesAsyncResult() {
                 ),
               },
               chainId: p.params.chainId,
-              globalExpressParams: p.params.globalExpressParams,
+              gasLimits: p.params.gasLimits,
+              tokensData: p.params.tokensData,
+              gasPrice: p.params.gasPrice,
             });
           }
         } else if (p.params.operation === Operation.Withdrawal) {
@@ -105,7 +114,9 @@ export function useTechnicalFeesAsyncResult() {
                 ),
               },
               chainId: p.params.chainId,
-              globalExpressParams: p.params.globalExpressParams,
+              gasLimits: p.params.gasLimits,
+              tokensData: p.params.tokensData,
+              gasPrice: p.params.gasPrice,
             });
           }
 
@@ -119,11 +130,17 @@ export function useTechnicalFeesAsyncResult() {
               ),
             },
             chainId: p.params.chainId,
-            globalExpressParams: p.params.globalExpressParams,
+            gasLimits: p.params.gasLimits,
+            tokensData: p.params.tokensData,
+            gasPrice: p.params.gasPrice,
           });
         }
       } else if (p.params.paySource === "sourceChain") {
-        if (p.params.tokenAddress === undefined || p.params.tokenAmount === undefined) {
+        if (
+          p.params.tokenAddress === undefined ||
+          p.params.tokenAmount === undefined ||
+          !p.params.globalExpressParams
+        ) {
           return undefined;
         }
         if (p.params.operation === Operation.Deposit) {
@@ -200,7 +217,7 @@ export function useTechnicalFeesAsyncResult() {
     },
     {
       params:
-        globalExpressParams && rawParams
+        rawParams && gasLimits && tokensData && gasPrice !== undefined
           ? {
               chainId,
               globalExpressParams,
@@ -214,6 +231,9 @@ export function useTechnicalFeesAsyncResult() {
               tokenAmount: firstTokenAmount,
               operation,
               amounts,
+              gasLimits,
+              tokensData,
+              gasPrice,
             }
           : undefined,
       withLoading: false,

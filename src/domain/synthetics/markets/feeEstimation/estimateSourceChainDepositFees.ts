@@ -1,4 +1,3 @@
-// import { getPublicClient } from "@wagmi/core";
 import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
@@ -19,12 +18,14 @@ import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { Operation } from "components/GmSwap/GmSwapBox/types";
+
 import { getRawRelayerParams, GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express";
 import { convertToUsd, getMidPrice } from "../../tokens";
 import { signCreateDeposit } from "../signCreateDeposit";
 import { CreateDepositParams, RawCreateDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
-import { estimatePureDepositGasLimit } from "./estimatePureDepositGasLimit";
+import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
 import { stargateTransferFees } from "./stargateTransferFees";
 
 export type SourceChainDepositFees = {
@@ -84,10 +85,17 @@ export async function estimateSourceChainDepositFees({
     marketOrGlvAddress: params.addresses.market,
   });
 
-  const keeperDepositGasLimit = estimatePureDepositGasLimit({
-    params,
+  const swapPathCount = BigInt(params.addresses.longTokenSwapPath.length + params.addresses.shortTokenSwapPath.length);
+  const keeperDepositGasLimit = estimatePureLpActionExecutionFee({
+    action: {
+      operation: Operation.Deposit,
+      isGlv: false,
+      swapsCount: swapPathCount,
+    },
     chainId,
-    globalExpressParams,
+    tokensData: globalExpressParams.tokensData,
+    gasPrice: globalExpressParams.gasPrice,
+    gasLimits: globalExpressParams.gasLimits,
   }).gasLimit;
 
   // Add actions gas
