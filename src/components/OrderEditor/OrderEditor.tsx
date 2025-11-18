@@ -304,31 +304,49 @@ export function OrderEditor(p: Props) {
       return undefined;
     }
 
-    const positionOrder = p.order as PositionOrderInfo;
+    if (isSwapOrderType(p.order.orderType)) {
+      return {
+        createOrderParams: [],
+        updateOrderParams: [
+          buildUpdateOrderPayload({
+            chainId,
+            indexTokenAddress: zeroAddress,
+            orderKey: p.order.key,
+            orderType: p.order.orderType,
+            sizeDeltaUsd: 0n,
+            triggerPrice: triggerRatio?.ratio ?? p.order.triggerPrice,
+            acceptablePrice: 0n,
+            minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
+            autoCancel: p.order.autoCancel,
+            validFromTime: 0n,
+            executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+          }),
+        ],
+        cancelOrderParams: [],
+      };
+    } else {
+      const positionOrder = p.order as PositionOrderInfo;
 
-    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
-      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
-      : triggerPrice ?? positionOrder.triggerPrice;
-
-    const updateOrderParams = buildUpdateOrderPayload({
-      chainId,
-      indexTokenAddress: isSwapOrderType(p.order.orderType) ? zeroAddress : positionOrder.indexToken.address,
-      orderKey: p.order.key,
-      orderType: p.order.orderType,
-      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-      triggerPrice: orderTriggerPrice,
-      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-      autoCancel: positionOrder.autoCancel,
-      validFromTime: 0n,
-      executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
-    });
-
-    return {
-      createOrderParams: [],
-      updateOrderParams: [updateOrderParams],
-      cancelOrderParams: [],
-    };
+      return {
+        createOrderParams: [],
+        updateOrderParams: [
+          buildUpdateOrderPayload({
+            chainId,
+            indexTokenAddress: positionOrder.indexToken.address,
+            orderKey: p.order.key,
+            orderType: p.order.orderType,
+            sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+            triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
+            acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+            minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+            autoCancel: positionOrder.autoCancel,
+            validFromTime: 0n,
+            executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+          }),
+        ],
+        cancelOrderParams: [],
+      };
+    }
   }, [
     signer,
     tokensData,
