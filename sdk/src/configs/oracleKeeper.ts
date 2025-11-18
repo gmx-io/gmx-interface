@@ -13,7 +13,7 @@ const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
 };
 
 const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
-  [ARBITRUM]: ["https://arbitrum-api-fallback.gmxinfra.io", "https://arbitrum-api-fallback.gmxinfra2.io"],
+  [ARBITRUM]: ["https://arbitrum-api-fallback.gmxinfra2.io", "https://arbitrum-api-fallback.gmxinfra.io"],
 
   [AVALANCHE]: ["https://avalanche-api-fallback.gmxinfra.io", "https://avalanche-api-fallback.gmxinfra2.io"],
 
