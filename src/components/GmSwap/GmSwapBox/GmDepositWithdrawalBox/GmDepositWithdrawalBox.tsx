@@ -91,6 +91,7 @@ import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { useTechnicalFeesAsyncResult } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
+import { SelectedPoolLabel } from "../SelectedPool";
 
 export function GmSwapBoxDepositWithdrawal() {
   const { shouldDisableValidationForTesting } = useSettings();
@@ -567,12 +568,12 @@ export function GmSwapBoxDepositWithdrawal() {
                   onClickTopRightLabel={marketTokenInputClickTopRightLabel}
                   onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
                 >
-                  {selectedGlvOrMarketAddress && (
+                  {selectedGlvOrMarketAddress && isWithdrawal ? (
                     <MultichainMarketTokenSelector
                       chainId={chainId}
                       label={isWithdrawal ? t`Pay` : t`Receive`}
                       srcChainId={srcChainId}
-                      paySource={paySource || "settlementChain"}
+                      paySource={paySource}
                       onSelectTokenAddress={async (newChainId) => {
                         if (newChainId === 0) {
                           setPaySource("gmxAccount");
@@ -596,6 +597,20 @@ export function GmSwapBoxDepositWithdrawal() {
                             : undefined
                       }
                     />
+                  ) : (
+                    (glvInfo || marketInfo) && (
+                      <span className="inline-flex items-center">
+                        <TokenIcon
+                          className="mr-5"
+                          symbol={glvInfo?.glvToken.symbol ?? marketInfo?.indexToken.symbol ?? ""}
+                          displaySize={20}
+                          chainIdBadge={
+                            paySource === "sourceChain" ? srcChainId : paySource === "gmxAccount" ? 0 : undefined
+                          }
+                        />
+                        <SelectedPoolLabel glvOrMarketInfo={glvInfo ?? marketInfo} />
+                      </span>
+                    )
                   )}
                 </BuyInputSection>
               </div>
