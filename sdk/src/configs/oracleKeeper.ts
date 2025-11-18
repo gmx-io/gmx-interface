@@ -1,25 +1,25 @@
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
 
 const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
-  [ARBITRUM]: "https://arbitrum-api.gmxinfra.io",
+  [ARBITRUM]: "https://arbitrum-api-fallback.gmxinfra2.io",
 
-  [AVALANCHE]: "https://avalanche-api.gmxinfra.io",
+  [AVALANCHE]: "https://avalanche-api-fallback.gmxinfra2.io",
 
   [AVALANCHE_FUJI]: "https://synthetics-api-avax-fuji-upovm.ondigitalocean.app",
 
-  [BOTANIX]: "https://botanix-api.gmxinfra.io",
+  [BOTANIX]: "https://botanix-api-fallback.gmxinfra2.io",
 
   [ARBITRUM_SEPOLIA]: "https://dolphin-app-a2dup.ondigitalocean.app",
 };
 
 const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
-  [ARBITRUM]: ["https://arbitrum-api-fallback.gmxinfra.io", "https://arbitrum-api-fallback.gmxinfra2.io"],
+  [ARBITRUM]: ["https://arbitrum-api-fallback.gmxinfra2.io"],
 
-  [AVALANCHE]: ["https://avalanche-api-fallback.gmxinfra.io", "https://avalanche-api-fallback.gmxinfra2.io"],
+  [AVALANCHE]: ["https://avalanche-api-fallback.gmxinfra2.io"],
 
   [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji-upovm.ondigitalocean.app"],
 
-  [BOTANIX]: ["https://botanix-api-fallback.gmxinfra.io", "https://botanix-api-fallback.gmxinfra2.io"],
+  [BOTANIX]: ["https://botanix-api-fallback.gmxinfra2.io"],
 
   [ARBITRUM_SEPOLIA]: ["https://dolphin-app-a2dup.ondigitalocean.app"],
 };
