@@ -212,6 +212,7 @@ export function BridgeInModal({
             chainId={chainId}
             srcChainId={bridgeInChain}
             paySource={"sourceChain"}
+            label={t`Deposit`}
             onSelectTokenAddress={(newBridgeInChain) => {
               if (!isSourceChain(newBridgeInChain)) {
                 return;
@@ -221,6 +222,7 @@ export function BridgeInModal({
             marketInfo={glvOrMarketInfo}
             marketTokenPrice={marketTokenPrice}
             tokenBalancesData={sourceChainMarketTokenBalancesData}
+            hideTabs
           />
         </BuyInputSection>
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>

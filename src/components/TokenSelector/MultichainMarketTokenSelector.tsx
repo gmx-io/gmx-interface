@@ -36,6 +36,7 @@ type Props = {
   marketInfo: GlvOrMarketInfo | undefined;
   marketTokenPrice: bigint | undefined;
   tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>>;
+  hideTabs?: boolean;
 };
 
 export function MultichainMarketTokenSelector({
@@ -48,6 +49,7 @@ export function MultichainMarketTokenSelector({
   marketInfo,
   marketTokenPrice,
   tokenBalancesData,
+  hideTabs,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"all" | AnyChainId | 0>("all");
@@ -100,18 +102,20 @@ export function MultichainMarketTokenSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          <div className="pb-12">
-            <ButtonRowScrollFadeContainer>
-              <Tabs
-                options={NETWORKS_FILTER}
-                selectedValue={activeFilter}
-                onChange={(value) => setActiveFilter(value)}
-                type="inline"
-                qa="network-filter"
-                regularOptionClassname="shrink-0"
-              />
-            </ButtonRowScrollFadeContainer>
-          </div>
+          hideTabs ? null : (
+            <div className="pb-12">
+              <ButtonRowScrollFadeContainer>
+                <Tabs
+                  options={NETWORKS_FILTER}
+                  selectedValue={activeFilter}
+                  onChange={(value) => setActiveFilter(value)}
+                  type="inline"
+                  qa="network-filter"
+                  regularOptionClassname="shrink-0"
+                />
+              </ButtonRowScrollFadeContainer>
+            </div>
+          )
         }
         contentPadding={false}
       >

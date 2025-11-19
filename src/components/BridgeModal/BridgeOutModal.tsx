@@ -4,7 +4,7 @@ import { Address, encodeAbiParameters } from "viem";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
-import { getLayerZeroEndpointId, getStargatePoolAddress, isSourceChain } from "config/multichain";
+import { getLayerZeroEndpointId, getStargatePoolAddress } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -25,11 +25,12 @@ import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -316,20 +317,15 @@ export function BridgeOutModal({
               : undefined
           }
         >
-          <MultichainMarketTokenSelector
-            chainId={chainId}
-            srcChainId={bridgeOutChain}
-            paySource={"settlementChain"}
-            onSelectTokenAddress={(newBridgeOutChain) => {
-              if (!isSourceChain(newBridgeOutChain)) {
-                return;
-              }
-              setBridgeOutChain(newBridgeOutChain);
-            }}
-            marketInfo={glvOrMarketInfo}
-            marketTokenPrice={marketTokenPrice}
-            tokenBalancesData={settlementChainMarketTokenBalancesData}
-          />
+          <span className="inline-flex items-center">
+            <TokenIcon
+              className="mr-5"
+              symbol={isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken.symbol : glvOrMarketInfo.indexToken.symbol}
+              displaySize={20}
+              chainIdBadge={0}
+            />
+            <SelectedPoolLabel glvOrMarketInfo={glvOrMarketInfo} />
+          </span>
         </BuyInputSection>
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}
