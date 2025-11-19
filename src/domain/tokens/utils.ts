@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, BOTANIX, ContractsChainId, getExplorerUrl } from "config/chains";
+import { BOTANIX, ContractsChainId, getExplorerUrl } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 import {
@@ -14,7 +14,7 @@ import {
   getFeeBasisPoints,
 } from "lib/legacy";
 import { expandDecimals, PRECISION } from "lib/numbers";
-import { getTokenBySymbol, getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
+import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo, TokenPrices } from "sdk/types/tokens";
 
 export * from "sdk/utils/tokens";
@@ -285,16 +285,4 @@ export function getMinResidualAmount({
 const BLACKLISTED_REGEX = /Wrapped|\(Wormhole\)|\(LayerZero\)/gim;
 export function stripBlacklistedWords(name: string): string {
   return name.replace(BLACKLISTED_REGEX, "").trim();
-}
-
-const USD_BASED_STABLE_TOKEN_SYMBOLS = [
-  getTokenBySymbol(ARBITRUM, "USDC"),
-  getTokenBySymbol(ARBITRUM, "USDC.E"),
-  getTokenBySymbol(ARBITRUM, "USDT"),
-  getTokenBySymbol(ARBITRUM, "DAI"),
-  getTokenBySymbol(ARBITRUM_SEPOLIA, "USDC.SG"),
-].map((token) => token.symbol);
-
-export function isUsdBasedStableToken(token: Token) {
-  return USD_BASED_STABLE_TOKEN_SYMBOLS.includes(token.symbol);
 }

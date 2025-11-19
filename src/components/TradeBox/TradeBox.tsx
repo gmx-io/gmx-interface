@@ -53,10 +53,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import {
-  EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER,
-  getMinResidualGasPaymentTokenAmount,
-} from "domain/synthetics/express/expressOrderUtils";
+import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
 import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
@@ -64,7 +61,7 @@ import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendatio
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { isUsdBasedStableToken, Token } from "domain/tokens";
+import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -88,7 +85,8 @@ import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
-import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER } from "sdk/configs/express";
+import { getToken, isUsdBasedStableToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";

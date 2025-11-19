@@ -4,7 +4,7 @@ import { Address, encodeFunctionData, recoverTypedDataAddress, size, zeroAddress
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { isSourceChain } from "config/multichain";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
@@ -28,11 +28,11 @@ import {
   SignedSubacсountApproval,
   Subaccount,
 } from "domain/synthetics/subaccount";
-import { convertToTokenAmount, SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
-import { applyFactor, expandDecimals } from "lib/numbers";
+import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
@@ -459,56 +459,6 @@ export function getGasPaymentValidations({
     needGasPaymentTokenApproval,
     isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,
   };
-}
-
-export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER = 20;
-const EXPRESS_DEFAULT_MIN_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER, USD_DECIMALS);
-const EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER = 40;
-const EXPRESS_DEFAULT_MAX_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER, USD_DECIMALS);
-const EXPRESS_RESIDUAL_AMOUNT_MULTIPLIER = 20n;
-
-export function getMinResidualGasPaymentTokenAmount({
-  payTokenAddress,
-  expressParams,
-  gasPaymentToken: rawGasPaymentToken,
-  gasPaymentTokenAmount: rawGasPaymentTokenAmount,
-  applyBuffer = true,
-}: {
-  payTokenAddress: string | undefined;
-  expressParams?: ExpressTxnParams;
-  gasPaymentToken?: TokenData;
-  gasPaymentTokenAmount?: bigint;
-  applyBuffer?: boolean;
-}): bigint {
-  const gasPaymentToken = rawGasPaymentToken ?? expressParams?.gasPaymentParams.gasPaymentToken;
-  const gasPaymentTokenAmount = rawGasPaymentTokenAmount ?? expressParams?.gasPaymentParams.gasPaymentTokenAmount;
-
-  if (!gasPaymentToken || gasPaymentTokenAmount === undefined || !payTokenAddress) {
-    return 0n;
-  }
-
-  if (payTokenAddress !== gasPaymentToken.address) {
-    return 0n;
-  }
-
-  const minResidualAmount = convertToTokenAmount(
-    EXPRESS_DEFAULT_MIN_RESIDUAL_USD,
-    gasPaymentToken.decimals,
-    gasPaymentToken.prices.minPrice
-  )!;
-
-  const maxResidualAmount = convertToTokenAmount(
-    EXPRESS_DEFAULT_MAX_RESIDUAL_USD,
-    gasPaymentToken.decimals,
-    gasPaymentToken.prices.maxPrice
-  )!;
-
-  let residualAmount = minResidualAmount;
-  if (applyBuffer) {
-    residualAmount = gasPaymentTokenAmount * EXPRESS_RESIDUAL_AMOUNT_MULTIPLIER;
-  }
-
-  return bigMath.clamp(residualAmount, minResidualAmount, maxResidualAmount);
 }
 
 export async function buildAndSignExpressBatchOrderTxn({
