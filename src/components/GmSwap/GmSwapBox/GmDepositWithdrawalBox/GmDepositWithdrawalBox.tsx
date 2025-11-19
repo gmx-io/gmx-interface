@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import noop from "lodash/noop";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
@@ -75,15 +74,18 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
 import { useBestGmPoolAddressForGlv } from "components/MarketStats/hooks/useBestGmPoolForGlv";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
-import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
+import { MultichainTokenSelectorForLp } from "components/TokenSelector/MultichainTokenSelectorForLp";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
+import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
@@ -91,7 +93,6 @@ import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { useTechnicalFeesAsyncResult } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
-import { SelectedPoolLabel } from "../SelectedPool";
 
 export function GmSwapBoxDepositWithdrawal() {
   const { shouldDisableValidationForTesting } = useSettings();
@@ -464,6 +465,8 @@ export function GmSwapBoxDepositWithdrawal() {
     return btn;
   }, [submitState]);
 
+  const gmOrGlvSymbol = glvInfo ? "GLV" : "GM";
+
   return (
     <>
       <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
@@ -482,15 +485,17 @@ export function GmSwapBoxDepositWithdrawal() {
                   onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
                   className={isPair ? "rounded-b-0" : undefined}
                 >
-                  {firstTokenAddress && isSingle && isDeposit && tokenOptions.length > 1 ? (
-                    <MultichainTokenSelector
+                  {firstTokenAddress && isSingle && isDeposit ? (
+                    <MultichainTokenSelectorForLp
                       chainId={chainId}
                       srcChainId={srcChainId}
                       tokenAddress={firstTokenAddress}
                       payChainId={paySource === "gmxAccount" ? 0 : paySource === "sourceChain" ? srcChainId : undefined}
                       tokensData={availableTokensData}
                       onSelectTokenAddress={async (tokenAddress, isGmxAccount, newSrcChainId) => {
-                        if (isMarketTokenAddress(chainId, firstTokenAddress)) {
+                        if (newSrcChainId === undefined) {
+                          await switchNetwork(chainId, true);
+                        } else if (isMarketTokenAddress(chainId, firstTokenAddress)) {
                           await switchNetwork(chainId, true);
                         } else if (newSrcChainId !== srcChainId && newSrcChainId !== undefined) {
                           await switchNetwork(newSrcChainId, true);
@@ -503,7 +508,6 @@ export function GmSwapBoxDepositWithdrawal() {
                       }}
                       multichainTokens={sourceChainTokenOptions}
                       includeMultichainTokensInPay={isMarketTransferrableToSourceChain}
-                      onDepositTokenAddress={noop}
                     />
                   ) : isWithdrawal && firstTokenAddress && isSingle && tokenOptions.length > 1 ? (
                     <TokenSelector
@@ -571,7 +575,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   {selectedGlvOrMarketAddress && isWithdrawal ? (
                     <MultichainMarketTokenSelector
                       chainId={chainId}
-                      label={isWithdrawal ? t`Pay` : t`Receive`}
+                      label={isWithdrawal ? t`Sell ${gmOrGlvSymbol}` : t`Receive ${gmOrGlvSymbol}`}
                       srcChainId={srcChainId}
                       paySource={paySource}
                       onSelectTokenAddress={async (newChainId) => {
@@ -635,7 +639,16 @@ export function GmSwapBoxDepositWithdrawal() {
               />
             </div>
           </div>
-          <div className="border-t border-slate-600 p-12">{submitButton}</div>
+          <div className="border-t border-slate-600 p-12">
+            {srcChainId === undefined || isMarketTransferrableToSourceChain ? (
+              submitButton
+            ) : (
+              <>
+                <SwitchToSettlementChainWarning topic="liquidity" />
+                <SwitchToSettlementChainButtons>{submitButton}</SwitchToSettlementChainButtons>
+              </>
+            )}
+          </div>
         </div>
 
         <InfoRows

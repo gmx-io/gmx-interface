@@ -1,9 +1,10 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { memo, ReactNode, useEffect, useMemo, useState } from "react";
+import noop from "lodash/noop";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { getChainName, type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
-import { getSourceChainDecimals, isSourceChain } from "config/multichain";
+import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, type Token, type TokenData, type TokensData } from "domain/tokens";
@@ -25,7 +26,6 @@ import {
 } from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
-import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
@@ -36,6 +36,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import "./TokenSelector.scss";
+import { ConnectWalletModalContent } from "./ConnectWalletModalContent";
 
 type Props = {
   chainId: ContractsChainId;
@@ -57,7 +58,7 @@ type Props = {
   multichainTokens: TokenChainData[] | undefined;
   includeMultichainTokensInPay?: boolean;
 
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
+  onDepositTokenAddress?: (tokenAddress: string, chainId: SourceChainId) => void;
 
   isConnected?: boolean;
   walletIconUrls?: string[];
@@ -78,7 +79,7 @@ export function MultichainTokenSelector({
   label,
   multichainTokens,
   includeMultichainTokensInPay,
-  onDepositTokenAddress: propsOnDepositTokenAddress,
+  onDepositTokenAddress: propsOnDepositTokenAddress = noop,
   isConnected,
   walletIconUrls,
   openConnectModal,
@@ -261,7 +262,7 @@ type DisplayAvailableToTradeToken = TokenData & {
   // TODO MLTCH maybe move it in TokenData
   sourceChainDecimals?: number;
 };
-function useAvailableToTradeTokenList({
+export function useAvailableToTradeTokenList({
   chainId,
   activeFilter,
   srcChainId,
@@ -270,6 +271,7 @@ function useAvailableToTradeTokenList({
   multichainTokens,
   extendedSortSequence,
   includeMultichainTokensInPay,
+  includeSettlementChainTokens = false,
 }: {
   chainId: ContractsChainId;
   activeFilter: "pay" | "deposit";
@@ -279,6 +281,7 @@ function useAvailableToTradeTokenList({
   multichainTokens: TokenChainData[] | undefined;
   extendedSortSequence?: string[];
   includeMultichainTokensInPay?: boolean;
+  includeSettlementChainTokens?: boolean;
 }) {
   return useMemo(() => {
     if (activeFilter !== "pay") {
@@ -298,7 +301,8 @@ function useAvailableToTradeTokenList({
           balanceUsd,
         });
       }
-      if (token.walletBalance !== undefined && srcChainId === undefined) {
+
+      if (token.walletBalance !== undefined && (srcChainId === undefined || includeSettlementChainTokens)) {
         const balanceUsd = convertToUsd(token.walletBalance, token.decimals, token.prices.maxPrice) ?? 0n;
         concatenatedTokens.push({
           ...token,
@@ -310,8 +314,7 @@ function useAvailableToTradeTokenList({
       }
 
       if (token.sourceChainBalance !== undefined && srcChainId !== undefined) {
-        // TODO MLTCH: use sourceChainDecimals or put sourceChainBalance in normal decimals
-        const sourceChainDecimals = getSourceChainDecimals(srcChainId, token.address);
+        const sourceChainDecimals = getSourceChainDecimalsMapped(chainId, srcChainId, token.address);
 
         if (sourceChainDecimals === undefined) {
           continue;
@@ -416,12 +419,13 @@ function useAvailableToTradeTokenList({
     searchKeyword,
     tokensData,
     srcChainId,
+    includeSettlementChainTokens,
     chainId,
     extendedSortSequence,
   ]);
 }
 
-function AvailableToTradeTokenList({
+export function AvailableToTradeTokenList({
   chainId,
   onSelectTokenAddress,
   tokens,
@@ -635,43 +639,3 @@ function MultichainTokenList({
     </div>
   );
 }
-
-const ConnectWalletModalContent = memo(function ConnectWalletModalContent({
-  openConnectModal,
-  walletIconUrls,
-}: {
-  openConnectModal: (() => void) | undefined;
-  walletIconUrls: string[] | undefined;
-}) {
-  return (
-    <div className="flex grow flex-col items-center justify-center gap-20 p-adaptive">
-      {walletIconUrls?.length && (
-        <div className="flex rounded-full bg-slate-800 p-2">
-          {walletIconUrls.map((url, index) => (
-            <img
-              src={url}
-              alt="Wallet Icon"
-              className="relative -ml-8 size-24 rounded-full border-2 border-slate-800 first-of-type:ml-0"
-              // Safety: walletIconUrls is not changing, memo prevents parent caused re-renders
-              // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-              style={{
-                zIndex: walletIconUrls.length - index,
-              }}
-              key={url}
-            />
-          ))}
-        </div>
-      )}
-      <div className="text-body-medium text-center text-typography-secondary">
-        <Trans>
-          Please connect your wallet to view
-          <br />
-          all available payment options
-        </Trans>
-      </div>
-      <ConnectWalletButton onClick={openConnectModal}>
-        <Trans>Connect Wallet</Trans>
-      </ConnectWalletButton>
-    </div>
-  );
-});

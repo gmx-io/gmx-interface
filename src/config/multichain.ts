@@ -31,6 +31,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  ContractsChainId,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -554,7 +555,11 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
 export const RANDOM_WALLET = Wallet.createRandom();
 
-export function getSourceChainDecimals(chainId: SourceChainId, tokenAddress: string): number | undefined {
-  const tokenId = getMultichainTokenId(chainId, tokenAddress);
+export function getSourceChainDecimalsMapped(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId,
+  tokenAddress: string
+): number | undefined {
+  const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId as SourceChainId);
   return tokenId?.decimals;
 }

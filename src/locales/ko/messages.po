@@ -33,7 +33,7 @@ msgstr ""
 msgid "Pear Protocol"
 msgstr "Pear Protocol"
 
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Please connect your wallet to view<0/>all available payment options"
 msgstr "모든 사용 가능한 결제 옵션을 보려면 지갑을 연결하세요<0/>"
 
@@ -1993,7 +1993,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
@@ -3416,6 +3416,10 @@ msgstr "네트워크의 네이티브 토큰 {0}을 사용한 익스프레스 거
 msgid "Total Earned"
 msgstr ""
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "이 시장의 유동성 제공은 {chainNames}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames}으로 전환하세요."
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
 msgstr "자금을 출금하려면 계정에 <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol}이 필요합니다."
@@ -3500,6 +3504,10 @@ msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로�
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
 msgstr "스캔 후, 지갑을 연결할 수 있는 연결 프롬프트가 나타납니다."
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "이 시장의 유동성 제공은 {chainNames} 및 {lastChainName}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames} 또는 {lastChainName}으로 전환하세요."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4743,6 +4751,10 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "Shifting은 {chainNames}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames}으로 전환하세요."
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -6948,10 +6960,6 @@ msgstr "추천 코드 생성 실패."
 msgid "GMX dashboards and analytics."
 msgstr "GMX 대시보드 및 분석."
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
-msgstr "유동성 제공은 {chainNames}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames}으로 전환하세요."
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "{0}을 {1}로 외부 스왑"
@@ -7093,6 +7101,10 @@ msgstr "증가"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Supply"
 msgstr "총 공급량"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "Shifting은 {chainNames} 및 {lastChainName}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames} 또는 {lastChainName}으로 전환하세요."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -8180,10 +8192,6 @@ msgstr ""
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} 포지션은 자금 수수료 미지불, 시간당 {borrowRate} 대출 수수료 지불."
-
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
-msgstr "유동성 제공은 {chainNames} 및 {lastChainName}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames} 또는 {lastChainName}으로 전환하세요."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX Pages"

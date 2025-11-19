@@ -33,7 +33,7 @@ msgstr ""
 msgid "Pear Protocol"
 msgstr "Pear Protocol"
 
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Please connect your wallet to view<0/>all available payment options"
 msgstr "请连接您的钱包以查看<0/>所有可用支付选项"
 
@@ -1993,7 +1993,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Connect Wallet"
 msgstr "连接钱包"
 
@@ -3416,6 +3416,10 @@ msgstr "使用网络的本机代币 {0} 无法进行快速交易。请考虑使�
 msgid "Total Earned"
 msgstr ""
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "此市场的流动性提供仅在 {chainNames} 上可用。请切换到 {chainNames} 以访问赚取机会。"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
 msgstr "您的账户需要 <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} 来提取资金。"
@@ -3500,6 +3504,10 @@ msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以�
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
 msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "此市场的流动性提供仅在 {chainNames} 和 {lastChainName} 上可用。请切换到 {chainNames} 或 {lastChainName} 以访问赚取机会。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4743,6 +4751,10 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "Shifting 仅在 {chainNames} 上可用。请切换到 {chainNames} 以访问赚取机会。"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -6948,10 +6960,6 @@ msgstr "推荐代码创建失败。"
 msgid "GMX dashboards and analytics."
 msgstr "GMX 仪表板和分析。"
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
-msgstr "流动性提供仅在 {chainNames} 上可用。请切换到 {chainNames} 以访问赚取机会。"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "外部交换 {0} 到 {1}"
@@ -7093,6 +7101,10 @@ msgstr "增加"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Supply"
 msgstr "总供应量"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "Shifting 仅在 {chainNames} 和 {lastChainName} 上可用。请切换到 {chainNames} 或 {lastChainName} 以访问赚取机会。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -8180,10 +8192,6 @@ msgstr ""
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} 仓位不支付资金费用，并支付 {borrowRate} 每小时的借款费用。"
-
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
-msgstr "流动性提供仅在 {chainNames} 和 {lastChainName} 上可用。请切换到 {chainNames} 或 {lastChainName} 以访问赚取机会。"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX Pages"

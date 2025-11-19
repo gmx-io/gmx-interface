@@ -4,6 +4,7 @@ import { useAccount } from "wagmi";
 
 import { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
+import { getSourceChainDecimalsMapped } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -11,7 +12,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { getSourceChainDecimals } from "domain/synthetics/tokens/utils";
 import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
@@ -95,7 +95,7 @@ export function BridgeInModal({
 
   const sourceChainDecimals =
     bridgeInChain && glvOrMarketAddress
-      ? getSourceChainDecimals(chainId, bridgeInChain, glvOrMarketAddress)
+      ? getSourceChainDecimalsMapped(chainId, bridgeInChain, glvOrMarketAddress)
       : undefined;
 
   const gmxAccountMarketTokenBalance: bigint | undefined = marketTokenBalancesData[0];

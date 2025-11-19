@@ -33,7 +33,7 @@ msgstr ""
 msgid "Pear Protocol"
 msgstr "Pear Protocol"
 
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Please connect your wallet to view<0/>all available payment options"
 msgstr "利用可能なすべての支払いオプションを表示するには、ウォレットを接続してください<0/>"
 
@@ -1993,7 +1993,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
@@ -3416,6 +3416,10 @@ msgstr "ネットワークのネイティブトークン{0}を使用したエク
 msgid "Total Earned"
 msgstr ""
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "この市場の流動性提供は{chainNames}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}に切り替えてください。"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
 msgstr "資金を引き出すには、アカウントに<0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} が必要です。"
@@ -3500,6 +3504,10 @@ msgstr "GMXは現在積極的には求人を行っていませんが、プロジ
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
 msgstr "スキャン後、ウォレットを接続するためのプロンプトが表示されます。"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "この市場の流動性提供は{chainNames}および{lastChainName}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}または{lastChainName}に切り替えてください。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4743,6 +4751,10 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "Shiftingは{chainNames}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}に切り替えてください。"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -6948,10 +6960,6 @@ msgstr "紹介コード作成に失敗しました。"
 msgid "GMX dashboards and analytics."
 msgstr "GMXダッシュボードと分析。"
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
-msgstr "流動性提供は{chainNames}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}に切り替えてください。"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "外部スワップ {0} から {1}"
@@ -7093,6 +7101,10 @@ msgstr "増加"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Supply"
 msgstr "総供給量"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "Shiftingは{chainNames}および{lastChainName}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}または{lastChainName}に切り替えてください。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -8180,10 +8192,6 @@ msgstr ""
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort}ポジションはファンディング手数料を支払わず、{borrowRate}の借入手数料を1時間ごとに支払います。"
-
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
-msgstr "流動性提供は{chainNames}および{lastChainName}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}または{lastChainName}に切り替えてください。"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX Pages"

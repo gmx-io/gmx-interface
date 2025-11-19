@@ -1,6 +1,4 @@
-import { ContractsChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { getMappedTokenId } from "config/multichain";
 import { InfoTokens, SignedTokenPermit, Token, TokenBalanceType, TokenInfo } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -129,10 +127,4 @@ export function getBalanceByBalanceType(tokenData: TokenData, tokenBalanceType: 
     case TokenBalanceType.SourceChain:
       return tokenData.sourceChainBalance;
   }
-}
-
-// TODO MLTCH move this to src/config/multichain.ts
-export function getSourceChainDecimals(chainId: ContractsChainId, srcChainId: SourceChainId, tokenAddress: string) {
-  const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId as SourceChainId);
-  return tokenId?.decimals;
 }

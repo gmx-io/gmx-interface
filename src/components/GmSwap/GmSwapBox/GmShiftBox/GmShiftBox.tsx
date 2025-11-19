@@ -311,7 +311,7 @@ export function GmShiftBox({
           </div>
 
           <div className="rounded-b-8 border-t border-slate-600 bg-slate-900 p-12">
-            <SwitchToSettlementChainWarning topic="liquidity" />
+            <SwitchToSettlementChainWarning topic="shift" />
             <SwitchToSettlementChainButtons>
               <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
                 {submitState.text}

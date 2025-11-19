@@ -33,7 +33,7 @@ msgstr ""
 msgid "Pear Protocol"
 msgstr "Protocolo Pear"
 
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Please connect your wallet to view<0/>all available payment options"
 msgstr "Por favor, conecta tu billetera para ver<0/>todas las opciones de pago disponibles"
 
@@ -1993,7 +1993,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
@@ -3416,6 +3416,10 @@ msgstr "Trading Express no está disponible usando el token nativo de la red {0}
 msgid "Total Earned"
 msgstr ""
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "La provisión de liquidez para este mercado solo está disponible en {chainNames}. Por favor, cambia a {chainNames} para acceder a oportunidades de ganancias."
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
 msgstr "Necesitarás <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} en tu cuenta para retirar fondos."
@@ -3500,6 +3504,10 @@ msgstr "GMX no está buscando activamente nuevas contrataciones en este momento.
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
 msgstr "Después de escanear, aparecerá un mensaje de conexión para que conectes tu monedero."
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "La provisión de liquidez para este mercado solo está disponible en {chainNames} y {lastChainName}. Por favor, cambia a {chainNames} o {lastChainName} para acceder a oportunidades de ganancias."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4743,6 +4751,10 @@ msgstr ""
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana"
 msgstr "GMX Solana"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
+msgstr "Shifting solo está disponible en {chainNames}. Por favor, cambia a {chainNames} para acceder a oportunidades de ganancias."
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -6948,10 +6960,6 @@ msgstr "Creación del código de referido fallida."
 msgid "GMX dashboards and analytics."
 msgstr "Paneles y análisis de GMX."
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
-msgstr "La provisión de liquidez solo está disponible en {chainNames}. Por favor, cambia a {chainNames} para acceder a oportunidades de ganancias."
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "Intercambio Externo {0} a {1}"
@@ -7093,6 +7101,10 @@ msgstr "Incrementar"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Supply"
 msgstr "Suministro Total"
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Shifting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
+msgstr "Shifting solo está disponible en {chainNames} y {lastChainName}. Por favor, cambia a {chainNames} o {lastChainName} para acceder a oportunidades de ganancias."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -8180,10 +8192,6 @@ msgstr ""
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
 msgstr "Posiciones {longOrShort} no pagan comisión de financiación y pagan comisión de préstamo de {borrowRate} por hora."
-
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-msgid "Liquidity providing is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
-msgstr "La provisión de liquidez solo está disponible en {chainNames} y {lastChainName}. Por favor, cambia a {chainNames} o {lastChainName} para acceder a oportunidades de ganancias."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX Pages"

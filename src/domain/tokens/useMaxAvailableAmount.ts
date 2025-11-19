@@ -1,6 +1,7 @@
+import { getSourceChainDecimalsMapped } from "config/multichain";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { TokenData } from "domain/synthetics/tokens";
-import { getBalanceByBalanceType, getSourceChainDecimals } from "domain/synthetics/tokens/utils";
+import { getBalanceByBalanceType } from "domain/synthetics/tokens/utils";
 import { getMinResidualAmount, TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { absDiffBps, formatAmountFree, formatBalanceAmount } from "lib/numbers";
@@ -59,7 +60,7 @@ export function useMaxAvailableAmount({
     srcChainId && tokenBalanceType === TokenBalanceType.SourceChain
       ? formatBalanceAmount(
           fromTokenBalance,
-          getSourceChainDecimals(chainId, srcChainId, fromToken.address) ?? fromToken.decimals,
+          getSourceChainDecimalsMapped(chainId, srcChainId, fromToken.address) ?? fromToken.decimals,
           undefined,
           {
             isStable: fromToken.isStable,
