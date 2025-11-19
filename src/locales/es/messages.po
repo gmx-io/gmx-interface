@@ -583,6 +583,11 @@ msgstr "No muestres este mensaje de nuevo en los próximos 30 días."
 msgid "in liquidity"
 msgstr "en liquidez"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
 msgstr "Precio de Salida"
@@ -2684,11 +2689,6 @@ msgstr "Fallo al añadir código de referido."
 msgid "Updating"
 msgstr "Actualizando"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "Depositar USDC"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4240,6 +4240,11 @@ msgstr "Tasa Neta de Cortos / 1h"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5642,11 +5647,6 @@ msgstr "Comunidad GMX con iniciativas de NFTs, Trading y Educación"
 msgid "Liquidation Confirmations"
 msgstr "Confirmaciones de Liquidación"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "Saldo de gas insuficiente, por favor deposita más WETH o USDC."
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0>El OI de <1>#GMX V2</1> se ve genial</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Ver más: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5823,11 +5823,6 @@ msgstr "GLV gana de tarifas de trading (apertura, cierre, préstamo, liquidacion
 #: src/components/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr "Depósito fallido"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "Depositar USDC o ETH"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -7535,11 +7530,6 @@ msgstr "Los descuentos de GMX V2 se aplican automáticamente en cada operación 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share Position"
 msgstr "Compartir Posición"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "Saldo de gas insuficiente, por favor deposita más USDC."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"

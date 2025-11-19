@@ -583,6 +583,11 @@ msgstr "30日間このメッセージを表示しない"
 msgid "in liquidity"
 msgstr "流動性で"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
 msgstr "退出価格"
@@ -2684,11 +2689,6 @@ msgstr "紹介コードが追加できませんでした"
 msgid "Updating"
 msgstr "更新中"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "USDCを入金"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4240,6 +4240,11 @@ msgstr "1時間あたりのショートネットレート"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5642,11 +5647,6 @@ msgstr "NFT、取引、教育イニシアチブを持つGMXコミュニティ"
 msgid "Liquidation Confirmations"
 msgstr "清算確認"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "ガス残高不足、もっとWETHまたはUSDCを入金してください。"
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>のOIは素晴らしい</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>もっと確認: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5823,11 +5823,6 @@ msgstr "GLVはGMプール横断の取引手数料（オープン、クローズ�
 #: src/components/GmxAccountModal/keys.ts
 msgid "Deposit failed"
 msgstr "入金に失敗しました"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "USDCまたはETHを入金"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -7535,11 +7530,6 @@ msgstr "GMX V2割引は各取引で自動適用され、このテーブルに表
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share Position"
 msgstr "ポジション共有"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "ガス残高不足、もっとUSDCを入金してください。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
