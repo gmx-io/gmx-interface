@@ -195,6 +195,10 @@ msgstr "Годовая доходность пула или хранилища �
 msgid "Realized PnL after fees and net price impact."
 msgstr "Реализованный PnL после комиссий и чистого влияния цены."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Update {orderTypeName} Order"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx

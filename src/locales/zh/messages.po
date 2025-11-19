@@ -195,6 +195,10 @@ msgstr "池子或金库在选定期间的年化回报，与遵循 Uniswap V2 风
 msgid "Realized PnL after fees and net price impact."
 msgstr "扣除费用和净价格影响后的已实现盈亏。"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Update {orderTypeName} Order"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx

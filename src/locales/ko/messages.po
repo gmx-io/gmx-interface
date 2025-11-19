@@ -195,6 +195,10 @@ msgstr "선택 기간 동안 풀 또는 볼트의 연환산 수익률로, 동일
 msgid "Realized PnL after fees and net price impact."
 msgstr "수수료 및 순 가격 영향 후 실현 손익."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Update {orderTypeName} Order"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
