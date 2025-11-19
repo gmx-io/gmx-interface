@@ -559,6 +559,20 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     ]
   );
 
+  useEffect(
+    function gasPaymentTokenChangedEffect() {
+      const handleGasPaymentTokenChanged = () => {
+        setFromTokenInputValue("", true);
+      };
+      window.addEventListener("gasPaymentTokenChanged", handleGasPaymentTokenChanged);
+
+      return () => {
+        window.removeEventListener("gasPaymentTokenChanged", handleGasPaymentTokenChanged);
+      };
+    },
+    [setFromTokenInputValue]
+  );
+
   const onSwitchTokens = useCallback(() => {
     setFocusedInput((old) => (old === "from" ? "to" : "from"));
     switchTokenAddresses();
