@@ -461,8 +461,11 @@ export function getGasPaymentValidations({
   };
 }
 
-export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER = 5;
+export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER = 20;
 const EXPRESS_DEFAULT_MIN_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER, USD_DECIMALS);
+const EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER = 40;
+const EXPRESS_DEFAULT_MAX_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER, USD_DECIMALS);
+const EXPRESS_RESIDUAL_AMOUNT_MULTIPLIER = 20n;
 
 export function getMinResidualGasPaymentTokenAmount({
   payTokenAddress,
@@ -488,22 +491,24 @@ export function getMinResidualGasPaymentTokenAmount({
     return 0n;
   }
 
-  const defaultMinResidualAmount = convertToTokenAmount(
+  const minResidualAmount = convertToTokenAmount(
     EXPRESS_DEFAULT_MIN_RESIDUAL_USD,
     gasPaymentToken.decimals,
     gasPaymentToken.prices.minPrice
   )!;
 
-  let minResidualAmount = defaultMinResidualAmount;
+  const maxResidualAmount = convertToTokenAmount(
+    EXPRESS_DEFAULT_MAX_RESIDUAL_USD,
+    gasPaymentToken.decimals,
+    gasPaymentToken.prices.maxPrice
+  )!;
+
+  let residualAmount = minResidualAmount;
   if (applyBuffer) {
-    minResidualAmount = gasPaymentTokenAmount * 2n;
+    residualAmount = gasPaymentTokenAmount * EXPRESS_RESIDUAL_AMOUNT_MULTIPLIER;
   }
 
-  if (minResidualAmount > defaultMinResidualAmount) {
-    return minResidualAmount;
-  }
-
-  return defaultMinResidualAmount;
+  return bigMath.clamp(residualAmount, minResidualAmount, maxResidualAmount);
 }
 
 export async function buildAndSignExpressBatchOrderTxn({
