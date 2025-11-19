@@ -460,5 +460,6 @@ export const selectPoolsDetailsWithdrawalFindSwapPath = createSelector((q) => {
     return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Withdrawal));
   }
 
-  throw new Error("Weird state");
+  // Invariant that useEffect must fix.
+  return undefined;
 });
