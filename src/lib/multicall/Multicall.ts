@@ -17,6 +17,7 @@ import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { AbiId, abis as allAbis } from "sdk/abis";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
+import { banRpcUrl } from "lib/rpcTracker";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -248,6 +249,7 @@ export class Multicall {
 
       if (!this.fallbackRpcSwitcher?.isFallbackMode) {
         this.fallbackRpcSwitcher?.trigger();
+        banRpcUrl(this.chainId, providerUrls.primary, "Multicall primary");
       }
 
       // eslint-disable-next-line no-console
@@ -292,6 +294,8 @@ export class Multicall {
             requestType: "retry",
             rpcProvider: fallbackProviderName,
           });
+
+          banRpcUrl(this.chainId, fallbackProviderUrl, "Multicall fallback error");
 
           throw e;
         });

@@ -244,6 +244,7 @@ export type RpcFailureCounter = {
   event: "rpcTracker.provider.failed";
   data: {
     rpcProvider: string;
+    reason: string;
   };
 };
 
@@ -576,8 +577,10 @@ export type RpcTrackerRankingCounter = {
   event: "rpcTracker.ranking.setBestRpc";
   data: {
     chainId: number;
-    rpcProvider: string;
-    bestBlockGap: number | "unknown";
+    primaryRpc: string;
+    secondaryRpc: string;
+    primaryBlockGap: number | "unknown";
+    secondaryBlockGap: number | "unknown";
     isLargeAccount: boolean;
   };
 };

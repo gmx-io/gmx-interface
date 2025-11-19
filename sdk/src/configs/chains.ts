@@ -58,7 +58,6 @@ export type SourceChainId = (typeof SOURCE_CHAIN_IDS)[number];
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
 
 const CONTRACTS_CHAIN_CONFIGS = {
-  // Settlement chains
   [ARBITRUM]: {
     chainId: ARBITRUM,
     name: "Arbitrum",
@@ -317,7 +316,7 @@ export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testne
     case "layerzero-testnet":
       return "https://testnet.layerzeroscan.com/";
     default:
-      return CONTRACTS_CHAIN_CONFIGS[chainId].explorerUrl;
+      return ALL_CHAIN_CONFIGS[chainId].explorerUrl;
   }
 }
 

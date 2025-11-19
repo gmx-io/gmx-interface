@@ -1,23 +1,7 @@
-import { ContractsChainId } from "sdk/configs/chains";
-
-export type ProbeData = {
-  url: string;
-  isSuccess: boolean;
-  responseTime: number | null;
-  blockNumber: number | null;
-  timestamp: Date;
-  isPublic: boolean;
-  isValid?: boolean;
-  isSkipped?: boolean;
-  banTimestamp?: number;
-};
-
-export type ProviderData = {
-  url: string;
-  isPublic: boolean;
-};
+import { RpcConfig } from "config/rpc";
 
 export type RpcTrackerConfig = {
+  chainId: number;
   probeTimeout: number;
   probeFailTimeout: number;
   storageExpireTimeout: number;
@@ -25,31 +9,36 @@ export type RpcTrackerConfig = {
   blockFromFutureThreshold: number;
   blockLaggingThreshold: number;
   banTimeout: number;
+  maxStoredProbeStats: number;
+};
+
+export type ProbeData = {
+  url: string;
+  isValid: boolean;
+  responseTime: number | null;
+  blockNumber: number | null;
+  timestamp: Date;
+};
+
+export type RpcProviderState = RpcConfig & {
+  bannedTimestamp?: number;
+};
+
+export type ProbeStats = {
+  probeResults: {
+    [providerUrl: string]: ProbeData;
+  };
+  timestamp: number;
+  maxBlockNumber: number | null;
 };
 
 export type RpcTrackerState = {
-  [chainId: number]: {
-    chainId: ContractsChainId;
-    lastUsage: Date | null;
-    currentPrimaryUrl: string;
-    currentSecondaryUrl: string;
-    providers: {
-      [providerUrl: string]: ProviderData;
-    };
-    lastProbeStats?: {
-      timestamp: number;
-      probeStats: ProbeData[];
-      validProbesStats: ProbeData[];
-    };
-    bannedProviderUrls: {
-      [providerUrl: string]: {
-        banTimestamp: number;
-      };
-    };
+  lastUsage: Date | null;
+  bestPrimaryUrl: string;
+  bestSecondaryUrl: string;
+  providers: {
+    [providerUrl: string]: RpcProviderState;
   };
-};
-
-export type ProbeResults = {
-  probeStats: ProbeData[];
-  validProbesStats: ProbeData[];
+  probeStats: ProbeStats[];
+  trackerTimeoutId: number | null;
 };

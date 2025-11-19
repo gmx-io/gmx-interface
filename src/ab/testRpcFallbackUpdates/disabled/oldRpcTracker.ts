@@ -6,7 +6,6 @@ import orderBy from "lodash/orderBy";
 import { useEffect, useState } from "react";
 import { Address } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import {
   AnyChainId,
   ARBITRUM,
@@ -16,14 +15,12 @@ import {
   BOTANIX,
   CONTRACTS_CHAIN_IDS,
   ContractsChainId,
-  getChainName,
-  getFallbackRpcUrl,
-  getRpcProviders,
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
+import { getFallbackRpcUrl, getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { isDebugMode } from "lib/localStorage";
+import { isDebugMode } from "lib/devtools";
 import { RpcTrackerRankingCounter } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -83,9 +80,7 @@ let trackerTimeoutId: number | null = null;
 
 const trackerState = initTrackerState();
 
-if (!getIsFlagEnabled("testRpcFallbackUpdates")) {
-  trackRpcProviders({ warmUp: true });
-}
+trackRpcProviders({ warmUp: true });
 
 function trackRpcProviders({ warmUp = false } = {}) {
   Promise.all(
@@ -200,8 +195,6 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
 
   if (isDebugMode()) {
     // eslint-disable-next-line no-console
-    console.group(`RpcTracker ${getChainName(chainId)}`);
-    // eslint-disable-next-line no-console
     console.table(
       orderBy(
         probeStats.map((probe) => ({
@@ -216,8 +209,6 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
         ["asc"]
       )
     );
-    // eslint-disable-next-line no-console
-    console.groupEnd();
   }
 
   const bestBestBlockGap =
@@ -242,8 +233,10 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
     event: "rpcTracker.ranking.setBestRpc",
     data: {
       chainId,
-      rpcProvider: getProviderNameFromUrl(primaryUrl),
-      bestBlockGap: bestBestBlockGap ?? "unknown",
+      primaryRpc: getProviderNameFromUrl(primaryUrl),
+      secondaryRpc: getProviderNameFromUrl(secondaryUrl),
+      primaryBlockGap: bestBestBlockGap ?? "unknown",
+      secondaryBlockGap: "unknown",
       isLargeAccount: getIsLargeAccount(),
     },
   });
@@ -381,22 +374,27 @@ function initTrackerState() {
       }, {});
     };
 
-    const defaultProviders = getRpcProviders(chainId, "default");
-    const largeAccountProviders = getRpcProviders(chainId, "largeAccount");
-    const fallbackProviders = getRpcProviders(chainId, "fallback");
+    const defaultRpcProviders = getRpcProviders(chainId, "default");
+    const privateRpcProviders = getIsLargeAccount()
+      ? getRpcProviders(chainId, "largeAccount")
+      : getRpcProviders(chainId, "fallback");
 
     const providers = {
-      ...prepareProviders(defaultProviders, { isPublic: true }),
-      ...prepareProviders(fallbackProviders ?? [], { isPublic: false }),
+      ...prepareProviders(
+        getRpcProviders(chainId, "default").map((provider) => provider.url),
+        { isPublic: true }
+      ),
+      ...prepareProviders(privateRpcProviders?.map((provider) => provider.url) ?? [], { isPublic: false }),
     };
 
-    let currentPrimaryUrl: string = getIsLargeAccount()
-      ? largeAccountProviders[0] ?? defaultProviders[0]
-      : defaultProviders[0];
-
-    let currentSecondaryUrl: string = getIsLargeAccount()
-      ? defaultProviders[0]
-      : fallbackProviders?.[0] ?? defaultProviders[0];
+    let currentPrimaryUrl: string =
+      (getIsLargeAccount() ? privateRpcProviders?.[0]?.url : defaultRpcProviders?.[0]?.url) ??
+      defaultRpcProviders?.[0]?.url ??
+      "";
+    let currentSecondaryUrl: string =
+      (getIsLargeAccount() ? defaultRpcProviders?.[0]?.url : privateRpcProviders?.[0]?.url) ??
+      defaultRpcProviders?.[0]?.url ??
+      "";
 
     const storageKey = JSON.stringify(getRpcProviderKey(chainId));
     const storedProviderData = localStorage.getItem(storageKey);
@@ -434,9 +432,13 @@ function initTrackerState() {
 
 export function getCurrentRpcUrls(rawChainId: number): { primary: string; secondary: string } {
   const chainId = rawChainId as AnyChainId;
-  const defaultProviders = getRpcProviders(chainId, "default");
+  const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((provider) => provider.url);
 
-  if (!defaultProviders?.length) {
+  const privateRpcProviders = getIsLargeAccount()
+    ? getRpcProviders(chainId, "largeAccount")?.map((provider) => provider.url)
+    : getRpcProviders(chainId, "fallback")?.map((provider) => provider.url);
+
+  if (!defaultRpcProviders?.length) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }
 
@@ -444,11 +446,7 @@ export function getCurrentRpcUrls(rawChainId: number): { primary: string; second
     trackerState[chainId].lastUsage = new Date();
   }
 
-  const privateRpcProviders = getIsLargeAccount()
-    ? getRpcProviders(chainId, "largeAccount")
-    : getRpcProviders(chainId, "fallback");
-
-  const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? defaultProviders[0];
+  const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? defaultRpcProviders?.[0];
   const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? privateRpcProviders?.[0] ?? primary;
 
   return { primary, secondary };

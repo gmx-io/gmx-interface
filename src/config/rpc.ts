@@ -1,0 +1,380 @@
+import sample from "lodash/sample";
+
+import { mustNeverExist } from "lib/types";
+import {
+  AnyChainId,
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  ETH_MAINNET,
+  SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+} from "sdk/configs/chains";
+
+export * from "sdk/configs/chains";
+export { getChainName } from "sdk/configs/chains";
+
+const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS
+  ? JSON.parse(import.meta.env.VITE_APP_ARBITRUM_RPC_URLS)
+  : undefined;
+
+const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS
+  ? JSON.parse(import.meta.env.VITE_APP_AVALANCHE_RPC_URLS)
+  : undefined;
+
+const ENV_BOTANIX_RPC_URLS = import.meta.env.VITE_APP_BOTANIX_RPC_URLS
+  ? JSON.parse(import.meta.env.VITE_APP_BOTANIX_RPC_URLS)
+  : undefined;
+
+const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io", "gmxalt.io"];
+
+// Chains that support Alchemy WebSocket endpoints
+export const ALCHEMY_WS_SUPPORT_CHAINS = [
+  ARBITRUM,
+  BOTANIX,
+  ARBITRUM_SEPOLIA,
+  SOURCE_BASE_MAINNET,
+  SOURCE_OPTIMISM_SEPOLIA,
+  SOURCE_SEPOLIA,
+  SOURCE_BSC_MAINNET,
+];
+
+export type RpcConfig = {
+  url: string;
+  isPublic: boolean;
+  purpose: string;
+};
+
+export type ContractChainRpcConfig = {
+  default: string[];
+  fallback: string[];
+  largeAccount: string[];
+  express: string[];
+};
+
+export type SourceChainRpcConfig = {
+  default: string[];
+  fallback: string[];
+  largeAccount: string[];
+};
+
+const RPC_CONFIGS: Record<number, RpcConfig[]> = {
+  [ARBITRUM]: [
+    ...[
+      "https://arb1.arbitrum.io/rpc",
+      "https://arbitrum-one-rpc.publicnode.com",
+      // "https://1rpc.io/arb", has CORS issue
+      "https://arbitrum-one.public.blastapi.io",
+      // "https://arbitrum.drpc.org",
+      "https://rpc.ankr.com/arbitrum",
+    ].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    ...(ENV_ARBITRUM_RPC_URLS
+      ? ENV_ARBITRUM_RPC_URLS.map((url: string) => ({
+          url,
+          isPublic: false,
+          purpose: "fallback",
+        }))
+      : [getAlchemyProvider(ARBITRUM, "fallback")]),
+
+    // Large account
+    getAlchemyProvider(ARBITRUM, "largeAccount"),
+
+    // Express
+    getAlchemyProvider(ARBITRUM, "express"),
+  ],
+  [AVALANCHE]: [
+    ...["https://api.avax.network/ext/bc/C/rpc"].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    ...(ENV_AVALANCHE_RPC_URLS
+      ? ENV_AVALANCHE_RPC_URLS.map((url: string) => ({
+          url,
+          isPublic: false,
+          purpose: "fallback",
+        }))
+      : [getAlchemyProvider(AVALANCHE, "fallback")]),
+
+    // Large account
+    getAlchemyProvider(AVALANCHE, "largeAccount"),
+
+    // Express
+    getAlchemyProvider(AVALANCHE, "express"),
+  ],
+  [AVALANCHE_FUJI]: [
+    ...["https://avalanche-fuji-c-chain.publicnode.com", "https://api.avax-test.network/ext/bc/C/rpc"].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    ...[
+      "https://endpoints.omniatech.io/v1/avax/fuji/public",
+      "https://api.avax-test.network/ext/bc/C/rpc",
+      "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
+    ].map((url) => ({
+      url,
+      isPublic: false,
+      purpose: "fallback",
+    })),
+  ],
+  [ARBITRUM_SEPOLIA]: [
+    ...[
+      "https://sepolia-rollup.arbitrum.io/rpc",
+      "https://arbitrum-sepolia.drpc.org",
+      "https://arbitrum-sepolia-rpc.publicnode.com",
+    ].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    getAlchemyProvider(ARBITRUM_SEPOLIA, "fallback"),
+
+    // Express
+    getAlchemyProvider(ARBITRUM_SEPOLIA, "express"),
+  ],
+  [BOTANIX]: [
+    ...["https://rpc.ankr.com/botanix_mainnet"].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    ...(ENV_BOTANIX_RPC_URLS
+      ? ENV_BOTANIX_RPC_URLS.map((url: string) => ({
+          url,
+          isPublic: false,
+          purpose: "fallback",
+        }))
+      : [getAlchemyProvider(BOTANIX, "fallback")]),
+
+    // Large account
+    getAlchemyProvider(BOTANIX, "largeAccount"),
+
+    // Express
+    getAlchemyProvider(BOTANIX, "express"),
+  ],
+
+  // SOURCE CHAINS
+  [SOURCE_BASE_MAINNET]: [
+    ...[
+      "https://mainnet.base.org",
+      "https://base.llamarpc.com",
+      "https://base-rpc.publicnode.com",
+      "https://base.drpc.org",
+    ].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    getAlchemyProvider(SOURCE_BASE_MAINNET, "fallback"),
+
+    // Large account
+    getAlchemyProvider(SOURCE_BASE_MAINNET, "largeAccount"),
+  ],
+  [SOURCE_OPTIMISM_SEPOLIA]: [
+    ...["https://sepolia.optimism.io", "https://optimism-sepolia.drpc.org", "https://optimism-sepolia.therpc.io"].map(
+      (url) => ({
+        url,
+        isPublic: true,
+        purpose: "default",
+      })
+    ),
+
+    // Fallback
+    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "fallback"),
+
+    // Large account
+    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "largeAccount"),
+  ],
+  [SOURCE_SEPOLIA]: [
+    ...["https://sepolia.drpc.org"].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    getAlchemyProvider(SOURCE_SEPOLIA, "fallback"),
+
+    // Large account
+    getAlchemyProvider(SOURCE_SEPOLIA, "largeAccount"),
+  ],
+  [SOURCE_BSC_MAINNET]: [
+    ...[
+      "https://bsc-dataseed.bnbchain.org",
+      "https://1rpc.io/bnb",
+      "https://bsc.drpc.org",
+      "https://bsc-rpc.publicnode.com",
+    ].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    getAlchemyProvider(SOURCE_BSC_MAINNET, "fallback"),
+
+    // Large account
+    getAlchemyProvider(SOURCE_BSC_MAINNET, "largeAccount"),
+  ],
+
+  // ADDITIONAL CHAINS
+  [ETH_MAINNET]: [
+    ...["https://rpc.ankr.com/eth"].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+  ],
+};
+
+export const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
+  [ARBITRUM]: [getAlchemyProvider(ARBITRUM, "fallback", "ws"), getAlchemyProvider(ARBITRUM, "largeAccount", "ws")],
+  [AVALANCHE]: [{ url: "wss://api.avax.network/ext/bc/C/ws", isPublic: true, purpose: "fallback" }],
+  [ARBITRUM_SEPOLIA]: [
+    getAlchemyProvider(ARBITRUM_SEPOLIA, "fallback", "ws"),
+    getAlchemyProvider(ARBITRUM_SEPOLIA, "largeAccount", "ws"),
+  ],
+  [BOTANIX]: [getAlchemyProvider(BOTANIX, "fallback", "ws"), getAlchemyProvider(BOTANIX, "largeAccount", "ws")],
+  [SOURCE_BASE_MAINNET]: [
+    getAlchemyProvider(SOURCE_BASE_MAINNET, "fallback", "ws"),
+    getAlchemyProvider(SOURCE_BASE_MAINNET, "largeAccount", "ws"),
+  ],
+  [SOURCE_OPTIMISM_SEPOLIA]: [
+    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "fallback", "ws"),
+    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "largeAccount", "ws"),
+  ],
+  [SOURCE_SEPOLIA]: [
+    getAlchemyProvider(SOURCE_SEPOLIA, "fallback", "ws"),
+    getAlchemyProvider(SOURCE_SEPOLIA, "largeAccount", "ws"),
+  ],
+  [SOURCE_BSC_MAINNET]: [
+    getAlchemyProvider(SOURCE_BSC_MAINNET, "fallback", "ws"),
+    getAlchemyProvider(SOURCE_BSC_MAINNET, "largeAccount", "ws"),
+  ],
+};
+
+export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
+  const config = RPC_CONFIGS[chainId];
+
+  if (!config) {
+    return [];
+  }
+
+  return config.filter((rpc) => rpc.purpose === purpose);
+}
+
+export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
+  const config = WS_RPC_CONFIGS[chainId];
+
+  if (!config) {
+    return [];
+  }
+
+  return config.filter((rpc) => rpc.purpose === purpose);
+}
+
+export function getFallbackRpcUrl(chainId: number, isLargeAccount: boolean): string | undefined {
+  const fallbackProviders = getRpcProviders(chainId, isLargeAccount ? "largeAccount" : "fallback");
+  return sample(fallbackProviders.map((rpc) => rpc.url));
+}
+
+export function getExpressRpcUrl(chainId: number): string | undefined {
+  return sample(getRpcProviders(chainId, "express").map((rpc) => rpc.url));
+}
+
+export type RpcPurpose = "fallback" | "largeAccount" | "express" | "default";
+
+export function getAlchemyProvider(
+  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI>,
+  purpose: RpcPurpose,
+  type: "http" | "ws" = "http"
+): RpcConfig {
+  if (type === "ws" && !ALCHEMY_WS_SUPPORT_CHAINS.includes(chainId)) {
+    throw new Error(`WebSocket url is not supported for chainId: ${chainId}`);
+  }
+
+  let alchemyKey: string;
+
+  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
+    switch (purpose) {
+      case "fallback":
+        alchemyKey = "NnWkTZJp8dNKXlCIfJwej";
+        break;
+      case "largeAccount":
+        alchemyKey = "UnfP5Io4K9X8UZnUnFy2a";
+        break;
+      case "express":
+        alchemyKey = "vZoYuLP1GVpvE0wpgPKwC";
+        break;
+      case "default":
+        alchemyKey = "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+        break;
+      default:
+        mustNeverExist(purpose);
+        throw new Error(`Unsupported purpose: ${purpose}`);
+    }
+  } else {
+    alchemyKey = "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+  }
+
+  let baseUrl: string;
+  switch (chainId) {
+    case ARBITRUM:
+      baseUrl = `arb-mainnet.g.alchemy.com/v2`;
+      break;
+    case AVALANCHE:
+      baseUrl = `avax-mainnet.g.alchemy.com/v2`;
+      break;
+    case BOTANIX:
+      baseUrl = `botanix-mainnet.g.alchemy.com/v2`;
+      break;
+    case ARBITRUM_SEPOLIA:
+      baseUrl = `arb-sepolia.g.alchemy.com/v2`;
+      break;
+    case SOURCE_BASE_MAINNET:
+      baseUrl = `base-mainnet.g.alchemy.com/v2`;
+      break;
+    case SOURCE_OPTIMISM_SEPOLIA:
+      baseUrl = `opt-sepolia.g.alchemy.com/v2`;
+      break;
+    case SOURCE_SEPOLIA:
+      baseUrl = `eth-sepolia.g.alchemy.com/v2`;
+      break;
+    case SOURCE_BSC_MAINNET:
+      baseUrl = `bnb-mainnet.g.alchemy.com/v2`;
+      break;
+    default: {
+      mustNeverExist(chainId);
+      throw new Error(`Unsupported chainId: ${chainId}`);
+    }
+  }
+
+  const url = `${type}://${baseUrl}/${alchemyKey}`;
+
+  return {
+    url,
+    purpose,
+    isPublic: false,
+  };
+}

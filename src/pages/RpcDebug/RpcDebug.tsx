@@ -3,7 +3,7 @@ import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoR
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
-import { markFailedRpcProvider, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { banRpcUrl, useCurrentRpcUrls } from "lib/rpcTracker";
 import { getMarkPrice } from "sdk/utils/prices";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -41,7 +41,7 @@ export default function RpcDebug() {
                   }
                   // eslint-disable-next-line no-console
                   console.log("force primary failure");
-                  markFailedRpcProvider(chainId, primaryRpc);
+                  banRpcUrl(chainId, primaryRpc);
                 }}
               >
                 Force RPC Failure (Current Primary)
@@ -57,7 +57,7 @@ export default function RpcDebug() {
                     console.log("no secondary rpc");
                     return;
                   }
-                  markFailedRpcProvider(chainId, secondaryRpc);
+                  banRpcUrl(chainId, secondaryRpc);
                 }}
               >
                 Force RPC Failure (Current Secondary)
