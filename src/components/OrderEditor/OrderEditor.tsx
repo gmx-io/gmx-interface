@@ -190,18 +190,12 @@ export function OrderEditor(p: Props) {
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants();
 
-  const recommendedAcceptablePriceImpactBps = useMemo(() => {
-    return isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
+  const recommendedAcceptablePriceImpactBps =
+    isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
       ? increaseAmounts.recommendedAcceptablePriceDeltaBps
       : decreaseAmounts?.recommendedAcceptablePriceDeltaBps !== undefined
         ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
         : undefined;
-  }, [
-    p.order.orderType,
-    increaseAmounts?.acceptablePrice,
-    increaseAmounts?.recommendedAcceptablePriceDeltaBps,
-    decreaseAmounts?.recommendedAcceptablePriceDeltaBps,
-  ]);
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
@@ -550,7 +544,7 @@ export function OrderEditor(p: Props) {
     const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
-      text: `Update ${orderTypeName} Order`,
+      text: t`Update ${orderTypeName} Order`,
       disabled: false,
       onClick: onSubmit,
     };
@@ -639,19 +633,15 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const priceLabel = useMemo(
-    () =>
-      isTriggerDecreaseOrderType(p.order.orderType)
-        ? t`Trigger Price`
-        : isStopIncreaseOrderType(p.order.orderType)
-          ? t`Stop Price`
-          : t`Limit Price`,
-    [p.order.orderType]
-  );
+  const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
+    ? t`Trigger Price`
+    : isStopIncreaseOrderType(p.order.orderType)
+      ? t`Stop Price`
+      : t`Limit Price`;
 
-  const positionSize = useMemo(() => existingPosition?.sizeInUsd, [existingPosition?.sizeInUsd]);
+  const positionSize = existingPosition?.sizeInUsd;
 
-  const sizeUsd = useMemo(() => parseValue(sizeInputValue || "0", USD_DECIMALS)!, [sizeInputValue]);
+  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
 
   return (
     <div className="PositionEditor">
