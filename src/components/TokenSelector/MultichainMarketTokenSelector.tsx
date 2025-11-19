@@ -2,15 +2,12 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 
-import { getChainName, type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
-import { getChainIcon } from "config/icons";
-import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
+import { type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
-import { GmPaySource } from "domain/synthetics/markets/types";
+import { GlvOrMarketInfo, GmPaySource } from "domain/synthetics/markets/types";
 import { convertToUsd } from "domain/tokens";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_ARRAY } from "lib/objects";
 import { USD_DECIMALS } from "sdk/configs/factors";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { getMarketPoolName } from "sdk/utils/markets";
@@ -60,43 +57,30 @@ export function MultichainMarketTokenSelector({
       value: "all",
       label: (
         <span className="whitespace-nowrap">
-          <Trans>All Networks</Trans>
+          <Trans>All</Trans>
         </span>
       ),
     };
-    const gmxAccount: RegularOption<0> = {
-      value: 0,
-      label: (
-        <span className="whitespace-nowrap">
-          <Trans>GMX Account</Trans>
-        </span>
-      ),
-      icon: <img src={getChainIcon(0)} alt="GMX Account" className="size-24 shrink-0" />,
-    };
+
     const settlementChain: RegularOption<ContractsChainId> = {
       value: chainId,
       label: (
         <span className="whitespace-nowrap">
-          <Trans>{getChainName(chainId)}</Trans>
+          <Trans>Wallet Balance</Trans>
         </span>
       ),
-      icon: <img src={getChainIcon(chainId)} alt={getChainName(chainId)} className="size-24 shrink-0" />,
     };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => {
-      const chainIdNum = parseInt(sourceChainId) as AnyChainId | 0;
-      return {
-        value: chainIdNum,
-        label: (
-          <span className="whitespace-nowrap">
-            <Trans>{getChainName(chainIdNum)}</Trans>
-          </span>
-        ),
-        icon: <img src={getChainIcon(chainIdNum)} alt={getChainName(chainIdNum)} className="size-24 shrink-0" />,
-      };
-    });
+    const gmxAccount: RegularOption<0> = {
+      value: 0,
+      label: (
+        <span className="whitespace-nowrap">
+          <Trans>GMX Account Balance</Trans>
+        </span>
+      ),
+    };
 
-    return [wildCard, settlementChain, gmxAccount, ...chainFilters];
+    return [wildCard, settlementChain, gmxAccount];
   }, [chainId]);
 
   const onSelectTokenAddress = (tokenChainId: AnyChainId | 0) => {

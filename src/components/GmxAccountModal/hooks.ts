@@ -257,13 +257,19 @@ export function useMultichainTokens() {
   return useMultichainTradeTokensRequest(chainId, account);
 }
 
-export function useMultichainMarketTokenBalancesRequest(
-  chainId: ContractsChainId,
-  srcChainId: SourceChainId | undefined,
-  account: string | undefined,
-  tokenAddress: string | undefined,
-  enabled?: boolean
-): {
+export function useMultichainMarketTokenBalancesRequest({
+  chainId,
+  srcChainId,
+  account,
+  tokenAddress,
+  enabled,
+}: {
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId | undefined;
+  account: string | undefined;
+  tokenAddress: string | undefined;
+  enabled?: boolean;
+}): {
   tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>>;
   totalBalance: bigint | undefined;
   isBalanceDataLoading: boolean;

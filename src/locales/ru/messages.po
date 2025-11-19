@@ -920,7 +920,6 @@ msgstr "Вы собираетесь перейти на GMX Solana, которы
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2268,6 +2267,10 @@ msgstr "{0} будет обменян на {1} при выполнении ор�
 msgid "~5 minutes"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Sell {gmOrGlvSymbol}"
+msgstr "Продать {gmOrGlvSymbol}"
+
 #. Button to clear the filter selection
 #: src/components/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2688,8 +2691,6 @@ msgstr "Этот обмен маршрутизируется через неск
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3187,6 +3188,7 @@ msgstr "Требование..."
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "All"
 msgstr "Все"
 
@@ -3218,6 +3220,10 @@ msgstr "Позиции {longOrShort} {fundingAction} комиссию за фи�
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
 msgstr "TWAP"
+
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+msgid "Wallet Balance"
+msgstr "Баланс кошелька"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
@@ -3788,10 +3794,6 @@ msgstr "Почему я получаю два разных токена GLV?"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "Установить TP/SL"
-
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
-msgid "All Networks"
-msgstr ""
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -6386,7 +6388,6 @@ msgstr "Запросить <0>{0}</0>"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -6896,6 +6897,7 @@ msgstr "Подтвердить заявку"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
 msgstr "Баланс счета GMX"
 
@@ -7148,7 +7150,6 @@ msgstr "Выберите покупку на децентрализованны�
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GMX Account"

@@ -920,7 +920,6 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -2268,6 +2267,10 @@ msgstr ""
 msgid "~5 minutes"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+msgid "Sell {gmOrGlvSymbol}"
+msgstr ""
+
 #. Button to clear the filter selection
 #: src/components/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
@@ -2688,8 +2691,6 @@ msgstr ""
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "{0}"
 msgstr ""
 
@@ -3187,6 +3188,7 @@ msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "All"
 msgstr ""
 
@@ -3217,6 +3219,10 @@ msgstr ""
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
+msgstr ""
+
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+msgid "Wallet Balance"
 msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
@@ -3787,10 +3793,6 @@ msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
-msgstr ""
-
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
-msgid "All Networks"
 msgstr ""
 
 #: src/components/TVChart/ChartHeader.tsx
@@ -6386,7 +6388,6 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
@@ -6896,6 +6897,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
 msgstr ""
 
@@ -7148,7 +7150,6 @@ msgstr ""
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GMX Account"

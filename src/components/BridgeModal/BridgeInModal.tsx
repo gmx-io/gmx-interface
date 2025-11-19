@@ -73,13 +73,13 @@ export function BridgeInModal({
   const glvOrGm = isGlv ? "GLV" : "GM";
   const { address: account } = useAccount();
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest(
+  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest({
     chainId,
     srcChainId,
     account,
-    glvOrMarketAddress,
-    isVisible
-  );
+    tokenAddress: glvOrMarketAddress,
+    enabled: isVisible,
+  });
 
   const sourceChainMarketTokenBalancesData: Partial<Record<0 | AnyChainId, bigint>> = useMemo(() => {
     return {

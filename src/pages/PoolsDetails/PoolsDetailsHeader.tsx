@@ -68,7 +68,13 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     totalBalance,
     tokenBalancesData: tokenBalancesData,
     isBalanceDataLoading,
-  } = useMultichainMarketTokenBalancesRequest(chainId, srcChainId, account, marketToken?.address);
+  } = useMultichainMarketTokenBalancesRequest({
+    chainId,
+    srcChainId,
+    account,
+    tokenAddress: marketToken?.address,
+    enabled: Boolean(marketToken),
+  });
 
   const sortedTokenBalancesDataArray = useMemo(() => {
     return Object.entries(tokenBalancesData)

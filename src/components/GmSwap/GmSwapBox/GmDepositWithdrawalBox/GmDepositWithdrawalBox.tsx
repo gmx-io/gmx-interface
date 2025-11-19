@@ -141,12 +141,13 @@ export function GmSwapBoxDepositWithdrawal() {
   const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest(
+  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest({
     chainId,
     srcChainId,
     account,
-    selectedGlvOrMarketAddress
-  );
+    tokenAddress: selectedGlvOrMarketAddress,
+    enabled: Boolean(selectedGlvOrMarketAddress),
+  });
 
   const { marketsInfo: sortedGlvOrMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     glvAndMarketsInfoData,
@@ -575,7 +576,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   {selectedGlvOrMarketAddress && isWithdrawal ? (
                     <MultichainMarketTokenSelector
                       chainId={chainId}
-                      label={isWithdrawal ? t`Sell ${gmOrGlvSymbol}` : t`Receive ${gmOrGlvSymbol}`}
+                      label={isWithdrawal ? t`Sell ${gmOrGlvSymbol}` : ""}
                       srcChainId={srcChainId}
                       paySource={paySource}
                       onSelectTokenAddress={async (newChainId) => {

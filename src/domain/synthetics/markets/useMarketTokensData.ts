@@ -66,10 +66,6 @@ export function useMarketTokensDataRequest(
     specificChainId: srcChainId,
   });
 
-  // useEffect(() => {
-  //   console.log({ marketTokensMultichainBalancesResult });
-  // }, [marketTokensMultichainBalancesResult]);
-
   let isGlvTokensLoaded;
 
   if (withGlv === false) {

@@ -10,7 +10,7 @@ import { expandDecimals } from "lib/numbers";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
-import { getToken, getWrappedToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/types/orders";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
@@ -172,7 +172,10 @@ async function estimateSourceChainGlvDepositInitialTxFees({
 
   const isValidMarketTokenDeposit = tokenAddress === params.addresses.market;
   const isValidSideTokenDeposit =
-    marketConfig.longTokenAddress === tokenAddress || marketConfig.shortTokenAddress === tokenAddress;
+    marketConfig.longTokenAddress === tokenAddress ||
+    convertTokenAddress(chainId, marketConfig.longTokenAddress, "native") === tokenAddress ||
+    marketConfig.shortTokenAddress === tokenAddress ||
+    convertTokenAddress(chainId, marketConfig.shortTokenAddress, "native") === tokenAddress;
   if (!isValidMarketTokenDeposit && !isValidSideTokenDeposit) {
     const errorMessage = `Invalid token address for GLV deposit. Market config: ${JSON.stringify(marketConfig)}, token address: ${tokenAddress}`;
     // eslint-disable-next-line no-console
