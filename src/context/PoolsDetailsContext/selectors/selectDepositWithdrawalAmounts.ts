@@ -76,10 +76,6 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
   if (isDeposit) {
     // adjust for same collateral
     if (marketInfo.isSameCollaterals) {
-      if (longTokenAmount > 0n && shortTokenAmount > 0n) {
-        throw new Error("Weird state");
-      }
-
       const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
 
       const adjustedLongTokenAmount = positiveAmount / 2n;
