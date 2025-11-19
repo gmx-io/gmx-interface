@@ -1,6 +1,7 @@
 import random from "lodash/random";
 
 import { isLocal } from "config/env";
+import { getOracleKeeperFallbackStateKey } from "config/localStorage";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import {
   metrics,
@@ -38,6 +39,11 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
+type FallbackState = {
+  fallbackEndpoint: string;
+  timestamp: number;
+};
+
 const failsPerMinuteToFallback = 5;
 
 export class OracleKeeperFetcher implements OracleFetcher {
@@ -56,10 +62,51 @@ export class OracleKeeperFetcher implements OracleFetcher {
     this.mainUrl = getOracleKeeperUrl(this.chainId);
     this.isFallback = false;
     this.failTimes = [];
+
+    const storedState = this.loadStoredFallbackState();
+
+    if (storedState) {
+      this.isFallback = true;
+      this.fallbackIndex = this.fallbackUrls.indexOf(storedState.fallbackEndpoint);
+    }
   }
 
   get url() {
     return this.isFallback ? this.fallbackUrls[this.fallbackIndex] : this.mainUrl;
+  }
+
+  get storageKey() {
+    return JSON.stringify(getOracleKeeperFallbackStateKey(this.chainId));
+  }
+
+  loadStoredFallbackState() {
+    const stored = localStorage.getItem(this.storageKey);
+    if (!stored) return null;
+
+    try {
+      const parsed = JSON.parse(stored) as FallbackState;
+
+      const isValidFallback = parsed.fallbackEndpoint && this.fallbackUrls.includes(parsed.fallbackEndpoint);
+
+      return isValidFallback ? parsed : null;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to load fallback state from localStorage", error);
+      return null;
+    }
+  }
+
+  saveStoredFallbackState(fallbackEndpoint: string) {
+    try {
+      const state: FallbackState = {
+        fallbackEndpoint,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(this.storageKey, JSON.stringify(state));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to save fallback state to localStorage", error);
+    }
   }
 
   handleFailure(method: OracleKeeperMetricMethodId) {
@@ -91,6 +138,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
       metrics.pushCounter<OracleKeeperFallbackCounter>("oracleKeeper.fallback", {
         chainId: this.chainId,
       });
+
+      this.saveStoredFallbackState(this.fallbackUrls[this.fallbackIndex]);
     }
 
     this.fallbackThrottleTimerId = window.setTimeout(() => {
