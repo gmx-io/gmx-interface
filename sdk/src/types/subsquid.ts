@@ -2379,7 +2379,9 @@ export interface MarketInfo {
   poolValueMin: Scalars["BigInt"]["output"];
   positionFeeFactorForNegativeImpact: Scalars["BigInt"]["output"];
   positionFeeFactorForPositiveImpact: Scalars["BigInt"]["output"];
-  positionImpactExponentFactor: Scalars["BigInt"]["output"];
+  positionImpactExponentFactorPositive: Scalars["BigInt"]["output"];
+  positionImpactExponentFactorNegative: Scalars["BigInt"]["output"];
+  useOpenInterestInTokensForBalance: Scalars["Boolean"]["output"];
   positionImpactFactorNegative: Scalars["BigInt"]["output"];
   positionImpactFactorPositive: Scalars["BigInt"]["output"];
   positionImpactPoolAmount: Scalars["BigInt"]["output"];

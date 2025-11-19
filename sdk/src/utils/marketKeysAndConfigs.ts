@@ -31,6 +31,7 @@ import {
   POSITION_FEE_FACTOR_KEY,
   POSITION_IMPACT_EXPONENT_FACTOR_KEY,
   POSITION_IMPACT_FACTOR_KEY,
+  USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE,
   POSITION_IMPACT_POOL_AMOUNT_KEY,
   POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY,
   RESERVE_FACTOR_KEY,
@@ -217,10 +218,15 @@ export function hashMarketConfigKeys(market: MarketConfig) {
       ["bytes32", "address", "bool"],
       [MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY, marketAddress, false],
     ],
-    positionImpactExponentFactor: [
-      ["bytes32", "address"],
-      [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress],
+    positionImpactExponentFactorPositive: [
+      ["bytes32", "address", "bool"],
+      [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress, true],
     ],
+    positionImpactExponentFactorNegative: [
+      ["bytes32", "address", "bool"],
+      [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress, false],
+    ],
+    useOpenInterestInTokensForBalance: [["bytes32"], [USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE]],
     swapFeeFactorForBalanceWasImproved: [
       ["bytes32", "address", "bool"],
       [SWAP_FEE_FACTOR_KEY, marketAddress, true],

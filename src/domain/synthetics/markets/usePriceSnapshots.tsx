@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
+
 import { SECONDS_IN_DAY } from "lib/dates";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { Price } from "sdk/types/subsquid";
