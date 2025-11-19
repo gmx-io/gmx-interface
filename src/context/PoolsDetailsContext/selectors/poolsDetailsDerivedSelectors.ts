@@ -1,5 +1,6 @@
 import mapValues from "lodash/mapValues";
 
+import { isSettlementChain, MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
 import {
   selectChainId,
   selectDepositMarketTokensData,
@@ -423,6 +424,17 @@ export const selectPoolsDetailsIsFirstBuy = createSelector((q) => {
   }
 
   return Object.values(marketTokensData).every((marketToken) => marketToken.balance === 0n);
+});
+
+export const selectPoolsDetailsIsCrossChainMarket = createSelector((q): boolean => {
+  const chainId = q(selectChainId);
+  const selectedGlvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
+
+  if (!selectedGlvOrMarketAddress || !isSettlementChain(chainId)) {
+    return false;
+  }
+
+  return MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId]?.includes(selectedGlvOrMarketAddress) ?? false;
 });
 
 /**

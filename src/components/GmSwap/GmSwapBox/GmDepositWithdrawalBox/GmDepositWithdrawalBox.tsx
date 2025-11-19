@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
-import { isSettlementChain, isSourceChain, MULTI_CHAIN_PLATFORM_TOKENS_MAP } from "config/multichain";
+import { isSourceChain } from "config/multichain";
 import {
   usePoolsDetailsFirstTokenAddress,
   usePoolsDetailsFirstTokenInputValue,
@@ -22,6 +22,7 @@ import {
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvTokenData,
   selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsIsCrossChainMarket,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketAndTradeTokensData,
   selectPoolsDetailsMarketInfo,
@@ -701,28 +702,19 @@ function FirstTokenPlaceholder() {
 }
 
 function useUpdatePaySourceForMultichain() {
-  const { chainId } = useChainId();
-  const selectedGlvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const [paySource, setPaySource] = usePoolsDetailsPaySource();
-
-  const isMarketTransferrableToSourceChain = useMemo((): boolean => {
-    if (!selectedGlvOrMarketAddress || !isSettlementChain(chainId)) {
-      return false;
-    }
-
-    return MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId]?.includes(selectedGlvOrMarketAddress);
-  }, [chainId, selectedGlvOrMarketAddress]);
+  const isCrossChainMarket = useSelector(selectPoolsDetailsIsCrossChainMarket);
 
   useEffect(
     function updatePaySource() {
       if (paySource === "sourceChain") {
-        if (!isMarketTransferrableToSourceChain) {
+        if (!isCrossChainMarket) {
           setPaySource("gmxAccount");
         }
       }
     },
-    [isMarketTransferrableToSourceChain, paySource, setPaySource]
+    [isCrossChainMarket, paySource, setPaySource]
   );
 
-  return isMarketTransferrableToSourceChain;
+  return isCrossChainMarket;
 }
