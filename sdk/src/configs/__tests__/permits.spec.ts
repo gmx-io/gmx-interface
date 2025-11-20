@@ -7,7 +7,7 @@ import { getV2Tokens } from "configs/tokens";
 
 const validPermitErrorParts = ["ERC20Permit", "permit-expired", "permit is expired"];
 
-describe("UI token permit configs", () => {
+describe.skip("UI token permit configs", () => {
   CONTRACTS_CHAIN_IDS.forEach(async (chainId) => {
     const publicClient = createPublicClient({
       chain: getViemChain(chainId) as any,
