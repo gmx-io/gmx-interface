@@ -1,5 +1,3 @@
-import random from "lodash/random";
-
 import { isLocal } from "config/env";
 import { getOracleKeeperFallbackStateKey } from "config/localStorage";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
@@ -63,11 +61,17 @@ export class OracleKeeperFetcher implements OracleFetcher {
     this.isFallback = false;
     this.failTimes = [];
 
+    this.fallbackIndex = this.fallbackUrls.indexOf(this.mainUrl);
+
     const storedState = this.loadStoredFallbackState();
 
     if (storedState) {
       this.isFallback = true;
       this.fallbackIndex = this.fallbackUrls.indexOf(storedState.fallbackEndpoint);
+    }
+
+    if (this.fallbackIndex === -1) {
+      this.fallbackIndex = 0;
     }
   }
 
@@ -127,7 +131,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
       if (this.isFallback) {
         this.fallbackIndex = (this.fallbackIndex + 1) % this.fallbackUrls.length;
       } else {
-        this.fallbackIndex = random(0, this.fallbackUrls.length - 1);
+        // First fallback url should be different from the main url
+        this.fallbackIndex = this.fallbackUrls.findIndex((url) => url !== this.mainUrl);
       }
 
       // eslint-disable-next-line no-console
