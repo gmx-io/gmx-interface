@@ -42,7 +42,7 @@ type FallbackState = {
   timestamp: number;
 };
 
-const failsPerMinuteToFallback = 5;
+export const failsPerMinuteToFallback = 3;
 
 export class OracleKeeperFetcher implements OracleFetcher {
   private readonly chainId: number;
@@ -149,7 +149,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
     this.fallbackThrottleTimerId = window.setTimeout(() => {
       this.fallbackThrottleTimerId = undefined;
-    }, 5000);
+    }, 2000);
   }
 
   fetchTickers(): Promise<TickersResponse> {

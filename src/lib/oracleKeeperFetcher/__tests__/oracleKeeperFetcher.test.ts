@@ -5,7 +5,7 @@ import { metrics } from "lib/metrics";
 import { ARBITRUM } from "sdk/configs/chains";
 import * as oracleKeeperConfig from "sdk/configs/oracleKeeper";
 
-import { OracleKeeperFetcher } from "../oracleKeeperFetcher";
+import { failsPerMinuteToFallback, OracleKeeperFetcher } from "../oracleKeeperFetcher";
 
 vi.mock("lib/metrics", () => ({
   metrics: {
@@ -65,7 +65,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
     expect(fetcher.url).toBe(mainUrl);
 
     // Trigger failures
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
     }
@@ -98,7 +98,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
     expect(fetcher.url).toBe(initialFallback);
 
     // 1. Trigger failures to force rotation (index 0 -> 1)
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
     }
@@ -108,7 +108,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
     expect(JSON.parse(stored!).fallbackEndpoint).toBe(fetcher.url);
 
     // 2. Trigger failures again to rotate (index 1 -> 2 or back to 0 if length is 2)
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
     }
@@ -118,7 +118,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
     expect(JSON.parse(stored!).fallbackEndpoint).toBe(fetcher.url);
 
     // 3. Trigger failures again to rotate (index 2 -> 0 or back to 1 if length is 2)
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
     }
@@ -133,7 +133,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
 
     // Create fetcher and trigger fallback
     const fetcher1 = new OracleKeeperFetcher({ chainId });
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher1.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
     }
