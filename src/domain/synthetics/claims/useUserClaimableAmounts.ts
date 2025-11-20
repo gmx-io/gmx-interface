@@ -15,12 +15,28 @@ import { queryPaginated } from "sdk/utils/indexers";
 import { getMarketPoolName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
 
+import { useMarketTokensData } from "../markets";
+import { TokenData } from "../tokens";
+
 export const GLP_DISTRIBUTION_TEST_ID = 4672592n;
 export const GLP_DISTRIBUTION_ID = 11802763389053472339483616176459046875189472617101418668457790595837638713068n;
 export const GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID =
   113005011054014960800824418529010340523901000236636486140352426860453188114236n;
 export const GLV_BONUS_INCENTIVE_DISTRIBUTION_ID =
   64013039480962942581181820133015390730044968712377073754034637994666645393343n;
+
+export type ClaimableAmountsData = {
+  amounts: { title: string; usd: bigint; amount: bigint; token: TokenData }[];
+  totalUsd: bigint;
+};
+
+export type ClaimableAmountsDataByDistributionId = Record<string, ClaimableAmountsData>;
+
+export type DistributionConfiguration = {
+  claimTerms?: string;
+  claimsDisabled: boolean;
+};
+export type ClaimsConfigurationData = Record<string, DistributionConfiguration>;
 
 type ClaimsConfigurationRequestConfig = MulticallRequestConfig<{
   claimTermsGlpDistribution: {
@@ -39,6 +55,22 @@ type ClaimsConfigurationRequestConfig = MulticallRequestConfig<{
       };
     };
   };
+  claimTermsGlpDistributionTest: {
+    calls: {
+      getClaimTerms: {
+        methodName: string;
+        params: [string];
+      };
+    };
+  };
+  claimTermsGlvBonusIncentiveDistributionTest: {
+    calls: {
+      getClaimTerms: {
+        methodName: string;
+        params: [string];
+      };
+    };
+  };
   claimsDisabledGlvBonusIncentiveDistribution: {
     calls: {
       getClaimsDisabled: {
@@ -50,19 +82,16 @@ type ClaimsConfigurationRequestConfig = MulticallRequestConfig<{
 }>;
 
 export interface ClaimableAmountsResult {
-  claimsConfigData?: {
-    claimTermsGlpDistribution: string;
-    claimsDisabledGlpDistribution: boolean;
-    claimsDisabledGlvBonusIncentiveDistribution: boolean;
-  };
-  totalFundsToClaimUsd: bigint;
-  claimableTokensInfo: Record<string, { title: string; usd: bigint }>;
+  claimsConfigByDistributionId?: ClaimsConfigurationData;
+  claimableAmountsDataByDistributionId?: ClaimableAmountsDataByDistributionId;
   isLoading: boolean;
+  mutateClaimableAmounts: () => void;
 }
 
 export default function useUserClaimableAmounts(chainId: ContractsChainId, account?: string): ClaimableAmountsResult {
   const glvsInfo = useSelector(selectGlvInfo);
   const marketsInfo = useSelector(selectMarketsInfoData);
+  const { marketTokensData } = useMarketTokensData(chainId, undefined, { withGlv: true, isDeposit: false });
 
   const tokensData = useTokensData();
 
@@ -97,9 +126,33 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
         },
       },
     },
+    claimTermsGlpDistributionTest: {
+      contractAddress: getContract(chainId, "DataStore"),
+      abiId: "DataStore",
+      calls: {
+        getClaimTerms: {
+          methodName: "getString",
+          params: [claimTermsKey(GLP_DISTRIBUTION_TEST_ID)],
+        },
+      },
+    },
+    claimTermsGlvBonusIncentiveDistributionTest: {
+      contractAddress: getContract(chainId, "DataStore"),
+      abiId: "DataStore",
+      calls: {
+        getClaimTerms: {
+          methodName: "getString",
+          params: [claimTermsKey(GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID)],
+        },
+      },
+    },
   };
 
-  const { data: claimableAmountsData, isLoading: isClaimableAmountsLoading } = useSWR([], async () => {
+  const {
+    data: claimableAmounts,
+    isLoading: isClaimableAmountsLoading,
+    mutate: mutateClaimableAmounts,
+  } = useSWR([account, chainId], async () => {
     const subsquidClient = getSubsquidGraphClient(chainId);
 
     const amounts = await queryPaginated<ClaimableAmount>(async (limit, offset) => {
@@ -122,51 +175,72 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
     return amounts;
   });
 
-  const claimableTokensInfo = useMemo(() => {
-    const result: Record<string, { title: string; usd: bigint }> = {};
+  const claimableAmountsDataByDistributionId = useMemo(() => {
+    const result: ClaimableAmountsDataByDistributionId = {};
 
-    if (!claimableAmountsData || isClaimableAmountsLoading) {
+    if (
+      !claimableAmounts ||
+      isClaimableAmountsLoading ||
+      !glvsInfo ||
+      !marketsInfo ||
+      !tokensData ||
+      !marketTokensData
+    ) {
       return result;
     }
 
-    claimableAmountsData.forEach(({ token, amount }) => {
+    claimableAmounts.forEach((claimableAmount) => {
+      const { token, amount, distributionId } = claimableAmount;
+
+      if (!result[distributionId]) {
+        result[distributionId] = {
+          amounts: [],
+          totalUsd: 0n,
+        };
+      }
+
       const glv = glvsInfo?.[token];
       const market = marketsInfo?.[token];
       const tokenData = tokensData?.[token];
 
+      let title, usd;
+
       if (glv) {
-        result[token] = {
-          title: `GLV [${getMarketPoolName({
-            longToken: glv.longToken,
-            shortToken: glv.shortToken,
-          })}]`,
-          usd: convertToUsd(BigInt(amount), 18, glv.glvToken.prices.minPrice) ?? 0n,
-        };
+        title = `GLV [${getMarketPoolName({
+          longToken: glv.longToken,
+          shortToken: glv.shortToken,
+        })}]`;
+        usd = convertToUsd(BigInt(amount), 18, glv.glvToken.prices.minPrice) ?? 0n;
       }
 
       if (market) {
-        result[token] = {
-          title: getMarketPoolName({
-            longToken: market.longToken,
-            shortToken: market.shortToken,
-          }),
-          usd: convertToUsd(BigInt(amount), 18, market.longToken.prices.minPrice) ?? 0n,
-        };
+        title = getMarketPoolName({
+          longToken: market.longToken,
+          shortToken: market.shortToken,
+        });
+        usd = convertToUsd(BigInt(amount), 18, market.longToken.prices.minPrice) ?? 0n;
       }
 
       if (tokenData) {
-        result[token] = {
-          title: tokenData.symbol,
-          usd: convertToUsd(BigInt(amount), tokenData.decimals, tokenData.prices.minPrice) ?? 0n,
-        };
+        title = tokenData.symbol;
+        usd = convertToUsd(BigInt(amount), tokenData.decimals, tokenData.prices.minPrice) ?? 0n;
       }
+
+      result[distributionId].amounts.push({
+        amount: BigInt(amount),
+        token: tokensData[token] ?? marketTokensData[token],
+        usd,
+        title,
+      });
+
+      result[distributionId].totalUsd += usd;
     });
     return result;
-  }, [glvsInfo, tokensData, marketsInfo, claimableAmountsData, isClaimableAmountsLoading]);
+  }, [glvsInfo, tokensData, marketsInfo, claimableAmounts, isClaimableAmountsLoading, marketTokensData]);
 
-  const { data: claimsConfigData, isLoading: isClaimsConfigLoading } = useMulticall<
+  const { data: claimsConfigByDistributionId, isLoading: isClaimsConfigLoading } = useMulticall<
     ClaimsConfigurationRequestConfig,
-    ClaimableAmountsResult["claimsConfigData"] | undefined
+    ClaimsConfigurationData
   >(chainId, "glp-distribution", {
     key: account ? [account] : undefined,
     request: claimableAmountsRequests,
@@ -179,29 +253,37 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
         result.data.claimsDisabledGlvBonusIncentiveDistribution.getClaimsDisabled.returnValues[0]
       );
 
+      const claimTermsGlpDistributionTest = result.data.claimTermsGlpDistributionTest.getClaimTerms.returnValues[0];
+      const claimTermsGlvBonusIncentiveDistributionTest =
+        result.data.claimTermsGlvBonusIncentiveDistributionTest.getClaimTerms.returnValues[0];
+
       return {
-        claimTermsGlpDistribution,
-        claimsDisabledGlpDistribution,
-        claimsDisabledGlvBonusIncentiveDistribution,
+        [GLP_DISTRIBUTION_ID.toString()]: {
+          claimTerms: claimTermsGlpDistribution,
+          claimsDisabled: claimsDisabledGlpDistribution,
+        },
+        [GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString()]: {
+          claimTerms: undefined,
+          claimsDisabled: claimsDisabledGlvBonusIncentiveDistribution,
+        },
+        [GLP_DISTRIBUTION_TEST_ID.toString()]: {
+          claimTerms: claimTermsGlpDistributionTest,
+          claimsDisabled: false,
+        },
+        [GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID.toString()]: {
+          claimTerms: claimTermsGlvBonusIncentiveDistributionTest,
+          claimsDisabled: false,
+        },
       };
     },
   });
 
-  const totalFundsToClaimUsd = useMemo(() => {
-    return Object.values(claimableTokensInfo).reduce((acc, curr) => {
-      acc += curr.usd;
-      return acc;
-    }, 0n);
-  }, [claimableTokensInfo]);
-
-  const isLoading = useMemo(() => {
-    return !isClaimableAmountsLoading && !isClaimsConfigLoading;
-  }, [isClaimableAmountsLoading, isClaimsConfigLoading]);
+  const isLoading = isClaimableAmountsLoading || isClaimsConfigLoading;
 
   return {
-    claimsConfigData,
-    totalFundsToClaimUsd,
-    claimableTokensInfo,
+    claimsConfigByDistributionId,
+    claimableAmountsDataByDistributionId,
     isLoading,
+    mutateClaimableAmounts,
   };
 }
