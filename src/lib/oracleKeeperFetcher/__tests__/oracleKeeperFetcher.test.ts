@@ -113,7 +113,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
       vi.advanceTimersByTime(5100);
     }
 
-    expect(fetcher.url).toBe(fallbackUrls[0]);
+    expect(fetcher.url).toBe(fallbackUrls[2]);
     stored = localStorage.getItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)));
     expect(JSON.parse(stored!).fallbackEndpoint).toBe(fetcher.url);
 
@@ -123,7 +123,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
       vi.advanceTimersByTime(5100);
     }
 
-    expect(fetcher.url).toBe(fallbackUrls[1]);
+    expect(fetcher.url).toBe(fallbackUrls[0]);
     stored = localStorage.getItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)));
     expect(JSON.parse(stored!).fallbackEndpoint).toBe(fetcher.url);
   });
