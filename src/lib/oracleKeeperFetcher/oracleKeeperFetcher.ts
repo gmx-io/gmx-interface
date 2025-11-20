@@ -61,8 +61,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
     this.isFallback = false;
     this.failTimes = [];
 
-    this.fallbackIndex = this.fallbackUrls.indexOf(this.mainUrl);
-
     const storedState = this.loadStoredFallbackState();
 
     if (storedState) {
@@ -70,7 +68,10 @@ export class OracleKeeperFetcher implements OracleFetcher {
       this.fallbackIndex = this.fallbackUrls.indexOf(storedState.fallbackEndpoint);
     }
 
-    if (this.fallbackIndex === -1) {
+    const mainUrlIndex = this.fallbackUrls.indexOf(this.mainUrl);
+
+    if (this.fallbackIndex === -1 || this.fallbackIndex === mainUrlIndex) {
+      this.isFallback = false;
       this.fallbackIndex = 0;
     }
   }
