@@ -27,7 +27,6 @@
     "ts:clean": "tsc --build --clean && tsc --build",
     "tscheck": "yarn ts:clean && tsc -p tsconfig.json --noEmit",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
-    "typechain:stargate": "typechain --target ethers-v6 --out-dir ./src/typechain-types-stargate './node_modules/@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json'",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild",
     "openapi:lz": "openapi-typescript https://scan.layerzero-api.com/v1/openapi -o src/domain/multichain/tracker/gen.ts"
@@ -141,7 +140,6 @@
     "@lingui/cli": "4.10.0",
     "@lingui/loader": "4.10.0",
     "@lingui/vite-plugin": "4.11.3",
-    "@typechain/ethers-v6": "0.5.1",
     "@types/react-calendar": "4.1.0",
     "@types/react-date-range": "1.4.9",
     "@typescript-eslint/eslint-plugin": "8.26.1",
@@ -171,7 +169,6 @@
     "tailwindcss": "3.4.4",
     "terser": "5.43.1",
     "tsx": "4.19.0",
-    "typechain": "8.3.2",
     "vite": "5.4.0",
     "vite-bundle-analyzer": "0.20.1",
     "vite-plugin-svgr": "4.2.0",
