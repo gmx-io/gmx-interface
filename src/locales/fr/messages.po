@@ -587,6 +587,11 @@ msgstr "Ne plus afficher ce message pendant 30 jours."
 msgid "in liquidity"
 msgstr "en liquidité"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
 msgstr "Prix de Sortie"
@@ -2548,6 +2553,10 @@ msgstr "Stop Market - Augmentation Long"
 msgid "Enter your feedback here."
 msgstr "Entrez votre avis ici."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Vous retirez {0}, votre jeton de gas. Du gas est requis pour ce retrait, veuillez donc conserver au moins <0>{1}</0> en {2} ou changer votre jeton de gas dans <1>les paramètres</1>."
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Seules les positions avec plus de {0} en \"Capital Utilisé\" sont classées."
@@ -2687,11 +2696,6 @@ msgstr "L'ajout du code de parrainage a échoué."
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating"
 msgstr "Mise à jour"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "Déposer USDC"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4244,6 +4248,11 @@ msgstr "Taux net Shorts / 1h"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5646,11 +5655,6 @@ msgstr "Communauté GMX avec initiatives NFTs, Trading et Éducation"
 msgid "Liquidation Confirmations"
 msgstr "Confirmations de liquidation"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "Solde de gas insuffisant, veuillez déposer plus de WETH ou USDC."
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1> OI a l'air génial</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Vérifiez plus : <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5828,11 +5832,6 @@ msgstr "GLV gagne des frais de trading (ouverture, clôture, emprunt, liquidatio
 msgid "Deposit failed"
 msgstr "Dépôt échoué"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "Déposer USDC ou ETH"
-
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
@@ -5878,6 +5877,11 @@ msgstr "Aucun actif disponible pour dépôt"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 Avalanche Fuji"
 msgstr "V1 Avalanche Fuji"
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized Swap Impact"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -7535,11 +7539,6 @@ msgstr "Les réductions GMX V2 sont automatiquement appliquées sur chaque trade
 msgid "Share Position"
 msgstr "Partager la position"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "Solde de gas insuffisant, veuillez déposer plus d'USDC."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "Frais de dépôt"
@@ -7615,6 +7614,10 @@ msgstr "Adresse copiée dans votre presse-papiers."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "Collatéral restant inférieur à {0} USD"
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "Jeton de paiement de gaz changé de {fromSymbol} à {toSymbol} en raison d'un solde {fromSymbol} insuffisant."
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
@@ -7866,10 +7869,6 @@ msgstr "L'ordre au marché sera annulable dans ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
-msgstr "Vous retirez {0}, votre jeton de gas. Du gas est requis pour ce retrait, veuillez donc conserver au moins <0>{1}</0> en {2} ou changer votre jeton de gas dans les paramètres."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"

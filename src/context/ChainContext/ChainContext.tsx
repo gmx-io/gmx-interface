@@ -8,6 +8,9 @@ import { ARBITRUM, ARBITRUM_SEPOLIA, ContractsChainId, SourceChainId } from "sdk
 
 export type ChainContext = {
   chainId: ContractsChainId;
+  /**
+   * Guaranteed to be related to the settlement chain in `chainId`
+   */
   srcChainId: SourceChainId | undefined;
   isConnectedToChainId: boolean | undefined;
 };
