@@ -21,7 +21,7 @@ import {
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
-import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
+import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";

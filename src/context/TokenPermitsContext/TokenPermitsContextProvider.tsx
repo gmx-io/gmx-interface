@@ -1,6 +1,5 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 
-import { getIsFlagEnabled } from "config/ab";
 import { getTokenPermitsKey, PERMITS_DISABLED_KEY } from "config/localStorage";
 import { createAndSignTokenPermit, getIsPermitExpired, validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
@@ -33,12 +32,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
-  let [isPermitsDisabled, setIsPermitsDisabled] = useLocalStorageSerializeKey<boolean>(PERMITS_DISABLED_KEY, false);
-
-  if (getIsFlagEnabled("disablePermits")) {
-    isPermitsDisabled = true;
-    setIsPermitsDisabled = () => null;
-  }
+  const [isPermitsDisabled, setIsPermitsDisabled] = useLocalStorageSerializeKey<boolean>(PERMITS_DISABLED_KEY, false);
 
   const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
     getTokenPermitsKey(chainId, signer?.address),

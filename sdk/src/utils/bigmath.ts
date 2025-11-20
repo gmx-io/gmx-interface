@@ -42,4 +42,7 @@ export const bigMath = {
   mulmod(x: bigint, y: bigint, m: bigint): bigint {
     return (x * y) % m;
   },
+  clamp(value: bigint, min: bigint, max: bigint): bigint {
+    return bigMath.max(min, bigMath.min(value, max));
+  },
 };
