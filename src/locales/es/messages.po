@@ -2549,6 +2549,10 @@ msgstr "Stop Mercado - Largo Inc."
 msgid "Enter your feedback here."
 msgstr "Ingresa tus comentarios aquí."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Estás retirando {0}, tu token de gas. Se requiere gas para este retiro, por favor mantén al menos <0>{1}</0> en {2} o cambia tu token de gas en <1>configuraciones</1>."
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Solo posiciones con más de {0} en \"Capital Usado\" están clasificadas."
@@ -7607,6 +7611,10 @@ msgstr "Dirección copiada a tu portapapeles."
 msgid "Leftover collateral below {0} USD"
 msgstr "Garantía restante por debajo de {0} USD"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "Token de pago de gas cambiado de {fromSymbol} a {toSymbol} debido a saldo insuficiente de {fromSymbol}."
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "activación"
@@ -7857,10 +7865,6 @@ msgstr "Orden de mercado será cancelable en ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
-msgstr "Estás retirando {0}, tu token de gas. Se requiere gas para este retiro, por favor mantén al menos <0>{1}</0> en {2} o cambia tu token de gas en configuraciones."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"

@@ -2549,6 +2549,10 @@ msgstr "Стоп-Маркет - Лонг Увелич."
 msgid "Enter your feedback here."
 msgstr "Введите ваш отзыв здесь."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Вы выводите {0}, ваш газовый токен. Газ требуется для этого вывода, поэтому пожалуйста, оставьте как минимум <0>{1}</0> в {2} или переключите газовый токен в <1>настройках</1>."
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Только позиции с более {0} в \"Использованном Капитале\" ранжируются."
@@ -7607,6 +7611,10 @@ msgstr "Адрес скопирован в буфер обмена."
 msgid "Leftover collateral below {0} USD"
 msgstr "Оставшийся залог ниже {0} USD"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "Токен оплаты газа переключен с {fromSymbol} на {toSymbol} из-за недостаточного баланса {fromSymbol}."
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "триггер"
@@ -7857,10 +7865,6 @@ msgstr "Рыночный ордер можно будет отменить че�
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
-msgstr "Вы выводите {0}, ваш газовый токен. Газ требуется для этого вывода, поэтому пожалуйста, оставьте как минимум <0>{1}</0> в {2} или переключите газовый токен в настройках."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"

@@ -2549,6 +2549,10 @@ msgstr "스탑 마켓 - 롱 증가"
 msgid "Enter your feedback here."
 msgstr "여기에 피드백을 입력하세요."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "{0}, 가스 토큰을 출금 중입니다. 이 출금에 가스가 필요하므로 {2}에 최소 <0>{1}</0>을 유지하거나 <1>설정</1>에서 가스 토큰을 전환하세요."
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "\"자본 사용\"이 {0} 초과인 포지션만 랭킹됩니다."
@@ -7607,6 +7611,10 @@ msgstr "주소가 클립보드에 복사되었습니다."
 msgid "Leftover collateral below {0} USD"
 msgstr "잔여 담보 {0} USD 미만"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "{fromSymbol} 잔액 부족으로 인해 가스 결제 토큰이 {fromSymbol}에서 {toSymbol}로 전환되었습니다."
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "트리거"
@@ -7857,10 +7865,6 @@ msgstr "시장 주문 취소 가능 ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
-msgstr "{0}, 가스 토큰을 출금 중입니다. 이 출금에 가스가 필요하므로 {2}에 최소 <0>{1}</0>을 유지하거나 설정에서 가스 토큰을 전환하세요."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
