@@ -116,7 +116,7 @@ export function useRebatesInfoRequest(
         factor,
         value,
         valueByFactor,
-        timeKey: rawRebateInfo.timeKey,
+        timeKey: rawRebateInfo.timeKey.toString(),
         marketAddress: getAddress(rawRebateInfo.marketAddress),
         tokenAddress: getAddress(rawRebateInfo.tokenAddress),
         reductionFactor,
