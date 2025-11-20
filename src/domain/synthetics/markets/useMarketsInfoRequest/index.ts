@@ -332,7 +332,9 @@ function useMarketsConfigsRequest({
               dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
             maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
             lentPositionImpactPoolAmount: dataStoreValues.lentPositionImpactPoolAmount.returnValues[0],
-            positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
+            positionImpactExponentFactorPositive: dataStoreValues.positionImpactExponentFactorPositive.returnValues[0],
+            positionImpactExponentFactorNegative: dataStoreValues.positionImpactExponentFactorNegative.returnValues[0],
+            useOpenInterestInTokensForBalance: dataStoreValues.useOpenInterestInTokensForBalance.returnValues[0],
             swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
             swapFeeFactorForBalanceWasNotImproved:
               dataStoreValues.swapFeeFactorForBalanceWasNotImproved.returnValues[0],

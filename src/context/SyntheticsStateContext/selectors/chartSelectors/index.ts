@@ -7,7 +7,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -53,8 +53,9 @@ export const selectChartHeaderInfo = createSelector((q) => {
   const netRateHourlyLong = (fundingRateLong ?? 0n) + (borrowingRateLong ?? 0n);
   const netRateHourlyShort = (fundingRateShort ?? 0n) + (borrowingRateShort ?? 0n);
 
-  const longUsdVolume = marketInfo.longInterestUsd;
-  const totalVolume = marketInfo.longInterestUsd + marketInfo.shortInterestUsd;
+  const longUsdVolume = getOpenInterestForBalance(marketInfo, true);
+  const shortUsdVolume = getOpenInterestForBalance(marketInfo, false);
+  const totalVolume = longUsdVolume + shortUsdVolume;
 
   const longOpenInterestPercentage =
     totalVolume !== 0n
@@ -73,8 +74,8 @@ export const selectChartHeaderInfo = createSelector((q) => {
     borrowingRateShort,
     fundingRateLong,
     fundingRateShort,
-    openInterestLong: marketInfo.longInterestUsd,
-    openInterestShort: marketInfo.shortInterestUsd,
+    openInterestLong: longUsdVolume,
+    openInterestShort: shortUsdVolume,
     decimals: marketInfo.indexToken.decimals,
     longOpenInterestPercentage,
     shortOpenInterestPercentage,
