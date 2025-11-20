@@ -195,6 +195,10 @@ msgstr "Annualized return of the pool or vault over the selected period, compare
 msgid "Realized PnL after fees and net price impact."
 msgstr "Realized PnL after fees and net price impact."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Update {orderTypeName} Order"
+msgstr "Update {orderTypeName} Order"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx

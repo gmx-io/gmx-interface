@@ -188,6 +188,7 @@ export function getOrderInfo(p: {
       swapPathStats,
       triggerRatio,
       initialCollateralToken,
+      triggerPrice: order.contractTriggerPrice,
       targetCollateralToken,
       isSwap: true,
       isTwap: false,
