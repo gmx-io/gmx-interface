@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { useEffect } from "react";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -5,10 +6,20 @@ import { selectSetGasPaymentTokenAddress } from "context/SyntheticsStateContext/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 
 import { ExpressTxnParams } from "./types";
+
+const notifyGasPaymentTokenSwitched = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
+  helperToast.info(
+    t`Gas payment token switched from ${fromSymbol} to ${toSymbol} due to insufficient ${fromSymbol} balance.`,
+    {
+      toastId: "gas-payment-token-switched",
+    }
+  );
+};
 
 export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   expressParams,
@@ -20,23 +31,20 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   useSwitchGasPaymentTokenIfRequired({
     isOutGasTokenBalance: expressParams?.gasPaymentValidations.isOutGasTokenBalance,
     gasPaymentToken: expressParams?.gasPaymentParams.gasPaymentToken,
-    totalGasPaymentTokenAmount: expressParams
-      ? expressParams.gasPaymentParams.gasPaymentTokenAmount +
-        expressParams.gasPaymentParams.gasPaymentTokenAsCollateralAmount
-      : undefined,
+    gasPaymentTokenAmount: expressParams?.gasPaymentParams.gasPaymentTokenAmount,
     isGmxAccount,
   });
 }
 
-export function useSwitchGasPaymentTokenIfRequired({
+function useSwitchGasPaymentTokenIfRequired({
   isOutGasTokenBalance,
   gasPaymentToken,
-  totalGasPaymentTokenAmount,
+  gasPaymentTokenAmount,
   isGmxAccount,
 }: {
   isOutGasTokenBalance: boolean | undefined;
   gasPaymentToken: TokenData | undefined;
-  totalGasPaymentTokenAmount: bigint | undefined;
+  gasPaymentTokenAmount: bigint | undefined;
   isGmxAccount: boolean;
 }) {
   const { chainId } = useChainId();
@@ -45,12 +53,8 @@ export function useSwitchGasPaymentTokenIfRequired({
 
   useEffect(
     function switchGasPaymentToken() {
-      if (isOutGasTokenBalance && gasPaymentToken && totalGasPaymentTokenAmount !== undefined) {
-        const usdValue = convertToUsd(
-          totalGasPaymentTokenAmount,
-          gasPaymentToken.decimals,
-          gasPaymentToken.prices.minPrice
-        );
+      if (isOutGasTokenBalance && gasPaymentToken && gasPaymentTokenAmount !== undefined) {
+        const usdValue = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
 
         const anotherGasToken = getGasPaymentTokens(chainId).find((tokenAddress) => {
           const tokenData = getByKey(tokensData, tokenAddress);
@@ -72,14 +76,18 @@ export function useSwitchGasPaymentTokenIfRequired({
         });
 
         if (anotherGasToken && anotherGasToken !== gasPaymentToken.address) {
+          const newTokenData = getByKey(tokensData, anotherGasToken);
           setGasPaymentTokenAddress(anotherGasToken);
+          if (newTokenData) {
+            notifyGasPaymentTokenSwitched({ fromSymbol: gasPaymentToken.symbol, toSymbol: newTokenData.symbol });
+          }
         }
       }
     },
     [
       chainId,
       gasPaymentToken,
-      totalGasPaymentTokenAmount,
+      gasPaymentTokenAmount,
       isGmxAccount,
       isOutGasTokenBalance,
       setGasPaymentTokenAddress,

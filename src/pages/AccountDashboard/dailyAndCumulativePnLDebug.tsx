@@ -47,6 +47,14 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         },
         {
           label: (
+            <span className="text-[#ff00ff]">
+              <Trans>Realized Swap Impact</Trans>
+            </span>
+          ),
+          value: stats.realizedSwapImpact,
+        },
+        {
+          label: (
             <span className="text-[#00ffff]">
               <Trans>Unrealized PnL</Trans>
             </span>
@@ -118,6 +126,11 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
       value: lastPoint!.cumulativeRealizedPriceImpact,
     },
     {
+      className: "bg-[#ff00ff]",
+      text: "Cumulative Realized Swap Impact",
+      value: lastPoint!.cumulativeRealizedSwapImpact,
+    },
+    {
       className: "bg-[#00ffff]",
       text: "Last Unrealized PnL",
       value: lastPoint!.unrealizedPnl,
@@ -151,10 +164,12 @@ export const DEV_QUERY = gql`
       cumulativeRealizedFees
       cumulativeRealizedPnl
       cumulativeRealizedPriceImpact
+      cumulativeRealizedSwapImpact
       pnl
       realizedFees
       realizedPnl
       realizedPriceImpact
+      realizedSwapImpact
       timestamp
       unrealizedFees
       unrealizedPnl
@@ -168,6 +183,8 @@ export const DEBUG_FIELDS = [
   "realizedFees",
   "realizedPnl",
   "realizedPriceImpact",
+  "realizedSwapImpact",
+  "cumulativeRealizedSwapImpact",
   "unrealizedFees",
   "unrealizedPnl",
   "cumulativeRealizedFees",
@@ -186,6 +203,8 @@ export type AccountPnlHistoryPointDebugFields = {
   realizedPnlFloat: number;
   realizedPriceImpact: bigint;
   realizedPriceImpactFloat: number;
+  realizedSwapImpact: bigint;
+  realizedSwapImpactFloat: number;
   unrealizedFees: bigint;
   unrealizedFeesFloat: number;
   unrealizedPnl: bigint;
@@ -196,6 +215,8 @@ export type AccountPnlHistoryPointDebugFields = {
   cumulativeRealizedPnlFloat: number;
   cumulativeRealizedPriceImpact: bigint;
   cumulativeRealizedPriceImpactFloat: number;
+  cumulativeRealizedSwapImpact: bigint;
+  cumulativeRealizedSwapImpactFloat: number;
   startUnrealizedPnl: bigint;
   startUnrealizedFeesFloat: number;
   startUnrealizedFees: bigint;

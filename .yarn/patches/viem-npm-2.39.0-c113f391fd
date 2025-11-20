@@ -1,0 +1,41 @@
+diff --git a/_types/types/misc.d.ts b/_types/types/misc.d.ts
+index 2fa2d166d6e708ad2adea724a2e20f40b0b9ac88..09dde9b8affc12e28aed76a74581671f03fac0c6 100644
+--- a/_types/types/misc.d.ts
++++ b/_types/types/misc.d.ts
+@@ -1,7 +1,7 @@
+ import type { OneOf } from './utils.js';
+ export type ByteArray = Uint8Array;
+-export type Hex = `0x${string}`;
+-export type Hash = `0x${string}`;
++export type Hex = string;
++export type Hash = string;
+ export type LogTopic = Hex | Hex[] | null;
+ export type SignableMessage = string | {
+     /** Raw data representation of the message. */
+diff --git a/package.json b/package.json
+index 058971521de1c8620d615c54b1b04b81039f5fe1..f8d81659aef257ed114cc811e239c6e600ac6ffb 100644
+--- a/package.json
++++ b/package.json
+@@ -230,5 +230,6 @@
+     "wallet",
+     "web3",
+     "typescript"
+-  ]
++  ],
++  "packageManager": "yarn@3.8.7+sha512.bbe7e310ff7fd20dc63b111110f96fe18192234bb0d4f10441fa6b85d2b644c8923db8fbe6d7886257ace948440ab1f83325ad02af457a1806cdc97f03d2508e"
+ }
+diff --git a/types/misc.ts b/types/misc.ts
+index 625ba085cc64d197faff2f981ff06e706c2898a0..5353596ffd1387423d6c83fd81620ec15b3e79d3 100644
+--- a/types/misc.ts
++++ b/types/misc.ts
+@@ -1,8 +1,8 @@
+ import type { OneOf } from './utils.js'
+ 
+ export type ByteArray = Uint8Array
+-export type Hex = `0x${string}`
+-export type Hash = `0x${string}`
++export type Hex = string
++export type Hash = string
+ export type LogTopic = Hex | Hex[] | null
+ export type SignableMessage =
+   | string

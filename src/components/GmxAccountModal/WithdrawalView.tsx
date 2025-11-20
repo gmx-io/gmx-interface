@@ -37,6 +37,7 @@ import {
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectExpressGlobalParams,
@@ -55,7 +56,6 @@ import { useQuoteSend } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express/types";
-import { useSwitchGasPaymentTokenIfRequired } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -162,6 +162,7 @@ export const WithdrawalView = () => {
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isFirstWithdrawal = useIsFirstWithdrawal();
+  const { setIsSettingsVisible } = useSettings();
   const { setMultichainSubmittedWithdrawal, setMultichainWithdrawalSentTxnHash, setMultichainWithdrawalSentError } =
     useSyntheticsEvents();
 
@@ -418,15 +419,6 @@ export const WithdrawalView = () => {
       return getByKey(tokensData, errors?.isOutOfTokenError?.tokenAddress);
     }
   }, [errors, tokensData]);
-
-  useSwitchGasPaymentTokenIfRequired({
-    gasPaymentToken: globalExpressParams?.gasPaymentToken,
-    isOutGasTokenBalance: errors?.isOutOfTokenError?.isGasPaymentToken,
-    totalGasPaymentTokenAmount: errors?.isOutOfTokenError
-      ? errors.isOutOfTokenError.requiredAmount - errors.isOutOfTokenError.balance
-      : undefined,
-    isGmxAccount: true,
-  });
 
   const relayFeeAmount = expressTxnParamsAsyncResult?.data?.gasPaymentParams.relayerFeeAmount;
   const gasPaymentParams = expressTxnParamsAsyncResult?.data?.gasPaymentParams;
@@ -967,29 +959,47 @@ export const WithdrawalView = () => {
         <>
           {isAboveLimit && (
             <AlertInfoCard type="warning" className="my-4">
-              <Trans>
-                The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
-                <span className="numbers">{upperLimitFormatted}</span>.
-              </Trans>
+              <div>
+                <Trans>
+                  The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
+                  <span className="numbers">{upperLimitFormatted}</span>.
+                </Trans>
+              </div>
             </AlertInfoCard>
           )}
           {isBelowLimit && (
             <AlertInfoCard type="warning" className="my-4">
-              <Trans>
-                The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
-                <span className="numbers">{lowerLimitFormatted}</span>.
-              </Trans>
+              <div>
+                <Trans>
+                  The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
+                  <span className="numbers">{lowerLimitFormatted}</span>.
+                </Trans>
+              </div>
             </AlertInfoCard>
           )}
 
           {shouldShowMinRecommendedAmount && (
             <AlertInfoCard type="info" className="my-4">
-              <Trans>
-                You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
-                please keep at least{" "}
-                <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-                {selectedToken?.symbol} or switch your gas token in settings.
-              </Trans>
+              <div>
+                <Trans>
+                  You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
+                  please keep at least{" "}
+                  <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
+                  {selectedToken?.symbol} or switch your gas token in{" "}
+                  <span
+                    className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+                    onClick={() => {
+                      setIsSettingsVisible(true);
+                      setTimeout(() => {
+                        setIsVisibleOrView(false);
+                      }, 200);
+                    }}
+                  >
+                    settings
+                  </span>
+                  .
+                </Trans>
+              </div>
             </AlertInfoCard>
           )}
 
