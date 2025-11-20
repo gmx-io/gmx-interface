@@ -771,7 +771,7 @@ msgstr "MARKT"
 msgid "What did you like the most about our service?"
 msgstr "Was hat dir an unserem Service am besten gefallen?"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr ""
 
@@ -1100,8 +1100,8 @@ msgstr ""
 msgid "Collateral"
 msgstr "Kollateral"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "Akzeptieren Sie die Einlösebedingungen, um fortzufahren."
 
@@ -6595,7 +6595,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr "Tausch fehlgeschlagen."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr ""
 
@@ -7243,7 +7243,7 @@ msgstr "Stop-Loss abbrechen"
 msgid "Limit Decrease"
 msgstr "Limit-Verringerung"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "Warten auf die verbleibenden Safe-Bestätigungen."
 
@@ -7255,7 +7255,7 @@ msgstr "Stabilize-Protokoll"
 msgid "All assets"
 msgstr "Alle Assets"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr ""
 

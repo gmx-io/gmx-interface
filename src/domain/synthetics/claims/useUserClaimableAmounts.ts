@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
@@ -85,7 +85,7 @@ export interface ClaimableAmountsResult {
   claimsConfigByDistributionId?: ClaimsConfigurationData;
   claimableAmountsDataByDistributionId?: ClaimableAmountsDataByDistributionId;
   isLoading: boolean;
-  mutateClaimableAmounts: () => void;
+  onClaimed: (distributionIds: string[]) => void;
 }
 
 export default function useUserClaimableAmounts(chainId: ContractsChainId, account?: string): ClaimableAmountsResult {
@@ -94,6 +94,8 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
   const { marketTokensData } = useMarketTokensData(chainId, undefined, { withGlv: true, isDeposit: false });
 
   const tokensData = useTokensData();
+
+  const [claimedDistributionIds, setClaimedDistributionIds] = useState<string[]>([]);
 
   const claimableAmountsRequests: ClaimsConfigurationRequestConfig = {
     claimTermsGlpDistribution: {
@@ -148,11 +150,7 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
     },
   };
 
-  const {
-    data: claimableAmounts,
-    isLoading: isClaimableAmountsLoading,
-    mutate: mutateClaimableAmounts,
-  } = useSWR([account, chainId], async () => {
+  const { data: claimableAmounts, isLoading: isClaimableAmountsLoading } = useSWR([account, chainId], async () => {
     const subsquidClient = getSubsquidGraphClient(chainId);
 
     const amounts = await queryPaginated<ClaimableAmount>(async (limit, offset) => {
@@ -191,6 +189,10 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
 
     claimableAmounts.forEach((claimableAmount) => {
       const { token, amount, distributionId } = claimableAmount;
+
+      if (claimedDistributionIds.includes(distributionId)) {
+        return;
+      }
 
       if (!result[distributionId]) {
         result[distributionId] = {
@@ -236,7 +238,15 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
       result[distributionId].totalUsd += usd;
     });
     return result;
-  }, [glvsInfo, tokensData, marketsInfo, claimableAmounts, isClaimableAmountsLoading, marketTokensData]);
+  }, [
+    glvsInfo,
+    tokensData,
+    marketsInfo,
+    claimableAmounts,
+    isClaimableAmountsLoading,
+    marketTokensData,
+    claimedDistributionIds,
+  ]);
 
   const { data: claimsConfigByDistributionId, isLoading: isClaimsConfigLoading } = useMulticall<
     ClaimsConfigurationRequestConfig,
@@ -278,12 +288,13 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
     },
   });
 
-  const isLoading = isClaimableAmountsLoading || isClaimsConfigLoading;
+  const isLoading =
+    isClaimableAmountsLoading || isClaimsConfigLoading || !glvsInfo || !marketsInfo || !tokensData || !marketTokensData;
 
   return {
     claimsConfigByDistributionId,
     claimableAmountsDataByDistributionId,
     isLoading,
-    mutateClaimableAmounts,
+    onClaimed: setClaimedDistributionIds,
   };
 }

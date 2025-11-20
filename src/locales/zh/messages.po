@@ -771,7 +771,7 @@ msgstr "市场"
 msgid "What did you like the most about our service?"
 msgstr "您最喜欢我们服务的哪些方面？"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr ""
 
@@ -1100,8 +1100,8 @@ msgstr ""
 msgid "Collateral"
 msgstr "抵押品"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "接受申领条款以继续。"
 
@@ -6595,7 +6595,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr "交换失败。"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr ""
 
@@ -7243,7 +7243,7 @@ msgstr "取消止损"
 msgid "Limit Decrease"
 msgstr "限价减少"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "等待剩余 Safe 确认。"
 
@@ -7255,7 +7255,7 @@ msgstr "稳定协议"
 msgid "All assets"
 msgstr "所有资产"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr ""
 

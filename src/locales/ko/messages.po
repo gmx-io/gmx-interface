@@ -771,7 +771,7 @@ msgstr "마켓"
 msgid "What did you like the most about our service?"
 msgstr "우리 서비스에서 가장 마음에 들었던 점은 무엇인가요?"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr ""
 
@@ -1100,8 +1100,8 @@ msgstr ""
 msgid "Collateral"
 msgstr "담보"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "계속하려면 청구 조건을 수락하세요."
 
@@ -6595,7 +6595,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr "스왑 실패."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr ""
 
@@ -7243,7 +7243,7 @@ msgstr "스탑 로스 취소"
 msgid "Limit Decrease"
 msgstr "지정가 감소"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "남은 Safe 확인 대기 중."
 
@@ -7255,7 +7255,7 @@ msgstr "스태빌라이즈 프로토콜"
 msgid "All assets"
 msgstr "모든 자산"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr ""
 
