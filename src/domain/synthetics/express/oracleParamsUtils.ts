@@ -57,13 +57,11 @@ export function getOracleParamsForRelayParams({
 
 export function getSwapPathOracleTokens({
   chainId,
-  // marketsInfoData,
+
   initialCollateralAddress,
   swapPath,
 }: {
   chainId: ContractsChainId;
-  // TODO MLTCH: why is it a heavy MarketsInfoData when it could be static MarketConfig
-  // marketsInfoData: MarketsInfoData;
   initialCollateralAddress: string;
   swapPath: string[];
 }): string[] {
@@ -71,19 +69,13 @@ export function getSwapPathOracleTokens({
   const tokenAddresses: string[] = [initialCollateralAddress];
 
   for (const marketAddress of swapPath) {
-    // const marketInfo = getByKey(marketsInfoData, marketAddress);
     const marketConfig = MARKETS[chainId]?.[marketAddress];
 
     if (!marketConfig) {
       throw new Error(`Market not found for oracle params: ${marketAddress}`);
     }
 
-    // const tokenOut = getOppositeCollateral(marketInfo, currentToken);
     const tokenOut = getOppositeCollateralFromConfig(marketConfig, currentToken);
-
-    // if (!tokenOut?.address) {
-    //   throw new Error(`Token not found for oracle params: ${initialCollateralAddress}`);
-    // }
 
     currentToken = tokenOut;
     tokenAddresses.push(currentToken, marketConfig.indexTokenAddress);

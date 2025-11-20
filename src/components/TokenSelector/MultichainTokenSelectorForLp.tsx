@@ -70,14 +70,12 @@ export function MultichainTokenSelectorForLp({
     ? getToken(chainId, GM_STUB_ADDRESS)
     : getToken(chainId, tokenAddress);
 
-  const onSelectTokenAddress = (tokenAddress: string, _chainId: AnyChainId | 0) => {
+  const onSelectTokenAddress = (tokenAddress: string, tokenChainId: AnyChainId | 0) => {
     setIsModalVisible(false);
-    // TODO MLTCH: bad readability
-    propsOnSelectTokenAddress(
-      tokenAddress,
-      _chainId === 0,
-      _chainId !== chainId && _chainId !== 0 && isSourceChain(_chainId) ? _chainId : undefined
-    );
+    const isGmxAccount = tokenChainId === 0;
+    const tokenSrcChainId =
+      tokenChainId !== chainId && tokenChainId !== 0 && isSourceChain(tokenChainId) ? tokenChainId : undefined;
+    propsOnSelectTokenAddress(tokenAddress, isGmxAccount, tokenSrcChainId);
   };
 
   const availableToTradeTokenList = useAvailableToTradeTokenList({

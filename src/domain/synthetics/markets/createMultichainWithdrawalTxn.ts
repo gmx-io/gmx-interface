@@ -90,9 +90,6 @@ export async function createMultichainWithdrawalTxn({
   transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
   params: CreateWithdrawalParams;
-  // TODO MLTCH: support pending txns
-  // setPendingTxns,
-  // setPendingDeposit,
 }): Promise<void> {
   const txnData = await buildAndSignMultichainWithdrawalTxn({
     chainId,
@@ -111,8 +108,7 @@ export async function createMultichainWithdrawalTxn({
 
   await sendExpressTransaction({
     chainId,
-    // TODO MLTCH: pass true when we can
-    isSponsoredCall: false,
+    isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,
   });
 }

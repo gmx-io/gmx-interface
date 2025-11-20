@@ -48,12 +48,6 @@ export async function createWithdrawalTxn({
 
   await validateSignerAddress(signer, params.addresses.receiver);
 
-  // const wntAmount = p.params.executionFee;
-
-  // TODO MLTCH: do not forget to apply slippage elsewhere
-  // const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.params.minLongTokenAmount);
-  // const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.params.minShortTokenAmount);
-
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, params.executionFee] },
     { method: "sendTokens", params: [params.addresses.market, withdrawalVaultAddress, marketTokenAmount] },

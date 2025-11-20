@@ -88,8 +88,6 @@ export async function createSourceChainWithdrawalTxn({
     },
   };
 
-  // TODO MLTCH withdrawal also includes a withdrawal compose gas
-
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
     account,

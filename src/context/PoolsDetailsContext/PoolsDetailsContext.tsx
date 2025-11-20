@@ -84,6 +84,7 @@ export type PoolsDetailsState = {
   setIsMarketForGlvSelectedManually: (value: boolean) => void;
 };
 
+// TODO MLTCH this does not work
 function useReactRouterSearchParam(param: string): [string | undefined, (value: string | undefined) => void] {
   const searchParams = useRouteQuery();
   const value = searchParams.get(param) ?? undefined;
@@ -204,7 +205,6 @@ export function usePoolsDetailsState({
       mode,
       withdrawalMarketTokensData,
       selectedMarketForGlv,
-      // marketTokensBalancesResult,
 
       // GM Deposit/Withdrawal Box State
       focusedInput,
@@ -255,11 +255,6 @@ export function usePoolsDetailsState({
     setSecondTokenInputValue,
     setMarketOrGlvTokenInputValue,
   ]);
-
-  // TODO MLTCH move redirect somewhere else
-  // if (!value.glvOrMarketAddress) {
-  //   return <Redirect to="/pools" />;
-  // }
 
   return value;
 }

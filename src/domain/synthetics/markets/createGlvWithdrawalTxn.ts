@@ -52,10 +52,6 @@ export async function createGlvWithdrawalTxn({
 
   await validateSignerAddress(signer, params.addresses.receiver);
 
-  // TODO MLTCH: do not forget to apply slippage elsewhere
-  // const minLongTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minLongTokenAmount);
-  // const minShortTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minShortTokenAmount);
-
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, wntAmount] },
     { method: "sendTokens", params: [params.addresses.glv, withdrawalVaultAddress, glvTokenAmount] },

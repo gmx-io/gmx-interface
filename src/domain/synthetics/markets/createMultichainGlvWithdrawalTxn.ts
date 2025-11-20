@@ -90,9 +90,6 @@ export async function createMultichainGlvWithdrawalTxn({
   transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
   params: CreateGlvWithdrawalParams;
-  // TODO MLTCH: support pending txns
-  // setPendingTxns,
-  // setPendingDeposit,
 }): Promise<void> {
   const txnData = await buildAndSignMultichainGlvWithdrawalTxn({
     chainId,

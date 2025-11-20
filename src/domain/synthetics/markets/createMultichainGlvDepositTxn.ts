@@ -76,7 +76,7 @@ export async function buildAndSignMultichainGlvDepositTxn({
   };
 }
 
-export function createMultichainGlvDepositTxn({
+export async function createMultichainGlvDepositTxn({
   chainId,
   srcChainId,
   signer,
@@ -90,11 +90,8 @@ export function createMultichainGlvDepositTxn({
   transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
   params: CreateGlvDepositParams;
-  // TODO MLTCH: support pending txns
-  // setPendingTxns,
-  // setPendingDeposit,
 }) {
-  return buildAndSignMultichainGlvDepositTxn({
+  const txnData = await buildAndSignMultichainGlvDepositTxn({
     chainId,
     srcChainId,
     signer,
@@ -107,15 +104,11 @@ export function createMultichainGlvDepositTxn({
     },
     transferRequests,
     params,
-  }).then(async (txnData: ExpressTxnData) => {
-    await sendExpressTransaction({
-      chainId,
-      // TODO MLTCH: pass true when we can
-      isSponsoredCall: false,
-      txnData,
-    });
   });
-  // .then(makeTxnSentMetricsHandler(metricId))
-  // .catch(makeTxnErrorMetricsHandler(metricId))
-  // .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricId));
+
+  await sendExpressTransaction({
+    chainId,
+    isSponsoredCall: expressTxnParams.isSponsoredCall,
+    txnData,
+  });
 }

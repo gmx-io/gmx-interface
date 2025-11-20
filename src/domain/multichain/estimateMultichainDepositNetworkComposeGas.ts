@@ -10,9 +10,13 @@ import {
   OVERRIDE_ERC20_BYTECODE,
   RANDOM_SLOT,
 } from "config/multichain";
+import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
+import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { expandDecimals } from "lib/numbers";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
+import { isMarketTokenAddress } from "sdk/utils/markets";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OFTComposeMsgCodec } from "./codecs/OFTComposeMsgCodec";
@@ -51,10 +55,13 @@ export function getEstimateMultichainDepositNetworkComposeGasParameters({
     throw new Error("Stargate endpoint ID not found");
   }
 
-  // TODO get decimals from token config
-  const fakeAmount = isValidTokenSafe(chainId, unwrappedTokenAddress)
-    ? FAKE_INPUT_AMOUNT_MAP[getToken(chainId, unwrappedTokenAddress).symbol] ?? 10n ** 18n
-    : 10n ** 18n;
+  let fakeAmount = 10n ** 18n;
+  if (isValidTokenSafe(chainId, unwrappedTokenAddress)) {
+    const token = getToken(chainId, unwrappedTokenAddress);
+    fakeAmount = FAKE_INPUT_AMOUNT_MAP[token.symbol] ?? expandDecimals(10, token.decimals);
+  } else if (isMarketTokenAddress(chainId, unwrappedTokenAddress) || isGlvAddress(chainId, unwrappedTokenAddress)) {
+    fakeAmount = expandDecimals(10, PLATFORM_TOKEN_DECIMALS);
+  }
 
   const message = OFTComposeMsgCodec.encode(0n, sourceChainEndpointId, fakeAmount, composeFromWithMsg);
 

@@ -116,7 +116,7 @@ export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
 
 export class CodecUiHelper {
   public static encodeDepositMessage(account: string, data?: string): string {
-    return encodeAbiParameters([{ type: "address" }, { type: "bytes" }], [account as Address, (data as Hex) ?? "0x"]);
+    return encodeAbiParameters([{ type: "address" }, { type: "bytes" }], [account, data ?? "0x"]);
   }
 
   public static encodeComposeMsg(composeFromAddress: string, msg: string) {
@@ -142,24 +142,20 @@ export class CodecUiHelper {
     return layerZeroEndpoint;
   }
 
-  // TODO MLTCH make this type safe
   public static encodeMultichainActionData(action: MultichainAction): string {
     let actionData: Hex | undefined;
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, { type: "bytes32" }],
-        [
-          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.referralCode as Hex,
-        ]
+        [{ ...action.actionData.relayParams, signature: action.actionData.signature }, action.actionData.referralCode]
       );
     } else if (action.actionType === MultichainActionType.Deposit) {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_DEPOSIT_PARAMS_TYPE],
         [
-          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.transferRequests as any,
-          action.actionData.params as any,
+          { ...action.actionData.relayParams, signature: action.actionData.signature },
+          action.actionData.transferRequests,
+          action.actionData.params,
         ]
       );
     } else if (action.actionType === MultichainActionType.BridgeOut) {
@@ -175,8 +171,8 @@ export class CodecUiHelper {
           [
             BigInt(action.actionData.desChainId),
             action.actionData.deadline,
-            action.actionData.provider as Address,
-            action.actionData.providerData as Hex,
+            action.actionData.provider,
+            action.actionData.providerData,
             action.actionData.minAmountOut,
           ]
         );
@@ -187,11 +183,11 @@ export class CodecUiHelper {
             {
               desChainId: BigInt(action.actionData.desChainId),
               deadline: action.actionData.deadline,
-              provider: action.actionData.provider as Address,
-              providerData: action.actionData.providerData as Hex,
+              provider: action.actionData.provider,
+              providerData: action.actionData.providerData,
               minAmountOut: action.actionData.minAmountOut,
-              secondaryProvider: action.actionData.secondaryProvider as Address,
-              secondaryProviderData: action.actionData.secondaryProviderData as Hex,
+              secondaryProvider: action.actionData.secondaryProvider,
+              secondaryProviderData: action.actionData.secondaryProviderData,
               secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
             },
           ]
@@ -201,27 +197,27 @@ export class CodecUiHelper {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],
         [
-          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.transferRequests as any,
-          action.actionData.params as any,
+          { ...action.actionData.relayParams, signature: action.actionData.signature },
+          action.actionData.transferRequests,
+          action.actionData.params,
         ]
       );
     } else if (action.actionType === MultichainActionType.Withdrawal) {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_WITHDRAWAL_PARAMS_TYPE],
         [
-          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.transferRequests as any,
-          action.actionData.params as any,
+          { ...action.actionData.relayParams, signature: action.actionData.signature },
+          action.actionData.transferRequests,
+          action.actionData.params,
         ]
       );
     } else if (action.actionType === MultichainActionType.GlvWithdrawal) {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_WITHDRAWAL_PARAMS_TYPE],
         [
-          { ...(action.actionData.relayParams as any), signature: action.actionData.signature as Hex },
-          action.actionData.transferRequests as any,
-          action.actionData.params as any,
+          { ...action.actionData.relayParams, signature: action.actionData.signature },
+          action.actionData.transferRequests,
+          action.actionData.params,
         ]
       );
     }

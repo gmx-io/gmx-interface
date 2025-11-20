@@ -328,12 +328,17 @@ export const useDepositTransactions = ({
             throw toastCustomOrStargateError(chainId, error);
           });
       } else if (paySource === "gmxAccount") {
+        const expressTxnParams = await multichainDepositExpressTxnParams.promise;
+        if (!expressTxnParams) {
+          throw new Error("Express txn params are not set");
+        }
+
         promise = createMultichainDepositTxn({
           chainId,
           srcChainId,
           signer,
           transferRequests,
-          asyncExpressTxnResult: multichainDepositExpressTxnParams,
+          expressTxnParams,
           params: params as CreateDepositParams,
         });
       } else if (paySource === "settlementChain") {

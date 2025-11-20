@@ -194,9 +194,10 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       return undefined;
     }
 
-    // TODO MLTCH: do not forget to apply slippage here
-    // const minGlvTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
-    const minGlvTokens = 0n; //applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
+    let minGlvTokens = 0n;
+    if (paySource !== "sourceChain") {
+      minGlvTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
+    }
 
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
@@ -264,6 +265,13 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
     let dataList: string[] = EMPTY_ARRAY;
 
+    let minLongTokenAmount = 0n;
+    let minShortTokenAmount = 0n;
+    if (paySource !== "sourceChain") {
+      minLongTokenAmount = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n);
+      minShortTokenAmount = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n);
+    }
+
     if (paySource === "sourceChain") {
       if (!srcChainId) {
         return undefined;
@@ -302,9 +310,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           desChainId: chainId,
           provider: provider,
           providerData: providerData,
-          // TODO MLTCH apply some slippage
           minAmountOut: 0n,
-          // TODO MLTCH put secondary provider and data
           secondaryProvider: secondaryProvider ?? zeroAddress,
           secondaryProviderData: secondaryProvider ? providerData : "0x",
           secondaryMinAmountOut: 0n,
@@ -331,12 +337,8 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         longTokenSwapPath: (amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath ?? [],
         shortTokenSwapPath: (amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath ?? [],
       },
-      // TODO MLTCH: do not forget to apply slippage here
-      // minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
-      minLongTokenAmount: 0n,
-      // TODO MLTCH: do not forget to apply slippage
-      // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
-      minShortTokenAmount: 0n,
+      minLongTokenAmount,
+      minShortTokenAmount,
       shouldUnwrapNativeToken: shouldUnwrapNativeTokenForGm,
       callbackGasLimit: 0n,
       dataList,
@@ -392,7 +394,6 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           desChainId: chainId,
           provider: provider,
           providerData: providerData,
-          // TODO MLTCH apply some slippage
           minAmountOut: 0n,
           secondaryProvider: secondaryProvider ?? zeroAddress,
           secondaryProviderData: secondaryProvider ? providerData : "0x",

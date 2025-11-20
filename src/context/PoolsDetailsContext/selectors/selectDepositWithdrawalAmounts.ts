@@ -90,7 +90,6 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
         shortTokenAmount: adjustedShortTokenAmount,
         marketTokenAmount,
         glvTokenAmount,
-        // TODO MLTCH check it
         includeLongToken: adjustedLongTokenAmount > 0n,
         includeShortToken: adjustedShortTokenAmount > 0n,
         uiFeeFactor,

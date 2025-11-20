@@ -3,7 +3,6 @@ import { encodeFunctionData } from "viem";
 import { getContract } from "config/contracts";
 import { TransferRequests } from "domain/multichain/types";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
-import { AsyncResult } from "lib/useThrottledAsync";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -77,51 +76,39 @@ export async function buildAndSignMultichainDepositTxn({
   };
 }
 
-export function createMultichainDepositTxn({
+export async function createMultichainDepositTxn({
   chainId,
   srcChainId,
   signer,
   transferRequests,
-  asyncExpressTxnResult,
+  expressTxnParams,
   params,
 }: {
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
   signer: WalletSigner;
   transferRequests: TransferRequests;
-  // TODO MLTCH: make it just ExpressTxnParams
-  asyncExpressTxnResult: AsyncResult<ExpressTxnParams | undefined>;
+  expressTxnParams: ExpressTxnParams;
   params: CreateDepositParams;
-  // TODO MLTCH: support pending txns
-  // setPendingTxns,
-  // setPendingDeposit,
 }) {
-  if (!asyncExpressTxnResult.data) {
-    throw new Error("Async result is not set");
-  }
-
-  return buildAndSignMultichainDepositTxn({
+  const txnData = await buildAndSignMultichainDepositTxn({
     chainId,
     srcChainId,
     signer,
     account: params.addresses.receiver,
-    relayerFeeAmount: asyncExpressTxnResult.data.gasPaymentParams.relayerFeeAmount,
-    relayerFeeTokenAddress: asyncExpressTxnResult.data.gasPaymentParams.relayerFeeTokenAddress,
+    relayerFeeAmount: expressTxnParams.gasPaymentParams.relayerFeeAmount,
+    relayerFeeTokenAddress: expressTxnParams.gasPaymentParams.relayerFeeTokenAddress,
     relayParams: {
-      ...asyncExpressTxnResult.data.relayParamsPayload,
+      ...expressTxnParams.relayParamsPayload,
       deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
     },
     transferRequests,
     params,
-  }).then(async (txnData: ExpressTxnData) => {
-    await sendExpressTransaction({
-      chainId,
-      // TODO MLTCH: pass true when we can
-      isSponsoredCall: false,
-      txnData,
-    });
   });
-  // .then(makeTxnSentMetricsHandler(metricId))
-  // .catch(makeTxnErrorMetricsHandler(metricId))
-  // .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricId));
+
+  await sendExpressTransaction({
+    chainId,
+    isSponsoredCall: expressTxnParams.isSponsoredCall,
+    txnData,
+  });
 }
