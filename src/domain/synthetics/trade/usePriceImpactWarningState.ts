@@ -10,11 +10,7 @@ import type { FeeItem } from "sdk/types/fees";
 import type { TradeFlags } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
-import {
-  getIsHighSwapImpact,
-  getIsHighCollateralImpact,
-  getIsHighExternalSwapFees,
-} from "./utils/warnings";
+import { getIsHighSwapImpact, getIsHighCollateralImpact, getIsHighExternalSwapFees } from "./utils/warnings";
 
 export type WarningState = {
   shouldShowWarningForCollateral: boolean;
