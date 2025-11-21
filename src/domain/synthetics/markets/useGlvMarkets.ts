@@ -26,11 +26,8 @@ import {
   useMulticall,
 } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
-import { EMPTY_ARRAY } from "lib/objects";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-
-import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
 
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
 import { convertToContractTokenPrices, getBalanceTypeFromSrcChainId } from "../tokens";
@@ -64,10 +61,17 @@ export function useGlvMarketsInfo(
     chainId: ContractsChainId;
     srcChainId: SourceChainId | undefined;
     account: string | undefined;
-    withMultichainBalances?: boolean;
+    multichainMarketTokensBalances?: Partial<Record<number, Partial<Record<string, bigint>>>>;
   }
 ) {
-  const { marketsInfoData, tokensData, chainId, account, srcChainId, withMultichainBalances = false } = params;
+  const {
+    marketsInfoData,
+    tokensData,
+    chainId,
+    account,
+    srcChainId,
+    multichainMarketTokensBalances = undefined,
+  } = params;
 
   const { websocketTokenBalancesUpdates, resetTokensBalancesUpdates } = useTokensBalancesUpdates();
 
@@ -100,14 +104,6 @@ export function useGlvMarketsInfo(
       },
     }
   );
-
-  const glvTokensMultichainBalancesResult = useMultichainMarketTokensBalancesRequest({
-    chainId,
-    account,
-    enabled: enabled && withMultichainBalances && srcChainId !== undefined && Boolean(glvList?.length),
-    specificChainId: srcChainId,
-    overridePlatformTokens: glvList?.map(({ glv }) => glv.glvToken) ?? EMPTY_ARRAY,
-  });
 
   const glvs = useMemo(() => {
     return glvList?.map(({ glv, markets }) => ({
@@ -299,9 +295,10 @@ export function useGlvMarketsInfo(
       const walletBalance: bigint | undefined = glvRawData[glv.glvToken + "-tokenData"].balance?.returnValues[0];
       const gmxAccountBalance: bigint | undefined =
         glvRawData[glv.glvToken + "-gmxAccountData"]?.balance?.returnValues[0];
-      const sourceChainBalance = withMultichainBalances
-        ? glvTokensMultichainBalancesResult.tokenBalances[glv.glvToken]
-        : undefined;
+      const sourceChainBalance =
+        multichainMarketTokensBalances && srcChainId !== undefined
+          ? multichainMarketTokensBalances[srcChainId]?.[glv.glvToken]
+          : undefined;
 
       const balance = srcChainId !== undefined ? gmxAccountBalance : walletBalance;
 
@@ -377,16 +374,7 @@ export function useGlvMarketsInfo(
     });
 
     return result;
-  }, [
-    chainId,
-    glvRawData,
-    glvTokensMultichainBalancesResult.tokenBalances,
-    glvs,
-    marketsInfoData,
-    srcChainId,
-    tokensData,
-    withMultichainBalances,
-  ]);
+  }, [chainId, glvRawData, glvs, marketsInfoData, multichainMarketTokensBalances, srcChainId, tokensData]);
 
   // TODO MLTCH: use updated tokens balances hook
   // useUpdatedTokensBalances()

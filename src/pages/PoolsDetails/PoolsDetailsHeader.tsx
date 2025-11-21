@@ -3,7 +3,10 @@ import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { selectPoolsDetailsIsCrossChainMarket } from "context/PoolsDetailsContext/selectors";
+import {
+  selectPoolsDetailsCanBridgeInMarket,
+  selectPoolsDetailsCanBridgeOutMarket,
+} from "context/PoolsDetailsContext/selectors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -45,7 +48,8 @@ type Props = {
 export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const { chainId, srcChainId } = useChainId();
   const account = useSelector(selectAccount);
-  const isCrossChainMarket = useSelector(selectPoolsDetailsIsCrossChainMarket);
+  const canBridgeInMarket = useSelector(selectPoolsDetailsCanBridgeInMarket);
+  const canBridgeOutMarket = useSelector(selectPoolsDetailsCanBridgeOutMarket);
   const isGlv = glvOrMarketInfo && isGlvInfo(glvOrMarketInfo);
   const iconName = glvOrMarketInfo?.isSpotOnly
     ? getNormalizedTokenSymbol(glvOrMarketInfo.longToken.symbol) +
@@ -200,39 +204,44 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
           </>
         )}
       </div>
-      {isCrossChainMarket && (
-        <>
-          <div className={cx("flex items-center gap-8 max-lg:w-full lg:gap-12")}>
-            <Button
-              className="min-w-max basis-full"
-              variant="secondary"
-              size={isTablet ? "small" : "medium"}
-              onClick={() => setOpenedTransferModal("transferOut")}
-            >
-              {isTablet && <Sell16Icon className="size-16" />}
-              <Trans>Withdraw {glvOrGm}</Trans>
-            </Button>
-            <Button
-              className="min-w-max basis-full"
-              variant="secondary"
-              size={isTablet ? "small" : "medium"}
-              onClick={() => setOpenedTransferModal("transferIn")}
-            >
-              {isTablet && <Buy16Icon className="size-16" />}
-              <Trans>Deposit {glvOrGm}</Trans>
-            </Button>
-          </div>
-          <BridgeInModal
-            isVisible={openedTransferModal === "transferIn"}
-            setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferIn" : undefined)}
-            glvOrMarketInfo={glvOrMarketInfo}
-          />
-          <BridgeOutModal
-            isVisible={openedTransferModal === "transferOut"}
-            setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferOut" : undefined)}
-            glvOrMarketInfo={glvOrMarketInfo}
-          />
-        </>
+
+      <div className={cx("flex items-center gap-8 max-lg:w-full lg:gap-12")}>
+        {canBridgeOutMarket && (
+          <Button
+            className="min-w-max basis-full"
+            variant="secondary"
+            size={isTablet ? "small" : "medium"}
+            onClick={() => setOpenedTransferModal("transferOut")}
+          >
+            {isTablet && <Sell16Icon className="size-16" />}
+            <Trans>Withdraw {glvOrGm}</Trans>
+          </Button>
+        )}
+        {canBridgeInMarket && (
+          <Button
+            className="min-w-max basis-full"
+            variant="secondary"
+            size={isTablet ? "small" : "medium"}
+            onClick={() => setOpenedTransferModal("transferIn")}
+          >
+            {isTablet && <Buy16Icon className="size-16" />}
+            <Trans>Deposit {glvOrGm}</Trans>
+          </Button>
+        )}
+      </div>
+      {canBridgeOutMarket && (
+        <BridgeOutModal
+          isVisible={openedTransferModal === "transferOut"}
+          setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferOut" : undefined)}
+          glvOrMarketInfo={glvOrMarketInfo}
+        />
+      )}
+      {canBridgeInMarket && (
+        <BridgeInModal
+          isVisible={openedTransferModal === "transferIn"}
+          setIsVisible={(newIsVisible) => setOpenedTransferModal(newIsVisible ? "transferIn" : undefined)}
+          glvOrMarketInfo={glvOrMarketInfo}
+        />
       )}
     </div>
   );

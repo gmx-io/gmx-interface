@@ -69,6 +69,7 @@ export async function fetchSourceChainTokenBalances({
 }: {
   sourceChainId: SourceChainId;
   account: string;
+  // TODO MLTCH just pass string array of source chain token addresses
   sourceChainTokenIdMap: MultichainTokenMapping[SettlementChainId][SourceChainId];
 }): Promise<Record<string, bigint>> {
   const tokenAddresses = Object.keys(sourceChainTokenIdMap ?? {});

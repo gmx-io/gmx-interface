@@ -26,8 +26,6 @@ import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { ProgressiveTokensData } from "sdk/types/tokens";
 
-import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
-
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData, MarketsData } from "./types";
 import { useMarkets } from "./useMarkets";
@@ -50,21 +48,15 @@ export function useMarketTokensDataRequest(
      */
     withGlv?: boolean;
     enabled?: boolean;
-    withMultichainBalances?: boolean;
+    multichainMarketTokensBalances?: Partial<Record<number, Partial<Record<string, bigint>>>>;
   }
 ): MarketTokensDataResult {
-  const { isDeposit, account, glvData = {}, withGlv = true, enabled = true, withMultichainBalances = false } = p;
+  const { isDeposit, account, glvData = {}, withGlv = true, enabled = true, multichainMarketTokensBalances } = p;
   const { tokensData } = useTokensDataRequest(chainId, srcChainId, {
     enabled: enabled,
   });
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { resetTokensBalancesUpdates } = useTokensBalancesUpdates();
-  const marketTokensMultichainBalancesResult = useMultichainMarketTokensBalancesRequest({
-    chainId,
-    account,
-    enabled: enabled && withMultichainBalances && srcChainId !== undefined,
-    specificChainId: srcChainId,
-  });
 
   let isGlvTokensLoaded;
 
@@ -217,14 +209,14 @@ export function useMarketTokensDataRequest(
         return undefined;
       }
 
-      if (!withMultichainBalances || !marketTokensMultichainBalancesResult.isLoading) {
+      if (!multichainMarketTokensBalances || srcChainId === undefined) {
         return marketTokensData;
       }
 
       return mapValues(marketTokensData, (marketToken) => {
         return {
           ...marketToken,
-          sourceChainBalance: marketTokensMultichainBalancesResult.tokenBalances[marketToken.address],
+          sourceChainBalance: multichainMarketTokensBalances[srcChainId]?.[marketToken.address],
         };
       });
     }
@@ -234,24 +226,17 @@ export function useMarketTokensDataRequest(
       result[glvMarket.glvTokenAddress] = glvMarket.glvToken;
     });
 
-    if (withMultichainBalances && !marketTokensMultichainBalancesResult.isLoading) {
+    if (multichainMarketTokensBalances && srcChainId !== undefined) {
       return mapValues(result, (marketToken) => {
         return {
           ...marketToken,
-          sourceChainBalance: marketTokensMultichainBalancesResult.tokenBalances[marketToken.address],
+          sourceChainBalance: multichainMarketTokensBalances[srcChainId]?.[marketToken.address],
         };
       });
     }
 
     return result;
-  }, [
-    marketTokensData,
-    glvData,
-    withGlv,
-    withMultichainBalances,
-    marketTokensMultichainBalancesResult.isLoading,
-    marketTokensMultichainBalancesResult.tokenBalances,
-  ]);
+  }, [marketTokensData, glvData, withGlv, srcChainId, multichainMarketTokensBalances]);
 
   const updatedGmAndGlvMarketTokensData = useUpdatedTokensBalances(gmAndGlvMarketTokensData);
 

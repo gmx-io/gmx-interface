@@ -346,59 +346,60 @@ export function useMultichainMarketTokensBalancesRequest({
   chainId,
   account,
   enabled,
-  specificChainId,
-  overridePlatformTokens,
 }: {
   chainId: ContractsChainId;
   account: string | undefined;
   enabled: boolean;
-  specificChainId: SourceChainId | undefined;
-  overridePlatformTokens?: string[];
 }): {
-  tokenBalances: Record<string, bigint>;
+  tokenBalances: Partial<Record<number, Partial<Record<string, bigint>>>>;
   isLoading: boolean;
 } {
-  const platformTokens =
-    overridePlatformTokens ?? (MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined);
+  const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
 
   const { data: balancesResult } = useSWRSubscription(
-    account && platformTokens?.length && enabled && specificChainId !== undefined
-      ? ["multichain-market-tokens-balances", chainId, account, platformTokens, specificChainId]
+    account && platformTokens?.length && enabled
+      ? ["multichain-market-tokens-balances", chainId, account, platformTokens, undefined]
       : null,
     // TODO MLTCH optimistically update useSourceChainTokensDataRequest
     subscribeMultichainTokenBalances
   );
 
-  const tokenBalances: Record<string, bigint> = useMemo(() => {
-    if (!balancesResult || !specificChainId) {
+  const balances: Record<number, Record<string, bigint>> = useMemo(() => {
+    if (!balancesResult) {
       return EMPTY_OBJECT;
     }
 
-    const balances: Record<string, bigint> = {};
+    const balances: Record<number, Record<string, bigint>> = {};
 
-    for (const sourceChainTokenAddress in balancesResult.tokenBalances[specificChainId]) {
-      const settlementChainTokenId = getMappedTokenId(
-        specificChainId,
-        sourceChainTokenAddress,
-        chainId as SettlementChainId
-      );
+    for (const sourceChainIdRaw in balancesResult.tokenBalances) {
+      const sourceChainId = parseInt(sourceChainIdRaw) as SourceChainId;
+      for (const sourceChainTokenAddress in balancesResult.tokenBalances[sourceChainId]) {
+        const settlementChainTokenId = getMappedTokenId(
+          sourceChainId,
+          sourceChainTokenAddress,
+          chainId as SettlementChainId
+        );
 
-      if (!settlementChainTokenId) {
-        continue;
-      }
+        if (!settlementChainTokenId) {
+          continue;
+        }
 
-      const balance = balancesResult.tokenBalances[specificChainId][sourceChainTokenAddress];
+        const balance = balancesResult.tokenBalances[sourceChainId][sourceChainTokenAddress];
 
-      if (balance !== undefined && balance !== 0n) {
-        balances[settlementChainTokenId.address] = balance;
+        if (balance !== undefined && balance !== 0n) {
+          if (!balances[sourceChainId]) {
+            balances[sourceChainId] = {};
+          }
+          balances[sourceChainId][settlementChainTokenId.address] = balance;
+        }
       }
     }
 
     return balances;
-  }, [balancesResult, chainId, specificChainId]);
+  }, [balancesResult, chainId]);
 
   return {
-    tokenBalances,
+    tokenBalances: balances,
     isLoading: balancesResult?.isLoading ?? true,
   };
 }

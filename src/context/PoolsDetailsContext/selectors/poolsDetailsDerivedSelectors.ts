@@ -25,19 +25,20 @@ import { isMarketTokenAddress } from "sdk/utils/markets";
 import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 
 import {
-  selectPoolsDetailsPaySource,
-  selectPoolsDetailsMultichainTokensArray,
+  PLATFORM_TOKEN_DECIMALS,
   selectPoolsDetailsFirstTokenAddress,
-  selectPoolsDetailsSecondTokenAddress,
+  selectPoolsDetailsFirstTokenInputValue,
   selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsMarketOrGlvTokenInputValue,
   selectPoolsDetailsMode,
+  selectPoolsDetailsMultichainMarketTokensBalances,
+  selectPoolsDetailsMultichainTokensArray,
   selectPoolsDetailsOperation,
+  selectPoolsDetailsPaySource,
+  selectPoolsDetailsSecondTokenAddress,
+  selectPoolsDetailsSecondTokenInputValue,
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsWithdrawalMarketTokensData,
-  PLATFORM_TOKEN_DECIMALS,
-  selectPoolsDetailsFirstTokenInputValue,
-  selectPoolsDetailsMarketOrGlvTokenInputValue,
-  selectPoolsDetailsSecondTokenInputValue,
 } from "./baseSelectors";
 
 export const selectPoolsDetailsFlags = createSelector((q) => {
@@ -435,6 +436,41 @@ export const selectPoolsDetailsIsCrossChainMarket = createSelector((q): boolean 
   }
 
   return MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId]?.includes(selectedGlvOrMarketAddress) ?? false;
+});
+
+export const selectPoolsDetailsCanBridgeInMarket = createSelector((q) => {
+  const isCrossChainMarket = q(selectPoolsDetailsIsCrossChainMarket);
+  if (!isCrossChainMarket) {
+    return false;
+  }
+  const selectedGlvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
+
+  if (!selectedGlvOrMarketAddress) {
+    return false;
+  }
+
+  const multichainMarketTokensBalances = q(selectPoolsDetailsMultichainMarketTokensBalances);
+
+  const someSourceChainHasBalance = Object.values(multichainMarketTokensBalances).some(
+    (balanceMap) => (balanceMap?.[selectedGlvOrMarketAddress] ?? -1n) > 0n
+  );
+
+  return someSourceChainHasBalance;
+});
+
+export const selectPoolsDetailsCanBridgeOutMarket = createSelector((q) => {
+  const isCrossChainMarket = q(selectPoolsDetailsIsCrossChainMarket);
+  if (!isCrossChainMarket) {
+    return false;
+  }
+  const selectedGlvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
+  const marketTokenData = q((state) => getByKey(selectPoolsDetailsMarketTokensData(state), selectedGlvOrMarketAddress));
+
+  if (!marketTokenData || marketTokenData.gmxAccountBalance === undefined || marketTokenData.gmxAccountBalance === 0n) {
+    return false;
+  }
+
+  return true;
 });
 
 /**

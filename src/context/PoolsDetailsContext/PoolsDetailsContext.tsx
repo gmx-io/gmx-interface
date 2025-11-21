@@ -14,7 +14,11 @@ import { useSafeState } from "lib/useSafeState";
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import { Mode, Operation, isMode, isOperation } from "components/GmSwap/GmSwapBox/types";
-import { useMultichainTokens, useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
+import {
+  useMultichainMarketTokensBalancesRequest,
+  useMultichainTokens,
+  useMultichainTradeTokensRequest,
+} from "components/GmxAccountModal/hooks";
 
 export type PoolsDetailsQueryParams = {
   market: string;
@@ -69,6 +73,7 @@ export type PoolsDetailsState = {
   marketOrGlvTokenInputValue: string;
   isMarketForGlvSelectedManually: boolean;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
+  multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
@@ -104,12 +109,14 @@ export function usePoolsDetailsState({
   account,
   glvData,
   withGlv,
+  multichainMarketTokensBalancesResult,
 }: {
   enabled: boolean;
   marketsInfoData: MarketsInfoData | undefined;
   account: string | undefined;
   glvData: GlvInfoData | undefined;
   withGlv: boolean;
+  multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 }): PoolsDetailsState | undefined {
   const searchParams = useRouteQuery();
   const { chainId, srcChainId } = useChainId();
@@ -126,7 +133,7 @@ export function usePoolsDetailsState({
     glvData,
     withGlv,
     enabled,
-    withMultichainBalances: enabled,
+    multichainMarketTokensBalances: multichainMarketTokensBalancesResult?.tokenBalances,
   });
   const multichainTokensResult = useMultichainTradeTokensRequest(chainId, account);
 
@@ -216,7 +223,7 @@ export function usePoolsDetailsState({
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
       multichainTokensResult,
-
+      multichainMarketTokensBalancesResult,
       // Setters
       setOperation,
       setMode,
@@ -247,6 +254,7 @@ export function usePoolsDetailsState({
     marketOrGlvTokenInputValue,
     isMarketForGlvSelectedManually,
     multichainTokensResult,
+    multichainMarketTokensBalancesResult,
     setGlvOrMarketAddress,
     setPaySource,
     setFirstTokenAddress,

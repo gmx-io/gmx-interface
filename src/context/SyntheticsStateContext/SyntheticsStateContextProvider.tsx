@@ -67,6 +67,8 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
+import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
+
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { latestStateRef, StateCtx } from "./utils";
@@ -196,13 +198,20 @@ export function SyntheticsStateContextProvider({
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");
 
+  const multichainMarketTokensBalancesResult = useMultichainMarketTokensBalancesRequest({
+    chainId,
+    account,
+    enabled: pageType === "pools",
+  });
+
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: tokensDataResult.tokensData,
     chainId,
     account,
     srcChainId,
-    withMultichainBalances: pageType === "pools",
+    multichainMarketTokensBalances:
+      pageType === "pools" ? multichainMarketTokensBalancesResult.tokenBalances : undefined,
   });
 
   const { marketTokensData: depositMarketTokensData, progressiveMarketTokensData: progressiveDepositMarketTokensData } =
@@ -211,7 +220,8 @@ export function SyntheticsStateContextProvider({
       account,
       glvData: glvInfo.glvData,
       withGlv: shouldFetchGlvMarkets,
-      withMultichainBalances: pageType === "pools",
+      multichainMarketTokensBalances:
+        pageType === "pools" ? multichainMarketTokensBalancesResult.tokenBalances : undefined,
     });
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
@@ -300,6 +310,7 @@ export function SyntheticsStateContextProvider({
     withGlv: shouldFetchGlvMarkets,
     marketsInfoData: marketsInfo.marketsInfoData,
     account,
+    multichainMarketTokensBalancesResult,
   });
 
   const gasLimits = useGasLimits(chainId);
