@@ -203,6 +203,10 @@ msgstr "Rendimiento anualizado de la reserva o bóveda durante el período selec
 msgid "Realized PnL after fees and net price impact."
 msgstr "PnL Realizado después de tarifas e impacto de precio neto."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Update {orderTypeName} Order"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -599,6 +603,11 @@ msgstr "No muestres este mensaje de nuevo en los próximos 30 días."
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "en liquidez"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
@@ -2588,6 +2597,10 @@ msgstr "Stop Mercado - Largo Inc."
 msgid "Enter your feedback here."
 msgstr "Ingresa tus comentarios aquí."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Estás retirando {0}, tu token de gas. Se requiere gas para este retiro, por favor mantén al menos <0>{1}</0> en {2} o cambia tu token de gas en <1>configuraciones</1>."
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Solo posiciones con más de {0} en \"Capital Usado\" están clasificadas."
@@ -2731,11 +2744,6 @@ msgstr "Fallo al añadir código de referido."
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating"
 msgstr "Actualizando"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "Depositar USDC"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4334,6 +4342,11 @@ msgstr "Tasa Neta de Cortos / 1h"
 msgid "Discover GMX Earn"
 msgstr ""
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5779,11 +5792,6 @@ msgstr "Comunidad GMX con iniciativas de NFTs, Trading y Educación"
 msgid "Liquidation Confirmations"
 msgstr "Confirmaciones de Liquidación"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "Saldo de gas insuficiente, por favor deposita más WETH o USDC."
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0>El OI de <1>#GMX V2</1> se ve genial</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Ver más: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5965,11 +5973,6 @@ msgstr "GLV gana de tarifas de trading (apertura, cierre, préstamo, liquidacion
 msgid "Deposit failed"
 msgstr "Depósito fallido"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "Depositar USDC o ETH"
-
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
@@ -6017,6 +6020,11 @@ msgstr "No hay activos disponibles para depósito"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 Avalanche Fuji"
 msgstr "V1 Avalanche Fuji"
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized Swap Impact"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -7738,11 +7746,6 @@ msgstr "Los descuentos de GMX V2 se aplican automáticamente en cada operación 
 msgid "Share Position"
 msgstr "Compartir Posición"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "Saldo de gas insuficiente, por favor deposita más USDC."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "Comisión de Depósito"
@@ -7818,6 +7821,10 @@ msgstr "Dirección copiada a tu portapapeles."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "Garantía restante por debajo de {0} USD"
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "Token de pago de gas cambiado de {fromSymbol} a {toSymbol} debido a saldo insuficiente de {fromSymbol}."
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
@@ -8081,10 +8088,6 @@ msgstr "Orden de mercado será cancelable en ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
-msgstr "Estás retirando {0}, tu token de gas. Se requiere gas para este retiro, por favor mantén al menos <0>{1}</0> en {2} o cambia tu token de gas en configuraciones."
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

@@ -2295,3 +2295,9 @@ export const createTokensMap = (tokens: Token[]) => {
     {} as Record<string, Token>
   );
 };
+
+const USD_BASED_STABLE_TOKEN_SYMBOLS = ["USDC", "USDC.E", "USDT", "DAI", "USDC.SG"];
+
+export function isUsdBasedStableToken(token: Token) {
+  return USD_BASED_STABLE_TOKEN_SYMBOLS.includes(token.symbol);
+}

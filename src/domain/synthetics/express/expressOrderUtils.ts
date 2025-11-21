@@ -4,7 +4,7 @@ import { Address, encodeFunctionData, recoverTypedDataAddress, size, zeroAddress
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { isSourceChain } from "config/multichain";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
@@ -28,11 +28,11 @@ import {
   SignedSubacсountApproval,
   Subaccount,
 } from "domain/synthetics/subaccount";
-import { convertToTokenAmount, SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
-import { applyFactor, expandDecimals } from "lib/numbers";
+import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { ISigner } from "lib/transactions/iSigner";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
@@ -485,38 +485,6 @@ export function getGasPaymentValidations({
     needGasPaymentTokenApproval,
     isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,
   };
-}
-
-export function getMinResidualGasPaymentTokenAmount({
-  payTokenAddress,
-  expressParams,
-}: {
-  payTokenAddress: string | undefined;
-  expressParams: ExpressTxnParams | undefined;
-}): bigint {
-  if (!expressParams || !payTokenAddress) {
-    return 0n;
-  }
-
-  if (payTokenAddress !== expressParams.gasPaymentParams.gasPaymentTokenAddress) {
-    return 0n;
-  }
-
-  const { gasPaymentToken, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
-
-  const defaultMinResidualAmount = convertToTokenAmount(
-    expandDecimals(5, USD_DECIMALS),
-    gasPaymentToken.decimals,
-    gasPaymentToken.prices.minPrice
-  )!;
-
-  const minResidualAmount = gasPaymentTokenAmount * 2n;
-
-  if (minResidualAmount > defaultMinResidualAmount) {
-    return minResidualAmount;
-  }
-
-  return defaultMinResidualAmount;
 }
 
 export async function buildAndSignExpressBatchOrderTxn({

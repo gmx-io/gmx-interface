@@ -80,6 +80,8 @@ export type SwapOrderInfo = Order & {
   isTwap: false;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio | TokensRatioAndSlippage;
+  // Store trigger ratio value
+  triggerPrice: bigint;
   initialCollateralToken: TokenData;
   targetCollateralToken: TokenData;
 };

@@ -127,7 +127,8 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     // "https://1rpc.io/arb", has CORS issue
     "https://arbitrum-one.public.blastapi.io",
     // "https://arbitrum.drpc.org",
-    "https://rpc.ankr.com/arbitrum",
+    // requires authentication
+    // "https://rpc.ankr.com/arbitrum",
   ],
   [AVALANCHE]: [
     "https://api.avax.network/ext/bc/C/rpc",
