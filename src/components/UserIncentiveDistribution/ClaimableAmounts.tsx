@@ -178,7 +178,13 @@ export default function ClaimableAmounts() {
     buttonContent
   );
 
-  const claimableEntries = Object.entries(claimableAmountsDataByDistributionId ?? {}) ?? [];
+  const claimableEntries = useMemo(
+    () =>
+      Object.entries(claimableAmountsDataByDistributionId ?? {}).filter(
+        ([distributionId]) => !claimsConfigByDistributionId?.[distributionId]?.claimsDisabled
+      ),
+    [claimableAmountsDataByDistributionId, claimsConfigByDistributionId]
+  );
 
   if (isLoading) {
     return (
