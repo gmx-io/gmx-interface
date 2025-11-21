@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_ARRAY } from "lib/objects";
 
 import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 
@@ -70,8 +70,5 @@ export const selectPoolsDetailsWithdrawalMarketTokensData = (s: SyntheticsState)
 export const selectPoolsDetailsMultichainTokensArray = (s: SyntheticsState) =>
   s.poolsDetails?.multichainTokensResult?.tokenChainDataArray || EMPTY_ARRAY;
 
-export const selectPoolsDetailsMultichainMarketTokensBalances = (s: SyntheticsState) =>
-  s.poolsDetails?.multichainMarketTokensBalancesResult?.tokenBalances ||
-  (EMPTY_OBJECT as NonNullable<
-    SyntheticsState["poolsDetails"]
-  >["multichainMarketTokensBalancesResult"]["tokenBalances"]);
+export const selectPoolsDetailsMultichainMarketTokensBalancesResult = (s: SyntheticsState) =>
+  s.poolsDetails?.multichainMarketTokensBalancesResult;

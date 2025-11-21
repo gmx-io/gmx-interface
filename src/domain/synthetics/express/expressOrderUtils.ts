@@ -34,6 +34,7 @@ import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor, expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { ISigner } from "lib/transactions/iSigner";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
@@ -808,7 +809,7 @@ export async function buildAndSignBridgeOutTxn({
   srcChainId: SourceChainId;
   relayParamsPayload: RawRelayParamsPayload;
   params: BridgeOutParams;
-  signer: WalletSigner | undefined;
+  signer: WalletSigner | ISigner | undefined;
   account: string;
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
@@ -866,7 +867,7 @@ async function signBridgeOutPayload({
   chainId,
   srcChainId,
 }: {
-  signer: WalletSigner;
+  signer: WalletSigner | ISigner;
   relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;

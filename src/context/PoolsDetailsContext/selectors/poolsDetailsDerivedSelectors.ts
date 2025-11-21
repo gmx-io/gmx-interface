@@ -31,7 +31,7 @@ import {
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsMarketOrGlvTokenInputValue,
   selectPoolsDetailsMode,
-  selectPoolsDetailsMultichainMarketTokensBalances,
+  selectPoolsDetailsMultichainMarketTokensBalancesResult,
   selectPoolsDetailsMultichainTokensArray,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
@@ -449,9 +449,12 @@ export const selectPoolsDetailsCanBridgeInMarket = createSelector((q) => {
     return false;
   }
 
-  const multichainMarketTokensBalances = q(selectPoolsDetailsMultichainMarketTokensBalances);
+  const multichainMarketTokensBalanceResult = q(selectPoolsDetailsMultichainMarketTokensBalancesResult);
+  if (!multichainMarketTokensBalanceResult) {
+    return false;
+  }
 
-  const someSourceChainHasBalance = Object.values(multichainMarketTokensBalances).some(
+  const someSourceChainHasBalance = Object.values(multichainMarketTokensBalanceResult.tokenBalances).some(
     (balanceMap) => (balanceMap?.[selectedGlvOrMarketAddress] ?? -1n) > 0n
   );
 

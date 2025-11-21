@@ -26,7 +26,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
-import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
+import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -78,10 +78,9 @@ export function BridgeOutModal({
   const glvOrGm = isGlv ? "GLV" : "GM";
   const { address: account } = useAccount();
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest({
+  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalances({
     chainId,
     srcChainId,
-    account,
     tokenAddress: glvOrMarketAddress,
     enabled: isVisible,
   });
@@ -180,7 +179,7 @@ export function BridgeOutModal({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!account || !glvOrMarketAddress || bridgeOutAmount === undefined || !bridgeOutChain || !bridgeOutParams) {
+    if (!account || !bridgeOutChain || !bridgeOutParams) {
       helperToast.error(t`Error submitting withdrawal`);
       return;
     }

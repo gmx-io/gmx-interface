@@ -10,6 +10,7 @@ import {
   MULTI_CHAIN_TOKEN_MAPPING,
   MultichainTokenMapping,
 } from "config/multichain";
+import { selectPoolsDetailsMultichainMarketTokensBalancesResult } from "context/PoolsDetailsContext/selectors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -257,16 +258,14 @@ export function useMultichainTokens() {
   return useMultichainTradeTokensRequest(chainId, account);
 }
 
-export function useMultichainMarketTokenBalancesRequest({
+export function useMultichainMarketTokenBalances({
   chainId,
   srcChainId,
-  account,
   tokenAddress,
   enabled,
 }: {
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
-  account: string | undefined;
   tokenAddress: string | undefined;
   enabled?: boolean;
 }): {
@@ -274,52 +273,33 @@ export function useMultichainMarketTokenBalancesRequest({
   totalBalance: bigint | undefined;
   isBalanceDataLoading: boolean;
 } {
+  // TODO MLTCH: use selectDepositMarketTokensData or selectProgressiveDepositMarketTokensData
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, {
     isDeposit: true,
     withGlv: true,
     enabled,
   });
 
-  const { data: balancesResult } = useSWRSubscription(
-    account && tokenAddress && enabled
-      ? ["multichain-market-token-balances", chainId, account, [tokenAddress], undefined]
-      : null,
-    // TODO MLTCH optimistically update useSourceChainTokensDataRequest
-    subscribeMultichainTokenBalances
-  );
-
-  const tokenBalancesData: Partial<Record<AnyChainId | 0, bigint | undefined>> = useMemo(() => {
-    if (!marketTokensData || !tokenAddress) {
+  const multichainMarketTokensBalances = useSelector(selectPoolsDetailsMultichainMarketTokensBalancesResult);
+  const isBalanceDataLoading = multichainMarketTokensBalances?.isLoading ?? true;
+  const tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>> = useMemo(() => {
+    if (!tokenAddress) {
       return EMPTY_OBJECT;
     }
+    const balances = {
+      [chainId]: marketTokensData?.[tokenAddress].walletBalance,
+      [0]: marketTokensData?.[tokenAddress].gmxAccountBalance,
+    };
 
-    const walletBalance = marketTokensData[tokenAddress].walletBalance;
-    const gmxAccountBalance = marketTokensData[tokenAddress].gmxAccountBalance;
-
-    const balances = { [chainId]: walletBalance, [0]: gmxAccountBalance };
-
-    if (balancesResult) {
-      for (const sourceChainId in balancesResult.tokenBalances) {
-        const sourceChainTokenId = getMappedTokenId(
-          chainId as SettlementChainId,
-          tokenAddress,
-          parseInt(sourceChainId) as SourceChainId
-        );
-
-        if (!sourceChainTokenId) {
-          continue;
-        }
-
-        const balance = balancesResult.tokenBalances[sourceChainId][sourceChainTokenId.address];
-
-        if (balance !== undefined && balance !== 0n) {
-          balances[sourceChainId] = balance;
-        }
+    for (const sourceChainIdRaw in multichainMarketTokensBalances) {
+      if (multichainMarketTokensBalances[sourceChainIdRaw]?.[tokenAddress] === undefined) {
+        continue;
       }
+      balances[sourceChainIdRaw] = multichainMarketTokensBalances[sourceChainIdRaw][tokenAddress];
     }
 
     return balances;
-  }, [balancesResult, chainId, marketTokensData, tokenAddress]);
+  }, [chainId, marketTokensData, multichainMarketTokensBalances, tokenAddress]);
 
   const totalBalance = useMemo(() => {
     if (!tokenBalancesData) {
@@ -330,6 +310,7 @@ export function useMultichainMarketTokenBalancesRequest({
       if (balance === undefined) {
         continue;
       }
+      // Given that platform token decimals are always 18, we can just add the balances together
       totalBalance += balance;
     }
     return totalBalance;
@@ -338,7 +319,7 @@ export function useMultichainMarketTokenBalancesRequest({
   return {
     tokenBalancesData,
     totalBalance,
-    isBalanceDataLoading: balancesResult?.isLoading ?? true,
+    isBalanceDataLoading,
   };
 }
 

@@ -7,7 +7,6 @@ import {
   selectPoolsDetailsCanBridgeInMarket,
   selectPoolsDetailsCanBridgeOutMarket,
 } from "context/PoolsDetailsContext/selectors";
-import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   getGlvMarketShortening,
@@ -29,7 +28,7 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
-import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
+import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -47,7 +46,6 @@ type Props = {
 
 export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const { chainId, srcChainId } = useChainId();
-  const account = useSelector(selectAccount);
   const canBridgeInMarket = useSelector(selectPoolsDetailsCanBridgeInMarket);
   const canBridgeOutMarket = useSelector(selectPoolsDetailsCanBridgeOutMarket);
   const isGlv = glvOrMarketInfo && isGlvInfo(glvOrMarketInfo);
@@ -74,10 +72,9 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     totalBalance,
     tokenBalancesData: tokenBalancesData,
     isBalanceDataLoading,
-  } = useMultichainMarketTokenBalancesRequest({
+  } = useMultichainMarketTokenBalances({
     chainId,
     srcChainId,
-    account,
     tokenAddress: marketToken?.address,
     enabled: Boolean(marketToken),
   });

@@ -2,6 +2,7 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { BridgeOutParams } from "domain/multichain/types";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { sendExpressTransaction } from "lib/transactions";
+import { ISigner } from "lib/transactions/iSigner";
 import { WalletSigner } from "lib/wallets";
 
 import { buildAndSignBridgeOutTxn } from "../express/expressOrderUtils";
@@ -9,7 +10,7 @@ import { buildAndSignBridgeOutTxn } from "../express/expressOrderUtils";
 type TxnParams = {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
-  signer: WalletSigner;
+  signer: WalletSigner | ISigner;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
   account: string;

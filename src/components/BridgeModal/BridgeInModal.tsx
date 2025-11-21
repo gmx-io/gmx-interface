@@ -22,7 +22,7 @@ import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "s
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
-import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
+import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -73,10 +73,9 @@ export function BridgeInModal({
   const glvOrGm = isGlv ? "GLV" : "GM";
   const { address: account } = useAccount();
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest({
+  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalances({
     chainId,
     srcChainId,
-    account,
     tokenAddress: glvOrMarketAddress,
     enabled: isVisible,
   });

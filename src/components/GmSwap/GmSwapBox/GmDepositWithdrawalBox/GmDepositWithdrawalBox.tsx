@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo } from "react";
-import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
 import { isSourceChain } from "config/multichain";
@@ -21,8 +20,8 @@ import {
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvTokenData,
-  selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsIsCrossChainMarket,
+  selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketAndTradeTokensData,
   selectPoolsDetailsMarketInfo,
@@ -73,7 +72,7 @@ import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { useMultichainMarketTokenBalancesRequest } from "components/GmxAccountModal/hooks";
+import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
 import { useBestGmPoolAddressForGlv } from "components/MarketStats/hooks/useBestGmPoolForGlv";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
@@ -98,7 +97,6 @@ import { useUpdateTokens } from "./useUpdateTokens";
 export function GmSwapBoxDepositWithdrawal() {
   const { shouldDisableValidationForTesting } = useSettings();
   const { chainId, srcChainId } = useChainId();
-  const { address: account } = useAccount();
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
@@ -142,10 +140,9 @@ export function GmSwapBoxDepositWithdrawal() {
   const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalancesRequest({
+  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalances({
     chainId,
     srcChainId,
-    account,
     tokenAddress: selectedGlvOrMarketAddress,
     enabled: Boolean(selectedGlvOrMarketAddress),
   });
