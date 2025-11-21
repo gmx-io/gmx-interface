@@ -8,8 +8,8 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
 import { contractFetcher } from "lib/contracts";
+import { getGmxGraphClient } from "lib/indexers/clients";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
-import { getGmxGraphClient } from "lib/subgraph/clients";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 

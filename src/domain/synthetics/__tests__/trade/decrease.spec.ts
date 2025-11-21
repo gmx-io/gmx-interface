@@ -168,6 +168,7 @@ const position: PositionInfoLoaded = {
   hasLowCollateral: false,
   leverage: BigInt("0x3bc5"),
   leverageWithPnl: BigInt("0x3bc5"),
+  leverageWithoutPnl: BigInt("0x3bc5"),
   pnl: BigInt("0x12ab5bbd6ddb44211959c57e00"),
   pnlPercentage: BigInt("0x205f"),
   pnlAfterFees: BigInt("0x0c0c028ad300f9cb4b1449a799"),

@@ -1,5 +1,5 @@
 import { HIGH_EXTERNAL_SWAP_FEES_BPS } from "config/externalSwaps";
-import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS, HIGH_POSITION_IMPACT_BPS } from "config/factors";
+import { HIGH_COLLATERAL_IMPACT_BPS, HIGH_SWAP_IMPACT_BPS } from "config/factors";
 import { bigMath } from "sdk/utils/bigmath";
 
 import type { FeeItem } from "../../fees";
@@ -15,14 +15,6 @@ export function getIsHighCollateralImpact(collateralNetPriceImpact?: FeeItem) {
 export function getIsHighSwapImpact(swapPriceImpact?: FeeItem) {
   return Boolean(
     swapPriceImpact && swapPriceImpact.deltaUsd < 0 && bigMath.abs(swapPriceImpact.bps) > HIGH_SWAP_IMPACT_BPS
-  );
-}
-
-export function getIsHighPositionImpact(positionNetPriceImpact?: FeeItem) {
-  return Boolean(
-    positionNetPriceImpact &&
-      positionNetPriceImpact.deltaUsd < 0 &&
-      bigMath.abs(positionNetPriceImpact.bps) > HIGH_POSITION_IMPACT_BPS
   );
 }
 

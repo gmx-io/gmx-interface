@@ -7,7 +7,6 @@ export const chainlinkClient = createClient(ETH_MAINNET, "chainLink");
 
 export const arbitrumGraphClient = createClient(ARBITRUM, "stats");
 export const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
-export const nissohGraphClient = createClient(ARBITRUM, "nissohVault");
 
 export const avalancheGraphClient = createClient(AVALANCHE, "stats");
 export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
@@ -79,7 +78,7 @@ export function getGmxGraphClient(chainId: number) {
     return avalancheGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
     return null;
-  } else if (chainId === BOTANIX) {
+  } else if (chainId === BOTANIX || chainId === ARBITRUM_SEPOLIA) {
     return null;
   }
 
@@ -93,7 +92,7 @@ export function getReferralsGraphClient(chainId) {
     return avalancheReferralsGraphClient;
   } else if (chainId === AVALANCHE_FUJI) {
     return avalancheFujiReferralsGraphClient;
-  } else if (chainId === BOTANIX) {
+  } else if (chainId === BOTANIX || chainId === ARBITRUM_SEPOLIA) {
     return null;
   }
   throw new Error(`Unsupported chain ${chainId}`);

@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
@@ -10,6 +10,7 @@ import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpen
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -18,6 +19,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExpressOrdersEnabled,
+  selectGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
   selectSettingsWarningDotVisible,
   selectShowDebugValues,
@@ -51,10 +53,11 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
-import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
+import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
+import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -65,6 +68,7 @@ import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
 import {
   calculateDisplayDecimals,
+  expandDecimals,
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
@@ -81,12 +85,14 @@ import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER } from "sdk/configs/express";
+import { getToken, isUsdBasedStableToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
@@ -101,6 +107,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
+import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
@@ -198,7 +205,17 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     numberOfParts,
     setNumberOfParts,
     setDuration,
+    limitPriceWarningHidden,
+    setLimitPriceWarningHidden,
   } = useSelector(selectTradeboxState);
+
+  const isTwapModeAvailable = useMemo(
+    () =>
+      availableTradeModes.some((mode) =>
+        Array.isArray(mode) ? mode.some((nestedMode) => nestedMode === TradeMode.Twap) : mode === TradeMode.Twap
+      ),
+    [availableTradeModes]
+  );
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -219,6 +236,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fees = useSelector(selectTradeboxFees);
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
+  const gasPaymentTokenData = useSelector(selectGasPaymentToken);
+  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const { subaccount } = useSelector(selectSubaccountState);
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
@@ -235,7 +254,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
-    positionNetPriceImpact: fees?.positionNetPriceImpact,
     swapPriceImpact: fees?.swapPriceImpact,
     swapProfitFee: fees?.swapProfitFee,
     executionFeeUsd: executionFee?.feeUsd,
@@ -244,6 +262,20 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     tradeFlags,
     payUsd: fromUsd,
   });
+
+  const twapRecommendation = getTwapRecommendation(
+    isIncrease
+      ? {
+          enabled: isPosition && !isSwap && !isTwap && isTwapModeAvailable,
+          sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+          priceImpactPrecise: fees?.increasePositionPriceImpact?.precisePercentage,
+        }
+      : {
+          enabled: isPosition && isTrigger && !isTwap && isTwapModeAvailable,
+          sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+          priceImpactPrecise: fees?.decreasePositionPriceImpact?.precisePercentage,
+        }
+  );
 
   const { showHighLeverageWarning, dismissHighLeverageWarning } = useShowHighLeverageWarning();
 
@@ -293,16 +325,66 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
+  const { gasPaymentTokenAmountForMax, isGasPaymentTokenAmountForMaxApproximate } = useMemo(() => {
+    if (!expressOrdersEnabled) {
+      return {};
+    }
+    if (
+      submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined &&
+      // Submit button state may store previous gas payment token address, so we need to check if it matches the current gas payment token address
+      submitButtonState.expressParams.gasPaymentParams.gasPaymentTokenAddress === gasPaymentTokenAddress
+    ) {
+      return {
+        gasPaymentTokenAmountForMax: submitButtonState.expressParams.gasPaymentParams.gasPaymentTokenAmount,
+        isGasPaymentTokenAmountForMaxApproximate: false,
+      };
+    }
+    if (executionFee && gasPaymentTokenData) {
+      const gasPaymentTokenAmountForMax = convertToTokenAmount(
+        executionFee.feeUsd,
+        gasPaymentTokenData.decimals,
+        gasPaymentTokenData.prices.maxPrice
+      )!;
+      return {
+        gasPaymentTokenAmountForMax,
+        isGasPaymentTokenAmountForMaxApproximate: true,
+      };
+    }
+    const gasPaymentToken = getToken(chainId, gasPaymentTokenAddress);
+    if (isUsdBasedStableToken(gasPaymentToken)) {
+      const gasPaymentTokenAmountForMax = expandDecimals(
+        EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER,
+        gasPaymentToken.decimals
+      );
+      return {
+        gasPaymentTokenAmountForMax,
+        isGasPaymentTokenAmountForMaxApproximate: true,
+      };
+    }
+    return {};
+  }, [
+    expressOrdersEnabled,
+    submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount,
+    submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAddress,
+    gasPaymentTokenAddress,
+    executionFee,
+    gasPaymentTokenData,
+    chainId,
+  ]);
+
   const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken,
     nativeToken,
     fromTokenAmount,
     fromTokenInputValue,
     minResidualAmount: getMinResidualGasPaymentTokenAmount({
-      expressParams: submitButtonState.expressParams,
+      gasPaymentToken: gasPaymentTokenData,
+      gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
       payTokenAddress: fromTokenAddress,
+      applyBuffer: !isGasPaymentTokenAmountForMaxApproximate,
     }),
-    isLoading: submitButtonState.isExpressLoading,
+    isLoading:
+      expressOrdersEnabled && (submitButtonState.isExpressLoading || gasPaymentTokenAmountForMax === undefined),
   });
 
   const onMaxClick = useCallback(() => {
@@ -473,6 +555,20 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       tradeMode,
       tradeType,
     ]
+  );
+
+  useEffect(
+    function gasPaymentTokenChangedEffect() {
+      const handleGasPaymentTokenChanged = () => {
+        setFromTokenInputValue("", true);
+      };
+      window.addEventListener("gasPaymentTokenChanged", handleGasPaymentTokenChanged);
+
+      return () => {
+        window.removeEventListener("gasPaymentTokenChanged", handleGasPaymentTokenChanged);
+      };
+    },
+    [setFromTokenInputValue]
   );
 
   const onSwitchTokens = useCallback(() => {
@@ -1001,11 +1097,27 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
             </div>
 
+            {twapRecommendation && (
+              <ColorfulBanner color="blue" icon={InfoCircleIcon}>
+                <div className="flex flex-col gap-8">
+                  <span>
+                    <span
+                      className="cursor-pointer font-medium text-blue-300"
+                      onClick={() => onSelectTradeMode(TradeMode.Twap)}
+                    >
+                      <Trans>Use a TWAP order</Trans>
+                    </span>{" "}
+                    <Trans> for lower net price impact.</Trans>
+                  </span>
+                </div>
+              </ColorfulBanner>
+            )}
+
             {showSectionBetweenInputsAndButton && (
               <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
-                {isSwap && isLimit && !isTwap && (
-                  <AlertInfoCard key="showHasBetterOpenFeesAndNetFeesWarning">
+                {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+                  <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
                     <Trans>
                       The actual execution price may differ from the set limit price due to fees and price impact. This
                       ensures that you receive at least the minimum receive amount.
@@ -1101,8 +1213,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {priceImpactWarningState.shouldShowWarning && (
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
-                  collateralImpact={fees?.collateralNetPriceImpact}
-                  positionImpact={fees?.positionNetPriceImpact}
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}

@@ -56,9 +56,11 @@ export function GmListItem({
   glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
   glvTokensApyData,
+  apyLoading,
   isFavorite,
   onFavoriteClick,
   performance,
+  performanceLoading,
   performanceSnapshots,
 }: {
   token: ProgressiveTokenData;
@@ -67,8 +69,10 @@ export function GmListItem({
   glvTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   glvTokensApyData: MarketTokensAPRData | undefined;
+  apyLoading: boolean;
   isFavorite: boolean | undefined;
   onFavoriteClick: ((address: string) => void) | undefined;
+  performanceLoading: boolean;
   performance: PerformanceData | undefined;
   performanceSnapshots: PerformanceSnapshotsData | undefined;
 }) {
@@ -214,7 +218,7 @@ export function GmListItem({
             value={
               marketPerformance
                 ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
-                : "..."
+                : "N/A"
             }
             valueClassName={marketPerformance ? "numbers" : undefined}
           />
@@ -226,6 +230,16 @@ export function GmListItem({
       </div>
     );
   }
+
+  const performanceValue = marketPerformance
+    ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
+    : "N/A";
+
+  const apyValue = apy ? (
+    <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+  ) : (
+    "N/A"
+  );
 
   return (
     <TableTrActionable key={token.address} className="cursor-pointer" onClick={handleItemClick}>
@@ -290,18 +304,12 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[11%]">
-        {apy ? (
-          <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
-        ) : (
-          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
-        )}
+        {!apyLoading ? apyValue : <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />}
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
-        {marketPerformance ? (
-          <div className="numbers">
-            {formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })}
-          </div>
+        {!performanceLoading ? (
+          <div className="numbers">{performanceValue}</div>
         ) : (
           <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
         )}

@@ -28,7 +28,9 @@ export function GlvList({
   marketsTokensIncentiveAprData,
   glvTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  apyLoading,
   performance,
+  performanceLoading,
   performanceSnapshots,
 }: Props) {
   const glvsInfo = useSelector(selectGlvInfo);
@@ -56,9 +58,11 @@ export function GlvList({
         marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
         marketsTokensLidoAprData={marketsTokensLidoAprData}
         glvTokensApyData={glvTokensApyData}
+        apyLoading={apyLoading}
         isFavorite={undefined}
         onFavoriteClick={undefined}
         performance={performance}
+        performanceLoading={performanceLoading}
         performanceSnapshots={performanceSnapshots}
       />
     ));
