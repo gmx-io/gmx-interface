@@ -58,8 +58,14 @@ export default function ClaimableAmounts() {
     account,
   });
 
+  const onClaimSuccess = useCallback(() => {
+    onClaimed(selectedDistributionIds);
+    setSelectedDistributionIds([]);
+  }, [onClaimed, selectedDistributionIds]);
+
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
     selectedDistributionIds,
+    onSuccess: onClaimSuccess,
   });
 
   const claimAmounts = useCallback(async () => {
@@ -78,8 +84,6 @@ export default function ClaimableAmounts() {
         account,
         callback: claimFundsTransactionCallback,
       });
-      onClaimed(selectedDistributionIds);
-      setSelectedDistributionIds([]);
     } finally {
       setIsClaiming(false);
     }
@@ -87,7 +91,6 @@ export default function ClaimableAmounts() {
     signer,
     account,
     chainId,
-    onClaimed,
     claimFundsTransactionCallback,
     claimableAmountsDataByDistributionId,
     selectedDistributionIds,

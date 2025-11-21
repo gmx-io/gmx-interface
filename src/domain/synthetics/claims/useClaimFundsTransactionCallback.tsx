@@ -9,8 +9,8 @@ import { getDistributionTitle } from "components/UserIncentiveDistribution/utils
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-export function useClaimFundsTransactionCallback(data: { selectedDistributionIds: string[] }) {
-  const { selectedDistributionIds } = data;
+export function useClaimFundsTransactionCallback(data: { selectedDistributionIds: string[]; onSuccess: () => void }) {
+  const { selectedDistributionIds, onSuccess } = data;
 
   return useCallback(
     async (event: TxnEvent<WalletTxnCtx>) => {
@@ -54,10 +54,11 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
               </div>
             </div>
           );
+          onSuccess();
 
           return;
       }
     },
-    [selectedDistributionIds]
+    [selectedDistributionIds, onSuccess]
   );
 }
