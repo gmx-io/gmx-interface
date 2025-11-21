@@ -17,6 +17,7 @@ import {
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
 import type { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvAndGmMarketsInfoData, MarketsInfoData } from "domain/synthetics/markets";
 import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
@@ -109,7 +110,12 @@ export const useGmSwapSubmitState = ({
     shortTokenUsd = 0n,
   } = amounts ?? {};
 
-  const { isSubmitting, onSubmit } = useLpTransactions({
+  const {
+    isSubmitting,
+    onSubmit,
+    error: txnError,
+    isLoading,
+  } = useLpTransactions({
     shouldDisableValidation,
     technicalFees,
   });
@@ -152,7 +158,13 @@ export const useGmSwapSubmitState = ({
     marketToken: marketToken,
   });
 
-  const error = commonError || swapError;
+  let error = commonError || swapError;
+
+  if (txnError) {
+    if (txnError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+      error = t`Insufficient gas payment token balance`;
+    }
+  }
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove({
     routerAddress,
@@ -229,7 +241,7 @@ export const useGmSwapSubmitState = ({
       };
     }
 
-    if (!technicalFees) {
+    if (!technicalFees || isLoading) {
       return {
         text: (
           <>
@@ -262,5 +274,6 @@ export const useGmSwapSubmitState = ({
     swapErrorDescription,
     approve,
     operation,
+    isLoading,
   ]);
 };

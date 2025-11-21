@@ -7051,6 +7051,10 @@ msgstr "テイクプロフィットをキャンセル"
 msgid "Top PnL ($)"
 msgstr "トップPnL ($)"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient gas payment token balance"
+msgstr "ガス支払いトークンの残高不足"
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr "無効なアドレスです。有効なEthereumアドレスを入力してください"

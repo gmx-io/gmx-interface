@@ -7051,6 +7051,10 @@ msgstr ""
 msgid "Top PnL ($)"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient gas payment token balance"
+msgstr ""
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr ""

@@ -26,6 +26,7 @@ import {
   selectChainId,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { GlvBuyTask, GmBuyTask } from "domain/multichain/progress/GmOrGlvBuyProgress";
@@ -70,6 +71,8 @@ export const useDepositTransactions = ({
   technicalFees,
 }: Pick<UseLpTransactionProps, "shouldDisableValidation" | "technicalFees">): {
   onCreateDeposit: () => Promise<void>;
+  isLoading: boolean;
+  error: Error | undefined;
 } => {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -200,12 +203,24 @@ export const useDepositTransactions = ({
     };
   }, [rawParams, technicalFees, isDeposit, paySource]);
 
+  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gasPaymentTokenAsCollateralAmount = useMemo((): bigint | undefined => {
+    if (longTokenAddress === gasPaymentTokenAddress) {
+      return longTokenAmount;
+    }
+    if (shortTokenAddress === gasPaymentTokenAddress) {
+      return shortTokenAmount;
+    }
+    return undefined;
+  }, [longTokenAddress, shortTokenAddress, longTokenAmount, shortTokenAmount, gasPaymentTokenAddress]);
+
   const multichainDepositExpressTxnParams = useMultichainDepositExpressTxnParams({
     transferRequests,
     paySource,
     params,
     isGlv,
     isDeposit,
+    gasPaymentTokenAsCollateralAmount,
   });
 
   const getDepositMetricData = useCallback(() => {
@@ -268,7 +283,7 @@ export const useDepositTransactions = ({
   const { setMultichainTransferProgress } = useSyntheticsEvents();
 
   const onCreateGmDeposit = useCallback(
-    async function onCreateGmDeposit() {
+    async function onCreateGmDeposit(): Promise<void> {
       if (!isDeposit) {
         return Promise.reject();
       }
@@ -328,7 +343,7 @@ export const useDepositTransactions = ({
             throw toastCustomOrStargateError(chainId, error);
           });
       } else if (paySource === "gmxAccount") {
-        const expressTxnParams = await multichainDepositExpressTxnParams.promise;
+        const expressTxnParams = multichainDepositExpressTxnParams.data;
         if (!expressTxnParams) {
           throw new Error("Express txn params are not set");
         }
@@ -394,7 +409,7 @@ export const useDepositTransactions = ({
   );
 
   const onCreateGlvDeposit = useCallback(
-    async function onCreateGlvDeposit() {
+    async function onCreateGlvDeposit(): Promise<void> {
       if (!isDeposit) {
         return Promise.reject();
       }
@@ -541,5 +556,7 @@ export const useDepositTransactions = ({
 
   return {
     onCreateDeposit,
+    isLoading: !multichainDepositExpressTxnParams.error && !multichainDepositExpressTxnParams.data,
+    error: multichainDepositExpressTxnParams.error,
   };
 };

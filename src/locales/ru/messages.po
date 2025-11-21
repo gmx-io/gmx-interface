@@ -7051,6 +7051,10 @@ msgstr "Отменить тейк-профит"
 msgid "Top PnL ($)"
 msgstr "Топ PnL ($)"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient gas payment token balance"
+msgstr "Недостаточный баланс токена оплаты газа"
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr "Неверный адрес. Убедитесь, что вы ввели действительный адрес Ethereum"

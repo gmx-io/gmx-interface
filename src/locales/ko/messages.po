@@ -7051,6 +7051,10 @@ msgstr "테이크 프로핏 취소"
 msgid "Top PnL ($)"
 msgstr "상위 PnL ($)"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient gas payment token balance"
+msgstr "가스 결제 토큰 잔액 부족"
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr "유효하지 않은 주소. 유효한 이더리움 주소를 입력했는지 확인하세요"

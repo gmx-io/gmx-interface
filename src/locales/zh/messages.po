@@ -7051,6 +7051,10 @@ msgstr "取消止盈"
 msgid "Top PnL ($)"
 msgstr "最高盈亏 ($)"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient gas payment token balance"
+msgstr "Gas支付代币余额不足"
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr "无效地址。请确保您输入了有效的以太坊地址"

@@ -181,6 +181,13 @@ function getBatchExpressEstimatorParams({
   };
 }
 
+class ExpressEstimationError extends Error {
+  name = "ExpressEstimationError";
+}
+export class ExpressEstimationInsufficientGasPaymentTokenBalanceError extends ExpressEstimationError {
+  name = "ExpressEstimationInsufficientGasPaymentTokenBalanceError";
+}
+
 export async function estimateExpressParams({
   chainId,
   isGmxAccount,
@@ -190,6 +197,7 @@ export async function estimateExpressParams({
   estimationMethod = "approximate",
   requireValidations = true,
   subaccount: rawSubaccount,
+  throwOnInvalid = false,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
@@ -199,8 +207,12 @@ export async function estimateExpressParams({
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
+  throwOnInvalid?: boolean;
 }): Promise<ExpressTxnParams | undefined> {
   if (requireValidations && !transactionParams.isValid) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("transactionParams is invalid");
+    }
     return undefined;
   }
 
@@ -266,6 +278,9 @@ export async function estimateExpressParams({
   });
 
   if (!baseRelayFeeParams) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("baseRelayFeeParams is undefined");
+    }
     return undefined;
   }
 
@@ -308,6 +323,9 @@ export async function estimateExpressParams({
       !transactionParams.isValid
     ) {
       // In this cases simulation will fail
+      if (throwOnInvalid) {
+        throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError("estimateExpressParams");
+      }
       return undefined;
     }
 
@@ -326,6 +344,10 @@ export async function estimateExpressParams({
       });
 
       metrics.pushError(extendedError, "expressOrders.estimateGas");
+
+      if (throwOnInvalid) {
+        throw new ExpressEstimationError("gas limit estimation failed");
+      }
 
       return undefined;
     }
@@ -367,6 +389,9 @@ export async function estimateExpressParams({
   });
 
   if (!finalRelayFeeParams) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("finalRelayFeeParams is undefined");
+    }
     return undefined;
   }
 
@@ -389,6 +414,9 @@ export async function estimateExpressParams({
   });
 
   if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations, isSponsoredCall })) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("express params are invalid");
+    }
     return undefined;
   }
 

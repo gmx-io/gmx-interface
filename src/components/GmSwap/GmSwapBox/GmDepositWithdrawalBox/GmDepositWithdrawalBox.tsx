@@ -90,7 +90,7 @@ import { useGmWarningState } from "../useGmWarningState";
 import { InfoRows } from "./InfoRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
-import { useTechnicalFeesAsyncResult } from "./useTechnicalFeesAsyncResult";
+import { useTechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 
@@ -200,7 +200,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const amounts = useSelector(selectDepositWithdrawalAmounts);
 
-  const technicalFeesAsyncResult = useTechnicalFeesAsyncResult();
+  const technicalFees = useTechnicalFees();
 
   const { logicalFees } = useDepositWithdrawalFees({
     amounts,
@@ -211,7 +211,7 @@ export function GmSwapBoxDepositWithdrawal() {
     tokensData: tradeTokensData,
     glvInfo,
     isMarketTokenDeposit,
-    technicalFees: technicalFeesAsyncResult.data,
+    technicalFees,
     srcChainId,
   });
 
@@ -222,7 +222,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const submitState = useGmSwapSubmitState({
     routerAddress,
     logicalFees,
-    technicalFees: technicalFeesAsyncResult.data,
+    technicalFees,
     shouldDisableValidation: shouldDisableValidationForTesting,
     tokensData: tradeTokensData,
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
@@ -652,7 +652,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
         <InfoRows
           fees={logicalFees}
-          isLoading={firstTokenAmount === undefined ? false : !technicalFeesAsyncResult.data}
+          isLoading={firstTokenAmount === undefined ? false : !technicalFees}
           isDeposit={isDeposit}
         />
       </form>

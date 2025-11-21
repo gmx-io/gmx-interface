@@ -18,8 +18,6 @@ export const useDepositWithdrawalFees = ({
   gasPrice,
   isDeposit,
   tokensData,
-  // glvInfo,
-  // isMarketTokenDeposit,
   technicalFees,
   srcChainId,
 }: {

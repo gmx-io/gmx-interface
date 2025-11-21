@@ -62,7 +62,11 @@ import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdraw
 export const useWithdrawalTransactions = ({
   technicalFees,
   shouldDisableValidation,
-}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation">) => {
+}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation">): {
+  onCreateWithdrawal: () => Promise<void>;
+  isLoading: boolean;
+  error: Error | undefined;
+} => {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { setPendingWithdrawal } = useSyntheticsEvents();
@@ -217,7 +221,7 @@ export const useWithdrawalTransactions = ({
   const { setMultichainTransferProgress } = useSyntheticsEvents();
 
   const onCreateGlvWithdrawal = useCallback(
-    async function onCreateWithdrawal() {
+    async function onCreateWithdrawal(): Promise<void> {
       if (!isWithdrawal) {
         return Promise.reject();
       }
@@ -274,7 +278,7 @@ export const useWithdrawalTransactions = ({
             throw toastCustomOrStargateError(chainId, error);
           });
       } else if (paySource === "gmxAccount") {
-        const expressTxnParams = await multichainWithdrawalExpressTxnParams.promise;
+        const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!expressTxnParams) {
           throw new Error("Express txn params are not set");
         }
@@ -327,7 +331,7 @@ export const useWithdrawalTransactions = ({
       glvTokenAmount,
       technicalFees,
       setMultichainTransferProgress,
-      multichainWithdrawalExpressTxnParams.promise,
+      multichainWithdrawalExpressTxnParams.data,
       setPendingTxns,
       setPendingWithdrawal,
       blockTimestampData,
@@ -335,7 +339,7 @@ export const useWithdrawalTransactions = ({
   );
 
   const onCreateGmWithdrawal = useCallback(
-    async function onCreateWithdrawal() {
+    async function onCreateWithdrawal(): Promise<void> {
       if (!isWithdrawal) {
         return Promise.reject();
       }
@@ -421,7 +425,9 @@ export const useWithdrawalTransactions = ({
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
-        .catch((error) => toastCustomOrStargateError(chainId, error));
+        .catch((error) => {
+          toastCustomOrStargateError(chainId, error);
+        });
     },
     [
       isWithdrawal,
@@ -455,5 +461,7 @@ export const useWithdrawalTransactions = ({
 
   return {
     onCreateWithdrawal,
+    isLoading: multichainWithdrawalExpressTxnParams.isLoading,
+    error: multichainWithdrawalExpressTxnParams.error,
   };
 };

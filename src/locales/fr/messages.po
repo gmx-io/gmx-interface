@@ -7051,6 +7051,10 @@ msgstr "Annuler le take profit"
 msgid "Top PnL ($)"
 msgstr "PnL max. ($)"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient gas payment token balance"
+msgstr "Solde insuffisant du jeton de paiement de gaz"
+
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
 msgstr "Adresse invalide. Veuillez vous assurer d'avoir entré une adresse Ethereum valide"

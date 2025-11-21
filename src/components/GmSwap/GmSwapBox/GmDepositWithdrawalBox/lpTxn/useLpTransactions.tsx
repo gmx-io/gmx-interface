@@ -28,17 +28,27 @@ export const useLpTransactions = (
 ): {
   onSubmit: () => void;
   isSubmitting: boolean;
+  error: Error | undefined;
+  isLoading: boolean;
 } => {
   const operation = useSelector(selectPoolsDetailsOperation);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { onCreateDeposit } = useDepositTransactions({
+  const {
+    onCreateDeposit,
+    error: depositError,
+    isLoading: isDepositLoading,
+  } = useDepositTransactions({
     shouldDisableValidation: props.shouldDisableValidation,
     technicalFees: props.technicalFees,
   });
 
-  const { onCreateWithdrawal } = useWithdrawalTransactions({
+  const {
+    onCreateWithdrawal,
+    error: withdrawalError,
+    isLoading: isWithdrawalLoading,
+  } = useWithdrawalTransactions({
     shouldDisableValidation: props.shouldDisableValidation,
     technicalFees: props.technicalFees,
   });
@@ -68,5 +78,7 @@ export const useLpTransactions = (
   return {
     onSubmit,
     isSubmitting,
+    error: operation === Operation.Deposit ? depositError : withdrawalError,
+    isLoading: operation === Operation.Deposit ? isDepositLoading : isWithdrawalLoading,
   };
 };

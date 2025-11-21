@@ -25,19 +25,40 @@ import {
   RawCreateWithdrawalParams,
 } from "domain/synthetics/markets";
 import { estimatePureLpActionExecutionFee } from "domain/synthetics/markets/feeEstimation/estimatePureLpActionExecutionFee";
-import { estimateSourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
-import { estimateSourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
-import { estimateSourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
-import { estimateSourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
+import {
+  estimateSourceChainDepositFees,
+  SourceChainDepositFees,
+} from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
+import {
+  estimateSourceChainGlvDepositFees,
+  SourceChainGlvDepositFees,
+} from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
+import {
+  estimateSourceChainGlvWithdrawalFees,
+  SourceChainGlvWithdrawalFees,
+} from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
+import {
+  estimateSourceChainWithdrawalFees,
+  SourceChainWithdrawalFees,
+} from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { useChainId } from "lib/chains";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { MARKETS } from "sdk/configs/markets";
+import { ExecutionFee } from "sdk/types/fees";
 import { WithdrawalAmounts } from "sdk/types/trade";
 
 import { Operation } from "../types";
 
-export function useTechnicalFeesAsyncResult() {
+export type TechnicalFees =
+  | ExecutionFee
+  | SourceChainGlvDepositFees
+  | SourceChainDepositFees
+  | SourceChainWithdrawalFees
+  | SourceChainGlvWithdrawalFees
+  | undefined;
+
+export function useTechnicalFees(): TechnicalFees {
   const { chainId, srcChainId } = useChainId();
 
   const operation = useSelector(selectPoolsDetailsOperation);
@@ -64,7 +85,7 @@ export function useTechnicalFeesAsyncResult() {
   const rawParams = useSelector(selectPoolsDetailsParams);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
 
-  return useThrottledAsync(
+  const technicalFeesAsyncResult = useThrottledAsync(
     async (p) => {
       if (p.params.paySource === "gmxAccount" || p.params.paySource === "settlementChain") {
         if (p.params.operation === Operation.Deposit) {
@@ -240,4 +261,6 @@ export function useTechnicalFeesAsyncResult() {
       forceRecalculate,
     }
   );
+
+  return technicalFeesAsyncResult.data;
 }
