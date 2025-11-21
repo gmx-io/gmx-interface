@@ -5,14 +5,12 @@ import { helperToast } from "lib/helperToast";
 import { TxnEvent, TxnEventName, WalletTxnCtx } from "lib/transactions";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+import { getDistributionTitle } from "components/UserIncentiveDistribution/utils";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-export function useClaimFundsTransactionCallback(data: {
-  tokens: string[];
-  claimableTokenTitles: Record<string, string>;
-}) {
-  const { tokens, claimableTokenTitles } = data;
+export function useClaimFundsTransactionCallback(data: { selectedDistributionIds: string[]; onSuccess: () => void }) {
+  const { selectedDistributionIds, onSuccess } = data;
 
   return useCallback(
     async (event: TxnEvent<WalletTxnCtx>) => {
@@ -49,17 +47,18 @@ export function useClaimFundsTransactionCallback(data: {
                 <Trans>Funds claimed</Trans>
               </div>
               <div>
-                <Trans>Claimed {tokens.map((token) => claimableTokenTitles[token]).join(", ")} successfully.</Trans>
-              </div>
-              <div>
-                <Trans>Hold the GLV tokens for three months to be eligible for the $500,000 incentive program.</Trans>
+                <Trans>
+                  {selectedDistributionIds.map(getDistributionTitle).join(", ")} distributions have been claimed
+                  successfully.
+                </Trans>
               </div>
             </div>
           );
+          onSuccess();
 
           return;
       }
     },
-    [tokens, claimableTokenTitles]
+    [selectedDistributionIds, onSuccess]
   );
 }
