@@ -3,14 +3,16 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 
 import { type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
+import { getGlvOrMarketAddress } from "domain/synthetics/markets";
+import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo, GmPaySource } from "domain/synthetics/markets/types";
 import { convertToUsd } from "domain/tokens";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { USD_DECIMALS } from "sdk/configs/factors";
-import { getTokenBySymbol } from "sdk/configs/tokens";
-import { getMarketPoolName } from "sdk/utils/markets";
+import { getToken } from "sdk/configs/tokens";
+import { getMarketIndexTokenSymbol, getMarketPoolName } from "sdk/utils/markets";
 
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -52,9 +54,73 @@ export function MultichainMarketTokenSelector({
   hideTabs,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [activeFilter, setActiveFilter] = useState<"all" | AnyChainId | 0>("all");
+  const [activeFilter, setActiveFilter] = useState<"all" | "wallet" | "gmxAccount">("all");
 
-  const NETWORKS_FILTER = useMemo<RegularOption<"all" | AnyChainId | 0>[]>(() => {
+  const { tokens, hasGmxAccountBalance, hasWalletBalance } = useMemo((): {
+    tokens: DisplayToken[];
+    hasGmxAccountBalance: boolean;
+    hasWalletBalance: boolean;
+  } => {
+    let tokens: DisplayToken[] = EMPTY_ARRAY;
+    let hasGmxAccountBalance = false;
+    let hasWalletBalance = false;
+
+    if (!marketInfo) {
+      return { tokens, hasGmxAccountBalance, hasWalletBalance };
+    }
+
+    tokens = Object.entries(tokenBalancesData)
+      .filter(([tokenChainIdRaw, balance]) => {
+        const tokenChainId = parseInt(tokenChainIdRaw);
+
+        if (balance === 0n) {
+          return false;
+        }
+
+        if (tokenChainId === 0) {
+          hasGmxAccountBalance = true;
+        } else {
+          hasWalletBalance = true;
+        }
+
+        if (activeFilter === "all") {
+          return true;
+        }
+
+        if (activeFilter === "gmxAccount" && tokenChainId === 0) {
+          return true;
+        }
+
+        if (activeFilter === "wallet" && tokenChainId !== 0) {
+          return true;
+        }
+
+        return false;
+      })
+      .map(([chainId, balance]: [string, bigint | undefined]): DisplayToken | undefined => {
+        if (balance === undefined) {
+          return undefined;
+        }
+        const symbol = isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol;
+        const indexTokenAddress = isGlvInfo(marketInfo) ? marketInfo.glvToken.address : marketInfo.indexToken.address;
+
+        return {
+          address: getGlvOrMarketAddress(marketInfo),
+          balance,
+          balanceUsd: convertToUsd(balance, PLATFORM_TOKEN_DECIMALS, marketTokenPrice) ?? 0n,
+          chainId: parseInt(chainId) as AnyChainId | 0,
+          symbol,
+          indexTokenAddress,
+          longTokenAddress: marketInfo.longToken.address,
+          shortTokenAddress: marketInfo.shortToken.address,
+        };
+      })
+      .filter((token): token is DisplayToken => token !== undefined);
+
+    return { tokens, hasGmxAccountBalance, hasWalletBalance };
+  }, [activeFilter, marketInfo, marketTokenPrice, tokenBalancesData]);
+
+  const NETWORKS_FILTER = useMemo<RegularOption<"all" | "wallet" | "gmxAccount">[]>(() => {
     const wildCard: RegularOption<"all"> = {
       value: "all",
       label: (
@@ -64,8 +130,8 @@ export function MultichainMarketTokenSelector({
       ),
     };
 
-    const settlementChain: RegularOption<ContractsChainId> = {
-      value: chainId,
+    const wallet: RegularOption<"wallet"> = {
+      value: "wallet",
       label: (
         <span className="whitespace-nowrap">
           <Trans>Wallet Balance</Trans>
@@ -73,8 +139,8 @@ export function MultichainMarketTokenSelector({
       ),
     };
 
-    const gmxAccount: RegularOption<0> = {
-      value: 0,
+    const gmxAccount: RegularOption<"gmxAccount"> = {
+      value: "gmxAccount",
       label: (
         <span className="whitespace-nowrap">
           <Trans>GMX Account Balance</Trans>
@@ -82,8 +148,8 @@ export function MultichainMarketTokenSelector({
       ),
     };
 
-    return [wildCard, settlementChain, gmxAccount];
-  }, [chainId]);
+    return [wildCard, wallet, gmxAccount];
+  }, []);
 
   const onSelectTokenAddress = (tokenChainId: AnyChainId | 0) => {
     setIsModalVisible(false);
@@ -102,13 +168,13 @@ export function MultichainMarketTokenSelector({
         setIsVisible={setIsModalVisible}
         label={label}
         headerContent={
-          hideTabs ? null : (
+          hideTabs || hasGmxAccountBalance !== hasWalletBalance ? null : (
             <div className="pb-12">
               <ButtonRowScrollFadeContainer>
                 <Tabs
                   options={NETWORKS_FILTER}
                   selectedValue={activeFilter}
-                  onChange={(value) => setActiveFilter(value)}
+                  onChange={setActiveFilter}
                   type="inline"
                   qa="network-filter"
                   regularOptionClassname="shrink-0"
@@ -119,15 +185,7 @@ export function MultichainMarketTokenSelector({
         }
         contentPadding={false}
       >
-        <AvailableToTradeTokenList
-          onSelectTokenAddress={onSelectTokenAddress}
-          chainId={chainId}
-          srcChainId={srcChainId}
-          marketInfo={marketInfo}
-          tokenBalancesData={tokenBalancesData}
-          marketTokenPrice={marketTokenPrice}
-          activeFilter={activeFilter}
-        />
+        <AvailableToTradeTokenList chainId={chainId} onSelectTokenAddress={onSelectTokenAddress} tokens={tokens} />
       </SlideModal>
       <div
         data-qa={"market-token-selector"}
@@ -153,6 +211,7 @@ export function MultichainMarketTokenSelector({
 }
 
 type DisplayToken = {
+  address: string;
   symbol: string;
   indexTokenAddress: string | undefined;
   longTokenAddress: string;
@@ -164,66 +223,16 @@ type DisplayToken = {
 
 function AvailableToTradeTokenList({
   chainId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  srcChainId,
   onSelectTokenAddress,
-  marketInfo,
-  tokenBalancesData,
-  marketTokenPrice,
-  activeFilter,
+  tokens,
 }: {
   chainId: ContractsChainId;
-  srcChainId: SourceChainId | undefined;
   onSelectTokenAddress: (tokenChainId: AnyChainId | 0) => void;
-  marketInfo: GlvOrMarketInfo | undefined;
-  tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>>;
-  marketTokenPrice: bigint | undefined;
-  activeFilter: AnyChainId | 0 | "all";
+  tokens: DisplayToken[];
 }) {
-  const { gmStubToken, glvStubToken } = useMemo(() => {
-    return {
-      gmStubToken: getTokenBySymbol(chainId, "GM"),
-      glvStubToken: getTokenBySymbol(chainId, "GLV"),
-    };
-  }, [chainId]);
-
-  const sortedFilteredTokens = useMemo((): DisplayToken[] => {
-    if (!marketInfo) return EMPTY_ARRAY;
-    return Object.entries(tokenBalancesData)
-      .filter(([chainId]) => {
-        if (activeFilter === "all") {
-          return true;
-        }
-        return parseInt(chainId) === activeFilter;
-      })
-      .map(([chainId, balance]: [string, bigint | undefined]): DisplayToken | undefined => {
-        if (balance === undefined) {
-          return undefined;
-        }
-        const symbol = isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol;
-        const indexTokenAddress = isGlvInfo(marketInfo) ? marketInfo.glvToken.address : marketInfo.indexToken.address;
-
-        return {
-          balance,
-          balanceUsd:
-            convertToUsd(
-              balance,
-              isGlvInfo(marketInfo) ? glvStubToken.decimals : gmStubToken.decimals,
-              marketTokenPrice
-            ) ?? 0n,
-          chainId: parseInt(chainId) as AnyChainId | 0,
-          symbol,
-          indexTokenAddress,
-          longTokenAddress: marketInfo.longToken.address,
-          shortTokenAddress: marketInfo.shortToken.address,
-        };
-      })
-      .filter((token): token is DisplayToken => token !== undefined);
-  }, [activeFilter, glvStubToken.decimals, gmStubToken.decimals, marketInfo, marketTokenPrice, tokenBalancesData]);
-
   return (
     <div>
-      {sortedFilteredTokens.map((token) => {
+      {tokens.map((token) => {
         return (
           <div
             key={token.chainId ?? "settlement-chain"}
@@ -233,29 +242,34 @@ function AvailableToTradeTokenList({
             <div className="text-body-large flex items-center gap-8">
               <TokenIcon symbol={token.symbol} className="size-40" displaySize={40} chainIdBadge={token.chainId} />
 
-              {marketInfo && (
+              <div>
                 <div>
-                  <div>
-                    {isGlvInfo(marketInfo) ? (
-                      marketInfo.name
-                    ) : (
-                      <>
-                        {marketInfo?.indexToken.symbol}
-                        <span className="text-slate-100">/USD</span>
-                      </>
-                    )}
-                  </div>
-                  <div className="text-body-small text-slate-100">[{getMarketPoolName(marketInfo)}]</div>
+                  {isGlvAddress(chainId, token.address) ? (
+                    "GLV"
+                  ) : (
+                    <>
+                      {getMarketIndexTokenSymbol(chainId, token.address)}
+                      <span className="text-slate-100">/USD</span>
+                    </>
+                  )}
                 </div>
-              )}
+                <div className="text-body-small text-slate-100">
+                  [
+                  {getMarketPoolName({
+                    longToken: getToken(chainId, token.longTokenAddress),
+                    shortToken: getToken(chainId, token.shortTokenAddress),
+                  })}
+                  ]
+                </div>
+              </div>
             </div>
             <div className="text-right">
               <div className="text-body-large">
                 {token.balance > 0n &&
                   formatBalanceAmount(
                     token.balance,
-                    isGlvInfo(marketInfo) ? glvStubToken.decimals : gmStubToken.decimals,
-                    isGlvInfo(marketInfo) ? "GLV" : "GM",
+                    PLATFORM_TOKEN_DECIMALS,
+                    isGlvAddress(chainId, token.address) ? "GLV" : "GM",
                     {
                       isStable: false,
                     }
