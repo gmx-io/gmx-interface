@@ -3,7 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import partition from "lodash/partition";
-import { forwardRef, Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
@@ -15,13 +15,14 @@ import { getChainName } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import type { ModalProps } from "components/Modal/Modal";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 
 import SolanaNetworkItem from "./SolanaNetworkItem";
-import ModalWithPortal from "../Modal/ModalWithPortal";
 
 import "./NetworkDropdown.scss";
 
@@ -167,11 +168,6 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
     </>
   );
 }
-
-/**
- * This is needed because Fragment logs errors when passed props
- */
-const NoopWrapper = forwardRef<HTMLDivElement, { children: React.ReactNode }>(({ children }) => <>{children}</>);
 
 function NetworkMenuItem({
   network,

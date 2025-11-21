@@ -1,8 +1,9 @@
 import cx from "classnames";
-import { Fragment, ReactNode } from "react";
+import { ReactNode } from "react";
 
 import { useBreakpoints } from "lib/useBreakpoints";
 
+import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueInput } from "components/ValueInput/ValueInput";
@@ -106,7 +107,7 @@ export function SettingButton({
     }
   };
 
-  const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : Fragment;
+  const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : NoopWrapper;
 
   return (
     <Wrapper content={disabledTooltip} variant="none">
