@@ -7,11 +7,7 @@ import { usePublicClient } from "wagmi";
 import { getClaimTermsAcceptedKey } from "config/localStorage";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  ClaimableAmountsData,
-  DistributionConfiguration,
-  GLP_DISTRIBUTION_ID,
-} from "domain/synthetics/claims/useUserClaimableAmounts";
+import { ClaimableAmountsData, DistributionConfiguration } from "domain/synthetics/claims/useUserClaimableAmounts";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
@@ -47,7 +43,7 @@ export function ClaimableDistribution({
   const publicClient = usePublicClient();
 
   const [claimTermsAcceptedSignature, setClaimTermsAcceptedSignature] = useLocalStorage(
-    claimTerms ? getClaimTermsAcceptedKey(chainId, account, GLP_DISTRIBUTION_ID, claimTerms) : distributionId,
+    claimTerms ? getClaimTermsAcceptedKey(chainId, account, distributionId, claimTerms) : distributionId,
     ""
   );
 
