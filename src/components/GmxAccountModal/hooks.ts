@@ -281,6 +281,7 @@ export function useMultichainMarketTokenBalances({
   });
 
   const multichainMarketTokensBalances = useSelector(selectPoolsDetailsMultichainMarketTokensBalancesResult);
+
   const isBalanceDataLoading = multichainMarketTokensBalances?.isLoading ?? true;
   const tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>> = useMemo(() => {
     if (!tokenAddress) {
@@ -291,11 +292,16 @@ export function useMultichainMarketTokenBalances({
       [0]: marketTokensData?.[tokenAddress].gmxAccountBalance,
     };
 
-    for (const sourceChainIdRaw in multichainMarketTokensBalances) {
-      if (multichainMarketTokensBalances[sourceChainIdRaw]?.[tokenAddress] === undefined) {
+    if (!multichainMarketTokensBalances) {
+      return balances;
+    }
+
+    for (const sourceChainIdRaw in multichainMarketTokensBalances.tokenBalances) {
+      const balance = multichainMarketTokensBalances.tokenBalances[sourceChainIdRaw]?.[tokenAddress];
+      if (balance === undefined) {
         continue;
       }
-      balances[sourceChainIdRaw] = multichainMarketTokensBalances[sourceChainIdRaw][tokenAddress];
+      balances[sourceChainIdRaw] = balance;
     }
 
     return balances;

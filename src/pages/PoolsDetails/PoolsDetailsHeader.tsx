@@ -68,11 +68,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
 
   const { isMobile, isTablet } = useBreakpoints();
 
-  const {
-    totalBalance,
-    tokenBalancesData: tokenBalancesData,
-    isBalanceDataLoading,
-  } = useMultichainMarketTokenBalances({
+  const { totalBalance, tokenBalancesData, isBalanceDataLoading } = useMultichainMarketTokenBalances({
     chainId,
     srcChainId,
     tokenAddress: marketToken?.address,
@@ -92,6 +88,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
         balance,
       }));
   }, [tokenBalancesData]);
+  // console.log({ tokenBalancesData, isBalanceDataLoading });
 
   const marketBalanceUsd = convertToUsd(totalBalance, marketToken?.decimals, marketPrice);
 
