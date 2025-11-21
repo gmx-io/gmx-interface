@@ -1,6 +1,11 @@
 import { msg } from "@lingui/macro";
 import { useMemo } from "react";
 
+import {
+  selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsOperation,
+  selectPoolsDetailsSetOperation,
+} from "context/PoolsDetailsContext/selectors";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -40,14 +45,13 @@ const operationClassNames = {
 };
 
 type Props = {
-  selectedGlvOrMarketAddress?: string;
-  operation: Operation;
-  onSetOperation: (operation: Operation) => void;
   isInCurtain?: boolean;
 };
 
-export function GmSwapBoxHeader(p: Props) {
-  const { selectedGlvOrMarketAddress, operation, onSetOperation, isInCurtain } = p;
+export function GmSwapBoxHeader({ isInCurtain }: Props) {
+  const selectedGlvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
+  const operation = useSelector(selectPoolsDetailsOperation);
+  const setOperation = useSelector(selectPoolsDetailsSetOperation);
 
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const shiftAvailableMarkets = useSelector(selectShiftAvailableMarkets);
@@ -91,7 +95,7 @@ export function GmSwapBoxHeader(p: Props) {
     <Tabs
       options={availableOperationsTabsOptions}
       selectedValue={operation}
-      onChange={onSetOperation}
+      onChange={setOperation}
       regularOptionClassname={isInCurtain ? "grow !rounded-t-0" : "grow"}
       className={!isInCurtain ? "bg-slate-900" : undefined}
     />

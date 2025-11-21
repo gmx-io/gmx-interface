@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import type { MarketsInfoData } from "types/markets";
+import { SwapPricingType } from "types/orders";
 
 import { mockMarketsInfoData as createMockMarketsInfoData, mockTokensData, usdToToken } from "../../../test/mock";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "../swapStats";
@@ -300,7 +301,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     expect(result).toBeUndefined();
@@ -315,7 +316,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     expect(result).toBeDefined();
@@ -339,7 +340,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     expect(result).toBeDefined();
@@ -363,7 +364,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: true,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     expect(result).toBeDefined();
@@ -379,7 +380,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     expect(result).toBeUndefined();
@@ -394,7 +395,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     const resultWithoutImpact = getSwapPathStats({
@@ -405,7 +406,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: false,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     if (!resultWithImpact || !resultWithoutImpact) {
@@ -424,7 +425,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     expect(result).toBeDefined();
@@ -455,7 +456,7 @@ describe("getSwapPathStats", () => {
       usdIn: 100n * dollar,
       shouldUnwrapNativeToken: false,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     expect(result).toBeUndefined();

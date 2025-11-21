@@ -14,6 +14,7 @@ import GlvReader from "./GlvReader";
 import GlvRouter from "./GlvRouter";
 import GmxMigrator from "./GmxMigrator";
 import GovToken from "./GovToken";
+import IStargate from "./IStargate";
 import LayerZeroProvider from "./LayerZeroProvider";
 import MintableBaseToken from "./MintableBaseToken";
 import Multicall from "./Multicall";
@@ -132,6 +133,7 @@ export const abis = {
   VenusVToken,
   Vester,
   WETH,
+  IStargate,
 } satisfies Record<string, any>;
 
 export type AbiId = keyof typeof abis;

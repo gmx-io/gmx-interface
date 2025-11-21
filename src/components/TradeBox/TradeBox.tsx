@@ -112,7 +112,7 @@ import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
-import { useMultichainTokensRequest } from "../GmxAccountModal/hooks";
+import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
@@ -149,7 +149,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
-  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens } = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;
@@ -787,7 +787,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 srcChainId={srcChainId}
                 label={t`Pay`}
                 tokenAddress={fromTokenAddress}
-                isGmxAccount={isFromTokenGmxAccount}
+                payChainId={isFromTokenGmxAccount ? 0 : undefined}
                 onSelectTokenAddress={handleSelectFromTokenAddress}
                 extendedSortSequence={sortedLongAndShortTokens}
                 qa="collateral-selector"

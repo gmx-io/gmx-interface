@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
+import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -65,6 +66,8 @@ import { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
+
+import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
 
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
@@ -141,6 +144,7 @@ export type SyntheticsState = {
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
+  poolsDetails: PoolsDetailsState | undefined;
   features: FeaturesSettings | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
   sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
@@ -194,11 +198,20 @@ export function SyntheticsStateContextProvider({
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");
 
+  const multichainMarketTokensBalancesResult = useMultichainMarketTokensBalancesRequest({
+    chainId,
+    account,
+    enabled: pageType === "pools",
+  });
+
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: tokensDataResult.tokensData,
-    chainId: chainId,
-    account: account,
+    chainId,
+    account,
+    srcChainId,
+    multichainMarketTokensBalances:
+      pageType === "pools" ? multichainMarketTokensBalancesResult.tokenBalances : undefined,
   });
 
   const { marketTokensData: depositMarketTokensData, progressiveMarketTokensData: progressiveDepositMarketTokensData } =
@@ -207,6 +220,8 @@ export function SyntheticsStateContextProvider({
       account,
       glvData: glvInfo.glvData,
       withGlv: shouldFetchGlvMarkets,
+      multichainMarketTokensBalances:
+        pageType === "pools" ? multichainMarketTokensBalancesResult.tokenBalances : undefined,
     });
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
@@ -288,6 +303,15 @@ export function SyntheticsStateContextProvider({
   const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
+
+  const poolsDetailsState = usePoolsDetailsState({
+    enabled: pageType === "pools",
+    glvData: glvInfo.glvData,
+    withGlv: shouldFetchGlvMarkets,
+    marketsInfoData: marketsInfo.marketsInfoData,
+    account,
+    multichainMarketTokensBalancesResult,
+  });
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
@@ -375,6 +399,7 @@ export function SyntheticsStateContextProvider({
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
+      poolsDetails: poolsDetailsState,
       features,
       sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
@@ -419,6 +444,7 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionsConstants,
     positionsInfoData,
+    poolsDetailsState,
     progressiveDepositMarketTokensData,
     setKeepLeverage,
     settings,

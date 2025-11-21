@@ -34,6 +34,7 @@ import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { ISigner } from "lib/transactions/iSigner";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
@@ -180,6 +181,13 @@ function getBatchExpressEstimatorParams({
   };
 }
 
+class ExpressEstimationError extends Error {
+  name = "ExpressEstimationError";
+}
+export class ExpressEstimationInsufficientGasPaymentTokenBalanceError extends ExpressEstimationError {
+  name = "ExpressEstimationInsufficientGasPaymentTokenBalanceError";
+}
+
 export async function estimateExpressParams({
   chainId,
   isGmxAccount,
@@ -189,6 +197,7 @@ export async function estimateExpressParams({
   estimationMethod = "approximate",
   requireValidations = true,
   subaccount: rawSubaccount,
+  throwOnInvalid = false,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
@@ -198,8 +207,12 @@ export async function estimateExpressParams({
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
+  throwOnInvalid?: boolean;
 }): Promise<ExpressTxnParams | undefined> {
   if (requireValidations && !transactionParams.isValid) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("transactionParams is invalid");
+    }
     return undefined;
   }
 
@@ -213,7 +226,6 @@ export async function estimateExpressParams({
     gasPrice,
     isSponsoredCall,
     bufferBps,
-    marketsInfoData,
     gasPaymentAllowanceData,
   } = globalExpressParams;
 
@@ -266,6 +278,9 @@ export async function estimateExpressParams({
   });
 
   if (!baseRelayFeeParams) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("baseRelayFeeParams is undefined");
+    }
     return undefined;
   }
 
@@ -276,7 +291,6 @@ export async function estimateExpressParams({
     feeParams: baseRelayFeeParams.feeParams,
     externalCalls: baseRelayFeeParams.externalCalls,
     tokenPermits,
-    marketsInfoData,
   });
 
   const baseTxn = await expressTransactionBuilder({
@@ -309,6 +323,9 @@ export async function estimateExpressParams({
       !transactionParams.isValid
     ) {
       // In this cases simulation will fail
+      if (throwOnInvalid) {
+        throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError("estimateExpressParams");
+      }
       return undefined;
     }
 
@@ -327,6 +344,10 @@ export async function estimateExpressParams({
       });
 
       metrics.pushError(extendedError, "expressOrders.estimateGas");
+
+      if (throwOnInvalid) {
+        throw new ExpressEstimationError("gas limit estimation failed");
+      }
 
       return undefined;
     }
@@ -368,6 +389,9 @@ export async function estimateExpressParams({
   });
 
   if (!finalRelayFeeParams) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("finalRelayFeeParams is undefined");
+    }
     return undefined;
   }
 
@@ -378,7 +402,6 @@ export async function estimateExpressParams({
     feeParams: finalRelayFeeParams.feeParams,
     externalCalls: finalRelayFeeParams.externalCalls,
     tokenPermits,
-    marketsInfoData,
   });
 
   const gasPaymentValidations = getGasPaymentValidations({
@@ -391,6 +414,9 @@ export async function estimateExpressParams({
   });
 
   if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations, isSponsoredCall })) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("express params are invalid");
+    }
     return undefined;
   }
 
@@ -763,6 +789,7 @@ export function getOrderRelayRouterAddress(
   return getContract(chainId, contractName);
 }
 
+// TODO MLTCH: move to bridge out utils
 export async function buildAndSignBridgeOutTxn({
   chainId,
   srcChainId,
@@ -778,7 +805,7 @@ export async function buildAndSignBridgeOutTxn({
   srcChainId: SourceChainId;
   relayParamsPayload: RawRelayParamsPayload;
   params: BridgeOutParams;
-  signer: WalletSigner | undefined;
+  signer: WalletSigner | ISigner | undefined;
   account: string;
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
@@ -836,7 +863,7 @@ async function signBridgeOutPayload({
   chainId,
   srcChainId,
 }: {
-  signer: WalletSigner;
+  signer: WalletSigner | ISigner;
   relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;
