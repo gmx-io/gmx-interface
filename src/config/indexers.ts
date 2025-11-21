@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ETH_MAINNET } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, SOURCE_ETHEREUM_MAINNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
 
@@ -44,7 +44,7 @@ const INDEXER_URLS = {
   },
 
   common: {
-    [ETH_MAINNET]: {
+    [SOURCE_ETHEREUM_MAINNET]: {
       chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
     },
   },
@@ -64,8 +64,8 @@ export function getIndexerUrl(
     }
   }
 
-  if (chainId === ETH_MAINNET) {
-    return INDEXER_URLS.common[ETH_MAINNET]?.[indexer];
+  if (chainId === SOURCE_ETHEREUM_MAINNET) {
+    return INDEXER_URLS.common[SOURCE_ETHEREUM_MAINNET]?.[indexer];
   }
 
   return INDEXER_URLS?.[chainId]?.[indexer];

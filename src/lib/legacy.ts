@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import mapKeys from "lodash/mapKeys";
 import { useEnsName } from "wagmi";
 
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
+import { CHAIN_ID, SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -765,7 +765,7 @@ export function shortenAddress(address, length, padStart = 1) {
 export function useENS(address) {
   const { data } = useEnsName({
     address,
-    chainId: ETH_MAINNET,
+    chainId: SOURCE_ETHEREUM_MAINNET,
   });
   const ensName = data || undefined;
 

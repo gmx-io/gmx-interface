@@ -14,10 +14,12 @@ import {
   getAlchemyBaseMainnetWsUrl,
   getAlchemyBotanixWsUrl,
   getAlchemyBscMainnetWsUrl,
+  getAlchemyEthereumMainnetWsUrl,
   getAlchemyOptimismSepoliaWsUrl,
   getAlchemySepoliaWsUrl,
   getExpressRpcUrl,
   getFallbackRpcUrl,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -112,6 +114,14 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
   if (chainId === SOURCE_BSC_MAINNET) {
     return new ethers.WebSocketProvider(
       getAlchemyBscMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
+      network,
+      { staticNetwork: network }
+    );
+  }
+
+  if (chainId === SOURCE_ETHEREUM_MAINNET) {
+    return new ethers.WebSocketProvider(
+      getAlchemyEthereumMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
       network,
       { staticNetwork: network }
     );
