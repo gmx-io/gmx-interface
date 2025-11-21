@@ -271,21 +271,18 @@ export function ParseTransactionPage() {
         <h1 className="text-body-large mb-24">
           Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>
         </h1>
-        <Table className="mb-12 ">
-          <tbody>
-            <ParseTransactionEvents
-              events={primaryEvents}
-              keyPrefix="primary"
-              network={network}
-              chainId={chainId}
-              tokensData={tokensData}
-              marketsInfoData={marketsInfoData}
-              glvData={glvData}
-              marketTokensData={marketTokensData}
-              copyToClipboard={copyToClipboard}
-            />
-          </tbody>
-        </Table>
+
+        <ParseTransactionEvents
+          events={primaryEvents}
+          keyPrefix="primary"
+          network={network}
+          chainId={chainId}
+          tokensData={tokensData}
+          marketsInfoData={marketsInfoData}
+          glvData={glvData}
+          marketTokensData={marketTokensData}
+          copyToClipboard={copyToClipboard}
+        />
         {orderLifecycleEntries.length ? (
           <div className="mt-32">
             <h2 className="text-body-large mb-12">Order lifecycle</h2>
@@ -320,21 +317,17 @@ export function ParseTransactionPage() {
                               {lifecycleTarget.hash}
                             </ExternalLink>
                           </div>
-                          <Table className="mb-12 ">
-                            <tbody>
-                              <ParseTransactionEvents
-                                events={lifecycleEvents}
-                                keyPrefix={`orderLifecycle-${entry.orderKey}`}
-                                network={network}
-                                chainId={chainId}
-                                tokensData={tokensData}
-                                marketsInfoData={marketsInfoData}
-                                glvData={glvData}
-                                marketTokensData={marketTokensData}
-                                copyToClipboard={copyToClipboard}
-                              />
-                            </tbody>
-                          </Table>
+                          <ParseTransactionEvents
+                            events={lifecycleEvents}
+                            keyPrefix={`orderLifecycle-${entry.orderKey}`}
+                            network={network}
+                            chainId={chainId}
+                            tokensData={tokensData}
+                            marketsInfoData={marketsInfoData}
+                            glvData={glvData}
+                            marketTokensData={marketTokensData}
+                            copyToClipboard={copyToClipboard}
+                          />
                         </>
                       )
                     ) : (
@@ -686,51 +679,53 @@ const ParseTransactionEvents = ({
   }
 
   return events.map((event) => (
-    <Fragment key={`${keyPrefix}-${event.key}`}>
-      <TableTr>
-        <TableTd className="w-[25rem] font-medium">Name</TableTd>
-        <TableTd className="group !text-left" colSpan={2}>
-          <div className="flex flex-row items-center justify-between gap-8">
-            <span className="flex flex-row items-center gap-8 whitespace-nowrap">
-              {event.log}: {event.name}
-              <CopyButton value={event.name} />
-            </span>
-            <span>LogIndex: {event.logIndex}</span>
-          </div>
-        </TableTd>
-      </TableTr>
-      <TableTr>
-        <TableTd className="w-[25rem] font-medium">Topics</TableTd>
-        <TableTd className="group !text-left" colSpan={3}>
-          {event.topics.length > 0
-            ? event.topics.map((t) => (
-                <div className="mb-4 flex flex-row items-center gap-8" key={`${keyPrefix}-${event.name}-${t}`}>
-                  {t}
-                  <CopyButton value={t} />
-                </div>
-              ))
-            : "No topics"}
-        </TableTd>
-      </TableTr>
-      {event.values.map((value) => (
-        <LogEntryComponent
-          name={event.name}
-          key={`${keyPrefix}-${event.key}-${value.item}`}
-          {...value}
-          network={network}
-          chainId={chainId}
-          entries={event.values}
-          tokensData={tokensData}
-          marketsInfoData={marketsInfoData}
-          glvData={glvData}
-          marketTokensData={marketTokensData}
-          copyToClipboard={copyToClipboard}
-          allEvents={events}
-        />
-      ))}
-      <TableTr>
-        <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
-      </TableTr>
-    </Fragment>
+    <Table key={`${keyPrefix}-${event.key}`} className="mt-[24px] overflow-hidden !rounded-8 first:mt-0">
+      <tbody>
+        <TableTr>
+          <TableTd className="w-[25rem] font-medium">Name</TableTd>
+          <TableTd className="group !text-left" colSpan={2}>
+            <div className="flex flex-row items-center justify-between gap-8">
+              <span className="flex flex-row items-center gap-8 whitespace-nowrap">
+                {event.log}: {event.name}
+                <CopyButton value={event.name} />
+              </span>
+              <span>LogIndex: {event.logIndex}</span>
+            </div>
+          </TableTd>
+        </TableTr>
+        <TableTr>
+          <TableTd className="w-[25rem] font-medium">Topics</TableTd>
+          <TableTd className="group !text-left" colSpan={3}>
+            {event.topics.length > 0
+              ? event.topics.map((t) => (
+                  <div className="mb-4 flex flex-row items-center gap-8" key={`${keyPrefix}-${event.name}-${t}`}>
+                    {t}
+                    <CopyButton value={t} />
+                  </div>
+                ))
+              : "No topics"}
+          </TableTd>
+        </TableTr>
+        {event.values.map((value) => (
+          <LogEntryComponent
+            name={event.name}
+            key={`${keyPrefix}-${event.key}-${value.item}`}
+            {...value}
+            network={network}
+            chainId={chainId}
+            entries={event.values}
+            tokensData={tokensData}
+            marketsInfoData={marketsInfoData}
+            glvData={glvData}
+            marketTokensData={marketTokensData}
+            copyToClipboard={copyToClipboard}
+            allEvents={events}
+          />
+        ))}
+        <TableTr>
+          <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
+        </TableTr>
+      </tbody>
+    </Table>
   ));
 };
