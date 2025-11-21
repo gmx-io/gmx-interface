@@ -12,6 +12,9 @@ import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployme
 import { address as usdcPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
 import { address as usdcPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDC.json";
 import { address as usdtPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDT.json";
+import { address as ethPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolNative.json";
+import { address as usdcPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolUSDC.json";
+import { address as usdtPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
@@ -34,6 +37,7 @@ import {
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
@@ -125,6 +129,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdcPoolBsc,
       symbol: "USDC",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      decimals: 6,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: usdcPoolEthereum,
+      symbol: "USDC",
+    },
   },
   ["USDT"]: {
     [ARBITRUM]: {
@@ -148,6 +159,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdtPoolBsc,
       symbol: "USDT",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      decimals: 6,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: usdtPoolEthereum,
+      symbol: "USDT",
+    },
   },
   ["ETH"]: {
     [ARBITRUM]: {
@@ -162,6 +180,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       decimals: 18,
       chainId: SOURCE_BASE_MAINNET,
       stargate: ethPoolBase,
+      symbol: "ETH",
+    },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: ethPoolEthereum,
       symbol: "ETH",
     },
   },
@@ -328,6 +353,7 @@ export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChain
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
+  [SOURCE_ETHEREUM_MAINNET]: ARBITRUM,
   [SOURCE_BASE_MAINNET]: ARBITRUM,
   [SOURCE_BSC_MAINNET]: ARBITRUM,
   [BOTANIX]: ARBITRUM,
@@ -371,6 +397,7 @@ export function getMappedTokenId(
 }
 
 export const MULTICALLS_MAP: Record<SourceChainId, string> = {
+  [SOURCE_ETHEREUM_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
@@ -404,6 +431,7 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [SOURCE_SEPOLIA]: 40161,
   [SOURCE_OPTIMISM_SEPOLIA]: 40232,
   [ARBITRUM]: 30110,
+  [SOURCE_ETHEREUM_MAINNET]: 30101,
   [SOURCE_BASE_MAINNET]: 30184,
   [AVALANCHE]: 30106,
   [SOURCE_BSC_MAINNET]: 30102,

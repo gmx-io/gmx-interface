@@ -6,6 +6,7 @@ import {
   avalancheFuji,
   base,
   Chain,
+  mainnet,
   optimismSepolia,
   sepolia,
   bsc,
@@ -18,8 +19,8 @@ import {
   AVALANCHE_FUJI,
   ARBITRUM,
   BOTANIX,
-  ETH_MAINNET,
   ARBITRUM_SEPOLIA,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SOURCE_BASE_MAINNET,
@@ -30,8 +31,8 @@ export {
   AVALANCHE_FUJI,
   ARBITRUM,
   BOTANIX,
-  ETH_MAINNET,
   ARBITRUM_SEPOLIA,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SOURCE_BASE_MAINNET,
@@ -51,6 +52,7 @@ export type ContractsChainIdProduction = Exclude<ContractsChainId, typeof AVALAN
 
 export type SettlementChainId = typeof ARBITRUM_SEPOLIA | typeof ARBITRUM | typeof AVALANCHE;
 export type SourceChainId =
+  | typeof SOURCE_ETHEREUM_MAINNET
   | typeof SOURCE_OPTIMISM_SEPOLIA
   | typeof SOURCE_SEPOLIA
   | typeof SOURCE_BASE_MAINNET
@@ -66,7 +68,8 @@ export type ChainName =
   | "Sepolia"
   | "Botanix"
   | "Base"
-  | "BNB";
+  | "BNB"
+  | "Ethereum";
 
 export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [ARBITRUM]: "Arbitrum",
@@ -74,6 +77,7 @@ export const CHAIN_NAMES_MAP: Record<AnyChainId, ChainName> = {
   [AVALANCHE_FUJI]: "Avalanche Fuji",
   [BOTANIX]: "Botanix",
   [ARBITRUM_SEPOLIA]: "Arbitrum Sepolia",
+  [SOURCE_ETHEREUM_MAINNET]: "Ethereum",
   [SOURCE_OPTIMISM_SEPOLIA]: "Optimism Sepolia",
   [SOURCE_SEPOLIA]: "Sepolia",
   [SOURCE_BASE_MAINNET]: "Base",
@@ -197,6 +201,7 @@ const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [BOTANIX]: botanix,
+  [SOURCE_ETHEREUM_MAINNET]: mainnet,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
   [SOURCE_BASE_MAINNET]: base,

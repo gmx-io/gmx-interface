@@ -1,4 +1,4 @@
-import { arbitrumSepolia, base } from "viem/chains";
+import { arbitrumSepolia, base, mainnet } from "viem/chains";
 
 import {
   AnyChainId,
@@ -8,6 +8,7 @@ import {
   AVALANCHE_FUJI,
   BOTANIX,
   getExplorerUrl,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -20,6 +21,7 @@ export const CHAIN_ID_TO_TX_URL_BUILDER: Record<
 > = {
   [ARBITRUM]: (txId: string) => `${getExplorerUrl(ARBITRUM)}tx/${txId}`,
   [AVALANCHE]: (txId: string) => `${getExplorerUrl(AVALANCHE)}tx/${txId}`,
+  [SOURCE_ETHEREUM_MAINNET]: (txId: string) => `${getExplorerUrl(SOURCE_ETHEREUM_MAINNET)}tx/${txId}`,
   [SOURCE_BASE_MAINNET]: (txId: string) => `${getExplorerUrl(SOURCE_BASE_MAINNET)}tx/${txId}`,
   [SOURCE_OPTIMISM_SEPOLIA]: (txId: string) => `${getExplorerUrl(SOURCE_OPTIMISM_SEPOLIA)}tx/${txId}`,
   [ARBITRUM_SEPOLIA]: (txId: string) => `${getExplorerUrl(ARBITRUM_SEPOLIA)}tx/${txId}`,
@@ -36,6 +38,7 @@ export const CHAIN_ID_TO_EXPLORER_NAME: Record<AnyChainId, string> = {
   [AVALANCHE]: "Snowtrace",
   [AVALANCHE_FUJI]: "Snowtrace",
   [ARBITRUM_SEPOLIA]: arbitrumSepolia.blockExplorers.default.name,
+  [SOURCE_ETHEREUM_MAINNET]: mainnet.blockExplorers.default.name,
   [SOURCE_BASE_MAINNET]: base.blockExplorers.default.name,
   [SOURCE_OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
   [SOURCE_SEPOLIA]: "Sepolia Etherscan",
