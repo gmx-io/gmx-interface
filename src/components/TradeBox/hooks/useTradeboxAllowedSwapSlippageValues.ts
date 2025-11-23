@@ -21,7 +21,7 @@ export function useTradeboxAllowedSwapSlippageValues() {
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
-  const { isLimit } = tradeFlags;
+  const { isLimit, isPosition } = tradeFlags;
 
   const setDefaultAllowedSwapSlippageBps = useSelector(selectTradeboxSetDefaultAllowedSwapSlippageBps);
   const setSelectedAllowedSwapSlippageBps = useSelector(selectTradeboxSetSelectedAllowedSwapSlippageBps);
@@ -51,7 +51,12 @@ export function useTradeboxAllowedSwapSlippageValues() {
    * Set initial value
    */
   useEffect(() => {
-    if (isLimit && defaultAllowedSwapSlippageBps === undefined && selectedAllowedSwapSlippageBps === undefined) {
+    if (
+      isLimit &&
+      isPosition &&
+      defaultAllowedSwapSlippageBps === undefined &&
+      selectedAllowedSwapSlippageBps === undefined
+    ) {
       const totalSwapImpactBps = swapImpactBps >= 0n ? 0n : bigMath.abs(swapImpactBps);
       let defaultSwapImpactBuffer = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS + totalSwapImpactBps;
 
@@ -61,6 +66,7 @@ export function useTradeboxAllowedSwapSlippageValues() {
   }, [
     defaultAllowedSwapSlippageBps,
     isLimit,
+    isPosition,
     swapImpactBps,
     selectedAllowedSwapSlippageBps,
     setDefaultAllowedSwapSlippageBps,

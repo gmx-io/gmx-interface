@@ -873,7 +873,7 @@ function getSwapRatioText(order: OrderInfo) {
     USD_DECIMALS,
     ratioDecimals,
     true
-  )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
+  )} ${triggerRatio?.smallestToken.symbol} per ${triggerRatio?.largestToken.symbol}`;
 
   const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 
