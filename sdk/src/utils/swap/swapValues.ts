@@ -165,7 +165,7 @@ export function getSwapAmountsByToValue(p: {
   });
 
   const swapStrategy = buildSwapStrategy({
-    amountIn: isLimit ? swapStrategyReverse.amountOut : swapStrategyReverse.amountIn,
+    amountIn: swapStrategyReverse.amountIn,
     tokenIn,
     tokenOut,
     marketsInfoData,
