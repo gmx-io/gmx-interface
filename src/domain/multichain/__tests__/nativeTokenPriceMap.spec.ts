@@ -11,8 +11,8 @@ import {
 } from "sdk/configs/chains";
 import { getNativeToken } from "sdk/configs/tokens";
 
-import { areChainsRelated } from "./areChainsRelated";
-import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
+import { areChainsRelated } from "../areChainsRelated";
+import { NATIVE_TOKEN_PRICE_MAP } from "../nativeTokenPriceMap";
 
 const SOURCE_CHAIN_NATIVE_SYMBOL_MAP: Record<SourceChainId, string> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "ETH",

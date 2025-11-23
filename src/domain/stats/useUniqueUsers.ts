@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { getSubgraphUrl } from "config/subgraph";
+import { getIndexerUrl } from "config/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
@@ -27,7 +27,7 @@ export default function useUniqueUsers() {
     async () => {
       const results = await Promise.all(
         ACTIVE_CHAIN_IDS.map(async (chainId) => {
-          const endpoint = getSubgraphUrl(chainId, "stats");
+          const endpoint = getIndexerUrl(chainId, "stats");
           if (!endpoint) return undefined;
           return await graphqlFetcher<UserStatsData>(endpoint, UNIQUE_USERS_QUERY);
         })

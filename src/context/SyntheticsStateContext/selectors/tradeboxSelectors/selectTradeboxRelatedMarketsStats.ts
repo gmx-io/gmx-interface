@@ -10,13 +10,11 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import {
   MarketStat,
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
@@ -24,7 +22,6 @@ import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets
 export type MarketLiquidityAndFeeStat = {
   isEnoughLiquidity: boolean;
   liquidity: bigint;
-  openFees: bigint | undefined;
 };
 
 export type RelatedMarketsStats = {
@@ -77,33 +74,9 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
         continue;
       }
 
-      const positionFeeBeforeDiscount = getFeeItem(
-        (marketIncreasePositionAmounts.positionFeeUsd + marketIncreasePositionAmounts.feeDiscountUsd) * -1n,
-        marketIncreasePositionAmounts.sizeDeltaUsd
-      );
-
-      const { priceImpactDeltaUsd } = getCappedPositionImpactUsd(
-        relatedMarket,
-        marketIncreasePositionAmounts.sizeDeltaUsd,
-        isLong,
-        true,
-        { shouldCapNegativeImpact: true }
-      );
-
-      const { acceptablePriceDeltaBps } = getAcceptablePriceByPriceImpact({
-        isIncrease: true,
-        isLong,
-        indexPrice: getMarkPrice({ prices: indexToken.prices, isLong, isIncrease: true }),
-        priceImpactDeltaUsd: priceImpactDeltaUsd,
-        sizeDeltaUsd: marketIncreasePositionAmounts.sizeDeltaUsd,
-      });
-
-      const openFees = positionFeeBeforeDiscount!.bps + acceptablePriceDeltaBps;
-
       const availableUsdLiquidityForPosition =
         defaultMarketsEnoughLiquidity[relatedMarket.marketTokenAddress].liquidity;
       result.relatedMarketsPositionStats[relatedMarket.marketTokenAddress] = {
-        openFees,
         liquidity: availableUsdLiquidityForPosition,
         isEnoughLiquidity: availableUsdLiquidityForPosition > increaseSizeUsd,
       };

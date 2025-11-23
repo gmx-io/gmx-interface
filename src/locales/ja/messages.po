@@ -145,6 +145,10 @@ msgstr "ストップロス"
 msgid "Type"
 msgstr "タイプ"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "esGMX Rewards:"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid ""
 msgstr ""
@@ -190,6 +194,10 @@ msgstr "選択された期間におけるプールまたはボールトの年換
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL after fees and net price impact."
 msgstr "手数料およびネット価格影響後の実現PnL。"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Update {orderTypeName} Order"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -578,6 +586,11 @@ msgstr "30日間このメッセージを表示しない"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "in liquidity"
 msgstr "流動性で"
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
@@ -1112,6 +1125,10 @@ msgstr "エクスプレス"
 msgid "Start Earning"
 msgstr "稼ぎ始めましょう"
 
+#: src/components/TVChart/Chart.tsx
+msgid "This simulated depth chart offers a hypothetical orderbook-style view of GMX liquidity—it's not how trades actually execute. Opens always execute at the mark price with zero impact applied, so any shown execution price for opening is purely virtual. The actual net price impact, applied only on closes, sums the displayed open and close impacts but is capped at 0.5%. <0>Read more</0>."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "ポジションの担保が{symbol}であり、初期価値が{indexName}ロングポジションサイズより高いため、担保価値は負のPnLをカバーし、清算価格はありません。"
@@ -1460,10 +1477,6 @@ msgstr "V2 Avalanche Fuji"
 msgid "Order executed"
 msgstr "注文執行済"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High impact on collateral"
-msgstr "担保への高い影響"
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}."
 msgstr "ロングポジションから{indexSymbol}をロングし、{collateralSymbol}担保から{collateralSymbol}をロングします。清算価格は{collateralSymbol}の価格に基づいて変動します。"
@@ -1650,6 +1663,10 @@ msgstr "警告: このポジションは手数料差引後の担保額が低い�
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a  price"
 msgstr "価格を入力"
+
+#: src/components/MarketStats/MarketGraphs.tsx
+msgid "Not enough data available yet"
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Using high leverage increases the risk of liquidation."
@@ -2536,6 +2553,10 @@ msgstr "ストップマーケット - ロング増加"
 msgid "Enter your feedback here."
 msgstr "ここにフィードバックを入力してください。"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "{0}、ガス・トークンを引き出しています。この引き出しにはガスが必要なので、{2}に少なくとも<0>{1}</0>を保持するか<1>設定</1>でガス・トークンを切り替えてください。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "\"資本使用額\"が{0}を超えるポジションのみがランキングされます。"
@@ -2675,11 +2696,6 @@ msgstr "紹介コードが追加できませんでした"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating"
 msgstr "更新中"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "USDCを入金"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -2893,6 +2909,10 @@ msgstr "リファラルコードを入力"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr "ルールを読む"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High Net Price Impact"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Lev."
@@ -3575,11 +3595,6 @@ msgstr "GLVを購入"
 msgid "Failed TWAP Part"
 msgstr "TWAPパートに失敗"
 
-#: src/components/PoolSelector2/PoolSelector2.tsx
-#: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Impact+Fees"
-msgstr "インパクト+手数料"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - Short Dec."
 msgstr "TP - ショート減少"
@@ -4181,10 +4196,6 @@ msgstr "蓄積された価格影響リベート。5日後に請求可能にな�
 msgid "Take Profit / Stop Loss"
 msgstr "テイクプロフィット / ストップロス"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Save {0} in price impact and fees by <0>switching to the {1} pool</0>"
-msgstr "<0>{1}プールに切り替えて</0>価格影響と手数料で{0}を節約"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "{networkName}のアカウントにこの取引を送信するための{0}が十分にありません。<0/><1/><2>{1}を購入または{networkName}に転送</2>"
@@ -4235,6 +4246,11 @@ msgstr "1時間あたりのショートネットレート"
 
 #: src/pages/Earn/EarnDiscoveryPage.tsx
 msgid "Discover GMX Earn"
+msgstr ""
+
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
@@ -4320,10 +4336,6 @@ msgstr "高い許容スリッページを設定しました。手数料を含む
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Create Referral Code"
 msgstr "紹介コード作成"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "High price impact"
-msgstr "高い価格影響"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
@@ -4933,6 +4945,10 @@ msgstr "未実現PnL開始"
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "承認が提出されました! <0>状況を確認する</0>"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "プールGM: {0} の{1} [{2}]での購入可能上限に達しました。購入サイズを減らすか、別のGMトークンを選択するか、GMトークンを別のプールにシフトして再試行してください。"
@@ -5099,6 +5115,11 @@ msgstr "Perpie"
 #: landing/src/pages/Home/SponsorsSection/SponsorsSection.tsx
 msgid "Supported by"
 msgstr "サポート"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Use a TWAP order"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade Confirmations"
@@ -5577,6 +5598,10 @@ msgstr "建玉"
 msgid "Failed to download trade history CSV."
 msgstr "取引履歴CSVのダウンロードに失敗。"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to the {0} pool</0> for potentially lower net price impact"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "市場"
@@ -5629,11 +5654,6 @@ msgstr "NFT、取引、教育イニシアチブを持つGMXコミュニティ"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation Confirmations"
 msgstr "清算確認"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "ガス残高不足、もっとWETHまたはUSDCを入金してください。"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5812,11 +5832,6 @@ msgstr "GLVはGMプール横断の取引手数料（オープン、クローズ�
 msgid "Deposit failed"
 msgstr "入金に失敗しました"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "USDCまたはETHを入金"
-
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
@@ -5862,6 +5877,11 @@ msgstr "入金可能な資産なし"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 Avalanche Fuji"
 msgstr "V1 Avalanche Fuji"
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized Swap Impact"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -6254,6 +6274,11 @@ msgstr "トップポジション"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "プール"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "for lower net price impact."
+msgstr ""
 
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
@@ -7514,11 +7539,6 @@ msgstr "GMX V2割引は各取引で自動適用され、このテーブルに表
 msgid "Share Position"
 msgstr "ポジション共有"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "ガス残高不足、もっとUSDCを入金してください。"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "入金手数料"
@@ -7594,6 +7614,10 @@ msgstr "アドレスがクリップボードにコピーされました。"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "残余担保が{0} USD未満"
+
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "{fromSymbol}の残高不足のため、ガス支払いトークンが {fromSymbol} から {toSymbol} に切り替えられました。"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
@@ -7845,10 +7869,6 @@ msgstr "マーケット注文は...でキャンセル可能"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
-msgstr "{0}、ガス・トークンを引き出しています。この引き出しにはガスが必要なので、{2}に少なくとも<0>{1}</0>を保持するか設定でガス・トークンを切り替えてください。"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"

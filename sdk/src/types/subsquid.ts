@@ -25,6 +25,8 @@ export interface AccountPnlHistoryPointObject {
   cumulativeRealizedPnl: Scalars["BigInt"]["output"];
   /** Field for debug */
   cumulativeRealizedPriceImpact: Scalars["BigInt"]["output"];
+  /** Field for debug */
+  cumulativeRealizedSwapImpact: Scalars["BigInt"]["output"];
   pnl: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedFees: Scalars["BigInt"]["output"];
@@ -32,6 +34,8 @@ export interface AccountPnlHistoryPointObject {
   realizedPnl: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedPriceImpact: Scalars["BigInt"]["output"];
+  /** Field for debug */
+  realizedSwapImpact: Scalars["BigInt"]["output"];
   /** Field for debug */
   startUnrealizedFees: Scalars["BigInt"]["output"];
   /** Field for debug */
@@ -56,6 +60,8 @@ export interface AccountPnlSummaryBucketObject {
   realizedPnlUsd: Scalars["BigInt"]["output"];
   /** Field for debug */
   realizedPriceImpactUsd: Scalars["BigInt"]["output"];
+  /** Field for debug */
+  realizedSwapImpactUsd: Scalars["BigInt"]["output"];
   /** Field for debug */
   startUnrealizedBasePnlUsd: Scalars["BigInt"]["output"];
   /** Field for debug */
@@ -87,6 +93,7 @@ export interface AccountStat {
   realizedFees: Scalars["BigInt"]["output"];
   realizedPnl: Scalars["BigInt"]["output"];
   realizedPriceImpact: Scalars["BigInt"]["output"];
+  realizedSwapImpact: Scalars["BigInt"]["output"];
   sumMaxSize: Scalars["BigInt"]["output"];
   volume: Scalars["BigInt"]["output"];
   wins: Scalars["Int"]["output"];
@@ -172,6 +179,12 @@ export enum AccountStatOrderByInput {
   realizedPriceImpact_DESC = "realizedPriceImpact_DESC",
   realizedPriceImpact_DESC_NULLS_FIRST = "realizedPriceImpact_DESC_NULLS_FIRST",
   realizedPriceImpact_DESC_NULLS_LAST = "realizedPriceImpact_DESC_NULLS_LAST",
+  realizedSwapImpact_ASC = "realizedSwapImpact_ASC",
+  realizedSwapImpact_ASC_NULLS_FIRST = "realizedSwapImpact_ASC_NULLS_FIRST",
+  realizedSwapImpact_ASC_NULLS_LAST = "realizedSwapImpact_ASC_NULLS_LAST",
+  realizedSwapImpact_DESC = "realizedSwapImpact_DESC",
+  realizedSwapImpact_DESC_NULLS_FIRST = "realizedSwapImpact_DESC_NULLS_FIRST",
+  realizedSwapImpact_DESC_NULLS_LAST = "realizedSwapImpact_DESC_NULLS_LAST",
   sumMaxSize_ASC = "sumMaxSize_ASC",
   sumMaxSize_ASC_NULLS_FIRST = "sumMaxSize_ASC_NULLS_FIRST",
   sumMaxSize_ASC_NULLS_LAST = "sumMaxSize_ASC_NULLS_LAST",
@@ -305,6 +318,15 @@ export interface AccountStatWhereInput {
   realizedPriceImpact_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedPriceImpact_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   realizedPriceImpact_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  realizedSwapImpact_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapImpact_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapImpact_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapImpact_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  realizedSwapImpact_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  realizedSwapImpact_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapImpact_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapImpact_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  realizedSwapImpact_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   sumMaxSize_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   sumMaxSize_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   sumMaxSize_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -1015,7 +1037,7 @@ export interface ClaimableCollateral {
   id: Scalars["String"]["output"];
   marketAddress: Scalars["String"]["output"];
   reductionFactor: Scalars["BigInt"]["output"];
-  timeKey: Scalars["String"]["output"];
+  timeKey: Scalars["Int"]["output"];
   tokenAddress: Scalars["String"]["output"];
   value: Scalars["BigInt"]["output"];
 }
@@ -1032,7 +1054,7 @@ export interface ClaimableCollateralGroup {
   factor: Scalars["BigInt"]["output"];
   id: Scalars["String"]["output"];
   marketAddress: Scalars["String"]["output"];
-  timeKey: Scalars["String"]["output"];
+  timeKey: Scalars["Int"]["output"];
   tokenAddress: Scalars["String"]["output"];
 }
 
@@ -1131,23 +1153,15 @@ export interface ClaimableCollateralGroupWhereInput {
   marketAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   marketAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   marketAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_contains?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_eq?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_gt?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_gte?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  timeKey_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   timeKey_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  timeKey_lt?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_lte?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  timeKey_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  timeKey_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   tokenAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
   tokenAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   tokenAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -1353,23 +1367,15 @@ export interface ClaimableCollateralWhereInput {
   reductionFactor_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   reductionFactor_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   reductionFactor_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  timeKey_contains?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_eq?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_gt?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_gte?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  timeKey_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   timeKey_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  timeKey_lt?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_lte?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  timeKey_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timeKey_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  timeKey_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timeKey_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   tokenAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
   tokenAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   tokenAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -4788,6 +4794,7 @@ export interface Order {
   cancelledReasonBytes?: Maybe<Scalars["String"]["output"]>;
   cancelledTxn?: Maybe<Transaction>;
   createdTxn: Transaction;
+  decreasePositionSwapType: Scalars["Int"]["output"];
   executedTxn?: Maybe<Transaction>;
   executionFee: Scalars["BigInt"]["output"];
   frozenReason?: Maybe<Scalars["String"]["output"]>;
@@ -4939,6 +4946,12 @@ export enum OrderOrderByInput {
   createdTxn_transactionIndex_DESC = "createdTxn_transactionIndex_DESC",
   createdTxn_transactionIndex_DESC_NULLS_FIRST = "createdTxn_transactionIndex_DESC_NULLS_FIRST",
   createdTxn_transactionIndex_DESC_NULLS_LAST = "createdTxn_transactionIndex_DESC_NULLS_LAST",
+  decreasePositionSwapType_ASC = "decreasePositionSwapType_ASC",
+  decreasePositionSwapType_ASC_NULLS_FIRST = "decreasePositionSwapType_ASC_NULLS_FIRST",
+  decreasePositionSwapType_ASC_NULLS_LAST = "decreasePositionSwapType_ASC_NULLS_LAST",
+  decreasePositionSwapType_DESC = "decreasePositionSwapType_DESC",
+  decreasePositionSwapType_DESC_NULLS_FIRST = "decreasePositionSwapType_DESC_NULLS_FIRST",
+  decreasePositionSwapType_DESC_NULLS_LAST = "decreasePositionSwapType_DESC_NULLS_LAST",
   executedTxn_blockNumber_ASC = "executedTxn_blockNumber_ASC",
   executedTxn_blockNumber_ASC_NULLS_FIRST = "executedTxn_blockNumber_ASC_NULLS_FIRST",
   executedTxn_blockNumber_ASC_NULLS_LAST = "executedTxn_blockNumber_ASC_NULLS_LAST",
@@ -5203,6 +5216,15 @@ export interface OrderWhereInput {
   cancelledTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
   createdTxn?: InputMaybe<TransactionWhereInput>;
   createdTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  decreasePositionSwapType_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  decreasePositionSwapType_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  decreasePositionSwapType_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   executedTxn?: InputMaybe<TransactionWhereInput>;
   executedTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
   executionFee_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -5484,6 +5506,7 @@ export interface PeriodAccountStatObject {
   realizedFees: Scalars["BigInt"]["output"];
   realizedPnl: Scalars["BigInt"]["output"];
   realizedPriceImpact: Scalars["BigInt"]["output"];
+  realizedSwapImpact: Scalars["BigInt"]["output"];
   startUnrealizedFees: Scalars["BigInt"]["output"];
   startUnrealizedPnl: Scalars["BigInt"]["output"];
   startUnrealizedPriceImpact: Scalars["BigInt"]["output"];
@@ -5756,6 +5779,7 @@ export interface PositionChange {
   sizeDeltaInTokens: Scalars["BigInt"]["output"];
   sizeDeltaUsd: Scalars["BigInt"]["output"];
   sizeInUsd: Scalars["BigInt"]["output"];
+  swapImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
   timestamp: Scalars["Int"]["output"];
   totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
   type: PositionChangeType;
@@ -5894,6 +5918,12 @@ export enum PositionChangeOrderByInput {
   sizeInUsd_DESC = "sizeInUsd_DESC",
   sizeInUsd_DESC_NULLS_FIRST = "sizeInUsd_DESC_NULLS_FIRST",
   sizeInUsd_DESC_NULLS_LAST = "sizeInUsd_DESC_NULLS_LAST",
+  swapImpactUsd_ASC = "swapImpactUsd_ASC",
+  swapImpactUsd_ASC_NULLS_FIRST = "swapImpactUsd_ASC_NULLS_FIRST",
+  swapImpactUsd_ASC_NULLS_LAST = "swapImpactUsd_ASC_NULLS_LAST",
+  swapImpactUsd_DESC = "swapImpactUsd_DESC",
+  swapImpactUsd_DESC_NULLS_FIRST = "swapImpactUsd_DESC_NULLS_FIRST",
+  swapImpactUsd_DESC_NULLS_LAST = "swapImpactUsd_DESC_NULLS_LAST",
   timestamp_ASC = "timestamp_ASC",
   timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
   timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
@@ -6131,6 +6161,15 @@ export interface PositionChangeWhereInput {
   sizeInUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   sizeInUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   sizeInUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapImpactUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapImpactUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  swapImpactUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
   timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
   timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
@@ -6673,6 +6712,12 @@ export enum PositionOrderByInput {
   accountStat_realizedPriceImpact_DESC = "accountStat_realizedPriceImpact_DESC",
   accountStat_realizedPriceImpact_DESC_NULLS_FIRST = "accountStat_realizedPriceImpact_DESC_NULLS_FIRST",
   accountStat_realizedPriceImpact_DESC_NULLS_LAST = "accountStat_realizedPriceImpact_DESC_NULLS_LAST",
+  accountStat_realizedSwapImpact_ASC = "accountStat_realizedSwapImpact_ASC",
+  accountStat_realizedSwapImpact_ASC_NULLS_FIRST = "accountStat_realizedSwapImpact_ASC_NULLS_FIRST",
+  accountStat_realizedSwapImpact_ASC_NULLS_LAST = "accountStat_realizedSwapImpact_ASC_NULLS_LAST",
+  accountStat_realizedSwapImpact_DESC = "accountStat_realizedSwapImpact_DESC",
+  accountStat_realizedSwapImpact_DESC_NULLS_FIRST = "accountStat_realizedSwapImpact_DESC_NULLS_FIRST",
+  accountStat_realizedSwapImpact_DESC_NULLS_LAST = "accountStat_realizedSwapImpact_DESC_NULLS_LAST",
   accountStat_sumMaxSize_ASC = "accountStat_sumMaxSize_ASC",
   accountStat_sumMaxSize_ASC_NULLS_FIRST = "accountStat_sumMaxSize_ASC_NULLS_FIRST",
   accountStat_sumMaxSize_ASC_NULLS_LAST = "accountStat_sumMaxSize_ASC_NULLS_LAST",
@@ -8387,7 +8432,9 @@ export interface TradeAction {
   borrowingFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   collateralTokenPriceMax?: Maybe<Scalars["BigInt"]["output"]>;
   collateralTokenPriceMin?: Maybe<Scalars["BigInt"]["output"]>;
+  collateralTotalCostAmount?: Maybe<Scalars["BigInt"]["output"]>;
   contractTriggerPrice?: Maybe<Scalars["BigInt"]["output"]>;
+  decreasePositionSwapType?: Maybe<Scalars["Int"]["output"]>;
   eventName: Scalars["String"]["output"];
   executionAmountOut?: Maybe<Scalars["BigInt"]["output"]>;
   executionPrice?: Maybe<Scalars["BigInt"]["output"]>;
@@ -8416,6 +8463,7 @@ export interface TradeAction {
   sizeDeltaInTokens?: Maybe<Scalars["BigInt"]["output"]>;
   sizeDeltaUsd?: Maybe<Scalars["BigInt"]["output"]>;
   srcChainId?: Maybe<Scalars["BigInt"]["output"]>;
+  swapImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
   swapPath: Array<Scalars["String"]["output"]>;
   timestamp: Scalars["Int"]["output"];
   totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
@@ -8468,12 +8516,24 @@ export enum TradeActionOrderByInput {
   collateralTokenPriceMin_DESC = "collateralTokenPriceMin_DESC",
   collateralTokenPriceMin_DESC_NULLS_FIRST = "collateralTokenPriceMin_DESC_NULLS_FIRST",
   collateralTokenPriceMin_DESC_NULLS_LAST = "collateralTokenPriceMin_DESC_NULLS_LAST",
+  collateralTotalCostAmount_ASC = "collateralTotalCostAmount_ASC",
+  collateralTotalCostAmount_ASC_NULLS_FIRST = "collateralTotalCostAmount_ASC_NULLS_FIRST",
+  collateralTotalCostAmount_ASC_NULLS_LAST = "collateralTotalCostAmount_ASC_NULLS_LAST",
+  collateralTotalCostAmount_DESC = "collateralTotalCostAmount_DESC",
+  collateralTotalCostAmount_DESC_NULLS_FIRST = "collateralTotalCostAmount_DESC_NULLS_FIRST",
+  collateralTotalCostAmount_DESC_NULLS_LAST = "collateralTotalCostAmount_DESC_NULLS_LAST",
   contractTriggerPrice_ASC = "contractTriggerPrice_ASC",
   contractTriggerPrice_ASC_NULLS_FIRST = "contractTriggerPrice_ASC_NULLS_FIRST",
   contractTriggerPrice_ASC_NULLS_LAST = "contractTriggerPrice_ASC_NULLS_LAST",
   contractTriggerPrice_DESC = "contractTriggerPrice_DESC",
   contractTriggerPrice_DESC_NULLS_FIRST = "contractTriggerPrice_DESC_NULLS_FIRST",
   contractTriggerPrice_DESC_NULLS_LAST = "contractTriggerPrice_DESC_NULLS_LAST",
+  decreasePositionSwapType_ASC = "decreasePositionSwapType_ASC",
+  decreasePositionSwapType_ASC_NULLS_FIRST = "decreasePositionSwapType_ASC_NULLS_FIRST",
+  decreasePositionSwapType_ASC_NULLS_LAST = "decreasePositionSwapType_ASC_NULLS_LAST",
+  decreasePositionSwapType_DESC = "decreasePositionSwapType_DESC",
+  decreasePositionSwapType_DESC_NULLS_FIRST = "decreasePositionSwapType_DESC_NULLS_FIRST",
+  decreasePositionSwapType_DESC_NULLS_LAST = "decreasePositionSwapType_DESC_NULLS_LAST",
   eventName_ASC = "eventName_ASC",
   eventName_ASC_NULLS_FIRST = "eventName_ASC_NULLS_FIRST",
   eventName_ASC_NULLS_LAST = "eventName_ASC_NULLS_LAST",
@@ -8642,6 +8702,12 @@ export enum TradeActionOrderByInput {
   srcChainId_DESC = "srcChainId_DESC",
   srcChainId_DESC_NULLS_FIRST = "srcChainId_DESC_NULLS_FIRST",
   srcChainId_DESC_NULLS_LAST = "srcChainId_DESC_NULLS_LAST",
+  swapImpactUsd_ASC = "swapImpactUsd_ASC",
+  swapImpactUsd_ASC_NULLS_FIRST = "swapImpactUsd_ASC_NULLS_FIRST",
+  swapImpactUsd_ASC_NULLS_LAST = "swapImpactUsd_ASC_NULLS_LAST",
+  swapImpactUsd_DESC = "swapImpactUsd_DESC",
+  swapImpactUsd_DESC_NULLS_FIRST = "swapImpactUsd_DESC_NULLS_FIRST",
+  swapImpactUsd_DESC_NULLS_LAST = "swapImpactUsd_DESC_NULLS_LAST",
   timestamp_ASC = "timestamp_ASC",
   timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
   timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
@@ -8781,6 +8847,15 @@ export interface TradeActionWhereInput {
   collateralTokenPriceMin_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   collateralTokenPriceMin_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   collateralTokenPriceMin_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  collateralTotalCostAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  collateralTotalCostAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  collateralTotalCostAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  collateralTotalCostAmount_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  collateralTotalCostAmount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  collateralTotalCostAmount_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  collateralTotalCostAmount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  collateralTotalCostAmount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  collateralTotalCostAmount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   contractTriggerPrice_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   contractTriggerPrice_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   contractTriggerPrice_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -8790,6 +8865,15 @@ export interface TradeActionWhereInput {
   contractTriggerPrice_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   contractTriggerPrice_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   contractTriggerPrice_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  decreasePositionSwapType_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  decreasePositionSwapType_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  decreasePositionSwapType_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  decreasePositionSwapType_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   eventName_contains?: InputMaybe<Scalars["String"]["input"]>;
   eventName_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   eventName_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -9086,6 +9170,15 @@ export interface TradeActionWhereInput {
   srcChainId_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   srcChainId_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   srcChainId_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapImpactUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  swapImpactUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  swapImpactUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  swapImpactUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   swapPath_containsAll?: InputMaybe<Array<Scalars["String"]["input"]>>;
   swapPath_containsAny?: InputMaybe<Array<Scalars["String"]["input"]>>;
   swapPath_containsNone?: InputMaybe<Array<Scalars["String"]["input"]>>;

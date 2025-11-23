@@ -78,6 +78,8 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 export const RPC_PROVIDER_KEY = "rpc-provider";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
+export const ORACLE_KEEPER_FALLBACK_STATE_KEY = "oracle-keeper-fallback-state";
+
 /**
  * @deprecated
  */
@@ -94,7 +96,7 @@ export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
 export const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
-export const getSubgraphUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
+export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
 export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
@@ -160,6 +162,10 @@ export function getExecutionFeeBufferBpsKey(chainId: number) {
 
 export function getRpcProviderKey(chainId: number | string) {
   return [chainId, RPC_PROVIDER_KEY];
+}
+
+export function getOracleKeeperFallbackStateKey(chainId: number) {
+  return [chainId, ORACLE_KEEPER_FALLBACK_STATE_KEY];
 }
 
 // TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then

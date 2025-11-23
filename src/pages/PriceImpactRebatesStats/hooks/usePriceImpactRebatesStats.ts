@@ -6,8 +6,8 @@ import { useLatest } from "react-use";
 import { MarketInfo, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TokenData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { getSyntheticsGraphClient } from "lib/indexers";
 import { getByKey } from "lib/objects";
-import { getSyntheticsGraphClient } from "lib/subgraph";
 
 type RawRebateGroup = {
   id: string;

@@ -3,11 +3,11 @@ import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals, PRECISION } from "lib/numbers";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import useWallet from "lib/wallets/useWallet";
 import { ClaimableCollateral } from "sdk/types/subsquid";
-import { queryPaginated } from "sdk/utils/subgraph";
+import { queryPaginated } from "sdk/utils/indexers";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { PositionsConstants } from "../positions/usePositionsConstants";
@@ -116,7 +116,7 @@ export function useRebatesInfoRequest(
         factor,
         value,
         valueByFactor,
-        timeKey: rawRebateInfo.timeKey,
+        timeKey: rawRebateInfo.timeKey.toString(),
         marketAddress: getAddress(rawRebateInfo.marketAddress),
         tokenAddress: getAddress(rawRebateInfo.tokenAddress),
         reductionFactor,

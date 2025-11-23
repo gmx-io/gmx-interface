@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { useCallback } from "react";
 
 import { BOTANIX, getChainName } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
@@ -68,6 +69,14 @@ export function TradingSettings({
     (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain || isGeminiWallet;
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
+
+  const handleSelectGasPaymentToken = useCallback(
+    (tokenAddress: string) => {
+      settings.setGasPaymentTokenAddress(tokenAddress);
+      window.dispatchEvent(new CustomEvent("gasPaymentTokenChanged"));
+    },
+    [settings]
+  );
 
   return (
     <div>
@@ -157,7 +166,7 @@ export function TradingSettings({
             {settings.expressOrdersEnabled && (
               <GasPaymentTokenSelector
                 currentTokenAddress={settings.gasPaymentTokenAddress}
-                onSelectToken={settings.setGasPaymentTokenAddress}
+                onSelectToken={handleSelectGasPaymentToken}
               />
             )}
           </SettingsSection>

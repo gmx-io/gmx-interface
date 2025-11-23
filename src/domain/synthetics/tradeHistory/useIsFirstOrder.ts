@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { getSyntheticsGraphClient } from "lib/subgraph/clients";
+import { getSubsquidGraphClient } from "lib/indexers/clients";
 
 export default function useIsFirstOrder(chainId: number, p: { account?: string }) {
   const { account } = p;
@@ -11,17 +11,17 @@ export default function useIsFirstOrder(chainId: number, p: { account?: string }
 
   const { data: isFirstOrder } = useSWR<boolean>(key, {
     fetcher: async () => {
-      const client = getSyntheticsGraphClient(chainId);
+      const client = getSubsquidGraphClient(chainId);
 
       const result = await client?.query({
         query: gql`
           query TradeActions($account: String!) {
-            tradeActions(first: 1, where: { account: $account }) {
+            tradeActions(limit: 1, where: { account_eq: $account }) {
               id
             }
           }
         `,
-        variables: { account: account?.toLowerCase() },
+        variables: { account: account },
         fetchPolicy: "no-cache",
       });
 

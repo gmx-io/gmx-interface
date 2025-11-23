@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
+import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals } from "lib/numbers";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { Position as SquidPosition } from "sdk/types/subsquid";
-import { queryPaginated } from "sdk/utils/subgraph";
+import { queryPaginated } from "sdk/utils/indexers";
 
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";
 import { LeaderboardDataType } from "./types";
