@@ -6821,6 +6821,10 @@ msgstr "보너스 리베이트"
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "{0} 시장 풀에 기존 포지션이 있지만, 이 주문에 대한 유동성이 부족합니다."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"

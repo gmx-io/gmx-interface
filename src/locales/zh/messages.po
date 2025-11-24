@@ -6821,6 +6821,10 @@ msgstr "奖金返利"
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "您在 {0} 市场池中有现有仓位，但此订单缺少流动性。"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"

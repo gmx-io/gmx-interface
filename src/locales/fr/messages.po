@@ -6821,6 +6821,10 @@ msgstr "Rabais bonus"
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "Vous avez une position existante dans le pool de marché {0}, mais il manque de liquidité pour cet ordre."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"

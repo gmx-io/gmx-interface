@@ -6821,6 +6821,10 @@ msgstr "ボーナスリベート"
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "あなたは{0}マーケットプールに既存のポジションを持っていますが、この注文のための流動性が不足しています。"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"

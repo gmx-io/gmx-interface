@@ -6821,6 +6821,10 @@ msgstr "Bonus Rebate"
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr "Show rPnL Amounts"
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
