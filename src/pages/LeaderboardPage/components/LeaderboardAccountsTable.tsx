@@ -78,7 +78,7 @@ export function LeaderboardAccountsTable({
       setOrderBy("pnlPercentage");
       setDirection("desc");
     }
-  }, [activeCompetition, isCompetitions, setDirection, setOrderBy]);
+  }, [activeCompetition, isCompetitions, setOrderBy, setDirection]);
 
   const ranks = useLeaderboardAccountsRanks();
   const term = useDebounce(searchAddress, 300);
