@@ -303,3 +303,12 @@ export function getMarketShortTokenSymbol(chainId: number, marketTokenAddress: s
 export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
   return MARKETS[chainId as ContractsChainId]?.[marketTokenAddress]?.indexTokenAddress === zeroAddress;
 }
+
+export function getMarketIsSameCollaterals(chainId: number, marketTokenAddress: string): boolean {
+  const market = MARKETS[chainId]?.[marketTokenAddress];
+  if (!market) {
+    return false;
+  }
+
+  return market.longTokenAddress === market.shortTokenAddress;
+}

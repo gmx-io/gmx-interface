@@ -20,7 +20,7 @@ import { getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/types/orders";
-import { isMarketTokenAddress } from "sdk/utils/markets";
+import { getMarketIsSameCollaterals, isMarketTokenAddress } from "sdk/utils/markets";
 
 import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 
@@ -159,10 +159,20 @@ export const selectPoolsDetailsMarketTokenAddress = createSelector((q) => {
   return glvOrMarketAddress;
 });
 
+/**
+ * Indicates the swap-to token after gm/glv sell
+ */
 export const selectPoolsDetailsWithdrawalReceiveTokenAddress = createSelector((q) => {
   const { isPair, isWithdrawal } = q(selectPoolsDetailsFlags);
 
   if (isPair || !isWithdrawal) {
+    return undefined;
+  }
+
+  const chainId = q(selectChainId);
+  const marketAddress = q(selectPoolsDetailsMarketTokenAddress);
+
+  if (marketAddress && getMarketIsSameCollaterals(chainId, marketAddress)) {
     return undefined;
   }
 
@@ -171,8 +181,6 @@ export const selectPoolsDetailsWithdrawalReceiveTokenAddress = createSelector((q
   if (!firstTokenAddress) {
     return undefined;
   }
-
-  const chainId = q(selectChainId);
 
   return convertTokenAddress(chainId, firstTokenAddress, "wrapped");
 });
