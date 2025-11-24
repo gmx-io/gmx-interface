@@ -58,8 +58,8 @@ msgid "Buy order executed."
 msgstr "買い注文が実行されました。"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Claims are disabled"
-msgstr "請求が無効化されています"
+#~ msgid "Claims are disabled"
+#~ msgstr "請求が無効化されています"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -380,6 +380,14 @@ msgstr "{0}の最大ショート値を超過しています"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "GM残高不足"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Select at least one distribution to claim."
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
@@ -772,7 +780,7 @@ msgstr "マーケット"
 msgid "What did you like the most about our service?"
 msgstr "当サービスで最も気に入った点は何ですか？"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr ""
 
@@ -1101,7 +1109,7 @@ msgstr ""
 msgid "Collateral"
 msgstr "担保"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "続行するには請求条件を受け入れてください。"
 
@@ -1508,7 +1516,7 @@ msgstr "NFTウォレット"
 msgid "GMX Proposals Voting page"
 msgstr "GMXのプロポーザル投票ページ"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
 msgstr ""
 
@@ -1777,6 +1785,10 @@ msgstr "リベート分配履歴"
 msgid "V1 Interface"
 msgstr "V1インターフェース"
 
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLP Reimbursement (test)"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2022,8 +2034,8 @@ msgid "Display Settings"
 msgstr "表示設定"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-msgstr "500,000ドルのインセンティブプログラムの対象となるために、GLVトークンを3ヶ月保持してください。"
+#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+#~ msgstr "500,000ドルのインセンティブプログラムの対象となるために、GLVトークンを3ヶ月保持してください。"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -5226,6 +5238,10 @@ msgstr "年率パフォーマンス"
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "最大注文制限に達したため{0}注文が更新されませんでした"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "{0} distributions have been claimed successfully."
+msgstr ""
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
 msgstr "90日"
@@ -6303,8 +6319,8 @@ msgid "Stop Loss"
 msgstr "ストップロス"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution (test)"
-msgstr ""
+#~ msgid "GLP Distribution (test)"
+#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
@@ -6586,7 +6602,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr "スワップに失敗しました。"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr ""
 
@@ -6597,6 +6613,10 @@ msgstr "ページが古くなっています。更新してください。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX提案"
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive (test)"
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6690,8 +6710,8 @@ msgid "shift"
 msgstr "シフト"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution"
-msgstr "GLP分配"
+#~ msgid "GLP Distribution"
+#~ msgstr "GLP分配"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7230,7 +7250,7 @@ msgstr "ストップロスをキャンセル"
 msgid "Limit Decrease"
 msgstr "リミット減少"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "残りのSafe確認を待機中。"
 
@@ -7242,7 +7262,7 @@ msgstr "Stabilizeプロトコル"
 msgid "All assets"
 msgstr "すべての資産"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr ""
 
@@ -7689,8 +7709,8 @@ msgid "Total Stats"
 msgstr "総統計"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully."
-msgstr "{0} の請求に成功しました。"
+#~ msgid "Claimed {0} successfully."
+#~ msgstr "{0} の請求に成功しました。"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"

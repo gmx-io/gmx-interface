@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GLP_DISTRIBUTION_ID, GLP_DISTRIBUTION_TEST_ID } from "domain/synthetics/claims/useUserClaimableAmounts";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
 import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
@@ -200,17 +199,7 @@ export default function UserIncentiveDistribution() {
 }
 
 function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
-  const isTestGlpIncident = typeId === GLP_DISTRIBUTION_TEST_ID;
-
-  if (isTestGlpIncident) {
-    return t`GLP Distribution (test)`;
-  }
-
-  if (typeId === GLP_DISTRIBUTION_ID) {
-    return t`GLP Distribution`;
-  }
-
-  const isCompetition = typeId >= 2000 && typeId < 3000;
+  const isCompetition = typeId >= 2000n && typeId < 3000n;
   return isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
 }
 
