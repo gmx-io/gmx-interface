@@ -183,38 +183,41 @@ function NetworkMenuItem({
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
-      <Wrapper variant="none" as="div" content={<Trans>Smart wallets are not supported on this network.</Trans>}>
-        <div
-          className={cx("network-dropdown-menu-item menu-item", {
-            "disabled !cursor-not-allowed opacity-50": disabled,
-          })}
-          data-qa={`networks-dropdown-${network.label}`}
-          onClick={() => {
-            if (disabled) {
-              return;
-            }
-            switchNetwork(network.value, isConnected);
-          }}
-        >
-          <div className="menu-item-group">
-            <div className="menu-item-icon">
-              <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+      {({ close }) => (
+        <Wrapper variant="none" as="div" content={<Trans>Smart wallets are not supported on this network.</Trans>}>
+          <div
+            className={cx("network-dropdown-menu-item menu-item", {
+              "disabled !cursor-not-allowed opacity-50": disabled,
+            })}
+            data-qa={`networks-dropdown-${network.label}`}
+            onClick={() => {
+              if (disabled) {
+                return;
+              }
+              close();
+              switchNetwork(network.value, isConnected);
+            }}
+          >
+            <div className="menu-item-group">
+              <div className="menu-item-icon">
+                <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+              </div>
+              <span
+                className={cx("network-dropdown-item-label", {
+                  "text-typography-primary": chainId === network.value,
+                })}
+              >
+                {network.label}
+              </span>
             </div>
-            <span
-              className={cx("network-dropdown-item-label", {
-                "text-typography-primary": chainId === network.value,
-              })}
-            >
-              {network.label}
-            </span>
+            <div className="network-dropdown-menu-item-img">
+              {chainId === network.value && (
+                <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
+              )}
+            </div>
           </div>
-          <div className="network-dropdown-menu-item-img">
-            {chainId === network.value && (
-              <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
-            )}
-          </div>
-        </div>
-      </Wrapper>
+        </Wrapper>
+      )}
     </Menu.Item>
   );
 }
