@@ -11,9 +11,8 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import SpinnerIcon from "img/ic_spinner.svg?react";
-
 import { Operation } from "../GmSwapBox/types";
+
 import "./GmFees.scss";
 
 type Props = {
@@ -38,8 +37,12 @@ export function GmFees(p: Props) {
 
     const operationText = operationTexts[p.operation];
 
+    if (p.isLoading) {
+      return t`Loading...`;
+    }
+
     if (p.totalFees?.deltaUsd === undefined) {
-      return "-";
+      return "0.000% / 0.000%";
     } else if (
       bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||
       p.swapFee ||
@@ -196,6 +199,7 @@ export function GmFees(p: Props) {
     );
   }, [
     p.operation,
+    p.isLoading,
     p.shiftFee,
     p.swapFee,
     p.swapPriceImpact,
@@ -206,10 +210,5 @@ export function GmFees(p: Props) {
     totalFeesUsd,
   ]);
 
-  return (
-    <SyntheticsInfoRow
-      label={<Trans>Price Impact / Fees</Trans>}
-      value={p.isLoading ? <SpinnerIcon className="spin size-15 text-white" /> : value}
-    />
-  );
+  return <SyntheticsInfoRow label={<Trans>Price Impact / Fees</Trans>} value={value} />;
 }

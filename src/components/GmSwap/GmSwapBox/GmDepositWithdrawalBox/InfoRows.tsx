@@ -8,14 +8,11 @@ import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
-import SpinnerIcon from "img/ic_spinner.svg?react";
-
 import { Operation } from "../types";
 
 export function InfoRows({
   isDeposit,
   fees,
-
   isLoading,
 }: {
   isDeposit: boolean;
@@ -48,13 +45,9 @@ export function InfoRows({
         <SyntheticsInfoRow
           label={<Trans>Network Fee</Trans>}
           value={
-            isLoading ? (
-              <SpinnerIcon className="spin size-15 text-white" />
-            ) : fees?.logicalNetworkFee?.deltaUsd ? (
-              formatDeltaUsd(fees?.logicalNetworkFee?.deltaUsd)
-            ) : (
-              "-"
-            )
+            isLoading || fees?.logicalNetworkFee?.deltaUsd === undefined
+              ? t`Loading...`
+              : formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
           }
         />
       </ExpandableRow>

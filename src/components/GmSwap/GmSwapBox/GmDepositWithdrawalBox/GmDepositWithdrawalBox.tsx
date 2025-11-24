@@ -651,7 +651,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
         <InfoRows
           fees={logicalFees}
-          isLoading={firstTokenAmount === undefined ? false : !technicalFees}
+          isLoading={(firstTokenAmount ?? 0n) === 0n ? false : !technicalFees}
           isDeposit={isDeposit}
         />
       </form>
