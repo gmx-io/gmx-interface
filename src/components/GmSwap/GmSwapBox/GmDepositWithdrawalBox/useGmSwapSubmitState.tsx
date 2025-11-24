@@ -358,6 +358,10 @@ function useExpressError({
     const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
     const totalRequired = collateralAmount + gasPaymentTokenAmount;
 
+    if (gasPaymentTokenAmount > gmxAccountBalance) {
+      return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees`;
+    }
+
     if (totalRequired > gmxAccountBalance) {
       return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
     }

@@ -3238,6 +3238,10 @@ msgstr "TWAP"
 msgid "Wallet Balance"
 msgstr "지갑 잔액"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "{0} balance in GMX account is insufficient to cover gas fees"
+msgstr "GMX 계정의 {0} 잔액이 가스 수수료를 충당하기에 부족합니다"
+
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
