@@ -3,7 +3,6 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
 import {
-  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
@@ -12,8 +11,9 @@ import {
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
+  selectPoolsDetailsPayLongToken,
+  selectPoolsDetailsPayShortToken,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
@@ -28,11 +28,10 @@ import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstima
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
-import { convertToTokenAmount, getTokenData, type TokenData, TokensData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
-import { convertTokenAddress } from "sdk/configs/tokens";
 import { GmSwapFees } from "sdk/types/trade";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -47,7 +46,6 @@ interface Props {
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
   shouldDisableValidation?: boolean;
-  tokensData: TokensData | undefined;
   technicalFees:
     | ExecutionFee
     | SourceChainGlvDepositFees
@@ -83,7 +81,6 @@ export const useGmSwapSubmitState = ({
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
   shouldDisableValidation,
-  tokensData,
 }: Props): SubmitButtonState => {
   const { isDeposit, isPair } = useSelector(selectPoolsDetailsFlags);
   const operation = useSelector(selectPoolsDetailsOperation);
@@ -94,10 +91,10 @@ export const useGmSwapSubmitState = ({
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
 
-  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
-  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+  const payLongToken = useSelector(selectPoolsDetailsPayLongToken);
+  const payShortToken = useSelector(selectPoolsDetailsPayShortToken);
 
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
@@ -144,18 +141,8 @@ export const useGmSwapSubmitState = ({
     isDeposit,
     marketInfo,
     glvInfo,
-    longToken:
-      firstTokenAddress !== undefined &&
-      (firstTokenAddress === longTokenAddress ||
-        convertTokenAddress(chainId, firstTokenAddress, "wrapped") === longTokenAddress)
-        ? getTokenData(tokensData, firstTokenAddress)
-        : undefined,
-    shortToken:
-      secondTokenAddress !== undefined &&
-      (secondTokenAddress === shortTokenAddress ||
-        convertTokenAddress(chainId, secondTokenAddress, "wrapped") === shortTokenAddress)
-        ? getTokenData(tokensData, secondTokenAddress)
-        : undefined,
+    longToken: payLongToken,
+    shortToken: payShortToken,
     glvToken,
     glvTokenAmount,
     glvTokenUsd,

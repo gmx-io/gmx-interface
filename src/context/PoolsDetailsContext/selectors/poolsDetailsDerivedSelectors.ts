@@ -316,6 +316,66 @@ export const selectPoolsDetailsSecondTokenData = createSelector((q) => {
   return getTokenData(marketAndTradeTokensData, secondTokenAddress);
 });
 
+export const selectPoolsDetailsPayLongToken = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const tradeTokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+  const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);
+  const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
+
+  if (!tradeTokensData || !longTokenAddress) {
+    return undefined;
+  }
+
+  if (
+    firstTokenAddress !== undefined &&
+    (firstTokenAddress === longTokenAddress ||
+      convertTokenAddress(chainId, firstTokenAddress, "wrapped") === longTokenAddress)
+  ) {
+    return getTokenData(tradeTokensData, firstTokenAddress);
+  }
+
+  if (
+    secondTokenAddress !== undefined &&
+    (secondTokenAddress === longTokenAddress ||
+      convertTokenAddress(chainId, secondTokenAddress, "wrapped") === longTokenAddress)
+  ) {
+    return getTokenData(tradeTokensData, secondTokenAddress);
+  }
+
+  return undefined;
+});
+
+export const selectPoolsDetailsPayShortToken = createSelector((q) => {
+  const chainId = q(selectChainId);
+  const tradeTokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
+  const secondTokenAddress = q(selectPoolsDetailsSecondTokenAddress);
+  const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
+
+  if (!tradeTokensData || !shortTokenAddress) {
+    return undefined;
+  }
+
+  if (
+    firstTokenAddress !== undefined &&
+    (firstTokenAddress === shortTokenAddress ||
+      convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress)
+  ) {
+    return getTokenData(tradeTokensData, firstTokenAddress);
+  }
+
+  if (
+    secondTokenAddress !== undefined &&
+    (secondTokenAddress === shortTokenAddress ||
+      convertTokenAddress(chainId, secondTokenAddress, "wrapped") === shortTokenAddress)
+  ) {
+    return getTokenData(tradeTokensData, secondTokenAddress);
+  }
+
+  return undefined;
+});
+
 export const selectPoolsDetailsFirstTokenAmount = createSelector((q) => {
   const firstToken = q(selectPoolsDetailsFirstToken);
 

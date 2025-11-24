@@ -224,7 +224,6 @@ export function GmSwapBoxDepositWithdrawal() {
     logicalFees,
     technicalFees,
     shouldDisableValidation: shouldDisableValidationForTesting,
-    tokensData: tradeTokensData,
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
     marketsInfoData,
