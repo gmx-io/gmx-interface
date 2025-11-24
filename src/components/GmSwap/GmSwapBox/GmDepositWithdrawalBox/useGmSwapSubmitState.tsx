@@ -15,7 +15,9 @@ import {
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
 import type { ExecutionFee } from "domain/synthetics/fees";
@@ -24,7 +26,7 @@ import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstima
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
-import { getTokenData, TokensData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, getTokenData, type TokenData, TokensData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -34,6 +36,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { Operation } from "../types";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
+import { TechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useTokensToApprove } from "./useTokensToApprove";
 
 interface Props {
@@ -95,6 +98,8 @@ export const useGmSwapSubmitState = ({
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
+  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
   const hasOutdatedUi = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
@@ -113,8 +118,8 @@ export const useGmSwapSubmitState = ({
   const {
     isSubmitting,
     onSubmit,
-    error: txnError,
     isLoading,
+    error: estimationError,
   } = useLpTransactions({
     shouldDisableValidation,
     technicalFees,
@@ -158,13 +163,27 @@ export const useGmSwapSubmitState = ({
     marketToken: marketToken,
   });
 
-  let error = commonError || swapError;
+  const expressError = useExpressError({
+    paySource,
+    technicalFees,
+    gasPaymentToken,
+    gasPaymentTokenAddress,
+    longTokenAddress,
+    shortTokenAddress,
+    longTokenAmount,
+    shortTokenAmount,
+  });
 
-  if (txnError) {
-    if (txnError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
-      error = t`Insufficient gas payment token balance`;
+  const formattedEstimationError = useMemo(() => {
+    if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+      if (gasPaymentToken) {
+        return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
+      }
     }
-  }
+    return undefined;
+  }, [estimationError, gasPaymentToken]);
+
+  const error = commonError || swapError || expressError || formattedEstimationError;
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove({
     routerAddress,
@@ -277,3 +296,81 @@ export const useGmSwapSubmitState = ({
     isLoading,
   ]);
 };
+
+function useExpressError({
+  paySource,
+  technicalFees,
+  gasPaymentToken,
+  gasPaymentTokenAddress,
+  longTokenAddress,
+  shortTokenAddress,
+  longTokenAmount,
+  shortTokenAmount,
+}: {
+  paySource: string | undefined;
+  technicalFees: TechnicalFees | undefined;
+  gasPaymentToken: TokenData | undefined;
+  gasPaymentTokenAddress: string | undefined;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
+  longTokenAmount: bigint | undefined;
+  shortTokenAmount: bigint | undefined;
+}): string | undefined {
+  return useMemo(() => {
+    if (paySource !== "gmxAccount" || !technicalFees || !gasPaymentToken || !gasPaymentTokenAddress) {
+      return undefined;
+    }
+
+    if (!("feeUsd" in technicalFees)) {
+      return undefined;
+    }
+
+    const executionFee = technicalFees as ExecutionFee;
+
+    const isLongTokenGasPayment = longTokenAddress === gasPaymentTokenAddress;
+    const isShortTokenGasPayment = shortTokenAddress === gasPaymentTokenAddress;
+
+    if (!isLongTokenGasPayment && !isShortTokenGasPayment) {
+      return undefined;
+    }
+
+    if (gasPaymentToken.prices.minPrice === undefined) {
+      return undefined;
+    }
+
+    const gasPaymentTokenAmount = convertToTokenAmount(
+      executionFee.feeUsd,
+      gasPaymentToken.decimals,
+      gasPaymentToken.prices.minPrice
+    );
+
+    if (gasPaymentTokenAmount === undefined || gasPaymentTokenAmount === 0n) {
+      return undefined;
+    }
+
+    let collateralAmount = 0n;
+    if (isLongTokenGasPayment) {
+      collateralAmount = longTokenAmount ?? 0n;
+    } else if (isShortTokenGasPayment) {
+      collateralAmount = shortTokenAmount ?? 0n;
+    }
+
+    const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
+    const totalRequired = collateralAmount + gasPaymentTokenAmount;
+
+    if (totalRequired > gmxAccountBalance) {
+      return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
+    }
+
+    return undefined;
+  }, [
+    paySource,
+    technicalFees,
+    gasPaymentToken,
+    gasPaymentTokenAddress,
+    longTokenAddress,
+    shortTokenAddress,
+    longTokenAmount,
+    shortTokenAmount,
+  ]);
+}

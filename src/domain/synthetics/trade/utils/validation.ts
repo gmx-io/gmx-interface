@@ -642,26 +642,6 @@ export function decreasePositionSizeByLeverageDiff(
   );
 }
 
-// function getTokenBalance(token: TokenData | undefined, balanceType: TokenBalanceType) {
-//   if (!token) {
-//     return 0n;
-//   }
-
-//   if (balanceType === TokenBalanceType.Wallet) {
-//     return token.walletBalance;
-//   }
-
-//   if (balanceType === TokenBalanceType.GmxAccount) {
-//     return token.gmxAccountBalance;
-//   }
-
-//   if (balanceType === TokenBalanceType.SourceChain) {
-//     return token.sourceChainBalance;
-//   }
-
-//   throw new Error(`Invalid balance type: ${balanceType}`);
-// }
-
 function getTokenBalanceByPaySource(
   token: TokenData | undefined,
   paySource: GmPaySource,

@@ -530,6 +530,11 @@ msgstr "Hohe externe Swap-Auswirkung"
 msgid "Adding"
 msgstr "Hinzufügen"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "{0} balance in GMX account is insufficient to cover gas fees and input amount"
+msgstr "{0} Guthaben im GMX-Konto reicht nicht aus, um Gasgebühren und Eingabebetrag zu decken"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "90+ crypto tokens"
 msgstr ""
@@ -7058,10 +7063,6 @@ msgstr "Take-Profit abbrechen"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "Top Gewinn/Verlust ($)"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "Insufficient gas payment token balance"
-msgstr "Unzureichendes Guthaben für Gas-Zahlungstoken"
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Invalid address. Please make sure you have entered a valid Ethereum address"
