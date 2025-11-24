@@ -2,6 +2,7 @@ import { Chain, getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
   coreWallet,
+  geminiWallet,
   injectedWallet,
   metaMaskWallet,
   okxWallet,
@@ -9,13 +10,12 @@ import {
   safeWallet,
   trustWallet,
   walletConnectWallet,
-  geminiWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
-import { createPublicClient, http, PublicClient, fallback } from "viem";
+import { createPublicClient, fallback, http, PublicClient } from "viem";
 import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
-import { botanix, getFallbackRpcUrl, getTestingRpcUrl, getViemChain } from "config/chains";
+import { botanix, getTestingRpcUrl, getViemChain, RPC_PROVIDERS } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { LRUCache } from "sdk/utils/LruCache";
@@ -62,51 +62,15 @@ export const getRainbowKitConfig = once(() =>
       ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
     ],
     transports: {
-      [arbitrum.id]: fallback([
-        http(getCurrentRpcUrls(arbitrum.id).primary),
-        http(getCurrentRpcUrls(arbitrum.id).secondary),
-        http(getFallbackRpcUrl(arbitrum.id, false)),
-      ]),
-      [avalanche.id]: fallback([
-        http(getCurrentRpcUrls(avalanche.id).primary),
-        http(getCurrentRpcUrls(avalanche.id).secondary),
-        http(getFallbackRpcUrl(avalanche.id, false)),
-      ]),
-      [avalancheFuji.id]: fallback([
-        http(getCurrentRpcUrls(avalancheFuji.id).primary),
-        http(getCurrentRpcUrls(avalancheFuji.id).secondary),
-        http(getFallbackRpcUrl(avalancheFuji.id, false)),
-      ]),
-      [arbitrumSepolia.id]: fallback([
-        http(getCurrentRpcUrls(arbitrumSepolia.id).primary),
-        http(getCurrentRpcUrls(arbitrumSepolia.id).secondary),
-        http(getFallbackRpcUrl(arbitrumSepolia.id, false)),
-      ]),
-      [base.id]: fallback([
-        http(getCurrentRpcUrls(base.id).primary),
-        http(getCurrentRpcUrls(base.id).secondary),
-        http(getFallbackRpcUrl(base.id, false)),
-      ]),
-      [optimismSepolia.id]: fallback([
-        http(getCurrentRpcUrls(optimismSepolia.id).primary),
-        http(getCurrentRpcUrls(optimismSepolia.id).secondary),
-        http(getFallbackRpcUrl(optimismSepolia.id, false)),
-      ]),
-      [sepolia.id]: fallback([
-        http(getCurrentRpcUrls(sepolia.id).primary),
-        http(getCurrentRpcUrls(sepolia.id).secondary),
-        http(getFallbackRpcUrl(sepolia.id, false)),
-      ]),
-      [botanix.id]: fallback([
-        http(getCurrentRpcUrls(botanix.id).primary),
-        http(getCurrentRpcUrls(botanix.id).secondary),
-        http(getFallbackRpcUrl(botanix.id, false)),
-      ]),
-      [bsc.id]: fallback([
-        http(getCurrentRpcUrls(bsc.id).primary),
-        http(getCurrentRpcUrls(bsc.id).secondary),
-        http(getFallbackRpcUrl(bsc.id, false)),
-      ]),
+      [arbitrum.id]: fallback([...RPC_PROVIDERS[arbitrum.id].map((url) => http(url))]),
+      [avalanche.id]: fallback([...RPC_PROVIDERS[avalanche.id].map((url) => http(url))]),
+      [avalancheFuji.id]: fallback([...RPC_PROVIDERS[avalancheFuji.id].map((url) => http(url))]),
+      [arbitrumSepolia.id]: fallback([...RPC_PROVIDERS[arbitrumSepolia.id].map((url) => http(url))]),
+      [base.id]: fallback([...RPC_PROVIDERS[base.id].map((url) => http(url))]),
+      [optimismSepolia.id]: fallback([...RPC_PROVIDERS[optimismSepolia.id].map((url) => http(url))]),
+      [sepolia.id]: fallback([...RPC_PROVIDERS[sepolia.id].map((url) => http(url))]),
+      [botanix.id]: fallback([...RPC_PROVIDERS[botanix.id].map((url) => http(url))]),
+      [bsc.id]: fallback([...RPC_PROVIDERS[bsc.id].map((url) => http(url))]),
     },
     wallets: [...popularWalletList, ...othersWalletList],
   })
