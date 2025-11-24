@@ -147,9 +147,11 @@ export type DepositAmounts = {
 export type WithdrawalAmounts = {
   marketTokenAmount: bigint;
   marketTokenUsd: bigint;
+  longTokenBeforeSwapAmount: bigint;
   longTokenAmount: bigint;
   longTokenSwapPathStats: SwapPathStats | undefined;
   shortTokenAmount: bigint;
+  shortTokenBeforeSwapAmount: bigint;
   longTokenUsd: bigint;
   shortTokenUsd: bigint;
   shortTokenSwapPathStats: SwapPathStats | undefined;

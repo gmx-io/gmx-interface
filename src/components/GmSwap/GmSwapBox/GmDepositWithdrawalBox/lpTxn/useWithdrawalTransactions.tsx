@@ -22,6 +22,10 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  TokensBalancesUpdates,
+  useTokensBalancesUpdates,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { GlvSellTask, GmSellTask } from "domain/multichain/progress/GmOrGlvSellProgress";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
@@ -53,6 +57,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
+import { TokenBalanceType } from "sdk/types/tokens";
 import { WithdrawalAmounts } from "sdk/types/trade";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 
@@ -71,6 +76,7 @@ export const useWithdrawalTransactions = ({
   const { signer, account } = useWallet();
   const { setPendingWithdrawal } = useSyntheticsEvents();
   const { setPendingTxns } = usePendingTxns();
+  const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
@@ -290,6 +296,29 @@ export const useWithdrawalTransactions = ({
           expressTxnParams,
           transferRequests,
           srcChainId,
+        }).then((result) => {
+          if (result?.taskId) {
+            const balanceUpdates: TokensBalancesUpdates = {};
+            transferRequests.tokens.forEach((token, i) => {
+              const amount = transferRequests.amounts[i];
+              balanceUpdates[token] = {
+                balanceType: TokenBalanceType.GmxAccount,
+                diff: -amount,
+                isPending: true,
+              };
+            });
+            addOptimisticTokensBalancesUpdates(balanceUpdates);
+
+            const glvWithdrawalParams = params as CreateGlvWithdrawalParams;
+            setPendingWithdrawal({
+              account: glvWithdrawalParams.addresses.receiver,
+              marketAddress: glvWithdrawalParams.addresses.glv,
+              marketTokenAmount: glvTokenAmount!,
+              minLongTokenAmount: glvWithdrawalParams.minLongTokenAmount,
+              minShortTokenAmount: glvWithdrawalParams.minShortTokenAmount,
+              shouldUnwrapNativeToken: glvWithdrawalParams.shouldUnwrapNativeToken,
+            });
+          }
         });
       } else if (paySource === "settlementChain") {
         promise = createGlvWithdrawalTxn({
@@ -335,6 +364,7 @@ export const useWithdrawalTransactions = ({
       setPendingTxns,
       setPendingWithdrawal,
       blockTimestampData,
+      addOptimisticTokensBalancesUpdates,
     ]
   );
 
@@ -404,6 +434,29 @@ export const useWithdrawalTransactions = ({
           expressTxnParams,
           transferRequests,
           srcChainId,
+        }).then((result) => {
+          if (result?.taskId) {
+            const balanceUpdates: TokensBalancesUpdates = {};
+            transferRequests.tokens.forEach((token, i) => {
+              const amount = transferRequests.amounts[i];
+              balanceUpdates[token] = {
+                balanceType: TokenBalanceType.GmxAccount,
+                diff: -amount,
+                isPending: true,
+              };
+            });
+            addOptimisticTokensBalancesUpdates(balanceUpdates);
+
+            const withdrawalParams = params as CreateWithdrawalParams;
+            setPendingWithdrawal({
+              account: withdrawalParams.addresses.receiver,
+              marketAddress: withdrawalParams.addresses.market,
+              marketTokenAmount: marketTokenAmount!,
+              minLongTokenAmount: withdrawalParams.minLongTokenAmount,
+              minShortTokenAmount: withdrawalParams.minShortTokenAmount,
+              shouldUnwrapNativeToken: withdrawalParams.shouldUnwrapNativeToken,
+            });
+          }
         });
       } else if (paySource === "settlementChain") {
         promise = createWithdrawalTxn({
@@ -454,6 +507,7 @@ export const useWithdrawalTransactions = ({
       setPendingTxns,
       setPendingWithdrawal,
       blockTimestampData,
+      addOptimisticTokensBalancesUpdates,
     ]
   );
 

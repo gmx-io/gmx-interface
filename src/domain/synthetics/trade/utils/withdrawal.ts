@@ -49,8 +49,10 @@ export function getWithdrawalAmounts(p: {
     marketTokenAmount: 0n,
     marketTokenUsd: 0n,
     longTokenAmount: 0n,
+    longTokenBeforeSwapAmount: 0n,
     longTokenUsd: 0n,
     shortTokenAmount: 0n,
+    shortTokenBeforeSwapAmount: 0n,
     shortTokenUsd: 0n,
     glvTokenAmount: 0n,
     glvTokenUsd: 0n,
@@ -100,18 +102,16 @@ export function getWithdrawalAmounts(p: {
     values.longTokenUsd = values.longTokenUsd - longSwapFeeUsd - longUiFeeUsd;
     values.shortTokenUsd = values.shortTokenUsd - shortSwapFeeUsd - shortUiFeeUsd;
 
-    if (!wrappedReceiveTokenAddress) {
-      values.longTokenAmount = convertToTokenAmount(
-        values.longTokenUsd,
-        longToken.decimals,
-        longToken.prices.maxPrice
-      )!;
-      values.shortTokenAmount = convertToTokenAmount(
-        values.shortTokenUsd,
-        shortToken.decimals,
-        shortToken.prices.maxPrice
-      )!;
-    } else if (wrappedReceiveTokenAddress === longToken.address) {
+    values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longToken.prices.maxPrice)!;
+    values.longTokenBeforeSwapAmount = values.longTokenAmount;
+    values.shortTokenAmount = convertToTokenAmount(
+      values.shortTokenUsd,
+      shortToken.decimals,
+      shortToken.prices.maxPrice
+    )!;
+    values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
+
+    if (wrappedReceiveTokenAddress === longToken.address) {
       const shortToLongSwapPathStats = findSwapPath!(values.shortTokenUsd);
       if (!shortToLongSwapPathStats) {
         return values;
@@ -143,8 +143,11 @@ export function getWithdrawalAmounts(p: {
       if (strategy === "byLongCollateral" && longPoolUsd > 0 && wrappedReceiveTokenAddress === longToken.address) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
-        values.shortTokenUsd = 0n;
+        // Approximate and take long token usd as resulting market token usd
+        values.longTokenBeforeSwapAmount = bigMath.mulDiv(values.longTokenUsd, longPoolUsd, totalPoolUsd);
         values.shortTokenAmount = 0n;
+        values.shortTokenUsd = 0n;
+        values.shortTokenBeforeSwapAmount = bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, totalPoolUsd);
       } else if (
         strategy === "byShortCollateral" &&
         shortPoolUsd > 0 &&
@@ -152,8 +155,11 @@ export function getWithdrawalAmounts(p: {
       ) {
         values.shortTokenAmount = shortTokenAmount;
         values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+        // Approximate and take short token usd as resulting market token usd
+        values.shortTokenBeforeSwapAmount = bigMath.mulDiv(values.shortTokenUsd, shortPoolUsd, totalPoolUsd);
         values.longTokenUsd = 0n;
         values.longTokenAmount = 0n;
+        values.longTokenBeforeSwapAmount = bigMath.mulDiv(values.shortTokenUsd, longPoolUsd, totalPoolUsd);
       }
     } else {
       if (strategy === "byLongCollateral" && longPoolUsd > 0) {

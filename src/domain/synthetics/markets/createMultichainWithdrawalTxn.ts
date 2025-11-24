@@ -2,7 +2,7 @@ import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { TransferRequests } from "domain/multichain/types";
-import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
+import { ExpressTxnData, ExpressTxnResult, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -90,7 +90,7 @@ export async function createMultichainWithdrawalTxn({
   transferRequests: TransferRequests;
   expressTxnParams: ExpressTxnParams;
   params: CreateWithdrawalParams;
-}): Promise<void> {
+}): Promise<ExpressTxnResult> {
   const txnData = await buildAndSignMultichainWithdrawalTxn({
     chainId,
     srcChainId,
@@ -106,7 +106,7 @@ export async function createMultichainWithdrawalTxn({
     params,
   });
 
-  await sendExpressTransaction({
+  return await sendExpressTransaction({
     chainId,
     isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,

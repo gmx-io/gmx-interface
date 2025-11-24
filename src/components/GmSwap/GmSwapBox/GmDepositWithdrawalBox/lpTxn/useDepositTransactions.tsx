@@ -28,6 +28,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  TokensBalancesUpdates,
+  useTokensBalancesUpdates,
+} from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { GlvBuyTask, GmBuyTask } from "domain/multichain/progress/GmOrGlvBuyProgress";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
@@ -46,6 +50,7 @@ import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSou
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
 import { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
+import { TokenBalanceType } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
@@ -78,6 +83,7 @@ export const useDepositTransactions = ({
   const srcChainId = useSelector(selectSrcChainId);
   const { signer, account } = useWallet();
   const { setPendingDeposit } = useSyntheticsEvents();
+  const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setPendingTxns } = usePendingTxns();
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
@@ -355,6 +361,35 @@ export const useDepositTransactions = ({
           transferRequests,
           expressTxnParams,
           params: params as CreateDepositParams,
+        }).then((result) => {
+          if (result?.taskId) {
+            const balanceUpdates: TokensBalancesUpdates = {};
+            transferRequests.tokens.forEach((token, i) => {
+              const amount = transferRequests.amounts[i];
+
+              balanceUpdates[token] = {
+                balanceType: TokenBalanceType.GmxAccount,
+                diff: -amount,
+                isPending: true,
+              };
+            });
+            addOptimisticTokensBalancesUpdates(balanceUpdates);
+
+            const depositParams = params as CreateDepositParams;
+            setPendingDeposit({
+              account: depositParams.addresses.receiver,
+              marketAddress: depositParams.addresses.market,
+              initialLongTokenAddress: depositParams.addresses.initialLongToken,
+              initialShortTokenAddress: depositParams.addresses.initialShortToken,
+              longTokenSwapPath: depositParams.addresses.longTokenSwapPath,
+              shortTokenSwapPath: depositParams.addresses.shortTokenSwapPath,
+              initialLongTokenAmount: longTokenAmount ?? 0n,
+              initialShortTokenAmount: shortTokenAmount ?? 0n,
+              minMarketTokens: depositParams.minMarketTokens,
+              shouldUnwrapNativeToken: depositParams.shouldUnwrapNativeToken,
+              isGlvDeposit: false,
+            });
+          }
         });
       } else if (paySource === "settlementChain") {
         promise = createDepositTxn({
@@ -405,6 +440,7 @@ export const useDepositTransactions = ({
       shouldDisableValidation,
       setPendingTxns,
       setPendingDeposit,
+      addOptimisticTokensBalancesUpdates,
     ]
   );
 
@@ -493,6 +529,39 @@ export const useDepositTransactions = ({
           transferRequests,
           expressTxnParams,
           params: params as CreateGlvDepositParams,
+        }).then((result) => {
+          if (result?.taskId) {
+            const balanceUpdates: TokensBalancesUpdates = {};
+            transferRequests.tokens.forEach((token, i) => {
+              const amount = transferRequests.amounts[i];
+
+              balanceUpdates[token] = {
+                balanceType: TokenBalanceType.GmxAccount,
+                diff: -amount,
+                isPending: true,
+              };
+            });
+            addOptimisticTokensBalancesUpdates(balanceUpdates);
+
+            const glvDepositParams = params as CreateGlvDepositParams;
+            setPendingDeposit({
+              account: glvDepositParams.addresses.receiver,
+              marketAddress: glvDepositParams.addresses.market,
+              glvAddress: glvDepositParams.addresses.glv,
+              initialLongTokenAddress: glvDepositParams.addresses.initialLongToken,
+              initialShortTokenAddress: glvDepositParams.addresses.initialShortToken,
+              longTokenSwapPath: glvDepositParams.addresses.longTokenSwapPath,
+              shortTokenSwapPath: glvDepositParams.addresses.shortTokenSwapPath,
+              initialLongTokenAmount: longTokenAmount ?? 0n,
+              initialShortTokenAmount: shortTokenAmount ?? 0n,
+              initialMarketTokenAmount: glvDepositParams.isMarketTokenDeposit ? marketTokenAmount ?? 0n : 0n,
+              minMarketTokens: glvDepositParams.minGlvTokens,
+              shouldUnwrapNativeToken: glvDepositParams.shouldUnwrapNativeToken,
+              isGlvDeposit: true,
+              isMarketDeposit: glvDepositParams.isMarketTokenDeposit,
+              marketTokenAmount: glvDepositParams.isMarketTokenDeposit ? marketTokenAmount : undefined,
+            });
+          }
         });
       } else if (paySource === "settlementChain") {
         promise = createGlvDepositTxn({
@@ -549,6 +618,7 @@ export const useDepositTransactions = ({
       blockTimestampData,
       setPendingTxns,
       setPendingDeposit,
+      addOptimisticTokensBalancesUpdates,
     ]
   );
 

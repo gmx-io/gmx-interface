@@ -1,5 +1,5 @@
 import chunk from "lodash/chunk";
-import { bytesToHex, Hex, hexToBytes, numberToHex, zeroAddress } from "viem";
+import { bytesToHex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -12,8 +12,8 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
-  selectPoolsDetailsGlvTokenAddress,
   selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsGlvTokenAddress,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsLongTokenAmount,
@@ -23,12 +23,13 @@ import {
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsShortTokenAmount,
+  selectPoolsDetailsWithdrawalReceiveTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import {
+  selectAccount,
+  selectChainId,
   selectGlvAndMarketsInfoData,
   selectMarketsInfoData,
-  selectChainId,
-  selectAccount,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
@@ -76,7 +77,6 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   }
 
   const glvTokenAddress = q(selectPoolsDetailsGlvTokenAddress);
-
   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
   const longTokenAmount = q(selectPoolsDetailsLongTokenAmount);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
@@ -96,6 +96,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   const marketOrGlvTokenAmount = q(selectPoolsDetailsMarketOrGlvTokenAmount);
 
   const amounts = q(selectDepositWithdrawalAmounts);
+  const withdrawalReceiveTokenAddress = q(selectPoolsDetailsWithdrawalReceiveTokenAddress);
 
   /**
    * When buy/sell GM - marketInfo is GM market, glvInfo is undefined
@@ -162,7 +163,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash as Hex);
+      const bytes = hexToBytes(actionHash);
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
@@ -224,7 +225,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash as Hex);
+      const bytes = hexToBytes(actionHash);
 
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
@@ -262,24 +263,48 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
     if (!longTokenAddress || !shortTokenAddress) {
       return undefined;
     }
+    const withdrawalAmounts = amounts as WithdrawalAmounts;
 
     let dataList: string[] = EMPTY_ARRAY;
 
-    let minLongTokenAmount = 0n;
-    let minShortTokenAmount = 0n;
+    let minLongTokenOutputAmount = 0n;
+    let minShortTokenOutputAmount = 0n;
+
     if (paySource !== "sourceChain") {
-      minLongTokenAmount = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n);
-      minShortTokenAmount = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n);
+      if (!withdrawalReceiveTokenAddress) {
+        minLongTokenOutputAmount = applySlippageToMinOut(
+          DEFAULT_SLIPPAGE_AMOUNT,
+          withdrawalAmounts.longTokenBeforeSwapAmount
+        );
+        minShortTokenOutputAmount = applySlippageToMinOut(
+          DEFAULT_SLIPPAGE_AMOUNT,
+          withdrawalAmounts.shortTokenBeforeSwapAmount
+        );
+      } else {
+        if (withdrawalAmounts.longTokenSwapPathStats) {
+          minLongTokenOutputAmount = withdrawalAmounts.longTokenSwapPathStats.amountOut;
+        } else {
+          minLongTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.longTokenBeforeSwapAmount
+          );
+        }
+
+        if (withdrawalAmounts.shortTokenSwapPathStats) {
+          minShortTokenOutputAmount = withdrawalAmounts.shortTokenSwapPathStats.amountOut;
+        } else {
+          minShortTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.shortTokenBeforeSwapAmount
+          );
+        }
+      }
     }
 
     if (paySource === "sourceChain") {
       if (!srcChainId) {
         return undefined;
       }
-
-      const withdrawalAmounts = amounts as WithdrawalAmounts;
-      const longTokenAmount = withdrawalAmounts.longTokenAmount;
-      const shortTokenAmount = withdrawalAmounts.shortTokenAmount;
 
       const longOftProvider = getStargatePoolAddress(chainId, convertTokenAddress(chainId, longTokenAddress, "native"));
       const shortOftProvider = getStargatePoolAddress(
@@ -316,7 +341,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash as Hex);
+      const bytes = hexToBytes(actionHash);
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
@@ -334,11 +359,11 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         receiver: account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
-        longTokenSwapPath: (amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath ?? [],
-        shortTokenSwapPath: (amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath ?? [],
+        longTokenSwapPath: withdrawalAmounts.longTokenSwapPathStats?.swapPath ?? [],
+        shortTokenSwapPath: withdrawalAmounts.shortTokenSwapPathStats?.swapPath ?? [],
       },
-      minLongTokenAmount,
-      minShortTokenAmount,
+      minLongTokenAmount: minLongTokenOutputAmount,
+      minShortTokenAmount: minShortTokenOutputAmount,
       shouldUnwrapNativeToken: shouldUnwrapNativeTokenForGm,
       callbackGasLimit: 0n,
       dataList,
@@ -354,13 +379,47 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
     const { glvTokenAddress: glvTokenAddress, glvToken } = glvInfo!;
 
+    const withdrawalAmounts = amounts as WithdrawalAmounts;
+
+    let minLongTokenOutputAmount = 0n;
+    let minShortTokenOutputAmount = 0n;
+    if (paySource !== "sourceChain") {
+      if (!withdrawalReceiveTokenAddress) {
+        minLongTokenOutputAmount = applySlippageToMinOut(
+          DEFAULT_SLIPPAGE_AMOUNT,
+          withdrawalAmounts.longTokenBeforeSwapAmount
+        );
+        minShortTokenOutputAmount = applySlippageToMinOut(
+          DEFAULT_SLIPPAGE_AMOUNT,
+          withdrawalAmounts.shortTokenBeforeSwapAmount
+        );
+      } else {
+        if (withdrawalAmounts.longTokenSwapPathStats) {
+          minLongTokenOutputAmount = withdrawalAmounts.longTokenSwapPathStats.amountOut;
+        } else {
+          minLongTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.longTokenBeforeSwapAmount
+          );
+        }
+
+        if (withdrawalAmounts.shortTokenSwapPathStats) {
+          minShortTokenOutputAmount = withdrawalAmounts.shortTokenSwapPathStats.amountOut;
+        } else {
+          minShortTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.shortTokenBeforeSwapAmount
+          );
+        }
+      }
+    }
+
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
       if (!srcChainId) {
         return undefined;
       }
 
-      const withdrawalAmounts = amounts as WithdrawalAmounts;
       const longTokenAmount = withdrawalAmounts.longTokenAmount;
       const shortTokenAmount = withdrawalAmounts.shortTokenAmount;
 
@@ -400,7 +459,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash as Hex);
+      const bytes = hexToBytes(actionHash);
 
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
@@ -420,13 +479,11 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         receiver: glvToken.totalSupply === 0n ? numberToHex(1, { size: 20 }) : account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
-        longTokenSwapPath: (amounts as WithdrawalAmounts)?.longTokenSwapPathStats?.swapPath ?? [],
-        shortTokenSwapPath: (amounts as WithdrawalAmounts)?.shortTokenSwapPathStats?.swapPath ?? [],
+        longTokenSwapPath: withdrawalAmounts.longTokenSwapPathStats?.swapPath ?? [],
+        shortTokenSwapPath: withdrawalAmounts.shortTokenSwapPathStats?.swapPath ?? [],
       },
-      // minLongTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, longTokenAmount ?? 0n),
-      minLongTokenAmount: 0n,
-      // minShortTokenAmount: applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, shortTokenAmount ?? 0n),
-      minShortTokenAmount: 0n,
+      minLongTokenAmount: minLongTokenOutputAmount,
+      minShortTokenAmount: minShortTokenOutputAmount,
       callbackGasLimit: 0n,
       shouldUnwrapNativeToken: shouldUnwrapNativeTokenForGlv,
       dataList,
