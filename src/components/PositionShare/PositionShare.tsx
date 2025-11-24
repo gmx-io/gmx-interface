@@ -333,7 +333,7 @@ function PositionShare({
 
         <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
           <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Include PnL in Leverage Display</Trans>
+            {isRpnl ? <Trans>Include rPnL in Leverage Display</Trans> : <Trans>Include PnL in Leverage Display</Trans>}
           </span>
         </ToggleSwitch>
 

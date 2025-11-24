@@ -4892,6 +4892,10 @@ msgstr "トップPnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "価格条件が満たされた場合でも、注文を執行するための十分な流動性がない可能性があります。"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Avalanche Fujiでは請求が利用できません"
