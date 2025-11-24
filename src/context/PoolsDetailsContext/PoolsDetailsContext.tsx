@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
@@ -8,6 +8,7 @@ import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
+import { useReactRouterSearchParam } from "lib/useReactRouterSearchParam";
 import useRouteQuery from "lib/useRouteQuery";
 import { useSafeState } from "lib/useSafeState";
 
@@ -88,20 +89,6 @@ export type PoolsDetailsState = {
   setMarketOrGlvTokenInputValue: (value: string) => void;
   setIsMarketForGlvSelectedManually: (value: boolean) => void;
 };
-
-// TODO MLTCH this does not work
-function useReactRouterSearchParam(param: string): [string | undefined, (value: string | undefined) => void] {
-  const searchParams = useRouteQuery();
-  const value = searchParams.get(param) ?? undefined;
-  const setValue = useCallback(
-    (value: string | undefined) => {
-      searchParams.set(param, value ?? "");
-    },
-    [searchParams, param]
-  );
-
-  return [value, setValue] as const;
-}
 
 export function usePoolsDetailsState({
   enabled,
