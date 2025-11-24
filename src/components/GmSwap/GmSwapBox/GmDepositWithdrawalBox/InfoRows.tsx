@@ -45,9 +45,11 @@ export function InfoRows({
         <SyntheticsInfoRow
           label={<Trans>Network Fee</Trans>}
           value={
-            isLoading || fees?.logicalNetworkFee?.deltaUsd === undefined
+            isLoading
               ? t`Loading...`
-              : formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
+              : fees?.logicalNetworkFee?.deltaUsd === undefined
+                ? "..."
+                : formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
           }
         />
       </ExpandableRow>
