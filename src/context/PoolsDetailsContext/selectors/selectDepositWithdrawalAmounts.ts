@@ -18,14 +18,16 @@ import {
   selectPoolsDetailsWithdrawalFindSwapPath,
   selectPoolsDetailsWithdrawalReceiveTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
-import { selectUiFeeFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectUiFeeFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
 export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts | WithdrawalAmounts | undefined => {
+  const chainId = q(selectChainId);
   const uiFeeFactor = q(selectUiFeeFactor);
 
   const { isDeposit, isWithdrawal } = q(selectPoolsDetailsFlags);
@@ -100,6 +102,17 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       });
     }
 
+    const includeLongToken = isPair
+      ? true
+      : firstTokenAddress !== undefined &&
+        (firstTokenAddress === longTokenAddress ||
+          convertTokenAddress(chainId, firstTokenAddress, "wrapped") === longTokenAddress);
+    const includeShortToken = isPair
+      ? true
+      : firstTokenAddress !== undefined &&
+        (firstTokenAddress === shortTokenAddress ||
+          convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress);
+
     return getDepositAmounts({
       marketInfo,
       marketToken,
@@ -109,12 +122,8 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       shortTokenAmount,
       marketTokenAmount,
       glvTokenAmount,
-      includeLongToken: isPair
-        ? true
-        : firstTokenAddress === longTokenAddress || secondTokenAddress === longTokenAddress,
-      includeShortToken: isPair
-        ? true
-        : secondTokenAddress === shortTokenAddress || firstTokenAddress === shortTokenAddress,
+      includeLongToken,
+      includeShortToken,
       uiFeeFactor,
       strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
       isMarketTokenDeposit,

@@ -129,7 +129,9 @@ export function getWithdrawalAmounts(p: {
     } else if (wrappedReceiveTokenAddress === shortToken.address) {
       const longToShortSwapPathStats = findSwapPath!(values.longTokenUsd);
       if (!longToShortSwapPathStats) {
-        throw new Error("Long to short swap path stats is not valid");
+        // eslint-disable-next-line no-console
+        console.error("Long to short swap path stats is not valid");
+        return values;
       }
       values.longTokenUsd = 0n;
       values.longTokenSwapPathStats = longToShortSwapPathStats;
