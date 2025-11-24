@@ -12,6 +12,7 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
+import { dynamicActivate, locales } from "lib/i18n";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
@@ -99,10 +100,9 @@ export function AppRoutes() {
     }
   }
 
-  const urlParams = useSearchParams<{ chainId: string }>();
+  const { chainId, lang } = useSearchParams<{ chainId?: string; lang?: string }>();
 
   useEffect(() => {
-    const chainId = urlParams.chainId;
     if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
       switchNetwork(Number(chainId), true).then(() => {
         const searchParams = new URLSearchParams(history.location.search);
@@ -113,7 +113,13 @@ export function AppRoutes() {
         });
       });
     }
-  }, [urlParams, history]);
+  }, [chainId, history]);
+
+  useEffect(() => {
+    if (lang && Object.prototype.hasOwnProperty.call(locales, lang)) {
+      dynamicActivate(lang);
+    }
+  }, [lang]);
 
   const isEarnPage = history.location.pathname.startsWith("/earn");
   useEffect(() => {
