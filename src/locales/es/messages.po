@@ -1110,7 +1110,6 @@ msgid "Collateral"
 msgstr "Garantía"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "Acepta los términos de reclamación para continuar."
 
@@ -6320,8 +6319,8 @@ msgid "Stop Loss"
 msgstr "Stop Loss"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution (test)"
-msgstr "Distribución GLP (prueba)"
+#~ msgid "GLP Distribution (test)"
+#~ msgstr "Distribución GLP (prueba)"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
@@ -6711,8 +6710,8 @@ msgid "shift"
 msgstr "cambio"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution"
-msgstr "Distribución GLP"
+#~ msgid "GLP Distribution"
+#~ msgstr "Distribución GLP"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"

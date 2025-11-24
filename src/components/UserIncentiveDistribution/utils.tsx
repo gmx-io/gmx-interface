@@ -9,7 +9,7 @@ import {
   GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID,
   GLV_BONUS_INCENTIVE_DISTRIBUTION_ID,
   GLP_DISTRIBUTION_TEST_ID,
-} from "domain/synthetics/claims/useUserClaimableAmounts";
+} from "domain/synthetics/claims/constants";
 import { helperToast } from "lib/helperToast";
 import { WalletSigner } from "lib/wallets";
 import { AccountType } from "lib/wallets/useAccountType";

@@ -17,7 +17,7 @@ export function getClaimTransactionCallData({
   selectedDistributionIds: string[];
   claimableAmountsDataByDistributionId: ClaimableAmountsDataByDistributionId;
   account: string;
-  signatures: Record<string, string>;
+  signatures: Record<string, string | undefined>;
 }) {
   const params = selectedDistributionIds.flatMap((distributionId) => {
     return claimableAmountsDataByDistributionId[distributionId].amounts.map((amount) => ({
@@ -40,7 +40,7 @@ export function createClaimAmountsTransaction(data: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   account: string;
-  signatures: Record<string, string>;
+  signatures: Record<string, string | undefined>;
   callback: TxnCallback<WalletTxnCtx>;
 }) {
   const {

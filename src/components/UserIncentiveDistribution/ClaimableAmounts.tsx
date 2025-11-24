@@ -33,9 +33,9 @@ export default function ClaimableAmounts() {
 
   const [isClaiming, setIsClaiming] = useState(false);
   const [selectedDistributionIds, setSelectedDistributionIds] = useState<string[]>([]);
-  const [signatures, setSignatures] = useState<Record<string, string>>({});
+  const [signatures, setSignatures] = useState<Record<string, string | undefined>>({});
 
-  const onSignTerms = useCallback((distributionId: string, signature: string) => {
+  const onSignatureChange = useCallback((distributionId: string, signature: string | undefined) => {
     setSignatures((prev) => ({ ...prev, [distributionId]: signature }));
   }, []);
 
@@ -213,7 +213,7 @@ export default function ClaimableAmounts() {
             distributionId={distributionId}
             claimableAmountsData={data}
             distributionConfiguration={claimsConfigByDistributionId?.[distributionId]}
-            onSignTerms={onSignTerms}
+            onSignatureChange={onSignatureChange}
           />
         ))}
 

@@ -25,7 +25,7 @@ export const useClaimExecutionFee = ({
   chainId: ContractsChainId;
   signer: WalletSigner | undefined;
   account: string | undefined;
-  signatures: Record<string, string>;
+  signatures: Record<string, string | undefined>;
 }) => {
   const gasPrice = useGasPrice(chainId);
 

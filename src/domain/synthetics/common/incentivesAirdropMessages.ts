@@ -7,7 +7,7 @@ import {
   GLP_DISTRIBUTION_TEST_ID,
   GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID,
   GLV_BONUS_INCENTIVE_DISTRIBUTION_ID,
-} from "../claims/useUserClaimableAmounts";
+} from "../claims/constants";
 
 export const INCENTIVE_TYPE_MAP = {
   1001: t`GM Airdrop`,

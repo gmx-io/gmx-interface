@@ -27,14 +27,14 @@ export function ClaimableDistribution({
   distributionConfiguration,
   selected,
   onToggle,
-  onSignTerms,
+  onSignatureChange,
 }: {
   distributionId: string;
   claimableAmountsData: ClaimableAmountsData;
   distributionConfiguration?: DistributionConfiguration;
   selected: boolean;
   onToggle: (distributionId: string) => void;
-  onSignTerms: (distributionId: string, signature: string) => void;
+  onSignatureChange: (distributionId: string, signature: string | undefined) => void;
 }) {
   const { claimTerms, claimsDisabled } = distributionConfiguration ?? {};
   const { account, signer, walletClient } = useWallet();
@@ -63,7 +63,7 @@ export function ClaimableDistribution({
         }
 
         if (!isSmartAccount && claimTermsAcceptedSignature) {
-          onSignTerms(distributionId, claimTermsAcceptedSignature);
+          onSignatureChange(distributionId, claimTermsAcceptedSignature);
           return;
         }
 
@@ -83,10 +83,10 @@ export function ClaimableDistribution({
 
         setIsSafeSigValid(isValid);
         setIsContractOwnersSigned(isValid);
-        onSignTerms(distributionId, isValid ? claimTermsAcceptedSignature || "0x" : "");
+        onSignatureChange(distributionId, isValid ? claimTermsAcceptedSignature || "0x" : undefined);
       } catch (e) {
         setIsSafeSigValid(false);
-        onSignTerms(distributionId, "");
+        onSignatureChange(distributionId, undefined);
       }
     }
 
@@ -109,7 +109,7 @@ export function ClaimableDistribution({
     isSmartAccount,
     isContractOwnersSigned,
     setClaimTermsAcceptedSignature,
-    onSignTerms,
+    onSignatureChange,
     distributionId,
   ]);
 
@@ -121,9 +121,9 @@ export function ClaimableDistribution({
     (signature: string) => {
       setIsContractOwnersSigned(true);
       setClaimTermsAcceptedSignature(signature);
-      onSignTerms(distributionId, signature);
+      onSignatureChange(distributionId, signature);
     },
-    [setIsContractOwnersSigned, setClaimTermsAcceptedSignature, onSignTerms, distributionId]
+    [setIsContractOwnersSigned, setClaimTermsAcceptedSignature, onSignatureChange, distributionId]
   );
 
   const signClaimTerms = useCallback(async () => {
@@ -178,10 +178,6 @@ export function ClaimableDistribution({
 
     let text = <Trans>Accept the claim terms to continue.</Trans>;
 
-    if (isSmartAccount && !isContractOwnersSigned) {
-      text = <Trans>Accept the claim terms to continue.</Trans>;
-    }
-
     if (accountType === AccountType.Safe && isStartedMultisig && !isSafeSigValid) {
       text = <Trans>Waiting for the remaining Safe confirmations.</Trans>;
     }
@@ -195,17 +191,7 @@ export function ClaimableDistribution({
     }
 
     return component;
-  }, [
-    displayAcceptClaimTerms,
-    selected,
-    onToggle,
-    distributionId,
-    isSmartAccount,
-    isContractOwnersSigned,
-    isStartedMultisig,
-    accountType,
-    isSafeSigValid,
-  ]);
+  }, [displayAcceptClaimTerms, selected, onToggle, distributionId, isStartedMultisig, accountType, isSafeSigValid]);
 
   if (claimsDisabled || claimableAmountsData.amounts.length === 0) {
     return null;
@@ -214,7 +200,7 @@ export function ClaimableDistribution({
   return (
     <div className="rounded-8 bg-fill-surfaceElevated50 lg:pl-12">
       <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-slate-600 p-12 lg:pl-0">
-        <div className="space-between flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4">
           {checkBox}
           <span className="text-body-medium font-medium text-typography-primary">
             {getDistributionTitle(distributionId)}
