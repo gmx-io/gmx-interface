@@ -3,6 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
 import {
+  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsMarketTokenDeposit,
@@ -12,6 +13,7 @@ import {
   selectPoolsDetailsMarketTokensData,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
+  selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
@@ -30,6 +32,7 @@ import { convertToTokenAmount, getTokenData, type TokenData, TokensData } from "
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { GmSwapFees } from "sdk/types/trade";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -91,9 +94,11 @@ export const useGmSwapSubmitState = ({
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
 
+  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
+  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
-
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
@@ -139,8 +144,18 @@ export const useGmSwapSubmitState = ({
     isDeposit,
     marketInfo,
     glvInfo,
-    longToken: getTokenData(tokensData, longTokenAddress),
-    shortToken: getTokenData(tokensData, shortTokenAddress),
+    longToken:
+      firstTokenAddress !== undefined &&
+      (firstTokenAddress === longTokenAddress ||
+        convertTokenAddress(chainId, firstTokenAddress, "wrapped") === longTokenAddress)
+        ? getTokenData(tokensData, firstTokenAddress)
+        : undefined,
+    shortToken:
+      secondTokenAddress !== undefined &&
+      (secondTokenAddress === shortTokenAddress ||
+        convertTokenAddress(chainId, secondTokenAddress, "wrapped") === shortTokenAddress)
+        ? getTokenData(tokensData, secondTokenAddress)
+        : undefined,
     glvToken,
     glvTokenAmount,
     glvTokenUsd,
