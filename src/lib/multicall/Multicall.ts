@@ -1,5 +1,6 @@
 import { Chain, createPublicClient, http } from "viem";
 
+import { getIsFlagEnabled } from "config/ab";
 import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
 import type {
@@ -12,12 +13,12 @@ import type {
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
 import { serializeMulticallErrors } from "lib/multicall/utils";
+import { markFailedRpcProvider } from "lib/rpc/bestRpcTracker";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { AbiId, abis as allAbis } from "sdk/abis";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
-import { banRpcUrl } from "lib/rpcTracker";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -58,6 +59,7 @@ export class Multicall {
     });
   }
 
+  // TODO: Remove after AB
   fallbackRpcSwitcher = new SlidingWindowFallbackSwitcher({
     fallbackTimeout: 60 * 1000, // 1 minute
     restoreTimeout: 5 * 60 * 1000, // 5 minutes
@@ -144,7 +146,13 @@ export class Multicall {
       });
     });
 
-    const providerUrl = this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.secondary : providerUrls.primary;
+    let providerUrl: string;
+    if (getIsFlagEnabled("testRpcFallbackUpdates")) {
+      providerUrl = providerUrls.primary;
+    } else {
+      providerUrl = this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.secondary : providerUrls.primary;
+    }
+
     const client = Multicall.getViemClient(this.chainId, providerUrl);
     const rpcProviderName = getProviderNameFromUrl(providerUrl);
 
@@ -249,7 +257,7 @@ export class Multicall {
 
       if (!this.fallbackRpcSwitcher?.isFallbackMode) {
         this.fallbackRpcSwitcher?.trigger();
-        banRpcUrl(this.chainId, providerUrls.primary, "Multicall primary");
+        markFailedRpcProvider(this.chainId, providerUrls.primary);
       }
 
       // eslint-disable-next-line no-console
@@ -295,7 +303,7 @@ export class Multicall {
             rpcProvider: fallbackProviderName,
           });
 
-          banRpcUrl(this.chainId, fallbackProviderUrl, "Multicall fallback error");
+          markFailedRpcProvider(this.chainId, fallbackProviderUrl);
 
           throw e;
         });

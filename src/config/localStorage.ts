@@ -27,6 +27,7 @@ export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
+export const DEBUG_RPC_TRACKER_KEY = "debug-rpc-tracker";
 export const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
@@ -79,6 +80,8 @@ export const RPC_PROVIDER_KEY = "rpc-provider";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 export const ORACLE_KEEPER_FALLBACK_STATE_KEY = "oracle-keeper-fallback-state";
+
+export const FALLBACK_TRACKER_PREFIX = "FallbackTracker";
 
 /**
  * @deprecated
@@ -166,6 +169,10 @@ export function getRpcProviderKey(chainId: number | string) {
 
 export function getOracleKeeperFallbackStateKey(chainId: number) {
   return [chainId, ORACLE_KEEPER_FALLBACK_STATE_KEY];
+}
+
+export function getFallbackTrackerKey(trackerKey: string) {
+  return `${FALLBACK_TRACKER_PREFIX}:${trackerKey}`;
 }
 
 // TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then

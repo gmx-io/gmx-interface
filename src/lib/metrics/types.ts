@@ -240,11 +240,25 @@ export type OrderCancelledEvent = {
 };
 
 // RPC tracking
-export type RpcFailureCounter = {
-  event: "rpcTracker.provider.failed";
+export type FallbackTrackerBannedCounter = {
+  event: "fallbackTracker.endpoint.banned";
   data: {
-    rpcProvider: string;
+    key: string;
+    endpoint: string;
     reason: string;
+  };
+};
+
+export type FallbackTrackerRankingCounter = {
+  event: "fallbackTracker.ranking.updateEndpoints";
+  data: {
+    chainId: number;
+    key: string;
+    primary: string;
+    secondaryRpc: string;
+    primaryBlockGap: number | "unknown";
+    secondaryBlockGap: number | "unknown";
+    isLargeAccount: boolean;
   };
 };
 
@@ -570,18 +584,6 @@ export type MulticallFallbackRpcModeCounter = {
   data: {
     chainId: number;
     isInMainThread: boolean;
-  };
-};
-
-export type RpcTrackerRankingCounter = {
-  event: "rpcTracker.ranking.setBestRpc";
-  data: {
-    chainId: number;
-    primaryRpc: string;
-    secondaryRpc: string;
-    primaryBlockGap: number | "unknown";
-    secondaryBlockGap: number | "unknown";
-    isLargeAccount: boolean;
   };
 };
 

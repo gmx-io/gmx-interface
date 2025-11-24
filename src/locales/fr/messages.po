@@ -464,6 +464,10 @@ msgstr "Classique"
 msgid "Unstaking"
 msgstr "Désengagement"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Monitoring"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -736,6 +740,10 @@ msgstr "Taille moyenne de position."
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> à </1>{1} <2/>"
+
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "See <0>Tenderly Docs</0>."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
@@ -1027,6 +1035,10 @@ msgstr "Réclamation des frais de financement"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "All Time"
 msgstr "Tout le temps"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Debug"
+msgstr ""
 
 #: src/components/Referrals/referralsHelper.ts
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
@@ -2000,6 +2012,10 @@ msgstr "Une erreur s'est produite. Veuillez réessayer."
 msgid "Dune Analytics"
 msgstr "Dune Analytics"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Debug Swaps"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "Il n'y a pas assez de liquidité GM : {0} [{1}] dans GLV pour satisfaire votre demande de vente. Veuillez choisir un pool différent, réduire la taille de vente, ou diviser votre retrait de plusieurs pools."
@@ -2505,6 +2521,10 @@ msgstr "et"
 msgid "Insufficient GLV liquidity"
 msgstr "Liquidité GLV insuffisante"
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Tenderly Settings"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "Vous serez short {indexSymbol} uniquement à partir de votre position short."
@@ -2580,6 +2600,10 @@ msgstr "<0>Oui, nous vous encourageons à construire sur GMX ou à l'intégrer d
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation Fee"
 msgstr "Frais de liquidation"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Permits"
+msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -4892,6 +4916,10 @@ msgstr "PnL supérieur (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "Il pourrait ne pas y avoir suffisamment de liquidité pour exécuter votre ordre lorsque les conditions de prix sont remplies."
 
+#: src/components/AbFlagsSettings/AbFlagsSettings.tsx
+msgid "AB Flags"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Les réclamations ne sont pas disponibles sur Avalanche Fuji"
@@ -6236,6 +6264,10 @@ msgstr "Le plafond d'achat pour le pool GM : {0} utilisant le token de paiement 
 msgid "Active Management"
 msgstr ""
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Simulate TXs"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr "marchés liquides profonds"
@@ -6367,6 +6399,10 @@ msgstr "Acheter GMX"
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
 msgstr "Erreur de copie"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Tracker Logging"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
@@ -6606,6 +6642,10 @@ msgstr "Compte Telegram"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Vendre {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Links"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"

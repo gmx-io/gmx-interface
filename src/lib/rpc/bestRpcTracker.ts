@@ -1,21 +1,25 @@
+import { useEffect, useState } from "react";
+
 import {
   getCurrentRpcUrls as old_getCurrentRpcUrls,
   useCurrentRpcUrls as old_useCurrentRpcUrls,
+  trackRpcProviders as old_trackRpcProviders,
 } from "ab/testRpcFallbackUpdates/disabled/oldRpcTracker";
-import { useEffect, useState } from "react";
-
 import { getIsFlagEnabled } from "config/ab";
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { DEFAULT_RPC_TRACKER_CONFIG, RpcTracker } from "lib/rpcTracker/RpcTracker";
+import { DEFAULT_RPC_TRACKER_CONFIG, RpcTracker } from "lib/rpc/RpcTracker";
 
 const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
 
 // Create singleton instances
 const rpcTrackerInstances = CONTRACTS_CHAIN_IDS.reduce(
   (acc, chainId) => {
-    acc[chainId] = new RpcTracker({ ...DEFAULT_RPC_TRACKER_CONFIG, chainId });
+    acc[chainId] = new RpcTracker({
+      ...DEFAULT_RPC_TRACKER_CONFIG,
+      chainId: chainId as ContractsChainId,
+    });
     return acc;
   },
   {} as Record<number, RpcTracker>
@@ -27,7 +31,9 @@ function getRpcTracker(chainId: number): RpcTracker | undefined {
 
 // Initialize tracking if flag is enabled
 if (getIsFlagEnabled("testRpcFallbackUpdates")) {
-  Object.values(rpcTrackerInstances).forEach((tracker) => tracker.track({ warmUp: true }));
+  Object.values(rpcTrackerInstances).forEach((tracker) => tracker.fallbackTracker.track({ warmUp: true }));
+} else {
+  old_trackRpcProviders({ warmUp: true });
 }
 
 // Export wrapper functions that match the original API
@@ -46,7 +52,11 @@ function _getCurrentRpcUrls(chainId: number) {
 
   const tracker = getRpcTracker(chainId);
 
-  return tracker?.getCurrentRpcUrls() ?? { primary, secondary };
+  if (tracker) {
+    return tracker.pickCurrentRpcUrls();
+  }
+
+  return { primary, secondary };
 }
 
 function _useCurrentRpcUrls(chainId: number) {
@@ -85,13 +95,13 @@ function _useCurrentRpcUrls(chainId: number) {
   return bestRpcUrls;
 }
 
-async function _markFailedRpcProvider(chainId: number, failedRpcUrl: string, reason?: string) {
+async function _markFailedRpcProvider(chainId: number, failedRpcUrl: string) {
   const tracker = getRpcTracker(chainId);
   if (!tracker) {
     return;
   }
 
-  tracker.banProvider(failedRpcUrl, reason || "Provider marked as failed");
+  tracker.triggerFailure(failedRpcUrl);
 }
 
 export const useCurrentRpcUrls = getIsFlagEnabled("testRpcFallbackUpdates")

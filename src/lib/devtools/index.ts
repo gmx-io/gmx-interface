@@ -1,61 +1,72 @@
-import orderBy from "lodash/orderBy";
+import { isDevelopment } from "config/env";
 
-import { getChainName } from "config/chains";
-import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
-import { ProbeData, ProbeStats, RpcProviderState } from "lib/rpcTracker/types";
+const DEVTOOLS_STATE_KEY = "devToolsState";
 
-export function isDebugMode() {
-  return localStorage.getItem(JSON.stringify(SHOW_DEBUG_VALUES_KEY)) === "true";
-}
+type DevtoolsState = {
+  debugRpcTracker?: boolean;
+};
 
-export function setDebugMode(value: boolean) {
-  localStorage.setItem(JSON.stringify(SHOW_DEBUG_VALUES_KEY), value.toString());
-}
+type DevtoolsKey = keyof DevtoolsState;
 
 class Devtools {
-  debugRpcTrackerState({
-    chainId,
-    lastProbeStats,
-    providers,
-    bestPrimaryUrl,
-    bestSecondaryUrl,
-    getBannedTimestamp,
-  }: {
-    chainId: number;
-    lastProbeStats: ProbeStats | undefined;
-    providers: Record<string, RpcProviderState>;
-    bestPrimaryUrl: string;
-    bestSecondaryUrl: string;
-    getBannedTimestamp: (url: string) => number | undefined;
-  }) {
-    if (!isDebugMode()) {
+  state: DevtoolsState = {
+    debugRpcTracker: false,
+  };
+
+  constructor() {
+    this.loadState();
+  }
+
+  private getStorageKey(): string {
+    return JSON.stringify(DEVTOOLS_STATE_KEY);
+  }
+
+  private loadState(): void {
+    if (!isDevelopment()) {
       return;
     }
 
-    const debugStats = Object.values(lastProbeStats?.probeResults ?? {}).map((probe: ProbeData) => ({
-      url: probe.url,
-      isPublic: providers[probe.url]?.isPublic ? "✅" : "❌",
-      isPrimary: probe.url === bestPrimaryUrl ? "✅" : "❌",
-      isSecondary: probe.url === bestSecondaryUrl ? "✅" : "❌",
-      isValid: probe.isValid ? "✅" : "❌",
-      responseTime: probe.responseTime,
-      blockNumber: probe.blockNumber,
-      bannedTimestamp: getBannedTimestamp(probe.url) ?? "",
-    }));
+    try {
+      const key = this.getStorageKey();
+      const stored = localStorage.getItem(key);
+      if (stored !== null) {
+        const parsed = JSON.parse(stored) as Partial<DevtoolsState>;
+        this.state = {
+          ...parsed,
+        };
+      }
+    } catch (_error) {
+      return;
+    }
+  }
 
-    (window as any).rpcTracker = (window as any).rpcTracker || {};
-    (window as any).rpcTracker[chainId] = {
-      primary: bestPrimaryUrl,
-      secondary: bestSecondaryUrl,
-      debugStats,
-    };
+  private saveState(): void {
+    if (!isDevelopment()) {
+      return;
+    }
 
-    // eslint-disable-next-line no-console
-    console.group(`RpcTracker ${getChainName(chainId)}`);
-    // eslint-disable-next-line no-console
-    console.table(orderBy(debugStats, ["responseTime"], ["asc"]));
-    // eslint-disable-next-line no-console
-    console.groupEnd();
+    try {
+      const key = this.getStorageKey();
+      localStorage.setItem(key, JSON.stringify(this.state));
+    } catch (_error) {
+      return;
+    }
+  }
+
+  getFlag<K extends DevtoolsKey>(key: K): boolean {
+    if (!isDevelopment()) {
+      return false;
+    }
+    return (this.state[key] ?? false) as boolean;
+  }
+
+  setFlag<K extends DevtoolsKey>(key: K, value: boolean): void {
+    if (!isDevelopment()) {
+      return;
+    }
+
+    this.state[key] = value;
+    this.saveState();
   }
 }
 

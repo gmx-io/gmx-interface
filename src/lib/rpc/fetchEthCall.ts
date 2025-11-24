@@ -11,7 +11,6 @@ export async function fetchEthCall({
   blockTag?: string;
   signal?: AbortSignal;
 }) {
-  // TODO: ttf?
   const response = await fetch(url, {
     method: "POST",
     headers: {

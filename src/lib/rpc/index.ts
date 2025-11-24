@@ -5,7 +5,7 @@ import { AnyChainId, AVALANCHE_FUJI } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getExpressRpcUrl, getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpcTracker";
+import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;

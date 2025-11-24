@@ -270,7 +270,7 @@ export class Utils extends Module {
     const premium = getGasPricePremium(this.chainId as ContractsChainId) || 0n;
     const price = gasPrice + premium;
 
-    return price === undefined ? undefined : BigInt(gasPrice);
+    return BigInt(price);
   }
 
   private _uiFeeFactor = 0n;

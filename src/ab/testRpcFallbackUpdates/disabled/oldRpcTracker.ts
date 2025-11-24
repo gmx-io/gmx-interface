@@ -18,10 +18,10 @@ import {
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
-import { getFallbackRpcUrl, getRpcProviders } from "config/rpc";
+import { getChainName, getFallbackRpcUrl, getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { isDebugMode } from "lib/devtools";
-import { RpcTrackerRankingCounter } from "lib/metrics";
+import { devtools } from "lib/devtools";
+import { FallbackTrackerRankingCounter } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
@@ -80,9 +80,7 @@ let trackerTimeoutId: number | null = null;
 
 const trackerState = initTrackerState();
 
-trackRpcProviders({ warmUp: true });
-
-function trackRpcProviders({ warmUp = false } = {}) {
+export function trackRpcProviders({ warmUp = false } = {}) {
   Promise.all(
     Object.values(trackerState).map(async (chainTrackerState) => {
       const { providers, lastUsage, chainId } = chainTrackerState;
@@ -193,7 +191,7 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
     nextSecondaryRpc = bestResponseTimeValidProbe;
   }
 
-  if (isDebugMode()) {
+  if (devtools.getFlag("debugRpcTracker")) {
     // eslint-disable-next-line no-console
     console.table(
       orderBy(
@@ -229,11 +227,12 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 
   window.dispatchEvent(new CustomEvent(RPC_TRACKER_UPDATE_EVENT));
 
-  emitMetricCounter<RpcTrackerRankingCounter>({
-    event: "rpcTracker.ranking.setBestRpc",
+  emitMetricCounter<FallbackTrackerRankingCounter>({
+    event: "fallbackTracker.ranking.updateEndpoints",
     data: {
       chainId,
-      primaryRpc: getProviderNameFromUrl(primaryUrl),
+      key: `RpcTracker:${getChainName(chainId)}`,
+      primary: getProviderNameFromUrl(primaryUrl),
       secondaryRpc: getProviderNameFromUrl(secondaryUrl),
       primaryBlockGap: bestBestBlockGap ?? "unknown",
       secondaryBlockGap: "unknown",

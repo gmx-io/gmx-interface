@@ -30,6 +30,7 @@ const ENV_BOTANIX_RPC_URLS = import.meta.env.VITE_APP_BOTANIX_RPC_URLS
   ? JSON.parse(import.meta.env.VITE_APP_BOTANIX_RPC_URLS)
   : undefined;
 
+const debugAlchemy = true;
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io", "gmxalt.io"];
 
 // Chains that support Alchemy WebSocket endpoints
@@ -316,7 +317,7 @@ export function getAlchemyProvider(
 
   let alchemyKey: string;
 
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
+  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host) || debugAlchemy) {
     switch (purpose) {
       case "fallback":
         alchemyKey = "NnWkTZJp8dNKXlCIfJwej";
@@ -328,8 +329,7 @@ export function getAlchemyProvider(
         alchemyKey = "vZoYuLP1GVpvE0wpgPKwC";
         break;
       case "default":
-        alchemyKey = "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-        break;
+        throw new Error(`Unsupported purpose: ${purpose}`);
       default:
         mustNeverExist(purpose);
         throw new Error(`Unsupported purpose: ${purpose}`);
