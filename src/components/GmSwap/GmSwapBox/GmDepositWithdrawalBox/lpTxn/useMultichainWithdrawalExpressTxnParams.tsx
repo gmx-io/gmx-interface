@@ -36,6 +36,7 @@ export function useMultichainWithdrawalExpressTxnParams({
     isGmxAccount: paySource === "gmxAccount",
     enabled,
     executionFeeAmount: params?.executionFee,
+    withLoading: false,
     expressTransactionBuilder: async ({ relayParams, gasPaymentParams }) => {
       if (!enabled) {
         throw new Error("Invalid params");

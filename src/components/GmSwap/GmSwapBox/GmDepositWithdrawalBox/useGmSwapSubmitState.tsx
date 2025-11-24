@@ -181,7 +181,10 @@ export const useGmSwapSubmitState = ({
       if (gasPaymentToken) {
         return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
       }
+    } else if (estimationError) {
+      return estimationError.name;
     }
+
     return undefined;
   }, [estimationError, gasPaymentToken]);
 

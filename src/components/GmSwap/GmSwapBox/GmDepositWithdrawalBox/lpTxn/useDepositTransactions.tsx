@@ -517,7 +517,7 @@ export const useDepositTransactions = ({
             throw toastCustomOrStargateError(chainId, error);
           });
       } else if (paySource === "gmxAccount") {
-        const expressTxnParams = await multichainDepositExpressTxnParams.promise;
+        const expressTxnParams = multichainDepositExpressTxnParams.data;
         if (!expressTxnParams) {
           throw new Error("Express txn params are not set");
         }
@@ -612,7 +612,7 @@ export const useDepositTransactions = ({
       shortTokenAddress,
       setMultichainTransferProgress,
       glvTokenAmount,
-      multichainDepositExpressTxnParams.promise,
+      multichainDepositExpressTxnParams.data,
       params,
       shouldDisableValidation,
       blockTimestampData,

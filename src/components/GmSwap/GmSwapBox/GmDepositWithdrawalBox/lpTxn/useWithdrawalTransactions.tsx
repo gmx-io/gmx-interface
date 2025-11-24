@@ -422,7 +422,7 @@ export const useWithdrawalTransactions = ({
           }
         });
       } else if (paySource === "gmxAccount") {
-        const expressTxnParams = await multichainWithdrawalExpressTxnParams.promise;
+        const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!expressTxnParams) {
           throw new Error("Express txn params are not set");
         }
@@ -502,12 +502,12 @@ export const useWithdrawalTransactions = ({
       rawParams,
       marketTokenAmount,
       setMultichainTransferProgress,
-      multichainWithdrawalExpressTxnParams.promise,
+      multichainWithdrawalExpressTxnParams.data,
+      addOptimisticTokensBalancesUpdates,
+      setPendingWithdrawal,
       shouldDisableValidation,
       setPendingTxns,
-      setPendingWithdrawal,
       blockTimestampData,
-      addOptimisticTokensBalancesUpdates,
     ]
   );
 
