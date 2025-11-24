@@ -10,17 +10,19 @@ export function getClaimTransactionCallData(
   tokens: string[],
   account: string,
   signature = "0x",
-  distributionId: bigint
+  distributionId: bigint,
+  claimTerms: string
 ) {
   const params = tokens.map((token) => ({
     token,
     distributionId,
     termsSignature: signature as `0x${string}`,
+    acceptedTerms: claimTerms,
   }));
 
   return encodeFunctionData({
     abi: ClaimHandlerAbi,
-    functionName: "claimFunds",
+    functionName: "acceptTermsAndClaim",
     args: [params, account],
   });
 }
@@ -32,11 +34,12 @@ export function createClaimAmountsTransaction(data: {
   account: string;
   signature: string | undefined;
   distributionId: bigint;
+  claimTerms: string;
   claimableTokenTitles: Record<string, string>;
   callback: TxnCallback<WalletTxnCtx>;
 }) {
-  const { tokens, chainId, signer, account, signature, distributionId, callback } = data;
-  const callData = getClaimTransactionCallData(tokens, account, signature, distributionId);
+  const { tokens, chainId, signer, account, signature, distributionId, claimTerms, callback } = data;
+  const callData = getClaimTransactionCallData(tokens, account, signature, distributionId, claimTerms);
 
   return sendWalletTransaction({
     chainId,

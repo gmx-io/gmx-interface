@@ -69,7 +69,7 @@ export const CONTRACTS = {
     LayerZeroProvider: "0x7129Ea01F0826c705d6F7ab01Cf3C06bb83E9397",
 
     ChainlinkPriceFeedProvider: "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B",
-    ClaimHandler: "0x28f1F4AA95F49FAB62464536A269437B13d48976",
+    ClaimHandler: "0x8a83F2a71A53d3860a60C9F2E68AB2C46Ff9624e",
 
     // External
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
@@ -146,7 +146,7 @@ export const CONTRACTS = {
     LayerZeroProvider: "0xA1D94802EcD642051B677dBF37c8E78ce6dd3784",
 
     ChainlinkPriceFeedProvider: "0x05d97cee050bfb81FB3EaD4A9368584F8e72C88e",
-    ClaimHandler: "0x7FfedCAC2eCb2C29dDc027B60D6F8107295Ff2eA",
+    ClaimHandler: "0xefCAdA759241D10B45d9Cb6265B19ADec97ceced",
 
     // External
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
@@ -187,7 +187,7 @@ export const CONTRACTS = {
     LayerZeroProvider: "0x61af99b07995cb7Ee8c2FACF6D8fb6042FeAA0d9",
 
     ChainlinkPriceFeedProvider: "0xDc613305e9267f0770072dEaB8c03162e0554b2d",
-    ClaimHandler: "0x3ca0f3ad78a9d0b2a0c060fe86d1141118a285c4",
+    ClaimHandler: "0x162e3a5B47C9a45ff762E5b4b23D048D6780C14e",
 
     // External
     ExternalHandler: "0x36b906eA6AE7c74aeEE8cDE66D01B3f1f8843872",
@@ -343,7 +343,7 @@ export const CONTRACTS = {
 
     ChainlinkPriceFeedProvider: "0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d",
     ReferralStorage: "0xBbCdA58c228Bb29B5769778181c81Ac8aC546c11",
-    ClaimHandler: "0x96FE82b9C6FE46af537cE465B3befBD7b076C982",
+    ClaimHandler: "0xdB980712cCB142A11296c1b9cf70C24E1e90002A",
 
     // External
     Multicall: "0xD84793ae65842fFac5C20Ab8eaBD699ea1FC79F3",

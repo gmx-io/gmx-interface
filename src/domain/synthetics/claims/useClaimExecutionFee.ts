@@ -16,6 +16,7 @@ export const useClaimExecutionFee = ({
   claimTermsAcceptedSignature,
   signer,
   distributionId,
+  claimTerms,
   isSmartAccount,
   isContractOwnersSigned,
 }: {
@@ -25,6 +26,7 @@ export const useClaimExecutionFee = ({
   claimTermsAcceptedSignature: string | undefined;
   signer: WalletSigner | undefined;
   distributionId: bigint;
+  claimTerms: string;
   isSmartAccount: boolean;
   isContractOwnersSigned: boolean;
 }) => {
@@ -34,14 +36,15 @@ export const useClaimExecutionFee = ({
     return Boolean(hasSignature && signer && account && claimableTokens.length > 0 && gasPrice !== undefined);
   }, [claimTermsAcceptedSignature, signer, account, claimableTokens, gasPrice, isSmartAccount, isContractOwnersSigned]);
 
-  return useSWR(enabled ? [account, claimableTokens, chainId, claimTermsAcceptedSignature, signer] : null, {
+  return useSWR(enabled ? [account, claimableTokens, chainId, claimTermsAcceptedSignature, claimTerms, signer] : null, {
     refreshInterval: undefined,
     fetcher: async () => {
       const callData = getClaimTransactionCallData(
         claimableTokens,
         account!,
         claimTermsAcceptedSignature!,
-        distributionId
+        distributionId,
+        claimTerms
       );
       const gasLimit = await estimateGasLimit(signer!.provider!, {
         to: getContract(chainId, "ClaimHandler"),

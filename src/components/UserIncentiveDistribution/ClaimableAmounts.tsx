@@ -72,6 +72,7 @@ export default function ClaimableAmounts() {
     claimTermsAcceptedSignature,
     signer,
     distributionId: GLP_DISTRIBUTION_ID,
+    claimTerms,
   });
 
   const onFinishMultisig = useCallback(
@@ -195,6 +196,7 @@ export default function ClaimableAmounts() {
         account,
         signature,
         distributionId: GLP_DISTRIBUTION_ID,
+        claimTerms,
         claimableTokenTitles,
         callback: claimFundsTransactionCallback,
       });
