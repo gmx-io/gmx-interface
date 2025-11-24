@@ -202,13 +202,6 @@ export const EXPRESS_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
   [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl("express")],
 };
 
-export const TESTING_RPC_PROVIDERS: Partial<Record<AnyChainId, string>> = {
-  [ARBITRUM]: getAlchemyArbitrumHttpUrl("testing"),
-  [SOURCE_BASE_MAINNET]: getAlchemyBaseMainnetHttpUrl("testing"),
-  [ARBITRUM_SEPOLIA]: getAlchemyArbitrumSepoliaHttpUrl("testing"),
-  [SOURCE_SEPOLIA]: getAlchemySepoliaHttpUrl("testing"),
-};
-
 type ConstantName = keyof (typeof constants)[ContractsChainId];
 
 export const getConstant = <T extends ContractsChainId, K extends ConstantName>(
@@ -234,22 +227,9 @@ export function getExpressRpcUrl(chainId: number): string {
   return sample(EXPRESS_RPC_PROVIDERS[chainId]);
 }
 
-export function getTestingRpcUrl(chainId: number): string {
-  return TESTING_RPC_PROVIDERS[chainId];
-}
-
-type AlchemyKeyPurpose = "fallback" | "largeAccount" | "express" | "testing";
+type AlchemyKeyPurpose = "fallback" | "largeAccount" | "express";
 
 function getAlchemyKey(purpose: AlchemyKeyPurpose): string {
-  if (purpose === "testing") {
-    if (import.meta.env.MODE === "test") {
-      if (!import.meta.env.VITE_APP_ALCHEMY_TESTING_KEY) {
-        throw new Error("VITE_APP_ALCHEMY_TESTING_KEY is not set");
-      }
-    }
-    return import.meta.env.VITE_APP_ALCHEMY_TESTING_KEY;
-  }
-
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
     if (purpose === "fallback") {
       return "NnWkTZJp8dNKXlCIfJwej";

@@ -15,9 +15,8 @@ import once from "lodash/once";
 import { createPublicClient, fallback, http, PublicClient } from "viem";
 import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
-import { botanix, getTestingRpcUrl, getViemChain, RPC_PROVIDERS } from "config/chains";
+import { botanix, getViemChain, RPC_PROVIDERS } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { LRUCache } from "sdk/utils/LruCache";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
@@ -79,26 +78,27 @@ export const getRainbowKitConfig = once(() =>
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
 export function getPublicClientWithRpc(chainId: number): PublicClient {
-  // TODO MLTCH DO NOT FORGET TO ADD TESTING KEY TO GITHUB SECRETS
-  const primaryRpcUrl =
-    import.meta.env.MODE === "test" ? getTestingRpcUrl(chainId) : getCurrentRpcUrls(chainId).primary;
-  const key = `chainId:${chainId}-rpcUrl:${primaryRpcUrl}`;
+  const key = `chainId:${chainId}`;
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
   }
   const publicClient = createPublicClient({
-    transport: http(
-      primaryRpcUrl,
-      import.meta.env.MODE === "test"
-        ? {
-            fetchOptions: {
-              headers: {
-                Origin: "http://localhost:3010",
-              },
-            },
-          }
-        : undefined
-    ),
+    transport: fallback([
+      ...RPC_PROVIDERS[chainId].map((url: string) =>
+        http(
+          url,
+          import.meta.env.MODE === "test"
+            ? {
+                fetchOptions: {
+                  headers: {
+                    Origin: "http://localhost:3010",
+                  },
+                },
+              }
+            : undefined
+        )
+      ),
+    ]),
     chain: getViemChain(chainId),
   });
   PUBLIC_CLIENTS_CACHE.set(key, publicClient);
