@@ -556,7 +556,8 @@ export const useDepositTransactions = ({
 
   return {
     onCreateDeposit,
-    isLoading: !multichainDepositExpressTxnParams.error && !multichainDepositExpressTxnParams.data,
-    error: multichainDepositExpressTxnParams.error,
+    isLoading:
+      paySource === "gmxAccount" && !multichainDepositExpressTxnParams.error && !multichainDepositExpressTxnParams.data,
+    error: paySource === "gmxAccount" ? multichainDepositExpressTxnParams.error : undefined,
   };
 };

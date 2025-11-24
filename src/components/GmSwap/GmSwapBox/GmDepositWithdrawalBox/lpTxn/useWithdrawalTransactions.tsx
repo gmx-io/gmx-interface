@@ -461,7 +461,10 @@ export const useWithdrawalTransactions = ({
 
   return {
     onCreateWithdrawal,
-    isLoading: multichainWithdrawalExpressTxnParams.isLoading,
-    error: multichainWithdrawalExpressTxnParams.error,
+    isLoading:
+      paySource === "gmxAccount" &&
+      !multichainWithdrawalExpressTxnParams.error &&
+      !multichainWithdrawalExpressTxnParams.data,
+    error: paySource === "gmxAccount" ? multichainWithdrawalExpressTxnParams.error : undefined,
   };
 };
