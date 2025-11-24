@@ -6155,10 +6155,6 @@ msgstr "GMXボールト"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
-msgid "{0} Balance"
-msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr "分"
@@ -6270,6 +6266,11 @@ msgstr "オープン手数料"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed."
 msgstr "売り注文が実行されました。"
+
+#. to network
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "<0>to </0><1>{0}</1>"
+msgstr "<0>へ </0><1>{0}</1>"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -6909,6 +6910,7 @@ msgid "Confirm Claim"
 msgstr "請求を確認"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -7202,6 +7204,9 @@ msgstr ""
 msgid "NFT ID"
 msgstr "NFT ID"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
 msgstr "ネットワークを選択"

@@ -1,9 +1,11 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters } from "viem";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { getChainIcon } from "config/icons";
 import { getLayerZeroEndpointId, getStargatePoolAddress } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -24,9 +26,10 @@ import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
-import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
+import { useGmxAccountWithdrawNetworks, useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -85,6 +88,8 @@ export function BridgeOutModal({
     enabled: isVisible,
   });
 
+  const networks = useGmxAccountWithdrawNetworks();
+
   const settlementChainMarketTokenBalancesData: Partial<Record<0 | AnyChainId, bigint>> = useMemo(() => {
     return {
       [0]: marketTokenBalancesData[0],
@@ -93,13 +98,9 @@ export function BridgeOutModal({
 
   const gmxAccountMarketTokenBalance: bigint | undefined = settlementChainMarketTokenBalancesData[0];
 
-  const bridgeOutChainMarketTokenBalance: bigint | undefined = bridgeOutChain
-    ? marketTokenBalancesData[bridgeOutChain]
-    : undefined;
-
-  const nextBridgeOutMarketTokenBalance: bigint | undefined =
-    bridgeOutChainMarketTokenBalance !== undefined && bridgeOutAmount !== undefined
-      ? bridgeOutChainMarketTokenBalance + bridgeOutAmount
+  const nextGmxAccountMarketTokenBalance: bigint | undefined =
+    gmxAccountMarketTokenBalance !== undefined && bridgeOutAmount !== undefined
+      ? gmxAccountMarketTokenBalance - bridgeOutAmount
       : undefined;
 
   const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
@@ -173,6 +174,7 @@ export function BridgeOutModal({
     expressTransactionBuilder,
     isGmxAccount: true,
     enabled: isVisible,
+    // label: "BridgeOutModal",
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
@@ -245,6 +247,13 @@ export function BridgeOutModal({
       };
     }
 
+    if (bridgeOutChain === undefined) {
+      return {
+        text: t`Select network`,
+        disabled: true,
+      };
+    }
+
     if (
       gmxAccountMarketTokenBalance === undefined ||
       marketTokenDecimals === undefined ||
@@ -282,12 +291,13 @@ export function BridgeOutModal({
     };
   }, [
     isCreatingTxn,
-    expressTxnParamsAsyncResult,
-    errors,
     bridgeOutInputValue,
+    bridgeOutChain,
     gmxAccountMarketTokenBalance,
     marketTokenDecimals,
     bridgeOutAmount,
+    errors?.isOutOfTokenError,
+    expressTxnParamsAsyncResult.data,
   ]);
 
   if (!glvOrMarketInfo) {
@@ -299,6 +309,7 @@ export function BridgeOutModal({
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={t`Withdraw ${glvOrGm}: ${getMarketIndexName(glvOrMarketInfo)}`}
+      desktopContentClassName="w-[420px]"
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-12">
         <BuyInputSection
@@ -326,29 +337,74 @@ export function BridgeOutModal({
             <SelectedPoolLabel glvOrMarketInfo={glvOrMarketInfo} />
           </span>
         </BuyInputSection>
+
+        <DropdownSelector
+          value={bridgeOutChain}
+          onChange={(value) => {
+            setBridgeOutChain(Number(value) as SourceChainId);
+          }}
+          placeholder={t`Select network`}
+          button={
+            <div className="flex items-center gap-8 text-14">
+              {bridgeOutChain !== undefined ? (
+                <>
+                  <img src={getChainIcon(bridgeOutChain)} alt={getChainName(bridgeOutChain)} className="size-20" />
+                  <div>
+                    <Trans comment="to network">
+                      <span className="text-typography-secondary">to </span>
+                      <span>{getChainName(bridgeOutChain)}</span>
+                    </Trans>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                </>
+              )}
+            </div>
+          }
+          options={networks}
+          item={NetworkItem}
+          itemKey={networkItemKey}
+        />
+
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}
         </Button>
-        {bridgeOutChain !== undefined && (
-          <SyntheticsInfoRow
-            label={t`${getChainName(bridgeOutChain)} Balance`}
-            value={
-              <ValueTransition
-                from={
-                  bridgeOutChainMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
-                    ? formatBalanceAmount(bridgeOutChainMarketTokenBalance, marketTokenDecimals)
-                    : undefined
-                }
-                to={
-                  nextBridgeOutMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
-                    ? formatBalanceAmount(nextBridgeOutMarketTokenBalance, marketTokenDecimals)
-                    : undefined
-                }
-              />
-            }
-          />
-        )}
+        <SyntheticsInfoRow
+          label={t`GMX Account Balance`}
+          value={
+            <ValueTransition
+              from={
+                gmxAccountMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
+                  ? formatBalanceAmount(gmxAccountMarketTokenBalance, marketTokenDecimals, glvOrGm)
+                  : undefined
+              }
+              to={
+                nextGmxAccountMarketTokenBalance !== undefined && marketTokenDecimals !== undefined
+                  ? formatBalanceAmount(nextGmxAccountMarketTokenBalance, marketTokenDecimals, glvOrGm)
+                  : undefined
+              }
+            />
+          }
+        />
       </form>
     </SlideModal>
+  );
+}
+
+function networkItemKey(option: { id: number; name: string }) {
+  return option.id;
+}
+
+function NetworkItem({ option }: { option: { id: number; name: string } }) {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-8">
+        <img src={getChainIcon(option.id)} alt={option.name} className="size-20" />
+        <span className="text-body-large">{option.name}</span>
+      </div>
+    </div>
   );
 }

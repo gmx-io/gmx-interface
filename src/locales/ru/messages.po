@@ -6155,10 +6155,6 @@ msgstr "Хранилище GMX"
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
-msgid "{0} Balance"
-msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr "Минута(ы)"
@@ -6270,6 +6266,11 @@ msgstr "Комиссия за открытие"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed."
 msgstr "Ордер на продажу исполнен."
+
+#. to network
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "<0>to </0><1>{0}</1>"
+msgstr "<0>в </0><1>{0}</1>"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -6909,6 +6910,7 @@ msgid "Confirm Claim"
 msgstr "Подтвердить заявку"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -7202,6 +7204,9 @@ msgstr ""
 msgid "NFT ID"
 msgstr "ID NFT"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
 msgstr "Выберите сеть"

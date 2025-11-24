@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
@@ -115,6 +115,23 @@ export function BridgeInModal({
     tokenBalanceType: TokenBalanceType.SourceChain,
   });
 
+  useEffect(() => {
+    if (bridgeInChain !== undefined) {
+      return;
+    }
+
+    const firstChainWithBalance = Object.entries(sourceChainMarketTokenBalancesData).find(([chainId, balance]) => {
+      if (!isSourceChain(Number(chainId))) {
+        return false;
+      }
+      return balance !== undefined && balance > 0n;
+    });
+
+    if (firstChainWithBalance) {
+      setBridgeInChain(Number(firstChainWithBalance[0]) as SourceChainId);
+    }
+  }, [bridgeInChain, sourceChainMarketTokenBalancesData]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!account || !glvOrMarketAddress || bridgeInAmount === undefined || !bridgeInChain) {
@@ -163,6 +180,13 @@ export function BridgeInModal({
       };
     }
 
+    if (bridgeInChain === undefined) {
+      return {
+        text: t`Select network`,
+        disabled: true,
+      };
+    }
+
     if (
       bridgeInChainMarketTokenBalance === undefined ||
       bridgeInAmount === undefined ||
@@ -179,7 +203,14 @@ export function BridgeInModal({
       text: t`Deposit`,
       disabled: false,
     };
-  }, [isCreatingTxn, bridgeInInputValue, bridgeInChainMarketTokenBalance, bridgeInAmount, sourceChainDecimals]);
+  }, [
+    isCreatingTxn,
+    bridgeInInputValue,
+    bridgeInChain,
+    bridgeInChainMarketTokenBalance,
+    bridgeInAmount,
+    sourceChainDecimals,
+  ]);
 
   if (!glvOrMarketInfo) {
     return null;
@@ -190,6 +221,7 @@ export function BridgeInModal({
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={t`Deposit ${glvOrGm}: ${getMarketIndexName(glvOrMarketInfo)}`}
+      desktopContentClassName="w-[420px]"
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-12">
         <BuyInputSection
@@ -233,12 +265,12 @@ export function BridgeInModal({
             <ValueTransition
               from={
                 gmxAccountMarketTokenBalance !== undefined && PLATFORM_TOKEN_DECIMALS !== undefined
-                  ? formatBalanceAmount(gmxAccountMarketTokenBalance, PLATFORM_TOKEN_DECIMALS)
+                  ? formatBalanceAmount(gmxAccountMarketTokenBalance, PLATFORM_TOKEN_DECIMALS, glvOrGm)
                   : undefined
               }
               to={
                 nextGmxAccountMarketTokenBalance !== undefined && PLATFORM_TOKEN_DECIMALS !== undefined
-                  ? formatBalanceAmount(nextGmxAccountMarketTokenBalance, PLATFORM_TOKEN_DECIMALS)
+                  ? formatBalanceAmount(nextGmxAccountMarketTokenBalance, PLATFORM_TOKEN_DECIMALS, glvOrGm)
                   : undefined
               }
             />

@@ -6155,10 +6155,6 @@ msgstr ""
 msgid "Jones DAO"
 msgstr ""
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
-msgid "{0} Balance"
-msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
 msgstr ""
@@ -6269,6 +6265,11 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed."
+msgstr ""
+
+#. to network
+#: src/components/BridgeModal/BridgeOutModal.tsx
+msgid "<0>to </0><1>{0}</1>"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -6909,6 +6910,7 @@ msgid "Confirm Claim"
 msgstr ""
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -7202,6 +7204,9 @@ msgstr ""
 msgid "NFT ID"
 msgstr ""
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
 msgstr ""
