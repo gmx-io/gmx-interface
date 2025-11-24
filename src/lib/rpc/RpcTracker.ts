@@ -1,8 +1,17 @@
 import orderBy from "lodash/orderBy";
 import { decodeFunctionResult, encodeFunctionData } from "viem";
 
-import { ContractsChainId, getChainName, getRpcProviders, RpcConfig, RpcPurpose } from "config/rpc";
+import {
+  ContractsChainId,
+  getChainName,
+  getProviderNameFromUrl,
+  getRpcProviders,
+  RpcConfig,
+  RpcPurpose,
+} from "config/rpc";
 import { DEFAULT_FALLBACK_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import type { RpcTrackerUpdateEndpointsEvent } from "lib/metrics/types";
 import { fetchEthCall } from "lib/rpc/fetchEthCall";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -76,9 +85,11 @@ export class RpcTracker {
       checkEndpoint: this.probeProvider,
       selectNextPrimary: this.selectNextPrimary,
       selectNextSecondary: this.selectNextSecondary,
-      onUpdate: () => {
+      onUpdate: ({ primary, secondary, endpointsStats }) => {
         devtools.debugRpcTrackerState(this);
+        this.emitUpdateEndpointsMetric({ primary, secondary, endpointsStats });
       },
+      getEndpointName: getProviderNameFromUrl,
     });
   }
 
@@ -294,5 +305,45 @@ export class RpcTracker {
     return mostRecentBlock - secondRecentBlock > this.params.blockFromFutureThreshold
       ? secondRecentBlock
       : mostRecentBlock;
+  };
+
+  emitUpdateEndpointsMetric = ({
+    primary,
+    secondary,
+    endpointsStats,
+  }: {
+    primary: string;
+    secondary: string;
+    endpointsStats: RpcStats[];
+  }) => {
+    const bestValidBlock = this.getBestValidBlock(endpointsStats);
+    const primaryStats = endpointsStats.find((s) => s.endpoint === primary);
+    const secondaryStats = endpointsStats.find((s) => s.endpoint === secondary);
+
+    emitMetricEvent<RpcTrackerUpdateEndpointsEvent>({
+      event: "rpcTracker.updateEndpoints",
+      isError: false,
+      data: {
+        chainName: getChainName(this.params.chainId),
+        primary: getProviderNameFromUrl(primary),
+        secondary: getProviderNameFromUrl(secondary),
+        primaryBlockGap: this.getBlockGap(primaryStats, bestValidBlock),
+        secondaryBlockGap: this.getBlockGap(secondaryStats, bestValidBlock),
+      },
+    });
+  };
+
+  getBlockGap = (endpointStats: RpcStats | undefined, bestValidBlock: number | undefined): number | "unknown" => {
+    if (!endpointStats) {
+      return "unknown";
+    }
+
+    const blockNumber = endpointStats.checkResult?.stats?.blockNumber;
+
+    if (typeof blockNumber !== "number" || !bestValidBlock) {
+      return "unknown";
+    }
+
+    return bestValidBlock - blockNumber;
   };
 }

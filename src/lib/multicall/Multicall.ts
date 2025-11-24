@@ -3,6 +3,7 @@ import { Chain, createPublicClient, http } from "viem";
 import { getIsFlagEnabled } from "config/ab";
 import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
+import { getProviderNameFromUrl } from "config/rpc";
 import type {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -14,7 +15,6 @@ import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metric
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
 import { serializeMulticallErrors } from "lib/multicall/utils";
 import { markFailedRpcProvider } from "lib/rpc/bestRpcTracker";
-import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { AbiId, abis as allAbis } from "sdk/abis";

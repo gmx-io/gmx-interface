@@ -19,12 +19,12 @@ import {
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
 import { getChainName, getFallbackRpcUrl, getRpcProviders } from "config/rpc";
+import { getProviderNameFromUrl } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { devtools } from "lib/devtools";
-import { FallbackTrackerRankingCounter } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
+import { FallbackTrackerRankingCounter } from "lib/metrics/types";
 import { EMPTY_OBJECT } from "lib/objects";
-import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
 import { sleep } from "lib/sleep";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
@@ -231,7 +231,7 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
     event: "fallbackTracker.ranking.updateEndpoints",
     data: {
       chainId,
-      key: `RpcTracker:${getChainName(chainId)}`,
+      key: `OldRpcTracker:${getChainName(chainId)}`,
       primary: getProviderNameFromUrl(primaryUrl),
       secondaryRpc: getProviderNameFromUrl(secondaryUrl),
       primaryBlockGap: bestBestBlockGap ?? "unknown",

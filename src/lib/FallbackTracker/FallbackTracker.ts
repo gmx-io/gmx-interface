@@ -2,6 +2,8 @@ import { differenceInMilliseconds } from "date-fns";
 
 import { getFallbackTrackerKey } from "config/localStorage";
 import { ErrorLike } from "lib/errors";
+import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import type { FallbackTrackerBannedEvent } from "lib/metrics/types";
 import { sleepWithSignal } from "lib/sleep";
 import { combineAbortSignals } from "sdk/utils/abort";
 
@@ -76,7 +78,8 @@ export type FallbackTrackerParams<TCheckResult> = {
     secondary: string;
   }) => string | undefined;
 
-  onUpdate?: () => void;
+  onUpdate?: (params: { primary: string; secondary: string; endpointsStats: EndpointStats<TCheckResult>[] }) => void;
+  getEndpointName?: (endpoint: string) => string | undefined;
 };
 
 export type FallbackTrackerState<TCheckStats> = {
@@ -138,9 +141,19 @@ export class FallbackTracker<TCheckStats> {
     return `${this.trackerKey}:endpointsUpdated`;
   }
 
-  emitEndpointsUpdated(primary: string, secondary: string) {
-    window.dispatchEvent(new CustomEvent(this.edpointsUpdatedEventKey, { detail: { primary, secondary } }));
-    this.params.onUpdate?.();
+  emitEndpointsUpdated({
+    primary,
+    secondary,
+    endpointsStats,
+  }: {
+    primary: string;
+    secondary: string;
+    endpointsStats: EndpointStats<TCheckStats>[];
+  }) {
+    window.dispatchEvent(
+      new CustomEvent(this.edpointsUpdatedEventKey, { detail: { primary, secondary, endpointsStats } })
+    );
+    this.params.onUpdate?.({ primary, secondary, endpointsStats });
   }
 
   warn(message: string) {
@@ -265,6 +278,16 @@ export class FallbackTracker<TCheckStats> {
       timestamp: Date.now(),
       reason,
     };
+
+    emitMetricEvent<FallbackTrackerBannedEvent>({
+      event: "fallbackTracker.endpoint.banned",
+      isError: false,
+      data: {
+        key: this.trackerKey,
+        endpoint: this.params.getEndpointName?.(endpoint) ?? endpoint,
+        reason,
+      },
+    });
 
     const keepPrimary = this.state.primary !== endpoint;
     const keepSecondary = this.state.secondary !== endpoint;
@@ -404,7 +427,11 @@ export class FallbackTracker<TCheckStats> {
           secondary: nextSecondary,
         });
 
-        this.emitEndpointsUpdated(nextPrimary, nextSecondary);
+        this.emitEndpointsUpdated({
+          primary: nextPrimary,
+          secondary: nextSecondary,
+          endpointsStats: endpointsStats,
+        });
       }
     };
 

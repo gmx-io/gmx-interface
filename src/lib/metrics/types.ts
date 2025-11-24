@@ -239,9 +239,10 @@ export type OrderCancelledEvent = {
   data: OrderMetricData & ErrorData;
 };
 
-// RPC tracking
-export type FallbackTrackerBannedCounter = {
+// Fallback tracking
+export type FallbackTrackerBannedEvent = {
   event: "fallbackTracker.endpoint.banned";
+  isError: false;
   data: {
     key: string;
     endpoint: string;
@@ -259,6 +260,18 @@ export type FallbackTrackerRankingCounter = {
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
     isLargeAccount: boolean;
+  };
+};
+
+export type RpcTrackerUpdateEndpointsEvent = {
+  event: "rpcTracker.updateEndpoints";
+  isError: false;
+  data: {
+    chainName: string;
+    primary: string;
+    secondary: string;
+    primaryBlockGap: number | "unknown";
+    secondaryBlockGap: number | "unknown";
   };
 };
 
@@ -494,6 +507,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
@@ -538,6 +552,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
@@ -561,6 +576,7 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
