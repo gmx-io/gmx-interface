@@ -1110,8 +1110,8 @@ msgid "Collateral"
 msgstr "Kollateral"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-msgid "Accept the claim terms to continue."
-msgstr "Akzeptieren Sie die Einlösebedingungen, um fortzufahren."
+#~ msgid "Accept the claim terms to continue."
+#~ msgstr "Akzeptieren Sie die Einlösebedingungen, um fortzufahren."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -3313,6 +3313,10 @@ msgstr "Debug-Einstellungen"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "Mehr Optionen"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network."
@@ -6603,8 +6607,8 @@ msgid "Swap failed."
 msgstr "Tausch fehlgeschlagen."
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-msgid "Accept claim terms"
-msgstr ""
+#~ msgid "Accept claim terms"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
@@ -7251,8 +7255,8 @@ msgid "Limit Decrease"
 msgstr "Limit-Verringerung"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-msgid "Waiting for the remaining Safe confirmations."
-msgstr "Warten auf die verbleibenden Safe-Bestätigungen."
+#~ msgid "Waiting for the remaining Safe confirmations."
+#~ msgstr "Warten auf die verbleibenden Safe-Bestätigungen."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"

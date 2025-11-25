@@ -1110,8 +1110,8 @@ msgid "Collateral"
 msgstr "抵押品"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-msgid "Accept the claim terms to continue."
-msgstr "接受申领条款以继续。"
+#~ msgid "Accept the claim terms to continue."
+#~ msgstr "接受申领条款以继续。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -3313,6 +3313,10 @@ msgstr "调试设置"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "更多选项"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "The settlement chain is the network used for your GMX Account and opening positions. GMX Account balances and positions are specific to the selected network."
@@ -6603,8 +6607,8 @@ msgid "Swap failed."
 msgstr "交换失败。"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-msgid "Accept claim terms"
-msgstr ""
+#~ msgid "Accept claim terms"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
@@ -7251,8 +7255,8 @@ msgid "Limit Decrease"
 msgstr "限价减少"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-msgid "Waiting for the remaining Safe confirmations."
-msgstr "等待剩余 Safe 确认。"
+#~ msgid "Waiting for the remaining Safe confirmations."
+#~ msgstr "等待剩余 Safe 确认。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
