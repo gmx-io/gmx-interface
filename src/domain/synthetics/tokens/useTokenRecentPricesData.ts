@@ -78,10 +78,6 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           priceItems,
           pricesCacheRef: PRICES_CACHE[chainId],
           pricesCacheUpdatedRef: PRICES_CACHE_UPDATED[chainId],
-          resultLength: Object.keys(result).length,
-          pricesCacheRefLength: Object.keys(PRICES_CACHE[chainId]).length,
-          resultKeys: Object.keys(result),
-          pricesCacheRefKeys: Object.keys(PRICES_CACHE[chainId]),
         });
 
         metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
