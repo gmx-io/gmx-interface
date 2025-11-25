@@ -12,7 +12,7 @@ import {
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
-import { createPublicClient, fallback, http, PublicClient } from "viem";
+import { createPublicClient, fallback, http, PublicClient, Transport } from "viem";
 import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
 import { botanix, getViemChain, RPC_PROVIDERS } from "config/chains";
@@ -60,17 +60,23 @@ export const getRainbowKitConfig = once(() =>
       bsc,
       ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
     ],
-    transports: {
-      [arbitrum.id]: fallback([...RPC_PROVIDERS[arbitrum.id].map((url) => http(url))]),
-      [avalanche.id]: fallback([...RPC_PROVIDERS[avalanche.id].map((url) => http(url))]),
-      [avalancheFuji.id]: fallback([...RPC_PROVIDERS[avalancheFuji.id].map((url) => http(url))]),
-      [arbitrumSepolia.id]: fallback([...RPC_PROVIDERS[arbitrumSepolia.id].map((url) => http(url))]),
-      [base.id]: fallback([...RPC_PROVIDERS[base.id].map((url) => http(url))]),
-      [optimismSepolia.id]: fallback([...RPC_PROVIDERS[optimismSepolia.id].map((url) => http(url))]),
-      [sepolia.id]: fallback([...RPC_PROVIDERS[sepolia.id].map((url) => http(url))]),
-      [botanix.id]: fallback([...RPC_PROVIDERS[botanix.id].map((url) => http(url))]),
-      [bsc.id]: fallback([...RPC_PROVIDERS[bsc.id].map((url) => http(url))]),
-    },
+    transports: [
+      arbitrum,
+      avalanche,
+      avalancheFuji,
+      arbitrumSepolia,
+      base,
+      optimismSepolia,
+      sepolia,
+      botanix,
+      bsc,
+    ].reduce(
+      (acc, chain) => {
+        acc[chain.id] = fallback([...RPC_PROVIDERS[chain.id].map((url: string) => http(url))]);
+        return acc;
+      },
+      {} as Record<number, Transport>
+    ),
     wallets: [...popularWalletList, ...othersWalletList],
   })
 );
