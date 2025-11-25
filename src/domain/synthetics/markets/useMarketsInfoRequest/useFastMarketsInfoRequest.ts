@@ -244,12 +244,6 @@ export function useFastMarketsInfoRequest(chainId: number) {
     },
   });
 
-  console.log("fastMarketInfoData", {
-    fastMarketInfoData,
-    error,
-    isLoading,
-  });
-
   return useMemo(
     () => ({
       fastMarketInfoData,
