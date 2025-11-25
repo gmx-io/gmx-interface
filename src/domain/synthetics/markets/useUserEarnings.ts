@@ -1,3 +1,4 @@
+import chunk from "lodash/chunk";
 import { useMemo } from "react";
 import useSWR from "swr";
 
@@ -89,6 +90,8 @@ function createQuery(marketAddress: string) {
 `;
 }
 
+const MARKETS_BATCH_SIZE = 15;
+
 export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceChainId | undefined) => {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
@@ -115,18 +118,19 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
 
       const startOfPeriod = Math.floor(Date.now() / 1000) - daysConsidered * 24 * 60 * 60;
 
-      let queryBody = "";
+      const chunks = chunk(marketAddresses, MARKETS_BATCH_SIZE);
+      const requests: Promise<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | undefined>[] = [];
 
-      marketAddresses.forEach((marketAddress) => {
-        queryBody += createQuery(marketAddress);
-      });
+      for (const chunk of chunks) {
+        let queryBody = "";
 
-      queryBody = `query ($account: String, $startOfPeriod: Int) {${queryBody}}`;
+        chunk.forEach((marketAddress) => {
+          queryBody += createQuery(marketAddress);
+        });
 
-      let responseOrUndefined: Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | undefined =
-        undefined;
-      try {
-        responseOrUndefined = await graphqlFetcher<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]>>(
+        queryBody = `query ($account: String, $startOfPeriod: Int) {${queryBody}}`;
+
+        const request = graphqlFetcher<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]>>(
           subgraphUrl!,
           queryBody,
           {
@@ -134,6 +138,23 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
             startOfPeriod,
           }
         );
+
+        requests.push(request);
+      }
+
+      let responseOrUndefined: Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | undefined =
+        undefined;
+
+      try {
+        const chunkResponses = await Promise.all(requests);
+        responseOrUndefined = chunkResponses.reduce((acc, chunkResponse) => {
+          if (!chunkResponse) return acc;
+
+          return {
+            ...acc,
+            ...chunkResponse,
+          };
+        }, {});
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);

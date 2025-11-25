@@ -38,13 +38,12 @@
     "@floating-ui/dom": "1.6.7",
     "@floating-ui/react": "0.26.19",
     "@gelatonetwork/relay-sdk": "5.6.0",
-    "@gemini-wallet/rainbow": "0.2.0",
     "@headlessui/react": "1.7.19",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "@lingui/core": "4.10.0",
     "@lingui/macro": "4.11.3",
     "@lingui/react": "4.10.0",
-    "@rainbow-me/rainbowkit": "2.2.0",
+    "@rainbow-me/rainbowkit": "2.2.9",
     "@stargatefinance/stg-evm-sdk-v2": "1.1.12",
     "@tanstack/react-query": "5.25.0",
     "@taskworld.com/rereselect": "0.3.0",
@@ -58,8 +57,8 @@
     "@types/react-router-dom": "5.3.3",
     "@uniswap/sdk-core": "3.0.1",
     "@uniswap/v3-sdk": "3.9.0",
-    "@wagmi/connectors": "5.3.7",
-    "@wagmi/core": "2.14.4",
+    "@wagmi/connectors": "6.1.4",
+    "@wagmi/core": "2.22.1",
     "bigdecimal": "0.6.1",
     "bowser": "2.11.0",
     "classnames": "2.3.1",
@@ -100,8 +99,8 @@
     "swr": "2.3.3",
     "typescript": "5.4.2",
     "use-context-selector": "1.4.1",
-    "viem": "2.37.1",
-    "wagmi": "2.12.29",
+    "viem": "2.39.0",
+    "wagmi": "2.19.3",
     "web-vitals": "1.1.2",
     "worker-loader": "3.0.8"
   },
@@ -110,7 +109,7 @@
     "@coinbase/wallet-sdk": "4.3.0",
     "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
     "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8",
-    "viem@2.37.1": "patch:viem@npm:2.37.1#.yarn/patches/viem-npm-2.37.1-7013552341"
+    "viem@2.39.0": "patch:viem@npm:2.39.0#.yarn/patches/viem-npm-2.39.0-c113f391fd"
   },
   "eslintConfig": {
     "extends": [

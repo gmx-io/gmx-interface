@@ -888,18 +888,22 @@ export const DepositView = () => {
 
       {isAboveLimit && (
         <AlertInfoCard type="warning" className="mt-8">
-          <Trans>
-            The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
-            <span className="numbers">{upperLimitFormatted}</span>.
-          </Trans>
+          <div>
+            <Trans>
+              The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
+              <span className="numbers">{upperLimitFormatted}</span>.
+            </Trans>
+          </div>
         </AlertInfoCard>
       )}
       {isBelowLimit && (
         <AlertInfoCard type="warning" className="mt-8">
-          <Trans>
-            The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
-            <span className="numbers">{lowerLimitFormatted}</span>.
-          </Trans>
+          <div>
+            <Trans>
+              The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
+              <span className="numbers">{lowerLimitFormatted}</span>.
+            </Trans>
+          </div>
         </AlertInfoCard>
       )}
       <div className="h-32 shrink-0 grow" />

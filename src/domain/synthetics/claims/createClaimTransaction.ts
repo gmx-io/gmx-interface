@@ -6,19 +6,28 @@ import type { WalletSigner } from "lib/wallets";
 import ClaimHandlerAbi from "sdk/abis/ClaimHandler";
 import type { ContractsChainId } from "sdk/configs/chains";
 
-export function getClaimTransactionCallData(
-  tokens: string[],
-  account: string,
-  signature = "0x",
-  distributionId: bigint,
-  claimTerms: string
-) {
-  const params = tokens.map((token) => ({
-    token,
-    distributionId,
-    termsSignature: signature as `0x${string}`,
-    acceptedTerms: claimTerms,
-  }));
+import { ClaimableAmountsDataByDistributionId } from "./useUserClaimableAmounts";
+
+export function getClaimTransactionCallData({
+  selectedDistributionIds,
+  claimableAmountsDataByDistributionId,
+  account,
+  signatures,
+}: {
+  selectedDistributionIds: string[];
+  claimableAmountsDataByDistributionId: ClaimableAmountsDataByDistributionId;
+  account: string;
+  signatures: Record<string, string | undefined>;
+  acceptedTerms: string;
+}) {
+  const params = selectedDistributionIds.flatMap((distributionId) => {
+    return claimableAmountsDataByDistributionId[distributionId].amounts.map((amount) => ({
+      token: amount.token.address,
+      distributionId: BigInt(distributionId),
+      termsSignature: signatures[distributionId] ?? "0x",
+      acceptedTerms: acceptedTerms,
+    }));
+  });
 
   return encodeFunctionData({
     abi: ClaimHandlerAbi,
@@ -28,18 +37,30 @@ export function getClaimTransactionCallData(
 }
 
 export function createClaimAmountsTransaction(data: {
-  tokens: string[];
+  selectedDistributionIds: string[];
+  claimableAmountsDataByDistributionId: ClaimableAmountsDataByDistributionId;
   chainId: ContractsChainId;
   signer: WalletSigner;
   account: string;
-  signature: string | undefined;
-  distributionId: bigint;
-  claimTerms: string;
-  claimableTokenTitles: Record<string, string>;
+  signatures: Record<string, string | undefined>;
   callback: TxnCallback<WalletTxnCtx>;
 }) {
-  const { tokens, chainId, signer, account, signature, distributionId, claimTerms, callback } = data;
-  const callData = getClaimTransactionCallData(tokens, account, signature, distributionId, claimTerms);
+  const {
+    selectedDistributionIds,
+    claimableAmountsDataByDistributionId,
+    chainId,
+    signer,
+    account,
+    signatures,
+    callback,
+  } = data;
+
+  const callData = getClaimTransactionCallData({
+    selectedDistributionIds,
+    claimableAmountsDataByDistributionId,
+    account,
+    signatures,
+  });
 
   return sendWalletTransaction({
     chainId,

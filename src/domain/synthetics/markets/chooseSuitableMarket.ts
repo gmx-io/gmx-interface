@@ -72,7 +72,6 @@ export function getLargestRelatedExistingPositionOrOrder({
         marketAddress: order.marketAddress,
         collateralTokenAddress: order.initialCollateralTokenAddress,
       };
-      return;
     }
   });
 
@@ -108,7 +107,10 @@ export function chooseSuitableMarket({
       tradeType: TradeType.Swap,
     };
   }
-  const maxLiquidtyPool = preferredTradeType === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
+
+  const tradeTypeForPoolSelection =
+    preferredTradeType === "largestPosition" ? currentTradeType ?? TradeType.Long : preferredTradeType;
+  const maxLiquidityPool = tradeTypeForPoolSelection === TradeType.Long ? maxLongLiquidityPool : maxShortLiquidityPool;
 
   if (preferredTradeType === "largestPosition" && positionsInfo) {
     let largestLongPositionOrOrder = getLargestRelatedExistingPositionOrOrder({
@@ -126,7 +128,7 @@ export function chooseSuitableMarket({
     });
 
     if (!largestLongPositionOrOrder && !largestShortPositionOrOrder) {
-      let marketTokenAddress = maxLiquidtyPool?.marketTokenAddress;
+      let marketTokenAddress = maxLiquidityPool?.marketTokenAddress;
 
       if (!marketTokenAddress) {
         return undefined;
@@ -158,14 +160,14 @@ export function chooseSuitableMarket({
       collateralTokenAddress: largestPositionOrOrder?.collateralTokenAddress,
     };
   } else if (preferredTradeType === "largestPosition") {
-    if (!maxLongLiquidityPool) {
+    if (!maxLiquidityPool) {
       return undefined;
     }
 
     return {
       indexTokenAddress,
-      marketTokenAddress: maxLongLiquidityPool.marketTokenAddress,
-      tradeType: TradeType.Long,
+      marketTokenAddress: maxLiquidityPool.marketTokenAddress,
+      tradeType: currentTradeType ?? TradeType.Long,
     };
   }
 
@@ -178,7 +180,7 @@ export function chooseSuitableMarket({
       indexTokenAddress,
     });
 
-  const marketAddress = largestPositionOrOrder?.marketAddress ?? maxLiquidtyPool?.marketTokenAddress;
+  const marketAddress = largestPositionOrOrder?.marketAddress ?? maxLiquidityPool?.marketTokenAddress;
 
   if (!marketAddress) {
     return undefined;

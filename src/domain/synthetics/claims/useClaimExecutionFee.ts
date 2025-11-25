@@ -8,44 +8,70 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 import { useGasPrice } from "../fees";
 import { getClaimTransactionCallData } from "./createClaimTransaction";
+import { ClaimableAmountsDataByDistributionId, ClaimsConfigurationData } from "./useUserClaimableAmounts";
 
 export const useClaimExecutionFee = ({
-  account,
-  claimableTokens,
+  selectedDistributionIds,
+  claimableAmountsDataByDistributionId,
+  claimsConfigByDistributionId,
   chainId,
-  claimTermsAcceptedSignature,
   signer,
-  distributionId,
-  claimTerms,
-  isSmartAccount,
-  isContractOwnersSigned,
+  account,
+  signatures,
 }: {
-  account: string | undefined;
-  claimableTokens: string[];
+  selectedDistributionIds: string[];
+  claimableAmountsDataByDistributionId: ClaimableAmountsDataByDistributionId | undefined;
+  claimsConfigByDistributionId: ClaimsConfigurationData | undefined;
   chainId: ContractsChainId;
-  claimTermsAcceptedSignature: string | undefined;
   signer: WalletSigner | undefined;
-  distributionId: bigint;
-  claimTerms: string;
-  isSmartAccount: boolean;
-  isContractOwnersSigned: boolean;
+  account: string | undefined;
+  signatures: Record<string, string | undefined>;
 }) => {
   const gasPrice = useGasPrice(chainId);
-  const enabled = useMemo(() => {
-    const hasSignature = isSmartAccount ? isContractOwnersSigned : claimTermsAcceptedSignature;
-    return Boolean(hasSignature && signer && account && claimableTokens.length > 0 && gasPrice !== undefined);
-  }, [claimTermsAcceptedSignature, signer, account, claimableTokens, gasPrice, isSmartAccount, isContractOwnersSigned]);
 
-  return useSWR(enabled ? [account, claimableTokens, chainId, claimTermsAcceptedSignature, claimTerms, signer] : null, {
+  const enabled = useMemo(() => {
+    if (
+      gasPrice === undefined ||
+      claimableAmountsDataByDistributionId === undefined ||
+      claimsConfigByDistributionId === undefined ||
+      signer === undefined ||
+      account === undefined ||
+      selectedDistributionIds.length === 0
+    ) {
+      return false;
+    }
+
+    return selectedDistributionIds.every((distributionId) => {
+      if (claimsConfigByDistributionId[distributionId]?.claimTerms) {
+        return signatures[distributionId] !== undefined;
+      }
+
+      return true;
+    });
+  }, [
+    signatures,
+    selectedDistributionIds,
+    gasPrice,
+    claimsConfigByDistributionId,
+    claimableAmountsDataByDistributionId,
+    signer,
+    account,
+  ]);
+
+  return useSWR(enabled ? [account, selectedDistributionIds, chainId, signer] : null, {
     refreshInterval: undefined,
     fetcher: async () => {
-      const callData = getClaimTransactionCallData(
-        claimableTokens,
-        account!,
-        claimTermsAcceptedSignature!,
-        distributionId,
-        claimTerms
-      );
+      if (claimableAmountsDataByDistributionId === undefined || signer === undefined || account === undefined) {
+        return 0n;
+      }
+
+      const callData = getClaimTransactionCallData({
+        selectedDistributionIds,
+        claimableAmountsDataByDistributionId,
+        account,
+        signatures,
+      });
+
       const gasLimit = await estimateGasLimit(signer!.provider!, {
         to: getContract(chainId, "ClaimHandler"),
         data: callData,
