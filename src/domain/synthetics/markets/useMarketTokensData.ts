@@ -198,6 +198,7 @@ export function useMarketTokensDataRequest(
         };
 
         resetTokensBalancesUpdates(Object.keys(marketTokensMap), TokenBalanceType.Wallet);
+        resetTokensBalancesUpdates(Object.keys(marketTokensMap), TokenBalanceType.GmxAccount);
 
         return marketTokensMap;
       }, {} as TokensData),

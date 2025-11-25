@@ -267,6 +267,7 @@ export function useGlvMarketsInfo(
         if (glvs?.length) {
           const glvTokens = glvs.map(({ glv }) => glv.glvToken);
           resetTokensBalancesUpdates(glvTokens, TokenBalanceType.Wallet);
+          resetTokensBalancesUpdates(glvTokens, TokenBalanceType.GmxAccount);
         }
 
         return data;
