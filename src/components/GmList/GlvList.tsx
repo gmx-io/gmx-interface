@@ -99,7 +99,7 @@ export function GlvList({
                     <Trans>TVL (SUPPLY)</Trans>
                   </TableTh>
                   <TableTh>
-                    <Trans>WALLET</Trans>
+                    <Trans>BALANCE</Trans>
                   </TableTh>
                   <TableTh>
                     <FeeApyLabel upperCase variant="iconStroke" />

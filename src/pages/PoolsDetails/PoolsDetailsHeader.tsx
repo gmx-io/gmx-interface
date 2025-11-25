@@ -88,7 +88,6 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
         balance,
       }));
   }, [tokenBalancesData]);
-  // console.log({ tokenBalancesData, isBalanceDataLoading });
 
   const marketBalanceUsd = convertToUsd(totalBalance, marketToken?.decimals, marketPrice);
 

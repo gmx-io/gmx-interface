@@ -1,9 +1,11 @@
 import { Trans } from "@lingui/macro";
+import mapValues from "lodash/mapValues";
 import React, { useCallback, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
+import { selectPoolsDetailsMultichainMarketTokensBalancesResult } from "context/PoolsDetailsContext/selectors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -83,6 +85,11 @@ export function GmListItem({
   const userEarnings = useUserEarnings(chainId, srcChainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
+  const multichainMarketTokensBalancesResult = useSelector(selectPoolsDetailsMultichainMarketTokensBalancesResult);
+  const multichainMarketTokenBalances = mapValues(
+    multichainMarketTokensBalancesResult?.tokenBalances,
+    (balances) => balances?.[token.address] ?? 0n
+  );
 
   const marketOrGlv = getByKey(marketsInfoData, token?.address);
 
@@ -197,7 +204,7 @@ export function GmListItem({
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Wallet</Trans>}
+            label={<Trans>Balance</Trans>}
             value={
               <GmTokensBalanceInfo
                 token={token}
@@ -206,6 +213,7 @@ export function GmListItem({
                 earnedTotal={marketEarnings?.total}
                 isGlv={isGlv}
                 singleLine={true}
+                multichainBalances={multichainMarketTokenBalances}
               />
             }
           />
@@ -299,6 +307,7 @@ export function GmListItem({
           daysConsidered={daysConsidered}
           earnedRecently={marketEarnings?.recent}
           earnedTotal={marketEarnings?.total}
+          multichainBalances={multichainMarketTokenBalances}
           isGlv={isGlv}
         />
       </TableTdActionable>

@@ -378,12 +378,18 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
-export function getTotalGmInfo(tokensData?: TokensData) {
-  return getTotalTokensBalance(tokensData, ["GM"]);
+export function getTotalGmInfo(
+  tokensData?: TokensData,
+  multichainMarketTokensBalances?: Partial<Record<number, Partial<Record<string, bigint>>>>
+) {
+  return getTotalTokensBalance(tokensData, ["GM"], multichainMarketTokensBalances);
 }
 
-export function getTotalGlvInfo(tokensData?: TokensData) {
-  return getTotalTokensBalance(tokensData, ["GLV"]);
+export function getTotalGlvInfo(
+  tokensData?: TokensData,
+  multichainMarketTokensBalances?: Partial<Record<number, Partial<Record<string, bigint>>>>
+) {
+  return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
 }
 
 export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {

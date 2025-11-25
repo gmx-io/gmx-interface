@@ -1,6 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
+import { AnyChainId, getChainName, SourceChainId } from "config/chains";
+import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
+import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -21,41 +25,91 @@ export const GmTokensBalanceInfo = ({
   earnedTotal,
   earnedRecently,
   daysConsidered,
+  multichainBalances,
   isGlv = false,
   singleLine = false,
-  className,
 }: {
   token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
   daysConsidered: number;
+  multichainBalances: Partial<Record<SourceChainId, bigint>> | undefined;
   isGlv?: boolean;
   singleLine?: boolean;
-  className?: string;
 }) => {
+  const multichainTotalBalance = multichainBalances
+    ? Object.values(multichainBalances).reduce((acc, balance) => acc + balance, 0n)
+    : 0n;
+  const balance = (token?.walletBalance ?? 0n) + (token?.gmxAccountBalance ?? 0n) + multichainTotalBalance;
+
   const content =
-    token && token.balance !== undefined && token.balance !== 0n ? (
+    token && balance !== 0n ? (
       <TokenValuesInfoCell
-        value={formatBalanceAmount(token.balance, token.decimals)}
+        value={formatBalanceAmount(balance, token.decimals)}
         usd={
-          token.balance !== undefined && token.balance !== 0n
-            ? formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+          balance !== 0n
+            ? formatUsd(convertToUsd(balance, token.decimals, token.prices?.minPrice), {
                 fallbackToZero: true,
               })
             : undefined
         }
         symbol={token.symbol}
         singleLine={singleLine}
-        className={className}
       />
     ) : (
       <span>-</span>
     );
 
+  const chainId = useSelector(selectChainId);
+  const sortedTokenBalancesDataArray = useSortedTokenBalances({
+    chainId,
+    walletBalance: token?.walletBalance,
+    gmxAccountBalance: token?.gmxAccountBalance,
+    multichainBalances,
+  });
+
+  const hasChainBalances = sortedTokenBalancesDataArray.length > 0;
+  const hasFees = earnedTotal !== undefined || earnedRecently !== undefined;
+
   const tooltipContent = useMemo(() => {
-    if (earnedTotal === undefined && earnedRecently === undefined) return null;
+    if (!hasFees && !hasChainBalances) {
+      return null;
+    }
+
     return (
       <>
+        {sortedTokenBalancesDataArray
+          .map(({ chainId, balance }) => {
+            const label =
+              chainId === 0
+                ? t`GMX account Balance`
+                : t({
+                    message: `${getChainName(chainId)} Balance`,
+                    comment: "chainname balance",
+                  });
+
+            const balanceUsd = convertToUsd(balance, PLATFORM_TOKEN_DECIMALS, token?.prices?.minPrice);
+            if (balanceUsd === undefined || balanceUsd === 0n) {
+              return null;
+            }
+            const formattedUsd = formatUsd(balanceUsd);
+            const formattedToken = formatBalanceAmount(balance, PLATFORM_TOKEN_DECIMALS, isGlv ? "GLV" : "GM");
+
+            return (
+              <StatsTooltipRow
+                key={chainId}
+                label={label}
+                value={
+                  <span>
+                    <span className="numbers">{formattedUsd}</span>{" "}
+                    <span className="text-typography-secondary numbers">({formattedToken})</span>
+                  </span>
+                }
+                showDollar={false}
+              />
+            );
+          })
+          .filter(Boolean)}
         {earnedTotal !== undefined && (
           <StatsTooltipRow
             showDollar={false}
@@ -74,15 +128,30 @@ export const GmTokensBalanceInfo = ({
             valueClassName="numbers"
           />
         )}
-        <br />
-        <div className="text-typography-primary">
-          <Trans>The fees' USD value is calculated at the time they are earned and does not include incentives.</Trans>
-        </div>
+        {hasFees && (
+          <>
+            <br />
+            <div className="text-typography-primary">
+              <Trans>
+                The fees' USD value is calculated at the time they are earned and does not include incentives.
+              </Trans>
+            </div>
+          </>
+        )}
       </>
     );
-  }, [daysConsidered, earnedRecently, earnedTotal]);
+  }, [
+    hasFees,
+    hasChainBalances,
+    sortedTokenBalancesDataArray,
+    earnedTotal,
+    earnedRecently,
+    daysConsidered,
+    token?.prices?.minPrice,
+    isGlv,
+  ]);
 
-  if ((earnedTotal === undefined && earnedRecently === undefined) || isGlv) {
+  if (!hasFees && !hasChainBalances) {
     return content;
   }
 
@@ -179,6 +248,49 @@ export const GmTokensTotalBalanceInfo = ({
     <>{label}</>
   );
 };
+
+function useSortedTokenBalances({
+  chainId,
+  walletBalance,
+  gmxAccountBalance,
+  multichainBalances,
+}: {
+  chainId: number;
+  walletBalance: bigint | undefined;
+  gmxAccountBalance: bigint | undefined;
+  multichainBalances: Partial<Record<SourceChainId, bigint>> | undefined;
+}) {
+  // Build tokenBalancesData similar to useMultichainMarketTokenBalances
+  const tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>> = useMemo(() => {
+    const balances: Partial<Record<AnyChainId | 0, bigint>> = {
+      [chainId]: walletBalance,
+      [0]: gmxAccountBalance,
+    };
+
+    if (multichainBalances) {
+      for (const sourceChainId in multichainBalances) {
+        const balance = multichainBalances[sourceChainId];
+        if (balance !== undefined && balance > 0n) {
+          balances[sourceChainId] = balance;
+        }
+      }
+    }
+
+    return balances;
+  }, [chainId, walletBalance, gmxAccountBalance, multichainBalances]);
+
+  return useMemo(() => {
+    return Object.entries(tokenBalancesData)
+      .filter(([, balance]) => balance !== undefined && balance > 0n)
+      .sort((a, b) => {
+        return a[1] > b[1] ? -1 : 1;
+      })
+      .map(([chainId, balance]) => ({
+        chainId: parseInt(chainId) as AnyChainId | 0,
+        balance: balance,
+      }));
+  }, [tokenBalancesData]);
+}
 
 function useLpIncentivesIsActive() {
   return useIncentiveStats()?.lp?.isActive ?? false;

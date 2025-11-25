@@ -2093,6 +2093,11 @@ msgstr "申领成功。"
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
 msgstr "您有一个现有仓位以 {0} 作为抵押品。此订单对该仓位无效。<0>切换到 {1} 抵押品</0>"
 
+#: src/components/GmList/GlvList.tsx
+#: src/components/GmList/GmList.tsx
+msgid "BALANCE"
+msgstr "余额"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling sell request."
 msgstr "履行卖出请求。"
@@ -4090,6 +4095,10 @@ msgstr "执行订单模拟失败。"
 msgid "Support for"
 msgstr "支持"
 
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "GMX account Balance"
+msgstr "GMX账户余额"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
 msgstr ""
@@ -4264,11 +4273,6 @@ msgstr "UniDex 杠杆"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Numerous Assets"
 msgstr "众多资产"
-
-#: src/components/GmList/GlvList.tsx
-#: src/components/GmList/GmList.tsx
-msgid "WALLET"
-msgstr "钱包"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -5673,6 +5677,7 @@ msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1 小时"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -6160,6 +6165,11 @@ msgstr "GMX 金库"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
+
+#. chainname balance
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "{0} Balance"
+msgstr "{0}余额"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minute(s)"
@@ -7383,7 +7393,6 @@ msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read m
 msgstr "奖金年利率将作为 {airdropTokenTitle} 代币空投。<0>阅读更多</0>。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/components/GmList/GmListItem.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx

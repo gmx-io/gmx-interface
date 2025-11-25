@@ -2093,6 +2093,11 @@ msgstr ""
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
 msgstr ""
 
+#: src/components/GmList/GlvList.tsx
+#: src/components/GmList/GmList.tsx
+msgid "BALANCE"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling sell request."
 msgstr ""
@@ -4090,6 +4095,10 @@ msgstr ""
 msgid "Support for"
 msgstr ""
 
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "GMX account Balance"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
 msgstr ""
@@ -4263,11 +4272,6 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Numerous Assets"
-msgstr ""
-
-#: src/components/GmList/GlvList.tsx
-#: src/components/GmList/GmList.tsx
-msgid "WALLET"
 msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
@@ -5673,6 +5677,7 @@ msgid "{formattedNetRate} / 1h"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -6159,6 +6164,11 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
+msgstr ""
+
+#. chainname balance
+#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+msgid "{0} Balance"
 msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
@@ -7383,7 +7393,6 @@ msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read m
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/components/GmList/GmListItem.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
