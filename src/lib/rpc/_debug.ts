@@ -1,11 +1,34 @@
 import orderBy from "lodash/orderBy";
 
 import { getChainName } from "config/chains";
+import { getProviderNameFromUrl } from "config/rpc";
 import { devtools as globalDevtools } from "lib/devtools";
+import { FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, type EndpointFailureDetail } from "lib/FallbackTracker/events";
 
 import { RpcTracker } from "./RpcTracker";
 
 class RpcDevtools {
+  private endpointFailures: Map<string, number> = new Map();
+  private listeners: Array<(failures: Map<string, number>) => void> = [];
+
+  constructor() {
+    if (typeof window !== "undefined") {
+      const handleFailureEvent = (event: Event) => {
+        const customEvent = event as CustomEvent<EndpointFailureDetail>;
+        const { endpoint } = customEvent.detail;
+        const currentCount = this.endpointFailures.get(endpoint) || 0;
+        this.endpointFailures.set(endpoint, currentCount + 1);
+        this.notifyListeners();
+      };
+
+      window.addEventListener(FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, handleFailureEvent);
+    }
+  }
+
+  get shouldMockPrivateRpcCheck() {
+    return globalDevtools.getFlag("rpcTrackerMockPrivateRpcCheck");
+  }
+
   debugRpcTrackerState(rpcTracker: RpcTracker) {
     if (!globalDevtools.getFlag("debugRpcTracker")) {
       return;
@@ -23,7 +46,7 @@ class RpcDevtools {
       const checkResult = endpointStats?.checkResult;
 
       return {
-        url: endpoint,
+        url: getProviderNameFromUrl(endpoint),
         purpose: rpcConfig?.purpose ?? "unknown",
         isPublic: rpcConfig?.isPublic ? "✅" : "❌",
         success: checkResult?.success ? "✅" : "❌",
@@ -53,6 +76,34 @@ class RpcDevtools {
     console.table(orderBy(debugStats, ["responseTime"], ["asc"]));
     // eslint-disable-next-line no-console
     console.groupEnd();
+  }
+
+  getEndpointFailures(): Map<string, number> {
+    return new Map(this.endpointFailures);
+  }
+
+  getFailureCount(endpoint: string): number {
+    return this.endpointFailures.get(endpoint) || 0;
+  }
+
+  onFailuresUpdate(callback: (failures: Map<string, number>) => void): () => void {
+    this.listeners.push(callback);
+    return () => {
+      const index = this.listeners.indexOf(callback);
+      if (index > -1) {
+        this.listeners.splice(index, 1);
+      }
+    };
+  }
+
+  private notifyListeners() {
+    const failures = this.getEndpointFailures();
+    this.listeners.forEach((listener) => listener(failures));
+  }
+
+  clearFailures() {
+    this.endpointFailures.clear();
+    this.notifyListeners();
   }
 }
 

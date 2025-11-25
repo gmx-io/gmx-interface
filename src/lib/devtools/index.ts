@@ -4,6 +4,7 @@ const DEVTOOLS_STATE_KEY = "devToolsState";
 
 type DevtoolsState = {
   debugRpcTracker?: boolean;
+  rpcTrackerMockPrivateRpcCheck?: boolean;
 };
 
 type DevtoolsKey = keyof DevtoolsState;
@@ -11,6 +12,7 @@ type DevtoolsKey = keyof DevtoolsState;
 class Devtools {
   state: DevtoolsState = {
     debugRpcTracker: false,
+    rpcTrackerMockPrivateRpcCheck: false,
   };
 
   constructor() {

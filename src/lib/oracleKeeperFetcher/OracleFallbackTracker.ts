@@ -1,5 +1,5 @@
 import { ContractsChainId } from "config/rpc";
-import { DEFAULT_FALLBACK_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
+import { DEFAULT_FALLBACK_TRACKER_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
 
 type OracleCheckResult = {
   endpoint: string;
@@ -24,7 +24,7 @@ export class OracleFallbackTracker {
     );
 
     this.fallbackTracker = new FallbackTracker<OracleCheckResult>({
-      ...DEFAULT_FALLBACK_CONFIG,
+      ...DEFAULT_FALLBACK_TRACKER_CONFIG,
       trackerKey: `OracleKeeper-${this.params.chainId}`,
       primary: this.params.primary,
       secondary: this.params.secondary,

@@ -3,17 +3,24 @@ import uniqueId from "lodash/uniqueId";
 import { getAbFlags } from "config/ab";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { emitFallbackTrackerEndpointFailure } from "lib/FallbackTracker/events";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
 import { sleep } from "lib/sleep";
 
+import { multicallDevtools, MULTICALL_DEBUG_EVENT_NAME, type MulticallDebugEvent } from "./_debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { MulticallProviderUrls } from "./Multicall";
 import { MAX_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
 const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
+
+executorWorker.onerror = (error) => {
+  // eslint-disable-next-line no-console
+  console.error("[executeMulticallWorker] Worker error:", error);
+};
 
 const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
 
@@ -37,6 +44,17 @@ executorWorker.onmessage = (event) => {
       time: event.data.detail.time,
       data: event.data.detail.data,
     });
+    return;
+  }
+
+  if ("isFallbackTrackerFailure" in event.data) {
+    emitFallbackTrackerEndpointFailure(event.data.detail);
+    return;
+  }
+
+  if ("isDebug" in event.data) {
+    const debugEvent = event.data.detail as MulticallDebugEvent;
+    globalThis.dispatchEvent(new CustomEvent(MULTICALL_DEBUG_EVENT_NAME, { detail: debugEvent }));
     return;
   }
 
@@ -76,6 +94,7 @@ export async function executeMulticallWorker(
   const id = uniqueId("multicall-");
 
   const providerUrls: MulticallProviderUrls = getCurrentRpcUrls(chainId);
+  const debugState = multicallDevtools.getDebugState();
 
   executorWorker.postMessage({
     id,
@@ -85,13 +104,14 @@ export async function executeMulticallWorker(
     abFlags: getAbFlags(),
     isLargeAccount: getIsLargeAccount(),
     PRODUCTION_PREVIEW_KEY: localStorage.getItem(PRODUCTION_PREVIEW_KEY),
+    debugState,
   });
 
   const { promise, resolve, reject } = Promise.withResolvers<MulticallResult<any> | undefined>();
   promises[id] = { resolve, reject };
 
   const internalMulticallTimeout = MAX_TIMEOUT;
-  const bufferTimeout = 500;
+  const bufferTimeout = 1000;
   const escapePromise = sleep(internalMulticallTimeout + bufferTimeout).then(() => {
     throw new Error("timeout");
   });
@@ -99,6 +119,8 @@ export async function executeMulticallWorker(
 
   return race.catch(async (error) => {
     delete promises[id];
+
+    const providerUrls = getCurrentRpcUrls(chainId);
 
     if (error.message === "timeout") {
       emitMetricEvent<MulticallTimeoutEvent>({
@@ -135,6 +157,14 @@ export async function executeMulticallWorker(
         error.stack
       );
     }
+
+    // Send debug event for worker fallback
+    multicallDevtools.dispatchDebugEvent({
+      type: "worker-fallback",
+      isInWorker: false,
+      chainId,
+      providerUrl: providerUrls.primary,
+    });
 
     return await executeMulticallMainThread(chainId, request);
   });

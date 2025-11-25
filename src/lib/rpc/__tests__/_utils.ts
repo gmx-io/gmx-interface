@@ -76,7 +76,7 @@ export const createMockEndpointStats = (
     endpoint,
     banned: undefined,
     failureTimestamps: [],
-    failureDebounceTimeout: undefined,
+    failureThrottleTimeout: undefined,
     checkResult,
     ...restOverrides,
   };

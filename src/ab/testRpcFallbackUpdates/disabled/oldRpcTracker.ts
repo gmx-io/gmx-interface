@@ -429,7 +429,7 @@ function initTrackerState() {
   }, {} as RpcTrackerState);
 }
 
-export function getCurrentRpcUrls(rawChainId: number): { primary: string; secondary: string } {
+export function getCurrentRpcUrls(rawChainId: number): { primary: string; secondary: string; trackerKey: string } {
   const chainId = rawChainId as AnyChainId;
   const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((provider) => provider.url);
 
@@ -448,7 +448,7 @@ export function getCurrentRpcUrls(rawChainId: number): { primary: string; second
   const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? defaultRpcProviders?.[0];
   const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? privateRpcProviders?.[0] ?? primary;
 
-  return { primary, secondary };
+  return { primary, secondary, trackerKey: "OldRpcTracker" };
 }
 
 export function useCurrentRpcUrls(chainId: number | undefined): { primary?: string; secondary?: string } {

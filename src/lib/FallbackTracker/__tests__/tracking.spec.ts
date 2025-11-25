@@ -635,27 +635,16 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       expect(controller?.signal.aborted).toBe(true);
     });
 
-    it("should clear switchEndpointsTimeout", () => {
-      const config = createMockConfig({
-        selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
-      });
-      const tracker = new FallbackTracker(config);
-      tracker.selectBestEndpoints();
-
-      tracker.stopTracking();
-
-      expect(tracker.state.switchEndpointsTimeout).toBeUndefined();
-    });
-
-    it("should clear all failureDebounceTimeouts", () => {
+    it("should clear all failure throttle timeouts", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
+      tracker.triggerFailure(config.primary);
+      // Trigger another failure during throttle period - should be ignored
       tracker.triggerFailure(config.primary);
 
       tracker.stopTracking();
 
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeUndefined();
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
     });
   });
 });

@@ -25,7 +25,7 @@ const rpcTrackerInstances = CONTRACTS_CHAIN_IDS.reduce(
   {} as Record<number, RpcTracker>
 );
 
-function getRpcTracker(chainId: number): RpcTracker | undefined {
+export function getRpcTracker(chainId: number): RpcTracker | undefined {
   return rpcTrackerInstances[chainId as ContractsChainId];
 }
 
@@ -56,7 +56,7 @@ function _getCurrentRpcUrls(chainId: number) {
     return tracker.pickCurrentRpcUrls();
   }
 
-  return { primary, secondary };
+  return { primary, secondary, trackerKey: "unknown" };
 }
 
 function _useCurrentRpcUrls(chainId: number) {

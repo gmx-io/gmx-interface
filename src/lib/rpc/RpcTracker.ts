@@ -9,7 +9,8 @@ import {
   RpcConfig,
   RpcPurpose,
 } from "config/rpc";
-import { DEFAULT_FALLBACK_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
+import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { DEFAULT_FALLBACK_TRACKER_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import type { RpcTrackerUpdateEndpointsEvent } from "lib/metrics/types";
 import { fetchEthCall } from "lib/rpc/fetchEthCall";
@@ -44,9 +45,15 @@ type RpcStats = EndpointStats<RpcCheckResult>;
 export class RpcTracker {
   providersMap: Record<string, RpcConfig>;
   fallbackTracker: FallbackTracker<RpcCheckResult>;
+
+  get trackerKey() {
+    return this.fallbackTracker.trackerKey;
+  }
+
   getIsLargeAccount = () => {
-    return false;
+    return getIsLargeAccount();
   };
+
   getRpcConfig(endpoint: string): RpcConfig | undefined {
     return this.providersMap[endpoint];
   }
@@ -77,19 +84,22 @@ export class RpcTracker {
     const secondaryProvider = chainProviders[1] || defaultProvider;
 
     this.fallbackTracker = new FallbackTracker<RpcCheckResult>({
-      ...DEFAULT_FALLBACK_CONFIG,
+      ...DEFAULT_FALLBACK_TRACKER_CONFIG,
       trackerKey: `RpcTracker:${getChainName(this.params.chainId)}`,
       primary: defaultProvider.url,
       secondary: secondaryProvider.url,
       endpoints: chainProviders.map((provider) => provider.url),
-      checkEndpoint: this.probeProvider,
+      checkEndpoint: this.checkRpc,
       selectNextPrimary: this.selectNextPrimary,
       selectNextSecondary: this.selectNextSecondary,
+      getEndpointName: getProviderNameFromUrl,
       onUpdate: ({ primary, secondary, endpointsStats }) => {
         devtools.debugRpcTrackerState(this);
         this.emitUpdateEndpointsMetric({ primary, secondary, endpointsStats });
       },
-      getEndpointName: getProviderNameFromUrl,
+      onTrackFinished: () => {
+        devtools.debugRpcTrackerState(this);
+      },
     });
   }
 
@@ -100,6 +110,7 @@ export class RpcTracker {
     return {
       primary,
       secondary,
+      trackerKey: this.trackerKey,
     };
   }
 
@@ -123,11 +134,18 @@ export class RpcTracker {
     this.fallbackTracker.banEndpoint(endpoint, reason);
   }
 
-  probeProvider = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
+  checkRpc = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
     const rpcConfig = this.providersMap[endpoint];
 
-    if (!rpcConfig.isPublic && !this.getIsLargeAccount()) {
-      throw new Error("Skip private provider for non large account");
+    if (!rpcConfig.isPublic && devtools.shouldMockPrivateRpcCheck) {
+      return {
+        responseTime: 300,
+        blockNumber: 100000,
+      };
+    }
+
+    if ((!rpcConfig.isPublic && !this.getIsLargeAccount()) || rpcConfig.purpose !== "largeAccount") {
+      throw new Error("Skip private provider");
     }
 
     const chainId = this.params.chainId;
@@ -193,26 +211,15 @@ export class RpcTracker {
   selectNextPrimary = ({ endpointsStats }): string | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
-    const filter = (result) => {
+    const filtered = validStats.filter((result) => {
       const purpose = this.getRpcConfig(result.endpoint)?.purpose;
-      const allowedPurposes: RpcPurpose[] = this.getIsLargeAccount() ? ["largeAccount", "default"] : ["default"];
+      const allowedPurposes = this.getIsLargeAccount() ? ["largeAccount", "default"] : ["default"];
       return purpose && allowedPurposes.includes(purpose as RpcPurpose);
-    };
+    });
 
-    let allowedStats = validStats.filter(filter);
-
-    if (allowedStats.length === 0) {
-      allowedStats = endpointsStats.filter(filter);
-    }
-
-    const rankedFprPrimary = orderBy(
-      allowedStats,
+    const ranked = orderBy(
+      filtered,
       [
-        (result) => {
-          const preferredPurpose = this.getIsLargeAccount() ? "largeAccount" : "default";
-          const purpose = this.providersMap[result.endpoint].purpose;
-          return preferredPurpose === purpose ? 0 : 1;
-        },
         (result) => {
           const bannedTimestamp = result.banned?.timestamp;
           if (!bannedTimestamp) {
@@ -220,39 +227,39 @@ export class RpcTracker {
           }
           return bannedTimestamp;
         },
+        (result) => {
+          const purpose = this.getRpcConfig(result.endpoint)?.purpose;
+
+          let score = 0;
+
+          if (this.getIsLargeAccount()) {
+            if (purpose === "largeAccount") {
+              score += 1;
+            }
+          }
+
+          return score;
+        },
         (result) => result.checkResult?.stats?.responseTime ?? Infinity,
       ],
-      ["asc", "asc", "asc"]
+      ["asc", "desc", "asc"]
     );
 
-    return rankedFprPrimary[0]?.endpoint;
+    return ranked[0]?.endpoint;
   };
 
   selectNextSecondary = ({ endpointsStats }): string | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
-    const filter = (result) => {
+    const filtered = validStats.filter((result) => {
       const purpose = this.getRpcConfig(result.endpoint)?.purpose;
-      const allowedPurposes: RpcPurpose[] = this.getIsLargeAccount()
-        ? ["largeAccount", "default"]
-        : ["default", "fallback"];
+      const allowedPurposes = this.getIsLargeAccount() ? ["default", "largeAccount"] : ["default", "fallback"];
       return purpose && allowedPurposes.includes(purpose as RpcPurpose);
-    };
+    });
 
-    let allowedStats = validStats.filter(filter);
-
-    if (allowedStats.length === 0) {
-      allowedStats = endpointsStats.filter(filter);
-    }
-
-    const rankedFprSecondary = orderBy(
-      allowedStats,
+    const ranked = orderBy(
+      filtered,
       [
-        (result) => {
-          const preferredPurpose = this.getIsLargeAccount() ? "default" : "fallback";
-          const purpose = this.providersMap[result.endpoint].purpose;
-          return preferredPurpose === purpose ? 0 : 1;
-        },
         (result) => {
           const bannedTimestamp = result.banned?.timestamp;
           if (!bannedTimestamp) {
@@ -260,13 +267,49 @@ export class RpcTracker {
           }
           return bannedTimestamp;
         },
+        (result) => {
+          const purpose = this.getRpcConfig(result.endpoint)?.purpose;
+
+          let score = 0;
+          if (this.getIsLargeAccount()) {
+            if (purpose === "largeAccount") {
+              score += 1;
+            }
+          } else {
+            if (purpose === "fallback") {
+              score += 1;
+            }
+          }
+
+          return score;
+        },
         (result) => result.checkResult?.stats?.responseTime ?? Infinity,
       ],
-      ["asc", "asc", "asc"]
+      ["asc", "desc", "asc"]
     );
 
-    return rankedFprSecondary[0]?.endpoint;
+    return ranked[0]?.endpoint;
   };
+
+  // selectEndpointStats = (endpointsStats: RpcStats[], strategies: FilterStrategy[]): RpcStats | undefined => {
+  //   const filter = (stats, strategy: FilterStrategy) => {
+  //     const byPurpose = strategy.purpose
+  //       ? strategy.purpose.includes(this.getRpcConfig(stats.endpoint)?.purpose as RpcPurpose)
+  //       : true;
+  //     const byBanned = strategy.allowBanned ? !stats.banned : true;
+  //     return byPurpose && byBanned;
+  //   };
+
+  //   for (const strategy of strategies) {
+  //     const allowedStats = endpointsStats.find((stats) => filter(stats, strategy));
+
+  //     if (allowedStats) {
+  //       return allowedStats;
+  //     }
+  //   }
+
+  //   return undefined;
+  // };
 
   getValidStats = (endpointsStats: RpcStats[]): RpcStats[] => {
     const bestValidBlock = this.getBestValidBlock(endpointsStats);
@@ -282,7 +325,10 @@ export class RpcTracker {
       const isLagging =
         bestValidBlock && rpcBlockNumber && bestValidBlock - rpcBlockNumber > this.params.blockLaggingThreshold;
 
-      return isSuccess && !isFromFuture && !isLagging;
+      const ignoreBlockNumberCheck =
+        devtools.shouldMockPrivateRpcCheck && !this.getRpcConfig(result.endpoint)?.isPublic;
+
+      return isSuccess && (ignoreBlockNumberCheck || (!isFromFuture && !isLagging));
     });
 
     return validStats;

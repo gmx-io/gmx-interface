@@ -54,72 +54,60 @@ describe("FallbackTracker - endpoint banning", () => {
 
       tracker.triggerFailure(config.primary);
       // Wait for debounce (default is 2 seconds)
-      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.debounce + 10);
+      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10);
 
       tracker.triggerFailure(config.primary);
       // Wait for debounce to process
-      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.debounce + 10);
+      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10);
 
       expect(banSpy).toHaveBeenCalledWith(config.primary, "Banned by failures threshold");
     });
 
-    // Debounce behavior
-    it("should debounce subsequent calls within debounce window", async () => {
+    // Throttle behavior
+    it("should throttle subsequent calls during throttle period", async () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
-      const debounceTime = config.failuresBeforeBan.debounce;
+      const throttleTime = config.failuresBeforeBan.throttle;
 
       // First call executes immediately (leading edge) - sets failureDebounceTimeout
       tracker.triggerFailure(config.primary);
       const initialFailureCount = tracker.state.endpointsState[config.primary].failureTimestamps.length;
       expect(initialFailureCount).toBe(1);
       await vi.advanceTimersByTimeAsync(10);
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeDefined();
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeDefined();
 
-      // Wait for first setTimeout to execute and clear failureDebounceTimeout
-      await vi.advanceTimersByTimeAsync(debounceTime);
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeUndefined();
+      // Second call during throttle period - should be ignored
+      tracker.triggerFailure(config.primary);
+      expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount);
 
-      // Second call immediately after - executes immediately again (leading edge)
+      // Third call during throttle period - should also be ignored
+      tracker.triggerFailure(config.primary);
+      expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount);
+
+      // Advance time past throttle - timeout clears, but no trailing edge processing
+      await vi.advanceTimersByTimeAsync(throttleTime);
+
+      // Should still have only 1 failure (no trailing edge)
+      expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount);
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
+
+      // Next call after throttle period - executes immediately again (leading edge)
       tracker.triggerFailure(config.primary);
       expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount + 1);
-
-      // Wait a bit for second call's setTimeout to execute
-      await vi.advanceTimersByTimeAsync(10);
-      // After setTimeout executes, failureDebounceTimeout is cleared
-
-      // Third call should be debounced - manually set failureDebounceTimeout to simulate pending debounce
-      tracker.state.endpointsState[config.primary].failureDebounceTimeout = window.setTimeout(() => {
-        // Empty timeout for testing
-      }, debounceTime) as unknown as NodeJS.Timeout;
-      const countBeforeDebounce = tracker.state.endpointsState[config.primary].failureTimestamps.length;
-
-      tracker.triggerFailure(config.primary);
-      expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(countBeforeDebounce);
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeDefined();
-
-      // Advance time past debounce
-      await vi.advanceTimersByTimeAsync(debounceTime);
-
-      // Should have processed debounced call
-      expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBeGreaterThan(
-        countBeforeDebounce
-      );
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeUndefined();
     });
 
-    it("should add only one failure after debounce when multiple failures occur rapidly", async () => {
+    it("should ignore multiple failures during throttle period", async () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
-      const debounceTime = config.failuresBeforeBan.debounce;
+      const throttleTime = config.failuresBeforeBan.throttle;
 
       // First call executes immediately (leading edge) - adds failure immediately
       tracker.triggerFailure(config.primary);
       const initialFailureCount = tracker.state.endpointsState[config.primary].failureTimestamps.length;
       expect(initialFailureCount).toBe(1);
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeDefined();
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeDefined();
 
-      // Trigger multiple failures rapidly within debounce window
+      // Trigger multiple failures rapidly within throttle window - all should be ignored
       tracker.triggerFailure(config.primary);
       tracker.triggerFailure(config.primary);
       tracker.triggerFailure(config.primary);
@@ -127,33 +115,36 @@ describe("FallbackTracker - endpoint banning", () => {
 
       // Count should still be 1 (only the first one was added immediately)
       expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount);
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeDefined();
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeDefined();
 
-      // Advance time past debounce - should add one more failure (not all the rapid ones)
-      await vi.advanceTimersByTimeAsync(debounceTime + 10);
+      // Advance time past throttle - timeout clears, but no failures were processed
+      await vi.advanceTimersByTimeAsync(throttleTime + 10);
 
-      // Should have exactly 2 failures: initial + one after debounce
-      expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(2);
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeUndefined();
+      // Should still have exactly 1 failure (no trailing edge processing)
+      expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(1);
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
     });
 
-    it("should handle stopTracking during triggerFailure debounce", async () => {
+    it("should handle stopTracking during triggerFailure throttle", async () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
 
       tracker.triggerFailure(config.primary);
       await vi.advanceTimersByTimeAsync(10);
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeDefined();
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeDefined();
 
-      // Stop tracking should clear the debounce timeout
+      // Trigger another failure during throttle period - should be ignored
+      tracker.triggerFailure(config.primary);
+
+      // Stop tracking should clear the throttle timeout
       tracker.stopTracking();
 
-      expect(tracker.state.endpointsState[config.primary].failureDebounceTimeout).toBeUndefined();
+      expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
 
-      // Advance time past default debounce (2 seconds) - should not process debounced failure
-      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.debounce);
+      // Advance time past throttle - should not process any failures
+      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle);
       const failureCount = tracker.state.endpointsState[config.primary].failureTimestamps.length;
-      expect(failureCount).toBe(1); // Only the initial failure, debounced one was cancelled
+      expect(failureCount).toBe(1); // Only the initial failure, subsequent ones were ignored
     });
 
     // Window filtering
@@ -171,7 +162,7 @@ describe("FallbackTracker - endpoint banning", () => {
 
       // Trigger another failure - should filter out old ones
       tracker.triggerFailure(config.primary);
-      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.debounce + 10); // Wait for debounce to process
+      await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10); // Wait for debounce to process
 
       const endpointState = tracker.state.endpointsState[config.primary];
       const windowStart = Date.now() - config.failuresBeforeBan.window;

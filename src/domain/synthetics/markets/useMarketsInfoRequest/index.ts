@@ -127,118 +127,127 @@ function useMarketsValuesRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  const marketsValuesQuery = useMulticall(chainId, `useMarketsValuesRequest-${chainId}`, {
-    key:
-      !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? [...marketsAddresses] : null,
+  const { data: marketsValuesData, error: marketsValuesError } = useMulticall(
+    chainId,
+    `useMarketsValuesRequest-${chainId}`,
+    {
+      key:
+        !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0
+          ? [...marketsAddresses]
+          : null,
 
-    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
-    clearUnusedKeys: true,
-    keepPreviousData: true,
+      refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+      clearUnusedKeys: true,
+      keepPreviousData: true,
 
-    request: () =>
-      buildMarketsValuesRequest(chainId, {
-        marketsAddresses,
-        marketsData,
-        tokensData,
-        dataStoreAddress,
-        syntheticsReaderAddress,
-      }),
-    parseResponse: (res) => {
-      const result = marketsAddresses!.reduce(
-        (acc, marketAddress) => {
-          const readerErrors = res.errors[`${marketAddress}-reader`];
-          const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
+      request: () =>
+        buildMarketsValuesRequest(chainId, {
+          marketsAddresses,
+          marketsData,
+          tokensData,
+          dataStoreAddress,
+          syntheticsReaderAddress,
+        }),
+      parseResponse: (res) => {
+        const result = marketsAddresses!.reduce(
+          (acc, marketAddress) => {
+            const readerErrors = res.errors[`${marketAddress}-reader`];
+            const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
 
-          const readerValues = res.data[`${marketAddress}-reader`];
-          const dataStoreValues = res.data[`${marketAddress}-dataStore`];
+            const readerValues = res.data[`${marketAddress}-reader`];
+            const dataStoreValues = res.data[`${marketAddress}-dataStore`];
 
-          // Skip invalid market
-          if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
-            // eslint-disable-next-line no-console
-            console.log("market info error", marketAddress, readerErrors, dataStoreErrors, readerValues);
+            // Skip invalid market
+            if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
+              // eslint-disable-next-line no-console
+              console.log("market info error", marketAddress, readerErrors, dataStoreErrors, readerValues);
+              return acc;
+            }
+            const market = getByKey(marketsData, marketAddress)!;
+            const marketDivisor = getMarketDivisor(market);
+
+            const longInterestUsingLongToken =
+              BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]) / marketDivisor;
+            const longInterestUsingShortToken =
+              BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]) / marketDivisor;
+            const shortInterestUsingLongToken =
+              BigInt(dataStoreValues.shortInterestUsingLongToken.returnValues[0]) / marketDivisor;
+            const shortInterestUsingShortToken =
+              BigInt(dataStoreValues.shortInterestUsingShortToken.returnValues[0]) / marketDivisor;
+
+            const longInterestUsd = longInterestUsingLongToken + longInterestUsingShortToken;
+            const shortInterestUsd = shortInterestUsingLongToken + shortInterestUsingShortToken;
+
+            const longInterestInTokensUsingLongToken =
+              BigInt(dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
+            const longInterestInTokensUsingShortToken =
+              BigInt(dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
+            const shortInterestInTokensUsingLongToken =
+              BigInt(dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
+            const shortInterestInTokensUsingShortToken =
+              BigInt(dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
+
+            const longInterestInTokens = longInterestInTokensUsingLongToken + longInterestInTokensUsingShortToken;
+            const shortInterestInTokens = shortInterestInTokensUsingLongToken + shortInterestInTokensUsingShortToken;
+
+            const { nextFunding, virtualInventory } = readerValues.marketInfo.returnValues;
+
+            const [, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues as [
+              unknown,
+              {
+                poolValue: bigint;
+
+                longPnl: bigint;
+                shortPnl: bigint;
+                netPnl: bigint;
+              },
+            ];
+
+            const [, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues as [
+              unknown,
+              { poolValue: bigint; totalBorrowingFees: bigint; longPnl: bigint; shortPnl: bigint; netPnl: bigint },
+            ];
+
+            acc[marketAddress] = {
+              longInterestUsd,
+              shortInterestUsd,
+              longInterestInTokens,
+              shortInterestInTokens,
+              longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
+              shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
+              poolValueMin: poolValueInfoMin.poolValue,
+              poolValueMax: poolValueInfoMax.poolValue,
+              totalBorrowingFees: poolValueInfoMax.totalBorrowingFees,
+              positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
+              swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
+              swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
+              borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
+              borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
+
+              fundingFactorPerSecond: nextFunding.fundingFactorPerSecond,
+              longsPayShorts: nextFunding.longsPayShorts,
+
+              virtualPoolAmountForLongToken: virtualInventory.virtualPoolAmountForLongToken,
+              virtualPoolAmountForShortToken: virtualInventory.virtualPoolAmountForShortToken,
+              virtualInventoryForPositions: virtualInventory.virtualInventoryForPositions,
+            };
+
             return acc;
+          },
+          {} as {
+            [marketAddress: string]: MarketValues;
           }
-          const market = getByKey(marketsData, marketAddress)!;
-          const marketDivisor = getMarketDivisor(market);
+        );
 
-          const longInterestUsingLongToken =
-            BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]) / marketDivisor;
-          const longInterestUsingShortToken =
-            BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]) / marketDivisor;
-          const shortInterestUsingLongToken =
-            BigInt(dataStoreValues.shortInterestUsingLongToken.returnValues[0]) / marketDivisor;
-          const shortInterestUsingShortToken =
-            BigInt(dataStoreValues.shortInterestUsingShortToken.returnValues[0]) / marketDivisor;
+        return result;
+      },
+    }
+  );
 
-          const longInterestUsd = longInterestUsingLongToken + longInterestUsingShortToken;
-          const shortInterestUsd = shortInterestUsingLongToken + shortInterestUsingShortToken;
-
-          const longInterestInTokensUsingLongToken =
-            BigInt(dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
-          const longInterestInTokensUsingShortToken =
-            BigInt(dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
-          const shortInterestInTokensUsingLongToken =
-            BigInt(dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
-          const shortInterestInTokensUsingShortToken =
-            BigInt(dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
-
-          const longInterestInTokens = longInterestInTokensUsingLongToken + longInterestInTokensUsingShortToken;
-          const shortInterestInTokens = shortInterestInTokensUsingLongToken + shortInterestInTokensUsingShortToken;
-
-          const { nextFunding, virtualInventory } = readerValues.marketInfo.returnValues;
-
-          const [, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues as [
-            unknown,
-            {
-              poolValue: bigint;
-
-              longPnl: bigint;
-              shortPnl: bigint;
-              netPnl: bigint;
-            },
-          ];
-
-          const [, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues as [
-            unknown,
-            { poolValue: bigint; totalBorrowingFees: bigint; longPnl: bigint; shortPnl: bigint; netPnl: bigint },
-          ];
-
-          acc[marketAddress] = {
-            longInterestUsd,
-            shortInterestUsd,
-            longInterestInTokens,
-            shortInterestInTokens,
-            longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
-            shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
-            poolValueMin: poolValueInfoMin.poolValue,
-            poolValueMax: poolValueInfoMax.poolValue,
-            totalBorrowingFees: poolValueInfoMax.totalBorrowingFees,
-            positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
-            swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
-            swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
-            borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
-            borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
-
-            fundingFactorPerSecond: nextFunding.fundingFactorPerSecond,
-            longsPayShorts: nextFunding.longsPayShorts,
-
-            virtualPoolAmountForLongToken: virtualInventory.virtualPoolAmountForLongToken,
-            virtualPoolAmountForShortToken: virtualInventory.virtualPoolAmountForShortToken,
-            virtualInventoryForPositions: virtualInventory.virtualInventoryForPositions,
-          };
-
-          return acc;
-        },
-        {} as {
-          [marketAddress: string]: MarketValues;
-        }
-      );
-
-      return result;
-    },
-  });
-
-  return marketsValuesQuery;
+  return {
+    data: marketsValuesData,
+    error: marketsValuesError,
+  };
 }
 
 function useMarketsConfigsRequest({
@@ -252,7 +261,7 @@ function useMarketsConfigsRequest({
 }) {
   const dataStoreAddress = getContract(chainId, "DataStore");
 
-  const marketsConfigsQuery = useMulticall(chainId, "useMarketsConfigsRequest", {
+  const { data: marketsConfigsData, error: marketsConfigsError } = useMulticall(chainId, "useMarketsConfigsRequest", {
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses],
 
     refreshInterval: CONFIG_UPDATE_INTERVAL,
@@ -358,5 +367,8 @@ function useMarketsConfigsRequest({
     },
   });
 
-  return marketsConfigsQuery;
+  return {
+    data: marketsConfigsData,
+    error: marketsConfigsError,
+  };
 }

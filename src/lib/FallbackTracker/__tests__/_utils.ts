@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-import { DEFAULT_FALLBACK_CONFIG } from "../FallbackTracker";
+import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "../FallbackTracker";
 import type { CheckResult, FallbackTrackerParams } from "../FallbackTracker";
 
 export const testEndpoints = {
@@ -29,7 +29,7 @@ export const createMockConfig = (
   overrides?: Partial<FallbackTrackerParams<TestCheckResult>>
 ): FallbackTrackerParams<TestCheckResult> => {
   const config: FallbackTrackerParams<TestCheckResult> = {
-    ...DEFAULT_FALLBACK_CONFIG,
+    ...DEFAULT_FALLBACK_TRACKER_CONFIG,
     trackerKey: "test-tracker",
     primary: testEndpoints.primary,
     secondary: testEndpoints.secondary,

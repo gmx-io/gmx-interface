@@ -127,56 +127,17 @@ describe("FallbackTracker > selectBestEndpoints", () => {
     expect(onUpdate).toHaveBeenCalled();
   });
 
-  it("should debounce subsequent calls within debounce window", async () => {
-    vi.useFakeTimers();
+  it("should always evaluate selectors on consecutive calls", () => {
     const config = createMockConfig({
       selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
       selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
-      switchEndpointsDebounce: 1000,
     });
     const tracker = new FallbackTracker(config);
-    const selectNextPrimaryMock = config.selectNextPrimary as ReturnType<typeof vi.fn>;
-
-    // First call executes immediately (leading edge) - sets switchEndpointsTimeout
-    tracker.selectBestEndpoints();
-    expect(selectNextPrimaryMock.mock.calls.length).toBe(1);
-    await vi.advanceTimersByTimeAsync(10);
-    expect(tracker.state.switchEndpointsTimeout).toBeDefined();
-
-    // Wait for first setTimeout to execute and clear switchEndpointsTimeout
-    await vi.advanceTimersByTimeAsync(1000);
-    expect(tracker.state.switchEndpointsTimeout).toBeUndefined();
-
-    // Second call immediately after - executes immediately again (leading edge)
-    tracker.selectBestEndpoints();
-    expect(selectNextPrimaryMock.mock.calls.length).toBe(2);
-
-    // Wait a bit for second call's setTimeout to be set
-    await vi.advanceTimersByTimeAsync(10);
-    expect(tracker.state.switchEndpointsTimeout).toBeDefined();
-
-    // Third call should be debounced - clears timeout and sets new one
-    tracker.selectBestEndpoints();
-    // Should still be 2 because third call is debounced
-    expect(selectNextPrimaryMock.mock.calls.length).toBe(2);
-
-    // To properly test debounce, we need to simulate that switchEndpointsTimeout is set
-    // Let's manually set it and then call selectBestEndpoints
-    tracker.state.switchEndpointsTimeout = window.setTimeout(() => {
-      // Empty timeout for testing
-    }, 1000);
-    const callCountBeforeDebounce = selectNextPrimaryMock.mock.calls.length;
 
     tracker.selectBestEndpoints();
-    expect(selectNextPrimaryMock.mock.calls.length).toBe(callCountBeforeDebounce); // Still same, debounced
+    tracker.selectBestEndpoints();
+    tracker.selectBestEndpoints();
 
-    // Advance time past debounce window
-    await vi.advanceTimersByTimeAsync(1000);
-
-    // Should have executed debounced call
-    expect(selectNextPrimaryMock.mock.calls.length).toBeGreaterThan(callCountBeforeDebounce);
-    expect(tracker.state.switchEndpointsTimeout).toBeUndefined();
-
-    vi.useRealTimers();
+    expect((config.selectNextPrimary as ReturnType<typeof vi.fn>).mock.calls.length).toBe(3);
   });
 });

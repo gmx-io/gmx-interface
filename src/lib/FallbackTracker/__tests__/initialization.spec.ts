@@ -113,7 +113,7 @@ describe("FallbackTracker - initialization and storage", () => {
       expect(state.endpoint).toBe(endpoint);
       expect(state.failureTimestamps).toEqual([]);
       expect(state.banned).toBeUndefined();
-      expect(state.failureDebounceTimeout).toBeUndefined();
+      expect(state.failureThrottleTimeout).toBeUndefined();
     });
   });
 

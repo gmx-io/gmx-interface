@@ -7,7 +7,13 @@ import type { FallbackTrackerBannedEvent } from "lib/metrics/types";
 import { sleepWithSignal } from "lib/sleep";
 import { combineAbortSignals } from "sdk/utils/abort";
 
-export const DEFAULT_FALLBACK_CONFIG = {
+import {
+  emitFallbackTrackerEndpointsUpdated,
+  FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY,
+  EndpointFailureDetail,
+} from "./events";
+
+export const DEFAULT_FALLBACK_TRACKER_CONFIG = {
   trackInterval: 10 * 1000, // 10 seconds
   checkTimeout: 10 * 1000, // 10 seconds
   cacheTimeout: 5 * 60 * 1000, // 5 minutes
@@ -15,9 +21,9 @@ export const DEFAULT_FALLBACK_CONFIG = {
   failuresBeforeBan: {
     count: 3, // 3 failures
     window: 60 * 1000, // 1 minute
-    debounce: 2 * 1000, // 2 seconds
+    throttle: 2 * 1000, // 2 seconds
   },
-  switchEndpointsDebounce: 10 * 1000, // 10 seconds
+  setEndpointsThrottle: 5 * 1000, // 5 seconds
   maxStoredCheckStats: 1, // 10 check stats
 };
 
@@ -43,14 +49,14 @@ export type FallbackTrackerParams<TCheckResult> = {
     /** Time window for counting failures */
     window: number;
     /** Throttle for counting failures */
-    debounce: number;
+    throttle: number;
   };
-
-  /** Debounce for switching endpoints */
-  switchEndpointsDebounce: number;
 
   /** Maximum number of check stats to store */
   maxStoredCheckStats: number;
+
+  /** Throttle for setCurrentEndpoints calls */
+  setEndpointsThrottle: number;
 
   /** Default primary endpoint */
   primary: string;
@@ -79,6 +85,7 @@ export type FallbackTrackerParams<TCheckResult> = {
   }) => string | undefined;
 
   onUpdate?: (params: { primary: string; secondary: string; endpointsStats: EndpointStats<TCheckResult>[] }) => void;
+  onTrackFinished?: () => void;
   getEndpointName?: (endpoint: string) => string | undefined;
 };
 
@@ -98,7 +105,9 @@ export type FallbackTrackerState<TCheckStats> = {
 
   trackerTimeoutId: number | undefined;
   abortController: AbortController | undefined;
-  switchEndpointsTimeout: number | undefined;
+  setEndpointsThrottleTimeout: number | undefined;
+  pendingEndpoints: { primary: string; secondary: string } | undefined;
+  unsubscribeFromEvents: () => void;
 };
 
 export type EndpointState = {
@@ -110,7 +119,7 @@ export type EndpointState = {
       }
     | undefined;
   failureTimestamps: number[];
-  failureDebounceTimeout: NodeJS.Timeout | undefined;
+  failureThrottleTimeout: number | undefined;
 };
 
 export type CheckResult<TCheckStats> = {
@@ -137,10 +146,6 @@ export class FallbackTracker<TCheckStats> {
     return getFallbackTrackerKey(this.params.trackerKey);
   }
 
-  get edpointsUpdatedEventKey() {
-    return `${this.trackerKey}:endpointsUpdated`;
-  }
-
   emitEndpointsUpdated({
     primary,
     secondary,
@@ -150,9 +155,7 @@ export class FallbackTracker<TCheckStats> {
     secondary: string;
     endpointsStats: EndpointStats<TCheckStats>[];
   }) {
-    window.dispatchEvent(
-      new CustomEvent(this.edpointsUpdatedEventKey, { detail: { primary, secondary, endpointsStats } })
-    );
+    emitFallbackTrackerEndpointsUpdated({ trackerKey: this.trackerKey, primary, secondary, endpointsStats });
     this.params.onUpdate?.({ primary, secondary, endpointsStats });
   }
 
@@ -179,6 +182,12 @@ export class FallbackTracker<TCheckStats> {
       ...state,
       checkResult: lastCheckResults?.[endpoint] ?? undefined,
     };
+  }
+
+  getEndpointsStats(): EndpointStats<TCheckStats>[] {
+    return this.params.endpoints
+      .map((endpoint) => this.getEndpointStats(endpoint))
+      .filter((s): s is EndpointStats<TCheckStats> => s !== undefined);
   }
 
   constructor(public readonly params: FallbackTrackerParams<TCheckStats>) {
@@ -214,7 +223,7 @@ export class FallbackTracker<TCheckStats> {
             endpoint,
             failureTimestamps: [],
             banned: undefined,
-            failureDebounceTimeout: undefined,
+            failureThrottleTimeout: undefined,
           };
           return acc;
         },
@@ -223,7 +232,9 @@ export class FallbackTracker<TCheckStats> {
       checkStats: [],
       trackerTimeoutId: undefined,
       abortController: undefined,
-      switchEndpointsTimeout: undefined,
+      setEndpointsThrottleTimeout: undefined,
+      pendingEndpoints: undefined,
+      unsubscribeFromEvents: this.subscribeToEvents(),
     };
   }
 
@@ -235,35 +246,26 @@ export class FallbackTracker<TCheckStats> {
       return;
     }
 
-    const processFailure = () => {
-      const now = Date.now();
-
-      endpointState.failureTimestamps.push(now);
-
-      const windowStart = now - this.params.failuresBeforeBan.window;
-      endpointState.failureTimestamps = endpointState.failureTimestamps.filter((timestamp) => timestamp >= windowStart);
-
-      const failureCount = endpointState.failureTimestamps.length;
-
-      if (failureCount >= this.params.failuresBeforeBan.count) {
-        this.banEndpoint(endpoint, "Banned by failures threshold");
-      }
-    };
-
-    if (!endpointState.failureDebounceTimeout) {
-      processFailure();
-      endpointState.failureDebounceTimeout = window.setTimeout(() => {
-        endpointState.failureDebounceTimeout = undefined;
-      }, this.params.failuresBeforeBan.debounce) as unknown as NodeJS.Timeout;
+    if (this.params.failuresBeforeBan.throttle !== 0 && endpointState.failureThrottleTimeout) {
       return;
     }
 
-    clearTimeout(endpointState.failureDebounceTimeout);
+    endpointState.failureThrottleTimeout = window.setTimeout(() => {
+      endpointState.failureThrottleTimeout = undefined;
+    }, this.params.failuresBeforeBan.throttle);
 
-    endpointState.failureDebounceTimeout = window.setTimeout(() => {
-      processFailure();
-      endpointState.failureDebounceTimeout = undefined;
-    }, this.params.failuresBeforeBan.debounce) as unknown as NodeJS.Timeout;
+    const now = Date.now();
+
+    endpointState.failureTimestamps.push(now);
+
+    const windowStart = now - this.params.failuresBeforeBan.window;
+    endpointState.failureTimestamps = endpointState.failureTimestamps.filter((timestamp) => timestamp >= windowStart);
+
+    const failureCount = endpointState.failureTimestamps.length;
+
+    if (failureCount >= this.params.failuresBeforeBan.count) {
+      this.banEndpoint(endpoint, "Banned by failures threshold");
+    }
   };
 
   public banEndpoint = (endpoint: string, reason: string) => {
@@ -288,6 +290,8 @@ export class FallbackTracker<TCheckStats> {
         reason,
       },
     });
+
+    this.warn(`Ban endpoint "${endpoint}" with reason "${reason}"`);
 
     const keepPrimary = this.state.primary !== endpoint;
     const keepSecondary = this.state.secondary !== endpoint;
@@ -334,6 +338,7 @@ export class FallbackTracker<TCheckStats> {
 
     this.checkEndpoints()
       .then(() => {
+        this.params.onTrackFinished?.();
         this.selectBestEndpoints();
       })
       .finally(() => {
@@ -342,6 +347,8 @@ export class FallbackTracker<TCheckStats> {
   }
 
   public stopTracking() {
+    this.state.unsubscribeFromEvents();
+
     // Abort any pending probes.
     if (this.state.trackerTimeoutId) {
       clearTimeout(this.state.trackerTimeoutId);
@@ -353,103 +360,114 @@ export class FallbackTracker<TCheckStats> {
       this.state.abortController = undefined;
     }
 
-    // Clear all debounce timeouts
-    if (this.state.switchEndpointsTimeout) {
-      clearTimeout(this.state.switchEndpointsTimeout);
-      this.state.switchEndpointsTimeout = undefined;
-    }
-
+    // Clear failure throttles
     Object.values(this.state.endpointsState).forEach((endpointState) => {
-      if (endpointState.failureDebounceTimeout) {
-        clearTimeout(endpointState.failureDebounceTimeout);
-        endpointState.failureDebounceTimeout = undefined;
+      if (endpointState.failureThrottleTimeout) {
+        clearTimeout(endpointState.failureThrottleTimeout);
+        endpointState.failureThrottleTimeout = undefined;
       }
     });
+
+    // Clear setEndpoints throttle
+    if (this.state.setEndpointsThrottleTimeout) {
+      clearTimeout(this.state.setEndpointsThrottleTimeout);
+      this.state.setEndpointsThrottleTimeout = undefined;
+    }
+
+    this.state.pendingEndpoints = undefined;
   }
 
   selectBestEndpoints = ({
     keepPrimary = false,
     keepSecondary = false,
   }: { keepPrimary?: boolean; keepSecondary?: boolean } = {}) => {
-    const processSelectBestEndpoints = () => {
-      const endpointsStats = this.params.endpoints
-        .map((endpoint) => this.getEndpointStats(endpoint))
-        .filter((s): s is EndpointStats<TCheckStats> => s !== undefined);
-
-      const statsForPrimary = keepSecondary
-        ? endpointsStats.filter((s) => s.endpoint !== this.state.secondary)
-        : endpointsStats;
-
-      let nextPrimary: string | undefined = this.state.primary;
-      if (!keepPrimary) {
-        try {
-          nextPrimary = this.params.selectNextPrimary({
-            endpointsStats: statsForPrimary,
-            primary: this.state.primary,
-            secondary: this.state.secondary,
-          });
-        } catch (error) {
-          this.warn(`Error in selectNextPrimary: ${error instanceof Error ? error.message : String(error)}`);
-          // Fallback to current primary if selection failed
-        }
-      }
-
-      if (!nextPrimary) {
-        nextPrimary = this.state.primary;
-      }
-
-      const statsForSecondary = endpointsStats.filter((s) => s.endpoint !== nextPrimary);
-      let nextSecondary: string | undefined = this.state.secondary;
-
-      if (!keepSecondary) {
-        try {
-          nextSecondary = this.params.selectNextSecondary({
-            endpointsStats: statsForSecondary,
-            primary: this.state.primary,
-            secondary: this.state.secondary,
-          });
-        } catch (error) {
-          this.warn(`Error in selectNextSecondary: ${error instanceof Error ? error.message : String(error)}`);
-          // Fallback to current secondary if selection fails
-        }
-      }
-
-      if (!nextSecondary) {
-        nextSecondary = this.state.secondary;
-      }
-
-      if (nextPrimary !== this.state.primary || nextSecondary !== this.state.secondary) {
-        this.state.primary = nextPrimary;
-        this.state.secondary = nextSecondary;
-
-        this.saveEndpointsState({
-          primary: nextPrimary,
-          secondary: nextSecondary,
-        });
-
-        this.emitEndpointsUpdated({
-          primary: nextPrimary,
-          secondary: nextSecondary,
-          endpointsStats: endpointsStats,
-        });
-      }
-    };
-
-    if (!this.state.switchEndpointsTimeout) {
-      processSelectBestEndpoints();
-      this.state.switchEndpointsTimeout = window.setTimeout(() => {
-        this.state.switchEndpointsTimeout = undefined;
-      }, this.params.switchEndpointsDebounce);
+    if (this.params.endpoints.length === 1) {
+      this.state.primary = this.params.endpoints[0];
+      this.state.secondary = this.params.endpoints[0];
       return;
     }
 
-    clearTimeout(this.state.switchEndpointsTimeout);
+    const endpointsStats = this.getEndpointsStats();
 
-    this.state.switchEndpointsTimeout = window.setTimeout(() => {
-      processSelectBestEndpoints();
-      this.state.switchEndpointsTimeout = undefined;
-    }, this.params.switchEndpointsDebounce);
+    const statsForPrimary = keepSecondary
+      ? endpointsStats.filter((s) => s.endpoint !== this.state.secondary)
+      : endpointsStats;
+
+    let nextPrimary: string | undefined = this.state.primary;
+    if (!keepPrimary) {
+      try {
+        nextPrimary =
+          this.params.selectNextPrimary({
+            endpointsStats: statsForPrimary,
+            primary: this.state.primary,
+            secondary: this.state.secondary,
+          }) ?? nextPrimary;
+      } catch (error) {
+        this.warn(`Error in selectNextPrimary: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+
+    const statsForSecondary = endpointsStats.filter((s) => s.endpoint !== nextPrimary);
+
+    let nextSecondary: string | undefined = this.state.secondary;
+
+    if (!keepSecondary) {
+      try {
+        nextSecondary =
+          this.params.selectNextSecondary({
+            endpointsStats: statsForSecondary,
+            primary: this.state.primary,
+            secondary: this.state.secondary,
+          }) ?? nextSecondary;
+      } catch (error) {
+        this.warn(`Error in selectNextSecondary: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+
+    this.setCurrentEndpoints(nextPrimary, nextSecondary);
   };
+
+  setCurrentEndpoints(primary: string, secondary: string) {
+    if (primary === this.state.primary && secondary === this.state.secondary) {
+      return;
+    }
+
+    const applyEndpoints = (p: string, s: string) => {
+      this.state.primary = p;
+      this.state.secondary = s;
+
+      this.saveEndpointsState({
+        primary: p,
+        secondary: s,
+      });
+
+      this.emitEndpointsUpdated({
+        primary: p,
+        secondary: s,
+        endpointsStats: this.getEndpointsStats(),
+      });
+
+      this.state.pendingEndpoints = undefined;
+    };
+
+    // Throttle with trailing edge: process immediately on first call
+    if (!this.state.setEndpointsThrottleTimeout) {
+      applyEndpoints(primary, secondary);
+
+      this.state.setEndpointsThrottleTimeout = window.setTimeout(() => {
+        // Trailing edge: process last endpoints if there was a call during throttle period
+        if (this.state.pendingEndpoints) {
+          applyEndpoints(this.state.pendingEndpoints.primary, this.state.pendingEndpoints.secondary);
+        }
+
+        this.state.setEndpointsThrottleTimeout = undefined;
+      }, this.params.setEndpointsThrottle);
+      return;
+    }
+
+    // During throttle period: save endpoints for trailing edge processing
+    this.state.pendingEndpoints = { primary, secondary };
+  }
 
   async checkEndpoints() {
     const checkTimestamp = Date.now();
@@ -524,6 +542,23 @@ export class FallbackTracker<TCheckStats> {
       differenceInMilliseconds(Date.now(), this.state.lastUsage) > this.params.disableUnusedTrackingTimeout;
 
     return hasMultipleEndpoints && (warmUp || !isUnused);
+  }
+
+  subscribeToEvents() {
+    const triggerFailureHandler = (event: Event) => {
+      const { detail } = event as CustomEvent<EndpointFailureDetail>;
+      if (detail.trackerKey === this.trackerKey) {
+        this.triggerFailure(detail.endpoint);
+      }
+    };
+
+    window.addEventListener(FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, triggerFailureHandler);
+
+    const unsubscribeFromEvents = () => {
+      window.removeEventListener(FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, triggerFailureHandler);
+    };
+
+    return unsubscribeFromEvents;
   }
 
   loadEndpointsState(validEndpoints: string[]) {
