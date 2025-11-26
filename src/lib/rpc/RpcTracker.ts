@@ -353,6 +353,10 @@ export class RpcTracker {
       return isSuccess && (ignoreBlockNumberCheck || (!isFromFuture && !isLagging));
     });
 
+    if (validStats.length === 0) {
+      return endpointsStats;
+    }
+
     return validStats;
   };
 
