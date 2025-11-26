@@ -1,5 +1,7 @@
 import { encodeAbiParameters } from "viem";
+import { vi } from "vitest";
 
+import * as rpcConfigModule from "config/rpc";
 import type { RpcConfig } from "config/rpc";
 import type { CheckResult, EndpointStats } from "lib/FallbackTracker";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -9,33 +11,35 @@ import type { RpcCheckResult } from "../RpcTracker";
 
 export const testChainId = ARBITRUM;
 
-export const testRpcConfigs: RpcConfig[] = [
-  {
+export const testRpcConfigs = {
+  defaultPrimary: {
     url: "https://primary-rpc.com",
     isPublic: true,
-    purpose: "default",
+    purpose: "default" as const,
   },
-  {
+  defaultSecondary: {
     url: "https://secondary-rpc.com",
     isPublic: true,
-    purpose: "default",
+    purpose: "default" as const,
   },
-  {
+  fallback: {
     url: "https://fallback-rpc.com",
     isPublic: false,
-    purpose: "fallback",
+    purpose: "fallback" as const,
   },
-  {
+  largeAccount: {
     url: "https://large-account-rpc.com",
     isPublic: false,
-    purpose: "largeAccount",
+    purpose: "largeAccount" as const,
   },
-  {
+  express: {
     url: "https://express-rpc.com",
     isPublic: false,
-    purpose: "express",
+    purpose: "express" as const,
   },
-];
+} as const satisfies Record<string, RpcConfig>;
+
+export const testRpcConfigsArray: RpcConfig[] = Object.values(testRpcConfigs);
 
 export const createMockRpcTrackerParams = (overrides?: {
   chainId?: ContractsChainId;
@@ -115,3 +119,9 @@ export const createMockBlockAndAggregateResponse = (
 
   return { result: encodedResult };
 };
+
+export function mockGetRpcProvidersWithTestConfigs(configsToReturn: RpcConfig[]) {
+  vi.spyOn(rpcConfigModule, "getRpcProviders").mockImplementation((chainId: number, purpose: string) => {
+    return configsToReturn.filter((config) => config.purpose === purpose);
+  });
+}

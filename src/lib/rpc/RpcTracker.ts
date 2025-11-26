@@ -48,18 +48,6 @@ export class RpcTracker {
   fallbackTracker: FallbackTracker<RpcCheckResult>;
   offFallbackTrackerEvents: () => void;
 
-  get trackerKey() {
-    return this.fallbackTracker.trackerKey;
-  }
-
-  getIsLargeAccount = () => {
-    return getIsLargeAccount();
-  };
-
-  getRpcConfig(endpoint: string): RpcConfig | undefined {
-    return this.providersMap[endpoint];
-  }
-
   constructor(public readonly params: RpcTrackerParams) {
     const chainProviders = [
       getRpcProviders(this.params.chainId, "default"),
@@ -120,6 +108,18 @@ export class RpcTracker {
     };
   }
 
+  get trackerKey() {
+    return this.fallbackTracker.trackerKey;
+  }
+
+  getIsLargeAccount = () => {
+    return getIsLargeAccount();
+  };
+
+  getRpcConfig(endpoint: string): RpcConfig | undefined {
+    return this.providersMap[endpoint];
+  }
+
   public stopTracking() {
     this.offFallbackTrackerEvents();
     this.fallbackTracker.stopTracking();
@@ -148,14 +148,6 @@ export class RpcTracker {
     return endpoints[0];
   }
 
-  public triggerFailure(endpoint: string) {
-    this.fallbackTracker.triggerFailure(endpoint);
-  }
-
-  public banEndpoint(endpoint: string, reason: string) {
-    this.fallbackTracker.banEndpoint(endpoint, reason);
-  }
-
   checkRpc = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
     const rpcConfig = this.providersMap[endpoint];
 
@@ -166,7 +158,7 @@ export class RpcTracker {
       };
     }
 
-    if ((!rpcConfig.isPublic && !this.getIsLargeAccount()) || rpcConfig.purpose !== "largeAccount") {
+    if (!rpcConfig.isPublic && (!this.getIsLargeAccount() || rpcConfig.purpose !== "largeAccount")) {
       throw new Error("Skip private provider");
     }
 

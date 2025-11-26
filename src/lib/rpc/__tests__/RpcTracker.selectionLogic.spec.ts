@@ -1,11 +1,110 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import * as rpcConfigModule from "config/rpc";
 import { suppressConsole } from "lib/__testUtils__/_utils";
+import { onFallbackTrackerEvent } from "lib/FallbackTracker/events";
 
 import { RpcTracker } from "../RpcTracker";
-import { createMockRpcTrackerParams, createMockEndpointStats, testRpcConfigs } from "./_utils";
+import { createMockRpcTrackerParams, createMockEndpointStats, testRpcConfigs, testRpcConfigsArray } from "./_utils";
 
-describe("RpcTracker - selection logic", () => {
+// Helper function to mock getRpcProviders to return test configs
+function mockGetRpcProvidersWithTestConfigs(configsToReturn: typeof testRpcConfigsArray) {
+  return vi.spyOn(rpcConfigModule, "getRpcProviders").mockImplementation((chainId: number, purpose: string) => {
+    return configsToReturn.filter((config) => config.purpose === purpose);
+  });
+}
+
+// Helper function to capture updateEndpoints events for a specific tracker
+function captureUpdateEndpointsEvent(tracker: RpcTracker) {
+  let capturedEvent: any = null;
+  const unsubscribe = onFallbackTrackerEvent("updateEndpoints", (event) => {
+    if (event.trackerKey === tracker.trackerKey) {
+      capturedEvent = event;
+    }
+  });
+
+  return {
+    get event() {
+      return capturedEvent;
+    },
+    unsubscribe,
+  };
+}
+
+// Helper function to verify fallbackTracker state and updateEndpoints event
+function verifyFallbackTrackerEndpoints(
+  tracker: RpcTracker,
+  eventCapture: ReturnType<typeof captureUpdateEndpointsEvent>,
+  expectedPrimary: string,
+  expectedSecondary?: string,
+  options?: { checkEndpointsStats?: boolean }
+) {
+  expect(tracker.fallbackTracker.state.primary).toBe(expectedPrimary);
+  if (expectedSecondary !== undefined) {
+    expect(tracker.fallbackTracker.state.secondary).toBe(expectedSecondary);
+  } else {
+    expect(tracker.fallbackTracker.state.secondary).toBeDefined();
+  }
+
+  expect(eventCapture.event).toBeDefined();
+  expect(eventCapture.event.primary).toBe(expectedPrimary);
+  if (expectedSecondary !== undefined) {
+    expect(eventCapture.event.secondary).toBe(expectedSecondary);
+  } else {
+    expect(eventCapture.event.secondary).toBeDefined();
+  }
+  expect(eventCapture.event.trackerKey).toBe(tracker.trackerKey);
+  if (options?.checkEndpointsStats) {
+    expect(eventCapture.event.endpointsStats).toBeDefined();
+  }
+}
+
+// Helper function to verify fallbackTracker endpoints selection and event emission
+function verifyFallbackTrackerSelection(
+  tracker: RpcTracker,
+  stats: any[],
+  expectedPrimary: string,
+  expectedSecondary?: string,
+  options?: { checkEndpointsStats?: boolean; allowSameEndpoints?: boolean }
+) {
+  // Set initial endpoints to different values to ensure event is emitted
+  tracker.fallbackTracker.state.primary = "https://old-primary.com";
+  tracker.fallbackTracker.state.secondary = "https://old-secondary.com";
+  vi.spyOn(tracker.fallbackTracker, "getEndpointsStats").mockReturnValue(stats as any);
+  const eventCapture = captureUpdateEndpointsEvent(tracker);
+
+  tracker.fallbackTracker.selectBestEndpoints();
+
+  if (!options?.allowSameEndpoints) {
+    expect(tracker.fallbackTracker.state.primary).not.toBe(tracker.fallbackTracker.state.secondary);
+  }
+
+  verifyFallbackTrackerEndpoints(tracker, eventCapture, expectedPrimary, expectedSecondary, {
+    checkEndpointsStats: options?.checkEndpointsStats,
+  });
+  eventCapture.unsubscribe();
+}
+
+// Helper function to verify that fallbackTracker state remains unchanged when selectNext returns undefined
+function verifyFallbackTrackerStateUnchanged(tracker: RpcTracker) {
+  // Capture initial state
+  const initialPrimary = tracker.fallbackTracker.state.primary;
+  const initialSecondary = tracker.fallbackTracker.state.secondary;
+
+  // Capture events to ensure no event was emitted
+  const eventCapture = captureUpdateEndpointsEvent(tracker);
+
+  // Verify state hasn't changed
+  expect(tracker.fallbackTracker.state.primary).toBe(initialPrimary);
+  expect(tracker.fallbackTracker.state.secondary).toBe(initialSecondary);
+
+  // Verify no event was emitted
+  expect(eventCapture.event).toBeNull();
+
+  eventCapture.unsubscribe();
+}
+
+describe("Selection logic", () => {
   suppressConsole();
 
   beforeEach(() => {
@@ -13,209 +112,847 @@ describe("RpcTracker - selection logic", () => {
     vi.clearAllMocks();
   });
 
-  describe("selectNextPrimary", () => {
-    it("should filter by purpose (default for non-large account)", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
+  describe("Primary", () => {
+    describe("Edge cases", () => {
+      it("should return undefined when empty array passed", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
-          checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
-        }),
-        createMockEndpointStats(testRpcConfigs[2].url, {
-          checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
-        }),
-      ];
+        const result = tracker.selectNextPrimary({ endpointsStats: [] });
 
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
+        expect(result).toBeUndefined();
+        verifyFallbackTrackerStateUnchanged(tracker);
       });
 
-      const result = tracker.selectNextPrimary({ endpointsStats: stats });
+      it("should return undefined when no valid endpoints", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      expect(result).toBe(testRpcConfigs[0].url);
-    });
+        const allInvalidStats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: false, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            checkResult: { success: false, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
 
-    it("should filter by purpose (largeAccount+default for large account)", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
+        // Mock getValidStats to return empty array (no valid endpoints)
+        vi.spyOn(tracker, "getValidStats").mockReturnValue([]);
 
-      tracker.getIsLargeAccount = () => true;
+        // Should return undefined when no valid endpoints
+        const result = tracker.selectNextPrimary({ endpointsStats: allInvalidStats });
 
-      const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
-          checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
-        }),
-        createMockEndpointStats(testRpcConfigs[3].url, {
-          checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
-        }),
-      ];
-
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
+        expect(result).toBeUndefined();
+        verifyFallbackTrackerStateUnchanged(tracker);
       });
 
-      const result = tracker.selectNextPrimary({ endpointsStats: stats });
+      it("should return only one valid endpoint matched criteria for regular account", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      expect(result).toBe(testRpcConfigs[3].url);
-    });
+        const singleValidEndpoint = testRpcConfigs.defaultPrimary.url;
+        const stats = [
+          createMockEndpointStats(singleValidEndpoint, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.fallback.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
 
-    it("should prefer valid stats over all stats", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
 
-      const validStats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
-          checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
-        }),
-      ];
-
-      const invalidStats = [
-        createMockEndpointStats(testRpcConfigs[1].url, {
-          checkResult: { success: false, stats: { responseTime: 50, blockNumber: 1000000 } },
-        }),
-      ];
-
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
+        expect(result).toBe(singleValidEndpoint);
+        verifyFallbackTrackerSelection(tracker, stats, singleValidEndpoint);
       });
 
-      vi.spyOn(tracker, "getValidStats").mockReturnValue(validStats);
+      it("should return only one valid endpoint matched criteria for large account", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      const result = tracker.selectNextPrimary({ endpointsStats: [...validStats, ...invalidStats] });
+        tracker.getIsLargeAccount = () => true;
 
-      expect(result).toBe(testRpcConfigs[0].url);
-    });
+        const singleValidEndpoint = testRpcConfigs.largeAccount.url;
+        const stats = [
+          createMockEndpointStats(singleValidEndpoint, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.fallback.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
 
-    it("should return undefined when no valid stats match allowed purposes", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
 
-      const validStats = [
-        createMockEndpointStats(testRpcConfigs[2].url, {
-          checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
-        }),
-      ];
-
-      const allStats = [
-        ...validStats,
-        createMockEndpointStats(testRpcConfigs[0].url, {
-          checkResult: { success: false, stats: { responseTime: 50, blockNumber: 1000000 } },
-        }),
-      ];
-
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
+        expect(result).toBe(singleValidEndpoint);
+        verifyFallbackTrackerSelection(tracker, stats, singleValidEndpoint);
       });
 
-      vi.spyOn(tracker, "getValidStats").mockReturnValue(validStats);
+      it("should return undefined when no endpoints matched criteria", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      const result = tracker.selectNextPrimary({ endpointsStats: allStats });
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.fallback.url, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
 
-      expect(result).toBeUndefined();
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        expect(result).toBeUndefined();
+        verifyFallbackTrackerStateUnchanged(tracker);
+      });
     });
 
-    it("should rank by preferred purpose, banned timestamp, and responseTime", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
+    describe("For regular account", () => {
+      it("should filter by purpose (default for non-large account)", () => {
+        const params = createMockRpcTrackerParams();
+        // Mock getRpcProviders to return all test configs
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
-          checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
-        }),
-        createMockEndpointStats(testRpcConfigs[1].url, {
-          checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
-        }),
-      ];
+        const expectedPrimary = testRpcConfigs.defaultPrimary.url;
 
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
+        const stats = [
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.fallback.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        expect(result).toBe(expectedPrimary);
+
+        // Verify fallbackTracker and event
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary);
       });
 
-      const result = tracker.selectNextPrimary({ endpointsStats: stats });
+      it("should prefer valid stats over all stats", () => {
+        const params = createMockRpcTrackerParams();
+        // Mock getRpcProviders to return all test configs
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      expect(result).toBe(testRpcConfigs[1].url);
+        const expectedPrimary = testRpcConfigs.defaultPrimary.url;
+
+        const validStats = [
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const invalidStats = [
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            checkResult: { success: false, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+        ];
+
+        vi.spyOn(tracker, "getValidStats").mockReturnValue(validStats);
+
+        const result = tracker.selectNextPrimary({ endpointsStats: [...validStats, ...invalidStats] });
+
+        expect(result).toBe(expectedPrimary);
+
+        // Verify fallbackTracker and event
+        verifyFallbackTrackerSelection(tracker, validStats, expectedPrimary, undefined, { allowSameEndpoints: true });
+      });
+
+      it("should return undefined when no valid stats match allowed purposes", () => {
+        const params = createMockRpcTrackerParams();
+        // Mock getRpcProviders to return all test configs
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const validStats = [
+          createMockEndpointStats(testRpcConfigs.fallback.url, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const allStats = [
+          ...validStats,
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: false, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+        ];
+
+        vi.spyOn(tracker, "getValidStats").mockReturnValue(validStats);
+
+        const result = tracker.selectNextPrimary({ endpointsStats: allStats });
+
+        expect(result).toBeUndefined();
+        verifyFallbackTrackerStateUnchanged(tracker);
+      });
+
+      it("should rank by preferred purpose, banned timestamp, and responseTime", () => {
+        const params = createMockRpcTrackerParams();
+        // Mock getRpcProviders to return all test configs
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const expectedPrimary = testRpcConfigs.defaultSecondary.url;
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        expect(result).toBe(expectedPrimary);
+
+        // Verify fallbackTracker and event
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary);
+      });
+
+      it("should never select non-default rpc as primary (fallback)", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.fallback.url, {
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        // Should select default even if fallback is faster
+        expect(result).toBe(testRpcConfigs.defaultPrimary.url);
+        verifyFallbackTrackerSelection(tracker, stats, testRpcConfigs.defaultPrimary.url);
+      });
+
+      it("should never select non-default rpc as primary (largeAccount)", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.largeAccount.url, {
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        // Should select default even if largeAccount is faster
+        expect(result).toBe(testRpcConfigs.defaultPrimary.url);
+        verifyFallbackTrackerSelection(tracker, stats, testRpcConfigs.defaultPrimary.url);
+      });
+
+      it("should select non-banned endpoint first, then by response speed", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const expectedPrimary = testRpcConfigs.defaultSecondary.url; // Non-banned and faster
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            banned: { timestamp: Date.now(), reason: "test" },
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        expect(result).toBe(expectedPrimary);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary);
+      });
+
+      it("should sort by ban timestamp when all endpoints are banned", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const olderBanTime = Date.now() - 10000;
+        const newerBanTime = Date.now() - 5000;
+        const expectedPrimary = testRpcConfigs.defaultPrimary.url; // Older ban timestamp (less recent)
+
+        const stats = [
+          createMockEndpointStats(expectedPrimary, {
+            banned: { timestamp: olderBanTime, reason: "test" },
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            banned: { timestamp: newerBanTime, reason: "test" },
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        // Should select endpoint with older ban timestamp (less recent ban)
+        expect(result).toBe(expectedPrimary);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary);
+      });
+
+      it("should return default endpoint when only one default endpoint exists", () => {
+        const params = createMockRpcTrackerParams();
+        // Mock getRpcProviders to return only one default config
+        mockGetRpcProvidersWithTestConfigs([testRpcConfigs.defaultPrimary]);
+        const tracker = new RpcTracker(params);
+
+        const singleDefaultEndpoint = testRpcConfigs.defaultPrimary.url;
+        const stats = [
+          createMockEndpointStats(singleDefaultEndpoint, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        expect(result).toBe(singleDefaultEndpoint);
+
+        // Verify fallbackTracker state
+        // For single endpoint, constructor already sets it correctly, and selectBestEndpoints does early return
+        // without calling setCurrentEndpoints, so no event should be emitted
+        expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+
+        // Verify that selectBestEndpoints doesn't change endpoints and doesn't emit event
+        const eventCapture = captureUpdateEndpointsEvent(tracker);
+        tracker.fallbackTracker.selectBestEndpoints();
+        // Event should not be emitted because endpoints don't change
+        expect(eventCapture.event).toBeNull();
+        // Endpoints should remain the same
+        expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+        eventCapture.unsubscribe();
+      });
     });
 
-    it("should return undefined when no matching endpoints", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
+    describe("For large account", () => {
+      it("should prefer largeAccount endpoint by default", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
 
-      vi.spyOn(tracker, "getRpcConfig").mockReturnValue(undefined);
+        tracker.getIsLargeAccount = () => true;
 
-      const result = tracker.selectNextPrimary({ endpointsStats: [] });
+        const expectedPrimary = testRpcConfigs.largeAccount.url;
 
-      expect(result).toBeUndefined();
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        // Should prefer largeAccount even if default is faster
+        expect(result).toBe(expectedPrimary);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary);
+      });
+
+      it("should select largeAccount even if default rpcs are faster until largeAccount is banned", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        tracker.getIsLargeAccount = () => true;
+
+        const expectedPrimary = testRpcConfigs.largeAccount.url;
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 10, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            checkResult: { success: true, stats: { responseTime: 20, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 1000, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        // Should still select largeAccount even if much slower
+        expect(result).toBe(expectedPrimary);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary);
+      });
+
+      it("should use regular account logic when largeAccount is banned", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        tracker.getIsLargeAccount = () => true;
+
+        const expectedPrimary = testRpcConfigs.defaultSecondary.url; // Fastest non-banned default
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.largeAccount.url, {
+            banned: { timestamp: Date.now(), reason: "test" },
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextPrimary({ endpointsStats: stats });
+
+        // Should select fastest default when largeAccount is banned
+        expect(result).toBe(expectedPrimary);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary);
+      });
     });
   });
 
-  describe("selectNextSecondary", () => {
-    it("should filter by purpose (default+fallback for non-large account)", () => {
+  describe("Secondary", () => {
+    describe("Edge cases", () => {
+      it("should return undefined when empty array passed", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const result = tracker.selectNextSecondary({ endpointsStats: [] });
+
+        expect(result).toBeUndefined();
+        verifyFallbackTrackerStateUnchanged(tracker);
+      });
+
+      it("should return undefined when no valid endpoints", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const allInvalidStats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: false, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        vi.spyOn(tracker, "getValidStats").mockReturnValue([]);
+
+        const result = tracker.selectNextSecondary({ endpointsStats: allInvalidStats });
+
+        expect(result).toBeUndefined();
+        verifyFallbackTrackerStateUnchanged(tracker);
+      });
+
+      it("should return only one valid endpoint matched criteria", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const expectedPrimary = testRpcConfigs.defaultPrimary.url;
+        const singleValidEndpoint = testRpcConfigs.fallback.url;
+        const stats = [
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(singleValidEndpoint, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.largeAccount.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        expect(result).toBe(singleValidEndpoint);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, singleValidEndpoint);
+      });
+
+      it("should return undefined when no endpoints matched criteria", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.express.url, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        expect(result).toBeUndefined();
+        verifyFallbackTrackerStateUnchanged(tracker);
+      });
+
+      it("should return default endpoint when only one endpoint exists", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs([testRpcConfigs.defaultPrimary]);
+        const tracker = new RpcTracker(params);
+
+        const singleDefaultEndpoint = testRpcConfigs.defaultPrimary.url;
+        const stats = [
+          createMockEndpointStats(singleDefaultEndpoint, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        expect(result).toBe(singleDefaultEndpoint);
+
+        // Verify fallbackTracker state
+        // For single endpoint, constructor already sets it correctly, and selectBestEndpoints does early return
+        // without calling setCurrentEndpoints, so no event should be emitted
+        expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+
+        // Verify that selectBestEndpoints doesn't change endpoints and doesn't emit event
+        const eventCapture = captureUpdateEndpointsEvent(tracker);
+        tracker.fallbackTracker.selectBestEndpoints();
+        // Event should not be emitted because endpoints don't change
+        expect(eventCapture.event).toBeNull();
+        // Endpoints should remain the same
+        expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+        eventCapture.unsubscribe();
+      });
+    });
+
+    describe("For regular account", () => {
+      it("should select fallback rpc by default", () => {
+        const params = createMockRpcTrackerParams();
+        // Mock getRpcProviders to return all test configs
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const expectedPrimary = testRpcConfigs.defaultPrimary.url;
+        const expectedSecondary = testRpcConfigs.fallback.url;
+
+        const stats = [
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedSecondary, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        expect(result).toBe(expectedSecondary);
+
+        // Verify fallbackTracker and event
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+      });
+
+      it("should select fallback rpc even if default is faster", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const expectedSecondary = testRpcConfigs.fallback.url;
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 10, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedSecondary, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        // Should prefer fallback even if default is much faster
+        expect(result).toBe(expectedSecondary);
+        verifyFallbackTrackerSelection(tracker, stats, testRpcConfigs.defaultPrimary.url, expectedSecondary);
+      });
+
+      it("should select non-banned fastest default rpc when no fallback available", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs([testRpcConfigs.defaultPrimary, testRpcConfigs.defaultSecondary]);
+        const tracker = new RpcTracker(params);
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        // Should select fastest default when no fallback available
+        expect(result).toBe(testRpcConfigs.defaultSecondary.url); // Fastest default
+
+        // Verify fallbackTracker: primary will be fastest default, secondary will be slower default
+        const expectedPrimary = testRpcConfigs.defaultSecondary.url;
+        const expectedSecondary = testRpcConfigs.defaultPrimary.url;
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+      });
+
+      it("should select non-banned fastest default rpc when fallback is banned", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.fallback.url, {
+            banned: { timestamp: Date.now(), reason: "test" },
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        // Should select fastest default when fallback is banned
+        expect(result).toBe(testRpcConfigs.defaultSecondary.url); // Fastest non-banned default
+
+        // Verify fallbackTracker: primary will be fastest default, secondary will be slower default
+        const expectedPrimary = testRpcConfigs.defaultSecondary.url;
+        const expectedSecondary = testRpcConfigs.defaultPrimary.url;
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+      });
+    });
+
+    describe("For large account", () => {
+      it("should select non-banned fastest RPC", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        tracker.getIsLargeAccount = () => true;
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.largeAccount.url, {
+            banned: { timestamp: Date.now(), reason: "test" },
+            checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        // Should select fastest non-banned RPC
+        expect(result).toBe(testRpcConfigs.defaultSecondary.url); // Fastest non-banned
+
+        // Verify fallbackTracker: primary will be fastest default, secondary will be slower default
+        const expectedPrimary = testRpcConfigs.defaultSecondary.url;
+        const expectedSecondary = testRpcConfigs.defaultPrimary.url;
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+      });
+
+      it("should prefer largeAccount for secondary when available and not banned", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        tracker.getIsLargeAccount = () => true;
+
+        const expectedPrimary = testRpcConfigs.largeAccount.url; // largeAccount will be selected as primary
+        const expectedSecondary = testRpcConfigs.defaultPrimary.url; // default will be selected as secondary
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 10, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(testRpcConfigs.largeAccount.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+        ];
+
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        // Should prefer largeAccount even if default is faster
+        expect(result).toBe(testRpcConfigs.largeAccount.url); // largeAccount will be selected
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+      });
+
+      it("should prefer largeAccount purpose for large account secondary selection", () => {
+        const params = createMockRpcTrackerParams();
+        mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
+        const tracker = new RpcTracker(params);
+
+        tracker.getIsLargeAccount = () => true;
+
+        // For largeAccount, when selecting secondary, it should prefer largeAccount over default
+        // But if primary is already largeAccount, secondary will be selected from remaining stats
+        const expectedPrimary = testRpcConfigs.largeAccount.url;
+        const expectedSecondary = testRpcConfigs.defaultPrimary.url; // Only defaultPrimary remains after primary selection
+
+        const stats = [
+          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+            checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+          }),
+          createMockEndpointStats(expectedPrimary, {
+            checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+          }),
+        ];
+
+        // Test selectNextSecondary directly - it should prefer largeAccount when available
+        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+
+        expect(result).toBe(expectedPrimary); // Should prefer largeAccount
+
+        // Verify fallbackTracker and event
+        // Include stats for both primary and secondary selection
+        const allStats = [
+          ...stats,
+          createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
+            checkResult: { success: true, stats: { responseTime: 300, blockNumber: 1000000 } },
+          }),
+        ];
+        // After selectBestEndpoints, primary will be largeAccount, secondary will be defaultPrimary (from remaining stats)
+        verifyFallbackTrackerSelection(tracker, allStats, expectedPrimary, expectedSecondary);
+      });
+    });
+  });
+
+  describe("Combined", () => {
+    it("should select unique primary and secondary for regular account", () => {
       const params = createMockRpcTrackerParams();
+      mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
         }),
-        createMockEndpointStats(testRpcConfigs[2].url, {
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+        }),
+        createMockEndpointStats(testRpcConfigs.fallback.url, {
+          checkResult: { success: true, stats: { responseTime: 150, blockNumber: 1000000 } },
         }),
       ];
 
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
-      });
-
-      const result = tracker.selectNextSecondary({ endpointsStats: stats });
-
-      expect(result).toBe(testRpcConfigs[2].url);
+      // For regular account: primary = fastest default, secondary = fallback
+      verifyFallbackTrackerSelection(
+        tracker,
+        stats,
+        testRpcConfigs.defaultSecondary.url, // Fastest default (responseTime: 100)
+        testRpcConfigs.fallback.url // Fallback (responseTime: 150)
+      );
     });
 
-    it("should prefer largeAccount purpose for large account secondary selection", () => {
+    it("should select unique primary and secondary for large account", () => {
       const params = createMockRpcTrackerParams();
+      mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
       const tracker = new RpcTracker(params);
 
       tracker.getIsLargeAccount = () => true;
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
-          checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+          checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
         }),
-        createMockEndpointStats(testRpcConfigs[3].url, {
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
+        }),
+        createMockEndpointStats(testRpcConfigs.largeAccount.url, {
+          checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
         }),
       ];
 
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
-      });
-
-      const result = tracker.selectNextSecondary({ endpointsStats: stats });
-
-      expect(result).toBe(testRpcConfigs[3].url);
+      // For large account: primary = largeAccount (preferred), secondary = fastest default
+      verifyFallbackTrackerSelection(
+        tracker,
+        stats,
+        testRpcConfigs.largeAccount.url, // largeAccount (preferred even if slower)
+        testRpcConfigs.defaultPrimary.url // Fastest default (responseTime: 50)
+      );
     });
 
-    it("should prefer fallback purpose for non-large account", () => {
+    it("should select unique primary and secondary when some endpoints are banned", () => {
       const params = createMockRpcTrackerParams();
+      mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+          banned: { timestamp: Date.now(), reason: "test" },
+          checkResult: { success: true, stats: { responseTime: 50, blockNumber: 1000000 } },
+        }),
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
-        createMockEndpointStats(testRpcConfigs[2].url, {
-          checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
+        createMockEndpointStats(testRpcConfigs.fallback.url, {
+          checkResult: { success: true, stats: { responseTime: 150, blockNumber: 1000000 } },
         }),
       ];
 
-      testRpcConfigs.forEach((config) => {
-        tracker.providersMap[config.url] = config;
-      });
+      // With banned endpoint: primary = fastest non-banned default, secondary = fallback
+      verifyFallbackTrackerSelection(
+        tracker,
+        stats,
+        testRpcConfigs.defaultSecondary.url, // Fastest non-banned default (responseTime: 100)
+        testRpcConfigs.fallback.url // Fallback (responseTime: 150)
+      );
+    });
 
-      const result = tracker.selectNextSecondary({ endpointsStats: stats });
+    it("should select same endpoint for both primary and secondary when only one endpoint exists", () => {
+      const params = createMockRpcTrackerParams();
+      mockGetRpcProvidersWithTestConfigs([testRpcConfigs.defaultPrimary]);
+      const tracker = new RpcTracker(params);
 
-      expect(result).toBe(testRpcConfigs[2].url);
+      const singleEndpoint = testRpcConfigs.defaultPrimary.url;
+
+      // Verify initial state: constructor should set both primary and secondary to the single endpoint
+      expect(tracker.fallbackTracker.state.primary).toBe(singleEndpoint);
+      expect(tracker.fallbackTracker.state.secondary).toBe(singleEndpoint);
+
+      // Set initial endpoints to different values to test that selectBestEndpoints changes them
+      tracker.fallbackTracker.state.primary = "https://old-primary.com";
+      tracker.fallbackTracker.state.secondary = "https://old-secondary.com";
+      const eventCapture = captureUpdateEndpointsEvent(tracker);
+
+      tracker.fallbackTracker.selectBestEndpoints();
+
+      // Verify that primary and secondary are the same when only one endpoint exists
+      expect(tracker.fallbackTracker.state.primary).toBe(singleEndpoint);
+      expect(tracker.fallbackTracker.state.secondary).toBe(singleEndpoint);
+      expect(tracker.fallbackTracker.state.primary).toBe(tracker.fallbackTracker.state.secondary);
+
+      // When endpoints.length === 1, selectBestEndpoints does early return without calling setCurrentEndpoints
+      // So no event should be emitted (even though endpoints changed)
+      // This is the expected behavior according to FallbackTracker implementation
+      expect(eventCapture.event).toBeNull();
+
+      eventCapture.unsubscribe();
     });
   });
 
@@ -225,10 +962,10 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
-        createMockEndpointStats(testRpcConfigs[1].url, {
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: false, stats: { responseTime: 50, blockNumber: 1000000 } },
         }),
       ];
@@ -238,7 +975,7 @@ describe("RpcTracker - selection logic", () => {
       const result = tracker.getValidStats(stats);
 
       expect(result.length).toBe(1);
-      expect(result[0].endpoint).toBe(testRpcConfigs[0].url);
+      expect(result[0].endpoint).toBe(testRpcConfigs.defaultPrimary.url);
     });
 
     it("should filter out endpoints with blockNumber from future", () => {
@@ -246,10 +983,10 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1002000 } },
         }),
-        createMockEndpointStats(testRpcConfigs[1].url, {
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
       ];
@@ -259,7 +996,7 @@ describe("RpcTracker - selection logic", () => {
       const result = tracker.getValidStats(stats);
 
       expect(result.length).toBe(1);
-      expect(result[0].endpoint).toBe(testRpcConfigs[1].url);
+      expect(result[0].endpoint).toBe(testRpcConfigs.defaultSecondary.url);
     });
 
     it("should filter out endpoints with blockNumber lagging", () => {
@@ -267,10 +1004,10 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
-        createMockEndpointStats(testRpcConfigs[1].url, {
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 949 } },
         }),
       ];
@@ -280,7 +1017,7 @@ describe("RpcTracker - selection logic", () => {
       const result = tracker.getValidStats(stats);
 
       expect(result.length).toBe(1);
-      expect(result[0].endpoint).toBe(testRpcConfigs[0].url);
+      expect(result[0].endpoint).toBe(testRpcConfigs.defaultPrimary.url);
     });
 
     it("should return all stats when no valid stats are found", () => {
@@ -288,7 +1025,7 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: false, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
       ];
@@ -298,7 +1035,7 @@ describe("RpcTracker - selection logic", () => {
       const result = tracker.getValidStats(stats);
 
       expect(result.length).toBe(stats.length);
-      expect(result[0].endpoint).toBe(testRpcConfigs[0].url);
+      expect(result[0].endpoint).toBe(testRpcConfigs.defaultPrimary.url);
     });
 
     it("should handle undefined blockNumber", () => {
@@ -306,7 +1043,7 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: undefined } },
         }),
       ];
@@ -323,7 +1060,7 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
       ];
@@ -342,7 +1079,7 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
       ];
@@ -357,10 +1094,10 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000500 } },
         }),
-        createMockEndpointStats(testRpcConfigs[1].url, {
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
       ];
@@ -375,10 +1112,10 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1002000 } },
         }),
-        createMockEndpointStats(testRpcConfigs[1].url, {
+        createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
         }),
       ];
@@ -393,7 +1130,7 @@ describe("RpcTracker - selection logic", () => {
       const tracker = new RpcTracker(params);
 
       const stats = [
-        createMockEndpointStats(testRpcConfigs[0].url, {
+        createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
           checkResult: { success: true, stats: { responseTime: 100, blockNumber: undefined } },
         }),
       ];

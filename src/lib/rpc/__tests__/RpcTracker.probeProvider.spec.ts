@@ -11,7 +11,7 @@ import { RpcTracker } from "../RpcTracker";
 import { createMockRpcTrackerParams, createMockBlockAndAggregateResponse } from "./_utils";
 import * as fetchEthCallModule from "../fetchEthCall";
 
-describe("RpcTracker - probeProvider", () => {
+describe("RpcTracker - checkRpc", () => {
   suppressConsole();
 
   beforeEach(() => {
@@ -27,10 +27,6 @@ describe("RpcTracker - probeProvider", () => {
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
 
-      if (!publicProvider) {
-        return;
-      }
-
       const blockNumber = 1000000;
       const sampleFieldValue = 1000000000000000000000n;
 
@@ -42,33 +38,6 @@ describe("RpcTracker - probeProvider", () => {
 
       expect(result.responseTime).toBeGreaterThanOrEqual(0);
       expect(result.blockNumber).toBe(blockNumber);
-    });
-
-    it("should calculate responseTime correctly", async () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
-
-      const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
-      const publicProvider = publicProviders[0];
-
-      if (!publicProvider) {
-        return;
-      }
-
-      const blockNumber = 1000000;
-      const sampleFieldValue = 1000000000000000000000n;
-
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockImplementation(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        return createMockBlockAndAggregateResponse(blockNumber, sampleFieldValue);
-      });
-
-      const startTime = Date.now();
-      const result = await tracker.checkRpc(publicProvider.url, new AbortController().signal);
-      const endTime = Date.now();
-
-      expect(result.responseTime).toBeGreaterThanOrEqual(0);
-      expect(result.responseTime).toBeLessThanOrEqual(endTime - startTime + 10);
     });
 
     it("should correctly parse blockAndAggregate response with viem", async () => {
@@ -174,10 +143,6 @@ describe("RpcTracker - probeProvider", () => {
       const privateProviders = rpcConfigModule.getRpcProviders(params.chainId, "fallback").filter((p) => !p?.isPublic);
       const privateProvider = privateProviders[0];
 
-      if (!privateProvider) {
-        return;
-      }
-
       await expect(tracker.checkRpc(privateProvider.url, new AbortController().signal)).rejects.toThrow(
         "Skip private provider"
       );
@@ -193,10 +158,6 @@ describe("RpcTracker - probeProvider", () => {
         .getRpcProviders(params.chainId, "largeAccount")
         .filter((p) => !p?.isPublic);
       const privateProvider = privateProviders[0];
-
-      if (!privateProvider) {
-        return;
-      }
 
       const blockNumber = 1000000;
       const sampleFieldValue = 1000000000000000000000n;
@@ -219,10 +180,6 @@ describe("RpcTracker - probeProvider", () => {
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
 
-      if (!publicProvider) {
-        return;
-      }
-
       await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
@@ -235,10 +192,6 @@ describe("RpcTracker - probeProvider", () => {
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
 
-      if (!publicProvider) {
-        return;
-      }
-
       await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
@@ -248,10 +201,6 @@ describe("RpcTracker - probeProvider", () => {
 
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
-
-      if (!publicProvider) {
-        return;
-      }
 
       vi.spyOn(fetchEthCallModule, "fetchEthCall").mockRejectedValue(new Error("Network error"));
 
@@ -264,10 +213,6 @@ describe("RpcTracker - probeProvider", () => {
 
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
-
-      if (!publicProvider) {
-        return;
-      }
 
       const blockNumber = 1000000;
       const invalidSampleFieldValue = 0n;
@@ -285,10 +230,6 @@ describe("RpcTracker - probeProvider", () => {
 
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
-
-      if (!publicProvider) {
-        return;
-      }
 
       const abortController = new AbortController();
       abortController.abort();
