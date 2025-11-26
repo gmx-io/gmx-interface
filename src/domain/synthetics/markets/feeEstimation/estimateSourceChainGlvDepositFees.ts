@@ -1,3 +1,5 @@
+import { zeroAddress } from "viem";
+
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
@@ -184,6 +186,9 @@ async function estimateSourceChainGlvDepositInitialTxFees({
   const initialToken = isValidMarketTokenDeposit
     ? getGmToken(chainId, params.addresses.market)
     : getToken(chainId, tokenAddress);
+  const initialWrappedTokenAddress = isValidMarketTokenDeposit
+    ? undefined
+    : convertTokenAddress(chainId, tokenAddress, "wrapped");
   const sourceChainTokenId = getMappedTokenId(chainId, tokenAddress, srcChainId);
 
   if (!sourceChainTokenId) {
@@ -230,12 +235,20 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     {
       to: vaultAddress,
       token: params.addresses.initialLongToken,
-      amount: params.addresses.initialLongToken === tokenAddress ? tokenAmount : 0n,
+      amount:
+        params.addresses.initialLongToken === tokenAddress ||
+        params.addresses.initialLongToken === initialWrappedTokenAddress
+          ? tokenAmount
+          : 0n,
     },
     {
       to: vaultAddress,
       token: params.addresses.initialShortToken,
-      amount: params.addresses.initialShortToken === tokenAddress ? tokenAmount : 0n,
+      amount:
+        params.addresses.initialShortToken === tokenAddress ||
+        params.addresses.initialShortToken === initialWrappedTokenAddress
+          ? tokenAmount
+          : 0n,
     },
     {
       to: vaultAddress,
@@ -280,11 +293,13 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
   });
 
+  const amountLD = expandDecimals(1, initialToken.decimals) / 10n;
+
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
     account: RANDOM_WALLET.address,
     srcChainId,
-    amountLD: expandDecimals(1, initialToken.decimals) / 10n,
+    amountLD,
     composeGas: initialComposeGas,
     isToGmx: true,
     isManualGas: params.isMarketTokenDeposit ? true : false,
@@ -303,6 +318,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     useSendToken: isValidMarketTokenDeposit ? false : true,
     disableOverrides: isValidMarketTokenDeposit ? true : false,
     account: params.addresses.receiver,
+    additionalValue: sourceChainTokenId.address === zeroAddress ? amountLD : undefined,
   });
 
   return {
