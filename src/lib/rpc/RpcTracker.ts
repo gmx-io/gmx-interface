@@ -98,12 +98,10 @@ export class RpcTracker {
     });
 
     // Subscribe to FallbackTracker events
-    const expectedTrackerKey = this.trackerKey;
-
     const unsubscribeUpdate = onFallbackTrackerEvent(
       "updateEndpoints",
       ({ trackerKey, primary, secondary, endpointsStats }) => {
-        if (trackerKey === expectedTrackerKey) {
+        if (trackerKey === this.trackerKey) {
           devtools.debugRpcTrackerState(this);
           this.emitUpdateEndpointsMetric({ primary, secondary, endpointsStats });
         }
@@ -111,7 +109,7 @@ export class RpcTracker {
     );
 
     const unsubscribeTrackFinished = onFallbackTrackerEvent("trackFinished", ({ trackerKey }) => {
-      if (trackerKey === expectedTrackerKey) {
+      if (trackerKey === this.trackerKey) {
         devtools.debugRpcTrackerState(this);
       }
     });
@@ -159,16 +157,16 @@ export class RpcTracker {
   }
 
   checkRpc = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
-    const rpcConfig = this.getRpcConfig(endpoint);
+    const rpcConfig = this.providersMap[endpoint];
 
-    if (!rpcConfig?.isPublic && devtools.shouldMockPrivateRpcCheck) {
+    if (!rpcConfig.isPublic && devtools.shouldMockPrivateRpcCheck) {
       return {
         responseTime: 300,
         blockNumber: 100000,
       };
     }
 
-    if (!rpcConfig?.isPublic && (!this.getIsLargeAccount() || rpcConfig?.purpose !== "largeAccount")) {
+    if ((!rpcConfig.isPublic && !this.getIsLargeAccount()) || rpcConfig.purpose !== "largeAccount") {
       throw new Error("Skip private provider");
     }
 
@@ -339,7 +337,6 @@ export class RpcTracker {
     const bestValidBlock = this.getBestValidBlock(endpointsStats);
 
     let validStats = endpointsStats.filter((result) => {
-      // Exclude banned endpoints
       const isSuccess = result.checkResult?.success;
 
       const rpcBlockNumber = result.checkResult?.stats?.blockNumber;
@@ -355,10 +352,6 @@ export class RpcTracker {
 
       return isSuccess && (ignoreBlockNumberCheck || (!isFromFuture && !isLagging));
     });
-
-    if (validStats.length === 0) {
-      return endpointsStats;
-    }
 
     return validStats;
   };

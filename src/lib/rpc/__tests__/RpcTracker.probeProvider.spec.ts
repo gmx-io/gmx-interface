@@ -179,7 +179,7 @@ describe("RpcTracker - probeProvider", () => {
       }
 
       await expect(tracker.checkRpc(privateProvider.url, new AbortController().signal)).rejects.toThrow(
-        "Skip private provider for non large account"
+        "Skip private provider"
       );
     });
 
@@ -189,7 +189,9 @@ describe("RpcTracker - probeProvider", () => {
 
       tracker.getIsLargeAccount = () => true;
 
-      const privateProviders = rpcConfigModule.getRpcProviders(params.chainId, "fallback").filter((p) => !p?.isPublic);
+      const privateProviders = rpcConfigModule
+        .getRpcProviders(params.chainId, "largeAccount")
+        .filter((p) => !p?.isPublic);
       const privateProvider = privateProviders[0];
 
       if (!privateProvider) {

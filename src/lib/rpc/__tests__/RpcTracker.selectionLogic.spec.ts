@@ -87,7 +87,7 @@ describe("RpcTracker - selection logic", () => {
       expect(result).toBe(testRpcConfigs[0].url);
     });
 
-    it("should fall back to all stats when no valid stats match purpose", () => {
+    it("should return undefined when no valid stats match allowed purposes", () => {
       const params = createMockRpcTrackerParams();
       const tracker = new RpcTracker(params);
 
@@ -112,7 +112,7 @@ describe("RpcTracker - selection logic", () => {
 
       const result = tracker.selectNextPrimary({ endpointsStats: allStats });
 
-      expect(result).toBe(testRpcConfigs[0].url);
+      expect(result).toBeUndefined();
     });
 
     it("should rank by preferred purpose, banned timestamp, and responseTime", () => {
@@ -172,7 +172,7 @@ describe("RpcTracker - selection logic", () => {
       expect(result).toBe(testRpcConfigs[2].url);
     });
 
-    it("should filter by purpose (largeAccount+default for large account)", () => {
+    it("should prefer largeAccount purpose for large account secondary selection", () => {
       const params = createMockRpcTrackerParams();
       const tracker = new RpcTracker(params);
 
@@ -193,7 +193,7 @@ describe("RpcTracker - selection logic", () => {
 
       const result = tracker.selectNextSecondary({ endpointsStats: stats });
 
-      expect(result).toBe(testRpcConfigs[0].url);
+      expect(result).toBe(testRpcConfigs[3].url);
     });
 
     it("should prefer fallback purpose for non-large account", () => {
@@ -283,7 +283,7 @@ describe("RpcTracker - selection logic", () => {
       expect(result[0].endpoint).toBe(testRpcConfigs[0].url);
     });
 
-    it("should return empty array when no valid stats", () => {
+    it("should return all stats when no valid stats are found", () => {
       const params = createMockRpcTrackerParams();
       const tracker = new RpcTracker(params);
 
@@ -297,7 +297,8 @@ describe("RpcTracker - selection logic", () => {
 
       const result = tracker.getValidStats(stats);
 
-      expect(result.length).toBe(0);
+      expect(result.length).toBe(stats.length);
+      expect(result[0].endpoint).toBe(testRpcConfigs[0].url);
     });
 
     it("should handle undefined blockNumber", () => {
