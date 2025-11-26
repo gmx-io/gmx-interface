@@ -17,6 +17,8 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { BUY_GMX_MODAL_LINKS } from "./buyGmxModalConfig";
 
+const DIRECT_BUY_PATH = "/trade/swap?from=usdc&to=gmx";
+
 export function BuyGmxModal({
   isVisible,
   setIsVisible,
@@ -28,7 +30,6 @@ export function BuyGmxModal({
   const { active } = useWallet();
   const history = useHistory();
   const [isSwitching, setIsSwitching] = useState(false);
-  const directBuyPath = "/trade/swap?from=usdc&to=gmx";
 
   const handleBuyDirectClick = async (event: MouseEvent) => {
     event.preventDefault();
@@ -38,7 +39,7 @@ export function BuyGmxModal({
     }
 
     if (chainId === ARBITRUM) {
-      history.push(directBuyPath);
+      history.push(DIRECT_BUY_PATH);
       return;
     }
 
@@ -46,17 +47,16 @@ export function BuyGmxModal({
 
     try {
       if (!active) {
-        switchNetwork(ARBITRUM, active).catch(() => {
-          setIsSwitching(false);
-        });
+        history.push(DIRECT_BUY_PATH);
+        switchNetwork(ARBITRUM, active);
       } else {
         await switchNetwork(ARBITRUM, active);
+        history.push(DIRECT_BUY_PATH);
       }
     } catch (e) {
       metrics.pushError(e, "buyGmxModal.switchNetworkError");
     }
 
-    history.push(directBuyPath);
     setIsSwitching(false);
   };
 
