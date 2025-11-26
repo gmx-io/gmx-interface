@@ -4819,8 +4819,6 @@ msgstr "Cancelling {ordersText}."
 
 #: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
-#: src/components/GmSwap/GmFees/GmFees.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

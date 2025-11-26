@@ -149,8 +149,6 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       },
     });
 
-    // MultichainBridgeActionFailed
-
     const multichainBridgeActionFailedTopicFilter = encodeEventTopics({
       abi: abis.EventEmitter,
       eventName: "EventLog1",

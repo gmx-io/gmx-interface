@@ -1,3 +1,4 @@
+import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useState } from "react";
@@ -32,9 +33,10 @@ import Button from "components/Button/Button";
 import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import Buy16Icon from "img/ic_buy_16.svg?react";
+import BuyIcon from "img/ic_buy.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
-import Sell16Icon from "img/ic_sell_16.svg?react";
+import MenuDotsIcon from "img/ic_menu_dots.svg?react";
+import SellIcon from "img/ic_sell.svg?react";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 
@@ -65,7 +67,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const userEarnings = useUserEarnings(chainId, srcChainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
-  const { isMobile, isTablet } = useBreakpoints();
+  const { isMobile } = useBreakpoints();
 
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
   const multichainMarketTokenBalances = marketToken?.address
@@ -149,6 +151,46 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                     secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
                       showZero: true,
                     })} ${isGlv ? "GLV" : "GM"}`}
+                    afterValue={
+                      canBridgeOutMarket || canBridgeInMarket ? (
+                        <div className="relative shrink-0">
+                          <Menu>
+                            <Menu.Button as="div">
+                              <MenuDotsIcon className="size-20 cursor-pointer text-typography-secondary hover:text-typography-primary" />
+                            </Menu.Button>
+                            <Menu.Items
+                              as="div"
+                              className="absolute right-0 top-full z-10 mt-8 min-w-max overflow-hidden rounded-8 border-1/2 border-slate-600 bg-slate-900 outline-none"
+                            >
+                              {canBridgeInMarket && (
+                                <Menu.Item
+                                  as="div"
+                                  className="menu-item flex cursor-pointer items-center gap-8 px-12 py-8 hover:bg-fill-surfaceHover"
+                                  onClick={() => setOpenedTransferModal("transferIn")}
+                                >
+                                  <BuyIcon className="size-16" />
+                                  <div className="text-body-medium">
+                                    <Trans>Deposit {glvOrGm}</Trans>
+                                  </div>
+                                </Menu.Item>
+                              )}
+                              {canBridgeOutMarket && (
+                                <Menu.Item
+                                  as="div"
+                                  className="menu-item flex cursor-pointer items-center gap-8 px-12 py-8 hover:bg-fill-surfaceHover"
+                                  onClick={() => setOpenedTransferModal("transferOut")}
+                                >
+                                  <SellIcon className="size-16" />
+                                  <div className="text-body-medium">
+                                    <Trans>Withdraw {glvOrGm}</Trans>
+                                  </div>
+                                </Menu.Item>
+                              )}
+                            </Menu.Items>
+                          </Menu>
+                        </div>
+                      ) : undefined
+                    }
                     tooltipContent={
                       <MultichainBalanceTooltip
                         multichainBalances={multichainMarketTokenBalances}
@@ -170,30 +212,6 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
         )}
       </div>
 
-      <div className={cx("flex items-center gap-8 max-lg:w-full lg:gap-12")}>
-        {canBridgeOutMarket && (
-          <Button
-            className="min-w-max basis-full"
-            variant="secondary"
-            size={isTablet ? "small" : "medium"}
-            onClick={() => setOpenedTransferModal("transferOut")}
-          >
-            {isTablet && <Sell16Icon className="size-16" />}
-            <Trans>Withdraw {glvOrGm}</Trans>
-          </Button>
-        )}
-        {canBridgeInMarket && (
-          <Button
-            className="min-w-max basis-full"
-            variant="secondary"
-            size={isTablet ? "small" : "medium"}
-            onClick={() => setOpenedTransferModal("transferIn")}
-          >
-            {isTablet && <Buy16Icon className="size-16" />}
-            <Trans>Deposit {glvOrGm}</Trans>
-          </Button>
-        )}
-      </div>
       {canBridgeOutMarket && (
         <BridgeOutModal
           isVisible={openedTransferModal === "transferOut"}
