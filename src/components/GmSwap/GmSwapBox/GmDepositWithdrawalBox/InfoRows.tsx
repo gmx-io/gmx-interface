@@ -7,6 +7,7 @@ import { formatDeltaUsd } from "lib/numbers";
 import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
 
 import { Operation } from "../types";
 
@@ -45,11 +46,13 @@ export function InfoRows({
         <SyntheticsInfoRow
           label={<Trans>Network Fee</Trans>}
           value={
-            isLoading
-              ? t`Loading...`
-              : fees?.logicalNetworkFee?.deltaUsd === undefined
-                ? "..."
-                : formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
+            isLoading ? (
+              <UsdValueWithSkeleton usd={undefined} />
+            ) : fees?.logicalNetworkFee?.deltaUsd === undefined ? (
+              "..."
+            ) : (
+              formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
+            )
           }
         />
       </ExpandableRow>

@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -38,7 +39,9 @@ export function GmFees(p: Props) {
     const operationText = operationTexts[p.operation];
 
     if (p.isLoading) {
-      return t`Loading...`;
+      return (
+        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={120} className="leading-base" inline={true} />
+      );
     }
 
     if (p.totalFees?.deltaUsd === undefined) {
