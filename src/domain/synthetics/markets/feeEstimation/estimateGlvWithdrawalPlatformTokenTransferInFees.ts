@@ -147,7 +147,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     throw new Error("Token ID not found");
   }
 
-  const { quoteSend: platformTokenTransferInQuoteSend, returnTransferGasLimit: platformTokenTransferInGasLimit } =
+  const { nativeFee: platformTokenTransferInNativeFee, transferGasLimit: platformTokenTransferInGasLimit } =
     await stargateTransferFees({
       chainId: srcChainId,
       stargateAddress: tokenId.stargate,
@@ -159,7 +159,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
 
   return {
     platformTokenTransferInGasLimit,
-    platformTokenTransferInNativeFee: platformTokenTransferInQuoteSend.nativeFee,
+    platformTokenTransferInNativeFee,
     platformTokenTransferInComposeGas: composeGas,
     relayParamsPayload: returnRelayParamsPayload,
   };

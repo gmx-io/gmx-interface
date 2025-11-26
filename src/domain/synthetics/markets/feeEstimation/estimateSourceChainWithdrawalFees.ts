@@ -162,7 +162,7 @@ async function estimateSingleTokenReturnTransfer({
     isToGmx: false,
   });
 
-  const { quoteSend, returnTransferGasLimit } = await stargateTransferFees({
+  const { nativeFee, transferGasLimit } = await stargateTransferFees({
     chainId,
     stargateAddress,
     sendParams,
@@ -172,8 +172,8 @@ async function estimateSingleTokenReturnTransfer({
   });
 
   return {
-    transferGasLimit: returnTransferGasLimit,
-    transferNativeFee: quoteSend.nativeFee,
+    transferGasLimit,
+    transferNativeFee: nativeFee,
   };
 }
 

@@ -33,14 +33,12 @@ export async function estimateDepositPlatformTokenTransferOutFees({
     isManualGas: true,
   });
 
-  const { quoteSend: primaryStargateQuoteSend, returnTransferGasLimit } = await stargateTransferFees({
+  const { nativeFee: returnTransferNativeFee, transferGasLimit: returnTransferGasLimit } = await stargateTransferFees({
     chainId: fromChainId,
     stargateAddress: marketTokenId.stargate,
     sendParams: returnTransferSendParams,
     tokenAddress: marketTokenId.address,
   });
-
-  const returnTransferNativeFee = primaryStargateQuoteSend.nativeFee;
 
   return {
     platformTokenReturnTransferGasLimit: returnTransferGasLimit,

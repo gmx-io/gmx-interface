@@ -287,9 +287,9 @@ async function estimateSourceChainDepositInitialTxFees({
   const additionalValue = unwrappedPayTokenAddress === zeroAddress ? amountLD : 0n;
 
   const {
-    quoteSend: initialQuoteSend,
+    nativeFee: initialTxNativeFee,
     quoteOft: initialQuoteOft,
-    returnTransferGasLimit: initialStargateTxnGasLimit,
+    transferGasLimit: initialStargateTxnGasLimit,
   } = await stargateTransferFees({
     chainId: srcChainId,
     stargateAddress: sourceChainTokenId.stargate,
@@ -300,9 +300,9 @@ async function estimateSourceChainDepositInitialTxFees({
   });
 
   return {
-    initialTxNativeFee: initialQuoteSend.nativeFee,
+    initialTxNativeFee,
     initialTxGasLimit: initialStargateTxnGasLimit,
-    initialTxReceivedAmount: initialQuoteOft[2].amountReceivedLD,
+    initialTxReceivedAmount: initialQuoteOft.receipt.amountReceivedLD,
     initialTransferComposeGas: initialComposeGas,
     relayParamsPayload: returnRelayParamsPayload,
   };

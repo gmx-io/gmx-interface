@@ -1,11 +1,16 @@
 import { maxUint256, zeroHash } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { RANDOM_WALLET, OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT } from "config/multichain";
-import { SendParam } from "domain/multichain/types";
+import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
+import { OFTFeeDetail, QuoteOft, SendParam } from "domain/multichain/types";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
+import { bigMath } from "sdk/utils/bigmath";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/utils/numbers";
+
+const LZ_NATIVE_FEE_BUFFER_BPS = 1000n; // 10%
 
 export async function stargateTransferFees({
   chainId,
@@ -40,11 +45,15 @@ export async function stargateTransferFees({
    */
   additionalValue?: bigint;
   account?: string;
-}) {
+}): Promise<{
+  nativeFee: bigint;
+  quoteOft: QuoteOft;
+  transferGasLimit: bigint;
+}> {
   const client = getPublicClientWithRpc(chainId);
 
   // Read quotes in parallel
-  const [quoteSend, quoteOft] = await Promise.all([
+  const [quoteSend, quoteOftRaw] = await Promise.all([
     client.readContract({
       address: stargateAddress,
       abi: abis.IStargate,
@@ -59,15 +68,23 @@ export async function stargateTransferFees({
     }),
   ]);
 
-  const value = quoteSend.nativeFee + additionalValue;
+  const quoteOft: QuoteOft = {
+    limit: quoteOftRaw[0],
+    oftFeeDetails: quoteOftRaw[1] as OFTFeeDetail[],
+    receipt: quoteOftRaw[2],
+  };
 
-  const returnTransferGasLimit = await client
+  const nativeFeeBuffer = bigMath.mulDiv(quoteSend.nativeFee, LZ_NATIVE_FEE_BUFFER_BPS, BASIS_POINTS_DIVISOR_BIGINT);
+  const adjustedNativeFee = quoteSend.nativeFee + nativeFeeBuffer;
+  const value = adjustedNativeFee + additionalValue;
+
+  const transferGasLimit = await client
     .estimateContractGas({
       address: stargateAddress,
       abi: abis.IStargate,
       functionName: useSendToken ? "sendToken" : "send",
       account: account,
-      args: [sendParams, quoteSend, account],
+      args: [sendParams, sendQuoteFromNative(adjustedNativeFee), account],
       value,
       stateOverride: disableOverrides
         ? undefined
@@ -91,8 +108,8 @@ export async function stargateTransferFees({
     .then(applyGasLimitBuffer);
 
   return {
-    quoteSend,
+    nativeFee: adjustedNativeFee,
     quoteOft,
-    returnTransferGasLimit,
+    transferGasLimit,
   };
 }
