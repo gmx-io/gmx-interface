@@ -41,8 +41,8 @@ export class OracleFallbackTracker {
     };
   }
 
-  public triggerFailure(endpoint: string) {
-    this.fallbackTracker.triggerFailure(endpoint);
+  public reportFailure(endpoint: string) {
+    this.fallbackTracker.reportFailure(endpoint);
   }
 
   public track(options?: { warmUp?: boolean }) {

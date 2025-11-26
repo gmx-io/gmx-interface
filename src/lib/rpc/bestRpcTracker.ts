@@ -10,7 +10,7 @@ import { getIsFlagEnabled } from "config/ab";
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { onFallbackTrackerEvent } from "lib/FallbackTracker/events";
+import { onFallbackTracker } from "lib/FallbackTracker/events";
 import { DEFAULT_RPC_TRACKER_CONFIG, RpcTracker } from "lib/rpc/RpcTracker";
 
 type UpdateEndpointsListener = (data: { chainId?: number }) => void;
@@ -37,7 +37,7 @@ const rpcTrackerInstances = CONTRACTS_CHAIN_IDS.reduce(
 
 // Subscribe to FallbackTracker events and emit to local listeners
 if (typeof window !== "undefined") {
-  onFallbackTrackerEvent("updateEndpoints", ({ trackerKey }) => {
+  onFallbackTracker("endpointsUpdated", ({ trackerKey }) => {
     const chainId = trackerKeyToChainId.get(trackerKey);
     if (chainId !== undefined) {
       updateEndpointsListeners.forEach((listener) => {
@@ -121,14 +121,13 @@ function _useCurrentRpcUrls(chainId: number) {
       });
     };
 
-    const unsubscribe = onFallbackTrackerEvent("updateEndpoints", handleRpcUpdate);
+    const unsubscribe = onFallbackTracker("endpointsUpdated", handleRpcUpdate);
     window.addEventListener(RPC_TRACKER_UPDATE_EVENT as any, oldHandleRpcUpdate);
 
     return () => {
       isMounted = false;
       unsubscribe();
       window.removeEventListener(RPC_TRACKER_UPDATE_EVENT as any, oldHandleRpcUpdate);
-      // Don't call stopTracking() - it unsubscribes from triggerFailure events which should remain active
     };
   }, [chainId]);
 
@@ -141,7 +140,7 @@ async function _markFailedRpcProvider(chainId: number, failedRpcUrl: string) {
     return;
   }
 
-  tracker.triggerFailure(failedRpcUrl);
+  tracker.fallbackTracker.reportFailure(failedRpcUrl);
 }
 
 export const useCurrentRpcUrls = getIsFlagEnabled("testRpcFallbackUpdates")

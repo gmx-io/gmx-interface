@@ -7,11 +7,7 @@ import type { FallbackTrackerBannedEvent } from "lib/metrics/types";
 import { sleepWithSignal } from "lib/sleep";
 import { combineAbortSignals } from "sdk/utils/abort";
 
-import {
-  emitFallbackTrackerEndpointsUpdated,
-  emitFallbackTrackerTrackFinished,
-  onFallbackTrackerEvent,
-} from "./events";
+import { emitEndpointsUpdated, emitTrackingFinished, onFallbackTracker } from "./events";
 
 export const DEFAULT_FALLBACK_TRACKER_CONFIG = {
   trackInterval: 10 * 1000, // 10 seconds
@@ -140,6 +136,13 @@ export type StoredState = {
   };
 };
 
+export type CurrentEndpoints = {
+  primary: string;
+  secondary: string;
+  fallbacks: string[];
+  trackerKey: string;
+};
+
 export class FallbackTracker<TCheckStats> {
   state: FallbackTrackerState<TCheckStats>;
 
@@ -228,11 +231,11 @@ export class FallbackTracker<TCheckStats> {
       .filter((s): s is EndpointStats<TCheckStats> => s !== undefined);
   }
 
-  public triggerFailure = (endpoint: string) => {
+  public reportFailure = (endpoint: string) => {
     const endpointState = this.state.endpointsState[endpoint];
 
     if (!endpointState) {
-      this.warn(`Trigger failure for invalid endpoint "${endpoint}"`);
+      this.warn(`Report failure for invalid endpoint "${endpoint}"`);
       return;
     }
 
@@ -296,30 +299,17 @@ export class FallbackTracker<TCheckStats> {
     this.selectBestEndpoints({ keepPrimary, keepSecondary });
   };
 
-  public pickPrimaryEndpoint() {
-    if (!this.state.primary || !this.state.endpointsState[this.state.primary]) {
-      // Should never happen, but for safety return primary from config
-      this.warn(`No primary endpoint`);
-      return this.params.primary;
-    }
-
+  public pick(): CurrentEndpoints {
     this.state.lastUsage = Date.now();
 
-    return this.state.primary;
-  }
-
-  public pickSecondaryEndpoint() {
-    if (!this.state.secondary || !this.state.endpointsState[this.state.secondary]) {
-      return this.params.primary;
-    }
-
-    this.state.lastUsage = Date.now();
-
-    return this.state.secondary;
-  }
-
-  public getEndpoints() {
-    return this.params.endpoints;
+    return {
+      primary: this.state.primary,
+      secondary: this.state.secondary,
+      fallbacks: this.params.endpoints.filter(
+        (endpoint) => endpoint !== this.state.primary && endpoint !== this.state.secondary
+      ),
+      trackerKey: this.trackerKey,
+    };
   }
 
   public track({ warmUp = false } = {}) {
@@ -334,7 +324,7 @@ export class FallbackTracker<TCheckStats> {
 
     this.checkEndpoints()
       .then(() => {
-        emitFallbackTrackerTrackFinished({ trackerKey: this.trackerKey });
+        emitTrackingFinished({ trackerKey: this.trackerKey });
         this.selectBestEndpoints();
       })
       .finally(() => {
@@ -438,7 +428,7 @@ export class FallbackTracker<TCheckStats> {
         cachedEndpointsState: this.getCachedEndpointsState(),
       });
 
-      emitFallbackTrackerEndpointsUpdated({
+      emitEndpointsUpdated({
         trackerKey: this.trackerKey,
         primary: primary,
         secondary: secondary,
@@ -471,6 +461,7 @@ export class FallbackTracker<TCheckStats> {
     const checkTimestamp = Date.now();
     const endpoints = this.params.endpoints;
 
+    // Abort any pending checks.
     if (this.state.abortController) {
       this.state.abortController.abort();
     }
@@ -478,7 +469,7 @@ export class FallbackTracker<TCheckStats> {
     const globalAbortController = new AbortController();
     this.state.abortController = globalAbortController;
 
-    const checkResults = await Promise.allSettled(
+    const results = await Promise.allSettled(
       endpoints.map((endpoint) => {
         const timeoutController = new AbortController();
         const combinedController = combineAbortSignals(globalAbortController.signal, timeoutController.signal);
@@ -491,40 +482,28 @@ export class FallbackTracker<TCheckStats> {
           this.params.checkEndpoint(endpoint, combinedController.signal),
         ]);
       })
-    );
-
-    // Implement basic result failed.
-    // If results failed we still want to check endpoints.
-    const results = endpoints.map((endpoint, index): CheckResult<TCheckStats> => {
-      const result = checkResults[index];
-
-      if (result.status === "fulfilled") {
-        return {
-          endpoint,
-          success: true,
-          stats: result.value as TCheckStats,
-        };
-      }
-
-      return {
-        endpoint,
-        success: false,
-        error: result.reason instanceof Error ? result.reason : new Error(result.reason),
-        stats: undefined,
-      };
+    ).then((checkResults) => {
+      return checkResults
+        .map((result, index): CheckResult<TCheckStats> => {
+          return {
+            endpoint: endpoints[index],
+            success: result.status === "fulfilled",
+            stats: result.status === "fulfilled" ? (result.value as TCheckStats) : undefined,
+            error: result.status === "rejected" ? result.reason : undefined,
+          };
+        })
+        .reduce(
+          (acc, result) => {
+            acc[result.endpoint] = result;
+            return acc;
+          },
+          {} as Record<string, CheckResult<TCheckStats>>
+        );
     });
 
-    const resultsByEndpoint = results.reduce(
-      (acc, result, index) => {
-        acc[endpoints[index]] = result;
-        return acc;
-      },
-      {} as Record<string, CheckResult<TCheckStats>>
-    );
-
     this.state.checkStats.push({
+      results,
       timestamp: checkTimestamp,
-      results: resultsByEndpoint,
     });
 
     if (this.state.checkStats.length > this.params.maxStoredCheckStats) {
@@ -533,7 +512,7 @@ export class FallbackTracker<TCheckStats> {
   }
 
   shouldTrack({ warmUp = false }: { warmUp?: boolean } = {}) {
-    const hasMultipleEndpoints = this.getEndpoints().length > 1;
+    const hasMultipleEndpoints = this.params.endpoints.length > 1;
 
     const isUnused =
       !this.state.lastUsage ||
@@ -543,9 +522,9 @@ export class FallbackTracker<TCheckStats> {
   }
 
   subscribeToIncomingEvents() {
-    return onFallbackTrackerEvent("triggerFailure", ({ trackerKey, endpoint }) => {
+    return onFallbackTracker("endpointFailure", ({ trackerKey, endpoint }) => {
       if (trackerKey === this.trackerKey) {
-        this.triggerFailure(endpoint);
+        this.reportFailure(endpoint);
       }
     });
   }
@@ -570,35 +549,30 @@ export class FallbackTracker<TCheckStats> {
     }
 
     try {
-      const parsed = JSON.parse(stored) as StoredState | { primary: string; secondary: string; timestamp: number };
-
-      const primary = parsed.primary;
-      const secondary = parsed.secondary;
-
-      if (!primary || !secondary || !validEndpoints.includes(primary) || !validEndpoints.includes(secondary)) {
-        throw new Error("Invalid endpoints state");
-      }
+      const parsed = JSON.parse(stored) as StoredState;
 
       if (Date.now() - parsed.timestamp > this.params.cacheTimeout) {
         return undefined;
       }
 
-      // Handle backward compatibility: old format doesn't have cachedEndpointsState
-      const cachedEndpointsState: StoredState["cachedEndpointsState"] = {};
-      if ("cachedEndpointsState" in parsed && parsed.cachedEndpointsState) {
-        // Filter out endpoints that are no longer valid
-        for (const endpoint of validEndpoints) {
-          if (parsed.cachedEndpointsState[endpoint]) {
-            cachedEndpointsState[endpoint] = parsed.cachedEndpointsState[endpoint];
-          }
-        }
+      const primary = parsed.primary;
+      const secondary = parsed.secondary;
+
+      if (
+        !primary ||
+        !secondary ||
+        !validEndpoints.includes(primary) ||
+        !validEndpoints.includes(secondary) ||
+        Object.keys(parsed.cachedEndpointsState).some((endpoint) => !validEndpoints.includes(endpoint))
+      ) {
+        throw new Error("Invalid endpoints state");
       }
 
       return {
         primary,
         secondary,
         timestamp: parsed.timestamp,
-        cachedEndpointsState,
+        cachedEndpointsState: parsed.cachedEndpointsState,
       };
     } catch (error) {
       return undefined;

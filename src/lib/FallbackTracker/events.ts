@@ -2,18 +2,18 @@ import { EndpointStats } from "./FallbackTracker";
 
 export type FallbackTrackerEventsTypes = {
   // Incomming
-  triggerFailure: {
+  endpointFailure: {
     endpoint: string;
     trackerKey: string;
   };
   // Outgoing
-  updateEndpoints: {
+  endpointsUpdated: {
     trackerKey: string;
     primary: string;
     secondary: string;
     endpointsStats: EndpointStats<any>[];
   };
-  trackFinished: {
+  trackingFinished: {
     trackerKey: string;
   };
 };
@@ -21,41 +21,36 @@ export type FallbackTrackerEventsTypes = {
 export type FallbackTrackerEventName = keyof FallbackTrackerEventsTypes;
 
 export const fallbackTrackerEventKeys: Record<FallbackTrackerEventName, string> = {
-  triggerFailure: "FALLBACK_TRACKER_TRIGGER_FAILURE",
-  updateEndpoints: "FALLBACK_TRACKER_ENDPOINTS_UPDATED",
-  trackFinished: "FALLBACK_TRACKER_TRACK_FINISHED",
+  endpointFailure: "FALLBACK_TRACKER_ENDPOINT_FAILURE",
+  endpointsUpdated: "FALLBACK_TRACKER_ENDPOINTS_UPDATED",
+  trackingFinished: "FALLBACK_TRACKER_TRACK_FINISHED",
 };
 
-export type EndpointFailureDetail = FallbackTrackerEventsTypes["triggerFailure"];
-
-export function emitFallbackTrackerEndpointFailure({
-  endpoint,
-  trackerKey,
-}: FallbackTrackerEventsTypes["triggerFailure"]) {
+export function emitEndpointFailure({ endpoint, trackerKey }: FallbackTrackerEventsTypes["endpointFailure"]) {
   globalThis.dispatchEvent(
-    new CustomEvent(fallbackTrackerEventKeys.triggerFailure, { detail: { endpoint, trackerKey } })
+    new CustomEvent(fallbackTrackerEventKeys.endpointFailure, { detail: { endpoint, trackerKey } })
   );
 }
 
-export function emitFallbackTrackerEndpointsUpdated({
+export function emitEndpointsUpdated({
   trackerKey,
   primary,
   secondary,
   endpointsStats,
-}: FallbackTrackerEventsTypes["updateEndpoints"]) {
+}: FallbackTrackerEventsTypes["endpointsUpdated"]) {
   globalThis.dispatchEvent(
-    new CustomEvent(fallbackTrackerEventKeys.updateEndpoints, {
+    new CustomEvent(fallbackTrackerEventKeys.endpointsUpdated, {
       detail: { trackerKey, primary, secondary, endpointsStats },
     })
   );
 }
 
-export function emitFallbackTrackerTrackFinished({ trackerKey }: FallbackTrackerEventsTypes["trackFinished"]) {
-  globalThis.dispatchEvent(new CustomEvent(fallbackTrackerEventKeys.trackFinished, { detail: { trackerKey } }));
+export function emitTrackingFinished({ trackerKey }: FallbackTrackerEventsTypes["trackingFinished"]) {
+  globalThis.dispatchEvent(new CustomEvent(fallbackTrackerEventKeys.trackingFinished, { detail: { trackerKey } }));
 }
 
-export function onFallbackTrackerEvent<TEvent extends FallbackTrackerEventName>(
-  event: TEvent,
+export function onFallbackTracker<TEvent extends FallbackTrackerEventName>(
+  eventName: TEvent,
   listener: (data: FallbackTrackerEventsTypes[TEvent]) => void
 ) {
   const handler = (event: Event) => {
@@ -63,9 +58,9 @@ export function onFallbackTrackerEvent<TEvent extends FallbackTrackerEventName>(
     listener(detail);
   };
 
-  globalThis.addEventListener(fallbackTrackerEventKeys[event], handler);
+  globalThis.addEventListener(fallbackTrackerEventKeys[eventName], handler);
 
   return () => {
-    globalThis.removeEventListener(fallbackTrackerEventKeys[event], handler);
+    globalThis.removeEventListener(fallbackTrackerEventKeys[eventName], handler);
   };
 }

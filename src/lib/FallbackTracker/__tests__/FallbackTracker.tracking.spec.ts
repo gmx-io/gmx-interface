@@ -638,9 +638,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
     it("should clear all failure throttle timeouts", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       // Trigger another failure during throttle period - should be ignored
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
 
       tracker.stopTracking();
 

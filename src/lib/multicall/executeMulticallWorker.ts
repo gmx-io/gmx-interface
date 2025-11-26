@@ -3,7 +3,7 @@ import uniqueId from "lodash/uniqueId";
 import { getAbFlags } from "config/ab";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { emitFallbackTrackerEndpointFailure } from "lib/FallbackTracker/events";
+import { emitEndpointFailure } from "lib/FallbackTracker/events";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
@@ -48,7 +48,7 @@ executorWorker.onmessage = (event) => {
   }
 
   if ("isFallbackTrackerFailure" in event.data) {
-    emitFallbackTrackerEndpointFailure(event.data.detail);
+    emitEndpointFailure(event.data.detail);
     return;
   }
 

@@ -18,14 +18,14 @@ describe("FallbackTracker - endpoint banning", () => {
     vi.restoreAllMocks();
   });
 
-  describe("triggerFailure", () => {
+  describe("reportFailure", () => {
     // Basic functionality
     it("should execute immediately on first call (leading edge) and add failure timestamp", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
       const banSpy = vi.spyOn(tracker, "banEndpoint");
 
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
 
       expect(tracker.state.endpointsState[config.primary].failureTimestamps).toHaveLength(1);
       expect(banSpy).not.toHaveBeenCalled();
@@ -37,8 +37,8 @@ describe("FallbackTracker - endpoint banning", () => {
       const banSpy = vi.spyOn(tracker, "banEndpoint");
 
       // Default count is 3, so 2 failures should not trigger ban
-      tracker.triggerFailure(config.primary);
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
+      tracker.reportFailure(config.primary);
 
       expect(banSpy).not.toHaveBeenCalled();
     });
@@ -50,17 +50,17 @@ describe("FallbackTracker - endpoint banning", () => {
 
       // Default count is 3, so trigger 3 failures
       // First failure
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       // Wait for throttle to clear
       await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10);
 
       // Second failure
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       // Wait for throttle to clear
       await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10);
 
       // Third failure - should trigger ban
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
 
       expect(banSpy).toHaveBeenCalledWith(config.primary, "Banned by failures threshold");
     });
@@ -72,18 +72,18 @@ describe("FallbackTracker - endpoint banning", () => {
       const throttleTime = config.failuresBeforeBan.throttle;
 
       // First call executes immediately (leading edge) - sets failureDebounceTimeout
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       const initialFailureCount = tracker.state.endpointsState[config.primary].failureTimestamps.length;
       expect(initialFailureCount).toBe(1);
       await vi.advanceTimersByTimeAsync(10);
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeDefined();
 
       // Second call during throttle period - should be ignored
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount);
 
       // Third call during throttle period - should also be ignored
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount);
 
       // Advance time past throttle - timeout clears, but no trailing edge processing
@@ -94,7 +94,7 @@ describe("FallbackTracker - endpoint banning", () => {
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
 
       // Next call after throttle period - executes immediately again (leading edge)
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount + 1);
     });
 
@@ -104,16 +104,16 @@ describe("FallbackTracker - endpoint banning", () => {
       const throttleTime = config.failuresBeforeBan.throttle;
 
       // First call executes immediately (leading edge) - adds failure immediately
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       const initialFailureCount = tracker.state.endpointsState[config.primary].failureTimestamps.length;
       expect(initialFailureCount).toBe(1);
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeDefined();
 
       // Trigger multiple failures rapidly within throttle window - all should be ignored
-      tracker.triggerFailure(config.primary);
-      tracker.triggerFailure(config.primary);
-      tracker.triggerFailure(config.primary);
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
+      tracker.reportFailure(config.primary);
+      tracker.reportFailure(config.primary);
+      tracker.reportFailure(config.primary);
 
       // Count should still be 1 (only the first one was added immediately)
       expect(tracker.state.endpointsState[config.primary].failureTimestamps.length).toBe(initialFailureCount);
@@ -127,16 +127,16 @@ describe("FallbackTracker - endpoint banning", () => {
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
     });
 
-    it("should handle stopTracking during triggerFailure throttle", async () => {
+    it("should handle stopTracking during reportFailure throttle", async () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
 
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       await vi.advanceTimersByTimeAsync(10);
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeDefined();
 
       // Trigger another failure during throttle period - should be ignored
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
 
       // Stop tracking should clear the throttle timeout
       tracker.stopTracking();
@@ -155,15 +155,15 @@ describe("FallbackTracker - endpoint banning", () => {
       const tracker = new FallbackTracker(config);
 
       // Trigger failures with time passing
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       await vi.advanceTimersByTimeAsync(30000);
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       await vi.advanceTimersByTimeAsync(30000);
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       await vi.advanceTimersByTimeAsync(60000); // Move past window (default is 60 seconds)
 
       // Trigger another failure - should filter out old ones
-      tracker.triggerFailure(config.primary);
+      tracker.reportFailure(config.primary);
       await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10); // Wait for debounce to process
 
       const endpointState = tracker.state.endpointsState[config.primary];
@@ -183,7 +183,7 @@ describe("FallbackTracker - endpoint banning", () => {
 
       // Should not throw or crash
       expect(() => {
-        tracker.triggerFailure(testEndpoints.invalid);
+        tracker.reportFailure(testEndpoints.invalid);
       }).not.toThrow();
 
       // State should remain unchanged

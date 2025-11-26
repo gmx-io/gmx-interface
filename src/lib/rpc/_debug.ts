@@ -3,7 +3,7 @@ import orderBy from "lodash/orderBy";
 import { getChainName } from "config/chains";
 import { getProviderNameFromUrl } from "config/rpc";
 import { devtools as globalDevtools } from "lib/devtools";
-import { onFallbackTrackerEvent } from "lib/FallbackTracker/events";
+import { onFallbackTracker } from "lib/FallbackTracker/events";
 
 import { RpcTracker } from "./RpcTracker";
 
@@ -14,7 +14,7 @@ class RpcDevtools {
 
   constructor() {
     if (typeof window !== "undefined") {
-      this.unsubscribeFromEvents = onFallbackTrackerEvent("triggerFailure", ({ endpoint }) => {
+      this.unsubscribeFromEvents = onFallbackTracker("endpointFailure", ({ endpoint }) => {
         const currentCount = this.endpointFailures.get(endpoint) || 0;
         this.endpointFailures.set(endpoint, currentCount + 1);
         this.notifyListeners();

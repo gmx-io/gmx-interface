@@ -1,14 +1,15 @@
 import { getChainName } from "config/chains";
 import { getProviderNameFromUrl } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { emitFallbackTrackerEndpointFailure } from "lib/FallbackTracker/events";
+import { emitEndpointFailure } from "lib/FallbackTracker/events";
 import type { MulticallDebugState, MulticallDebugEvent } from "lib/multicall/_debug";
 import { formatUsd } from "lib/numbers";
 import { getRpcTracker } from "lib/rpc/bestRpcTracker";
 import { getMarkPrice } from "sdk/utils/prices";
 
 import Button from "components/Button/Button";
-import Checkbox from "components/Checkbox/Checkbox";
+import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 export type RpcStats = {
   endpoint: string;
@@ -63,40 +64,40 @@ const getThreadName = (isInWorker: boolean) => {
 export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center">
-        <h3 className="text-xl font-bold">RPC Endpoints</h3>
+      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+        <h3 className="text-xl muted font-bold uppercase">RPC Endpoints</h3>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
-        <div className="rounded overflow-hidden border border-gray-200">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-200">
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Provider</th>
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Status</th>
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Failures</th>
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Banned</th>
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Purpose</th>
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Type</th>
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Response</th>
-                <th className="text-xs p-2 text-left font-semibold text-gray-400">Block</th>
-              </tr>
+        <div className="overflow-x-auto">
+          <Table>
+            <thead className="sticky top-0 z-10 bg-slate-900">
+              <TableTheadTr>
+                <TableTh padding="compact">Provider</TableTh>
+                <TableTh padding="compact">Status</TableTh>
+                <TableTh padding="compact">Failures</TableTh>
+                <TableTh padding="compact">Banned</TableTh>
+                <TableTh padding="compact">Purpose</TableTh>
+                <TableTh padding="compact">Type</TableTh>
+                <TableTh padding="compact">Response</TableTh>
+                <TableTh padding="compact">Block</TableTh>
+              </TableTheadTr>
             </thead>
             <tbody>
               {allRpcStats.map((rpc) => (
-                <tr key={rpc.endpoint} className="border-b border-gray-200">
-                  <td className="p-2">
+                <TableTr key={rpc.endpoint}>
+                  <TableTd padding="compact">
                     <div className="text-sm font-semibold text-white">{rpc.providerName}</div>
-                  </td>
-                  <td className="p-2">
+                  </TableTd>
+                  <TableTd padding="compact">
                     <div className="text-xs flex flex-wrap gap-1">
                       {rpc.isPrimary && <span className="text-cyan-400">Primary</span>}
                       {rpc.isSecondary && <span className="text-purple-400">Secondary</span>}
                     </div>
-                  </td>
-                  <td className="p-2">
+                  </TableTd>
+                  <TableTd padding="compact">
                     <span className="text-orange-500 text-sm font-semibold">{rpc.failureCount}</span>
-                  </td>
-                  <td className="p-2">
+                  </TableTd>
+                  <TableTd padding="compact">
                     {rpc.banTime ? (
                       <span className="text-xs font-semibold text-red-500">
                         {new Date(rpc.banTime).toLocaleTimeString("en-US", {
@@ -109,35 +110,35 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                     ) : (
                       <span className="text-xs text-gray-500">—</span>
                     )}
-                  </td>
-                  <td className="p-2">
+                  </TableTd>
+                  <TableTd padding="compact">
                     <span className={`text-xs ${getPurposeColor(rpc.purpose)}`}>{rpc.purpose}</span>
-                  </td>
-                  <td className="p-2">
+                  </TableTd>
+                  <TableTd padding="compact">
                     {rpc.isPublic ? (
                       <span className="text-xs text-green-400">public</span>
                     ) : (
                       <span className="text-xs text-gray-400">private</span>
                     )}
-                  </td>
-                  <td className="p-2">
+                  </TableTd>
+                  <TableTd padding="compact">
                     {rpc.responseTime !== undefined ? (
                       <span className="text-xs text-white">{rpc.responseTime}ms</span>
                     ) : (
                       <span className="text-xs text-gray-500">—</span>
                     )}
-                  </td>
-                  <td className="p-2">
+                  </TableTd>
+                  <TableTd padding="compact">
                     {rpc.blockNumber !== undefined ? (
                       <span className="text-xs text-white">{rpc.blockNumber}</span>
                     ) : (
                       <span className="text-xs text-gray-500">—</span>
                     )}
-                  </td>
-                </tr>
+                  </TableTd>
+                </TableTr>
               ))}
             </tbody>
-          </table>
+          </Table>
         </div>
       </div>
     </div>
@@ -154,46 +155,70 @@ export function EventsPanel({
   onClearEvents: () => void;
 }) {
   return (
-    <div className="flex flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between">
-        <h3 className="text-xl font-bold">Multicall Events</h3>
+    <div className="flex min-h-0 min-w-[480px] flex-col overflow-hidden">
+      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+        <h3 className="text-xl muted font-bold uppercase">Multicall Events</h3>
         <Button variant="secondary" onClick={onClearEvents}>
           Clear Events
         </Button>
       </div>
-      <div className="flex-1 space-y-3 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         {events.length === 0 ? (
-          <div className="rounded border border-gray-300 p-2">
-            <div className="text-sm font-semibold text-gray-700">Multicall Idle</div>
-            <div className="text-xs text-gray-500">{idleSeconds}s</div>
-          </div>
+          <Table>
+            <tbody>
+              <TableTr>
+                <TableTd padding="compact" colSpan={2}>
+                  <div className="text-sm font-semibold">Multicall Idle</div>
+                  <div className="text-xs text-gray-500">{idleSeconds}s</div>
+                </TableTd>
+              </TableTr>
+            </tbody>
+          </Table>
         ) : (
-          events.map((group, groupIndex) => {
-            const threadName = getThreadName(group.events[0]?.isInWorker ?? false);
-            return (
-              <div key={groupIndex} className="rounded border border-gray-300 p-2">
-                <div className="text-xs mb-1 font-semibold">
-                  {threadName} ({group.events.length})
-                </div>
-                <div className="space-y-1">
-                  {group.events.map((event, eventIndex) => {
+          <div className="overflow-x-auto">
+            <Table>
+              <thead className="sticky top-0 z-10 bg-slate-900">
+                <TableTheadTr>
+                  <TableTh padding="compact" className="text-left">
+                    Thread
+                  </TableTh>
+                  <TableTh padding="compact" className="text-left">
+                    Event
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {events.flatMap((group, groupIndex) => {
+                  const threadName = getThreadName(group.events[0]?.isInWorker ?? false);
+                  return group.events.map((event, eventIndex) => {
                     const chainName = event.chainId ? getChainName(event.chainId) : null;
                     const providerName = event.providerUrl ? getProviderNameFromUrl(event.providerUrl) : null;
                     const chainAndProvider =
                       chainName && providerName ? `${chainName} - ${providerName}` : chainName || providerName || null;
                     return (
-                      <div key={eventIndex} className="flex items-center gap-2">
-                        <span className={`text-xs font-semibold ${getEventColor(event.type)}`}>
-                          {formatEventType(event.type)}
-                        </span>
-                        {chainAndProvider && <span className="text-xs text-gray-500">{chainAndProvider}</span>}
-                      </div>
+                      <TableTr key={`${groupIndex}-${eventIndex}`}>
+                        <TableTd padding="compact">
+                          {eventIndex === 0 && (
+                            <div className="text-xs font-semibold">
+                              {threadName} ({group.events.length})
+                            </div>
+                          )}
+                        </TableTd>
+                        <TableTd padding="compact">
+                          <div className="flex flex-col items-start gap-2">
+                            <div className={`text-xs font-semibold ${getEventColor(event.type)}`}>
+                              {formatEventType(event.type)}
+                            </div>
+                            {chainAndProvider && <div className="text-xs text-gray-500">{chainAndProvider}</div>}
+                          </div>
+                        </TableTd>
+                      </TableTr>
                     );
-                  })}
-                </div>
-              </div>
-            );
-          })
+                  });
+                })}
+              </tbody>
+            </Table>
+          </div>
         )}
       </div>
     </div>
@@ -214,102 +239,126 @@ export function DebugControlsPanel({
   onDebugFlagChange: <K extends keyof MulticallDebugState>(flag: K, value: boolean) => void;
 }) {
   return (
-    <div className="flex flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center">
-        <h3 className="text-xl font-bold">Debug Controls</h3>
+    <div className="flex min-h-0 flex-col overflow-hidden">
+      <div className="mb-6 flex h-8 flex-shrink-0 items-center px-8 py-16">
+        <h3 className="text-xl muted font-bold uppercase">Debug Controls</h3>
       </div>
-      <div className="flex-1 space-y-6 overflow-y-auto pr-4">
-        <div className="rounded border border-gray-200 p-3">
-          <div className="text-sm mb-1 font-semibold text-gray-600">Account Type</div>
-          <div className="text-sm text-white">{getIsLargeAccount() ? "Large Account" : "Regular Account"}</div>
-        </div>
-
-        <div className="rounded border border-gray-200 p-3">
-          <h3 className="text-sm mb-3 font-semibold">Force Failures</h3>
-          <div className="space-y-2">
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => {
-                if (!primaryRpc) {
-                  return;
-                }
-                emitFallbackTrackerEndpointFailure({
-                  endpoint: primaryRpc,
-                  trackerKey: getRpcTracker(chainId)?.trackerKey ?? "unknown",
-                });
-              }}
-            >
-              Force Primary Failure
-            </Button>
-            <Button
-              variant="secondary"
-              className="w-full"
-              onClick={() => {
-                if (!secondaryRpc) {
-                  return;
-                }
-                emitFallbackTrackerEndpointFailure({
-                  endpoint: secondaryRpc,
-                  trackerKey: getRpcTracker(chainId)?.trackerKey ?? "unknown",
-                });
-              }}
-            >
-              Force Secondary Failure
-            </Button>
-          </div>
-        </div>
-
-        <div className="rounded border border-gray-200 p-3">
-          <h3 className="text-sm mb-3 font-semibold">Multicall Simulation</h3>
-          <div className="space-y-4">
-            <div>
-              <h4 className="text-xs mb-2 font-semibold text-gray-400">Worker Thread</h4>
-              <div className="space-y-2">
-                <Checkbox
-                  isChecked={debugState.triggerPrimaryAsFailedInWorker ?? false}
-                  setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInWorker", checked)}
-                >
-                  Primary failed
-                </Checkbox>
-                <Checkbox
-                  isChecked={debugState.triggerPrimaryTimeoutInWorker ?? false}
-                  setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryTimeoutInWorker", checked)}
-                >
-                  Primary timeout
-                </Checkbox>
-                <Checkbox
-                  isChecked={debugState.triggerSecondaryFailedInWorker ?? false}
-                  setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryFailedInWorker", checked)}
-                >
-                  Secondary failed
-                </Checkbox>
-                <Checkbox
-                  isChecked={debugState.triggerSecondaryTimeoutInWorker ?? false}
-                  setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryTimeoutInWorker", checked)}
-                >
-                  Secondary timeout
-                </Checkbox>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-xs mb-2 font-semibold text-gray-400">Main Thread</h4>
-              <div className="space-y-2">
-                <Checkbox
-                  isChecked={debugState.triggerPrimaryAsFailedInMainThread ?? false}
-                  setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInMainThread", checked)}
-                >
-                  Primary failed
-                </Checkbox>
-                <Checkbox
-                  isChecked={debugState.triggerSecondaryFailedInMainThread ?? false}
-                  setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryFailedInMainThread", checked)}
-                >
-                  Secondary failed
-                </Checkbox>
-              </div>
-            </div>
-          </div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="overflow-x-auto">
+          <Table>
+            <tbody>
+              <TableTr>
+                <TableTd padding="compact" colSpan={2}>
+                  <div className="py-6">
+                    <div className="text-base mb-6 font-semibold text-gray-400">Account Type</div>
+                    <div className="text-base text-white">
+                      {getIsLargeAccount() ? "Large Account" : "Regular Account"}
+                    </div>
+                  </div>
+                </TableTd>
+              </TableTr>
+              <TableTr>
+                <TableTd padding="compact" colSpan={2}>
+                  <div className="py-6">
+                    <div className="text-base mb-6 font-semibold text-gray-400">Force Failures</div>
+                    <div className="space-y-4">
+                      <Button
+                        variant="secondary"
+                        className="w-full"
+                        onClick={() => {
+                          if (!primaryRpc) {
+                            return;
+                          }
+                          emitEndpointFailure({
+                            endpoint: primaryRpc,
+                            trackerKey: getRpcTracker(chainId)?.trackerKey ?? "unknown",
+                          });
+                        }}
+                      >
+                        Force Primary Failure
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        className="w-full"
+                        onClick={() => {
+                          if (!secondaryRpc) {
+                            return;
+                          }
+                          emitEndpointFailure({
+                            endpoint: secondaryRpc,
+                            trackerKey: getRpcTracker(chainId)?.trackerKey ?? "unknown",
+                          });
+                        }}
+                      >
+                        Force Secondary Failure
+                      </Button>
+                    </div>
+                  </div>
+                </TableTd>
+              </TableTr>
+              <TableTr>
+                <TableTd padding="compact" colSpan={2}>
+                  <div className="py-6">
+                    <div className="text-base mb-6 font-semibold text-gray-400">Multicall Simulation</div>
+                    <div className="space-y-8">
+                      <div>
+                        <h4 className="text-sm mb-6 font-semibold text-gray-400">Worker Thread</h4>
+                        <div className="space-y-6">
+                          <ToggleSwitch
+                            isChecked={debugState.triggerPrimaryAsFailedInWorker ?? false}
+                            setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInWorker", checked)}
+                            textClassName="text-base text-white"
+                          >
+                            Primary failed
+                          </ToggleSwitch>
+                          <ToggleSwitch
+                            isChecked={debugState.triggerPrimaryTimeoutInWorker ?? false}
+                            setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryTimeoutInWorker", checked)}
+                            textClassName="text-base text-white"
+                          >
+                            Primary timeout
+                          </ToggleSwitch>
+                          <ToggleSwitch
+                            isChecked={debugState.triggerSecondaryFailedInWorker ?? false}
+                            setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryFailedInWorker", checked)}
+                            textClassName="text-base text-white"
+                          >
+                            Secondary failed
+                          </ToggleSwitch>
+                          <ToggleSwitch
+                            isChecked={debugState.triggerSecondaryTimeoutInWorker ?? false}
+                            setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryTimeoutInWorker", checked)}
+                            textClassName="text-base text-white"
+                          >
+                            Secondary timeout
+                          </ToggleSwitch>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="text-sm mb-6 font-semibold text-gray-400">Main Thread</h4>
+                        <div className="space-y-6">
+                          <ToggleSwitch
+                            isChecked={debugState.triggerPrimaryAsFailedInMainThread ?? false}
+                            setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInMainThread", checked)}
+                            textClassName="text-base text-white"
+                          >
+                            Primary failed
+                          </ToggleSwitch>
+                          <ToggleSwitch
+                            isChecked={debugState.triggerSecondaryFailedInMainThread ?? false}
+                            setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryFailedInMainThread", checked)}
+                            textClassName="text-base text-white"
+                          >
+                            Secondary failed
+                          </ToggleSwitch>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TableTd>
+              </TableTr>
+            </tbody>
+          </Table>
         </div>
       </div>
     </div>
@@ -320,21 +369,41 @@ export function MarketsSection({ marketsInfoData }: { marketsInfoData: any }) {
   return (
     <div className="mt-6">
       <h3 className="text-xl mb-4 font-bold">Markets Info</h3>
-      <div className="rounded border border-gray-200">
-        {!marketsInfoData ? (
-          <div className="p-4">Loading markets data...</div>
-        ) : (
-          <div className="divide-y divide-gray-200">
-            {Object.values(marketsInfoData || {}).map((marketInfo: any) => (
-              <div key={marketInfo.name} className="p-4">
-                <div className="font-semibold">{marketInfo.name}</div>
-                <div className="text-sm text-gray-600">
-                  {formatUsd(getMarkPrice({ prices: marketInfo.indexToken.prices, isIncrease: true, isLong: true }))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+      <div className="max-h-[400px] overflow-y-auto">
+        <div className="overflow-x-auto">
+          <Table>
+            <thead className="sticky top-0 z-10 bg-slate-900">
+              <TableTheadTr>
+                <TableTh padding="compact">Market</TableTh>
+                <TableTh padding="compact">Price</TableTh>
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {!marketsInfoData ? (
+                <TableTr>
+                  <TableTd padding="compact" colSpan={2}>
+                    Loading markets data...
+                  </TableTd>
+                </TableTr>
+              ) : (
+                Object.values(marketsInfoData || {}).map((marketInfo: any) => (
+                  <TableTr key={marketInfo.name}>
+                    <TableTd padding="compact">
+                      <div className="font-semibold">{marketInfo.name}</div>
+                    </TableTd>
+                    <TableTd padding="compact">
+                      <div className="text-sm">
+                        {formatUsd(
+                          getMarkPrice({ prices: marketInfo.indexToken.prices, isIncrease: true, isLong: true })
+                        )}
+                      </div>
+                    </TableTd>
+                  </TableTr>
+                ))
+              )}
+            </tbody>
+          </Table>
+        </div>
       </div>
     </div>
   );

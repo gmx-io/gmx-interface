@@ -8,6 +8,7 @@ import { multicallDevtools, type MulticallDebugState } from "lib/multicall/_debu
 import { getCurrentRpcUrls, getRpcTracker } from "lib/rpc/bestRpcTracker";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import Button from "components/Button/Button";
 import Card from "components/Card/Card";
 
 import { DebugControlsPanel, EventsPanel, MarketsSection, RpcTable, type GroupedEvent, type RpcStats } from "./parts";
@@ -113,19 +114,21 @@ export default function RpcDebug() {
 
   return (
     <AppPageLayout>
-      <div className="default-container page-layout">
+      <div className="default-container">
         <Card title="RPC Debug">
           <div className="App-card-content">
-            <div className="grid grid-cols-[2fr_1fr_320px] gap-6" style={GRID_STYLE}>
+            <div className="flex gap-8" style={GRID_STYLE}>
               <RpcTable allRpcStats={allRpcStats} />
               <EventsPanel events={events} idleSeconds={idleSeconds} onClearEvents={() => setEvents([])} />
-              <DebugControlsPanel
-                chainId={chainId}
-                primaryRpc={primaryRpc}
-                secondaryRpc={secondaryRpc}
-                debugState={debugState}
-                onDebugFlagChange={handleDebugFlagChange}
-              />
+              <div className="min-w-0 flex-1">
+                <DebugControlsPanel
+                  chainId={chainId}
+                  primaryRpc={primaryRpc}
+                  secondaryRpc={secondaryRpc}
+                  debugState={debugState}
+                  onDebugFlagChange={handleDebugFlagChange}
+                />
+              </div>
             </div>
             <MarketsSection marketsInfoData={marketsInfoData} />
           </div>

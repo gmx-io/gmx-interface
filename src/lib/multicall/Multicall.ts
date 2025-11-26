@@ -3,7 +3,7 @@ import { Chain, createPublicClient, http } from "viem";
 import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
 import { getProviderNameFromUrl } from "config/rpc";
-import { emitFallbackTrackerEndpointFailure } from "lib/FallbackTracker/events";
+import { emitEndpointFailure } from "lib/FallbackTracker/events";
 import type {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -341,7 +341,7 @@ export class Multicall {
           });
 
           sendDebugEvent("secondary-failed", { providerUrl: fallbackProviderUrl });
-          emitFallbackTrackerEndpointFailure({
+          emitEndpointFailure({
             endpoint: fallbackProviderUrl,
             trackerKey: providerUrls.trackerKey,
           });
@@ -366,7 +366,7 @@ export class Multicall {
       sleep(debugShouldTimeout ? 1000 : MAX_TIMEOUT).then(() => {
         sendDebugEvent("primary-timeout", { providerUrl });
 
-        emitFallbackTrackerEndpointFailure({
+        emitEndpointFailure({
           endpoint: providerUrl,
           trackerKey: providerUrls.trackerKey,
         });
@@ -415,7 +415,7 @@ export class Multicall {
 
         sendDebugEvent("primary-failed", { providerUrl });
 
-        emitFallbackTrackerEndpointFailure({
+        emitEndpointFailure({
           endpoint: providerUrl,
           trackerKey: providerUrls.trackerKey,
         });

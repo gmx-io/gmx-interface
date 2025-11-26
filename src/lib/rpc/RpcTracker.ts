@@ -11,7 +11,7 @@ import {
 } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { DEFAULT_FALLBACK_TRACKER_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
-import { onFallbackTrackerEvent } from "lib/FallbackTracker/events";
+import { onFallbackTracker } from "lib/FallbackTracker/events";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import type { RpcTrackerUpdateEndpointsEvent } from "lib/metrics/types";
 import { fetchEthCall } from "lib/rpc/fetchEthCall";
@@ -86,8 +86,8 @@ export class RpcTracker {
     });
 
     // Subscribe to FallbackTracker events
-    const unsubscribeUpdate = onFallbackTrackerEvent(
-      "updateEndpoints",
+    const unsubscribeUpdate = onFallbackTracker(
+      "endpointsUpdated",
       ({ trackerKey, primary, secondary, endpointsStats }) => {
         if (trackerKey === this.trackerKey) {
           devtools.debugRpcTrackerState(this);
@@ -96,7 +96,7 @@ export class RpcTracker {
       }
     );
 
-    const unsubscribeTrackFinished = onFallbackTrackerEvent("trackFinished", ({ trackerKey }) => {
+    const unsubscribeTrackFinished = onFallbackTracker("trackingFinished", ({ trackerKey }) => {
       if (trackerKey === this.trackerKey) {
         devtools.debugRpcTrackerState(this);
       }
@@ -126,18 +126,11 @@ export class RpcTracker {
   }
 
   public pickCurrentRpcUrls() {
-    const primary = this.fallbackTracker.pickPrimaryEndpoint();
-    const secondary = this.fallbackTracker.pickSecondaryEndpoint();
-
-    return {
-      primary,
-      secondary,
-      trackerKey: this.trackerKey,
-    };
+    return this.fallbackTracker.pick();
   }
 
   public getExpressRpcUrl() {
-    const endpoints = this.fallbackTracker.getEndpoints();
+    const endpoints = this.fallbackTracker.pick().fallbacks;
 
     const expressEndpoint = endpoints.find((endpoint) => this.providersMap[endpoint].purpose === "express");
 
