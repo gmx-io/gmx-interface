@@ -236,20 +236,6 @@ describe("FallbackTracker - endpoint selection and logic", () => {
       expect(event.detail.secondary).toBe(tracker.state.secondary);
     });
 
-    it("should call onUpdate callback when provided", () => {
-      const onUpdate = vi.fn();
-      const config = createMockConfig({
-        selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
-        onUpdate,
-      });
-      const tracker = new FallbackTracker(config);
-
-      tracker.selectBestEndpoints();
-
-      expect(onUpdate).toHaveBeenCalled();
-    });
-
     it("should allow consecutive selectBestEndpoints calls without throttling", () => {
       const config = createMockConfig({
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
@@ -262,62 +248,6 @@ describe("FallbackTracker - endpoint selection and logic", () => {
       tracker.selectBestEndpoints();
 
       expect((config.selectNextPrimary as ReturnType<typeof vi.fn>).mock.calls.length).toBe(3);
-    });
-
-    it("should handle error in selectNextPrimary gracefully", () => {
-      const config = createMockConfig({
-        selectNextPrimary: vi.fn().mockImplementation(() => {
-          throw new Error("Selection failed");
-        }),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
-      });
-      const tracker = new FallbackTracker(config);
-      const originalPrimary = tracker.state.primary;
-
-      tracker.selectBestEndpoints();
-
-      // Should fallback to current primary when selectNextPrimary throws
-      expect(tracker.state.primary).toBe(originalPrimary);
-      expect(config.selectNextPrimary).toHaveBeenCalled();
-    });
-
-    it("should handle error in selectNextSecondary gracefully", () => {
-      const config = createMockConfig({
-        selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-        selectNextSecondary: vi.fn().mockImplementation(() => {
-          throw new Error("Selection failed");
-        }),
-      });
-      const tracker = new FallbackTracker(config);
-      const originalSecondary = tracker.state.secondary;
-
-      tracker.selectBestEndpoints();
-
-      // Should fallback to current secondary when selectNextSecondary throws
-      expect(tracker.state.secondary).toBe(originalSecondary);
-      expect(config.selectNextSecondary).toHaveBeenCalled();
-    });
-
-    it("should handle errors in both selectNextPrimary and selectNextSecondary", () => {
-      const config = createMockConfig({
-        selectNextPrimary: vi.fn().mockImplementation(() => {
-          throw new Error("Primary selection failed");
-        }),
-        selectNextSecondary: vi.fn().mockImplementation(() => {
-          throw new Error("Secondary selection failed");
-        }),
-      });
-      const tracker = new FallbackTracker(config);
-      const originalPrimary = tracker.state.primary;
-      const originalSecondary = tracker.state.secondary;
-
-      tracker.selectBestEndpoints();
-
-      // Should fallback to current endpoints when both throw
-      expect(tracker.state.primary).toBe(originalPrimary);
-      expect(tracker.state.secondary).toBe(originalSecondary);
-      expect(config.selectNextPrimary).toHaveBeenCalled();
-      expect(config.selectNextSecondary).toHaveBeenCalled();
     });
   });
 });

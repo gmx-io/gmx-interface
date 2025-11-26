@@ -49,16 +49,18 @@ describe("FallbackTracker - endpoint banning", () => {
       const banSpy = vi.spyOn(tracker, "banEndpoint");
 
       // Default count is 3, so trigger 3 failures
+      // First failure
       tracker.triggerFailure(config.primary);
-      await vi.advanceTimersByTimeAsync(10);
-
-      tracker.triggerFailure(config.primary);
-      // Wait for debounce (default is 2 seconds)
+      // Wait for throttle to clear
       await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10);
 
+      // Second failure
       tracker.triggerFailure(config.primary);
-      // Wait for debounce to process
+      // Wait for throttle to clear
       await vi.advanceTimersByTimeAsync(config.failuresBeforeBan.throttle + 10);
+
+      // Third failure - should trigger ban
+      tracker.triggerFailure(config.primary);
 
       expect(banSpy).toHaveBeenCalledWith(config.primary, "Banned by failures threshold");
     });

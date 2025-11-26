@@ -543,9 +543,8 @@ export class FallbackTracker<TCheckStats> {
   }
 
   subscribeToIncomingEvents() {
-    const expectedTrackerKey = this.trackerKey;
     return onFallbackTrackerEvent("triggerFailure", ({ trackerKey, endpoint }) => {
-      if (trackerKey === expectedTrackerKey) {
+      if (trackerKey === this.trackerKey) {
         this.triggerFailure(endpoint);
       }
     });

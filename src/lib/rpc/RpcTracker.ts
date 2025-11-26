@@ -305,26 +305,6 @@ export class RpcTracker {
     return ranked[0]?.endpoint;
   };
 
-  // selectEndpointStats = (endpointsStats: RpcStats[], strategies: FilterStrategy[]): RpcStats | undefined => {
-  //   const filter = (stats, strategy: FilterStrategy) => {
-  //     const byPurpose = strategy.purpose
-  //       ? strategy.purpose.includes(this.getRpcConfig(stats.endpoint)?.purpose as RpcPurpose)
-  //       : true;
-  //     const byBanned = strategy.allowBanned ? !stats.banned : true;
-  //     return byPurpose && byBanned;
-  //   };
-
-  //   for (const strategy of strategies) {
-  //     const allowedStats = endpointsStats.find((stats) => filter(stats, strategy));
-
-  //     if (allowedStats) {
-  //       return allowedStats;
-  //     }
-  //   }
-
-  //   return undefined;
-  // };
-
   getValidStats = (endpointsStats: RpcStats[]): RpcStats[] => {
     const bestValidBlock = this.getBestValidBlock(endpointsStats);
 

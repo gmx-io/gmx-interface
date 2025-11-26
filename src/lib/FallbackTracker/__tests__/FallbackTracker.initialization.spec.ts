@@ -117,15 +117,19 @@ describe("FallbackTracker - initialization and storage", () => {
     });
   });
 
-  describe("saveEndpointsState", () => {
+  describe("saveStorage", () => {
     it("should save state to localStorage with correct key", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
       const setItemSpy = vi.spyOn(localStorage, "setItem");
 
-      tracker.saveEndpointsState({ primary: config.primary, secondary: config.secondary });
+      tracker.saveStorage({
+        primary: config.primary,
+        secondary: config.secondary,
+        cachedEndpointsState: tracker.getCachedEndpointsState(),
+      });
 
-      expect(setItemSpy).toHaveBeenCalledWith(getFallbackTrackerKey(config.trackerKey), expect.any(String));
+      expect(setItemSpy).toHaveBeenCalledWith(tracker.trackerKey, expect.any(String));
     });
 
     it("should include timestamp in saved state", () => {
@@ -133,7 +137,11 @@ describe("FallbackTracker - initialization and storage", () => {
       const tracker = new FallbackTracker(config);
       const setItemSpy = vi.spyOn(localStorage, "setItem");
 
-      tracker.saveEndpointsState({ primary: config.primary, secondary: config.secondary });
+      tracker.saveStorage({
+        primary: config.primary,
+        secondary: config.secondary,
+        cachedEndpointsState: tracker.getCachedEndpointsState(),
+      });
 
       const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
       expect(savedData.timestamp).toBeDefined();
@@ -150,7 +158,11 @@ describe("FallbackTracker - initialization and storage", () => {
 
       // Should not throw
       expect(() => {
-        tracker.saveEndpointsState({ primary: config.primary, secondary: config.secondary });
+        tracker.saveStorage({
+          primary: config.primary,
+          secondary: config.secondary,
+          cachedEndpointsState: tracker.getCachedEndpointsState(),
+        });
       }).not.toThrow();
 
       setItemSpy.mockRestore();

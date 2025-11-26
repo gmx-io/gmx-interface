@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import * as rpcConfigModule from "config/rpc";
 import { suppressConsole } from "lib/__testUtils__/_utils";
-import { ARBITRUM } from "sdk/configs/chains";
 
 import { RpcTracker } from "../RpcTracker";
 import { createMockRpcTrackerParams } from "./_utils";
@@ -33,8 +32,10 @@ describe("RpcTracker - constructor", () => {
 
       Object.values(tracker.providersMap).forEach((provider, index) => {
         expect(provider).toBeDefined();
-        expect(provider.url).toBe(allProviders[index].url);
-        expect(provider.purpose).toBe(allProviders[index].purpose);
+        const allProvider = allProviders[index];
+        expect(allProvider).toBeDefined();
+        expect(provider.url).toBe(allProvider!.url);
+        expect(provider.purpose).toBe(allProvider!.purpose);
       });
     });
 
