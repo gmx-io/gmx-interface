@@ -4095,7 +4095,7 @@ msgstr "주문 시뮬레이션 실행 실패."
 msgid "Support for"
 msgstr "지원"
 
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX account Balance"
 msgstr "GMX 계정 잔액"
 
@@ -6167,7 +6167,7 @@ msgid "Jones DAO"
 msgstr "Jones DAO"
 
 #. chainname balance
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "{0} Balance"
 msgstr "{0} 잔액"
 
@@ -7183,7 +7183,6 @@ msgstr "탈중앙화 또는 중앙화 거래소에서 구매 선택."
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GMX Account"
 msgstr "GMX 계정"
 

@@ -74,7 +74,6 @@ export type PoolsDetailsState = {
   marketOrGlvTokenInputValue: string;
   isMarketForGlvSelectedManually: boolean;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
-  multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
   setOperation: (operation: Operation) => void;
   setMode: (mode: Mode) => void;
@@ -210,7 +209,6 @@ export function usePoolsDetailsState({
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
       multichainTokensResult,
-      multichainMarketTokensBalancesResult,
       // Setters
       setOperation,
       setMode,
@@ -241,7 +239,6 @@ export function usePoolsDetailsState({
     marketOrGlvTokenInputValue,
     isMarketForGlvSelectedManually,
     multichainTokensResult,
-    multichainMarketTokensBalancesResult,
     setGlvOrMarketAddress,
     setPaySource,
     setFirstTokenAddress,

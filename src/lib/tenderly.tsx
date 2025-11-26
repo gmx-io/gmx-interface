@@ -44,10 +44,10 @@ export async function simulateCallDataWithTenderly({
   to: string;
   data: string;
   from: string;
-  value: bigint | number | undefined;
+  value: bigint | undefined;
   blockNumber: "latest" | number | undefined;
   gasPriceData: GasPriceData | undefined;
-  gasLimit: bigint | number | undefined;
+  gasLimit: bigint | undefined;
   comment: string | undefined;
   stateOverride?: StateOverride;
 }) {
@@ -151,8 +151,8 @@ async function processSimulation({
   data,
   value,
   to,
-  // gasLimit,
-  // gasPriceData,
+  gasLimit,
+  gasPriceData,
   blockNumber,
   comment,
   stateOverride,
@@ -162,8 +162,8 @@ async function processSimulation({
   from: string;
   to: string;
   data: string;
-  value: bigint | number | undefined;
-  gasLimit: bigint | number | undefined;
+  value: bigint | undefined;
+  gasLimit: bigint | undefined;
   gasPriceData: GasPriceData | undefined;
   blockNumber: "latest" | number | undefined;
   comment: string | undefined;
@@ -174,11 +174,11 @@ async function processSimulation({
     {
       from,
       to,
-      // gas: gasLimit !== undefined ? BigInt(gasLimit) : undefined,
+      gas: gasLimit,
       input: data,
       value: Number(value),
       stateOverride,
-      // ...gasPriceData,
+      ...gasPriceData,
     },
     blockNumber
   );

@@ -61,7 +61,6 @@ export async function watchLzTxRpc({
 
   const sourceBlock = await getPublicClientWithRpc(chainId).getBlock({ blockHash: sourceTx.blockHash });
   debugLog("loading logs");
-  // const sourceChainLogs = await fetchLogs(chainId, txHash);
   const sourceChainLogs = sourceTx.logs;
 
   if (abortSignal?.aborted) {

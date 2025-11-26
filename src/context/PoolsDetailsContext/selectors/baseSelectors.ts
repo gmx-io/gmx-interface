@@ -69,6 +69,3 @@ export const selectPoolsDetailsWithdrawalMarketTokensData = (s: SyntheticsState)
   s.poolsDetails?.withdrawalMarketTokensData;
 export const selectPoolsDetailsMultichainTokensArray = (s: SyntheticsState) =>
   s.poolsDetails?.multichainTokensResult?.tokenChainDataArray || EMPTY_ARRAY;
-
-export const selectPoolsDetailsMultichainMarketTokensBalancesResult = (s: SyntheticsState) =>
-  s.poolsDetails?.multichainMarketTokensBalancesResult;

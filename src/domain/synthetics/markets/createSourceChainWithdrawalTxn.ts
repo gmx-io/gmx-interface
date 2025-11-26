@@ -110,7 +110,6 @@ export async function createSourceChainWithdrawalTxn({
     value += tokenAmount;
   }
 
-  // try {
   const txnResult = await sendWalletTransaction({
     chainId: srcChainId!,
     to: sourceChainTokenId.stargate,

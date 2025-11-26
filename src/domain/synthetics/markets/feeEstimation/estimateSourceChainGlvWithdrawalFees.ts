@@ -1,5 +1,3 @@
-// import { getPublicClient } from "@wagmi/core";
-
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getToken } from "sdk/configs/tokens";
 

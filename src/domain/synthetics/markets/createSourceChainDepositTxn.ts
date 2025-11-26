@@ -98,7 +98,6 @@ export async function createSourceChainDepositTxn({
     value += tokenAmount;
   }
 
-  // try {
   const txnResult = await sendWalletTransaction({
     chainId: srcChainId!,
     to: sourceChainTokenId.stargate,
@@ -120,7 +119,4 @@ export async function createSourceChainDepositTxn({
   });
 
   return txnResult;
-  // } catch (error) {
-  //   toastCustomOrStargateError(chainId, error);
-  // }
 }

@@ -76,7 +76,6 @@ export async function estimateSourceChainGlvDepositFees({
   globalExpressParams: GlobalExpressParams;
   glvMarketCount: bigint;
 }): Promise<SourceChainGlvDepositFees> {
-  // debugger;
   const {
     platformTokenReturnTransferGasLimit: returnGmTransferGasLimit,
     platformTokenReturnTransferNativeFee: returnGmTransferNativeFee,

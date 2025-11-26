@@ -4095,7 +4095,7 @@ msgstr ""
 msgid "Support for"
 msgstr ""
 
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX account Balance"
 msgstr ""
 
@@ -6167,7 +6167,7 @@ msgid "Jones DAO"
 msgstr ""
 
 #. chainname balance
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "{0} Balance"
 msgstr ""
 
@@ -7183,7 +7183,6 @@ msgstr ""
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GMX Account"
 msgstr ""
 

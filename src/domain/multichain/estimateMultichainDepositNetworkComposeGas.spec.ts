@@ -1,8 +1,10 @@
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, maxUint256 } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { getProvider } from "lib/rpc";
+import { ARBITRUM } from "config/chains";
 import { simulateCallDataWithTenderly, TenderlyConfig } from "lib/tenderly";
+import { ISigner } from "lib/transactions/iSigner";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { ERC20Address } from "sdk/types/tokens";
 
 import {
@@ -33,8 +35,8 @@ const MOCK_VALID_DATA: EstimateMultichainDepositNetworkComposeGasParameters = {
     actionData: {
       relayParams: {
         oracleParams: {
-          tokens: ["0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73"],
-          providers: ["0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d", "0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d"],
+          tokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"],
+          providers: ["0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B", "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B"],
           data: ["0x", "0x"],
         },
         tokenPermits: [],
@@ -47,56 +49,56 @@ const MOCK_VALID_DATA: EstimateMultichainDepositNetworkComposeGasParameters = {
           refundTokens: [],
         },
         fee: {
-          feeToken: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
-          feeAmount: 2436711n,
-          feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
+          feeToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          feeAmount: 1508772n,
+          feeSwapPath: ["0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"],
         },
-        desChainId: 421614n,
-        userNonce: 1760446679n,
-        deadline: 1760450279n,
+        desChainId: 42161n,
+        userNonce: 1764082828n,
+        deadline: 1764086428n,
       },
       transferRequests: {
-        tokens: ["0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773"],
-        receivers: ["0x809Ea82C394beB993c2b6B0d73b8FD07ab92DE5A"],
-        amounts: [1000000n],
+        tokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"],
+        receivers: ["0xF89e77e8Dc11691C9e8757e84aaFbCD8A67d7A55"],
+        amounts: [5000000n],
       },
       params: {
         addresses: {
-          receiver: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
+          receiver: "0x8918F029ce357837294D71B2270eD403aac0eEc8",
           callbackContract: "0x0000000000000000000000000000000000000000",
           uiFeeReceiver: "0xff00000000000000000000000000000000000001",
-          market: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
-          initialLongToken: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73" as ERC20Address,
-          initialShortToken: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773" as ERC20Address,
+          market: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+          initialLongToken: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1" as ERC20Address,
+          initialShortToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" as ERC20Address,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
         },
-        minMarketTokens: 917474877705194438n,
+        minMarketTokens: 2661358281426942384n,
         shouldUnwrapNativeToken: false,
-        executionFee: 490769400000000n,
         callbackGasLimit: 0n,
         dataList: [
           "0x1e00e1bfa18454bf880ac17012d43b7b87f2a386d674ef67395563b8fb6c5a5e",
           "0x0000000000000000000000000000000000000000000000000000000000000003",
           "0x0000000000000000000000000000000000000000000000000000000000000040",
           "0x00000000000000000000000000000000000000000000000000000000000000e0",
-          "0x0000000000000000000000000000000000000000000000000000000000066eee",
-          "0x0000000000000000000000000000000000000000000000000000000068ee56e6",
-          "0x000000000000000000000000e4ebcac4a2e6cbee385ee407f7d5e278bc07e11e",
+          "0x000000000000000000000000000000000000000000000000000000000000a4b1",
+          "0x000000000000000000000000000000000000000000000000000000006925d29a",
+          "0x000000000000000000000000fcff5015627b8ce9ceaa7f5b38a6679f65fe39a7",
           "0x00000000000000000000000000000000000000000000000000000000000000a0",
-          "0x0000000000000000000000000000000000000000000000000cbb868a4ff68bc6",
+          "0x00000000000000000000000000000000000000000000000024ef0b41a87f39b0",
           "0x0000000000000000000000000000000000000000000000000000000000000020",
-          "0x0000000000000000000000000000000000000000000000000000000000009ce1",
+          "0x00000000000000000000000000000000000000000000000000000000000075e8",
         ],
+        executionFee: 489411485752000n,
       },
       signature:
-        "0x2ea8caa02ce5e873a03e9cadb481b8a02e3e1dd819582437706efa11ae80c53172744a1431803e590a5fc9afd60b017e2a33b188b4ede8cf46d4beb19040c88e1c",
+        "0x8bb4dc64ece788006498902ab4bc905e75fd87cbdc2b3966c8edc888740d730c744f0db6ab807159d4b13de863668e7c0aa617e1bbf8a5f793c5cb3b89c01bc01c",
     },
   },
-  chainId: 421614,
-  account: "0x9f3DDD654A2bdB2650DCAFdF02392dabf7eCe0Fb",
-  srcChainId: 11155111,
-  tokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+  chainId: 42161,
+  account: "0x82960569BcDd69bad3554cc87DE8d9A7f385E708",
+  srcChainId: 8453,
+  tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
 };
 
 const MOCK_INVALID_DATA: EstimateMultichainDepositNetworkComposeGasParameters = {
@@ -105,8 +107,8 @@ const MOCK_INVALID_DATA: EstimateMultichainDepositNetworkComposeGasParameters = 
     actionData: {
       relayParams: {
         oracleParams: {
-          tokens: ["0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73"],
-          providers: ["0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d", "0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d"],
+          tokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"],
+          providers: ["0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B", "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B"],
           data: ["0x", "0x"],
         },
         tokenPermits: [],
@@ -119,76 +121,75 @@ const MOCK_INVALID_DATA: EstimateMultichainDepositNetworkComposeGasParameters = 
           refundTokens: [],
         },
         fee: {
-          feeToken: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
-          // Notice huge inadequate fee amount
-          feeAmount: 2436711_000000000000000000n,
-          feeSwapPath: ["0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc"],
+          feeToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          // Note huge inadequate fee amount
+          feeAmount: maxUint256 / 2n,
+          feeSwapPath: ["0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"],
         },
-        desChainId: 421614n,
-        userNonce: 1760446679n,
-        deadline: 1760450279n,
+        desChainId: 42161n,
+        userNonce: 1764082828n,
+        deadline: 1764086428n,
       },
       transferRequests: {
-        tokens: ["0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773"],
-        receivers: ["0x809Ea82C394beB993c2b6B0d73b8FD07ab92DE5A"],
-        amounts: [1000000n],
+        tokens: ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831"],
+        receivers: ["0xF89e77e8Dc11691C9e8757e84aaFbCD8A67d7A55"],
+        amounts: [5000000n],
       },
       params: {
         addresses: {
-          receiver: "0x414dA6C7c50eADFBD4c67C902c7DAf59F58d32c7",
+          receiver: "0x8918F029ce357837294D71B2270eD403aac0eEc8",
           callbackContract: "0x0000000000000000000000000000000000000000",
           uiFeeReceiver: "0xff00000000000000000000000000000000000001",
-          market: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
-          initialLongToken: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73" as ERC20Address,
-          initialShortToken: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773" as ERC20Address,
+          market: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+          initialLongToken: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1" as ERC20Address,
+          initialShortToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" as ERC20Address,
           longTokenSwapPath: [],
           shortTokenSwapPath: [],
         },
-        minMarketTokens: 917474877705194438n,
+        minMarketTokens: 2661358281426942384n,
         shouldUnwrapNativeToken: false,
-        executionFee: 490769400000000n,
         callbackGasLimit: 0n,
         dataList: [
           "0x1e00e1bfa18454bf880ac17012d43b7b87f2a386d674ef67395563b8fb6c5a5e",
           "0x0000000000000000000000000000000000000000000000000000000000000003",
           "0x0000000000000000000000000000000000000000000000000000000000000040",
           "0x00000000000000000000000000000000000000000000000000000000000000e0",
-          "0x0000000000000000000000000000000000000000000000000000000000066eee",
-          "0x0000000000000000000000000000000000000000000000000000000068ee56e6",
-          "0x000000000000000000000000e4ebcac4a2e6cbee385ee407f7d5e278bc07e11e",
+          "0x000000000000000000000000000000000000000000000000000000000000a4b1",
+          "0x000000000000000000000000000000000000000000000000000000006925d29a",
+          "0x000000000000000000000000fcff5015627b8ce9ceaa7f5b38a6679f65fe39a7",
           "0x00000000000000000000000000000000000000000000000000000000000000a0",
-          "0x0000000000000000000000000000000000000000000000000cbb868a4ff68bc6",
+          "0x00000000000000000000000000000000000000000000000024ef0b41a87f39b0",
           "0x0000000000000000000000000000000000000000000000000000000000000020",
-          "0x0000000000000000000000000000000000000000000000000000000000009ce1",
+          "0x00000000000000000000000000000000000000000000000000000000000075e8",
         ],
+        executionFee: 489411485752000n,
       },
       signature:
-        "0x2ea8caa02ce5e873a03e9cadb481b8a02e3e1dd819582437706efa11ae80c53172744a1431803e590a5fc9afd60b017e2a33b188b4ede8cf46d4beb19040c88e1c",
+        "0x8bb4dc64ece788006498902ab4bc905e75fd87cbdc2b3966c8edc888740d730c744f0db6ab807159d4b13de863668e7c0aa617e1bbf8a5f793c5cb3b89c01bc01c",
     },
   },
-  chainId: 421614,
-  account: "0x9f3DDD654A2bdB2650DCAFdF02392dabf7eCe0Fb",
-  srcChainId: 11155111,
-  tokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+  chainId: 42161,
+  account: "0x82960569BcDd69bad3554cc87DE8d9A7f385E708",
+  srcChainId: 8453,
+  tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
 };
 
-describe.skipIf(import.meta.env.TENDERLY_TEST !== "true")(
-  "estimateMultichainDepositNetworkComposeGas",
-  { timeout: 60_000 },
-  () => {
+describe
+  .skipIf(import.meta.env.TENDERLY_TEST !== "true")
+  .concurrent("estimateMultichainDepositNetworkComposeGas", { timeout: 60_000 }, () => {
     it("should estimate the compose gas", async () => {
       const input = structuredClone(MOCK_VALID_DATA);
 
       const parameters = getEstimateMultichainDepositNetworkComposeGasParameters(input);
       const { success, raw } = await simulateCallDataWithTenderly({
-        chainId: 421614,
+        chainId: ARBITRUM,
         tenderlyConfig,
-        provider: getProvider(undefined, 421614),
+        provider: await ISigner.from({ viemPublicClient: getPublicClientWithRpc(ARBITRUM) }),
         to: parameters.address,
         data: encodeFunctionData(parameters),
         from: parameters.account as string,
         value: 0n,
-        blockNumber: 204541897,
+        blockNumber: 404004261,
         gasPriceData: {
           gasPrice: 0n,
         },
@@ -209,14 +210,14 @@ describe.skipIf(import.meta.env.TENDERLY_TEST !== "true")(
 
       const parameters = getEstimateMultichainDepositNetworkComposeGasParameters(input);
       const { success, raw } = await simulateCallDataWithTenderly({
-        chainId: 421614,
+        chainId: ARBITRUM,
         tenderlyConfig,
-        provider: getProvider(undefined, 421614),
+        provider: await ISigner.from({ viemPublicClient: getPublicClientWithRpc(ARBITRUM) }),
         to: parameters.address,
         data: encodeFunctionData(parameters),
         from: parameters.account as string,
         value: 0n,
-        blockNumber: 204541897,
+        blockNumber: 404004261,
         gasPriceData: {
           gasPrice: 0n,
         },
@@ -251,8 +252,7 @@ describe.skipIf(import.meta.env.TENDERLY_TEST !== "true")(
 
       expect(hasError).toBe(false);
     });
-  }
-);
+  });
 
 async function fetchTenderlySimulation(
   tenderlyConfig: TenderlyConfig,

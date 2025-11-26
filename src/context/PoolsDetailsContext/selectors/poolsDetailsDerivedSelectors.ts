@@ -7,6 +7,7 @@ import {
   selectGlvAndMarketsInfoData,
   selectGlvInfo,
   selectMarketsInfoData,
+  selectMultichainMarketTokensBalancesResult,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -31,7 +32,6 @@ import {
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsMarketOrGlvTokenInputValue,
   selectPoolsDetailsMode,
-  selectPoolsDetailsMultichainMarketTokensBalancesResult,
   selectPoolsDetailsMultichainTokensArray,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
@@ -539,7 +539,7 @@ export const selectPoolsDetailsCanBridgeInMarket = createSelector((q) => {
     return false;
   }
 
-  const multichainMarketTokensBalanceResult = q(selectPoolsDetailsMultichainMarketTokensBalancesResult);
+  const multichainMarketTokensBalanceResult = q(selectMultichainMarketTokensBalancesResult);
   if (!multichainMarketTokensBalanceResult) {
     return false;
   }

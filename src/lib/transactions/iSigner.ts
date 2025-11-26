@@ -6,21 +6,21 @@ import {
   JsonRpcProvider,
   TransactionRequest,
 } from "ethers";
-import { Account, Chain, Client, PublicActions, StateOverride, Transport, WalletActions, WalletRpcSchema } from "viem";
+import {
+  Account,
+  Chain,
+  Client,
+  PublicActions,
+  StateOverride,
+  Transport,
+  WalletActions,
+  WalletRpcSchema,
+  PublicClient as ViemPublicClient,
+  zeroAddress,
+} from "viem";
 
+import { mustNeverExist } from "lib/types";
 import { SignatureDomain, SignatureTypes } from "lib/wallets/signing";
-
-// export type ISignerSendTransactionParams = {
-//   to: string;
-//   data: string;
-//   value?: bigint;
-//   gasLimit?: bigint;
-//   gasPrice?: bigint;
-//   nonce?: number | bigint;
-//   from?: string;
-//   maxFeePerGas?: bigint;
-//   maxPriorityFeePerGas?: bigint;
-// };
 
 export type ISignerSendTransactionParams = Pick<
   TransactionRequest,
@@ -62,7 +62,8 @@ export interface ISignerInterface {
 }
 
 export class ISigner implements ISignerInterface {
-  private readonly isEthersSigner: boolean;
+  private readonly type: "ethers" | "viem" | "viemPublicClient";
+  private readonly signer: EthersSigner | ViemSigner | ViemPublicClient;
 
   private _address: string;
 
@@ -74,16 +75,42 @@ export class ISigner implements ISignerInterface {
     return this._address;
   }
 
-  private constructor(private readonly signer: EthersSigner | ViemSigner) {
-    this.isEthersSigner = signer instanceof EthersSigner;
+  private constructor({
+    ethersSigner,
+    viemSigner,
+    viemPublicClient,
+  }: {
+    ethersSigner?: EthersSigner;
+    viemSigner?: ViemSigner;
+    viemPublicClient?: ViemPublicClient;
+  }) {
+    if (ethersSigner) {
+      this.type = "ethers";
+      this.signer = ethersSigner;
+    } else if (viemSigner) {
+      this.type = "viem";
+      this.signer = viemSigner;
+    } else if (viemPublicClient) {
+      this.type = "viemPublicClient";
+      this.signer = viemPublicClient;
+    }
   }
 
-  static async from(signer: EthersSigner | ViemSigner) {
-    const gmxSigner = new ISigner(signer);
+  static async from({
+    ethersSigner,
+    viemSigner,
+    viemPublicClient,
+  }: {
+    ethersSigner?: EthersSigner;
+    viemSigner?: ViemSigner;
+    viemPublicClient?: ViemPublicClient;
+  }) {
+    const gmxSigner = new ISigner({ ethersSigner, viemSigner, viemPublicClient });
     await gmxSigner
       .match<string>({
         viem: (signer: ViemSigner) => signer.account.address,
         ethers: (signer: EthersSigner) => signer.getAddress(),
+        viemPublicClient: () => zeroAddress,
       })
       .then((address) => (gmxSigner._address = address));
     return gmxSigner;
@@ -269,11 +296,20 @@ export class ISigner implements ISignerInterface {
   private async match<T>(branches: {
     viem: (signer: ViemSigner) => T | Promise<T>;
     ethers: (signer: EthersSigner) => T | Promise<T>;
+    viemPublicClient?: (signer: ViemPublicClient) => T | Promise<T>;
   }): Promise<T> {
-    if (this.isEthersSigner) {
-      return await branches.ethers(this.signer as EthersSigner);
-    } else {
-      return await branches.viem(this.signer as ViemSigner);
+    switch (this.type) {
+      case "ethers":
+        return await branches.ethers(this.signer as EthersSigner);
+      case "viem":
+        return await branches.viem(this.signer as ViemSigner);
+      case "viemPublicClient":
+        return branches.viemPublicClient
+          ? await branches.viemPublicClient(this.signer as ViemPublicClient)
+          : await branches.viem(this.signer as ViemSigner);
+      default: {
+        return mustNeverExist(this.type);
+      }
     }
   }
 }

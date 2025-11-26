@@ -4095,7 +4095,7 @@ msgstr "Симуляция выполнения ордера не удалась
 msgid "Support for"
 msgstr "Поддержка для"
 
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX account Balance"
 msgstr "Баланс счета GMX"
 
@@ -6167,7 +6167,7 @@ msgid "Jones DAO"
 msgstr "Jones DAO"
 
 #. chainname balance
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "{0} Balance"
 msgstr "Баланс {0}"
 
@@ -7183,7 +7183,6 @@ msgstr "Выберите покупку на децентрализованны�
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GMX Account"
 msgstr "Счет GMX"
 

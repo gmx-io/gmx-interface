@@ -26,14 +26,12 @@ export function getOracleParamsForRelayParams({
   relayerFeeTokenAddress,
   feeSwapPath,
   externalCalls,
-  // marketsInfoData,
 }: {
   chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
   relayerFeeTokenAddress: string;
   feeSwapPath: string[];
   externalCalls: ExternalCallsPayload | undefined;
-  // marketsInfoData: MarketsInfoData;
 }) {
   const tokenAddresses = [gasPaymentTokenAddress, relayerFeeTokenAddress];
 
@@ -45,7 +43,6 @@ export function getOracleParamsForRelayParams({
     tokenAddresses.push(
       ...getSwapPathOracleTokens({
         chainId,
-        // marketsInfoData,
         initialCollateralAddress: gasPaymentTokenAddress,
         swapPath: feeSwapPath,
       })

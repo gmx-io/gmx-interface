@@ -1,4 +1,4 @@
-import type { SourceChainId } from "config/chains";
+import type { AnyChainId, SourceChainId } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
 
 export type TokenChainData = Token & {
@@ -81,3 +81,19 @@ export type MessagingFee = {
   nativeFee: bigint;
   lzTokenFee: bigint;
 };
+
+export type MultichainMarketTokenBalances = {
+  totalBalance: bigint;
+  totalBalanceUsd: bigint;
+  balances: Partial<
+    Record<
+      AnyChainId | 0,
+      {
+        balance: bigint;
+        balanceUsd: bigint;
+      }
+    >
+  >;
+};
+
+export type MultichainMarketTokensBalances = Record<string, MultichainMarketTokenBalances>;

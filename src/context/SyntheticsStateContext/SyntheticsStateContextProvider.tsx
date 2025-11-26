@@ -103,6 +103,7 @@ export type SyntheticsState = {
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
+    multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
     glvInfo: ReturnType<typeof useGlvMarketsInfo>;
     botanixStakingAssetsPerShare: bigint | undefined;
@@ -197,11 +198,12 @@ export function SyntheticsStateContextProvider({
 
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");
+  const shouldFetchMultichainMarketTokensBalances = pageType === "pools" || pageType === "earn";
 
   const multichainMarketTokensBalancesResult = useMultichainMarketTokensBalancesRequest({
     chainId,
     account,
-    enabled: pageType === "pools",
+    enabled: shouldFetchMultichainMarketTokensBalances,
   });
 
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
@@ -210,8 +212,9 @@ export function SyntheticsStateContextProvider({
     chainId,
     account,
     srcChainId,
-    multichainMarketTokensBalances:
-      pageType === "pools" ? multichainMarketTokensBalancesResult.tokenBalances : undefined,
+    multichainMarketTokensBalances: shouldFetchMultichainMarketTokensBalances
+      ? multichainMarketTokensBalancesResult.tokenBalances
+      : undefined,
   });
 
   const { marketTokensData: depositMarketTokensData, progressiveMarketTokensData: progressiveDepositMarketTokensData } =
@@ -220,8 +223,9 @@ export function SyntheticsStateContextProvider({
       account,
       glvData: glvInfo.glvData,
       withGlv: shouldFetchGlvMarkets,
-      multichainMarketTokensBalances:
-        pageType === "pools" ? multichainMarketTokensBalancesResult.tokenBalances : undefined,
+      multichainMarketTokensBalances: shouldFetchMultichainMarketTokensBalances
+        ? multichainMarketTokensBalancesResult.tokenBalances
+        : undefined,
     });
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
@@ -365,6 +369,7 @@ export function SyntheticsStateContextProvider({
         userReferralInfo,
         depositMarketTokensData,
         progressiveDepositMarketTokensData,
+        multichainMarketTokensBalancesResult,
 
         closingPositionKey,
         setClosingPositionKey,
@@ -408,55 +413,56 @@ export function SyntheticsStateContextProvider({
 
     return s;
   }, [
-    account,
-    accountStats,
-    accruedPositionPriceImpactFees,
-    blockTimestampData,
-    botanixStakingAssetsPerShare,
+    pageType,
     chainId,
-    claimablePositionPriceImpactFees,
-    closingPositionKey,
-    confirmationBoxState,
-    depositMarketTokensData,
-    externalSwapState,
-    features,
-    gasLimits,
-    gasPaymentTokenAllowance,
-    gasPrice,
-    glvInfo,
-    isCandlesLoaded,
-    isFirstOrder,
-    isLargeAccount,
-    isLoading,
-    keepLeverage,
-    l1ExpressOrderGasReference,
-    lastMonthAccountStats,
-    lastWeekAccountStats,
-    leaderboard,
+    srcChainId,
+    account,
+    signer,
     markets,
     marketsInfo,
-    missedCoinsModalPlace,
-    oracleSettings,
-    orderEditor,
     ordersInfo,
-    pageType,
-    positionEditorState,
-    positionSellerState,
     positionsConstants,
+    glvInfo,
+    botanixStakingAssetsPerShare,
+    isLoading,
     positionsInfoData,
-    poolsDetailsState,
-    progressiveDepositMarketTokensData,
-    setKeepLeverage,
-    settings,
-    signer,
-    sponsoredCallBalanceData,
-    srcChainId,
-    subaccountState,
-    tokenPermitsState,
     tokensDataResult,
-    tradeboxState,
     uiFeeFactor,
     userReferralInfo,
+    depositMarketTokensData,
+    progressiveDepositMarketTokensData,
+    multichainMarketTokensBalancesResult,
+    closingPositionKey,
+    missedCoinsModalPlace,
+    gasLimits,
+    gasPrice,
+    keepLeverage,
+    setKeepLeverage,
+    lastWeekAccountStats,
+    lastMonthAccountStats,
+    accountStats,
+    isCandlesLoaded,
+    isLargeAccount,
+    isFirstOrder,
+    blockTimestampData,
+    oracleSettings,
+    accruedPositionPriceImpactFees,
+    claimablePositionPriceImpactFees,
+    leaderboard,
+    settings,
+    subaccountState,
+    tradeboxState,
+    externalSwapState,
+    tokenPermitsState,
+    orderEditor,
+    positionSellerState,
+    positionEditorState,
+    confirmationBoxState,
+    poolsDetailsState,
+    features,
+    sponsoredCallBalanceData,
+    gasPaymentTokenAllowance,
+    l1ExpressOrderGasReference,
   ]);
 
   latestStateRef.current = state;

@@ -44,13 +44,6 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
 }> {
   const settlementWrappedTokenData = globalExpressParams.tokensData[getWrappedToken(chainId).address];
 
-  // const marketConfig = MARKETS[chainId][marketAddress];
-
-  // By default pay with short token
-  // const feeTokenAddress = isShortTokenBeingTransferred ? marketConfig.shortTokenAddress : marketConfig.longTokenAddress;
-
-  // 922534 gas on atomic swap with one stem USDC -> WETH
-  // 114185 gas on no swap WETH WETH
   const feeSwapStrategy = buildReverseSwapStrategy({
     chainId,
     amountOut: fullWntFee,

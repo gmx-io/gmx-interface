@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
+import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo } from "react";
 
@@ -42,6 +43,7 @@ import {
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectPoolsDetailsTokenOptions } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsTokenOptions";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -67,12 +69,12 @@ import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
+import { AnyChainId } from "sdk/configs/chains";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
 import { useBestGmPoolAddressForGlv } from "components/MarketStats/hooks/useBestGmPoolForGlv";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
@@ -140,12 +142,18 @@ export function GmSwapBoxDepositWithdrawal() {
   const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalances({
-    chainId,
-    srcChainId,
-    tokenAddress: selectedGlvOrMarketAddress,
-    enabled: Boolean(selectedGlvOrMarketAddress),
-  });
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const multichainMarketTokenBalances = selectedGlvOrMarketAddress
+    ? multichainMarketTokensBalances[selectedGlvOrMarketAddress]
+    : undefined;
+
+  const marketTokenBalancesData: Partial<Record<AnyChainId | 0, bigint>> = useMemo(
+    () =>
+      multichainMarketTokenBalances?.balances
+        ? mapValues(multichainMarketTokenBalances.balances, (data) => data?.balance)
+        : {},
+    [multichainMarketTokenBalances?.balances]
+  );
 
   const { marketsInfo: sortedGlvOrMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     glvAndMarketsInfoData,

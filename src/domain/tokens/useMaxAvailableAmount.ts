@@ -50,9 +50,13 @@ export function useMaxAvailableAmount({
     maxAvailableAmount = 0n;
   }
 
+  const decimals =
+    srcChainId && tokenBalanceType === TokenBalanceType.SourceChain
+      ? getSourceChainDecimalsMapped(chainId, srcChainId, fromToken.address) ?? fromToken.decimals
+      : fromToken.decimals;
   const formattedMaxAvailableAmount = formatAmountFree(
     maxAvailableAmount,
-    fromToken.decimals,
+    decimals,
     isMetamaskMobile ? MAX_METAMASK_MOBILE_DECIMALS : undefined
   );
 

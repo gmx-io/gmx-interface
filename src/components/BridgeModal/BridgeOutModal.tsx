@@ -4,10 +4,11 @@ import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters } from "viem";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { getLayerZeroEndpointId, getStargatePoolAddress } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
@@ -29,7 +30,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
-import { useGmxAccountWithdrawNetworks, useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
+import { useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -81,22 +82,14 @@ export function BridgeOutModal({
   const glvOrGm = isGlv ? "GLV" : "GM";
   const { address: account } = useAccount();
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalances({
-    chainId,
-    srcChainId,
-    tokenAddress: glvOrMarketAddress,
-    enabled: isVisible,
-  });
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const multichainMarketTokenBalances = glvOrMarketAddress
+    ? multichainMarketTokensBalances[glvOrMarketAddress]
+    : undefined;
 
   const networks = useGmxAccountWithdrawNetworks();
 
-  const settlementChainMarketTokenBalancesData: Partial<Record<0 | AnyChainId, bigint>> = useMemo(() => {
-    return {
-      [0]: marketTokenBalancesData[0],
-    };
-  }, [marketTokenBalancesData]);
-
-  const gmxAccountMarketTokenBalance: bigint | undefined = settlementChainMarketTokenBalancesData[0];
+  const gmxAccountMarketTokenBalance: bigint | undefined = multichainMarketTokenBalances?.balances[0]?.balance;
 
   const nextGmxAccountMarketTokenBalance: bigint | undefined =
     gmxAccountMarketTokenBalance !== undefined && bridgeOutAmount !== undefined

@@ -173,7 +173,6 @@ async function estimateSourceChainDepositInitialTxFees({
     marketConfig.longTokenAddress !== wrappedPayTokenAddress &&
     marketConfig.shortTokenAddress !== wrappedPayTokenAddress
   ) {
-    // console.log("marketConfig", params);
     throw new Error(
       `Token address not found in market config. Market config: ${JSON.stringify(marketConfig)}, token address: ${wrappedPayTokenAddress}`
     );

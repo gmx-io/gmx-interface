@@ -4095,7 +4095,7 @@ msgstr "Échec de la simulation d'exécution d'ordre."
 msgid "Support for"
 msgstr "Support pour"
 
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX account Balance"
 msgstr "Solde du compte GMX"
 
@@ -6167,7 +6167,7 @@ msgid "Jones DAO"
 msgstr "Jones DAO"
 
 #. chainname balance
-#: src/components/GmList/GmTokensTotalBalanceInfo.tsx
+#: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "{0} Balance"
 msgstr "Solde {0}"
 
@@ -7183,7 +7183,6 @@ msgstr "Choisissez d'acheter depuis des exchanges décentralisés ou centralisé
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
-#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GMX Account"
 msgstr "Compte GMX"
 

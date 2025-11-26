@@ -1,4 +1,3 @@
-// import { getPublicClient } from "@wagmi/core";
 import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";

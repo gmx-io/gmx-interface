@@ -3,14 +3,13 @@ import useSWR from "swr";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import {
   getMappedTokenId,
   MULTI_CHAIN_PLATFORM_TOKENS_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
   MultichainTokenMapping,
 } from "config/multichain";
-import { selectPoolsDetailsMultichainMarketTokensBalancesResult } from "context/PoolsDetailsContext/selectors";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -18,7 +17,6 @@ import {
   fetchSourceChainTokenBalances,
 } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
-import { useMarketTokensData } from "domain/synthetics/markets";
 import { convertToUsd, getMidPrice, useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthetics/tokens";
 import { TokenPricesData, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -256,77 +254,6 @@ export function useMultichainTokens() {
   const account = useSelector(selectAccount);
 
   return useMultichainTradeTokensRequest(chainId, account);
-}
-
-export function useMultichainMarketTokenBalances({
-  chainId,
-  srcChainId,
-  tokenAddress,
-  enabled,
-}: {
-  chainId: ContractsChainId;
-  srcChainId: SourceChainId | undefined;
-  tokenAddress: string | undefined;
-  enabled?: boolean;
-}): {
-  tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>>;
-  totalBalance: bigint | undefined;
-  isBalanceDataLoading: boolean;
-} {
-  // TODO MLTCH: use selectDepositMarketTokensData or selectProgressiveDepositMarketTokensData
-  const { marketTokensData } = useMarketTokensData(chainId, srcChainId, {
-    isDeposit: true,
-    withGlv: true,
-    enabled,
-  });
-
-  const multichainMarketTokensBalances = useSelector(selectPoolsDetailsMultichainMarketTokensBalancesResult);
-
-  const isBalanceDataLoading = multichainMarketTokensBalances?.isLoading ?? true;
-  const tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>> = useMemo(() => {
-    if (!tokenAddress) {
-      return EMPTY_OBJECT;
-    }
-    const balances = {
-      [chainId]: marketTokensData?.[tokenAddress].walletBalance,
-      [0]: marketTokensData?.[tokenAddress].gmxAccountBalance,
-    };
-
-    if (!multichainMarketTokensBalances) {
-      return balances;
-    }
-
-    for (const sourceChainIdRaw in multichainMarketTokensBalances.tokenBalances) {
-      const balance = multichainMarketTokensBalances.tokenBalances[sourceChainIdRaw]?.[tokenAddress];
-      if (balance === undefined) {
-        continue;
-      }
-      balances[sourceChainIdRaw] = balance;
-    }
-
-    return balances;
-  }, [chainId, marketTokensData, multichainMarketTokensBalances, tokenAddress]);
-
-  const totalBalance = useMemo(() => {
-    if (!tokenBalancesData) {
-      return undefined;
-    }
-    let totalBalance = 0n;
-    for (const balance of Object.values(tokenBalancesData)) {
-      if (balance === undefined) {
-        continue;
-      }
-      // Given that platform token decimals are always 18, we can just add the balances together
-      totalBalance += balance;
-    }
-    return totalBalance;
-  }, [tokenBalancesData]);
-
-  return {
-    tokenBalancesData,
-    totalBalance,
-    isBalanceDataLoading,
-  };
 }
 
 export function useMultichainMarketTokensBalancesRequest({

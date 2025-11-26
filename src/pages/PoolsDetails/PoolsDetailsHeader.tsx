@@ -1,12 +1,14 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import {
+  PLATFORM_TOKEN_DECIMALS,
   selectPoolsDetailsCanBridgeInMarket,
   selectPoolsDetailsCanBridgeOutMarket,
 } from "context/PoolsDetailsContext/selectors";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   getGlvMarketShortening,
@@ -22,20 +24,17 @@ import { useChainId } from "lib/chains";
 import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { AnyChainId, getChainName } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
-import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
-import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import Buy16Icon from "img/ic_buy_16.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import Sell16Icon from "img/ic_sell_16.svg?react";
-import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 
@@ -68,28 +67,13 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
 
   const { isMobile, isTablet } = useBreakpoints();
 
-  const { totalBalance, tokenBalancesData, isBalanceDataLoading } = useMultichainMarketTokenBalances({
-    chainId,
-    srcChainId,
-    tokenAddress: marketToken?.address,
-    enabled: Boolean(marketToken),
-  });
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const multichainMarketTokenBalances = marketToken?.address
+    ? multichainMarketTokensBalances[marketToken.address]
+    : undefined;
 
-  const sortedTokenBalancesDataArray = useMemo(() => {
-    return Object.entries(tokenBalancesData)
-      .sort((a, b) => {
-        const aBalance = a[1];
-        const bBalance = b[1];
-
-        return aBalance > bBalance ? -1 : 1;
-      })
-      .map(([chainId, balance]) => ({
-        chainId: parseInt(chainId) as AnyChainId | 0,
-        balance,
-      }));
-  }, [tokenBalancesData]);
-
-  const marketBalanceUsd = convertToUsd(totalBalance, marketToken?.decimals, marketPrice);
+  const totalBalance = multichainMarketTokenBalances?.totalBalance;
+  const marketBalanceUsd = multichainMarketTokenBalances?.totalBalanceUsd;
 
   const [isOpen, setIsOpen] = useState(true);
 
@@ -166,23 +150,11 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                       showZero: true,
                     })} ${isGlv ? "GLV" : "GM"}`}
                     tooltipContent={
-                      <div>
-                        {sortedTokenBalancesDataArray.map(({ chainId, balance }) => {
-                          const chainName = chainId === 0 ? t`GMX Account` : getChainName(chainId);
-
-                          return (
-                            <SyntheticsInfoRow
-                              key={chainId}
-                              label={chainName}
-                              value={formatBalanceAmount(balance, marketToken?.decimals, undefined, {
-                                showZero: true,
-                              })}
-                            />
-                          );
-                        })}
-
-                        {isBalanceDataLoading && <SpinnerIcon className="animate-spin" />}
-                      </div>
+                      <MultichainBalanceTooltip
+                        multichainBalances={multichainMarketTokenBalances}
+                        symbol={glvOrGm}
+                        decimals={PLATFORM_TOKEN_DECIMALS}
+                      />
                     }
                   />
                 )}

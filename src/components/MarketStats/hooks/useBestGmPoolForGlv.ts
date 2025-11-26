@@ -227,11 +227,6 @@ export const useBestGmPoolAddressForGlv = ({
 
   useEffect(() => {
     if (!isEligible) {
-      // TODO MLTCH check it
-      // if (selectedMarketForGlv !== fromMarketTokenInputState?.address) {
-      //   onSelectedMarketForGlv?.(fromMarketTokenInputState?.address);
-      // }
-
       return;
     }
 

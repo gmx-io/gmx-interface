@@ -1,4 +1,6 @@
 import { t } from "@lingui/macro";
+import mapValues from "lodash/mapValues";
+import pickBy from "lodash/pickBy";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -7,6 +9,7 @@ import { isSourceChain } from "config/multichain";
 import { getSourceChainDecimalsMapped } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
@@ -22,7 +25,6 @@ import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "s
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
-import { useMultichainMarketTokenBalances } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -73,31 +75,32 @@ export function BridgeInModal({
   const glvOrGm = isGlv ? "GLV" : "GM";
   const { address: account } = useAccount();
 
-  const { tokenBalancesData: marketTokenBalancesData } = useMultichainMarketTokenBalances({
-    chainId,
-    srcChainId,
-    tokenAddress: glvOrMarketAddress,
-    enabled: isVisible,
-  });
-
-  const sourceChainMarketTokenBalancesData: Partial<Record<0 | AnyChainId, bigint>> = useMemo(() => {
-    return {
-      ...marketTokenBalancesData,
-      [chainId]: undefined,
-      [0]: undefined,
-    };
-  }, [chainId, marketTokenBalancesData]);
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const multichainMarketTokenBalances = glvOrMarketAddress
+    ? multichainMarketTokensBalances[glvOrMarketAddress]
+    : undefined;
 
   const bridgeInChainMarketTokenBalance: bigint | undefined = bridgeInChain
-    ? marketTokenBalancesData[bridgeInChain]
+    ? multichainMarketTokenBalances?.balances[bridgeInChain]?.balance
     : undefined;
+
+  const sourceChainBalancesForSelector: Partial<Record<AnyChainId | 0, bigint>> =
+    multichainMarketTokenBalances?.balances
+      ? mapValues(
+          pickBy(multichainMarketTokenBalances.balances, (data, chainIdStr) => {
+            const chainIdNum = Number(chainIdStr);
+            return data && chainIdNum !== chainId && chainIdNum !== 0;
+          }),
+          (data) => data.balance
+        )
+      : {};
 
   const sourceChainDecimals =
     bridgeInChain && glvOrMarketAddress
       ? getSourceChainDecimalsMapped(chainId, bridgeInChain, glvOrMarketAddress)
       : undefined;
 
-  const gmxAccountMarketTokenBalance: bigint | undefined = marketTokenBalancesData[0];
+  const gmxAccountMarketTokenBalance: bigint | undefined = multichainMarketTokenBalances?.balances[0]?.balance;
 
   const nextGmxAccountMarketTokenBalance: bigint | undefined =
     gmxAccountMarketTokenBalance !== undefined && bridgeInAmount !== undefined
@@ -116,21 +119,22 @@ export function BridgeInModal({
   });
 
   useEffect(() => {
-    if (bridgeInChain !== undefined) {
+    if (bridgeInChain !== undefined || !multichainMarketTokenBalances?.balances) {
       return;
     }
 
-    const firstChainWithBalance = Object.entries(sourceChainMarketTokenBalancesData).find(([chainId, balance]) => {
-      if (!isSourceChain(Number(chainId))) {
+    const firstChainWithBalance = Object.entries(multichainMarketTokenBalances.balances).find(([chainIdStr, data]) => {
+      const chainIdNum = Number(chainIdStr);
+      if (!isSourceChain(chainIdNum) || (chainIdNum as number) === chainId || (chainIdNum as number) === 0) {
         return false;
       }
-      return balance !== undefined && balance > 0n;
+      return data?.balance !== undefined && data.balance > 0n;
     });
 
     if (firstChainWithBalance) {
       setBridgeInChain(Number(firstChainWithBalance[0]) as SourceChainId);
     }
-  }, [bridgeInChain, sourceChainMarketTokenBalancesData]);
+  }, [bridgeInChain, chainId, multichainMarketTokenBalances]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -252,7 +256,7 @@ export function BridgeInModal({
             }}
             marketInfo={glvOrMarketInfo}
             marketTokenPrice={marketTokenPrice}
-            tokenBalancesData={sourceChainMarketTokenBalancesData}
+            tokenBalancesData={sourceChainBalancesForSelector}
             hideTabs
           />
         </BuyInputSection>

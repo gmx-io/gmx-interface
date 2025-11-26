@@ -91,10 +91,6 @@ export const useTokensToApprove = ({
     firstTokenAddress !== undefined && srcChainId !== undefined
       ? getMappedTokenId(chainId as SourceChainId, firstTokenAddress, srcChainId)
       : undefined;
-  // const secondTokenSourceChainTokenId =
-  //   secondTokenAddress !== undefined && srcChainId !== undefined
-  //     ? getMappedTokenId(chainId as SourceChainId, secondTokenAddress, srcChainId)
-  //     : undefined;
 
   const multichainSpenderAddress = firstTokenSourceChainTokenId?.stargate;
 

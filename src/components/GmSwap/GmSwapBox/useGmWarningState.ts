@@ -5,13 +5,7 @@ import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
-export function useGmWarningState({
-  // executionFee,
-  logicalFees: fees,
-}: {
-  // executionFee: ExecutionFee | undefined;
-  logicalFees: GmSwapFees | undefined;
-}) {
+export function useGmWarningState({ logicalFees: fees }: { logicalFees: GmSwapFees | undefined }) {
   const { chainId } = useChainId();
 
   const isHighPriceImpact =

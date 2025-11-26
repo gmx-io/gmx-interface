@@ -1,5 +1,6 @@
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
+import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getTotalTokensBalance } from "domain/tokens/getTotalTokensBalance";
 import { PRECISION, expandDecimals } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -378,17 +379,23 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
-export function getTotalGmInfo(
-  tokensData?: TokensData,
-  multichainMarketTokensBalances?: Partial<Record<number, Partial<Record<string, bigint>>>>
-) {
+export function getTotalGmInfo({
+  tokensData,
+  multichainMarketTokensBalances,
+}: {
+  tokensData: TokensData | undefined;
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+}) {
   return getTotalTokensBalance(tokensData, ["GM"], multichainMarketTokensBalances);
 }
 
-export function getTotalGlvInfo(
-  tokensData?: TokensData,
-  multichainMarketTokensBalances?: Partial<Record<number, Partial<Record<string, bigint>>>>
-) {
+export function getTotalGlvInfo({
+  tokensData,
+  multichainMarketTokensBalances,
+}: {
+  tokensData: TokensData | undefined;
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+}) {
   return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
 }
 

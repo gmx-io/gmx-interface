@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
-import { selectPoolsDetailsMultichainMarketTokensBalancesResult } from "context/PoolsDetailsContext/selectors";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
   selectChainId,
   selectDepositMarketTokensData,
@@ -65,7 +65,7 @@ export function GmList({
   const marketsInfo = useSelector(selectMarketsInfoData);
   const marketTokensData = useSelector(selectDepositMarketTokensData);
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensDataWithoutGlv);
-  const multichainMarketTokensBalancesResult = useSelector(selectPoolsDetailsMultichainMarketTokensBalancesResult);
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { active } = useWallet();
   const userEarnings = useUserEarnings(chainId, srcChainId);
@@ -87,6 +87,7 @@ export function GmList({
     tab,
     favoriteTokens,
     performance,
+    multichainMarketTokensBalances,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -97,8 +98,8 @@ export function GmList({
 
   const userTotalGmInfo = useMemo(() => {
     if (!active || !marketTokensData) return;
-    return getTotalGmInfo(marketTokensData, multichainMarketTokensBalancesResult?.tokenBalances);
-  }, [active, marketTokensData, multichainMarketTokensBalancesResult?.tokenBalances]);
+    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
+  }, [active, marketTokensData, multichainMarketTokensBalances]);
 
   const rows =
     currentData.length > 0 &&
