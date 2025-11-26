@@ -324,7 +324,7 @@ export async function estimateExpressParams({
     ) {
       // In this cases simulation will fail
       if (throwOnInvalid) {
-        throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError("estimateExpressParams");
+        throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError();
       }
       return undefined;
     }

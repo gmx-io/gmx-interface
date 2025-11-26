@@ -167,7 +167,6 @@ export function BridgeOutModal({
     expressTransactionBuilder,
     isGmxAccount: true,
     enabled: isVisible,
-    // label: "BridgeOutModal",
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);

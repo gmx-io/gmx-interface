@@ -26,6 +26,7 @@ import {
 } from "domain/synthetics/express";
 import {
   estimateExpressParams,
+  ExpressEstimationInsufficientGasPaymentTokenBalanceError,
   getGasPaymentValidations,
   getOrderRelayRouterAddress,
 } from "domain/synthetics/express/expressOrderUtils";
@@ -424,21 +425,32 @@ export function useArbitraryRelayParamsAndPayload({
   return expressTxnParamsAsyncResult;
 }
 
-export function useArbitraryError(error: CustomError | Error | undefined):
+export function useArbitraryError(
+  error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined
+):
   | {
       isOutOfTokenError?: {
         tokenAddress: string;
         isGasPaymentToken: boolean;
-        balance: bigint;
-        requiredAmount: bigint;
+        balance?: bigint;
+        requiredAmount?: bigint;
       };
     }
   | undefined {
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
 
   return useMemo(() => {
+    if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+      return {
+        isOutOfTokenError: {
+          tokenAddress: gasPaymentTokenAddress,
+          isGasPaymentToken: true,
+        },
+      };
+    }
+
     if (!isCustomError(error)) {
-      return {};
+      return EMPTY_OBJECT;
     }
 
     const isInsufficientMultichainBalance = error.name === "InsufficientMultichainBalance";
