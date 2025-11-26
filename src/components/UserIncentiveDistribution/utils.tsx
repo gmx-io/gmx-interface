@@ -4,7 +4,12 @@ import { Address, hashMessage, PublicClient, WalletClient } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { GLP_DISTRIBUTION_ID } from "domain/synthetics/claims/useUserClaimableAmounts";
+import {
+  GLP_DISTRIBUTION_ID,
+  GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID,
+  GLV_BONUS_INCENTIVE_DISTRIBUTION_ID,
+  GLP_DISTRIBUTION_TEST_ID,
+} from "domain/synthetics/claims/constants";
 import { helperToast } from "lib/helperToast";
 import { WalletSigner } from "lib/wallets";
 import { AccountType } from "lib/wallets/useAccountType";
@@ -19,9 +24,30 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 const VALID_SIGNATURE_RESPONSE = "0x1626ba7e";
 const CLAIM_TERMS_HASH = "0x09335c037e73849fe301478f91674da05757165154d1dccb1b881c1846938f3d";
 
-function getMessage({ chainId, claimTerms }) {
-  return `${claimTerms}\ndistributionId ${GLP_DISTRIBUTION_ID}\ncontract ${getContract(chainId, "ClaimHandler").toLowerCase()}\nchainId ${chainId}`;
+function getMessage({
+  chainId,
+  claimTerms,
+  distributionId,
+}: {
+  chainId: ContractsChainId;
+  claimTerms: string;
+  distributionId: string;
+}) {
+  return `${claimTerms}\ndistributionId ${distributionId}\ncontract ${getContract(chainId, "ClaimHandler").toLowerCase()}\nchainId ${chainId}`;
 }
+
+export const getDistributionTitle = (distributionId: string) => {
+  switch (distributionId) {
+    case GLP_DISTRIBUTION_TEST_ID.toString():
+      return t`GLP Reimbursement (test)`;
+    case GLP_DISTRIBUTION_ID.toString():
+      return t`GLP Reimbursement`;
+    case GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString():
+      return t`GLV Bonus Incentive`;
+    case GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID.toString():
+      return t`GLV Bonus Incentive (test)`;
+  }
+};
 
 export async function checkValidity({
   chainId,
@@ -29,14 +55,16 @@ export async function checkValidity({
   publicClient,
   claimTerms,
   claimTermsAcceptedSignature,
+  distributionId,
 }: {
   chainId: ContractsChainId;
   account: Address;
   publicClient: PublicClient;
   claimTerms: string;
   claimTermsAcceptedSignature: string | undefined;
+  distributionId: string;
 }) {
-  const message = getMessage({ chainId, claimTerms });
+  const message = getMessage({ chainId, claimTerms, distributionId });
   const hash = hashMessage(message);
 
   const [inMemorySignatureResponse, onchainSignatureResponse] = (await Promise.all([
@@ -75,6 +103,7 @@ export async function beginSignatureProcess({
   chainId,
   publicClient,
   claimTerms,
+  distributionId,
   onFinish,
   onError,
 }: {
@@ -86,6 +115,7 @@ export async function beginSignatureProcess({
   publicClient: PublicClient;
   claimTerms: string;
   signer: WalletSigner;
+  distributionId: string;
   onFinish: (signature: string) => void;
   onError: (error: any) => void;
 }) {
@@ -113,6 +143,7 @@ export async function beginSignatureProcess({
       publicClient,
       claimTerms,
       claimTermsAcceptedSignature: signature,
+      distributionId,
     });
 
     if (isValid) {
@@ -129,6 +160,7 @@ export async function signMessage({
   walletClient,
   chainId,
   publicClient,
+  distributionId,
   claimTerms,
   setClaimTermsAcceptedSignature,
   onFinishMultisig,
@@ -140,13 +172,14 @@ export async function signMessage({
   walletClient: WalletClient;
   chainId: ContractsChainId;
   publicClient: PublicClient;
+  distributionId: string;
   claimTerms: string;
   onFinishMultisig: (signature: string) => void;
   setClaimTermsAcceptedSignature: (signature: string) => void;
   setIsStartedMultisig: (isStartedMultisig: boolean) => void;
   signer: WalletSigner;
 }) {
-  const message = getMessage({ chainId, claimTerms });
+  const message = getMessage({ chainId, claimTerms, distributionId });
 
   if (accountType === AccountType.Safe) {
     beginSignatureProcess({
@@ -158,6 +191,7 @@ export async function signMessage({
       claimTerms,
       accountType,
       signer,
+      distributionId,
       onFinish: onFinishMultisig,
       onError: (error) => {
         helperToast.error(
@@ -188,6 +222,7 @@ export async function signMessage({
       claimTerms,
       accountType,
       signer,
+      distributionId,
       onFinish: onFinishMultisig,
       onError: (error) => {
         helperToast.error(

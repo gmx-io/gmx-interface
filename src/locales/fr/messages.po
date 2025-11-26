@@ -58,8 +58,8 @@ msgid "Buy order executed."
 msgstr "Ordre d'achat exécuté."
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Claims are disabled"
-msgstr "Les réclamations sont désactivées"
+#~ msgid "Claims are disabled"
+#~ msgstr "Les réclamations sont désactivées"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -380,6 +380,14 @@ msgstr "Max {0} short dépassé"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "Solde GM insuffisant"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Select at least one distribution to claim."
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
@@ -780,7 +788,7 @@ msgstr "MARCHÉ"
 msgid "What did you like the most about our service?"
 msgstr "Qu'est-ce que vous avez le plus aimé dans notre service ?"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr ""
 
@@ -1113,7 +1121,7 @@ msgstr ""
 msgid "Collateral"
 msgstr "Collatéral"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "Acceptez les conditions de réclamation pour continuer."
 
@@ -1520,7 +1528,7 @@ msgstr "Portefeuille NFT"
 msgid "GMX Proposals Voting page"
 msgstr "Page de vote des propositions GMX"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
 msgstr ""
 
@@ -1789,6 +1797,10 @@ msgstr "Historique de distribution des remises"
 msgid "V1 Interface"
 msgstr "Interface V1"
 
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLP Reimbursement (test)"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2038,8 +2050,8 @@ msgid "Display Settings"
 msgstr "Paramètres d'affichage"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-msgstr "Conservez les jetons GLV pendant trois mois pour être éligible au programme d'incitation de 500 000 $."
+#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+#~ msgstr "Conservez les jetons GLV pendant trois mois pour être éligible au programme d'incitation de 500 000 $."
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -5254,6 +5266,10 @@ msgstr "Performance annualisée"
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} ordres n'ont pas été mis à jour car la limite maximale d'ordres a été atteinte"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "{0} distributions have been claimed successfully."
+msgstr ""
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
 msgstr "90j"
@@ -6335,8 +6351,8 @@ msgid "Stop Loss"
 msgstr "Stop Loss"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution (test)"
-msgstr "Distribution GLP (test)"
+#~ msgid "GLP Distribution (test)"
+#~ msgstr "Distribution GLP (test)"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
@@ -6622,7 +6638,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr "Échange échoué."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr ""
 
@@ -6633,6 +6649,10 @@ msgstr "Page périmée, veuillez rafraîchir"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "Propositions GMX"
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive (test)"
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6730,8 +6750,8 @@ msgid "shift"
 msgstr "décalage"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution"
-msgstr "Distribution GLP"
+#~ msgid "GLP Distribution"
+#~ msgstr "Distribution GLP"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7270,7 +7290,7 @@ msgstr "Annuler le stop loss"
 msgid "Limit Decrease"
 msgstr "Diminution limite"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "Attente des confirmations Safe restantes."
 
@@ -7282,7 +7302,7 @@ msgstr "Protocole Stabilize"
 msgid "All assets"
 msgstr "Tous les actifs"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr ""
 
@@ -7729,8 +7749,8 @@ msgid "Total Stats"
 msgstr "Stats totales"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully."
-msgstr "{0} réclamé avec succès."
+#~ msgid "Claimed {0} successfully."
+#~ msgstr "{0} réclamé avec succès."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"

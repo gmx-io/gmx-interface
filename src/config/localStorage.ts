@@ -233,7 +233,7 @@ export function getFromTokenIsGmxAccountKey(chainId: number) {
 export function getClaimTermsAcceptedKey(
   chainId: number,
   account: string | undefined,
-  distributionId: bigint,
+  distributionId: string,
   claimTerms: string
 ) {
   return `${chainId}:${account}:${distributionId}:${claimTerms}-${CLAIM_TERMS_ACCEPTED_KEY}`;
