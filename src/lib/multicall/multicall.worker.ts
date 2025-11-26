@@ -1,4 +1,4 @@
-import { FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY } from "lib/FallbackTracker/events";
+import { fallbackTrackerEventKeys } from "lib/FallbackTracker/events";
 import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_COUNTER_DISPATCH_NAME,
@@ -80,7 +80,7 @@ globalThis.addEventListener(MULTICALL_DEBUG_EVENT_NAME, (event) => {
   });
 });
 
-globalThis.addEventListener(FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, (event) => {
+globalThis.addEventListener(fallbackTrackerEventKeys.triggerFailure, (event) => {
   postMessage({
     isFallbackTrackerFailure: true,
     detail: (event as CustomEvent).detail,

@@ -11,6 +11,7 @@ import {
 } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { DEFAULT_FALLBACK_TRACKER_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
+import { onFallbackTrackerEvent } from "lib/FallbackTracker/events";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import type { RpcTrackerUpdateEndpointsEvent } from "lib/metrics/types";
 import { fetchEthCall } from "lib/rpc/fetchEthCall";
@@ -45,6 +46,7 @@ type RpcStats = EndpointStats<RpcCheckResult>;
 export class RpcTracker {
   providersMap: Record<string, RpcConfig>;
   fallbackTracker: FallbackTracker<RpcCheckResult>;
+  offFallbackTrackerEvents: () => void;
 
   get trackerKey() {
     return this.fallbackTracker.trackerKey;
@@ -93,14 +95,36 @@ export class RpcTracker {
       selectNextPrimary: this.selectNextPrimary,
       selectNextSecondary: this.selectNextSecondary,
       getEndpointName: getProviderNameFromUrl,
-      onUpdate: ({ primary, secondary, endpointsStats }) => {
-        devtools.debugRpcTrackerState(this);
-        this.emitUpdateEndpointsMetric({ primary, secondary, endpointsStats });
-      },
-      onTrackFinished: () => {
-        devtools.debugRpcTrackerState(this);
-      },
     });
+
+    // Subscribe to FallbackTracker events
+    const expectedTrackerKey = this.trackerKey;
+
+    const unsubscribeUpdate = onFallbackTrackerEvent(
+      "updateEndpoints",
+      ({ trackerKey, primary, secondary, endpointsStats }) => {
+        if (trackerKey === expectedTrackerKey) {
+          devtools.debugRpcTrackerState(this);
+          this.emitUpdateEndpointsMetric({ primary, secondary, endpointsStats });
+        }
+      }
+    );
+
+    const unsubscribeTrackFinished = onFallbackTrackerEvent("trackFinished", ({ trackerKey }) => {
+      if (trackerKey === expectedTrackerKey) {
+        devtools.debugRpcTrackerState(this);
+      }
+    });
+
+    this.offFallbackTrackerEvents = () => {
+      unsubscribeUpdate();
+      unsubscribeTrackFinished();
+    };
+  }
+
+  public stopTracking() {
+    this.offFallbackTrackerEvents();
+    this.fallbackTracker.stopTracking();
   }
 
   public pickCurrentRpcUrls() {
@@ -135,16 +159,16 @@ export class RpcTracker {
   }
 
   checkRpc = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
-    const rpcConfig = this.providersMap[endpoint];
+    const rpcConfig = this.getRpcConfig(endpoint);
 
-    if (!rpcConfig.isPublic && devtools.shouldMockPrivateRpcCheck) {
+    if (!rpcConfig?.isPublic && devtools.shouldMockPrivateRpcCheck) {
       return {
         responseTime: 300,
         blockNumber: 100000,
       };
     }
 
-    if ((!rpcConfig.isPublic && !this.getIsLargeAccount()) || rpcConfig.purpose !== "largeAccount") {
+    if (!rpcConfig?.isPublic && (!this.getIsLargeAccount() || rpcConfig?.purpose !== "largeAccount")) {
       throw new Error("Skip private provider");
     }
 
@@ -315,6 +339,7 @@ export class RpcTracker {
     const bestValidBlock = this.getBestValidBlock(endpointsStats);
 
     let validStats = endpointsStats.filter((result) => {
+      // Exclude banned endpoints
       const isSuccess = result.checkResult?.success;
 
       const rpcBlockNumber = result.checkResult?.stats?.blockNumber;
@@ -330,6 +355,10 @@ export class RpcTracker {
 
       return isSuccess && (ignoreBlockNumberCheck || (!isFromFuture && !isLagging));
     });
+
+    if (validStats.length === 0) {
+      return endpointsStats;
+    }
 
     return validStats;
   };

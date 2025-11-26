@@ -3,25 +3,22 @@ import orderBy from "lodash/orderBy";
 import { getChainName } from "config/chains";
 import { getProviderNameFromUrl } from "config/rpc";
 import { devtools as globalDevtools } from "lib/devtools";
-import { FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, type EndpointFailureDetail } from "lib/FallbackTracker/events";
+import { onFallbackTrackerEvent } from "lib/FallbackTracker/events";
 
 import { RpcTracker } from "./RpcTracker";
 
 class RpcDevtools {
   private endpointFailures: Map<string, number> = new Map();
   private listeners: Array<(failures: Map<string, number>) => void> = [];
+  private unsubscribeFromEvents: (() => void) | undefined;
 
   constructor() {
     if (typeof window !== "undefined") {
-      const handleFailureEvent = (event: Event) => {
-        const customEvent = event as CustomEvent<EndpointFailureDetail>;
-        const { endpoint } = customEvent.detail;
+      this.unsubscribeFromEvents = onFallbackTrackerEvent("triggerFailure", ({ endpoint }) => {
         const currentCount = this.endpointFailures.get(endpoint) || 0;
         this.endpointFailures.set(endpoint, currentCount + 1);
         this.notifyListeners();
-      };
-
-      window.addEventListener(FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, handleFailureEvent);
+      });
     }
   }
 

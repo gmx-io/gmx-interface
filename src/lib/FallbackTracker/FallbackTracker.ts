@@ -9,8 +9,8 @@ import { combineAbortSignals } from "sdk/utils/abort";
 
 import {
   emitFallbackTrackerEndpointsUpdated,
-  FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY,
-  EndpointFailureDetail,
+  emitFallbackTrackerTrackFinished,
+  onFallbackTrackerEvent,
 } from "./events";
 
 export const DEFAULT_FALLBACK_TRACKER_CONFIG = {
@@ -84,8 +84,6 @@ export type FallbackTrackerParams<TCheckResult> = {
     secondary: string;
   }) => string | undefined;
 
-  onUpdate?: (params: { primary: string; secondary: string; endpointsStats: EndpointStats<TCheckResult>[] }) => void;
-  onTrackFinished?: () => void;
   getEndpointName?: (endpoint: string) => string | undefined;
 };
 
@@ -107,7 +105,7 @@ export type FallbackTrackerState<TCheckStats> = {
   abortController: AbortController | undefined;
   setEndpointsThrottleTimeout: number | undefined;
   pendingEndpoints: { primary: string; secondary: string } | undefined;
-  unsubscribeFromEvents: () => void;
+  unsubscribeFromIncomingEvents: () => void;
 };
 
 export type EndpointState = {
@@ -133,30 +131,70 @@ export type EndpointStats<TCheckStats> = EndpointState & {
   checkResult: CheckResult<TCheckStats> | undefined;
 };
 
-export type StoredEndpointsState = {
+export type StoredState = {
   primary: string;
   secondary: string;
   timestamp: number;
+  cachedEndpointsState: {
+    [endpoint: string]: Pick<EndpointState, "banned">;
+  };
 };
 
 export class FallbackTracker<TCheckStats> {
   state: FallbackTrackerState<TCheckStats>;
 
-  get trackerKey() {
-    return getFallbackTrackerKey(this.params.trackerKey);
+  constructor(public readonly params: FallbackTrackerParams<TCheckStats>) {
+    let primary = this.params.primary;
+    let secondary = this.params.secondary;
+
+    if (!this.params.endpoints.length) {
+      throw new Error("No endpoints provided");
+    }
+
+    if (!this.params.endpoints.includes(this.params.primary)) {
+      throw new Error("Primary endpoint is not in endpoints list");
+    }
+
+    if (!this.params.endpoints.includes(this.params.secondary)) {
+      throw new Error("Secondary endpoint is not in endpoints list");
+    }
+
+    const stored = this.loadStorage(this.params.endpoints);
+
+    if (stored) {
+      primary = stored.primary;
+      secondary = stored.secondary;
+    }
+
+    const cachedEndpointsState = stored?.cachedEndpointsState ?? {};
+
+    this.state = {
+      primary,
+      secondary,
+      lastUsage: undefined,
+      endpointsState: this.params.endpoints.reduce(
+        (acc, endpoint) => {
+          acc[endpoint] = {
+            endpoint,
+            failureTimestamps: [],
+            banned: cachedEndpointsState[endpoint]?.banned,
+            failureThrottleTimeout: undefined,
+          };
+          return acc;
+        },
+        {} as Record<string, EndpointState>
+      ),
+      checkStats: [],
+      trackerTimeoutId: undefined,
+      abortController: undefined,
+      setEndpointsThrottleTimeout: undefined,
+      pendingEndpoints: undefined,
+      unsubscribeFromIncomingEvents: this.subscribeToIncomingEvents(),
+    };
   }
 
-  emitEndpointsUpdated({
-    primary,
-    secondary,
-    endpointsStats,
-  }: {
-    primary: string;
-    secondary: string;
-    endpointsStats: EndpointStats<TCheckStats>[];
-  }) {
-    emitFallbackTrackerEndpointsUpdated({ trackerKey: this.trackerKey, primary, secondary, endpointsStats });
-    this.params.onUpdate?.({ primary, secondary, endpointsStats });
+  get trackerKey() {
+    return getFallbackTrackerKey(this.params.trackerKey);
   }
 
   warn(message: string) {
@@ -188,54 +226,6 @@ export class FallbackTracker<TCheckStats> {
     return this.params.endpoints
       .map((endpoint) => this.getEndpointStats(endpoint))
       .filter((s): s is EndpointStats<TCheckStats> => s !== undefined);
-  }
-
-  constructor(public readonly params: FallbackTrackerParams<TCheckStats>) {
-    let primary = this.params.primary;
-    let secondary = this.params.secondary;
-
-    if (!this.params.endpoints.length) {
-      throw new Error("No endpoints provided");
-    }
-
-    if (!this.params.endpoints.includes(this.params.primary)) {
-      throw new Error("Primary endpoint is not in endpoints list");
-    }
-
-    if (!this.params.endpoints.includes(this.params.secondary)) {
-      throw new Error("Secondary endpoint is not in endpoints list");
-    }
-
-    const stored = this.loadEndpointsState(this.params.endpoints);
-
-    if (stored) {
-      primary = stored.primary;
-      secondary = stored.secondary;
-    }
-
-    this.state = {
-      primary,
-      secondary,
-      lastUsage: undefined,
-      endpointsState: this.params.endpoints.reduce(
-        (acc, endpoint) => {
-          acc[endpoint] = {
-            endpoint,
-            failureTimestamps: [],
-            banned: undefined,
-            failureThrottleTimeout: undefined,
-          };
-          return acc;
-        },
-        {} as Record<string, EndpointState>
-      ),
-      checkStats: [],
-      trackerTimeoutId: undefined,
-      abortController: undefined,
-      setEndpointsThrottleTimeout: undefined,
-      pendingEndpoints: undefined,
-      unsubscribeFromEvents: this.subscribeToEvents(),
-    };
   }
 
   public triggerFailure = (endpoint: string) => {
@@ -280,6 +270,12 @@ export class FallbackTracker<TCheckStats> {
       timestamp: Date.now(),
       reason,
     };
+
+    this.saveStorage({
+      primary: this.state.primary,
+      secondary: this.state.secondary,
+      cachedEndpointsState: this.getCachedEndpointsState(),
+    });
 
     emitMetricEvent<FallbackTrackerBannedEvent>({
       event: "fallbackTracker.endpoint.banned",
@@ -338,7 +334,7 @@ export class FallbackTracker<TCheckStats> {
 
     this.checkEndpoints()
       .then(() => {
-        this.params.onTrackFinished?.();
+        emitFallbackTrackerTrackFinished({ trackerKey: this.trackerKey });
         this.selectBestEndpoints();
       })
       .finally(() => {
@@ -347,7 +343,7 @@ export class FallbackTracker<TCheckStats> {
   }
 
   public stopTracking() {
-    this.state.unsubscribeFromEvents();
+    this.state.unsubscribeFromIncomingEvents();
 
     // Abort any pending probes.
     if (this.state.trackerTimeoutId) {
@@ -432,18 +428,20 @@ export class FallbackTracker<TCheckStats> {
       return;
     }
 
-    const applyEndpoints = (p: string, s: string) => {
-      this.state.primary = p;
-      this.state.secondary = s;
+    const applyEndpoints = (primary: string, secondary: string) => {
+      this.state.primary = primary;
+      this.state.secondary = secondary;
 
-      this.saveEndpointsState({
-        primary: p,
-        secondary: s,
+      this.saveStorage({
+        primary: primary,
+        secondary: secondary,
+        cachedEndpointsState: this.getCachedEndpointsState(),
       });
 
-      this.emitEndpointsUpdated({
-        primary: p,
-        secondary: s,
+      emitFallbackTrackerEndpointsUpdated({
+        trackerKey: this.trackerKey,
+        primary: primary,
+        secondary: secondary,
         endpointsStats: this.getEndpointsStats(),
       });
 
@@ -544,24 +542,28 @@ export class FallbackTracker<TCheckStats> {
     return hasMultipleEndpoints && (warmUp || !isUnused);
   }
 
-  subscribeToEvents() {
-    const triggerFailureHandler = (event: Event) => {
-      const { detail } = event as CustomEvent<EndpointFailureDetail>;
-      if (detail.trackerKey === this.trackerKey) {
-        this.triggerFailure(detail.endpoint);
+  subscribeToIncomingEvents() {
+    const expectedTrackerKey = this.trackerKey;
+    return onFallbackTrackerEvent("triggerFailure", ({ trackerKey, endpoint }) => {
+      if (trackerKey === expectedTrackerKey) {
+        this.triggerFailure(endpoint);
       }
-    };
-
-    window.addEventListener(FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, triggerFailureHandler);
-
-    const unsubscribeFromEvents = () => {
-      window.removeEventListener(FALLBACK_TRACKER_TRIGGER_FAILURE_EVENT_KEY, triggerFailureHandler);
-    };
-
-    return unsubscribeFromEvents;
+    });
   }
 
-  loadEndpointsState(validEndpoints: string[]) {
+  getCachedEndpointsState(): StoredState["cachedEndpointsState"] {
+    return Object.entries(this.state.endpointsState).reduce(
+      (acc, [endpoint, state]) => {
+        if (state.banned) {
+          acc[endpoint] = { banned: state.banned };
+        }
+        return acc;
+      },
+      {} as StoredState["cachedEndpointsState"]
+    );
+  }
+
+  loadStorage(validEndpoints: string[]): StoredState | undefined {
     const stored = localStorage.getItem(this.trackerKey);
 
     if (!stored) {
@@ -569,7 +571,7 @@ export class FallbackTracker<TCheckStats> {
     }
 
     try {
-      const parsed = JSON.parse(stored) as StoredEndpointsState;
+      const parsed = JSON.parse(stored) as StoredState | { primary: string; secondary: string; timestamp: number };
 
       const primary = parsed.primary;
       const secondary = parsed.secondary;
@@ -582,27 +584,41 @@ export class FallbackTracker<TCheckStats> {
         return undefined;
       }
 
+      // Handle backward compatibility: old format doesn't have cachedEndpointsState
+      const cachedEndpointsState: StoredState["cachedEndpointsState"] = {};
+      if ("cachedEndpointsState" in parsed && parsed.cachedEndpointsState) {
+        // Filter out endpoints that are no longer valid
+        for (const endpoint of validEndpoints) {
+          if (parsed.cachedEndpointsState[endpoint]) {
+            cachedEndpointsState[endpoint] = parsed.cachedEndpointsState[endpoint];
+          }
+        }
+      }
+
       return {
         primary,
         secondary,
+        timestamp: parsed.timestamp,
+        cachedEndpointsState,
       };
     } catch (error) {
       return undefined;
     }
   }
 
-  saveEndpointsState({ primary, secondary }: { primary: string; secondary: string }) {
-    const state: StoredEndpointsState = {
+  saveStorage({ primary, secondary, cachedEndpointsState }: Omit<StoredState, "timestamp">) {
+    const state: StoredState = {
       primary,
       secondary,
       timestamp: Date.now(),
+      cachedEndpointsState,
     };
 
     try {
       localStorage.setItem(this.trackerKey, JSON.stringify(state));
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.warn("Failed to save endpoints state to localStorage", error);
+      console.warn("Failed to save storage to localStorage", error);
       return;
     }
   }

@@ -262,16 +262,6 @@ export class Multicall {
       const fallbackProviderUrl = providerUrls.secondary;
       const fallbackProviderName = getProviderNameFromUrl(fallbackProviderUrl);
 
-      // Debug triggers for secondary failure
-      const debugShouldFail =
-        (isWebWorker && debugState?.triggerSecondaryFailedInWorker) ||
-        (!isWebWorker && debugState?.triggerSecondaryFailedInMainThread);
-
-      if (debugShouldFail) {
-        sendDebugEvent("secondary-failed", { providerUrl: fallbackProviderUrl });
-        throw new Error("Debug trigger: secondary failed");
-      }
-
       sendCounterEvent("call", {
         requestType: "retry",
         rpcProvider: fallbackProviderName,
@@ -300,10 +290,21 @@ export class Multicall {
       return Promise.race([
         fallbackClient.multicall({ contracts: encodedPayload as any }),
         sleep(MAX_TIMEOUT).then(() => {
+          sendDebugEvent("secondary-timeout", { providerUrl: fallbackProviderUrl });
           return Promise.reject(new Error("multicall timeout"));
         }),
       ])
         .then((response) => {
+          // Debug triggers for secondary failure
+          const debugShouldFail =
+            (isWebWorker && debugState?.triggerSecondaryFailedInWorker) ||
+            (!isWebWorker && debugState?.triggerSecondaryFailedInMainThread);
+
+          if (debugShouldFail) {
+            sendDebugEvent("secondary-failed", { providerUrl: fallbackProviderUrl });
+            throw new Error("Debug trigger: secondary failed");
+          }
+
           sendTiming({
             time: Math.round(performance.now() - fallbackDurationStart),
             requestType: "retry",

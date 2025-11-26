@@ -4,26 +4,53 @@ import {
   getCurrentRpcUrls as old_getCurrentRpcUrls,
   useCurrentRpcUrls as old_useCurrentRpcUrls,
   trackRpcProviders as old_trackRpcProviders,
+  RPC_TRACKER_UPDATE_EVENT,
 } from "ab/testRpcFallbackUpdates/disabled/oldRpcTracker";
 import { getIsFlagEnabled } from "config/ab";
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { onFallbackTrackerEvent } from "lib/FallbackTracker/events";
 import { DEFAULT_RPC_TRACKER_CONFIG, RpcTracker } from "lib/rpc/RpcTracker";
 
-const RPC_TRACKER_UPDATE_EVENT = "rpc-tracker-update-event";
+type UpdateEndpointsListener = (data: { chainId?: number }) => void;
+
+const updateEndpointsListeners = new Set<UpdateEndpointsListener>();
+
+// Map trackerKey to chainId for event handling
+const trackerKeyToChainId = new Map<string, number>();
 
 // Create singleton instances
 const rpcTrackerInstances = CONTRACTS_CHAIN_IDS.reduce(
   (acc, chainId) => {
-    acc[chainId] = new RpcTracker({
+    const tracker = new RpcTracker({
       ...DEFAULT_RPC_TRACKER_CONFIG,
       chainId: chainId as ContractsChainId,
     });
+    acc[chainId] = tracker;
+    // Map trackerKey to chainId
+    trackerKeyToChainId.set(tracker.trackerKey, chainId);
     return acc;
   },
   {} as Record<number, RpcTracker>
 );
+
+// Subscribe to FallbackTracker events and emit to local listeners
+if (typeof window !== "undefined") {
+  onFallbackTrackerEvent("updateEndpoints", ({ trackerKey }) => {
+    const chainId = trackerKeyToChainId.get(trackerKey);
+    if (chainId !== undefined) {
+      updateEndpointsListeners.forEach((listener) => {
+        try {
+          listener({ chainId });
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("[bestRpcTracker] Error in updateEndpoints listener:", error);
+        }
+      });
+    }
+  });
+}
 
 export function getRpcTracker(chainId: number): RpcTracker | undefined {
   return rpcTrackerInstances[chainId as ContractsChainId];
@@ -66,29 +93,42 @@ function _useCurrentRpcUrls(chainId: number) {
   }>(() => _getCurrentRpcUrls(chainId));
 
   useEffect(() => {
+    const tracker = getRpcTracker(chainId);
     let isMounted = true;
 
     setBestRpcUrls(_getCurrentRpcUrls(chainId));
 
-    const handleRpcUpdate = (event: Event) => {
-      const customEvent = event as CustomEvent<{ chainId?: number }>;
-      // TODO: Remove after AB.
-      // Update if:
-      // 1. Event has chainId and it matches this chain, OR
-      // 2. Event doesn't have chainId (legacy event - update for all chains)
-      const shouldUpdate =
-        isMounted && (customEvent.detail?.chainId === undefined || customEvent.detail?.chainId === chainId);
-
-      if (shouldUpdate) {
-        setBestRpcUrls(_getCurrentRpcUrls(chainId));
+    const oldHandleRpcUpdate = (data: { chainId: number }) => {
+      if (!isMounted) {
+        return;
       }
+
+      setBestRpcUrls(_getCurrentRpcUrls(data.chainId));
     };
 
-    window.addEventListener(RPC_TRACKER_UPDATE_EVENT, handleRpcUpdate);
+    const handleRpcUpdate = (data: { trackerKey: string; primary: string; secondary: string }) => {
+      if (!isMounted) {
+        return;
+      }
+
+      if (tracker?.trackerKey !== data.trackerKey) {
+        return;
+      }
+
+      setBestRpcUrls({
+        primary: data.primary,
+        secondary: data.secondary,
+      });
+    };
+
+    const unsubscribe = onFallbackTrackerEvent("updateEndpoints", handleRpcUpdate);
+    window.addEventListener(RPC_TRACKER_UPDATE_EVENT as any, oldHandleRpcUpdate);
 
     return () => {
       isMounted = false;
-      window.removeEventListener(RPC_TRACKER_UPDATE_EVENT, handleRpcUpdate);
+      unsubscribe();
+      window.removeEventListener(RPC_TRACKER_UPDATE_EVENT as any, oldHandleRpcUpdate);
+      // Don't call stopTracking() - it unsubscribes from triggerFailure events which should remain active
     };
   }, [chainId]);
 
