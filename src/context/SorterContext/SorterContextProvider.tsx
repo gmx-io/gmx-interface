@@ -38,22 +38,20 @@ export function SorterContextProvider({ children }: PropsWithChildren) {
 
   const setConfig = useCallback(
     (key: SorterKey, config: React.SetStateAction<SorterConfig<any>>) => {
-      setState((prev) => {
-        let newState = prev ?? DEFAULT_SORTER_STATE;
-        if (newState[key]) {
-          newState = updateByKey(
-            newState,
-            key,
-            typeof config === "function" ? config(newState[key]) : config
-          ) as SorterState;
-        } else {
-          newState = setByKey(newState, key, config) as SorterState;
-        }
-        newState = updateByKey(newState, key, { isDefault: false }) as SorterState;
-        return newState;
-      });
+      let newState = state ?? DEFAULT_SORTER_STATE;
+      if (newState[key]) {
+        newState = updateByKey(
+          newState,
+          key,
+          typeof config === "function" ? config(newState[key]) : config
+        ) as SorterState;
+      } else {
+        newState = setByKey(newState, key, config) as SorterState;
+      }
+      newState = updateByKey(newState, key, { isDefault: false }) as SorterState;
+      setState(newState);
     },
-    [setState]
+    [setState, state]
   );
 
   const stableValue = useMemo(() => ({ state: state ?? DEFAULT_SORTER_STATE, setConfig }), [state, setConfig]);
