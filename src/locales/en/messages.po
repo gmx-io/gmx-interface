@@ -58,8 +58,8 @@ msgid "Buy order executed."
 msgstr "Buy order executed."
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Claims are disabled"
-msgstr "Claims are disabled"
+#~ msgid "Claims are disabled"
+#~ msgstr "Claims are disabled"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -194,6 +194,10 @@ msgstr "Annualized return of the pool or vault over the selected period, compare
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL after fees and net price impact."
 msgstr "Realized PnL after fees and net price impact."
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Update {orderTypeName} Order"
+msgstr "Update {orderTypeName} Order"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -376,6 +380,14 @@ msgstr "Max {0} short exceeded"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "Insufficient GM balance"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Select at least one distribution to claim."
+msgstr "Select at least one distribution to claim."
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive"
+msgstr "GLV Bonus Incentive"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
@@ -583,6 +595,11 @@ msgstr "Don't show this message again for 30 days."
 msgid "in liquidity"
 msgstr "in liquidity"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+msgstr "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit Price"
 msgstr "Exit Price"
@@ -763,7 +780,7 @@ msgstr "MARKET"
 msgid "What did you like the most about our service?"
 msgstr "What did you like the most about our service?"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr "View breakdown"
 
@@ -1092,7 +1109,7 @@ msgstr "Allow all my tokens to be transferred to a new account"
 msgid "Collateral"
 msgstr "Collateral"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "Accept the claim terms to continue."
 
@@ -1499,7 +1516,7 @@ msgstr "NFT Wallet"
 msgid "GMX Proposals Voting page"
 msgstr "GMX Proposals Voting page"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
 msgstr "GLP Reimbursement"
 
@@ -1768,6 +1785,10 @@ msgstr "Rebates Distribution History"
 msgid "V1 Interface"
 msgstr "V1 Interface"
 
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLP Reimbursement (test)"
+msgstr "GLP Reimbursement (test)"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2013,8 +2034,8 @@ msgid "Display Settings"
 msgstr "Display Settings"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-msgstr "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
+#~ msgstr "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -2544,6 +2565,10 @@ msgstr "Stop Market - Long Inc."
 msgid "Enter your feedback here."
 msgstr "Enter your feedback here."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in \"Capital Used\" are ranked."
 msgstr "Only positions with over {0} in \"Capital Used\" are ranked."
@@ -2683,11 +2708,6 @@ msgstr "Adding referral code failed."
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Updating"
 msgstr "Updating"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC"
-msgstr "Deposit USDC"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4240,6 +4260,11 @@ msgstr "Shorts Net Rate / 1h"
 msgid "Discover GMX Earn"
 msgstr "Discover GMX Earn"
 
+#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Deposit {gasPaymentTokensText}"
+msgstr "Deposit {gasPaymentTokensText}"
+
 #: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -5213,6 +5238,10 @@ msgstr "Ann. Performance"
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} orders were not updated as max order limit reached"
 
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "{0} distributions have been claimed successfully."
+msgstr "{0} distributions have been claimed successfully."
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
 msgstr "90d"
@@ -5642,11 +5671,6 @@ msgstr "GMX Community with NFTs, Trading and Education initiatives"
 msgid "Liquidation Confirmations"
 msgstr "Liquidation Confirmations"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more WETH or USDC."
-msgstr "Insufficient gas balance, please deposit more WETH or USDC."
-
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
@@ -5824,11 +5848,6 @@ msgstr "GLV earns from trading fees (open, close, borrow, liquidations, swaps) a
 msgid "Deposit failed"
 msgstr "Deposit failed"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Deposit USDC or ETH"
-msgstr "Deposit USDC or ETH"
-
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
@@ -5874,6 +5893,11 @@ msgstr "No assets are available for deposit"
 #: src/components/Referrals/TradersStats.tsx
 msgid "V1 Avalanche Fuji"
 msgstr "V1 Avalanche Fuji"
+
+#: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized Swap Impact"
+msgstr "Realized Swap Impact"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -6295,8 +6319,8 @@ msgid "Stop Loss"
 msgstr "Stop Loss"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution (test)"
-msgstr "GLP Distribution (test)"
+#~ msgid "GLP Distribution (test)"
+#~ msgstr "GLP Distribution (test)"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
@@ -6578,7 +6602,7 @@ msgstr "Creating code"
 msgid "Swap failed."
 msgstr "Swap failed."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr "Accept claim terms"
 
@@ -6589,6 +6613,10 @@ msgstr "Page outdated, please refresh"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX Proposals"
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive (test)"
+msgstr "GLV Bonus Incentive (test)"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6682,8 +6710,8 @@ msgid "shift"
 msgstr "shift"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution"
-msgstr "GLP Distribution"
+#~ msgid "GLP Distribution"
+#~ msgstr "GLP Distribution"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7222,7 +7250,7 @@ msgstr "Cancel Stop Loss"
 msgid "Limit Decrease"
 msgstr "Limit Decrease"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "Waiting for the remaining Safe confirmations."
 
@@ -7234,7 +7262,7 @@ msgstr "Stabilize Protocol"
 msgid "All assets"
 msgstr "All assets"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr "Hide breakdown"
 
@@ -7531,11 +7559,6 @@ msgstr "GMX V2 discounts are automatically applied on each trade and are not dis
 msgid "Share Position"
 msgstr "Share Position"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "Insufficient gas balance, please deposit more USDC."
-msgstr "Insufficient gas balance, please deposit more USDC."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "Deposit Fee"
@@ -7612,6 +7635,10 @@ msgstr "Address copied to your clipboard."
 msgid "Leftover collateral below {0} USD"
 msgstr "Leftover collateral below {0} USD"
 
+#: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
+msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+msgstr "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "trigger"
@@ -7682,8 +7709,8 @@ msgid "Total Stats"
 msgstr "Total Stats"
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully."
-msgstr "Claimed {0} successfully."
+#~ msgid "Claimed {0} successfully."
+#~ msgstr "Claimed {0} successfully."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
@@ -7862,10 +7889,6 @@ msgstr "Market order will be cancellable in ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
-msgstr "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in settings."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
