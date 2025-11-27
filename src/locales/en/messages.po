@@ -2918,6 +2918,10 @@ msgstr "Market"
 msgid "Enter referral code"
 msgstr "Enter referral code"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr "Executed"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr "Read the rules"
@@ -5156,6 +5160,10 @@ msgstr "How likely are you to recommend our service to a friend or colleague?"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable External Swaps"
 msgstr "Enable External Swaps"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
+msgstr "Created"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -7587,6 +7595,10 @@ msgstr "Unknown order"
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
 msgstr "No open positions at GMX currently"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
+msgstr "Cancelled"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."

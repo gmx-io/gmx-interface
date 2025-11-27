@@ -2918,6 +2918,10 @@ msgstr "마켓"
 msgid "Enter referral code"
 msgstr "추천 코드 입력"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
 msgstr "규칙 읽기"
@@ -5156,6 +5160,10 @@ msgstr "우리 서비스를 친구나 동료에게 추천할 가능성은どれ�
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable External Swaps"
 msgstr "외부 스왑 활성화"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -7587,6 +7595,10 @@ msgstr "알 수 없는 주문"
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
 msgstr "현재 GMX에 열린 포지션 없음"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
+msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
