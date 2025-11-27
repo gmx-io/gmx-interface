@@ -5,24 +5,32 @@ import Skeleton from "react-loading-skeleton";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { GLP_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
 import { createClaimAmountsTransaction } from "domain/synthetics/claims/createClaimTransaction";
 import { useClaimExecutionFee } from "domain/synthetics/claims/useClaimExecutionFee";
 import { useClaimFundsTransactionCallback } from "domain/synthetics/claims/useClaimFundsTransactionCallback";
 import useUserClaimableAmounts from "domain/synthetics/claims/useUserClaimableAmounts";
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { useTokenBalances } from "domain/synthetics/tokens";
-import { formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
 import { ClaimableDistribution } from "./ClaimableDistribution";
+
+const GLP_REIMBURSEMENT_TERMS_URL =
+  "https://gateway.pinata.cloud/ipfs/bafkreiemqapoduhh2j5spg7ndmkqdx2l5s2uloqqcv4egu5qiy5oiv4kaq";
 
 export default function ClaimableAmounts() {
   const { account, signer } = useWallet();
@@ -33,11 +41,6 @@ export default function ClaimableAmounts() {
 
   const [isClaiming, setIsClaiming] = useState(false);
   const [selectedDistributionIds, setSelectedDistributionIds] = useState<string[]>([]);
-  const [signatures, setSignatures] = useState<Record<string, string | undefined>>({});
-
-  const onSignatureChange = useCallback((distributionId: string, signature: string | undefined) => {
-    setSignatures((prev) => ({ ...prev, [distributionId]: signature }));
-  }, []);
 
   const toggleDistributionId = useCallback((distributionId: string) => {
     setSelectedDistributionIds((prev) => {
@@ -52,7 +55,7 @@ export default function ClaimableAmounts() {
     selectedDistributionIds,
     claimableAmountsDataByDistributionId,
     claimsConfigByDistributionId,
-    signatures,
+    signatures: {},
     chainId,
     signer,
     account,
@@ -69,7 +72,7 @@ export default function ClaimableAmounts() {
   });
 
   const claimAmounts = useCallback(async () => {
-    if (!signer || !account || !claimableAmountsDataByDistributionId) {
+    if (!signer || !account || !claimableAmountsDataByDistributionId || !claimsConfigByDistributionId) {
       return;
     }
 
@@ -78,7 +81,8 @@ export default function ClaimableAmounts() {
       await createClaimAmountsTransaction({
         selectedDistributionIds,
         claimableAmountsDataByDistributionId,
-        signatures,
+        claimsConfigByDistributionId,
+        signatures: {},
         chainId,
         signer,
         account,
@@ -93,8 +97,8 @@ export default function ClaimableAmounts() {
     chainId,
     claimFundsTransactionCallback,
     claimableAmountsDataByDistributionId,
+    claimsConfigByDistributionId,
     selectedDistributionIds,
-    signatures,
   ]);
 
   const { balancesData } = useTokenBalances(chainId);
@@ -106,6 +110,49 @@ export default function ClaimableAmounts() {
       return acc;
     }, 0n);
   }, [selectedDistributionIds, claimableAmountsDataByDistributionId]);
+
+  const renderTotalTooltipContent = useCallback(() => {
+    if (!claimableAmountsDataByDistributionId) {
+      return null;
+    }
+
+    const allAmounts: Array<{ symbol: string; amount: bigint; decimals: number }> = [];
+    selectedDistributionIds.forEach((distributionId) => {
+      const data = claimableAmountsDataByDistributionId[distributionId];
+      if (data) {
+        data.amounts.forEach((amount) => {
+          allAmounts.push({
+            symbol: amount.token.symbol,
+            amount: amount.amount,
+            decimals: amount.token.decimals,
+          });
+        });
+      }
+    });
+
+    return allAmounts.map((tokenInfo, index) => (
+      <StatsTooltipRow
+        key={`${tokenInfo.symbol}-${index}`}
+        showDollar={false}
+        label={
+          tokenInfo.symbol ? (
+            <div className="flex items-center gap-4">
+              <TokenIcon symbol={tokenInfo.symbol} displaySize={16} />
+              <span>{tokenInfo.symbol}</span>
+            </div>
+          ) : (
+            "Unknown"
+          )
+        }
+        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+        valueClassName="numbers"
+      />
+    ));
+  }, [selectedDistributionIds, claimableAmountsDataByDistributionId]);
+
+  const hasGlpReimbursementSelected = useMemo(() => {
+    return selectedDistributionIds.includes(GLP_DISTRIBUTION_ID.toString());
+  }, [selectedDistributionIds]);
 
   const { isButtonDisabled, buttonText, buttonTooltipText, hasAvailableFundsToCoverExecutionFee } = useMemo(() => {
     let isButtonDisabled = false;
@@ -213,13 +260,17 @@ export default function ClaimableAmounts() {
             distributionId={distributionId}
             claimableAmountsData={data}
             distributionConfiguration={claimsConfigByDistributionId?.[distributionId]}
-            onSignatureChange={onSignatureChange}
           />
         ))}
 
       <div className="flex items-center justify-between">
         <span className="text-body-medium font-medium text-typography-secondary">Total to claim</span>
-        <span className="text-body-medium text-typography-primary">{formatUsd(totalFundsToClaimUsd)}</span>
+        <Tooltip
+          handle={formatUsd(totalFundsToClaimUsd)}
+          handleClassName="cursor-help numbers"
+          className="whitespace-nowrap"
+          renderContent={renderTotalTooltipContent}
+        />
       </div>
 
       {displayInsufficientGasAlert ? (
@@ -229,6 +280,18 @@ export default function ClaimableAmounts() {
       ) : null}
 
       {buttonElement}
+
+      {hasGlpReimbursementSelected && (
+        <div className="text-center font-medium text-typography-secondary">
+          <Trans>
+            By claiming, you agree to the{" "}
+            <ExternalLink href={GLP_REIMBURSEMENT_TERMS_URL} variant="underline" className="font-medium text-blue-300">
+              GLP Reimbursement
+            </ExternalLink>{" "}
+            terms.
+          </Trans>
+        </div>
+      )}
     </div>
   );
 }
