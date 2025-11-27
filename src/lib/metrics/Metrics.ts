@@ -14,6 +14,7 @@ import { getAppVersion } from "lib/version";
 import { getWalletNames, WalletNames } from "lib/wallets/getWalletNames";
 import { ErrorLike, parseError } from "sdk/utils/errors";
 
+import { _debugMetrics } from "./_debug";
 import {
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_EVENT_DISPATCH_NAME,
@@ -85,25 +86,19 @@ export class Metrics {
   }
 
   pushBatchItem = (item: BatchReportItem) => {
-    if (this.debug) {
-      // eslint-disable-next-line no-console
-      console.log(`Metrics: push ${item.type}`, item.payload);
-    }
+    _debugMetrics?.logBatchItem([item]);
 
     this.queue.push(item);
   };
 
-  sendBatchItems = (items: BatchReportItem[], logEvents = false) => {
-    if (logEvents && this.debug) {
-      // eslint-disable-next-line no-console
-      console.log(`Metrics: send batch items`, items);
-    }
+  sendBatchItems = (items: BatchReportItem[]) => {
+    _debugMetrics?.logBatchItem(items);
 
     if (!this.fetcher) {
       return Promise.reject(new Error("Metrics: fetcher is not initialized"));
     }
 
-    return this.fetcher.fetchPostBatchReport({ items }, this.debug);
+    return this.fetcher.fetchPostBatchReport({ items });
   };
 
   // Require Generic type to be specified
@@ -128,10 +123,7 @@ export class Metrics {
       },
     };
 
-    if (this.debug) {
-      // eslint-disable-next-line no-console
-      console.log(`Metrics: push event`, event, payload);
-    }
+    _debugMetrics?.logEvent(payload);
 
     this.queue.push({
       type: "event",
@@ -149,6 +141,8 @@ export class Metrics {
       abFlags: this.globalMetricData.abFlags,
       customFields: data ? this.serializeCustomFields(data) : undefined,
     };
+
+    _debugMetrics?.logCounter(payload);
 
     this.queue.push({
       type: "counter",
@@ -172,6 +166,8 @@ export class Metrics {
       type: "timing",
       payload,
     });
+
+    _debugMetrics?.logTiming(payload);
   }
 
   pushError = (error: ErrorLike | string, errorSource: string) => {
@@ -190,10 +186,7 @@ export class Metrics {
       },
     };
 
-    if (this.debug) {
-      // eslint-disable-next-line no-console
-      console.log("Metrics: error event", event);
-    }
+    _debugMetrics?.logError(event);
 
     this.pushEvent(event);
   };
@@ -205,26 +198,17 @@ export class Metrics {
     const RETRY_DELAY = BATCH_INTERVAL_MS * Math.pow(2, retryNumber);
 
     if (!this.fetcher) {
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: fetcher is not initialized");
-      }
+      _debugMetrics?.logQueueState("Fetcher is not initialized");
       return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
     }
 
     if (this.queue.length === 0) {
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: queue is empty");
-      }
+      _debugMetrics?.logQueueState("Empty");
       return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
     }
 
     if (!this.getIsGlobalPropsInited() && this.initGlobalPropsRetries > 0) {
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: global properties are not inited");
-      }
+      _debugMetrics?.logQueueState("Global properties are not inited");
       this.initGlobalPropsRetries--;
       return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
     }
@@ -232,10 +216,7 @@ export class Metrics {
     // Avoid infinite queue growth
     if (this.queue.length > MAX_QUEUE_LENGTH) {
       this.queue = this.queue.slice(-MAX_QUEUE_LENGTH);
-      if (this.debug) {
-        // eslint-disable-next-line no-console
-        console.log("Metrics: Slice queue");
-      }
+      _debugMetrics?.logQueueState("Sliced");
     }
 
     let items = this.queue.slice(0, MAX_BATCH_LENGTH);
@@ -247,12 +228,9 @@ export class Metrics {
 
     this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
 
-    if (this.debug) {
-      // eslint-disable-next-line no-console
-      console.log(`Metrics: send batch metrics: ${items.length} items`);
-    }
+    _debugMetrics?.logSendBatchItems(items);
 
-    return this.sendBatchItems(items, this.debug)
+    return this.sendBatchItems(items)
       .then(async (res) => {
         if (res.status === 400) {
           const errorData = await res.json();
@@ -268,8 +246,7 @@ export class Metrics {
         return sleep(BATCH_INTERVAL_MS).then(() => this._processQueue());
       })
       .catch((error) => {
-        // eslint-disable-next-line no-console
-        console.error(`Metrics: Error sending batch metrics`, error);
+        _debugMetrics?.warn(`Error sending batch metrics`, error);
 
         if (error.name === BAD_REQUEST_ERROR) {
           this.pushError(error, "Metrics");

@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
@@ -12,6 +13,8 @@ import { usePublicClient } from "wagmi";
 import { ARBITRUM, CHAIN_SLUGS_MAP, ContractsChainId, getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
+  GlvInfoData,
+  MarketsInfoData,
   getGlvDisplayName,
   getMarketFullName,
   useMarketTokensDataRequest,
@@ -20,10 +23,11 @@ import {
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { getOrderTypeLabel } from "domain/synthetics/orders";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
+import { defined } from "lib/guards";
 import { formatFactor, formatUsd } from "lib/numbers";
-import { parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
+import { ParseTransactionEvent, parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -57,8 +61,41 @@ import {
   formatSwapPath,
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
+import { OrderTransactionsSummary, useOrderTransactions } from "./useOrderTransactions";
 
 const NETWORKS = mapValues(invert(CHAIN_SLUGS_MAP), Number) as Record<string, ContractsChainId>;
+
+type OrderLifecycleTxnType = "created" | "executed" | "cancelled";
+
+const ORDER_EVENT_NAMES = ["OrderCreated", "OrderExecuted", "OrderCancelled", "OrderUpdated"];
+
+type TransactionOrderEvent = {
+  orderKey: string;
+  eventName: string;
+};
+
+type OrderLifecycleTarget = {
+  type: OrderLifecycleTxnType;
+  hash: string;
+};
+
+type OrderLifecycleEntry = {
+  orderKey: string;
+  events: TransactionOrderEvent[];
+  transactions?: OrderTransactionsSummary;
+  lifecycleTarget: OrderLifecycleTarget | null;
+};
+
+const getLabelByOrderLifecycleTxnType = (type: OrderLifecycleTxnType) => {
+  switch (type) {
+    case "created":
+      return t`Created`;
+    case "executed":
+      return t`Executed`;
+    case "cancelled":
+      return t`Cancelled`;
+  }
+};
 
 export function ParseTransactionPage() {
   const { tx, network } = useParams<{ tx: string; network: string }>();
@@ -71,9 +108,15 @@ export function ParseTransactionPage() {
     chainId,
   });
 
-  const { data, isLoading, error } = useSWR([chainId, tx], async function fetchTransaction() {
+  const txHash = typeof tx === "string" && isHash(tx) ? (tx as Hash) : undefined;
+
+  const {
+    data: primaryEvents,
+    isLoading: isPrimaryTxLoading,
+    error,
+  } = useSWR(txHash ? ([chainId, "transaction", txHash] as const) : null, async ([, , hash]) => {
     try {
-      return await parseTxEvents(client as PublicClient, tx as Hash);
+      return await parseTxEvents(client as PublicClient, hash as Hash);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
@@ -81,7 +124,7 @@ export function ParseTransactionPage() {
     }
   });
 
-  const isDeposit = data ? data.some((event) => event.name.toLowerCase().includes("deposit")) : false;
+  const isDeposit = primaryEvents ? primaryEvents.some((event) => event.name.toLowerCase().includes("deposit")) : false;
 
   const { tokensData } = useTokensDataRequest(chainId, undefined);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
@@ -97,6 +140,82 @@ export function ParseTransactionPage() {
     glvData,
   });
 
+  const orderEvents = useOrderEventsFromTransactionEvents(primaryEvents);
+
+  const orderKeys = useMemo(() => Array.from(new Set(orderEvents.map((event) => event.orderKey))), [orderEvents]);
+
+  const {
+    orderTransactionsMap,
+    isLoading: isOrderTransactionsLoading,
+    error: orderTransactionsError,
+  } = useOrderTransactions(chainId, orderKeys);
+
+  const orderLifecycleEntries = useMemo<OrderLifecycleEntry[]>(() => {
+    return orderKeys.map((orderKey) => {
+      const relatedEvents = orderEvents.filter((event) => event.orderKey === orderKey);
+      const transactions = orderTransactionsMap[orderKey];
+
+      let lifecycleTarget: OrderLifecycleTarget | null = null;
+
+      if (transactions?.executedTxnHash && transactions.executedTxnHash !== txHash) {
+        lifecycleTarget = {
+          type: "executed",
+          hash: transactions.executedTxnHash,
+        };
+      }
+      if (transactions?.cancelledTxnHash && transactions.cancelledTxnHash !== txHash) {
+        lifecycleTarget = {
+          type: "cancelled",
+          hash: transactions.cancelledTxnHash,
+        };
+      }
+      if (transactions?.createdTxnHash && transactions.createdTxnHash !== txHash) {
+        lifecycleTarget = {
+          type: "created",
+          hash: transactions.createdTxnHash,
+        };
+      }
+
+      return {
+        orderKey,
+        events: relatedEvents,
+        transactions,
+        lifecycleTarget,
+      };
+    });
+  }, [orderKeys, orderEvents, orderTransactionsMap, txHash]);
+
+  const lifecycleHashes = useMemo(
+    () => orderLifecycleEntries.map((target) => target.lifecycleTarget?.hash).filter(defined),
+    [orderLifecycleEntries]
+  );
+
+  const {
+    data: orderLifecycleEventsMap,
+    isLoading: isOrderLifecycleEventsLoading,
+    error: orderLifecycleEventsError,
+  } = useSWR(
+    lifecycleHashes.length ? ([chainId, "orderLifecycle", lifecycleHashes] as const) : null,
+    async ([, , hashes]) => {
+      const entries = await Promise.all(
+        hashes.map(async (hash) => {
+          try {
+            const events = await parseTxEvents(client as PublicClient, hash as Hash);
+            return [hash, events] as const;
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e);
+            throw e;
+          }
+        })
+      );
+
+      return Object.fromEntries(entries);
+    }
+  );
+
+  const orderLifecycleEventsByHash = orderLifecycleEventsMap ?? {};
+
   if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
@@ -105,7 +224,7 @@ export function ParseTransactionPage() {
     );
   }
 
-  if (!tx || !isHash(tx)) {
+  if (!txHash) {
     return <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">Invalid transaction</div>;
   }
 
@@ -115,7 +234,7 @@ export function ParseTransactionPage() {
     );
   }
 
-  if (isLoading || !data) {
+  if (isPrimaryTxLoading || !primaryEvents) {
     return (
       <div className="mt-32">
         <Loader />
@@ -127,70 +246,78 @@ export function ParseTransactionPage() {
     <AppPageLayout>
       <div className="mx-auto max-w-[1280px] pt-24">
         <h1 className="text-body-large mb-24">
-          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](tx)}>{tx}</ExternalLink>
+          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>
         </h1>
-        <Table className="mb-12 ">
-          <tbody>
-            {data.length ? (
-              data.map((event) => {
+
+        <ParseTransactionEvents
+          events={primaryEvents}
+          keyPrefix="primary"
+          network={network}
+          chainId={chainId}
+          tokensData={tokensData}
+          marketsInfoData={marketsInfoData}
+          glvData={glvData}
+          marketTokensData={marketTokensData}
+          copyToClipboard={copyToClipboard}
+        />
+        {orderLifecycleEntries.length ? (
+          <div className="mt-32">
+            <h2 className="text-body-large mb-12">Order lifecycle</h2>
+            {isOrderTransactionsLoading ? (
+              <Loader />
+            ) : orderTransactionsError ? (
+              <div className="text-body-medium text-red-400">
+                Failed to load order data: {orderTransactionsError.message}
+              </div>
+            ) : (
+              orderLifecycleEntries.map((entry) => {
+                const lifecycleTarget = entry.lifecycleTarget;
+                const lifecycleEvents = lifecycleTarget ? orderLifecycleEventsByHash[lifecycleTarget.hash] : undefined;
+
                 return (
-                  <Fragment key={event.key}>
-                    <TableTr>
-                      <TableTd className="w-[25rem] font-medium">Name</TableTd>
-                      <TableTd className="group !text-left" colSpan={2}>
-                        <div className="flex flex-row items-center justify-between gap-8">
-                          <span className="flex flex-row items-center gap-8 whitespace-nowrap">
-                            {event.log}: {event.name}
-                            <CopyButton value={event.name} />
-                          </span>
-                          <span>LogIndex: {event.logIndex}</span>
+                  <div key={entry.orderKey} className="mb-24 last:mb-0">
+                    <div className="text-body-medium mb-8">Order key: {entry.orderKey}</div>
+                    {!entry.transactions ? (
+                      <div className="text-body-medium text-typography-secondary">Order data is not available yet.</div>
+                    ) : lifecycleTarget ? (
+                      isOrderLifecycleEventsLoading ? (
+                        <Loader />
+                      ) : orderLifecycleEventsError ? (
+                        <div className="text-body-medium text-red-400">
+                          Failed to parse related transaction: {orderLifecycleEventsError.message}
                         </div>
-                      </TableTd>
-                    </TableTr>
-                    <TableTr>
-                      <TableTd className="w-[25rem] font-medium">Topics</TableTd>
-                      <TableTd className="group !text-left" colSpan={3}>
-                        {event.topics.length > 0
-                          ? event.topics.map((t) => (
-                              <div className="mb-4 flex flex-row items-center gap-8" key={event.name + t}>
-                                {t}
-                                <CopyButton value={t} />
-                              </div>
-                            ))
-                          : "No topics"}
-                      </TableTd>
-                    </TableTr>
-                    {event.values.map((value) => (
-                      <LogEntryComponent
-                        name={event.name}
-                        key={value.item}
-                        {...value}
-                        network={network}
-                        chainId={chainId}
-                        entries={event.values}
-                        tokensData={tokensData}
-                        marketsInfoData={marketsInfoData}
-                        glvData={glvData}
-                        marketTokensData={marketTokensData}
-                        copyToClipboard={copyToClipboard}
-                        allEvents={data}
-                      />
-                    ))}
-                    <TableTr>
-                      <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
-                    </TableTr>
-                  </Fragment>
+                      ) : (
+                        <>
+                          <div className="text-body-medium mb-16">
+                            {getLabelByOrderLifecycleTxnType(lifecycleTarget.type)} transaction:{" "}
+                            <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](lifecycleTarget.hash)}>
+                              {lifecycleTarget.hash}
+                            </ExternalLink>
+                          </div>
+                          <ParseTransactionEvents
+                            events={lifecycleEvents}
+                            keyPrefix={`orderLifecycle-${entry.orderKey}`}
+                            network={network}
+                            chainId={chainId}
+                            tokensData={tokensData}
+                            marketsInfoData={marketsInfoData}
+                            glvData={glvData}
+                            marketTokensData={marketTokensData}
+                            copyToClipboard={copyToClipboard}
+                          />
+                        </>
+                      )
+                    ) : (
+                      <div className="text-body-medium text-typography-secondary">
+                        No executed or cancelled transaction found yet.
+                      </div>
+                    )}
+                  </div>
                 );
               })
-            ) : (
-              <TableTr>
-                <TableTd className="!text-center font-medium" colSpan={3}>
-                  No events
-                </TableTd>
-              </TableTr>
             )}
-          </tbody>
-        </Table>
+          </div>
+        ) : null}
       </div>
     </AppPageLayout>
   );
@@ -331,6 +458,33 @@ const fieldFormatters = {
     ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
   }),
 };
+
+function useOrderEventsFromTransactionEvents(primaryEvents: ParseTransactionEvent[] | undefined) {
+  return useMemo<TransactionOrderEvent[]>(() => {
+    if (!primaryEvents?.length) {
+      return [];
+    }
+
+    return primaryEvents
+      .map((event) => {
+        if (!ORDER_EVENT_NAMES.includes(event.name)) {
+          return null;
+        }
+
+        const keyValue = event.values.find((value) => value.item === "key")?.value;
+
+        if (typeof keyValue !== "string") {
+          return null;
+        }
+
+        return {
+          orderKey: keyValue,
+          eventName: event.name,
+        };
+      })
+      .filter((value): value is TransactionOrderEvent => Boolean(value));
+  }, [primaryEvents]);
+}
 
 function LogEntryComponent(props: LogEntryComponentProps) {
   let value;
@@ -496,3 +650,86 @@ function CopyButton({ value }: { value: string }) {
     />
   );
 }
+
+const ParseTransactionEvents = ({
+  events,
+  keyPrefix,
+  network,
+  chainId,
+  tokensData,
+  marketsInfoData,
+  glvData,
+  marketTokensData,
+  copyToClipboard,
+}: {
+  events: ParseTransactionEvent[] | undefined;
+  keyPrefix: string;
+  network: string;
+  chainId: number;
+  tokensData: TokensData | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
+  glvData: GlvInfoData | undefined;
+  marketTokensData: TokensData | undefined;
+  copyToClipboard: (value: string) => void;
+}) => {
+  if (!events?.length) {
+    return (
+      <TableTr key={`empty-${keyPrefix}`}>
+        <TableTd className="!text-center font-medium" colSpan={3}>
+          No events
+        </TableTd>
+      </TableTr>
+    );
+  }
+
+  return events.map((event) => (
+    <Table key={`${keyPrefix}-${event.key}`} className="mt-[24px] overflow-hidden !rounded-8 first:mt-0">
+      <tbody>
+        <TableTr>
+          <TableTd className="w-[25rem] font-medium">Name</TableTd>
+          <TableTd className="group !text-left" colSpan={2}>
+            <div className="flex flex-row items-center justify-between gap-8">
+              <span className="flex flex-row items-center gap-8 whitespace-nowrap">
+                {event.log}: {event.name}
+                <CopyButton value={event.name} />
+              </span>
+              <span>LogIndex: {event.logIndex}</span>
+            </div>
+          </TableTd>
+        </TableTr>
+        <TableTr>
+          <TableTd className="w-[25rem] font-medium">Topics</TableTd>
+          <TableTd className="group !text-left" colSpan={3}>
+            {event.topics.length > 0
+              ? event.topics.map((t) => (
+                  <div className="mb-4 flex flex-row items-center gap-8" key={`${keyPrefix}-${event.name}-${t}`}>
+                    {t}
+                    <CopyButton value={t} />
+                  </div>
+                ))
+              : "No topics"}
+          </TableTd>
+        </TableTr>
+        {event.values.map((value) => (
+          <LogEntryComponent
+            name={event.name}
+            key={`${keyPrefix}-${event.key}-${value.item}`}
+            {...value}
+            network={network}
+            chainId={chainId}
+            entries={event.values}
+            tokensData={tokensData}
+            marketsInfoData={marketsInfoData}
+            glvData={glvData}
+            marketTokensData={marketTokensData}
+            copyToClipboard={copyToClipboard}
+            allEvents={events}
+          />
+        ))}
+        <TableTr>
+          <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
+        </TableTr>
+      </tbody>
+    </Table>
+  ));
+};

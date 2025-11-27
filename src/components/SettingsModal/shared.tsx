@@ -107,9 +107,10 @@ export function SettingButton({
   };
 
   const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : Fragment;
+  const wrapperProps = disabled && disabledTooltip ? { content: disabledTooltip, variant: "none" as const } : {};
 
   return (
-    <Wrapper content={disabledTooltip} variant="none">
+    <Wrapper {...wrapperProps}>
       <div
         className={cx(
           `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
