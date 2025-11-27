@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { Address } from "viem";
 
+import { FreshnessMetricId } from "lib/metrics";
+import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
@@ -33,7 +35,12 @@ export function use24hPriceDeltaMap(
       tokenSymbol: string;
     }[]
   >([chainId, oracleKeeperFetcher.url, "use24PriceDelta"], {
-    fetcher: () => oracleKeeperFetcher.fetch24hPrices(),
+    fetcher: () => {
+      return oracleKeeperFetcher.fetch24hPrices().then((res) => {
+        reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Prices24h);
+        return res;
+      });
+    },
   });
 
   const priceDeltas = useMemo(() => {

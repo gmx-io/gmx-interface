@@ -11,7 +11,8 @@ import {
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
 import type { Position } from "domain/synthetics/positions/types";
-import { metrics, MissedMarketPricesCounter } from "lib/metrics";
+import { FreshnessMetricId, metrics, MissedMarketPricesCounter } from "lib/metrics";
+import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -133,6 +134,10 @@ export function usePositions(
       setDisableBatching(false);
     }
   }, [disableBatching, positionsData]);
+
+  useEffect(() => {
+    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Positions);
+  }, [chainId, positionsData]);
 
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,

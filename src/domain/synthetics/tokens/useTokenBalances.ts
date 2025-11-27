@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
@@ -7,6 +8,8 @@ import {
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { Token } from "domain/tokens";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
+import { FreshnessMetricId } from "lib/metrics/types";
 import { CacheKey, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getToken, getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -92,6 +95,10 @@ export function useTokenBalances(
       return result;
     },
   });
+
+  useEffect(() => {
+    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Balances);
+  }, [chainId, data]);
 
   const balancesData = useUpdatedTokensBalances(data, "wallet");
 

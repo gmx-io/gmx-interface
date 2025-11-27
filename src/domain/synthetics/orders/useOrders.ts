@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Address, isAddressEqual } from "viem";
 
 import { ContractsChainId } from "config/chains";
@@ -8,6 +8,8 @@ import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { FreshnessMetricId } from "lib/metrics";
+import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -95,8 +97,12 @@ export function useOrders(
   const { data } = useMulticall(chainId, `useOrdersData-${chainId}`, {
     key: key,
     request: buildUseOrdersMulticall,
-    parseResponse: parseResponse,
+    parseResponse,
   });
+
+  useEffect(() => {
+    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Orders);
+  }, [chainId, data]);
 
   const ordersData: OrdersData | undefined = useMemo(() => {
     const filteredOrders = data?.orders.filter((order) => {
