@@ -23,7 +23,7 @@ export type OrderTransactionsMap = Record<string, OrderTransactionsSummary>;
 
 const ORDER_TRANSACTIONS_QUERY = gql`
   query OrderTransactions($orderKeys: [String!]!) {
-    orders(where: { id_in: $orderKeys }, limit: 500) {
+    orders(where: { id_in: $orderKeys }, limit: 10) {
       id
       createdTxn {
         hash

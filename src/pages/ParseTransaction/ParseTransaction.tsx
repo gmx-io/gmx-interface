@@ -140,30 +140,7 @@ export function ParseTransactionPage() {
     glvData,
   });
 
-  const orderEvents = useMemo<TransactionOrderEvent[]>(() => {
-    if (!primaryEvents?.length) {
-      return [];
-    }
-
-    return primaryEvents
-      .map((event) => {
-        if (!ORDER_EVENT_NAMES.includes(event.name)) {
-          return null;
-        }
-
-        const keyValue = event.values.find((value) => value.item === "key")?.value;
-
-        if (typeof keyValue !== "string") {
-          return null;
-        }
-
-        return {
-          orderKey: keyValue,
-          eventName: event.name,
-        };
-      })
-      .filter((value): value is TransactionOrderEvent => Boolean(value));
-  }, [primaryEvents]);
+  const orderEvents = useOrderEventsFromTransactionEvents(primaryEvents);
 
   const orderKeys = useMemo(() => Array.from(new Set(orderEvents.map((event) => event.orderKey))), [orderEvents]);
 
@@ -481,6 +458,33 @@ const fieldFormatters = {
     ClaimableFundingAmountPerSizeUpdated: formatAmountByCollateralToken15Shift,
   }),
 };
+
+function useOrderEventsFromTransactionEvents(primaryEvents: ParseTransactionEvent[] | undefined) {
+  return useMemo<TransactionOrderEvent[]>(() => {
+    if (!primaryEvents?.length) {
+      return [];
+    }
+
+    return primaryEvents
+      .map((event) => {
+        if (!ORDER_EVENT_NAMES.includes(event.name)) {
+          return null;
+        }
+
+        const keyValue = event.values.find((value) => value.item === "key")?.value;
+
+        if (typeof keyValue !== "string") {
+          return null;
+        }
+
+        return {
+          orderKey: keyValue,
+          eventName: event.name,
+        };
+      })
+      .filter((value): value is TransactionOrderEvent => Boolean(value));
+  }, [primaryEvents]);
+}
 
 function LogEntryComponent(props: LogEntryComponentProps) {
   let value;
