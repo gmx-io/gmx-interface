@@ -80,7 +80,7 @@ globalThis.addEventListener(MULTICALL_DEBUG_EVENT_NAME, (event) => {
   });
 });
 
-globalThis.addEventListener(fallbackTrackerEventKeys.reportFailure, (event) => {
+globalThis.addEventListener(fallbackTrackerEventKeys.reportEndpointFailure, (event) => {
   postMessage({
     isFallbackTrackerFailure: true,
     detail: (event as CustomEvent).detail,

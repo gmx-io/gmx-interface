@@ -3,7 +3,7 @@ import { Chain, createPublicClient, http } from "viem";
 import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
 import { getProviderNameFromUrl } from "config/rpc";
-import { emitEndpointFailure } from "lib/FallbackTracker/events";
+import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import type {
   MulticallErrorEvent,
   MulticallFallbackRpcModeCounter,
@@ -19,7 +19,7 @@ import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher
 import { AbiId, abis as allAbis } from "sdk/abis";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
 
-import { multicallDevtools, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
+import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
 
 export const MAX_TIMEOUT = 20000;
 
@@ -196,20 +196,13 @@ export class Multicall {
     };
 
     const sendDebugEvent = (type: MulticallDebugEventType, options: { providerUrl: string; error?: Error }) => {
-      const event = {
+      _debugMulticall?.dispatchEvent({
         type,
         isInWorker: isWebWorker,
         chainId: this.chainId,
         providerUrl: options.providerUrl,
         error: options.error,
-      };
-
-      // Use explicit methods based on context
-      if (isWebWorker) {
-        multicallDevtools.dispatchDebugEventInWorker(event);
-      } else {
-        multicallDevtools.dispatchDebugEventInMainThread(event);
-      }
+      });
     };
 
     const processResponse = (response: any) => {
@@ -287,6 +280,12 @@ export class Multicall {
 
       const fallbackDurationStart = performance.now();
 
+      const debugShouldTimeout = isWebWorker && debugState?.triggerSecondaryTimeoutInWorker;
+
+      if (debugShouldTimeout) {
+        await sleep(MAX_TIMEOUT * 2);
+      }
+
       return Promise.race([
         fallbackClient.multicall({ contracts: encodedPayload as any }),
         sleep(MAX_TIMEOUT).then(() => {
@@ -341,7 +340,7 @@ export class Multicall {
           });
 
           sendDebugEvent("secondary-failed", { providerUrl: fallbackProviderUrl });
-          emitEndpointFailure({
+          emitReportEndpointFailure({
             endpoint: fallbackProviderUrl,
             trackerKey: providerUrls.trackerKey,
           });
@@ -357,16 +356,19 @@ export class Multicall {
 
     const durationStart = performance.now();
 
-    // Debug trigger for primary timeout in worker
     const debugShouldTimeout = isWebWorker && debugState?.triggerPrimaryTimeoutInWorker;
+
+    if (debugShouldTimeout) {
+      await sleep(MAX_TIMEOUT * 2);
+    }
 
     sendDebugEvent("primary-start", { providerUrl });
     const result = await Promise.race([
       client.multicall({ contracts: encodedPayload as any }),
-      sleep(debugShouldTimeout ? 1000 : MAX_TIMEOUT).then(() => {
+      sleep(MAX_TIMEOUT).then(() => {
         sendDebugEvent("primary-timeout", { providerUrl });
 
-        emitEndpointFailure({
+        emitReportEndpointFailure({
           endpoint: providerUrl,
           trackerKey: providerUrls.trackerKey,
         });
@@ -415,7 +417,7 @@ export class Multicall {
 
         sendDebugEvent("primary-failed", { providerUrl });
 
-        emitEndpointFailure({
+        emitReportEndpointFailure({
           endpoint: providerUrl,
           trackerKey: providerUrls.trackerKey,
         });

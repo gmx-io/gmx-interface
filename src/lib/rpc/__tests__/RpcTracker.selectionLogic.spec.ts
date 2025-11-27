@@ -17,7 +17,7 @@ function mockGetRpcProvidersWithTestConfigs(configsToReturn: typeof testRpcConfi
 // Helper function to capture updateEndpoints events for a specific tracker
 function captureUpdateEndpointsEvent(tracker: RpcTracker) {
   let capturedEvent: any = null;
-  const unsubscribe = onFallbackTracker("updateEndpoints", (event) => {
+  const unsubscribe = onFallbackTracker("endpointsUpdated", (event) => {
     if (event.trackerKey === tracker.trackerKey) {
       capturedEvent = event;
     }

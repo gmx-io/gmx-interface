@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { devtools } from "lib/devtools";
+import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
@@ -20,16 +20,11 @@ interface DebugSettingsProps {
 export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
   const settings = useSettings();
   // eslint-disable-next-line react/hook-use-state
-  const [, setUpdateTrigger] = useState(0);
+  const [, setUpdateTrigger] = useState(false);
   const [debugLinksExpanded, setDebugLinksExpanded] = useState(false);
 
-  const handleRpcDebugToggle = useCallback((enabled: boolean) => {
-    devtools.setFlag("debugRpcTracker", enabled);
-    setUpdateTrigger((prev) => prev + 1);
-  }, []);
-
-  const toggleDebugLinks = useCallback((value: boolean) => {
-    setDebugLinksExpanded(value);
+  const forceUpdate = useCallback(() => {
+    setUpdateTrigger((prev) => !prev);
   }, []);
 
   return (
@@ -53,14 +48,40 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Disable Share Modal PnL Check</Trans>
         </ToggleSwitch>
 
-        <ToggleSwitch isChecked={devtools.getFlag("debugRpcTracker")} setIsChecked={handleRpcDebugToggle}>
+        <ToggleSwitch
+          isChecked={_debugRpcTracker?.getFlag(RpcDebugFlags.LogRpcTracker)}
+          setIsChecked={(enabled) => {
+            _debugRpcTracker?.setFlag(RpcDebugFlags.LogRpcTracker, enabled);
+            forceUpdate();
+          }}
+        >
           <Trans>RPC Tracker Logging</Trans>
+        </ToggleSwitch>
+
+        <ToggleSwitch
+          isChecked={_debugRpcTracker?.getFlag(RpcDebugFlags.DebugLargeAccountRpc)}
+          setIsChecked={(enabled) => {
+            _debugRpcTracker?.setFlag(RpcDebugFlags.DebugLargeAccountRpc, enabled);
+            forceUpdate();
+          }}
+        >
+          <Trans>Debug Large Account RPC</Trans>
+        </ToggleSwitch>
+
+        <ToggleSwitch
+          isChecked={_debugRpcTracker?.getFlag(RpcDebugFlags.DebugFallbackRpc)}
+          setIsChecked={(enabled) => {
+            _debugRpcTracker?.setFlag(RpcDebugFlags.DebugFallbackRpc, enabled);
+            forceUpdate();
+          }}
+        >
+          <Trans>Debug Fallback RPC</Trans>
         </ToggleSwitch>
 
         <ExpandableRow
           open={debugLinksExpanded}
           title={t`Debug Links`}
-          onToggle={toggleDebugLinks}
+          onToggle={() => setDebugLinksExpanded((prev) => !prev)}
           disableCollapseOnError={false}
           contentClassName="flex flex-col gap-12 pt-8"
           scrollIntoViewOnMobile

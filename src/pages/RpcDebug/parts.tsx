@@ -1,10 +1,10 @@
 import { getChainName } from "config/chains";
 import { getProviderNameFromUrl } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { emitEndpointFailure } from "lib/FallbackTracker/events";
-import type { MulticallDebugState, MulticallDebugEvent } from "lib/multicall/_debug";
+import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
+import type { MulticallDebugEvent, MulticallDebugState } from "lib/multicall/_debug";
 import { formatUsd } from "lib/numbers";
-import { getRpcTracker } from "lib/rpc/bestRpcTracker";
+import { getRpcTrackerByChainId } from "lib/rpc/useRpcUrls";
 import { getMarkPrice } from "sdk/utils/prices";
 
 import Button from "components/Button/Button";
@@ -269,9 +269,9 @@ export function DebugControlsPanel({
                           if (!primaryRpc) {
                             return;
                           }
-                          emitEndpointFailure({
+                          emitReportEndpointFailure({
                             endpoint: primaryRpc,
-                            trackerKey: getRpcTracker(chainId)?.trackerKey ?? "unknown",
+                            trackerKey: getRpcTrackerByChainId(chainId)?.trackerKey ?? "unknown",
                           });
                         }}
                       >
@@ -284,9 +284,9 @@ export function DebugControlsPanel({
                           if (!secondaryRpc) {
                             return;
                           }
-                          emitEndpointFailure({
+                          emitReportEndpointFailure({
                             endpoint: secondaryRpc,
-                            trackerKey: getRpcTracker(chainId)?.trackerKey ?? "unknown",
+                            trackerKey: getRpcTrackerByChainId(chainId)?.trackerKey ?? "unknown",
                           });
                         }}
                       >

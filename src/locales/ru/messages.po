@@ -2368,6 +2368,10 @@ msgstr "Максимальное количество частей: {MAX_TWAP_NU
 msgid "Launch App"
 msgstr "Запустить Приложение"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Large Account RPC"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Доступно для оплаты"
@@ -5261,6 +5265,10 @@ msgstr "Общий реализованный и нереализованный 
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Ann. Performance"
 msgstr "Годовая производительность"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Fallback RPC"
+msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"

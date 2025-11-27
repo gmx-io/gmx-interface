@@ -30,7 +30,7 @@ export const createMockConfig = (
 ): FallbackTrackerParams<TestCheckResult> => {
   const config: FallbackTrackerParams<TestCheckResult> = {
     ...DEFAULT_FALLBACK_TRACKER_CONFIG,
-    trackerKey: "test-tracker",
+    trackerKey: "test.tracker",
     primary: testEndpoints.primary,
     secondary: testEndpoints.secondary,
     endpoints: [testEndpoints.primary, testEndpoints.secondary, testEndpoints.fallback],

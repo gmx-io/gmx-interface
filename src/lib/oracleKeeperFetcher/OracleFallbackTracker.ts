@@ -1,4 +1,4 @@
-import { orderBy } from "lodash-es";
+import orderBy from "lodash/orderBy";
 
 import { ContractsChainId } from "config/rpc";
 import { DEFAULT_FALLBACK_TRACKER_CONFIG, FallbackTracker } from "lib/FallbackTracker";
@@ -35,10 +35,7 @@ export class OracleFallbackTracker {
   }
 
   public getCurrentEndpoints() {
-    return {
-      primary: this.fallbackTracker.pickPrimaryEndpoint(),
-      secondary: this.fallbackTracker.pickSecondaryEndpoint(),
-    };
+    return this.fallbackTracker.pick();
   }
 
   public reportFailure(endpoint: string) {

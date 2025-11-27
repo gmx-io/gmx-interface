@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getFallbackTrackerKey } from "config/localStorage";
 import { suppressConsole } from "lib/__testUtils__/_utils";
@@ -6,15 +6,26 @@ import { suppressConsole } from "lib/__testUtils__/_utils";
 import { FallbackTracker } from "../FallbackTracker";
 import { createMockConfig, testEndpoints } from "./_utils";
 
+const trackers: FallbackTracker<any>[] = [];
+
 describe("FallbackTracker - initialization and storage", () => {
   suppressConsole();
   beforeEach(() => {
     localStorage.clear();
   });
 
+  afterEach(() => {
+    trackers.forEach((tracker) => {
+      tracker.stopTracking();
+    });
+    trackers.length = 0;
+  });
+
   it("should initialize with valid config", () => {
     const config = createMockConfig();
     const tracker = new FallbackTracker(config);
+    trackers.push(tracker);
+    trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
     expect(tracker.state.secondary).toBe(config.secondary);
@@ -54,10 +65,12 @@ describe("FallbackTracker - initialization and storage", () => {
       primary: testEndpoints.secondary,
       secondary: testEndpoints.primary,
       timestamp: Date.now(),
+      cachedEndpointsState: {},
     };
     localStorage.setItem(getFallbackTrackerKey(config.trackerKey), JSON.stringify(storedState));
 
     const tracker = new FallbackTracker(config);
+    trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(storedState.primary);
     expect(tracker.state.secondary).toBe(storedState.secondary);
@@ -73,6 +86,7 @@ describe("FallbackTracker - initialization and storage", () => {
     localStorage.setItem(getFallbackTrackerKey(config.trackerKey), JSON.stringify(storedState));
 
     const tracker = new FallbackTracker(config);
+    trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
     expect(tracker.state.secondary).toBe(config.secondary);
@@ -83,6 +97,7 @@ describe("FallbackTracker - initialization and storage", () => {
     localStorage.setItem(getFallbackTrackerKey(config.trackerKey), JSON.stringify({ primary: testEndpoints.primary }));
 
     const tracker = new FallbackTracker(config);
+    trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
     expect(tracker.state.secondary).toBe(config.secondary);
@@ -98,6 +113,7 @@ describe("FallbackTracker - initialization and storage", () => {
     localStorage.setItem(getFallbackTrackerKey(config.trackerKey), JSON.stringify(storedState));
 
     const tracker = new FallbackTracker(config);
+    trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
     expect(tracker.state.secondary).toBe(config.secondary);
@@ -106,6 +122,7 @@ describe("FallbackTracker - initialization and storage", () => {
   it("should initialize endpointsState for all endpoints with default values", () => {
     const config = createMockConfig();
     const tracker = new FallbackTracker(config);
+    trackers.push(tracker);
 
     config.endpoints.forEach((endpoint) => {
       const state = tracker.state.endpointsState[endpoint];
@@ -121,6 +138,7 @@ describe("FallbackTracker - initialization and storage", () => {
     it("should save state to localStorage with correct key", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       const setItemSpy = vi.spyOn(localStorage, "setItem");
 
       tracker.saveStorage({
@@ -129,12 +147,13 @@ describe("FallbackTracker - initialization and storage", () => {
         cachedEndpointsState: tracker.getCachedEndpointsState(),
       });
 
-      expect(setItemSpy).toHaveBeenCalledWith(tracker.trackerKey, expect.any(String));
+      expect(setItemSpy).toHaveBeenCalledWith(tracker.storageKey, expect.any(String));
     });
 
     it("should include timestamp in saved state", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       const setItemSpy = vi.spyOn(localStorage, "setItem");
 
       tracker.saveStorage({
@@ -152,6 +171,7 @@ describe("FallbackTracker - initialization and storage", () => {
     it("should handle localStorage errors gracefully", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       const setItemSpy = vi.spyOn(localStorage, "setItem").mockImplementation(() => {
         throw new Error("Quota exceeded");
       });

@@ -1,87 +1,101 @@
+import "core-js/stable/promise/with-resolvers";
+
 import uniqueId from "lodash/uniqueId";
 
 import { getAbFlags } from "config/ab";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { emitEndpointFailure } from "lib/FallbackTracker/events";
+import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
-import { getCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { getCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 import { sleep } from "lib/sleep";
 
-import { multicallDevtools, MULTICALL_DEBUG_EVENT_NAME, type MulticallDebugEvent } from "./_debug";
+import { _debugMulticall, MULTICALL_DEBUG_EVENT_NAME, type MulticallDebugEvent } from "./_debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { MulticallProviderUrls } from "./Multicall";
 import { MAX_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
-const executorWorker: Worker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
+let executorWorker: Worker | null = null;
+if (typeof window !== "undefined" && !import.meta.env?.TEST) {
+  try {
+    executorWorker = new Worker(new URL("./multicall.worker", import.meta.url), { type: "module" });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("[executeMulticallWorker] Failed to create worker:", error);
+  }
+}
 
-executorWorker.onerror = (error) => {
-  // eslint-disable-next-line no-console
-  console.error("[executeMulticallWorker] Worker error:", error);
-};
+if (executorWorker) {
+  executorWorker.onerror = (error) => {
+    // eslint-disable-next-line no-console
+    console.error("[executeMulticallWorker] Worker error:", error);
+  };
+}
 
 const promises: Record<string, { resolve: (value: any) => void; reject: (error: any) => void }> = {};
 
-executorWorker.onmessage = (event) => {
-  if ("isMetrics" in event.data) {
-    emitMetricEvent<MetricEventParams>(event.data.detail);
-    return;
-  }
+if (executorWorker) {
+  executorWorker.onmessage = (event) => {
+    if ("isMetrics" in event.data) {
+      emitMetricEvent<MetricEventParams>(event.data.detail);
+      return;
+    }
 
-  if ("isCounter" in event.data) {
-    emitMetricCounter<any>({
-      event: event.data.detail.event,
-      data: event.data.detail.data,
-    });
-    return;
-  }
+    if ("isCounter" in event.data) {
+      emitMetricCounter<any>({
+        event: event.data.detail.event,
+        data: event.data.detail.data,
+      });
+      return;
+    }
 
-  if ("isTiming" in event.data) {
-    emitMetricTiming<any>({
-      event: event.data.detail.event,
-      time: event.data.detail.time,
-      data: event.data.detail.data,
-    });
-    return;
-  }
+    if ("isTiming" in event.data) {
+      emitMetricTiming<any>({
+        event: event.data.detail.event,
+        time: event.data.detail.time,
+        data: event.data.detail.data,
+      });
+      return;
+    }
 
-  if ("isFallbackTrackerFailure" in event.data) {
-    emitEndpointFailure(event.data.detail);
-    return;
-  }
+    if ("isFallbackTrackerFailure" in event.data) {
+      emitReportEndpointFailure(event.data.detail);
+      return;
+    }
 
-  if ("isDebug" in event.data) {
-    const debugEvent = event.data.detail as MulticallDebugEvent;
-    globalThis.dispatchEvent(new CustomEvent(MULTICALL_DEBUG_EVENT_NAME, { detail: debugEvent }));
-    return;
-  }
+    if ("isDebug" in event.data) {
+      const debugEvent = event.data.detail as MulticallDebugEvent;
+      globalThis.dispatchEvent(new CustomEvent(MULTICALL_DEBUG_EVENT_NAME, { detail: debugEvent }));
+      return;
+    }
 
-  const { id, result, error } = event.data;
+    const { id, result, error } = event.data;
 
-  const promise = promises[id];
+    const promise = promises[id];
 
-  if (!promise) {
-    // eslint-disable-next-line no-console
-    console.warn(`[executeMulticallWorker] Received message with unknown id: ${id}`);
+    if (!promise) {
+      // eslint-disable-next-line no-console
+      console.warn(`[executeMulticallWorker] Received message with unknown id: ${id}`);
 
-    return;
-  }
+      return;
+    }
 
-  if (error) {
-    const errorObj = new Error(error.message);
+    if (error) {
+      const errorObj = new Error(error.message);
 
-    errorObj.stack = error.stack;
-    errorObj.name = error.name;
+      errorObj.stack = error.stack;
+      errorObj.name = error.name;
 
-    promise.reject(errorObj);
-  } else {
-    promise.resolve(result);
-  }
+      promise.reject(errorObj);
+    } else {
+      promise.resolve(result);
+    }
 
-  delete promises[id];
-};
+    delete promises[id];
+  };
+}
 
 /**
  * Executes a multicall request in a worker.
@@ -91,10 +105,15 @@ export async function executeMulticallWorker(
   chainId: number,
   request: MulticallRequestConfig<any>
 ): Promise<MulticallResult<any> | undefined> {
+  // If worker is not available (e.g., in tests), fallback to main thread
+  if (!executorWorker) {
+    return await executeMulticallMainThread(chainId, request);
+  }
+
   const id = uniqueId("multicall-");
 
   const providerUrls: MulticallProviderUrls = getCurrentRpcUrls(chainId);
-  const debugState = multicallDevtools.getDebugState();
+  const debugState = _debugMulticall?.getDebugState();
 
   executorWorker.postMessage({
     id,
@@ -159,7 +178,7 @@ export async function executeMulticallWorker(
     }
 
     // Send debug event for worker fallback
-    multicallDevtools.dispatchDebugEvent({
+    _debugMulticall?.dispatchEvent({
       type: "worker-fallback",
       isInWorker: false,
       chainId,

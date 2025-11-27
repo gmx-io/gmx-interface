@@ -1,5 +1,6 @@
 import sample from "lodash/sample";
 
+import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 import { mustNeverExist } from "lib/types";
 import {
   AnyChainId,
@@ -92,6 +93,27 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Express
     getAlchemyProvider(ARBITRUM, "express"),
+
+    // Debug
+    ...(_debugRpcTracker?.getFlag(RpcDebugFlags.DebugLargeAccountRpc)
+      ? [
+          {
+            url: "https://arbitrum-one.public.blastapi.io",
+            isPublic: true,
+            purpose: "largeAccount",
+          },
+        ]
+      : []),
+
+    ...(_debugRpcTracker?.getFlag(RpcDebugFlags.DebugFallbackRpc)
+      ? [
+          {
+            url: "https://arbitrum-one.public.blastapi.io",
+            isPublic: true,
+            purpose: "fallback",
+          },
+        ]
+      : []),
   ],
   [AVALANCHE]: [
     ...["https://api.avax.network/ext/bc/C/rpc"].map((url) => ({

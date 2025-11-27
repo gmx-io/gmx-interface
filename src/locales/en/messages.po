@@ -2368,6 +2368,10 @@ msgstr "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "Launch App"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Large Account RPC"
+msgstr "Debug Large Account RPC"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Available to Pay"
@@ -5261,6 +5265,10 @@ msgstr "The total realized and unrealized profit and loss for the period, includ
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Ann. Performance"
 msgstr "Ann. Performance"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Fallback RPC"
+msgstr "Debug Fallback RPC"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"

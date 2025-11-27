@@ -2368,6 +2368,10 @@ msgstr ""
 msgid "Launch App"
 msgstr ""
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Large Account RPC"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr ""
@@ -5260,6 +5264,10 @@ msgstr ""
 
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Ann. Performance"
+msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Debug Fallback RPC"
 msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts

@@ -5,6 +5,8 @@ import { suppressConsole } from "lib/__testUtils__/_utils";
 import { FallbackTracker } from "../FallbackTracker";
 import { createMockConfig, testEndpoints } from "./_utils";
 
+const trackers: FallbackTracker<any>[] = [];
+
 describe("FallbackTracker - endpoint tracking and monitoring", () => {
   suppressConsole();
   beforeEach(() => {
@@ -14,6 +16,10 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
   });
 
   afterEach(() => {
+    trackers.forEach((tracker) => {
+      tracker.stopTracking();
+    });
+    trackers.length = 0;
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
@@ -24,6 +30,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       await tracker.checkEndpoints();
 
@@ -38,6 +45,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       expect(tracker.state.abortController).toBeUndefined();
 
@@ -62,6 +70,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         ),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       tracker.checkEndpoints();
       const firstController = tracker.state.abortController;
@@ -86,6 +95,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       await tracker.checkEndpoints();
 
@@ -101,6 +111,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Check failed")),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       await tracker.checkEndpoints();
 
@@ -123,6 +134,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         ), // Never resolves
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const checkPromise = tracker.checkEndpoints();
       await vi.advanceTimersByTimeAsync(150);
@@ -140,6 +152,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       await tracker.checkEndpoints();
 
@@ -153,6 +166,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       await tracker.checkEndpoints();
       await tracker.checkEndpoints();
@@ -171,6 +185,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       await tracker.checkEndpoints();
 
@@ -195,6 +210,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const checkPromise = tracker.checkEndpoints();
       await vi.advanceTimersByTimeAsync(150);
@@ -220,6 +236,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const checkPromise = tracker.checkEndpoints();
       await vi.advanceTimersByTimeAsync(10); // Let checks start
@@ -261,6 +278,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const checkPromise = tracker.checkEndpoints();
       await vi.advanceTimersByTimeAsync(10);
@@ -296,6 +314,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const checkPromise = tracker.checkEndpoints();
       await vi.advanceTimersByTimeAsync(150);
@@ -323,6 +342,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const firstCheckPromise = tracker.checkEndpoints();
       await vi.advanceTimersByTimeAsync(10);
@@ -348,6 +368,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 1, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const startTime = Date.now();
       await tracker.checkEndpoints();
@@ -377,6 +398,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         }),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       const checkPromise = tracker.checkEndpoints();
       await vi.advanceTimersByTimeAsync(10);
@@ -403,6 +425,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         secondary: testEndpoints.primary,
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       expect(tracker.shouldTrack()).toBe(false);
     });
@@ -410,7 +433,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
     it("should return true when multiple endpoints exist and recently used", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
 
       expect(tracker.shouldTrack()).toBe(true);
     });
@@ -418,6 +442,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
     it("should return false when unused for longer than disableUnusedTrackingTimeout", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       tracker.state.lastUsage = Date.now() - config.disableUnusedTrackingTimeout - 1000;
 
       expect(tracker.shouldTrack()).toBe(false);
@@ -426,6 +451,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
     it("should return true when warmUp is true (regardless of usage)", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       tracker.state.lastUsage = Date.now() - config.disableUnusedTrackingTimeout - 1000;
 
       expect(tracker.shouldTrack({ warmUp: true })).toBe(true);
@@ -440,7 +466,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint(); // Set lastUsage
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now(); // Set lastUsage
 
       expect(tracker.shouldTrack()).toBe(true);
       tracker.track();
@@ -454,6 +481,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn(),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       tracker.state.lastUsage = Date.now() - config.disableUnusedTrackingTimeout - 1000;
 
       expect(tracker.shouldTrack()).toBe(false);
@@ -470,6 +498,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         checkEndpoint: vi.fn(),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
 
       expect(tracker.shouldTrack()).toBe(false);
       tracker.track();
@@ -484,6 +513,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
       });
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       tracker.state.lastUsage = Date.now() - config.disableUnusedTrackingTimeout - 1000;
 
       expect(tracker.shouldTrack({ warmUp: true })).toBe(true);
@@ -501,7 +531,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
 
       tracker.track();
       await vi.advanceTimersByTimeAsync(0); // Complete first check
@@ -521,7 +552,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
 
       tracker.track();
       await vi.advanceTimersByTimeAsync(0); // Complete first check (will fail)
@@ -544,7 +576,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         ),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
 
       tracker.track();
       await vi.advanceTimersByTimeAsync(10); // Start checkEndpoints and let abortController be set
@@ -565,7 +598,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
 
       tracker.track();
       tracker.stopTracking();
@@ -583,7 +617,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
 
       tracker.track();
       await vi.advanceTimersByTimeAsync(0); // Let first track start
@@ -607,7 +642,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
       tracker.track();
 
       tracker.stopTracking();
@@ -625,7 +661,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         ),
       });
       const tracker = new FallbackTracker(config);
-      tracker.pickPrimaryEndpoint();
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
       tracker.track();
       await vi.advanceTimersByTimeAsync(0);
 
@@ -638,6 +675,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
     it("should clear all failure throttle timeouts", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
       tracker.reportFailure(config.primary);
       // Trigger another failure during throttle period - should be ignored
       tracker.reportFailure(config.primary);

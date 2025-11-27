@@ -174,13 +174,13 @@ const SOURCE_CHAIN_CONFIGS = {
   },
   [SOURCE_BASE_MAINNET]: {
     chainId: SOURCE_BASE_MAINNET,
-    name: "Base Mainnet",
+    name: "Base",
     slug: "base-mainnet",
     explorerUrl: "https://basescan.org/",
   },
   [SOURCE_BSC_MAINNET]: {
     chainId: SOURCE_BSC_MAINNET,
-    name: "BNB Mainnet",
+    name: "BNB",
     slug: "bnb-mainnet",
     explorerUrl: "https://bscscan.com/",
   },

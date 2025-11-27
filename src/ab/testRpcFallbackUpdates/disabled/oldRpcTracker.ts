@@ -18,13 +18,12 @@ import {
 } from "config/chains";
 import { getContract, getDataStoreContract, getMulticallContract } from "config/contracts";
 import { getRpcProviderKey } from "config/localStorage";
-import { getChainName, getFallbackRpcUrl, getRpcProviders } from "config/rpc";
-import { getProviderNameFromUrl } from "config/rpc";
+import { getChainName, getFallbackRpcUrl, getProviderNameFromUrl, getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { devtools } from "lib/devtools";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { FallbackTrackerRankingCounter } from "lib/metrics/types";
 import { EMPTY_OBJECT } from "lib/objects";
+import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 import { sleep } from "lib/sleep";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
@@ -191,7 +190,7 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
     nextSecondaryRpc = bestResponseTimeValidProbe;
   }
 
-  if (devtools.getFlag("debugRpcTracker")) {
+  if (_debugRpcTracker?.getFlag(RpcDebugFlags.LogRpcTracker)) {
     // eslint-disable-next-line no-console
     console.table(
       orderBy(

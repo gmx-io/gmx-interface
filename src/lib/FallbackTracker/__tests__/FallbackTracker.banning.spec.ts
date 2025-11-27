@@ -16,6 +16,7 @@ describe("FallbackTracker - endpoint banning", () => {
   afterEach(() => {
     vi.useRealTimers();
     vi.restoreAllMocks();
+    // Cleanup is handled by stopTracking calls in tests
   });
 
   describe("reportFailure", () => {

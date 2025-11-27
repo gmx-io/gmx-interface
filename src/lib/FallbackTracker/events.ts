@@ -2,7 +2,7 @@ import { EndpointStats } from "./FallbackTracker";
 
 export type FallbackTrackerEventsTypes = {
   // Incomming
-  endpointFailure: {
+  reportEndpointFailure: {
     endpoint: string;
     trackerKey: string;
   };
@@ -13,6 +13,10 @@ export type FallbackTrackerEventsTypes = {
     secondary: string;
     endpointsStats: EndpointStats<any>[];
   };
+  endpointBanned: {
+    endpoint: string;
+    trackerKey: string;
+  };
   trackingFinished: {
     trackerKey: string;
   };
@@ -21,14 +25,24 @@ export type FallbackTrackerEventsTypes = {
 export type FallbackTrackerEventName = keyof FallbackTrackerEventsTypes;
 
 export const fallbackTrackerEventKeys: Record<FallbackTrackerEventName, string> = {
-  endpointFailure: "FALLBACK_TRACKER_ENDPOINT_FAILURE",
+  reportEndpointFailure: "FALLBACK_TRACKER_ENDPOINT_FAILURE",
   endpointsUpdated: "FALLBACK_TRACKER_ENDPOINTS_UPDATED",
   trackingFinished: "FALLBACK_TRACKER_TRACK_FINISHED",
+  endpointBanned: "FALLBACK_TRACKER_ENDPOINT_BANNED",
 };
 
-export function emitEndpointFailure({ endpoint, trackerKey }: FallbackTrackerEventsTypes["endpointFailure"]) {
+export function emitReportEndpointFailure({
+  endpoint,
+  trackerKey,
+}: FallbackTrackerEventsTypes["reportEndpointFailure"]) {
   globalThis.dispatchEvent(
-    new CustomEvent(fallbackTrackerEventKeys.endpointFailure, { detail: { endpoint, trackerKey } })
+    new CustomEvent(fallbackTrackerEventKeys.reportEndpointFailure, { detail: { endpoint, trackerKey } })
+  );
+}
+
+export function emitEndpointBanned({ endpoint, trackerKey }: FallbackTrackerEventsTypes["endpointBanned"]) {
+  globalThis.dispatchEvent(
+    new CustomEvent(fallbackTrackerEventKeys.endpointBanned, { detail: { endpoint, trackerKey } })
   );
 }
 

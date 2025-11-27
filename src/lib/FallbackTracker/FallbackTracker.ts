@@ -2,12 +2,10 @@ import { differenceInMilliseconds } from "date-fns";
 
 import { getFallbackTrackerKey } from "config/localStorage";
 import { ErrorLike } from "lib/errors";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import type { FallbackTrackerBannedEvent } from "lib/metrics/types";
 import { sleepWithSignal } from "lib/sleep";
 import { combineAbortSignals } from "sdk/utils/abort";
 
-import { emitEndpointsUpdated, emitTrackingFinished, onFallbackTracker } from "./events";
+import { emitEndpointBanned, emitEndpointsUpdated, emitTrackingFinished, onFallbackTracker } from "./events";
 
 export const DEFAULT_FALLBACK_TRACKER_CONFIG = {
   trackInterval: 10 * 1000, // 10 seconds
@@ -101,7 +99,7 @@ export type FallbackTrackerState<TCheckStats> = {
   abortController: AbortController | undefined;
   setEndpointsThrottleTimeout: number | undefined;
   pendingEndpoints: { primary: string; secondary: string } | undefined;
-  unsubscribeFromIncomingEvents: () => void;
+  cleanupEvents: () => void;
 };
 
 export type EndpointState = {
@@ -192,11 +190,15 @@ export class FallbackTracker<TCheckStats> {
       abortController: undefined,
       setEndpointsThrottleTimeout: undefined,
       pendingEndpoints: undefined,
-      unsubscribeFromIncomingEvents: this.subscribeToIncomingEvents(),
+      cleanupEvents: this.selfSubscribe(),
     };
   }
 
   get trackerKey() {
+    return this.params.trackerKey;
+  }
+
+  get storageKey() {
     return getFallbackTrackerKey(this.params.trackerKey);
   }
 
@@ -280,15 +282,7 @@ export class FallbackTracker<TCheckStats> {
       cachedEndpointsState: this.getCachedEndpointsState(),
     });
 
-    emitMetricEvent<FallbackTrackerBannedEvent>({
-      event: "fallbackTracker.endpoint.banned",
-      isError: false,
-      data: {
-        key: this.trackerKey,
-        endpoint: this.params.getEndpointName?.(endpoint) ?? endpoint,
-        reason,
-      },
-    });
+    emitEndpointBanned({ endpoint, trackerKey: this.trackerKey });
 
     this.warn(`Ban endpoint "${endpoint}" with reason "${reason}"`);
 
@@ -299,7 +293,7 @@ export class FallbackTracker<TCheckStats> {
     this.selectBestEndpoints({ keepPrimary, keepSecondary });
   };
 
-  public pick(): CurrentEndpoints {
+  public pick = (): CurrentEndpoints => {
     this.state.lastUsage = Date.now();
 
     return {
@@ -310,6 +304,10 @@ export class FallbackTracker<TCheckStats> {
       ),
       trackerKey: this.trackerKey,
     };
+  };
+
+  public startTracking() {
+    this.track({ warmUp: true });
   }
 
   public track({ warmUp = false } = {}) {
@@ -333,7 +331,7 @@ export class FallbackTracker<TCheckStats> {
   }
 
   public stopTracking() {
-    this.state.unsubscribeFromIncomingEvents();
+    this.state.cleanupEvents();
 
     // Abort any pending probes.
     if (this.state.trackerTimeoutId) {
@@ -521,8 +519,8 @@ export class FallbackTracker<TCheckStats> {
     return hasMultipleEndpoints && (warmUp || !isUnused);
   }
 
-  subscribeToIncomingEvents() {
-    return onFallbackTracker("endpointFailure", ({ trackerKey, endpoint }) => {
+  selfSubscribe() {
+    return onFallbackTracker("reportEndpointFailure", ({ trackerKey, endpoint }) => {
       if (trackerKey === this.trackerKey) {
         this.reportFailure(endpoint);
       }
@@ -542,7 +540,7 @@ export class FallbackTracker<TCheckStats> {
   }
 
   loadStorage(validEndpoints: string[]): StoredState | undefined {
-    const stored = localStorage.getItem(this.trackerKey);
+    const stored = localStorage.getItem(this.storageKey);
 
     if (!stored) {
       return undefined;
@@ -588,7 +586,7 @@ export class FallbackTracker<TCheckStats> {
     };
 
     try {
-      localStorage.setItem(this.trackerKey, JSON.stringify(state));
+      localStorage.setItem(this.storageKey, JSON.stringify(state));
     } catch (error) {
       // eslint-disable-next-line no-console
       console.warn("Failed to save storage to localStorage", error);

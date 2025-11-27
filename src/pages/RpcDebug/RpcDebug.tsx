@@ -1,14 +1,13 @@
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { getProviderNameFromUrl } from "config/rpc";
 import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
-import { multicallDevtools, type MulticallDebugState } from "lib/multicall/_debug";
-import { getCurrentRpcUrls, getRpcTracker } from "lib/rpc/bestRpcTracker";
+import { _debugMulticall, type MulticallDebugState } from "lib/multicall/_debug";
+import { getCurrentRpcUrls, getRpcTrackerByChainId } from "lib/rpc/useRpcUrls";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import Button from "components/Button/Button";
 import Card from "components/Card/Card";
 
 import { DebugControlsPanel, EventsPanel, MarketsSection, RpcTable, type GroupedEvent, type RpcStats } from "./parts";
@@ -21,14 +20,14 @@ export default function RpcDebug() {
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
-  const [debugState, setDebugState] = useState<MulticallDebugState>(multicallDevtools.getDebugState());
+  const [debugState, setDebugState] = useState<MulticallDebugState>(_debugMulticall?.getDebugState() ?? {});
   const [events, setEvents] = useState<GroupedEvent[]>([]);
   const [idleSeconds, setIdleSeconds] = useState(0);
   const [allRpcStats, setAllRpcStats] = useState<RpcStats[]>([]);
 
   // Subscribe to debug events
   useEffect(() => {
-    const unsubscribe = multicallDevtools.onDebugEvent((event) => {
+    const unsubscribe = _debugMulticall?.onEvent((event) => {
       setIdleSeconds(0);
       setEvents((prev) => {
         const now = Date.now();
@@ -70,7 +69,8 @@ export default function RpcDebug() {
   // Update all RPC stats
   useEffect(() => {
     const updateStats = () => {
-      const tracker = getRpcTracker(chainId);
+      const tracker = getRpcTrackerByChainId(chainId);
+
       if (!tracker) {
         setAllRpcStats([]);
         return;
@@ -108,7 +108,7 @@ export default function RpcDebug() {
 
   // Update debug state when it changes
   const handleDebugFlagChange = useCallback(<K extends keyof MulticallDebugState>(flag: K, value: boolean) => {
-    multicallDevtools.setDebugFlag(flag, value);
+    _debugMulticall?.setFlag(flag, value);
     setDebugState((prev) => ({ ...prev, [flag]: value }));
   }, []);
 

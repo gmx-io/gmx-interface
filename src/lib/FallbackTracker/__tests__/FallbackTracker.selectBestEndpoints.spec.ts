@@ -4,10 +4,19 @@ import { fallbackTrackerEventKeys } from "../events";
 import { FallbackTracker } from "../FallbackTracker";
 import { createMockConfig, testEndpoints } from "./_utils";
 
+const trackers: FallbackTracker<any>[] = [];
+
 describe("FallbackTracker", () => {
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    trackers.forEach((tracker) => {
+      tracker.stopTracking();
+    });
+    trackers.length = 0;
   });
 
   describe("selectBestEndpoints", () => {
@@ -18,6 +27,7 @@ describe("FallbackTracker", () => {
           selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
         const originalSecondary = tracker.state.secondary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
@@ -38,6 +48,7 @@ describe("FallbackTracker", () => {
           selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
         const originalSecondary = tracker.state.secondary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
@@ -58,6 +69,7 @@ describe("FallbackTracker", () => {
           selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
 
         tracker.selectBestEndpoints({ keepSecondary: true });
 
@@ -73,6 +85,7 @@ describe("FallbackTracker", () => {
           selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
 
@@ -92,6 +105,7 @@ describe("FallbackTracker", () => {
           selectNextSecondary: vi.fn(),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
 
         tracker.selectBestEndpoints();
@@ -113,6 +127,7 @@ describe("FallbackTracker", () => {
           selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.fallback),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
         const warnSpy = vi.spyOn(tracker, "warn");
@@ -132,6 +147,7 @@ describe("FallbackTracker", () => {
           }),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const originalSecondary = tracker.state.secondary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
         const warnSpy = vi.spyOn(tracker, "warn");
@@ -153,6 +169,7 @@ describe("FallbackTracker", () => {
           }),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
         const originalSecondary = tracker.state.secondary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
@@ -174,6 +191,7 @@ describe("FallbackTracker", () => {
           selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.fallback),
         });
         const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
         const warnSpy = vi.spyOn(tracker, "warn");
@@ -227,7 +245,7 @@ describe("FallbackTracker", () => {
       expect(dispatchSpy).toHaveBeenCalledTimes(1);
 
       const event = dispatchSpy.mock.calls[0][0] as CustomEvent;
-      expect(event.type).toBe(fallbackTrackerEventKeys.updateEndpoints);
+      expect(event.type).toBe(fallbackTrackerEventKeys.endpointsUpdated);
       expect(event.detail.primary).toBe(newPrimary);
       expect(event.detail.secondary).toBe(newSecondary);
     });
@@ -300,7 +318,7 @@ describe("FallbackTracker", () => {
 
       expect(dispatchSpy).toHaveBeenCalled();
       const event = dispatchSpy.mock.calls[0][0] as CustomEvent;
-      expect(event.type).toBe(fallbackTrackerEventKeys.updateEndpoints);
+      expect(event.type).toBe(fallbackTrackerEventKeys.endpointsUpdated);
       expect(event.detail).toEqual({
         trackerKey: tracker.trackerKey,
         primary: newPrimary,

@@ -10,17 +10,12 @@ import {
   RpcPurpose,
 } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { DEFAULT_FALLBACK_TRACKER_CONFIG, FallbackTracker, EndpointStats } from "lib/FallbackTracker";
-import { onFallbackTracker } from "lib/FallbackTracker/events";
-import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import type { RpcTrackerUpdateEndpointsEvent } from "lib/metrics/types";
+import { DEFAULT_FALLBACK_TRACKER_CONFIG, EndpointStats, FallbackTracker } from "lib/FallbackTracker/FallbackTracker";
 import { fetchEthCall } from "lib/rpc/fetchEthCall";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { getMarketsByChainId } from "sdk/configs/markets";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
-
-import { devtools } from "./_debug";
 
 // Default configuration for RpcTracker (partial - requires chainId and providers)
 export const DEFAULT_RPC_TRACKER_CONFIG = {
@@ -41,12 +36,11 @@ export type RpcCheckResult = {
   blockNumber: number | undefined;
 };
 
-type RpcStats = EndpointStats<RpcCheckResult>;
+export type RpcStats = EndpointStats<RpcCheckResult>;
 
 export class RpcTracker {
   providersMap: Record<string, RpcConfig>;
   fallbackTracker: FallbackTracker<RpcCheckResult>;
-  offFallbackTrackerEvents: () => void;
 
   constructor(public readonly params: RpcTrackerParams) {
     const chainProviders = [
@@ -75,7 +69,7 @@ export class RpcTracker {
 
     this.fallbackTracker = new FallbackTracker<RpcCheckResult>({
       ...DEFAULT_FALLBACK_TRACKER_CONFIG,
-      trackerKey: `RpcTracker:${getChainName(this.params.chainId)}`,
+      trackerKey: `RpcTracker.${getChainName(this.params.chainId)}`,
       primary: defaultProvider.url,
       secondary: secondaryProvider.url,
       endpoints: chainProviders.map((provider) => provider.url),
@@ -84,28 +78,6 @@ export class RpcTracker {
       selectNextSecondary: this.selectNextSecondary,
       getEndpointName: getProviderNameFromUrl,
     });
-
-    // Subscribe to FallbackTracker events
-    const unsubscribeUpdate = onFallbackTracker(
-      "endpointsUpdated",
-      ({ trackerKey, primary, secondary, endpointsStats }) => {
-        if (trackerKey === this.trackerKey) {
-          devtools.debugRpcTrackerState(this);
-          this.emitUpdateEndpointsMetric({ primary, secondary, endpointsStats });
-        }
-      }
-    );
-
-    const unsubscribeTrackFinished = onFallbackTracker("trackingFinished", ({ trackerKey }) => {
-      if (trackerKey === this.trackerKey) {
-        devtools.debugRpcTrackerState(this);
-      }
-    });
-
-    this.offFallbackTrackerEvents = () => {
-      unsubscribeUpdate();
-      unsubscribeTrackFinished();
-    };
   }
 
   get trackerKey() {
@@ -118,11 +90,6 @@ export class RpcTracker {
 
   getRpcConfig(endpoint: string): RpcConfig | undefined {
     return this.providersMap[endpoint];
-  }
-
-  public stopTracking() {
-    this.offFallbackTrackerEvents();
-    this.fallbackTracker.stopTracking();
   }
 
   public pickCurrentRpcUrls() {
@@ -144,13 +111,6 @@ export class RpcTracker {
   checkRpc = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
     const rpcConfig = this.providersMap[endpoint];
 
-    if (!rpcConfig.isPublic && devtools.shouldMockPrivateRpcCheck) {
-      return {
-        responseTime: 300,
-        blockNumber: 100000,
-      };
-    }
-
     if (!rpcConfig.isPublic && (!this.getIsLargeAccount() || rpcConfig.purpose !== "largeAccount")) {
       throw new Error("Skip private provider");
     }
@@ -158,8 +118,11 @@ export class RpcTracker {
     const chainId = this.params.chainId;
     const startTime = Date.now();
 
-    const probeMarketAddress = Object.values(getMarketsByChainId(chainId))[0].marketTokenAddress;
-    const probeFieldKey = HASHED_MARKET_CONFIG_KEYS[chainId]?.[probeMarketAddress]?.["minCollateralFactor"];
+    const markets = getMarketsByChainId(chainId);
+    const probeMarket = Object.values(markets)[0];
+    const probeMarketAddress = probeMarket?.marketTokenAddress;
+    const probeFieldKey =
+      probeMarketAddress && HASHED_MARKET_CONFIG_KEYS[chainId]?.[probeMarketAddress]?.["minCollateralFactor"];
 
     if (!probeMarketAddress || !probeFieldKey) {
       throw new Error("Failed to get params for RPC check");
@@ -312,10 +275,7 @@ export class RpcTracker {
       const isLagging =
         bestValidBlock && rpcBlockNumber && bestValidBlock - rpcBlockNumber > this.params.blockLaggingThreshold;
 
-      const ignoreBlockNumberCheck =
-        devtools.shouldMockPrivateRpcCheck && !this.getRpcConfig(result.endpoint)?.isPublic;
-
-      return isSuccess && (ignoreBlockNumberCheck || (!isFromFuture && !isLagging));
+      return isSuccess && !isFromFuture && !isLagging;
     });
 
     if (validStats.length === 0) {
@@ -342,45 +302,5 @@ export class RpcTracker {
     return mostRecentBlock - secondRecentBlock > this.params.blockFromFutureThreshold
       ? secondRecentBlock
       : mostRecentBlock;
-  };
-
-  emitUpdateEndpointsMetric = ({
-    primary,
-    secondary,
-    endpointsStats,
-  }: {
-    primary: string;
-    secondary: string;
-    endpointsStats: RpcStats[];
-  }) => {
-    const bestValidBlock = this.getBestValidBlock(endpointsStats);
-    const primaryStats = endpointsStats.find((s) => s.endpoint === primary);
-    const secondaryStats = endpointsStats.find((s) => s.endpoint === secondary);
-
-    emitMetricEvent<RpcTrackerUpdateEndpointsEvent>({
-      event: "rpcTracker.updateEndpoints",
-      isError: false,
-      data: {
-        chainName: getChainName(this.params.chainId),
-        primary: getProviderNameFromUrl(primary),
-        secondary: getProviderNameFromUrl(secondary),
-        primaryBlockGap: this.getBlockGap(primaryStats, bestValidBlock),
-        secondaryBlockGap: this.getBlockGap(secondaryStats, bestValidBlock),
-      },
-    });
-  };
-
-  getBlockGap = (endpointStats: RpcStats | undefined, bestValidBlock: number | undefined): number | "unknown" => {
-    if (!endpointStats) {
-      return "unknown";
-    }
-
-    const blockNumber = endpointStats.checkResult?.stats?.blockNumber;
-
-    if (typeof blockNumber !== "number" || !bestValidBlock) {
-      return "unknown";
-    }
-
-    return bestValidBlock - blockNumber;
   };
 }

@@ -1,33 +1,45 @@
 import orderBy from "lodash/orderBy";
 
 import { getChainName } from "config/chains";
+import { isDevelopment } from "config/env";
 import { getProviderNameFromUrl } from "config/rpc";
-import { devtools as globalDevtools } from "lib/devtools";
-import { onFallbackTracker } from "lib/FallbackTracker/events";
+import { Storage } from "lib/storage/Storage";
 
 import { RpcTracker } from "./RpcTracker";
 
-class RpcDevtools {
-  private endpointFailures: Map<string, number> = new Map();
-  private listeners: Array<(failures: Map<string, number>) => void> = [];
-  private unsubscribeFromEvents: (() => void) | undefined;
+export enum RpcDebugFlags {
+  LogRpcTracker = "logRpcTracker",
+  DebugLargeAccountRpc = "debugLargeAccountRpc",
+  DebugFallbackRpc = "debugFallbackRpc",
+}
+
+export type RpcDebugState = {
+  [RpcDebugFlags.LogRpcTracker]: boolean;
+  [RpcDebugFlags.DebugLargeAccountRpc]: boolean;
+  [RpcDebugFlags.DebugFallbackRpc]: boolean;
+};
+
+class RpcTrackerDebug {
+  storage: Storage<RpcDebugState>;
 
   constructor() {
-    if (typeof window !== "undefined") {
-      this.unsubscribeFromEvents = onFallbackTracker("endpointFailure", ({ endpoint }) => {
-        const currentCount = this.endpointFailures.get(endpoint) || 0;
-        this.endpointFailures.set(endpoint, currentCount + 1);
-        this.notifyListeners();
-      });
-    }
+    this.storage = new Storage<RpcDebugState>("rpcDebugState");
   }
 
-  get shouldMockPrivateRpcCheck() {
-    return globalDevtools.getFlag("rpcTrackerMockPrivateRpcCheck");
+  get isEnabled() {
+    return this.getFlag(RpcDebugFlags.LogRpcTracker);
+  }
+
+  getFlag(flag: RpcDebugFlags) {
+    return this.storage.get(flag) ?? false;
+  }
+
+  setFlag(flag: RpcDebugFlags, value: boolean) {
+    this.storage.set(flag, value);
   }
 
   debugRpcTrackerState(rpcTracker: RpcTracker) {
-    if (!globalDevtools.getFlag("debugRpcTracker")) {
+    if (!this.isEnabled) {
       return;
     }
 
@@ -74,34 +86,6 @@ class RpcDevtools {
     // eslint-disable-next-line no-console
     console.groupEnd();
   }
-
-  getEndpointFailures(): Map<string, number> {
-    return new Map(this.endpointFailures);
-  }
-
-  getFailureCount(endpoint: string): number {
-    return this.endpointFailures.get(endpoint) || 0;
-  }
-
-  onFailuresUpdate(callback: (failures: Map<string, number>) => void): () => void {
-    this.listeners.push(callback);
-    return () => {
-      const index = this.listeners.indexOf(callback);
-      if (index > -1) {
-        this.listeners.splice(index, 1);
-      }
-    };
-  }
-
-  private notifyListeners() {
-    const failures = this.getEndpointFailures();
-    this.listeners.forEach((listener) => listener(failures));
-  }
-
-  clearFailures() {
-    this.endpointFailures.clear();
-    this.notifyListeners();
-  }
 }
 
-export const devtools = new RpcDevtools();
+export const _debugRpcTracker = isDevelopment() ? new RpcTrackerDebug() : undefined;
