@@ -4904,6 +4904,10 @@ msgstr "상위 PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "가격 조건이 충족될 때 주문을 실행할 충분한 유동성이 없을 수 있습니다."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Avalanche Fuji에서 청구 불가"
@@ -6840,6 +6844,10 @@ msgstr "보너스 리베이트"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "{0} 시장 풀에 기존 포지션이 있지만, 이 주문에 대한 유동성이 부족합니다."
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"

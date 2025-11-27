@@ -108,7 +108,7 @@ const MARKETS_INFO_QUERY = gql`
   }
 `;
 
-const MARKETS_INFO_QUERY_LIMIT = 250;
+const MARKETS_INFO_QUERY_LIMIT = 150;
 
 export function useFastMarketsInfoRequest(chainId: number) {
   const {
