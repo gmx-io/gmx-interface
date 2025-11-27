@@ -114,7 +114,7 @@ export const ColorfulButtonLink = ({
   }
 
   return (
-    <button className={className} onClick={onClick}>
+    <button className={className} onClick={onClick} type="button">
       {children}
 
       <ChevronRightIcon className="size-12" />
