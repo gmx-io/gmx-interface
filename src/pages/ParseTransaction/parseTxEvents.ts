@@ -61,6 +61,8 @@ export function convertFromContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);
 }
 
+export type ParseTransactionEvent = ReturnType<typeof parseEvent>;
+
 function parseEvent(event: ParseEventLogsReturnType<Abi, undefined, true, undefined>[number]) {
   const values: LogEntry[] = [];
   const parsedLog = eventEmitterInterface.parseLog(event);

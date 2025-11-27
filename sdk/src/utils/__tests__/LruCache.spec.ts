@@ -67,4 +67,16 @@ describe("LruCache", () => {
     expect(cache.has("a")).toBe(true);
     expect(cache.get("a")).toBe(1);
   });
+
+  it("should clear all entries when clean is called", () => {
+    const cache = new LRUCache<number>(2);
+    cache.set("a", 1);
+    cache.set("b", 2);
+    expect(cache.has("a")).toBe(true);
+    expect(cache.has("b")).toBe(true);
+    cache.clean();
+    expect(cache.has("a")).toBe(false);
+    expect(cache.has("b")).toBe(false);
+    expect(cache.getKeys().length).toBe(0);
+  });
 });

@@ -120,7 +120,7 @@ export interface OracleFetcher {
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
-  fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response>;
+  fetchPostBatchReport(body: BatchReportBody): Promise<Response>;
   fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchUiVersion(currentVersion: number, active: boolean): Promise<number>;
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;

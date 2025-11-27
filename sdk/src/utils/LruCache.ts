@@ -1,12 +1,10 @@
 export class LRUCache<T> {
   private capacity: number;
   private cache: Map<string, T>;
-  private recentKeys: string[];
 
   constructor(capacity: number) {
     this.capacity = capacity;
     this.cache = new Map<string, T>();
-    this.recentKeys = [];
   }
 
   has(key: string): boolean {
@@ -15,9 +13,11 @@ export class LRUCache<T> {
 
   get(key: string): T | undefined {
     if (this.cache.has(key)) {
-      // Update recentKeys to reflect the usage
-      this.updateRecentKeys(key);
-      return this.cache.get(key);
+      // Move to end (most recently used) by deleting and re-inserting
+      const value = this.cache.get(key)!;
+      this.cache.delete(key);
+      this.cache.set(key, value);
+      return value;
     }
     return undefined;
   }
@@ -27,32 +27,36 @@ export class LRUCache<T> {
       throw new Error("Key must be a string");
     }
 
-    // If key exists, update its value and move it to the front of recentKeys
     if (this.cache.has(key)) {
+      // Update existing key: delete and re-insert to move to end (most recently used)
+      this.cache.delete(key);
       this.cache.set(key, value);
-      this.updateRecentKeys(key);
     } else {
-      // If capacity is reached, remove least recently used item
+      // If capacity is 0, don't store anything
+      if (this.capacity === 0) {
+        return;
+      }
+      // If capacity is reached, remove least recently used (first entry)
       if (this.cache.size === this.capacity) {
-        const lruKey = this.recentKeys.shift();
-        if (lruKey) {
-          this.cache.delete(lruKey);
+        const firstKey = this.cache.keys().next().value;
+        if (firstKey !== undefined) {
+          this.cache.delete(firstKey);
         }
       }
-      // Add the new key-value pair to the cache and recentKeys
+      // Add the new key-value pair (inserted at end = most recently used)
       this.cache.set(key, value);
-      this.recentKeys.push(key);
     }
   }
 
   delete(key: string): void {
     this.cache.delete(key);
-    this.recentKeys = this.recentKeys.filter((k) => k !== key);
   }
 
-  private updateRecentKeys(key: string): void {
-    // Move the key to the end (most recently used) of recentKeys
-    this.recentKeys = this.recentKeys.filter((k) => k !== key);
-    this.recentKeys.push(key);
+  getKeys(): string[] {
+    return Array.from(this.cache.keys());
+  }
+
+  clean(): void {
+    this.cache.clear();
   }
 }
