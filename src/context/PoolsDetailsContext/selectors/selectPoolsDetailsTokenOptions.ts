@@ -13,15 +13,18 @@ import {
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsShortTokenAddress,
 } from "./poolsDetailsDerivedSelectors";
+import { selectMultichainMarketTokenBalances } from "./selectMultichainMarketTokenBalances";
 
 export const selectPoolsDetailsTokenOptions = createSelector((q): Array<Token & { isMarketToken?: boolean }> => {
   const chainId = q(selectChainId);
   const paySource = q(selectPoolsDetailsPaySource);
+
   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
   const glvInfo = q(selectPoolsDetailsGlvInfo);
   const { isPair, isDeposit } = q(selectPoolsDetailsFlags);
   const marketsInfoData = q(selectMarketsInfoData);
+  const multichainMarketTokensBalances = q(selectMultichainMarketTokenBalances);
 
   if (!longTokenAddress || !shortTokenAddress) return [];
 
@@ -48,7 +51,9 @@ export const selectPoolsDetailsTokenOptions = createSelector((q): Array<Token & 
           const indexTokenSymbol = getMarketIndexTokenSymbol(chainId, m.address);
           const market = marketsInfoData?.[m.address];
 
-          if (!market || market.isDisabled) {
+          const hasSomeBalance = (multichainMarketTokensBalances[m.address]?.totalBalance ?? 0n) > 0n;
+
+          if (!market || market.isDisabled || !hasSomeBalance) {
             return;
           }
 
