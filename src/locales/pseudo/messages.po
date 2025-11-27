@@ -4904,6 +4904,10 @@ msgstr ""
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr ""
@@ -6839,6 +6843,10 @@ msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
 msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx

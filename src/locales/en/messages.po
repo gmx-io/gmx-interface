@@ -4904,6 +4904,10 @@ msgstr "Top PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr "Include rPnL in Leverage Display"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Claims are not available on Avalanche Fuji"
@@ -6840,6 +6844,10 @@ msgstr "Bonus Rebate"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr "Show rPnL Amounts"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
