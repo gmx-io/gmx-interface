@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
-import { metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
+import { FreshnessMetricId, metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { registerOracleKeeperFailure, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -98,6 +99,8 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
         result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
       }
+
+      freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Tickers);
 
       return {
         pricesData: result,

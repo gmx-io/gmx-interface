@@ -1500,6 +1500,10 @@ msgstr "Failed to update order(s)"
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
+msgid "Metrics Debug"
+msgstr "Metrics Debug"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Failed Market Decrease"
@@ -2666,6 +2670,7 @@ msgstr "Fulfilling buy request."
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr "This swap is routed through several GM pools for the lowest possible fees and price impact."
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
