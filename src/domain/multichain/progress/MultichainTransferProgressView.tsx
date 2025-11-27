@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { getAccount } from "@wagmi/core";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useCopyToClipboard } from "react-use";
 
@@ -43,7 +43,7 @@ import SpinnerBlueSrc from "img/ic_spinner_blue.svg";
 
 import { MultichainTransferProgress } from "./MultichainTransferProgress";
 
-const TOAST_ID_PREFIX = "gm-sell-progress-";
+const MULTICHAIN_TRANSFER_PROGRESS_TOAST_ID = "multichain-transfer-progress";
 
 type PromiseState = "pending" | "completed" | "error";
 function usePromiseState<ErrorType = unknown>(
@@ -56,6 +56,8 @@ function usePromiseState<ErrorType = unknown>(
   const [error, setError] = useState<ErrorType | undefined>(undefined);
 
   useEffect(() => {
+    setState(undefined);
+    setError(undefined);
     if (!promise) {
       return;
     }
@@ -81,27 +83,20 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
     task?.getStepPromise("finished")
   );
 
-  const toastId = useMemo(() => {
-    if (!task) {
-      return undefined;
-    }
-    return `${TOAST_ID_PREFIX}${task.initialTxHash}`;
-  }, [task]);
-
   useEffect(() => {
     if (!task) {
       return;
     }
 
-    if (!finishedState || !toastId) {
-      if (toastId && toast.isActive(toastId)) {
-        toast.dismiss(toastId);
+    if (!finishedState) {
+      if (toast.isActive(MULTICHAIN_TRANSFER_PROGRESS_TOAST_ID)) {
+        toast.dismiss(MULTICHAIN_TRANSFER_PROGRESS_TOAST_ID);
       }
       return;
     }
 
-    if (toast.isActive(toastId)) {
-      toast.update(toastId, {
+    if (toast.isActive(MULTICHAIN_TRANSFER_PROGRESS_TOAST_ID)) {
+      toast.update(MULTICHAIN_TRANSFER_PROGRESS_TOAST_ID, {
         render: (
           <ToastContent chainId={chainId} task={task} finishedState={finishedState} finishedError={finishedError} />
         ),
@@ -110,7 +105,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
       toast(
         <ToastContent chainId={chainId} task={task} finishedState={finishedState} finishedError={finishedError} />,
         {
-          toastId,
+          toastId: MULTICHAIN_TRANSFER_PROGRESS_TOAST_ID,
           type: "default",
           autoClose: false,
           closeButton: false,
@@ -120,7 +115,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
         }
       );
     }
-  }, [chainId, finishedError, finishedState, task, toastId]);
+  }, [chainId, finishedError, finishedState, task]);
 
   return null;
 }
