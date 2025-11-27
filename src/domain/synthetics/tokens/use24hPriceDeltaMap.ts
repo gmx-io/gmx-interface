@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { Address } from "viem";
 
 import { FreshnessMetricId } from "lib/metrics";
-import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
@@ -37,7 +37,7 @@ export function use24hPriceDeltaMap(
   >([chainId, oracleKeeperFetcher.url, "use24PriceDelta"], {
     fetcher: () => {
       return oracleKeeperFetcher.fetch24hPrices().then((res) => {
-        reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Prices24h);
+        freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Prices24h);
         return res;
       });
     },

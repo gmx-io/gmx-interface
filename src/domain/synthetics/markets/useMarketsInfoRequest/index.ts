@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { FreshnessMetricId } from "lib/metrics";
-import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -241,7 +241,7 @@ function useMarketsValuesRequest({
   });
 
   useEffect(() => {
-    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.MarketsValues);
+    freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.MarketsValues);
   }, [chainId, marketsValuesQuery.data]);
 
   return marketsValuesQuery;
@@ -365,7 +365,7 @@ function useMarketsConfigsRequest({
   });
 
   useEffect(() => {
-    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.MarketsConfigs);
+    freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.MarketsConfigs);
   }, [chainId, marketsConfigsQuery.data]);
 
   return marketsConfigsQuery;

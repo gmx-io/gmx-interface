@@ -9,9 +9,10 @@ import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synth
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { FreshnessMetricId } from "lib/metrics";
-import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getWrappedToken } from "sdk/configs/tokens";
 import {
   isIncreaseOrderType,
@@ -95,14 +96,20 @@ export function useOrders(
   );
 
   const { data } = useMulticall(chainId, `useOrdersData-${chainId}`, {
+    refreshInterval: FREQUENT_UPDATE_INTERVAL,
     key: key,
     request: buildUseOrdersMulticall,
-    parseResponse,
+    parseResponse: (res, chainId) => {
+      const result = parseResponse(res, chainId);
+      return result;
+    },
   });
 
   useEffect(() => {
-    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Orders);
-  }, [chainId, data]);
+    if (!key) {
+      freshnessMetrics.clear(chainId, FreshnessMetricId.Orders);
+    }
+  }, [key, chainId]);
 
   const ordersData: OrdersData | undefined = useMemo(() => {
     const filteredOrders = data?.orders.filter((order) => {
@@ -196,10 +203,12 @@ function buildUseOrdersMulticall(chainId: ContractsChainId, key: CacheKey) {
   } satisfies MulticallRequestConfig<any>;
 }
 
-function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMulticall>>) {
+function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMulticall>>, chainId: ContractsChainId) {
   const count = Number(res.data.dataStore.count.returnValues[0]);
   const orderKeys = res.data.dataStore.keys.returnValues;
   const orders = res.data.reader.orders.returnValues as any[];
+
+  freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Orders);
 
   return {
     count,

@@ -1500,6 +1500,10 @@ msgstr "주문 업데이트 실패"
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
+msgid "Metrics Debug"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "마켓 감소 실패"
@@ -2666,6 +2670,7 @@ msgstr "매수 요청 이행 중."
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr "이 스왑은 가능한 최저 수수료와 가격 영향을 위해 여러 GM 풀을 통해 라우팅됩니다."
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"

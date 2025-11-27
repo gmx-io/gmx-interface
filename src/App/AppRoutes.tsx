@@ -15,6 +15,7 @@ import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
 import { useHashQueryParams } from "lib/useHashQueryParams";
 import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
@@ -55,6 +56,7 @@ export function AppRoutes() {
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
   useHashQueryParams();
+  useFreshnessMetricsControl();
 
   const query = useRouteQuery();
 

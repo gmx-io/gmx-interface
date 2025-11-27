@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
@@ -8,7 +8,7 @@ import {
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { Token } from "domain/tokens";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
-import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
 import { CacheKey, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -79,11 +79,16 @@ export function useTokenBalances(
 
   const account = overrideAccount ?? currentAccount;
 
+  const balancesKey = useMemo(
+    () => (account && enabled ? [account, overrideTokenList?.map((t) => t.address)] : null),
+    [account, enabled, overrideTokenList]
+  );
+
   const { data, error } = useMulticall(chainId, "useTokenBalances", {
-    key: account && enabled ? [account, overrideTokenList?.map((t) => t.address)] : null,
+    key: balancesKey,
     refreshInterval,
     request: buildTokenBalancesRequest,
-    parseResponse: (res) => {
+    parseResponse: (res, chainId) => {
       let result: TokenBalancesData = {};
 
       Object.keys(res.data).forEach((tokenAddress) => {
@@ -92,13 +97,17 @@ export function useTokenBalances(
 
       resetTokensBalancesUpdates(Object.keys(result), "wallet");
 
+      freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Balances);
+
       return result;
     },
   });
 
   useEffect(() => {
-    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Balances);
-  }, [chainId, data]);
+    if (!balancesKey) {
+      freshnessMetrics.clear(chainId, FreshnessMetricId.Balances);
+    }
+  }, [balancesKey, chainId]);
 
   const balancesData = useUpdatedTokensBalances(data, "wallet");
 

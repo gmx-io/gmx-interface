@@ -29,7 +29,7 @@ import {
   LoadingSuccessEvent,
   metrics,
 } from "lib/metrics";
-import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
@@ -412,7 +412,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     if (success) {
-      reportFreshnessMetricThrottled(this.chainId, FreshnessMetricId.Candles);
+      freshnessMetrics.reportThrottled(this.chainId, FreshnessMetricId.Candles);
       if (isPrefetch) {
         metrics.pushEvent<LoadingSuccessEvent>({
           event: "candlesLoad.success",

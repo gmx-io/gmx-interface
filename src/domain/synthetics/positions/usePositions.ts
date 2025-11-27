@@ -12,7 +12,7 @@ import {
 } from "context/SyntheticsEvents";
 import type { Position } from "domain/synthetics/positions/types";
 import { FreshnessMetricId, metrics, MissedMarketPricesCounter } from "lib/metrics";
-import { reportFreshnessMetricThrottled } from "lib/metrics/reportFreshnessMetric";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -48,12 +48,17 @@ export function usePositions(
     account,
   });
 
+  const positionsKey = useMemo(
+    () => (account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null),
+    [account, keysAndPrices.marketsKeys]
+  );
+
   const {
     data: positionsData,
     error: positionsError,
     isLoading,
   } = useMulticall(chainId, "usePositionsData", {
-    key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
+    key: positionsKey,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
@@ -84,8 +89,10 @@ export function usePositions(
         },
       };
     },
-    parseResponse: (res) => {
+    parseResponse: (res, chainId) => {
       const positions = res.data.reader.positions.returnValues;
+
+      freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
         const { position, fees, basePnlUsd } = positionInfo;
@@ -136,8 +143,10 @@ export function usePositions(
   }, [disableBatching, positionsData]);
 
   useEffect(() => {
-    reportFreshnessMetricThrottled(chainId, FreshnessMetricId.Positions);
-  }, [chainId, positionsData]);
+    if (!positionsKey) {
+      freshnessMetrics.clear(chainId, FreshnessMetricId.Positions);
+    }
+  }, [positionsKey, chainId]);
 
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,
