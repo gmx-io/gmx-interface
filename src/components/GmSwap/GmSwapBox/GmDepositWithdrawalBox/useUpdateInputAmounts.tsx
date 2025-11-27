@@ -1,16 +1,15 @@
 import { useCallback, useEffect } from "react";
 
 import {
+  PLATFORM_TOKEN_DECIMALS,
   selectPoolsDetailsFirstToken,
   selectPoolsDetailsFlags,
   selectPoolsDetailsFocusedInput,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsGlvTokenAmount,
-  selectPoolsDetailsGlvTokenData,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketOrGlvTokenAmount,
-  selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsSecondToken,
   selectPoolsDetailsSetFirstTokenInputValue,
   selectPoolsDetailsSetMarketOrGlvTokenInputValue,
@@ -58,9 +57,7 @@ function updateTokenInputForMatch({
 
 export function useUpdateInputAmounts() {
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
-  const glvToken = useSelector(selectPoolsDetailsGlvTokenData);
   const glvTokenAmount = useSelector(selectPoolsDetailsGlvTokenAmount);
-  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
   const marketTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
@@ -78,9 +75,13 @@ export function useUpdateInputAmounts() {
   const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
   const setMarketOrGlvTokenInputValue = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
 
+  const hasMarketInfo = Boolean(marketInfo);
+  const isSameCollaterals = marketInfo?.isSameCollaterals;
+  const isGlv = Boolean(glvInfo);
+
   // Deposit: User entered collateral tokens → calculate output market/GLV tokens
   const handleDepositInputUpdate = useCallback(() => {
-    if (!amounts || !marketToken) return;
+    if (!amounts) return;
 
     const isCollateralFocused = ["first", "second"].includes(focusedInput);
 
@@ -95,11 +96,9 @@ export function useUpdateInputAmounts() {
       }
 
       // Update market/GLV token output
-      const outputAmount = glvInfo ? amounts.glvTokenAmount : amounts.marketTokenAmount;
-      const outputToken = glvInfo ? glvToken : marketToken;
-      if (!outputToken) return;
+      const outputAmount = isGlv ? amounts.glvTokenAmount : amounts.marketTokenAmount;
 
-      setMarketOrGlvTokenInputValue(formatTokenAmount(outputAmount, outputToken.decimals));
+      setMarketOrGlvTokenInputValue(formatTokenAmount(outputAmount, PLATFORM_TOKEN_DECIMALS));
     } else if (focusedInput === "market") {
       // User entered market/GLV amount → calculate collateral inputs
       const inputAmount = glvInfo ? glvTokenAmount : marketTokenAmount;
@@ -113,6 +112,14 @@ export function useUpdateInputAmounts() {
       // Special case: platform token deposit
       if (firstToken?.isPlatformToken) {
         setFirstTokenInputValue(formatTokenAmount(amounts.marketTokenAmount, firstToken.decimals));
+        return;
+      }
+
+      if (isSameCollaterals) {
+        if (firstToken) {
+          const combinedAmount = amounts.longTokenAmount + amounts.shortTokenAmount;
+          setFirstTokenInputValue(formatAmountFree(combinedAmount, firstToken.decimals));
+        }
         return;
       }
 
@@ -137,26 +144,26 @@ export function useUpdateInputAmounts() {
     }
   }, [
     amounts,
-    marketToken,
     focusedInput,
+    isGlv,
+    setMarketOrGlvTokenInputValue,
     glvInfo,
-    glvToken,
     glvTokenAmount,
     marketTokenAmount,
     firstToken,
+    isSameCollaterals,
     firstTokenWrappedAddress,
     longTokenAddress,
     shortTokenAddress,
+    setFirstTokenInputValue,
     secondToken,
     secondTokenWrappedAddress,
-    setMarketOrGlvTokenInputValue,
-    setFirstTokenInputValue,
     setSecondTokenInputValue,
   ]);
 
   // Withdrawal: User entered market tokens → calculate output collateral tokens
   const handleWithdrawalInputUpdate = useCallback(() => {
-    if (!amounts || !marketInfo || !marketToken) return;
+    if (!amounts || !hasMarketInfo) return;
 
     if (focusedInput === "market") {
       // User entered market token amount → calculate collateral outputs
@@ -166,11 +173,12 @@ export function useUpdateInputAmounts() {
         return;
       }
 
-      if (marketInfo.isSameCollaterals) {
+      if (isSameCollaterals) {
         // Both tokens are the same, combine amounts
-        if (longTokenAddress && firstToken) {
+        if (firstToken) {
           const combinedAmount = amounts.longTokenAmount + amounts.shortTokenAmount;
-          setFirstTokenInputValue(formatTokenAmount(combinedAmount, firstToken.decimals));
+
+          setFirstTokenInputValue(formatAmountFree(combinedAmount, firstToken.decimals));
         }
       } else {
         // Different tokens, update separately
@@ -209,11 +217,10 @@ export function useUpdateInputAmounts() {
       }
 
       // Update market token input
-      setMarketOrGlvTokenInputValue(formatTokenAmount(amounts.marketTokenAmount, marketToken.decimals));
+      setMarketOrGlvTokenInputValue(formatTokenAmount(amounts.marketTokenAmount, PLATFORM_TOKEN_DECIMALS));
 
-      // Update both collateral token displays
-      if (marketInfo.isSameCollaterals) {
-        if (longTokenAddress && firstToken) {
+      if (isSameCollaterals) {
+        if (firstToken) {
           const combinedAmount = amounts.longTokenAmount + amounts.shortTokenAmount;
           setFirstTokenInputValue(formatAmountFree(combinedAmount, firstToken.decimals));
         }
@@ -239,17 +246,17 @@ export function useUpdateInputAmounts() {
     }
   }, [
     amounts,
-    marketInfo,
-    marketToken,
+    hasMarketInfo,
     focusedInput,
+    isSameCollaterals,
+    setFirstTokenInputValue,
+    setSecondTokenInputValue,
     longTokenAddress,
     firstToken,
     firstTokenWrappedAddress,
     shortTokenAddress,
     secondToken,
     secondTokenWrappedAddress,
-    setFirstTokenInputValue,
-    setSecondTokenInputValue,
     setMarketOrGlvTokenInputValue,
   ]);
 

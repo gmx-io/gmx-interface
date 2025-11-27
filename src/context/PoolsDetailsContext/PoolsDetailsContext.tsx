@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
@@ -144,12 +144,58 @@ export function usePoolsDetailsState({
     [mode, operation, rawPaySource, setPaySource, srcChainId]
   );
 
-  const [firstTokenAddress, setFirstTokenAddress] = useLocalStorageSerializeKey<
-    ERC20Address | NativeTokenSupportedAddress | undefined
-  >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "first"], undefined);
-  const [secondTokenAddress, setSecondTokenAddress] = useLocalStorageSerializeKey<
-    ERC20Address | NativeTokenSupportedAddress | undefined
-  >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "second"], undefined);
+  const [inputTokenAddresses, setInputTokenAddresses] = useLocalStorageSerializeKey<
+    | {
+        first: ERC20Address | NativeTokenSupportedAddress | undefined;
+        second: ERC20Address | NativeTokenSupportedAddress | undefined;
+      }
+    | undefined
+  >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "inputTokenAddresses"], undefined);
+
+  const firstTokenAddress = inputTokenAddresses?.first;
+  const secondTokenAddress =
+    inputTokenAddresses?.second === inputTokenAddresses?.first ? undefined : inputTokenAddresses?.second;
+
+  const setFirstTokenAddress = useCallback(
+    (address: ERC20Address | NativeTokenSupportedAddress | undefined) => {
+      setInputTokenAddresses((prev) => {
+        if (!prev) {
+          return { first: address, second: undefined };
+        }
+
+        const firstTokenAddress = prev?.first;
+        const secondTokenAddress = prev?.second === prev?.first ? undefined : prev?.second;
+
+        if (secondTokenAddress && secondTokenAddress === address) {
+          // Swap
+          return { first: address, second: firstTokenAddress };
+        }
+        return { first: address, second: secondTokenAddress };
+      });
+    },
+    [setInputTokenAddresses]
+  );
+
+  const setSecondTokenAddress = useCallback(
+    (address: ERC20Address | NativeTokenSupportedAddress | undefined) => {
+      setInputTokenAddresses((prev) => {
+        if (!prev) {
+          return { first: undefined, second: address };
+        }
+
+        const firstTokenAddress = prev?.first;
+        const secondTokenAddress = prev?.second === prev?.first ? undefined : prev?.second;
+
+        if (firstTokenAddress && firstTokenAddress === address) {
+          // Swap
+          return { first: secondTokenAddress, second: address };
+        }
+        return { first: firstTokenAddress, second: address };
+      });
+    },
+    [setInputTokenAddresses]
+  );
+
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");

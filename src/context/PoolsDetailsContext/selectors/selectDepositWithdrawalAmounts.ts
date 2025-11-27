@@ -76,6 +76,15 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
   }
 
   if (isDeposit) {
+    const includeLongToken = isPair
+      ? true
+      : firstTokenAddress !== undefined &&
+        convertTokenAddress(chainId, firstTokenAddress, "wrapped") === longTokenAddress;
+    const includeShortToken = isPair
+      ? true
+      : firstTokenAddress !== undefined &&
+        convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress;
+
     // adjust for same collateral
     if (marketInfo.isSameCollaterals) {
       const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
@@ -92,8 +101,8 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
         shortTokenAmount: adjustedShortTokenAmount,
         marketTokenAmount,
         glvTokenAmount,
-        includeLongToken: adjustedLongTokenAmount > 0n,
-        includeShortToken: adjustedShortTokenAmount > 0n,
+        includeLongToken,
+        includeShortToken,
         uiFeeFactor,
         strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
         isMarketTokenDeposit,
@@ -101,17 +110,6 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
         glvToken: glvToken!,
       });
     }
-
-    const includeLongToken = isPair
-      ? true
-      : firstTokenAddress !== undefined &&
-        (firstTokenAddress === longTokenAddress ||
-          convertTokenAddress(chainId, firstTokenAddress, "wrapped") === longTokenAddress);
-    const includeShortToken = isPair
-      ? true
-      : firstTokenAddress !== undefined &&
-        (firstTokenAddress === shortTokenAddress ||
-          convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress);
 
     return getDepositAmounts({
       marketInfo,
@@ -153,6 +151,7 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       glvToken,
       findSwapPath: withdrawalFindSwapPath,
       wrappedReceiveTokenAddress: receiveTokenAddress,
+      isSameCollaterals: marketInfo.isSameCollaterals,
     });
   }
 

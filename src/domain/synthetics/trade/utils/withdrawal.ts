@@ -19,6 +19,7 @@ export function getWithdrawalAmounts(p: {
   glvTokenAmount?: bigint;
   glvToken?: TokenData;
   findSwapPath?: FindSwapPath;
+  isSameCollaterals?: boolean;
 }): WithdrawalAmounts {
   const {
     marketInfo,
@@ -33,6 +34,7 @@ export function getWithdrawalAmounts(p: {
     glvTokenAmount,
     findSwapPath,
     wrappedReceiveTokenAddress,
+    isSameCollaterals,
   } = p;
 
   const { longToken, shortToken } = marketInfo;
@@ -144,10 +146,21 @@ export function getWithdrawalAmounts(p: {
         values.longTokenAmount = longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         // Approximate and take long token usd as resulting market token usd
-        values.longTokenBeforeSwapAmount = bigMath.mulDiv(values.longTokenUsd, longPoolUsd, totalPoolUsd);
+        values.longTokenBeforeSwapAmount = bigMath.mulDiv(values.longTokenAmount, longPoolUsd, totalPoolUsd);
+
         values.shortTokenAmount = 0n;
         values.shortTokenUsd = 0n;
-        values.shortTokenBeforeSwapAmount = bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, totalPoolUsd);
+        values.shortTokenBeforeSwapAmount = convertToTokenAmount(
+          bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, totalPoolUsd),
+          shortToken.decimals,
+          shortToken.prices.maxPrice
+        )!;
+        const shortTokenBeforeSwapAmountUsd = convertToUsd(
+          values.shortTokenBeforeSwapAmount,
+          shortToken.decimals,
+          shortToken.prices.maxPrice
+        )!;
+        values.shortTokenSwapPathStats = findSwapPath!(shortTokenBeforeSwapAmountUsd);
       } else if (
         strategy === "byShortCollateral" &&
         shortPoolUsd > 0 &&
@@ -156,13 +169,32 @@ export function getWithdrawalAmounts(p: {
         values.shortTokenAmount = shortTokenAmount;
         values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
         // Approximate and take short token usd as resulting market token usd
-        values.shortTokenBeforeSwapAmount = bigMath.mulDiv(values.shortTokenUsd, shortPoolUsd, totalPoolUsd);
+        values.shortTokenBeforeSwapAmount = bigMath.mulDiv(values.shortTokenAmount, shortPoolUsd, totalPoolUsd);
+
         values.longTokenUsd = 0n;
         values.longTokenAmount = 0n;
-        values.longTokenBeforeSwapAmount = bigMath.mulDiv(values.shortTokenUsd, longPoolUsd, totalPoolUsd);
+        values.longTokenBeforeSwapAmount = convertToTokenAmount(
+          bigMath.mulDiv(values.shortTokenUsd, longPoolUsd, totalPoolUsd),
+          longToken.decimals,
+          longToken.prices.maxPrice
+        )!;
+        const longTokenBeforeSwapAmountUsd = convertToUsd(
+          values.longTokenBeforeSwapAmount,
+          longToken.decimals,
+          longToken.prices.maxPrice
+        )!;
+        values.longTokenSwapPathStats = findSwapPath!(longTokenBeforeSwapAmountUsd);
       }
     } else {
-      if (strategy === "byLongCollateral" && longPoolUsd > 0) {
+      if (isSameCollaterals) {
+        const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
+        values.longTokenAmount = positiveAmount / 2n;
+        values.shortTokenAmount = positiveAmount - values.longTokenAmount;
+        values.longTokenUsd = convertToUsd(values.longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
+        values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
+        values.longTokenBeforeSwapAmount = values.longTokenUsd;
+        values.shortTokenBeforeSwapAmount = values.shortTokenUsd;
+      } else if (strategy === "byLongCollateral" && longPoolUsd > 0) {
         values.longTokenAmount = longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, longPoolUsd);
