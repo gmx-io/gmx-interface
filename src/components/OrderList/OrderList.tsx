@@ -289,10 +289,10 @@ export function OrderList({
                 <TableTh className="w-[15%]">
                   <Trans>Size</Trans>
                 </TableTh>
-                <TableTh className="w-[16%]">
+                <TableTh className="w-[18%]">
                   <Trans>Trigger Price</Trans>
                 </TableTh>
-                <TableTh className="w-[16%]">
+                <TableTh className="w-[18%]">
                   <Trans>Mark Price</Trans>
                 </TableTh>
 

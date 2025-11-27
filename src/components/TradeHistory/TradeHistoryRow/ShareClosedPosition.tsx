@@ -85,6 +85,7 @@ export default function ShareClosedPosition({
       onDoNotShowAgainChange={onDoNotShowAgainChange}
       onShareAction={onShareAction}
       shareSource={shareSource}
+      isRpnl={true}
     />
   );
 }
