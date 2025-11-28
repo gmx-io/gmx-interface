@@ -57,10 +57,6 @@ msgstr "You can transfer {nativeTokenSymbol} from other networks to {chainName} 
 msgid "Buy order executed."
 msgstr "Buy order executed."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#~ msgid "Claims are disabled"
-#~ msgstr "Claims are disabled"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -157,6 +153,11 @@ msgstr "/+Z5u4"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
 msgstr "Close Price Impact"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {gasPaymentTokenSymbol} balance to pay for gas"
+msgstr "Insufficient {gasPaymentTokenSymbol} balance to pay for gas"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime LP rewards:"
@@ -2037,10 +2038,6 @@ msgstr "Botanix currently has no GLV vault(s) active. You can provide liquidity 
 msgid "Display Settings"
 msgstr "Display Settings"
 
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-#~ msgstr "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Total:"
@@ -3866,7 +3863,6 @@ msgid "There is no price impact for increase orders, orders are filled at the ma
 msgstr "There is no price impact for increase orders, orders are filled at the mark price. Price impact is applied during decrease orders. <0>Read more</0>."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "Insufficient {0} balance to pay for gas"
 
@@ -6335,10 +6331,6 @@ msgstr "We Value Your Feedback"
 msgid "Stop Loss"
 msgstr "Stop Loss"
 
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution (test)"
-#~ msgstr "GLP Distribution (test)"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr "keep more of what you earn"
@@ -6725,10 +6717,6 @@ msgstr "The available liquidity will be the lesser of the difference between the
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "shift"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution"
-#~ msgstr "GLP Distribution"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7732,10 +7720,6 @@ msgstr "Total Pending Rewards"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Total Stats"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Claimed {0} successfully."
-#~ msgstr "Claimed {0} successfully."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
