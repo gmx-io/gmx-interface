@@ -101,7 +101,9 @@ export type MarketInfo = Market &
     maxLendableImpactFactorForWithdrawals: bigint;
     maxLendableImpactUsd: bigint;
     lentPositionImpactPoolAmount: bigint;
-    positionImpactExponentFactor: bigint;
+    positionImpactExponentFactorPositive: bigint;
+    positionImpactExponentFactorNegative: bigint;
+    useOpenInterestInTokensForBalance: boolean;
 
     swapFeeFactorForBalanceWasImproved: bigint;
     swapFeeFactorForBalanceWasNotImproved: bigint;

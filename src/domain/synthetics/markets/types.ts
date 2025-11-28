@@ -3,7 +3,10 @@ import { Market, MarketInfo, MarketPoolTokens } from "sdk/types/markets";
 
 export * from "sdk/types/markets";
 
-export type FastMarketInfo = Omit<MarketInfo, keyof MarketPoolTokens | keyof Market> & {
+export type FastMarketInfo = Omit<
+  Omit<MarketInfo, keyof MarketPoolTokens | keyof Market>,
+  "useOpenInterestInTokensForBalance"
+> & {
   marketTokenAddress: string;
   longTokenAddress: string;
   shortTokenAddress: string;

@@ -301,7 +301,11 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -385,6 +389,7 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Avalanche",
@@ -773,7 +778,11 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -857,6 +866,7 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Avalanche",
@@ -1241,7 +1251,11 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -1325,6 +1339,7 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Dogecoin",
@@ -1675,7 +1690,11 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -1792,6 +1811,7 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -2134,7 +2154,11 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -2250,6 +2274,7 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Ethereum",
@@ -2600,7 +2625,11 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -2716,6 +2745,7 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -3077,7 +3107,11 @@ export const executeOrderDecreaseShort = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -3193,6 +3227,7 @@ export const executeOrderDecreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Uniswap",
@@ -3564,7 +3599,11 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -3680,6 +3719,7 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Arbitrum",
@@ -4049,7 +4089,11 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -4165,6 +4209,7 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -4510,7 +4555,11 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -4634,6 +4683,7 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "XRP",
@@ -4992,7 +5042,11 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -5108,6 +5162,7 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Chainlink",
@@ -5528,7 +5583,11 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
     },
-    positionImpactExponentFactor: {
+    positionImpactExponentFactorPositive: {
+      type: "bigint",
+      hex: "0x193e5939a08ce9dbd480000000",
+    },
+    positionImpactExponentFactorNegative: {
       type: "bigint",
       hex: "0x193e5939a08ce9dbd480000000",
     },
@@ -5644,6 +5703,7 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Ethereum",
@@ -6124,7 +6184,8 @@ export const createOrderStopMarketLong = prepare({
     maxPositionImpactFactorPositive: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorNegative: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorForLiquidations: { type: "bigint", value: "0" },
-    positionImpactExponentFactor: { type: "bigint", value: "1739944843614544000000000000000" },
+    positionImpactExponentFactorPositive: { type: "bigint", value: "1739944843614544000000000000000" },
+    positionImpactExponentFactorNegative: { type: "bigint", value: "1739944843614544000000000000000" },
     swapFeeFactorForBalanceWasImproved: { type: "bigint", value: "500000000000000000000000000" },
     swapFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "700000000000000000000000000" },
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
@@ -6216,6 +6277,7 @@ export const createOrderStopMarketLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -6348,7 +6410,8 @@ export const executeOrderStopMarketLong = prepare({
     maxPositionImpactFactorPositive: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorNegative: { type: "bigint", value: "5000000000000000000000000000" },
     maxPositionImpactFactorForLiquidations: { type: "bigint", value: "0" },
-    positionImpactExponentFactor: { type: "bigint", value: "1739944843614544000000000000000" },
+    positionImpactExponentFactorPositive: { type: "bigint", value: "1739944843614544000000000000000" },
+    positionImpactExponentFactorNegative: { type: "bigint", value: "1739944843614544000000000000000" },
     swapFeeFactorForBalanceWasImproved: { type: "bigint", value: "500000000000000000000000000" },
     swapFeeFactorForBalanceWasNotImproved: { type: "bigint", value: "700000000000000000000000000" },
     swapImpactFactorPositive: { type: "bigint", value: "200000000000000000000" },
@@ -6440,6 +6503,7 @@ export const executeOrderStopMarketLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    useOpenInterestInTokensForBalance: false,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
