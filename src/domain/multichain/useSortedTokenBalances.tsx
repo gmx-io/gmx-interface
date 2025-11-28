@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
-import { AnyChainId } from "config/chains";
-import { MultichainMarketTokenBalances } from "domain/multichain/types";
+import type { AnyChainId, GmxAccountPseudoChainId } from "config/chains";
+import type { MultichainMarketTokenBalances } from "domain/multichain/types";
 import { EMPTY_ARRAY } from "lib/objects";
 
 // TODO MLTCH this could be a selector
@@ -9,7 +9,7 @@ export function useSortedTokenBalances({
   multichainBalances,
 }: {
   multichainBalances: MultichainMarketTokenBalances | undefined;
-}): { chainId: AnyChainId | 0; balance: bigint; balanceUsd: bigint }[] {
+}): { chainId: AnyChainId | GmxAccountPseudoChainId; balance: bigint; balanceUsd: bigint }[] {
   return useMemo(() => {
     if (!multichainBalances?.balances) {
       return EMPTY_ARRAY;
@@ -29,7 +29,7 @@ export function useSortedTokenBalances({
         return aBalanceUsd > bBalanceUsd ? -1 : 1;
       })
       .map(([chainId, data]) => ({
-        chainId: parseInt(chainId) as AnyChainId | 0,
+        chainId: parseInt(chainId) as AnyChainId | GmxAccountPseudoChainId,
         balance: data!.balance,
         balanceUsd: data!.balanceUsd,
       }));

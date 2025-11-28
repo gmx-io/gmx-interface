@@ -4,7 +4,13 @@ import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters } from "viem";
 import { useAccount } from "wagmi";
 
-import { getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import {
+  ContractsChainId,
+  getChainName,
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 import { getChainIcon } from "config/icons";
 import { getLayerZeroEndpointId, getStargatePoolAddress } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -12,7 +18,7 @@ import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
-import { BridgeOutParams } from "domain/multichain/types";
+import type { BridgeOutParams } from "domain/multichain/types";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
@@ -89,7 +95,8 @@ export function BridgeOutModal({
 
   const networks = useGmxAccountWithdrawNetworks();
 
-  const gmxAccountMarketTokenBalance: bigint | undefined = multichainMarketTokenBalances?.balances[0]?.balance;
+  const gmxAccountMarketTokenBalance: bigint | undefined =
+    multichainMarketTokenBalances?.balances[GMX_ACCOUNT_PSEUDO_CHAIN_ID]?.balance;
 
   const nextGmxAccountMarketTokenBalance: bigint | undefined =
     gmxAccountMarketTokenBalance !== undefined && bridgeOutAmount !== undefined
@@ -107,39 +114,12 @@ export function BridgeOutModal({
     tokenBalanceType: TokenBalanceType.GmxAccount,
   });
 
-  const bridgeOutParams: BridgeOutParams | undefined = useMemo(() => {
-    if (
-      bridgeOutChain === undefined ||
-      glvOrMarketAddress === undefined ||
-      bridgeOutAmount === undefined ||
-      bridgeOutAmount <= 0n
-    ) {
-      return;
-    }
-
-    const dstEid = getLayerZeroEndpointId(bridgeOutChain);
-    const stargateAddress = getStargatePoolAddress(chainId, glvOrMarketAddress);
-
-    if (dstEid === undefined || stargateAddress === undefined) {
-      return;
-    }
-
-    return {
-      token: glvOrMarketAddress as Address,
-      amount: bridgeOutAmount,
-      minAmountOut: 0n,
-      data: encodeAbiParameters(
-        [
-          {
-            type: "uint32",
-            name: "dstEid",
-          },
-        ],
-        [dstEid]
-      ),
-      provider: stargateAddress,
-    };
-  }, [bridgeOutChain, glvOrMarketAddress, bridgeOutAmount, chainId]);
+  const bridgeOutParams = useBridgeOutParams({
+    bridgeOutChain,
+    glvOrMarketAddress,
+    bridgeOutAmount,
+    chainId,
+  });
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
     if (account === undefined || bridgeOutParams === undefined || bridgeOutChain === undefined) {
@@ -399,4 +379,50 @@ function NetworkItem({ option }: { option: { id: number; name: string } }) {
       </div>
     </div>
   );
+}
+
+function useBridgeOutParams({
+  bridgeOutChain,
+  glvOrMarketAddress,
+  bridgeOutAmount,
+  chainId,
+}: {
+  bridgeOutChain: SourceChainId | undefined;
+  glvOrMarketAddress: string | undefined;
+  bridgeOutAmount: bigint | undefined;
+  chainId: ContractsChainId;
+}): BridgeOutParams | undefined {
+  return useMemo(() => {
+    if (
+      bridgeOutChain === undefined ||
+      glvOrMarketAddress === undefined ||
+      bridgeOutAmount === undefined ||
+      bridgeOutAmount <= 0n
+    ) {
+      return;
+    }
+
+    const dstEid = getLayerZeroEndpointId(bridgeOutChain);
+    const stargateAddress = getStargatePoolAddress(chainId, glvOrMarketAddress);
+
+    if (dstEid === undefined || stargateAddress === undefined) {
+      return;
+    }
+
+    return {
+      token: glvOrMarketAddress as Address,
+      amount: bridgeOutAmount,
+      minAmountOut: 0n,
+      data: encodeAbiParameters(
+        [
+          {
+            type: "uint32",
+            name: "dstEid",
+          },
+        ],
+        [dstEid]
+      ),
+      provider: stargateAddress,
+    };
+  }, [bridgeOutChain, glvOrMarketAddress, bridgeOutAmount, chainId]);
 }

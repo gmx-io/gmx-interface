@@ -1,4 +1,4 @@
-import { AnyChainId } from "config/chains";
+import { AnyChainId, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import {
   selectChainId,
   selectMultichainMarketTokensBalancesResult,
@@ -35,7 +35,7 @@ export const selectMultichainMarketTokenBalances = createSelector((q): Multichai
           balance: walletBalance,
           balanceUsd: walletBalanceUsd,
         },
-        [0]: {
+        [GMX_ACCOUNT_PSEUDO_CHAIN_ID]: {
           balance: gmxAccountBalance,
           balanceUsd: gmxAccountBalanceUsd,
         },

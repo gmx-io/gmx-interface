@@ -1,18 +1,24 @@
 import cx from "classnames";
 import { useState } from "react";
 
-import { type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
+import {
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  type AnyChainId,
+  type ContractsChainId,
+  type GmxAccountPseudoChainId,
+  type SourceChainId,
+} from "config/chains";
 import { isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { type Token, type TokensData } from "domain/tokens";
-import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
 import {
   getIsSpotOnlyMarket,
-  getMarketIndexName,
   getMarketIndexToken,
   getMarketIndexTokenSymbol,
   isMarketTokenAddress,
-} from "sdk/utils/markets";
+} from "sdk/configs/markets";
+import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
+import { getMarketIndexName } from "sdk/utils/markets";
 
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -33,7 +39,7 @@ type Props = {
   className?: string;
 
   tokenAddress: string;
-  payChainId: AnyChainId | 0 | undefined;
+  payChainId: AnyChainId | GmxAccountPseudoChainId | undefined;
 
   tokensData: TokensData | undefined;
 
@@ -70,11 +76,11 @@ export function MultichainTokenSelectorForLp({
     ? getToken(chainId, GM_STUB_ADDRESS)
     : getToken(chainId, tokenAddress);
 
-  const onSelectTokenAddress = (tokenAddress: string, tokenChainId: AnyChainId | 0) => {
+  const onSelectTokenAddress = (tokenAddress: string, tokenChainId: AnyChainId | GmxAccountPseudoChainId) => {
     setIsModalVisible(false);
-    const isGmxAccount = tokenChainId === 0;
+    const isGmxAccount = tokenChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID;
     const tokenSrcChainId =
-      tokenChainId !== chainId && tokenChainId !== 0 && isSourceChain(tokenChainId) ? tokenChainId : undefined;
+      tokenChainId !== chainId && !isGmxAccount && isSourceChain(tokenChainId) ? tokenChainId : undefined;
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount, tokenSrcChainId);
   };
 

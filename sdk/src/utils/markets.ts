@@ -1,11 +1,8 @@
-import { zeroAddress } from "viem";
-
-import { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR } from "configs/factors";
-import { MARKETS, MarketConfig } from "configs/markets";
-import { convertTokenAddress, getToken, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
-import { NativeTokenSupportedAddress, Token, TokenPrices, TokensData } from "types/tokens";
+import type { MarketConfig } from "configs/markets";
+import { getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import type { ContractMarketPrices, Market, MarketInfo } from "types/markets";
+import type { Token, TokenPrices, TokensData } from "types/tokens";
 
 import { applyFactor, PRECISION } from "./numbers";
 import { getByKey } from "./objects";
@@ -235,80 +232,4 @@ export function getIsMarketAvailableForExpressSwaps(marketInfo: MarketInfo) {
   return [marketInfo.indexToken, marketInfo.longToken, marketInfo.shortToken].every(
     (token) => token.hasPriceFeedProvider
   );
-}
-
-export function isMarketTokenAddress(chainId: number, marketTokenAddress: string): boolean {
-  return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
-}
-
-export function getMarketIndexTokenAddress(
-  chainId: number,
-  marketTokenAddress: string
-): NativeTokenSupportedAddress | undefined {
-  return convertTokenAddress(chainId, MARKETS[chainId]?.[marketTokenAddress]?.indexTokenAddress, "native");
-}
-
-export function getMarketIndexToken(chainId: number, marketTokenAddress: string): Token | undefined {
-  const indexTokenAddress = getMarketIndexTokenAddress(chainId, marketTokenAddress);
-  if (!indexTokenAddress) {
-    return undefined;
-  }
-
-  return getToken(chainId, indexTokenAddress);
-}
-
-export function getMarketIndexTokenSymbol(chainId: number, marketTokenAddress: string): string {
-  const indexToken = getMarketIndexToken(chainId, marketTokenAddress);
-  if (!indexToken) {
-    return "";
-  }
-
-  return indexToken.symbol;
-}
-
-export function getMarketLongTokenAddress(chainId: number, marketTokenAddress: string): string {
-  return MARKETS[chainId][marketTokenAddress].longTokenAddress;
-}
-
-export function getMarketShortTokenAddress(chainId: number, marketTokenAddress: string): string {
-  return MARKETS[chainId][marketTokenAddress].shortTokenAddress;
-}
-
-export function getMarketLongToken(chainId: number, marketTokenAddress: string): Token {
-  return getToken(chainId, getMarketLongTokenAddress(chainId, marketTokenAddress))!;
-}
-
-export function getMarketShortToken(chainId: number, marketTokenAddress: string): Token {
-  return getToken(chainId, getMarketShortTokenAddress(chainId, marketTokenAddress))!;
-}
-
-export function getMarketLongTokenSymbol(chainId: number, marketTokenAddress: string): string {
-  const longTokenAddress = MARKETS[chainId]?.[marketTokenAddress]?.longTokenAddress;
-  if (!longTokenAddress) {
-    return "";
-  }
-
-  return getToken(chainId, convertTokenAddress(chainId, longTokenAddress, "native")).symbol;
-}
-
-export function getMarketShortTokenSymbol(chainId: number, marketTokenAddress: string): string {
-  const shortTokenAddress = MARKETS[chainId]?.[marketTokenAddress]?.shortTokenAddress;
-  if (!shortTokenAddress) {
-    return "";
-  }
-
-  return getToken(chainId, convertTokenAddress(chainId, shortTokenAddress, "native")).symbol;
-}
-
-export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
-  return MARKETS[chainId as ContractsChainId]?.[marketTokenAddress]?.indexTokenAddress === zeroAddress;
-}
-
-export function getMarketIsSameCollaterals(chainId: number, marketTokenAddress: string): boolean {
-  const market = MARKETS[chainId]?.[marketTokenAddress];
-  if (!market) {
-    return false;
-  }
-
-  return market.longTokenAddress === market.shortTokenAddress;
 }

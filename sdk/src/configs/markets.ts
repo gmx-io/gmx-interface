@@ -2,8 +2,12 @@
   This files is used to pre-build data during the build process.
   Avoid adding client-side code here, as it can break the build process.
 */
+import { zeroAddress } from "viem";
+
+import type { ERC20Address, NativeTokenSupportedAddress, Token } from "types/tokens";
+
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
-import { getTokenBySymbol } from "./tokens";
+import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
@@ -1232,3 +1236,67 @@ export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol:
   }
   return symbol;
 };
+
+export function isMarketTokenAddress(chainId: number, marketTokenAddress: string): boolean {
+  return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
+}
+
+export function getTokenAddressByMarket(
+  chainId: number,
+  marketTokenAddress: string,
+  tokenType: "long" | "short" | "index"
+): ERC20Address | NativeTokenSupportedAddress {
+  const market = MARKETS[chainId as ContractsChainId][marketTokenAddress];
+
+  if (tokenType === "index") {
+    return convertTokenAddress(chainId, market.indexTokenAddress, "native")! as
+      | ERC20Address
+      | NativeTokenSupportedAddress;
+  }
+
+  if (tokenType === "long") {
+    return market.longTokenAddress as ERC20Address;
+  }
+
+  return market.shortTokenAddress as ERC20Address;
+}
+
+export function getMarketIndexToken(chainId: number, marketTokenAddress: string): Token {
+  const indexTokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, "index");
+
+  return getToken(chainId, indexTokenAddress);
+}
+
+export function getMarketIndexTokenSymbol(chainId: number, marketTokenAddress: string): string {
+  const indexToken = getMarketIndexToken(chainId, marketTokenAddress);
+  if (!indexToken) {
+    return "";
+  }
+
+  return indexToken.symbol;
+}
+
+export function getMarketLongTokenSymbol(chainId: number, marketTokenAddress: string): string {
+  const longTokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, "long");
+
+  return getToken(chainId, convertTokenAddress(chainId, longTokenAddress, "native")).symbol;
+}
+
+export function getMarketShortTokenSymbol(chainId: number, marketTokenAddress: string): string {
+  const shortTokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, "short");
+
+  return getToken(chainId, convertTokenAddress(chainId, shortTokenAddress, "native")).symbol;
+}
+
+export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
+  return MARKETS[chainId as ContractsChainId]?.[marketTokenAddress]?.indexTokenAddress === zeroAddress;
+}
+
+export function getMarketIsSameCollaterals(chainId: number, marketTokenAddress: string): boolean {
+  const market = MARKETS[chainId]?.[marketTokenAddress];
+  if (!market) {
+    return false;
+  }
+
+  return market.longTokenAddress === market.shortTokenAddress;
+}

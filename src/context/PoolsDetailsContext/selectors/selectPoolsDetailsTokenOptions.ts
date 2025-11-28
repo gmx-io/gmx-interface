@@ -3,8 +3,8 @@ import uniqBy from "lodash/uniqBy";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { Token, getGmToken } from "domain/tokens";
+import { getMarketIndexTokenSymbol } from "sdk/configs/markets";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
-import { getMarketIndexTokenSymbol } from "sdk/utils/markets";
 
 import { selectPoolsDetailsPaySource } from "./baseSelectors";
 import {

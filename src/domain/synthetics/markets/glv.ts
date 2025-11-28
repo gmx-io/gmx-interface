@@ -10,8 +10,7 @@ import {
   GlvOrMarketInfo,
   MarketInfo,
 } from "domain/synthetics/markets";
-import { Token } from "domain/tokens";
-import { getToken } from "sdk/configs/tokens";
+import type { ERC20Address } from "domain/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { TokenData, TokensData } from "../tokens";
@@ -135,18 +134,10 @@ export function isGlvAddress(chainId: number, address: string): boolean {
   return Boolean(GLV_MARKETS[chainId]?.[address]);
 }
 
-export function getGlvLongTokenAddress(chainId: number, address: string): string {
-  return GLV_MARKETS[chainId][address].longTokenAddress;
-}
+export function getTokenAddressByGlv(chainId: number, address: string, tokenType: "long" | "short"): ERC20Address {
+  if (tokenType === "long") {
+    return GLV_MARKETS[chainId][address].longTokenAddress as ERC20Address;
+  }
 
-export function getGlvShortTokenAddress(chainId: number, address: string): string {
-  return GLV_MARKETS[chainId][address].shortTokenAddress;
-}
-
-export function getGlvLongToken(chainId: number, address: string): Token {
-  return getToken(chainId, getGlvLongTokenAddress(chainId, address));
-}
-
-export function getGlvShortToken(chainId: number, address: string): Token {
-  return getToken(chainId, getGlvShortTokenAddress(chainId, address));
+  return GLV_MARKETS[chainId][address].shortTokenAddress as ERC20Address;
 }

@@ -3,7 +3,14 @@ import cx from "classnames";
 import noop from "lodash/noop";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
-import { getChainName, type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
+import {
+  getChainName,
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  type AnyChainId,
+  type ContractsChainId,
+  type GmxAccountPseudoChainId,
+  type SourceChainId,
+} from "config/chains";
 import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -12,18 +19,17 @@ import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { MARKETS } from "sdk/configs/markets";
-import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
 import {
   getIsSpotOnlyMarket,
-  getMarketIndexName,
   getMarketIndexToken,
   getMarketIndexTokenSymbol,
   getMarketLongTokenSymbol,
-  getMarketPoolName,
   getMarketShortTokenSymbol,
   isMarketTokenAddress,
-} from "sdk/utils/markets";
+  MARKETS,
+} from "sdk/configs/markets";
+import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
+import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -35,8 +41,9 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import "./TokenSelector.scss";
 import { ConnectWalletModalContent } from "./ConnectWalletModalContent";
+
+import "./TokenSelector.scss";
 
 type Props = {
   chainId: ContractsChainId;
@@ -46,7 +53,7 @@ type Props = {
   className?: string;
 
   tokenAddress: string;
-  payChainId: AnyChainId | 0 | undefined;
+  payChainId: AnyChainId | GmxAccountPseudoChainId | undefined;
 
   tokensData: TokensData | undefined;
 
@@ -90,11 +97,13 @@ export function MultichainTokenSelector({
     ? getToken(chainId, GM_STUB_ADDRESS)
     : getToken(chainId, tokenAddress);
 
-  const onSelectTokenAddress = (tokenAddress: string, tokenChainId: AnyChainId | 0) => {
+  const onSelectTokenAddress = (tokenAddress: string, tokenChainId: AnyChainId | GmxAccountPseudoChainId) => {
     setIsModalVisible(false);
-    const isGmxAccount = tokenChainId === 0;
+    const isGmxAccount = tokenChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID;
     const tokenSrcChainId =
-      tokenChainId !== chainId && tokenChainId !== 0 && isSourceChain(tokenChainId) ? tokenChainId : undefined;
+      tokenChainId !== chainId && tokenChainId !== GMX_ACCOUNT_PSEUDO_CHAIN_ID && isSourceChain(tokenChainId)
+        ? tokenChainId
+        : undefined;
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount, tokenSrcChainId);
   };
 
@@ -256,7 +265,7 @@ export function MultichainTokenSelector({
 type DisplayAvailableToTradeToken = TokenData & {
   balance: bigint;
   balanceUsd: bigint;
-  chainId: AnyChainId | 0;
+  chainId: AnyChainId | GmxAccountPseudoChainId;
   // TODO MLTCH maybe move it in TokenData
   sourceChainDecimals?: number;
 };
@@ -294,7 +303,7 @@ export function useAvailableToTradeTokenList({
         concatenatedTokens.push({
           ...token,
           balanceType: TokenBalanceType.GmxAccount,
-          chainId: 0,
+          chainId: GMX_ACCOUNT_PSEUDO_CHAIN_ID,
           balance: token.gmxAccountBalance,
           balanceUsd,
         });
@@ -429,7 +438,7 @@ export function AvailableToTradeTokenList({
   tokens,
 }: {
   chainId: ContractsChainId;
-  onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | 0) => void;
+  onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | GmxAccountPseudoChainId) => void;
   tokens: DisplayAvailableToTradeToken[];
 }) {
   return (
@@ -474,7 +483,12 @@ export function AvailableToTradeTokenList({
                       </span>
                     </div>
                     <span className="text-body-small text-typography-secondary">
-                      <Trans>From</Trans> {token.chainId === 0 ? "GMX Account" : getChainName(token.chainId)}
+                      <Trans>From</Trans>{" "}
+                      {token.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID ? (
+                        <Trans>GMX Account</Trans>
+                      ) : (
+                        getChainName(token.chainId)
+                      )}
                     </span>
                   </div>
                 </>

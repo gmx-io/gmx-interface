@@ -2,7 +2,13 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 
-import { type AnyChainId, type ContractsChainId, type SourceChainId } from "config/chains";
+import {
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  type AnyChainId,
+  type ContractsChainId,
+  type GmxAccountPseudoChainId,
+  type SourceChainId,
+} from "config/chains";
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
@@ -11,8 +17,9 @@ import { convertToUsd } from "domain/tokens";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { USD_DECIMALS } from "sdk/configs/factors";
+import { getMarketIndexTokenSymbol } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
-import { getMarketIndexTokenSymbol, getMarketPoolName } from "sdk/utils/markets";
+import { getMarketPoolName } from "sdk/utils/markets";
 
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -33,11 +40,11 @@ type Props = {
   className?: string;
 
   paySource: GmPaySource;
-  onSelectTokenAddress: (srcChainId: AnyChainId | 0) => void;
+  onSelectTokenAddress: (srcChainId: AnyChainId | GmxAccountPseudoChainId) => void;
 
   marketInfo: GlvOrMarketInfo | undefined;
   marketTokenPrice: bigint | undefined;
-  tokenBalancesData: Partial<Record<AnyChainId | 0, bigint>>;
+  tokenBalancesData: Partial<Record<AnyChainId | GmxAccountPseudoChainId, bigint>>;
   hideTabs?: boolean;
 };
 
@@ -77,7 +84,7 @@ export function MultichainMarketTokenSelector({
           return false;
         }
 
-        if (tokenChainId === 0) {
+        if (tokenChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
           hasGmxAccountBalance = true;
         } else {
           hasWalletBalance = true;
@@ -87,11 +94,11 @@ export function MultichainMarketTokenSelector({
           return true;
         }
 
-        if (activeFilter === "gmxAccount" && tokenChainId === 0) {
+        if (activeFilter === "gmxAccount" && tokenChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
           return true;
         }
 
-        if (activeFilter === "wallet" && tokenChainId !== 0) {
+        if (activeFilter === "wallet" && tokenChainId !== GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
           return true;
         }
 
@@ -108,7 +115,7 @@ export function MultichainMarketTokenSelector({
           address: getGlvOrMarketAddress(marketInfo),
           balance,
           balanceUsd: convertToUsd(balance, PLATFORM_TOKEN_DECIMALS, marketTokenPrice) ?? 0n,
-          chainId: parseInt(chainId) as AnyChainId | 0,
+          chainId: parseInt(chainId) as AnyChainId | GmxAccountPseudoChainId,
           symbol,
           indexTokenAddress,
           longTokenAddress: marketInfo.longToken.address,
@@ -151,7 +158,7 @@ export function MultichainMarketTokenSelector({
     return [wildCard, wallet, gmxAccount];
   }, []);
 
-  const onSelectTokenAddress = (tokenChainId: AnyChainId | 0) => {
+  const onSelectTokenAddress = (tokenChainId: AnyChainId | GmxAccountPseudoChainId) => {
     setIsModalVisible(false);
     propsOnSelectTokenAddress(tokenChainId);
   };
@@ -198,7 +205,13 @@ export function MultichainMarketTokenSelector({
               className="mr-5"
               symbol={isGlvInfo(marketInfo) ? marketInfo.glvToken.symbol : marketInfo.indexToken.symbol}
               displaySize={20}
-              chainIdBadge={paySource === "sourceChain" ? srcChainId : paySource === "gmxAccount" ? 0 : undefined}
+              chainIdBadge={
+                paySource === "sourceChain"
+                  ? srcChainId
+                  : paySource === "gmxAccount"
+                    ? GMX_ACCOUNT_PSEUDO_CHAIN_ID
+                    : undefined
+              }
             />
             <SelectedPoolLabel glvOrMarketInfo={marketInfo} />
           </span>
@@ -218,7 +231,7 @@ type DisplayToken = {
   shortTokenAddress: string;
   balance: bigint;
   balanceUsd: bigint;
-  chainId: AnyChainId | 0;
+  chainId: AnyChainId | GmxAccountPseudoChainId;
 };
 
 function AvailableToTradeTokenList({
@@ -227,7 +240,7 @@ function AvailableToTradeTokenList({
   tokens,
 }: {
   chainId: ContractsChainId;
-  onSelectTokenAddress: (tokenChainId: AnyChainId | 0) => void;
+  onSelectTokenAddress: (tokenChainId: AnyChainId | GmxAccountPseudoChainId) => void;
   tokens: DisplayToken[];
 }) {
   return (

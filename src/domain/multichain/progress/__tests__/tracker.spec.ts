@@ -74,7 +74,7 @@ describe.concurrent("LongCrossChainTask", () => {
     );
   });
 
-  it.skip("sepolia reverted glv buy", { timeout: 30_000 }, async () => {
+  it("sepolia reverted glv buy", { timeout: 30_000 }, async () => {
     const sourceChainId = SOURCE_SEPOLIA;
     const settlementChainId = ARBITRUM_SEPOLIA;
     const initialTxHash = "0xb065aa691f70edf8e47317cd7748abe85358a1807445679b981b049a1259bcf9";
@@ -99,7 +99,7 @@ describe.concurrent("LongCrossChainTask", () => {
     );
   });
 
-  it.skip("sepolia glv market buy", { timeout: 30_000 }, async () => {
+  it("sepolia glv market buy", { timeout: 30_000 }, async () => {
     const sourceChainId = SOURCE_SEPOLIA;
     const settlementChainId = ARBITRUM_SEPOLIA;
     const initialTxHash = "0x29576bb08a500f07795d0281d5aec08f0df641d2976e3accf0436d2b3126c2aa";

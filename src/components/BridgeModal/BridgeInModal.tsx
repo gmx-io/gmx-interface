@@ -1,10 +1,14 @@
 import { t } from "@lingui/macro";
-import mapValues from "lodash/mapValues";
-import pickBy from "lodash/pickBy";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
+import {
+  type AnyChainId,
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  type GmxAccountPseudoChainId,
+  type SettlementChainId,
+  type SourceChainId,
+} from "config/chains";
 import { isSourceChain } from "config/multichain";
 import { getSourceChainDecimalsMapped } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -19,6 +23,7 @@ import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domai
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { EMPTY_OBJECT } from "lib/objects";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
@@ -84,23 +89,25 @@ export function BridgeInModal({
     ? multichainMarketTokenBalances?.balances[bridgeInChain]?.balance
     : undefined;
 
-  const sourceChainBalancesForSelector: Partial<Record<AnyChainId | 0, bigint>> =
+  const sourceChainBalancesForSelector: Partial<Record<AnyChainId | GmxAccountPseudoChainId, bigint>> =
     multichainMarketTokenBalances?.balances
-      ? mapValues(
-          pickBy(multichainMarketTokenBalances.balances, (data, chainIdStr) => {
-            const chainIdNum = Number(chainIdStr);
-            return data && chainIdNum !== chainId && chainIdNum !== 0;
-          }),
-          (data) => data.balance
+      ? Object.fromEntries(
+          Object.entries(multichainMarketTokenBalances.balances)
+            .filter(([chainIdStr, data]) => {
+              const chainIdNum = Number(chainIdStr);
+              return data && chainIdNum !== chainId && chainIdNum !== GMX_ACCOUNT_PSEUDO_CHAIN_ID;
+            })
+            .map(([chainIdStr, data]) => [chainIdStr, data.balance])
         )
-      : {};
+      : EMPTY_OBJECT;
 
   const sourceChainDecimals =
     bridgeInChain && glvOrMarketAddress
       ? getSourceChainDecimalsMapped(chainId, bridgeInChain, glvOrMarketAddress)
       : undefined;
 
-  const gmxAccountMarketTokenBalance: bigint | undefined = multichainMarketTokenBalances?.balances[0]?.balance;
+  const gmxAccountMarketTokenBalance: bigint | undefined =
+    multichainMarketTokenBalances?.balances[GMX_ACCOUNT_PSEUDO_CHAIN_ID]?.balance;
 
   const nextGmxAccountMarketTokenBalance: bigint | undefined =
     gmxAccountMarketTokenBalance !== undefined && bridgeInAmount !== undefined
@@ -125,7 +132,11 @@ export function BridgeInModal({
 
     const firstChainWithBalance = Object.entries(multichainMarketTokenBalances.balances).find(([chainIdStr, data]) => {
       const chainIdNum = Number(chainIdStr);
-      if (!isSourceChain(chainIdNum) || (chainIdNum as number) === chainId || (chainIdNum as number) === 0) {
+      if (
+        !isSourceChain(chainIdNum) ||
+        (chainIdNum as number) === chainId ||
+        (chainIdNum as number) === GMX_ACCOUNT_PSEUDO_CHAIN_ID
+      ) {
         return false;
       }
       return data?.balance !== undefined && data.balance > 0n;

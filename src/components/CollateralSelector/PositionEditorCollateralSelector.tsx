@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useMedia } from "react-use";
 
-import { ContractsChainId, getChainName } from "config/chains";
+import { ContractsChainId, GMX_ACCOUNT_PSEUDO_CHAIN_ID, getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import type { TokenData } from "domain/synthetics/tokens/types";
 import { formatBalanceAmount } from "lib/numbers";
@@ -47,7 +47,7 @@ export function PositionEditorCollateralSelector(props: Props) {
             <TokenIcon
               symbol={props.selectedTokenSymbol}
               displaySize={20}
-              chainIdBadge={props.isCollateralTokenFromGmxAccount ? 0 : props.chainId}
+              chainIdBadge={props.isCollateralTokenFromGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : props.chainId}
             />
             {props.selectedTokenSymbol}
           </div>
@@ -134,8 +134,12 @@ function CollateralListItemDesktop({
               <ArrowRightIcon className="text-slate-100" />
               <div className="flex items-center gap-4">
                 <img
-                  src={getChainIcon(tokenData.balanceType === TokenBalanceType.GmxAccount ? 0 : chainId)}
-                  alt={getChainName(tokenData.balanceType === TokenBalanceType.GmxAccount ? 0 : chainId)}
+                  src={getChainIcon(
+                    tokenData.balanceType === TokenBalanceType.GmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId
+                  )}
+                  alt={getChainName(
+                    tokenData.balanceType === TokenBalanceType.GmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId
+                  )}
                   className="size-16"
                 />
                 {tokenData.balanceType === TokenBalanceType.GmxAccount ? (
@@ -210,7 +214,7 @@ function CollateralListItemMobile({
         <TokenIcon
           symbol={tokenData.symbol}
           displaySize={28}
-          chainIdBadge={tokenData.balanceType === TokenBalanceType.GmxAccount ? 0 : chainId}
+          chainIdBadge={tokenData.balanceType === TokenBalanceType.GmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId}
         />
         <div>{tokenData.symbol}</div>
       </div>

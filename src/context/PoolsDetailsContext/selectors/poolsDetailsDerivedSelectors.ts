@@ -18,10 +18,9 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { MARKETS } from "sdk/configs/markets";
+import { getMarketIsSameCollaterals, isMarketTokenAddress, MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/types/orders";
-import { getMarketIsSameCollaterals, isMarketTokenAddress } from "sdk/utils/markets";
 
 import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 

@@ -15,8 +15,8 @@ import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { expandDecimals } from "lib/numbers";
 import { abis } from "sdk/abis";
+import { isMarketTokenAddress } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
-import { isMarketTokenAddress } from "sdk/utils/markets";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OFTComposeMsgCodec } from "./codecs/OFTComposeMsgCodec";

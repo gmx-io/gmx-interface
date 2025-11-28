@@ -1,4 +1,4 @@
-import type { AnyChainId, SourceChainId } from "config/chains";
+import type { AnyChainId, GmxAccountPseudoChainId, SourceChainId } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
 
 export type TokenChainData = Token & {
@@ -87,7 +87,7 @@ export type MultichainMarketTokenBalances = {
   totalBalanceUsd: bigint;
   balances: Partial<
     Record<
-      AnyChainId | 0,
+      AnyChainId | GmxAccountPseudoChainId,
       {
         balance: bigint;
         balanceUsd: bigint;

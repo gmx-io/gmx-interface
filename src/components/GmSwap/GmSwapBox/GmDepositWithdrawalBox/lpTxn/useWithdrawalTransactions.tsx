@@ -20,7 +20,7 @@ import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/sele
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectBlockTimestampData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   TokensBalancesUpdates,
@@ -104,40 +104,9 @@ export const useWithdrawalTransactions = ({
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
-  const marketTokenAddress = marketToken?.address;
-  const glvTokenAddress = glvInfo?.glvTokenAddress;
   const executionFeeTokenDecimals = getWrappedToken(chainId)!.decimals;
 
-  const transferRequests = useMemo((): TransferRequests | undefined => {
-    if (!isWithdrawal) {
-      return undefined;
-    }
-
-    if (isGlv) {
-      if (!glvTokenAddress) {
-        return undefined;
-      }
-      return getTransferRequests([
-        {
-          to: getContract(chainId, "GlvVault"),
-          token: glvTokenAddress,
-          amount: glvTokenAmount,
-        },
-      ]);
-    }
-
-    if (!marketTokenAddress) {
-      return undefined;
-    }
-
-    return getTransferRequests([
-      {
-        to: getContract(chainId, "WithdrawalVault"),
-        token: marketTokenAddress,
-        amount: marketTokenAmount,
-      },
-    ]);
-  }, [chainId, glvTokenAddress, glvTokenAmount, isGlv, isWithdrawal, marketTokenAddress, marketTokenAmount]);
+  const transferRequests = useWithdrawalTransferRequests();
 
   const rawParams = useSelector(selectPoolsDetailsParams);
 
@@ -522,3 +491,49 @@ export const useWithdrawalTransactions = ({
     error: paySource === "gmxAccount" ? multichainWithdrawalExpressTxnParams.error : undefined,
   };
 };
+
+function useWithdrawalTransferRequests(): TransferRequests | undefined {
+  const chainId = useSelector(selectChainId);
+  const { isWithdrawal } = useSelector(selectPoolsDetailsFlags);
+  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
+  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
+
+  const { glvTokenAmount = 0n, marketTokenAmount = 0n } = amounts ?? {};
+
+  const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
+  const marketTokenAddress = marketToken?.address;
+  const glvTokenAddress = glvInfo?.glvTokenAddress;
+
+  return useMemo((): TransferRequests | undefined => {
+    if (!isWithdrawal) {
+      return undefined;
+    }
+
+    if (isGlv) {
+      if (!glvTokenAddress) {
+        return undefined;
+      }
+      return getTransferRequests([
+        {
+          to: getContract(chainId, "GlvVault"),
+          token: glvTokenAddress,
+          amount: glvTokenAmount,
+        },
+      ]);
+    }
+
+    if (!marketTokenAddress) {
+      return undefined;
+    }
+
+    return getTransferRequests([
+      {
+        to: getContract(chainId, "WithdrawalVault"),
+        token: marketTokenAddress,
+        amount: marketTokenAmount,
+      },
+    ]);
+  }, [chainId, glvTokenAddress, glvTokenAmount, isGlv, isWithdrawal, marketTokenAddress, marketTokenAmount]);
+}

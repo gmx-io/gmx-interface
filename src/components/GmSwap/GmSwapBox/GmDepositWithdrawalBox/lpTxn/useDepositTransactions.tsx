@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
-import { SettlementChainId } from "config/chains";
+import type { SettlementChainId } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsFlags,
@@ -95,8 +95,6 @@ export const useDepositTransactions = ({
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const paySource = useSelector(selectPoolsDetailsPaySource);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
-  const isMarketTokenDeposit = useSelector(selectPoolsDetailsIsMarketTokenDeposit);
-  const marketTokenAddress = useSelector(selectPoolsDetailsMarketTokenAddress);
 
   const tokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
@@ -114,82 +112,9 @@ export const useDepositTransactions = ({
 
   const isFirstBuy = useSelector(selectPoolsDetailsIsFirstBuy);
 
-  const initialLongTokenAddress = longTokenAddress
-    ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
-    : undefined;
-  const initialShortTokenAddress =
-    shortTokenAddress && initialLongTokenAddress
-      ? convertTokenAddress(
-          chainId,
-          marketInfo?.isSameCollaterals ? initialLongTokenAddress : shortTokenAddress,
-          "wrapped"
-        )
-      : undefined;
-
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
 
-  const transferRequests = useMemo((): TransferRequests | undefined => {
-    if (!isDeposit) {
-      return undefined;
-    }
-
-    const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
-
-    if (isMarketTokenDeposit) {
-      return getTransferRequests([
-        {
-          to: vaultAddress,
-          token: marketTokenAddress,
-          amount: marketTokenAmount,
-        },
-      ]);
-    }
-
-    if (paySource === "sourceChain") {
-      let tokenAddress =
-        longTokenAmount !== undefined && longTokenAmount > 0n ? initialLongTokenAddress : initialShortTokenAddress;
-
-      const estimatedReceivedAmount =
-        (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees | undefined)?.txnEstimatedReceivedAmount ??
-        0n;
-
-      let amount = longTokenAmount !== undefined && longTokenAmount > 0n ? longTokenAmount : shortTokenAmount!;
-
-      return getTransferRequests([
-        {
-          to: vaultAddress,
-          token: tokenAddress,
-          amount: applySlippageToMinOut(1, estimatedReceivedAmount ?? amount),
-        },
-      ]);
-    }
-
-    return getTransferRequests([
-      {
-        to: vaultAddress,
-        token: initialLongTokenAddress,
-        amount: longTokenAmount,
-      },
-      {
-        to: vaultAddress,
-        token: initialShortTokenAddress,
-        amount: shortTokenAmount,
-      },
-    ]);
-  }, [
-    isDeposit,
-    isGlv,
-    chainId,
-    paySource,
-    initialLongTokenAddress,
-    longTokenAmount,
-    initialShortTokenAddress,
-    shortTokenAmount,
-    isMarketTokenDeposit,
-    technicalFees,
-    marketTokenAddress,
-    marketTokenAmount,
-  ]);
+  const transferRequests = useDepositTransferRequests({ technicalFees });
 
   const rawParams = useSelector(selectPoolsDetailsParams);
 
@@ -631,3 +556,100 @@ export const useDepositTransactions = ({
     error: paySource === "gmxAccount" ? multichainDepositExpressTxnParams.error : undefined,
   };
 };
+
+function useDepositTransferRequests({
+  technicalFees,
+}: {
+  technicalFees: UseLpTransactionProps["technicalFees"];
+}): TransferRequests | undefined {
+  const chainId = useSelector(selectChainId);
+  const { isDeposit } = useSelector(selectPoolsDetailsFlags);
+  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
+  const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
+  const paySource = useSelector(selectPoolsDetailsPaySource);
+  const isMarketTokenDeposit = useSelector(selectPoolsDetailsIsMarketTokenDeposit);
+  const marketTokenAddress = useSelector(selectPoolsDetailsMarketTokenAddress);
+  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
+
+  const { longTokenAmount = 0n, shortTokenAmount = 0n, marketTokenAmount = 0n } = amounts ?? {};
+
+  const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
+
+  const initialLongTokenAddress = longTokenAddress
+    ? convertTokenAddress(chainId, longTokenAddress, "wrapped")
+    : undefined;
+  const initialShortTokenAddress =
+    shortTokenAddress && initialLongTokenAddress
+      ? convertTokenAddress(
+          chainId,
+          marketInfo?.isSameCollaterals ? initialLongTokenAddress : shortTokenAddress,
+          "wrapped"
+        )
+      : undefined;
+
+  return useMemo((): TransferRequests | undefined => {
+    if (!isDeposit) {
+      return undefined;
+    }
+
+    const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
+
+    if (isMarketTokenDeposit) {
+      return getTransferRequests([
+        {
+          to: vaultAddress,
+          token: marketTokenAddress,
+          amount: marketTokenAmount,
+        },
+      ]);
+    }
+
+    if (paySource === "sourceChain") {
+      let tokenAddress =
+        longTokenAmount !== undefined && longTokenAmount > 0n ? initialLongTokenAddress : initialShortTokenAddress;
+
+      const estimatedReceivedAmount =
+        (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees | undefined)?.txnEstimatedReceivedAmount ??
+        0n;
+
+      let amount = longTokenAmount !== undefined && longTokenAmount > 0n ? longTokenAmount : shortTokenAmount!;
+
+      return getTransferRequests([
+        {
+          to: vaultAddress,
+          token: tokenAddress,
+          amount: applySlippageToMinOut(1, estimatedReceivedAmount ?? amount),
+        },
+      ]);
+    }
+
+    return getTransferRequests([
+      {
+        to: vaultAddress,
+        token: initialLongTokenAddress,
+        amount: longTokenAmount,
+      },
+      {
+        to: vaultAddress,
+        token: initialShortTokenAddress,
+        amount: shortTokenAmount,
+      },
+    ]);
+  }, [
+    isDeposit,
+    isGlv,
+    chainId,
+    paySource,
+    initialLongTokenAddress,
+    longTokenAmount,
+    initialShortTokenAddress,
+    shortTokenAmount,
+    isMarketTokenDeposit,
+    technicalFees,
+    marketTokenAddress,
+    marketTokenAmount,
+  ]);
+}

@@ -59,7 +59,6 @@ import {
   getGlvOrMarketAddress,
   getMarketIndexName,
   getTokenPoolType,
-  isMarketTokenAddress,
 } from "domain/synthetics/markets/utils";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -69,8 +68,8 @@ import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
-import { AnyChainId } from "sdk/configs/chains";
-import { MARKETS } from "sdk/configs/markets";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
+import { isMarketTokenAddress, MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
@@ -147,7 +146,7 @@ export function GmSwapBoxDepositWithdrawal() {
     ? multichainMarketTokensBalances[selectedGlvOrMarketAddress]
     : undefined;
 
-  const marketTokenBalancesData: Partial<Record<AnyChainId | 0, bigint>> = useMemo(
+  const marketTokenBalancesData: Partial<Record<AnyChainId | GmxAccountPseudoChainId, bigint>> = useMemo(
     () =>
       multichainMarketTokenBalances?.balances
         ? mapValues(multichainMarketTokenBalances.balances, (data) => data?.balance)
@@ -496,7 +495,13 @@ export function GmSwapBoxDepositWithdrawal() {
                       chainId={chainId}
                       srcChainId={srcChainId}
                       tokenAddress={firstTokenAddress}
-                      payChainId={paySource === "gmxAccount" ? 0 : paySource === "sourceChain" ? srcChainId : undefined}
+                      payChainId={
+                        paySource === "gmxAccount"
+                          ? GMX_ACCOUNT_PSEUDO_CHAIN_ID
+                          : paySource === "sourceChain"
+                            ? srcChainId
+                            : undefined
+                      }
                       tokensData={availableTokensData}
                       onSelectTokenAddress={async (tokenAddress, isGmxAccount, newSrcChainId) => {
                         if (newSrcChainId === undefined) {
@@ -526,7 +531,11 @@ export function GmSwapBoxDepositWithdrawal() {
                       showTokenImgInDropdown
                       tokens={tokenOptions}
                       chainIdBadge={
-                        paySource === "gmxAccount" ? 0 : paySource === "sourceChain" ? srcChainId : undefined
+                        paySource === "gmxAccount"
+                          ? GMX_ACCOUNT_PSEUDO_CHAIN_ID
+                          : paySource === "sourceChain"
+                            ? srcChainId
+                            : undefined
                       }
                     />
                   ) : (
@@ -558,7 +567,11 @@ export function GmSwapBoxDepositWithdrawal() {
                           symbol={secondToken?.symbol}
                           displaySize={20}
                           chainIdBadge={
-                            paySource === "gmxAccount" ? 0 : paySource === "sourceChain" ? srcChainId : undefined
+                            paySource === "gmxAccount"
+                              ? GMX_ACCOUNT_PSEUDO_CHAIN_ID
+                              : paySource === "sourceChain"
+                                ? srcChainId
+                                : undefined
                           }
                         />
                       </div>
@@ -585,7 +598,7 @@ export function GmSwapBoxDepositWithdrawal() {
                       srcChainId={srcChainId}
                       paySource={paySource}
                       onSelectTokenAddress={async (newChainId) => {
-                        if (newChainId === 0) {
+                        if (newChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
                           setPaySource("gmxAccount");
                         } else if (newChainId === chainId) {
                           if (srcChainId !== undefined) {
@@ -615,7 +628,11 @@ export function GmSwapBoxDepositWithdrawal() {
                           symbol={glvInfo?.glvToken.symbol ?? marketInfo?.indexToken.symbol ?? ""}
                           displaySize={20}
                           chainIdBadge={
-                            paySource === "sourceChain" ? srcChainId : paySource === "gmxAccount" ? 0 : undefined
+                            paySource === "sourceChain"
+                              ? srcChainId
+                              : paySource === "gmxAccount"
+                                ? GMX_ACCOUNT_PSEUDO_CHAIN_ID
+                                : undefined
                           }
                         />
                         <SelectedPoolLabel glvOrMarketInfo={glvInfo ?? marketInfo} />
@@ -688,7 +705,13 @@ function FirstTokenPlaceholder() {
             ).symbol
           }
           displaySize={20}
-          chainIdBadge={paySource === "sourceChain" ? srcChainId : paySource === "gmxAccount" ? 0 : undefined}
+          chainIdBadge={
+            paySource === "sourceChain"
+              ? srcChainId
+              : paySource === "gmxAccount"
+                ? GMX_ACCOUNT_PSEUDO_CHAIN_ID
+                : undefined
+          }
         />
       </div>
     );
@@ -699,7 +722,13 @@ function FirstTokenPlaceholder() {
       <TokenWithIcon
         symbol={firstToken?.symbol}
         displaySize={20}
-        chainIdBadge={paySource === "sourceChain" ? srcChainId : paySource === "gmxAccount" ? 0 : undefined}
+        chainIdBadge={
+          paySource === "sourceChain"
+            ? srcChainId
+            : paySource === "gmxAccount"
+              ? GMX_ACCOUNT_PSEUDO_CHAIN_ID
+              : undefined
+        }
       />
     </div>
   );

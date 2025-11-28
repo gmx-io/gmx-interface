@@ -7,22 +7,21 @@ import { useCopyToClipboard } from "react-use";
 
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
-import { getGlvLongToken, getGlvShortToken } from "domain/synthetics/markets/glv";
+import { getTokenAddressByGlv } from "domain/synthetics/markets/glv";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import {
-  getIsSpotOnlyMarket,
-  getMarketIndexName,
   getMarketIndexToken,
-  getMarketIndexTokenSymbol,
-  getMarketLongToken,
-  getMarketPoolName,
-  getMarketShortToken,
+  getIsSpotOnlyMarket,
   isMarketTokenAddress,
-} from "sdk/utils/markets";
+  getMarketIndexTokenSymbol,
+  getTokenAddressByMarket,
+} from "sdk/configs/markets";
+import { getToken } from "sdk/configs/tokens";
+import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
 import { formatTokenAmount, formatUsd } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
@@ -188,11 +187,11 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
   let longToken: Token | undefined;
   let shortToken: Token | undefined;
   if (task.isGlv) {
-    longToken = getGlvLongToken(chainId, task.token.address);
-    shortToken = getGlvShortToken(chainId, task.token.address);
+    longToken = getToken(chainId, getTokenAddressByGlv(chainId, task.token.address, "long"));
+    shortToken = getToken(chainId, getTokenAddressByGlv(chainId, task.token.address, "short"));
   } else {
-    longToken = getMarketLongToken(chainId, task.token.address);
-    shortToken = getMarketShortToken(chainId, task.token.address);
+    longToken = getToken(chainId, getTokenAddressByMarket(chainId, task.token.address, "long"));
+    shortToken = getToken(chainId, getTokenAddressByMarket(chainId, task.token.address, "short"));
   }
 
   const poolName = getMarketPoolName({

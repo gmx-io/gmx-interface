@@ -18,7 +18,7 @@ import {
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvInfo, isMarketTokenAddress } from "domain/synthetics/markets";
+import { GlvInfo } from "domain/synthetics/markets";
 import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { getNeedTokenApprove, TokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
@@ -29,6 +29,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getContract } from "sdk/configs/contracts";
+import { isMarketTokenAddress } from "sdk/configs/markets";
 import { getToken, isValidTokenSafe } from "sdk/configs/tokens";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
