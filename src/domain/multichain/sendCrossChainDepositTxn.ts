@@ -6,7 +6,7 @@ import { TxnCallback, WalletTxnCtx, sendWalletTransaction } from "lib/transactio
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 
-import type { MessagingFee } from "./types";
+import { sendQuoteFromNative } from "./sendQuoteFromNative";
 
 export async function sendCrossChainDepositTxn({
   chainId,
@@ -15,7 +15,7 @@ export async function sendCrossChainDepositTxn({
   account,
   tokenAddress,
   stargateAddress,
-  quoteSend,
+  quoteSendNativeFee,
   amount,
   callback,
 }: {
@@ -26,11 +26,11 @@ export async function sendCrossChainDepositTxn({
   amount: bigint;
   sendParams: SendParam;
   account: string;
-  quoteSend: MessagingFee;
+  quoteSendNativeFee: bigint;
   callback?: TxnCallback<WalletTxnCtx>;
 }) {
   const isNative = tokenAddress === zeroAddress;
-  const value = isNative ? amount : 0n;
+  const value = quoteSendNativeFee + (isNative ? amount : 0n);
 
   await sendWalletTransaction({
     chainId: chainId,
@@ -39,9 +39,9 @@ export async function sendCrossChainDepositTxn({
     callData: encodeFunctionData({
       abi: abis.IStargate,
       functionName: "sendToken",
-      args: [sendParams, quoteSend, account],
+      args: [sendParams, sendQuoteFromNative(quoteSendNativeFee), account],
     }),
-    value: (quoteSend.nativeFee as bigint) + value,
+    value,
     callback,
   });
 }

@@ -53,7 +53,7 @@ import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFund
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
-import { useQuoteSend } from "domain/multichain/useQuoteSend";
+import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express/types";
@@ -288,7 +288,7 @@ export const WithdrawalView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const quoteSend = useQuoteSend({
+  const nativeFee = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainProvider: provider,
@@ -324,7 +324,7 @@ export const WithdrawalView = () => {
     return false;
   }, [baseSendParams]);
 
-  const baseQuoteSend = useQuoteSend({
+  const baseNativeFee = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainProvider: provider,
@@ -338,7 +338,7 @@ export const WithdrawalView = () => {
     protocolFeeAmount,
     networkFee: bridgeNetworkFee,
   } = useMultichainQuoteFeeUsd({
-    quoteSend,
+    quoteSendNativeFee: nativeFee,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
     sourceChainId: chainId,
@@ -646,7 +646,7 @@ export const WithdrawalView = () => {
       }
     }
 
-    const nativeFee = bridgeNetworkFee ?? baseQuoteSend?.nativeFee;
+    const nativeFee = bridgeNetworkFee ?? baseNativeFee;
 
     if (unwrappedSelectedTokenAddress === zeroAddress && nativeFee !== undefined) {
       amount = amount - (nativeFee * 11n) / 10n;
@@ -657,7 +657,7 @@ export const WithdrawalView = () => {
     setInputValue(formatAmountFree(amount, selectedToken.decimals));
   }, [
     account,
-    baseQuoteSend?.nativeFee,
+    baseNativeFee,
     bridgeNetworkFee,
     chainId,
     gasPaymentToken?.address,

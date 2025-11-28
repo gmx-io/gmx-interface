@@ -5,12 +5,15 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { sendWalletTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
+
+import { fetchLayerZeroNativeFee } from "./feeEstimation/stargateTransferFees";
 
 export async function createBridgeInTxn({
   chainId,
@@ -51,14 +54,12 @@ export async function createBridgeInTxn({
     throw new Error("Token ID not found");
   }
 
-  const quoteSend = await getPublicClientWithRpc(srcChainId).readContract({
-    address: sourceChainTokenId.stargate,
-    abi: abis.IStargate,
-    functionName: "quoteSend",
-    args: [sendParams, false],
+  const nativeFee = await fetchLayerZeroNativeFee({
+    chainId,
+    stargateAddress: sourceChainTokenId.stargate,
+    sendParams,
   });
-
-  const value = quoteSend.nativeFee + (tokenAddress === zeroAddress ? tokenAmount : 0n);
+  const value = nativeFee + (tokenAddress === zeroAddress ? tokenAmount : 0n);
 
   try {
     const txnResult = await sendWalletTransaction({
@@ -68,7 +69,7 @@ export async function createBridgeInTxn({
       callData: encodeFunctionData({
         abi: abis.IStargate,
         functionName: "send",
-        args: [sendParams, { nativeFee: quoteSend.nativeFee, lzTokenFee: 0n }, account],
+        args: [sendParams, sendQuoteFromNative(nativeFee), account],
       }),
       value,
       msg: t`Sent transfer in transaction`,

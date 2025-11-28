@@ -41,7 +41,7 @@ import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFe
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
-import { useQuoteSend } from "domain/multichain/useQuoteSend";
+import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -369,7 +369,7 @@ export const DepositView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const quoteSend = useQuoteSend({
+  const quoteSendNativeFee = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainProvider: sourceChainProvider,
@@ -379,7 +379,7 @@ export const DepositView = () => {
   });
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
-    quoteSend,
+    quoteSendNativeFee,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
     sourceChainId: depositViewChain,
@@ -528,7 +528,7 @@ export const DepositView = () => {
     amountLD !== undefined &&
     amountLD > 0n &&
     depositViewChain &&
-    quoteSend &&
+    quoteSendNativeFee !== undefined &&
     sendParamsWithSlippage &&
     selectedTokenSourceChainTokenId;
 
@@ -556,7 +556,7 @@ export const DepositView = () => {
         tokenAddress: selectedTokenSourceChainTokenId.address,
         stargateAddress: selectedTokenSourceChainTokenId.stargate,
         amount: amountLD,
-        quoteSend,
+        quoteSendNativeFee,
         sendParams: sendParamsWithSlippage,
         account,
         callback: makeCrossChainCallback({
@@ -578,7 +578,7 @@ export const DepositView = () => {
     latestInputAmountUsd,
     latestIsFirstDeposit,
     makeCrossChainCallback,
-    quoteSend,
+    quoteSendNativeFee,
     selectedToken,
     selectedTokenSourceChainTokenId?.address,
     selectedTokenSourceChainTokenId?.stargate,
@@ -755,11 +755,11 @@ export const DepositView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
-  } else if (nativeTokenSourceChainBalance !== undefined && quoteSend !== undefined) {
+  } else if (nativeTokenSourceChainBalance !== undefined && quoteSendNativeFee !== undefined) {
     const isNative = unwrappedSelectedTokenAddress === zeroAddress;
     const value = isNative ? amountLD : 0n;
 
-    if (quoteSend.nativeFee + value > nativeTokenSourceChainBalance) {
+    if (quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
       const nativeTokenSymbol = getNativeToken(settlementChainId)?.symbol;
       buttonState = {
         text: t`Insufficient ${nativeTokenSymbol} balance`,

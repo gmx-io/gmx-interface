@@ -9,7 +9,7 @@ import { useChainId } from "lib/chains";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
 import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
-import type { MessagingFee, QuoteOft } from "./types";
+import type { QuoteOft } from "./types";
 
 export function useNativeTokenMultichainUsd({
   sourceChainId,
@@ -97,13 +97,13 @@ export function useGasMultichainUsd({
 }
 
 export function useMultichainQuoteFeeUsd({
-  quoteSend,
+  quoteSendNativeFee,
   quoteOft,
   unwrappedTokenAddress,
   sourceChainId,
   targetChainId,
 }: {
-  quoteSend: MessagingFee | undefined;
+  quoteSendNativeFee: bigint | undefined;
   quoteOft: QuoteOft | undefined;
   unwrappedTokenAddress: string | undefined;
   sourceChainId: AnyChainId | undefined;
@@ -118,12 +118,11 @@ export function useMultichainQuoteFeeUsd({
   const { chainId } = useChainId();
   const { pricesData: settlementChainTokenPricesData } = useTokenRecentPricesRequest(chainId);
 
-  const nativeFee = quoteSend?.nativeFee as bigint;
   const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
 
   const nativeFeeUsd = useNativeTokenMultichainUsd({
     sourceChainId,
-    sourceChainTokenAmount: nativeFee,
+    sourceChainTokenAmount: quoteSendNativeFee,
     targetChainId,
   });
 
@@ -165,7 +164,7 @@ export function useMultichainQuoteFeeUsd({
   }
 
   return {
-    networkFee: nativeFee,
+    networkFee: quoteSendNativeFee,
     networkFeeUsd: nativeFeeUsd,
     protocolFeeAmount,
     protocolFeeUsd,

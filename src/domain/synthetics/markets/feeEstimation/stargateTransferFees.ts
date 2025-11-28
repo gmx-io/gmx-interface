@@ -1,6 +1,6 @@
 import { maxUint256, zeroHash } from "viem";
 
-import type { SettlementChainId, SourceChainId } from "config/chains";
+import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { OFTFeeDetail, QuoteOft, SendParam } from "domain/multichain/types";
@@ -11,6 +11,30 @@ import { bigMath } from "sdk/utils/bigmath";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/utils/numbers";
 
 const LZ_NATIVE_FEE_BUFFER_BPS = 1000n; // 10%
+
+function applyBufferBps(value: bigint, bufferBps: bigint): bigint {
+  const buffer = bigMath.mulDiv(value, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
+  return value + buffer;
+}
+
+export async function fetchLayerZeroNativeFee({
+  chainId,
+  stargateAddress,
+  sendParams,
+}: {
+  chainId: AnyChainId;
+  stargateAddress: string;
+  sendParams: SendParam;
+}): Promise<bigint> {
+  const client = getPublicClientWithRpc(chainId);
+  const result = await client.readContract({
+    address: stargateAddress,
+    abi: abis.IStargate,
+    functionName: "quoteSend",
+    args: [sendParams, false],
+  });
+  return applyBufferBps(result.nativeFee, LZ_NATIVE_FEE_BUFFER_BPS);
+}
 
 export async function stargateTransferFees({
   chainId,
@@ -53,13 +77,8 @@ export async function stargateTransferFees({
   const client = getPublicClientWithRpc(chainId);
 
   // Read quotes in parallel
-  const [quoteSend, quoteOftRaw] = await Promise.all([
-    client.readContract({
-      address: stargateAddress,
-      abi: abis.IStargate,
-      functionName: "quoteSend",
-      args: [sendParams, false],
-    }),
+  const [nativeFee, quoteOftRaw] = await Promise.all([
+    fetchLayerZeroNativeFee({ chainId, stargateAddress, sendParams }),
     client.readContract({
       address: stargateAddress,
       abi: abis.IStargate,
@@ -74,9 +93,7 @@ export async function stargateTransferFees({
     receipt: quoteOftRaw[2],
   };
 
-  const nativeFeeBuffer = bigMath.mulDiv(quoteSend.nativeFee, LZ_NATIVE_FEE_BUFFER_BPS, BASIS_POINTS_DIVISOR_BIGINT);
-  const adjustedNativeFee = quoteSend.nativeFee + nativeFeeBuffer;
-  const value = adjustedNativeFee + additionalValue;
+  const value = nativeFee + additionalValue;
 
   const transferGasLimit = await client
     .estimateContractGas({
@@ -84,7 +101,7 @@ export async function stargateTransferFees({
       abi: abis.IStargate,
       functionName: useSendToken ? "sendToken" : "send",
       account: account,
-      args: [sendParams, sendQuoteFromNative(adjustedNativeFee), account],
+      args: [sendParams, sendQuoteFromNative(nativeFee), account],
       value,
       stateOverride: disableOverrides
         ? undefined
@@ -108,7 +125,7 @@ export async function stargateTransferFees({
     .then(applyGasLimitBuffer);
 
   return {
-    nativeFee: adjustedNativeFee,
+    nativeFee,
     quoteOft,
     transferGasLimit,
   };
