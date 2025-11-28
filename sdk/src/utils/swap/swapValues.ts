@@ -1,5 +1,6 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { MarketsInfoData } from "types/markets";
+import { SwapPricingType } from "types/orders";
 import { InternalSwapStrategy, NoSwapStrategy } from "types/swapStrategy";
 import type { TokenData, TokensRatio } from "types/tokens";
 import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
@@ -58,6 +59,7 @@ export function getSwapAmountsByFromValue(p: {
     chainId,
     swapOptimizationOrder,
     externalSwapQuoteParams,
+    swapPricingType: SwapPricingType.Swap,
   });
 
   const swapPathStats = swapStrategy.swapPathStats;
@@ -162,6 +164,7 @@ export function getSwapAmountsByToValue(p: {
     chainId,
     externalSwapQuoteParams,
     swapOptimizationOrder,
+    swapPricingType: SwapPricingType.Swap,
   });
 
   const swapStrategy = buildSwapStrategy({
@@ -172,6 +175,7 @@ export function getSwapAmountsByToValue(p: {
     chainId,
     swapOptimizationOrder,
     externalSwapQuoteParams,
+    swapPricingType: SwapPricingType.Swap,
   });
 
   const uiFeeUsd = applyFactor(swapStrategy.usdIn, uiFeeFactor);

@@ -24,7 +24,7 @@ export async function sendExpressTransaction(p: {
   chainId: ContractsChainId;
   txnData: ExpressTxnData;
   isSponsoredCall: boolean;
-}) {
+}): Promise<ExpressTxnResult> {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
     [p.txnData.callData as Address, p.txnData.to as Address, p.txnData.feeToken as Address, p.txnData.feeAmount]

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketConfig } from "configs/markets";
+import { SwapPricingType } from "types/orders";
 import { bigMath } from "utils/bigmath";
 
 import { mockMarketsInfoData, mockTokensData } from "../../../test/mock";
@@ -597,7 +598,7 @@ describe("createSwapEstimator", () => {
       },
     });
 
-    const estimator = createSwapEstimator(marketsInfoData, false);
+    const estimator = createSwapEstimator(marketsInfoData, SwapPricingType.Swap);
     const result = estimator(
       {
         marketAddress: "ETH-ETH-USDC",
@@ -617,7 +618,7 @@ describe("createSwapEstimator", () => {
     const marketKeys = ["ETH-ETH-USDC"];
     const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
 
-    const estimator = createSwapEstimator(marketsInfoData, false);
+    const estimator = createSwapEstimator(marketsInfoData, SwapPricingType.Swap);
     const result = estimator(
       {
         marketAddress: "NON-EXISTENT",
@@ -679,7 +680,7 @@ describe("createNaiveSwapEstimator", () => {
       },
     });
 
-    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
     const result = estimator(
       {
         marketAddress: "ETH-ETH-USDC",
@@ -699,7 +700,7 @@ describe("createNaiveSwapEstimator", () => {
     const marketKeys = ["ETH-ETH-USDC"];
     const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys);
 
-    const estimator = createNaiveSwapEstimator(marketsInfoData, false);
+    const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
     const result = estimator(
       {
         marketAddress: "NON-EXISTENT",

@@ -1,44 +1,53 @@
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { useEffect } from "react";
 
+import {
+  selectPoolsDetailsFirstTokenAddress,
+  selectPoolsDetailsFlags,
+  selectPoolsDetailsSecondTokenAmount,
+  selectPoolsDetailsSecondTokenAddress,
+  selectPoolsDetailsSetFirstTokenAddress,
+  selectPoolsDetailsSetFocusedInput,
+  selectPoolsDetailsSetSecondTokenAddress,
+  selectPoolsDetailsSetSecondTokenInputValue,
+} from "context/PoolsDetailsContext/selectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getTokenPoolType } from "domain/synthetics/markets/utils";
-import { Token } from "domain/tokens";
+import { ERC20Address, NativeTokenSupportedAddress, Token } from "domain/tokens";
+import { useChainId } from "lib/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 export function useUpdateTokens({
-  chainId,
   tokenOptions,
-  firstTokenAddress,
-  setFirstTokenAddress,
-  isSingle,
-  isPair,
-  secondTokenAddress,
   marketInfo,
-  secondTokenAmount,
-  setFocusedInput,
-  setSecondTokenAddress,
-  setSecondTokenInputValue,
 }: {
-  chainId: number;
   tokenOptions: Token[];
-  firstTokenAddress: string | undefined;
-  setFirstTokenAddress: Dispatch<SetStateAction<string | undefined>>;
-  isSingle: boolean;
-  isPair: boolean;
-  secondTokenAddress: string | undefined;
   marketInfo: GlvOrMarketInfo | undefined;
-  secondTokenAmount: bigint | undefined;
-  setFocusedInput: Dispatch<SetStateAction<"market" | "longCollateral" | "shortCollateral">>;
-  setSecondTokenAddress: Dispatch<SetStateAction<string | undefined>>;
-  setSecondTokenInputValue: Dispatch<SetStateAction<string>>;
 }) {
+  const { chainId } = useChainId();
+  const { isPair, isSingle } = useSelector(selectPoolsDetailsFlags);
+
+  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
+  const setFirstTokenAddress = useSelector(selectPoolsDetailsSetFirstTokenAddress);
+  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
+  const setSecondTokenAddress = useSelector(selectPoolsDetailsSetSecondTokenAddress);
+  const setSecondTokenInputValue = useSelector(selectPoolsDetailsSetSecondTokenInputValue);
+  const setFocusedInput = useSelector(selectPoolsDetailsSetFocusedInput);
+  const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
+
   useEffect(
     function updateTokens() {
       if (!tokenOptions.length) return;
 
+      if (secondTokenAddress && !isPair) {
+        setSecondTokenAddress(undefined);
+        setSecondTokenInputValue("");
+        return;
+      }
+
       const isFirstTokenValid = tokenOptions.find((token) => token.address === firstTokenAddress);
       if (!isFirstTokenValid) {
-        setFirstTokenAddress(tokenOptions[0].address);
+        setFirstTokenAddress(tokenOptions[0].address as ERC20Address | NativeTokenSupportedAddress);
       }
 
       const moveFromPairToSingleWithPresentSecondToken =
@@ -46,7 +55,7 @@ export function useUpdateTokens({
       if (moveFromPairToSingleWithPresentSecondToken) {
         const secondTokenPoolType = getTokenPoolType(marketInfo, secondTokenAddress);
 
-        setFocusedInput(secondTokenPoolType === "long" ? "longCollateral" : "shortCollateral");
+        setFocusedInput(secondTokenPoolType === "long" ? "first" : "second");
         setSecondTokenAddress(undefined);
         setSecondTokenInputValue("");
         return;
@@ -73,7 +82,7 @@ export function useUpdateTokens({
               convertTokenAddress(chainId, firstTokenAddress, "wrapped")
             );
           });
-          setSecondTokenAddress(secondToken?.address);
+          setSecondTokenAddress(secondToken?.address as ERC20Address | NativeTokenSupportedAddress | undefined);
         }
       }
     },

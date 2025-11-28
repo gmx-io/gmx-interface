@@ -2,6 +2,7 @@ import { Chain, getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
   coreWallet,
+  geminiWallet,
   injectedWallet,
   metaMaskWallet,
   okxWallet,
@@ -9,14 +10,14 @@ import {
   safeWallet,
   trustWallet,
   walletConnectWallet,
-  geminiWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
-import { http } from "viem";
+import { createPublicClient, fallback, http, PublicClient, Transport } from "viem";
 import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
-import { botanix } from "config/chains";
+import { botanix, getViemChain, RPC_PROVIDERS } from "config/chains";
 import { isDevelopment } from "config/env";
+import { LRUCache } from "sdk/utils/LruCache";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 
@@ -59,17 +60,53 @@ export const getRainbowKitConfig = once(() =>
       bsc,
       ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
     ],
-    transports: {
-      [arbitrum.id]: http(),
-      [avalanche.id]: http(),
-      [avalancheFuji.id]: http(),
-      [arbitrumSepolia.id]: http(),
-      [base.id]: http(),
-      [optimismSepolia.id]: http(),
-      [sepolia.id]: http(),
-      [botanix.id]: http(),
-      [bsc.id]: http(),
-    },
+    transports: [
+      arbitrum,
+      avalanche,
+      avalancheFuji,
+      arbitrumSepolia,
+      base,
+      optimismSepolia,
+      sepolia,
+      botanix,
+      bsc,
+    ].reduce(
+      (acc, chain) => {
+        acc[chain.id] = fallback([...RPC_PROVIDERS[chain.id].map((url: string) => http(url))]);
+        return acc;
+      },
+      {} as Record<number, Transport>
+    ),
     wallets: [...popularWalletList, ...othersWalletList],
   })
 );
+
+const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
+
+export function getPublicClientWithRpc(chainId: number): PublicClient {
+  const key = `chainId:${chainId}`;
+  if (PUBLIC_CLIENTS_CACHE.has(key)) {
+    return PUBLIC_CLIENTS_CACHE.get(key)!;
+  }
+  const publicClient = createPublicClient({
+    transport: fallback([
+      ...RPC_PROVIDERS[chainId].map((url: string) =>
+        http(
+          url,
+          import.meta.env.MODE === "test"
+            ? {
+                fetchOptions: {
+                  headers: {
+                    Origin: "http://localhost:3010",
+                  },
+                },
+              }
+            : undefined
+        )
+      ),
+    ]),
+    chain: getViemChain(chainId),
+  });
+  PUBLIC_CLIENTS_CACHE.set(key, publicClient);
+  return publicClient;
+}

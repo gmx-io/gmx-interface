@@ -9,6 +9,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 export function PoolsDetailsMarketAmount({
   value,
   secondaryValue,
+  afterValue,
   label,
   tooltipContent,
   valueClassName,
@@ -16,6 +17,7 @@ export function PoolsDetailsMarketAmount({
 }: {
   value: ReactNode;
   secondaryValue?: string;
+  afterValue?: ReactNode;
   label?: ReactNode;
   tooltipContent?: ReactNode;
   valueClassName?: string;
@@ -39,10 +41,18 @@ export function PoolsDetailsMarketAmount({
     </span>
   );
 
-  const valueContentWithTooltip = tooltipContent ? (
+  let valueContentWithTooltip = tooltipContent ? (
     <TooltipWithPortal handle={valueContent} content={tooltipContent} />
   ) : (
     valueContent
+  );
+  valueContentWithTooltip = afterValue ? (
+    <div className="flex items-center">
+      {valueContentWithTooltip}
+      {afterValue}
+    </div>
+  ) : (
+    valueContentWithTooltip
   );
 
   if (isMobile) {

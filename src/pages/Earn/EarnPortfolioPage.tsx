@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
@@ -25,6 +26,7 @@ export default function EarnPortfolioPage() {
   const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { marketsTokensApyData: marketsTotalApyData, glvApyInfoData: glvTotalApyData } = useGmMarketsApy(
     chainId,
@@ -82,7 +84,7 @@ export default function EarnPortfolioPage() {
   return (
     <EarnPageLayout>
       {processedData && <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />}
-      {marketsInfoData && marketTokensData && processedData ? (
+      {processedData ? (
         <>
           {hasAnyAssets && (
             <AssetsList
@@ -92,14 +94,14 @@ export default function EarnPortfolioPage() {
               hasGmx={hasGmxAssets}
               hasEsGmx={hasEsGmxAssets}
               gmGlvAssets={gmGlvAssets}
-              marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
               glv30dApyData={glv30dApyData}
               markets30dApyData={markets30dApyData}
+              multichainMarketTokensBalances={multichainMarketTokensBalances}
             />
           )}
-          {glv90dApyData && markets90dApyData && performance90d && (
+          {glv90dApyData && markets90dApyData && performance90d && marketTokensData && (
             <RecommendedAssets
               hasGmxAssets={hasGmxAssets}
               marketsInfoData={marketsInfoData}
@@ -117,11 +119,11 @@ export default function EarnPortfolioPage() {
               hasGmx={hasGmxAssets}
               hasEsGmx={hasEsGmxAssets}
               gmGlvAssets={gmGlvAssets}
-              marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
               glv30dApyData={glv30dApyData}
               markets30dApyData={markets30dApyData}
+              multichainMarketTokensBalances={multichainMarketTokensBalances}
             />
           )}
         </>

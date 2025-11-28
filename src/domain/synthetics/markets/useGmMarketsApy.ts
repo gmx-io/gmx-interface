@@ -253,6 +253,7 @@ export function useGmMarketsApy(
     tokensData,
     chainId,
     account,
+    srcChainId,
   });
 
   const marketsInfoData = {

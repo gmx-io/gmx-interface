@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
   selectGlvInfo,
   selectGlvInfoLoading,
@@ -36,6 +37,7 @@ export function GlvList({
   const glvsInfo = useSelector(selectGlvInfo);
   const glvsLoading = useSelector(selectGlvInfoLoading);
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensData);
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const isLoading = !glvsInfo || !progressiveMarketTokensData || glvsLoading;
 
@@ -44,8 +46,12 @@ export function GlvList({
       return [];
     }
 
-    return sortGmTokensDefault(glvsInfo, progressiveMarketTokensData);
-  }, [glvsInfo, progressiveMarketTokensData]);
+    return sortGmTokensDefault({
+      marketsInfoData: glvsInfo,
+      marketTokensData: progressiveMarketTokensData,
+      multichainMarketTokensBalances,
+    });
+  }, [glvsInfo, progressiveMarketTokensData, multichainMarketTokensBalances]);
 
   const rows =
     sortedGlvTokens.length > 0 &&
@@ -99,7 +105,7 @@ export function GlvList({
                     <Trans>TVL (SUPPLY)</Trans>
                   </TableTh>
                   <TableTh>
-                    <Trans>WALLET</Trans>
+                    <Trans>BALANCE</Trans>
                   </TableTh>
                   <TableTh>
                     <FeeApyLabel upperCase variant="iconStroke" />

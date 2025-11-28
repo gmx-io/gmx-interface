@@ -5,6 +5,7 @@ import type { SortDirection } from "context/SorterContext/types";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenFavoritesTabOption } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { MarketTokensAPRData, MarketsInfoData, getMarketPoolName } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { stripBlacklistedWords } from "domain/tokens/utils";
@@ -29,6 +30,7 @@ export function useFilterSortPools({
   tab,
   favoriteTokens,
   performance,
+  multichainMarketTokensBalances,
 }: {
   performance: PerformanceData | undefined;
   marketsInfo: MarketsInfoData | undefined;
@@ -41,6 +43,7 @@ export function useFilterSortPools({
   searchText: string;
   tab: TokenFavoritesTabOption;
   favoriteTokens: string[];
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
   const chainId = useSelector(selectChainId);
 
@@ -77,7 +80,7 @@ export function useFilterSortPools({
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      return sortGmTokensDefault(marketsInfo, marketTokensData);
+      return sortGmTokensDefault({ marketsInfoData: marketsInfo, marketTokensData, multichainMarketTokensBalances });
     }
 
     return sortGmTokensByField({
@@ -88,6 +91,7 @@ export function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
+      multichainMarketTokensBalances,
       performance,
     });
   }, [
@@ -99,6 +103,7 @@ export function useFilterSortPools({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    multichainMarketTokensBalances,
     performance,
   ]);
 

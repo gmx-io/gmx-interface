@@ -21,7 +21,10 @@ describe("fetchMultichainTokenBalances", () => {
 
   it("should fetch real token balances", async () => {
     const account = "0x0000000000000000000000000000000000000000";
-    const result = await fetchMultichainTokenBalances(ARBITRUM, account);
+    const result = await fetchMultichainTokenBalances({
+      settlementChainId: ARBITRUM,
+      account,
+    });
     expect(result[SOURCE_BASE_MAINNET][NATIVE_TOKEN_ADDRESS]).toBeGreaterThan(0n);
   }, 10_000);
 });

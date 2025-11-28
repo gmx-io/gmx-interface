@@ -3,10 +3,10 @@ import cx from "classnames";
 import { useMedia } from "react-use";
 
 import { ContractsChainId } from "config/chains";
+import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { MarketTokensAPRData } from "domain/synthetics/markets/types";
-import { TokensData } from "domain/synthetics/tokens";
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -24,11 +24,12 @@ export function AssetsList({
   hasGmx,
   hasEsGmx,
   gmGlvAssets,
-  marketTokensData,
+
   glvTotalApyData,
   marketsTotalApyData,
   glv30dApyData,
   markets30dApyData,
+  multichainMarketTokensBalances,
 }: {
   chainId: ContractsChainId;
   processedData: StakingProcessedData | undefined;
@@ -36,11 +37,11 @@ export function AssetsList({
   hasGmx: boolean;
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
-  marketTokensData: TokensData | undefined;
   glvTotalApyData: MarketTokensAPRData | undefined;
   marketsTotalApyData: MarketTokensAPRData | undefined;
   glv30dApyData: MarketTokensAPRData | undefined;
   markets30dApyData: MarketTokensAPRData | undefined;
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
   const cardsCount = (hasGmx ? 1 : 0) + (hasEsGmx ? 1 : 0) + gmGlvAssets.length;
   const { isMobile } = useBreakpoints();
@@ -72,7 +73,6 @@ export function AssetsList({
           {gmGlvAssets.map((info) => (
             <GmGlvAssetCard
               key={getGlvOrMarketAddress(info)}
-              token={getByKey(marketTokensData, getGlvOrMarketAddress(info))}
               marketInfo={info}
               chainId={chainId}
               totalFeeApy={
@@ -85,6 +85,7 @@ export function AssetsList({
                   ? getByKey(glv30dApyData, info.glvTokenAddress)
                   : getByKey(markets30dApyData, info.marketTokenAddress)
               }
+              multichainMarketTokenBalances={multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]}
             />
           ))}
         </div>

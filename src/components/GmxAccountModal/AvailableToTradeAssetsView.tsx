@@ -4,7 +4,7 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { getChainName, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -111,7 +111,9 @@ const AssetsList = ({ tokens, noChainFilter }: { tokens: DisplayToken[]; noChain
               <div>
                 <div>{displayToken.symbol}</div>
                 <div className="text-body-small text-slate-100">
-                  {displayToken.chainId === 0 ? t`GMX Account` : getChainName(displayToken.chainId)}
+                  {displayToken.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID
+                    ? t`GMX Account`
+                    : getChainName(displayToken.chainId)}
                 </div>
               </div>
             </div>
@@ -140,7 +142,7 @@ const AssetListMultichain = () => {
       .filter((token) => !token.isNative && token.gmxAccountBalance !== 0n && token.gmxAccountBalance !== undefined)
       .map(
         (token): DisplayToken => ({
-          chainId: 0,
+          chainId: GMX_ACCOUNT_PSEUDO_CHAIN_ID,
           symbol: token.symbol,
           isGmxAccount: true,
           balance: token.gmxAccountBalance,
@@ -167,7 +169,7 @@ const AssetListSettlementChain = () => {
           isGmxAccount: true,
           balance: tokenData.gmxAccountBalance,
           balanceUsd: convertToUsd(tokenData.gmxAccountBalance, tokenData.decimals, getMidPrice(tokenData.prices)),
-          chainId: 0,
+          chainId: GMX_ACCOUNT_PSEUDO_CHAIN_ID,
           isStable: tokenData.isStable,
         },
         {

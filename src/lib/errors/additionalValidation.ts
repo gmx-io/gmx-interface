@@ -3,6 +3,7 @@ import { BaseContract, Overrides, Provider, TransactionRequest } from "ethers";
 import { ErrorLike, parseError } from "lib/errors";
 import { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { ISigner, ISignerSendTransactionParams } from "lib/transactions/iSigner";
 import { ErrorPattern } from "sdk/utils/errors/transactionsErrors";
 import { mustNeverExist } from "sdk/utils/types";
 
@@ -39,7 +40,7 @@ export function getAdditionalValidationType(error: Error) {
   return undefined;
 }
 
-export function getEstimateGasError(provider: Provider, txnData: TransactionRequest) {
+export function getEstimateGasError(provider: Provider | ISigner, txnData: TransactionRequest) {
   return provider
     .estimateGas(txnData)
     .then(() => {
@@ -53,7 +54,7 @@ export function getEstimateGasError(provider: Provider, txnData: TransactionRequ
 
 export async function getCallStaticError(
   chainId: number,
-  provider: Provider,
+  provider: Provider | ISigner,
   txnData?: TransactionRequest,
   txnHash?: string
 ): Promise<{ error?: ErrorLike; txnData?: TransactionRequest }> {
@@ -97,8 +98,8 @@ export async function getCallStaticError(
 export async function additionalTxnErrorValidation(
   error: Error,
   chainId: number,
-  provider: Provider,
-  txnData: TransactionRequest
+  provider: Provider | ISigner,
+  txnData: ISignerSendTransactionParams
 ) {
   const additionalValidationType = getAdditionalValidationType(error);
 

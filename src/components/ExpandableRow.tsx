@@ -15,7 +15,7 @@ import { SyntheticsInfoRow } from "./SyntheticsInfoRow";
 
 const ANIMATION_DURATION = 0.2;
 
-const EXPAND_ANIMATION_VARIANTS: Variants = {
+export const EXPAND_ANIMATION_VARIANTS: Variants = {
   collapsed: {
     height: 0,
     opacity: 0,

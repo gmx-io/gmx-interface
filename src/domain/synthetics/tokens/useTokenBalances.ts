@@ -6,7 +6,7 @@ import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { Token } from "domain/tokens";
+import { Token, TokenBalanceType } from "domain/tokens";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
@@ -95,7 +95,7 @@ export function useTokenBalances(
         result[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
       });
 
-      resetTokensBalancesUpdates(Object.keys(result), "wallet");
+      resetTokensBalancesUpdates(Object.keys(result), TokenBalanceType.Wallet);
 
       freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Balances);
 
@@ -109,7 +109,7 @@ export function useTokenBalances(
     }
   }, [balancesKey, chainId]);
 
-  const balancesData = useUpdatedTokensBalances(data, "wallet");
+  const balancesData = useUpdatedTokensBalances(data, TokenBalanceType.Wallet);
 
   return {
     balancesData,

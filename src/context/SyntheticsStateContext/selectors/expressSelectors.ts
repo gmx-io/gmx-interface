@@ -3,6 +3,7 @@ import { isDevelopment } from "config/env";
 import type { GlobalExpressParams } from "domain/synthetics/express";
 import { getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
+import { SwapPricingType } from "sdk/types/orders";
 import type { FindSwapPath } from "sdk/types/trade";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 
@@ -120,10 +121,10 @@ export const selectExpressFindSwapPath = createSelector(function selectExpressFi
     fromTokenAddress: gasPaymentTokenAddress,
     toTokenAddress: relayerFeeTokenAddress,
     marketsInfoData,
-    isExpressFeeSwap: true,
     disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
     manualPath: _debugSwapMarketsConfig?.manualPath,
     gasEstimationParams,
+    swapPricingType: SwapPricingType.AtomicSwap,
   });
 
   return findFeeSwapPath;

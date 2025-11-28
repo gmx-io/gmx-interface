@@ -10,6 +10,7 @@ import {
 import { callContract } from "lib/contracts";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import SubaccountRouterAbi from "sdk/abis/SubaccountRouter";
@@ -201,7 +202,8 @@ export async function removeSubaccountExpressTxn({
 
   const relayerFeeAmount = await estimateArbitraryRelayFee({
     chainId,
-    provider,
+    client: getPublicClientWithRpc(chainId),
+    account,
     rawRelayParamsPayload: rawBaseRelayParamsPayload,
     expressTransactionBuilder: getTxnData,
     gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,

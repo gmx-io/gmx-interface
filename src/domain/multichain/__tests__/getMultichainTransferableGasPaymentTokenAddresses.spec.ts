@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { getChainName, SettlementChainId, SourceChainId } from "config/chains";
-import { MULTICHAIN_TOKEN_MAPPING } from "config/multichain";
+import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 
 import { getMultichainTransferableGasPaymentTokenSymbols } from "../getMultichainTransferableGasPaymentTokenAddresses";
 
@@ -13,10 +13,10 @@ function forEachSettlementSourceCombination(
     sourceChainName: string;
   }) => void
 ) {
-  for (const settlementChainIdString in MULTICHAIN_TOKEN_MAPPING) {
+  for (const settlementChainIdString in MULTI_CHAIN_TOKEN_MAPPING) {
     const settlementChainId = parseInt(settlementChainIdString) as SettlementChainId;
     const settlementChainName = getChainName(settlementChainId);
-    for (const sourceChainIdString in MULTICHAIN_TOKEN_MAPPING[settlementChainId]) {
+    for (const sourceChainIdString in MULTI_CHAIN_TOKEN_MAPPING[settlementChainId]) {
       const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
       const sourceChainName = getChainName(sourceChainId);
       callback({
