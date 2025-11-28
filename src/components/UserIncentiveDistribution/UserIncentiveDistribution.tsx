@@ -221,7 +221,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
 
   const renderTotalTooltipContent = useCallback(() => {
     return tokenIncentiveDetails.map((tokenInfo) => {
-      const symbol = tokenInfo.symbol || "Unknown";
+      const symbol = tokenInfo.symbol;
 
       return (
         <StatsTooltipRow
@@ -229,7 +229,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
           showDollar={false}
           label={
             <div className="flex items-center gap-4">
-              <TokenIcon symbol={symbol} displaySize={16} />
+              {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
               <span>{symbol}</span>
             </div>
           }

@@ -435,10 +435,6 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.positionImpactExponentFactorNegative],
         },
-        useOpenInterestInTokensForBalance: {
-          methodName: "getBool",
-          params: [prebuiltHashedKeys.useOpenInterestInTokensForBalance],
-        },
         swapFeeFactorForBalanceWasImproved: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.swapFeeFactorForBalanceWasImproved],

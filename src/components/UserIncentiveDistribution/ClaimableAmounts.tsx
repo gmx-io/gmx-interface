@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
+import { GLP_REIMBURSEMENT_TERMS_URL } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -28,9 +29,6 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import EarnIcon from "img/ic_earn.svg?react";
 
 import { ClaimableDistribution } from "./ClaimableDistribution";
-
-const GLP_REIMBURSEMENT_TERMS_URL =
-  "https://gateway.pinata.cloud/ipfs/bafkreiemqapoduhh2j5spg7ndmkqdx2l5s2uloqqcv4egu5qiy5oiv4kaq";
 
 export default function ClaimableAmounts() {
   const { account, signer } = useWallet();
