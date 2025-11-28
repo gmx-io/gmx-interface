@@ -8,6 +8,7 @@ import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { ExpandableRow } from "components/ExpandableRow";
+import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDebugSettings";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
@@ -118,6 +119,8 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         <AbFlagSettings />
 
         <DebugSwapsSettings />
+
+        <MetricsDebugSettings />
 
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
       </SettingsSection>

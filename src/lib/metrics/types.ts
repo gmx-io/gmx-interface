@@ -163,6 +163,25 @@ export type LoadingFailedEvent = {
   } & ErrorData;
 };
 
+export enum FreshnessMetricId {
+  Tickers = `tickers`,
+  Candles = "candles",
+  Prices24h = "24Prices",
+  MarketsValues = "marketsValues",
+  MarketsConfigs = "marketsConfigs",
+  Positions = "positions",
+  Orders = "orders",
+  Balances = "balances",
+}
+
+export type FreshnessTiming = {
+  event: `freshness.${FreshnessMetricId}`;
+  data: {
+    chainId: number;
+    metricId: FreshnessMetricId;
+  };
+};
+
 // Transactions tracking
 export type SubmittedOrderEvent = {
   event: `${OrderMetricType}.${OrderStage.Submitted}`;

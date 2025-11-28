@@ -1512,6 +1512,10 @@ msgstr "Не удалось обновить ордер(а)"
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
+msgid "Metrics Debug"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Рыночное уменьшение не удалось"
@@ -2694,6 +2698,7 @@ msgstr "Выполнение запроса на покупку."
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr "Этот обмен маршрутизируется через несколько пулов GM для минимальных возможных комиссий и влияния цены."
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
@@ -2945,6 +2950,10 @@ msgstr "Рынок"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter referral code"
 msgstr "Введите реферальный код"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
@@ -4936,6 +4945,10 @@ msgstr "Может не хватить ликвидности для выпол�
 msgid "AB Flags"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Клеймы недоступны на Avalanche Fuji"
@@ -5184,6 +5197,10 @@ msgstr "Насколько вероятно, что вы порекоменду�
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable External Swaps"
 msgstr "Включить внешние свопы"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
@@ -6889,6 +6906,10 @@ msgstr "Бонусный рибейт"
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "У вас есть существующая позиция в пуле рынка {0}, но для этого ордера недостаточно ликвидности."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
@@ -7627,6 +7648,10 @@ msgstr "Неизвестный ордер"
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
 msgstr "На данный момент нет открытых позиций на GMX"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
+msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."

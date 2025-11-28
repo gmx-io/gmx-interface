@@ -190,12 +190,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       });
   }
 
-  fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendBatchMetrics", body);
-    }
-
+  fetchPostBatchReport(body: BatchReportBody): Promise<Response> {
     if (isLocal()) {
       return Promise.resolve(new Response());
     }

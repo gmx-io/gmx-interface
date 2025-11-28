@@ -21,7 +21,15 @@ import {
   parseSymbolName,
 } from "domain/tradingview/utils";
 import { parseError } from "lib/errors";
-import { getRequestId, LoadingFailedEvent, LoadingStartEvent, LoadingSuccessEvent, metrics } from "lib/metrics";
+import {
+  FreshnessMetricId,
+  getRequestId,
+  LoadingFailedEvent,
+  LoadingStartEvent,
+  LoadingSuccessEvent,
+  metrics,
+} from "lib/metrics";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
@@ -404,6 +412,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     if (success) {
+      freshnessMetrics.reportThrottled(this.chainId, FreshnessMetricId.Candles);
       if (isPrefetch) {
         metrics.pushEvent<LoadingSuccessEvent>({
           event: "candlesLoad.success",

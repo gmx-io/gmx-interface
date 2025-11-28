@@ -209,7 +209,7 @@ export async function estimateExpressParams({
     gasPaymentToken,
     relayerFeeToken,
     l1Reference,
-    tokenPermits,
+    tokenPermits: rawTokenPermits,
     gasPrice,
     isSponsoredCall,
     bufferBps,
@@ -237,6 +237,8 @@ export async function estimateExpressParams({
     : undefined;
 
   const subaccount = subaccountValidations?.isValid ? rawSubaccount : undefined;
+
+  const tokenPermits = isGmxAccount ? [] : rawTokenPermits;
 
   const baseRelayerGasLimit = estimateRelayerGasLimit({
     gasLimits,

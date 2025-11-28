@@ -157,6 +157,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
+  // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<ContractsChainId, ContractsChainConfig>;
 
 const SOURCE_CHAIN_CONFIGS = {
@@ -184,6 +185,7 @@ const SOURCE_CHAIN_CONFIGS = {
     slug: "bnb-mainnet",
     explorerUrl: "https://bscscan.com/",
   },
+  // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<SourceChainId, SourceChainConfig>;
 
 const ALL_CHAIN_CONFIGS = {
