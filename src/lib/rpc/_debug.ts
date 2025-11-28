@@ -1,33 +1,69 @@
 import orderBy from "lodash/orderBy";
 
-import { getChainName } from "config/chains";
+import { ContractsChainId, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getProviderNameFromUrl } from "config/rpc";
+import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
 
 import { RpcTracker } from "./RpcTracker";
 
 export enum RpcDebugFlags {
   LogRpcTracker = "logRpcTracker",
-  DebugLargeAccountRpc = "debugLargeAccountRpc",
-  DebugFallbackRpc = "debugFallbackRpc",
+  DebugLargeAccount = "debugLargeAccount",
+  DebugAlchemy = "debugAlchemy",
 }
 
 export type RpcDebugState = {
   [RpcDebugFlags.LogRpcTracker]: boolean;
-  [RpcDebugFlags.DebugLargeAccountRpc]: boolean;
-  [RpcDebugFlags.DebugFallbackRpc]: boolean;
+  [RpcDebugFlags.DebugLargeAccount]: boolean;
+  [RpcDebugFlags.DebugAlchemy]: boolean;
+};
+
+export type OldRpcTrackerDebugStats = {
+  url: string;
+  isPrimary: string;
+  isValid: string;
+  responseTime: number | null;
+  blockNumber: number | null;
+  purpose: string | undefined;
+  isPublic: string;
+};
+
+export type OldRpcTrackerState = {
+  primary: string;
+  secondary: string;
+  debugStats: OldRpcTrackerDebugStats[];
+  timestamp: number;
+};
+
+export type DebugRpcEndpoint = {
+  url: string;
+  isPublic: boolean;
+  purpose: string;
+};
+
+type DebugRpcEndpointsState = {
+  endpoints: Record<number, DebugRpcEndpoint[]>;
 };
 
 class RpcTrackerDebug {
   storage: Storage<RpcDebugState>;
+  oldRpcTrackerState: Map<number, OldRpcTrackerState>;
+  debugRpcEndpointsStorage: Storage<DebugRpcEndpointsState>;
 
   constructor() {
     this.storage = new Storage<RpcDebugState>("rpcDebugState");
+    this.oldRpcTrackerState = new Map();
+    this.debugRpcEndpointsStorage = new Storage<DebugRpcEndpointsState>("debugRpcEndpoints");
   }
 
-  get isEnabled() {
-    return this.getFlag(RpcDebugFlags.LogRpcTracker);
+  private getEndpointsState(): Record<number, DebugRpcEndpoint[]> {
+    return this.debugRpcEndpointsStorage.get("endpoints") ?? {};
+  }
+
+  private saveEndpointsState(endpoints: Record<number, DebugRpcEndpoint[]>) {
+    this.debugRpcEndpointsStorage.set("endpoints", endpoints);
   }
 
   getFlag(flag: RpcDebugFlags) {
@@ -39,7 +75,7 @@ class RpcTrackerDebug {
   }
 
   debugRpcTrackerState(rpcTracker: RpcTracker) {
-    if (!this.isEnabled) {
+    if (!this.getFlag(RpcDebugFlags.LogRpcTracker)) {
       return;
     }
 
@@ -85,6 +121,57 @@ class RpcTrackerDebug {
     console.table(orderBy(debugStats, ["responseTime"], ["asc"]));
     // eslint-disable-next-line no-console
     console.groupEnd();
+  }
+
+  setOldRpcTrackerState(chainId: number, state: OldRpcTrackerState) {
+    this.oldRpcTrackerState.set(chainId as ContractsChainId, state);
+  }
+
+  getOldRpcTrackerState(chainId: number): OldRpcTrackerState | undefined {
+    return this.oldRpcTrackerState.get(chainId as ContractsChainId);
+  }
+
+  setDebugRpcEndpoint(chainId: number, url: string, isPublic: boolean, purpose: string) {
+    const endpointsState = this.getEndpointsState();
+    const endpoints = endpointsState[chainId] ?? [];
+
+    const filteredEndpoints = endpoints.filter((ep) => ep.url !== url);
+    filteredEndpoints.push({ url, isPublic, purpose });
+
+    endpointsState[chainId] = filteredEndpoints;
+    this.saveEndpointsState(endpointsState);
+  }
+
+  getDebugRpcEndpoints(chainId: number): DebugRpcEndpoint[] {
+    const endpointsState = this.getEndpointsState();
+    return endpointsState[chainId] ?? [];
+  }
+
+  removeDebugRpcEndpoint(chainId: number, url: string) {
+    const endpointsState = this.getEndpointsState();
+    const endpoints = endpointsState[chainId] ?? [];
+    const filteredEndpoints = endpoints.filter((ep) => ep.url !== url);
+
+    if (filteredEndpoints.length === 0) {
+      delete endpointsState[chainId];
+    } else {
+      endpointsState[chainId] = filteredEndpoints;
+    }
+    this.saveEndpointsState(endpointsState);
+  }
+
+  getAllDebugRpcEndpoints(): Record<number, DebugRpcEndpoint[]> {
+    return this.getEndpointsState();
+  }
+
+  subscribeForRpcTrackerDebugging(tracker: RpcTracker) {
+    addFallbackTrackerListenner("endpointsUpdated", tracker.trackerKey, () => {
+      this.debugRpcTrackerState(tracker);
+    });
+
+    addFallbackTrackerListenner("trackingFinished", tracker.trackerKey, () => {
+      this.debugRpcTrackerState(tracker);
+    });
   }
 }
 

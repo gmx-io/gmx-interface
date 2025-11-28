@@ -16,7 +16,7 @@ describe("FallbackTracker - initialization and storage", () => {
 
   afterEach(() => {
     trackers.forEach((tracker) => {
-      tracker.stopTracking();
+      tracker.cleanup();
     });
     trackers.length = 0;
   });

@@ -17,7 +17,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
 
   afterEach(() => {
     trackers.forEach((tracker) => {
-      tracker.stopTracking();
+      tracker.cleanup();
     });
     trackers.length = 0;
     vi.useRealTimers();
@@ -162,7 +162,6 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
 
     it("should limit checkStats to maxStoredCheckStats", async () => {
       const config = createMockConfig({
-        maxStoredCheckStats: 2,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
@@ -172,7 +171,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       await tracker.checkEndpoints();
       await tracker.checkEndpoints();
 
-      expect(tracker.state.checkStats.length).toBe(2);
+      // STORED_CHECK_STATS_MAX_COUNT is hardcoded to 1 in the implementation
+      expect(tracker.state.checkStats.length).toBe(1);
     });
 
     it("should handle partial failures - some endpoints succeed, some fail", async () => {
@@ -584,7 +584,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
 
       // Stop tracking while checkEndpoints is running
       const abortController = tracker.state.abortController;
-      tracker.stopTracking();
+      tracker.cleanup();
 
       expect(abortController?.signal.aborted).toBe(true);
       expect(tracker.state.trackerTimeoutId).toBeUndefined();
@@ -602,9 +602,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       tracker.state.lastUsage = Date.now();
 
       tracker.track();
-      tracker.stopTracking();
+      tracker.cleanup();
       tracker.track();
-      tracker.stopTracking();
+      tracker.cleanup();
 
       expect(tracker.state.trackerTimeoutId).toBeUndefined();
       expect(tracker.state.abortController).toBeUndefined();
@@ -646,7 +646,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       tracker.state.lastUsage = Date.now();
       tracker.track();
 
-      tracker.stopTracking();
+      tracker.cleanup();
 
       expect(tracker.state.trackerTimeoutId).toBeUndefined();
     });
@@ -667,7 +667,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       await vi.advanceTimersByTimeAsync(0);
 
       const controller = tracker.state.abortController;
-      tracker.stopTracking();
+      tracker.cleanup();
 
       expect(controller?.signal.aborted).toBe(true);
     });
@@ -680,7 +680,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       // Trigger another failure during throttle period - should be ignored
       tracker.reportFailure(config.primary);
 
-      tracker.stopTracking();
+      tracker.cleanup();
 
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
     });

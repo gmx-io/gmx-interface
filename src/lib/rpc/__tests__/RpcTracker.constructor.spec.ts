@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import * as rpcConfigModule from "config/rpc";
+import { getChainName } from "config/rpc";
 import { suppressConsole } from "lib/__testUtils__/_utils";
+import { ARBITRUM } from "sdk/configs/chains";
 
 import { RpcTracker } from "../RpcTracker";
 import { createMockRpcTrackerParams } from "./_utils";
@@ -15,30 +17,6 @@ describe("RpcTracker - constructor", () => {
   });
 
   describe("initialization", () => {
-    it("should create providersMap from getRpcProviders", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
-
-      const allProviders = [
-        ...rpcConfigModule.getRpcProviders(params.chainId, "default"),
-        ...rpcConfigModule.getRpcProviders(params.chainId, "largeAccount"),
-        ...rpcConfigModule.getRpcProviders(params.chainId, "fallback"),
-        ...rpcConfigModule.getRpcProviders(params.chainId, "express"),
-      ]
-        .flat()
-        .filter((p) => p !== undefined);
-
-      expect(Object.keys(tracker.providersMap).length).toBeGreaterThan(0);
-
-      Object.values(tracker.providersMap).forEach((provider, index) => {
-        expect(provider).toBeDefined();
-        const allProvider = allProviders[index];
-        expect(allProvider).toBeDefined();
-        expect(provider.url).toBe(allProvider!.url);
-        expect(provider.purpose).toBe(allProvider!.purpose);
-      });
-    });
-
     it("should filter out undefined providers", () => {
       const params = createMockRpcTrackerParams();
 
@@ -64,26 +42,6 @@ describe("RpcTracker - constructor", () => {
       expect(providerUrls.every((url) => url !== undefined)).toBe(true);
     });
 
-    it("should set primary and secondary endpoints correctly", () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
-
-      const allProviders = [
-        ...rpcConfigModule.getRpcProviders(params.chainId, "default"),
-        ...rpcConfigModule.getRpcProviders(params.chainId, "largeAccount"),
-        ...rpcConfigModule.getRpcProviders(params.chainId, "fallback"),
-        ...rpcConfigModule.getRpcProviders(params.chainId, "express"),
-      ]
-        .flat()
-        .filter((p) => p !== undefined);
-
-      const firstProvider = allProviders[0];
-      const secondProvider = allProviders[1] || firstProvider;
-
-      expect(tracker.fallbackTracker.params.primary).toBe(firstProvider?.url);
-      expect(tracker.fallbackTracker.params.secondary).toBe(secondProvider?.url);
-    });
-
     it("should handle case when only one provider is available", () => {
       const params = createMockRpcTrackerParams();
 
@@ -98,6 +56,22 @@ describe("RpcTracker - constructor", () => {
 
       expect(tracker.fallbackTracker.params.primary).toBe("https://single-provider.com");
       expect(tracker.fallbackTracker.params.secondary).toBe("https://single-provider.com");
+    });
+  });
+
+  describe("trackerKey validation", () => {
+    it("should generate trackerKey in correct format: RpcTracker.{chainName}", () => {
+      const params = createMockRpcTrackerParams({ chainId: ARBITRUM });
+
+      vi.spyOn(rpcConfigModule, "getRpcProviders").mockImplementation(() => {
+        return [{ url: "https://test-rpc.com", isPublic: true, purpose: "default" }];
+      });
+
+      const tracker = new RpcTracker(params);
+      const expectedChainName = getChainName(ARBITRUM);
+      const expectedTrackerKey = `RpcTracker.${expectedChainName}`;
+
+      expect(tracker.trackerKey).toBe(expectedTrackerKey);
     });
   });
 });

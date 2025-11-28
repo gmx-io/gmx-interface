@@ -249,7 +249,7 @@ export function getChainSlug(chainId: number): string {
   return ALL_CHAIN_CONFIGS[chainId].slug;
 }
 
-export function getChainIdBySlug(slug: string) {
+export function getChainIdBySlug(slug: string): AnyChainId | undefined {
   const chainId = Object.values(ALL_CHAIN_CONFIGS).find((config) => config.slug === slug)?.chainId;
 
   return chainId;

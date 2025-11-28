@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { getIsFlagEnabled } from "config/ab";
 import { getProviderNameFromUrl } from "config/rpc";
 import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
+import { FreshnessMetricId } from "lib/metrics/types";
 import { _debugMulticall, type MulticallDebugState } from "lib/multicall/_debug";
+import { _debugRpcTracker } from "lib/rpc/_debug";
 import { getCurrentRpcUrls, getRpcTrackerByChainId } from "lib/rpc/useRpcUrls";
+import { usePrevious } from "lib/usePrevious";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Card from "components/Card/Card";
+import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
 import { DebugControlsPanel, EventsPanel, MarketsSection, RpcTable, type GroupedEvent, type RpcStats } from "./parts";
 
@@ -17,6 +23,8 @@ const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 export default function RpcDebug() {
   const { chainId } = useChainId();
   const { primary: primaryRpc, secondary: secondaryRpc } = getCurrentRpcUrls(chainId);
+  const prevPrimaryRpc = usePrevious(primaryRpc);
+  const prevSecondaryRpc = usePrevious(secondaryRpc);
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
@@ -24,6 +32,14 @@ export default function RpcDebug() {
   const [events, setEvents] = useState<GroupedEvent[]>([]);
   const [idleSeconds, setIdleSeconds] = useState(0);
   const [allRpcStats, setAllRpcStats] = useState<RpcStats[]>([]);
+  const [freshnessValues, setFreshnessValues] = useState<{
+    marketValues: number | undefined;
+    balances: number | undefined;
+  }>({ marketValues: undefined, balances: undefined });
+  const [freshnessHistory, setFreshnessHistory] = useState<{
+    marketValues: number[];
+    balances: number[];
+  }>({ marketValues: [], balances: [] });
 
   // Subscribe to debug events
   useEffect(() => {
@@ -69,33 +85,57 @@ export default function RpcDebug() {
   // Update all RPC stats
   useEffect(() => {
     const updateStats = () => {
-      const tracker = getRpcTrackerByChainId(chainId);
+      const isNewTracker = getIsFlagEnabled("testRpcFallbackUpdates");
 
-      if (!tracker) {
-        setAllRpcStats([]);
-        return;
+      if (isNewTracker) {
+        const tracker = getRpcTrackerByChainId(chainId);
+
+        if (!tracker) {
+          setAllRpcStats([]);
+          return;
+        }
+
+        const fallbackTracker = tracker.fallbackTracker;
+
+        // Update all RPC stats
+        const allStats = fallbackTracker.getEndpointsStats();
+        const statsWithDetails = allStats.map((stats) => {
+          const rpcConfig = tracker.getRpcConfig(stats.endpoint);
+          return {
+            endpoint: stats.endpoint,
+            providerName: getProviderNameFromUrl(stats.endpoint),
+            purpose: rpcConfig?.purpose ?? "unknown",
+            isPublic: rpcConfig?.isPublic ?? false,
+            failureCount: stats.failureTimestamps?.length ?? 0,
+            banTime: stats.banned?.timestamp,
+            responseTime: stats.checkResult?.stats?.responseTime,
+            blockNumber: stats.checkResult?.stats?.blockNumber,
+            isPrimary: stats.endpoint === primaryRpc,
+            isSecondary: stats.endpoint === secondaryRpc,
+          };
+        });
+        setAllRpcStats(statsWithDetails);
+      } else {
+        // Use old tracker state from debug tracker
+        const oldTrackerState = _debugRpcTracker?.getOldRpcTrackerState(chainId);
+        if (oldTrackerState?.debugStats && oldTrackerState.debugStats.length > 0) {
+          const statsWithDetails = oldTrackerState.debugStats.map((stat) => ({
+            endpoint: stat.url,
+            providerName: getProviderNameFromUrl(stat.url),
+            purpose: stat.purpose ?? "unknown",
+            isPublic: stat.isPublic === "yes",
+            failureCount: 0,
+            banTime: undefined,
+            responseTime: stat.responseTime ?? undefined,
+            blockNumber: stat.blockNumber ?? undefined,
+            isPrimary: stat.url === oldTrackerState.primary,
+            isSecondary: stat.url === oldTrackerState.secondary,
+          }));
+          setAllRpcStats(statsWithDetails);
+        } else {
+          setAllRpcStats([]);
+        }
       }
-
-      const fallbackTracker = tracker.fallbackTracker;
-
-      // Update all RPC stats
-      const allStats = fallbackTracker.getEndpointsStats();
-      const statsWithDetails = allStats.map((stats) => {
-        const rpcConfig = tracker.getRpcConfig(stats.endpoint);
-        return {
-          endpoint: stats.endpoint,
-          providerName: getProviderNameFromUrl(stats.endpoint),
-          purpose: rpcConfig?.purpose ?? "unknown",
-          isPublic: rpcConfig?.isPublic ?? false,
-          failureCount: stats.failureTimestamps?.length ?? 0,
-          banTime: stats.banned?.timestamp,
-          responseTime: stats.checkResult?.stats?.responseTime,
-          blockNumber: stats.checkResult?.stats?.blockNumber,
-          isPrimary: stats.endpoint === primaryRpc,
-          isSecondary: stats.endpoint === secondaryRpc,
-        };
-      });
-      setAllRpcStats(statsWithDetails);
     };
 
     updateStats();
@@ -105,6 +145,108 @@ export default function RpcDebug() {
 
     return () => clearInterval(interval);
   }, [chainId, primaryRpc, secondaryRpc]);
+
+  // Update freshness values periodically and track last 3 diffs when data is updated
+  useEffect(() => {
+    let previousMarketValuesLastUpdated: number | undefined = undefined;
+    let previousBalancesLastUpdated: number | undefined = undefined;
+
+    const updateFreshness = () => {
+      const now = Date.now();
+      const marketValuesLastUpdated = freshnessMetrics.getLastUpdated(chainId, FreshnessMetricId.MarketsValues);
+      const balancesLastUpdated = freshnessMetrics.getLastUpdated(chainId, FreshnessMetricId.Balances);
+      const marketValuesFreshness = marketValuesLastUpdated ? now - marketValuesLastUpdated : undefined;
+      const balancesFreshness = balancesLastUpdated ? now - balancesLastUpdated : undefined;
+
+      // Track when data is updated (lastUpdated timestamp changes)
+      if (
+        previousMarketValuesLastUpdated !== undefined &&
+        marketValuesLastUpdated !== undefined &&
+        marketValuesLastUpdated !== previousMarketValuesLastUpdated
+      ) {
+        // Data was updated, calculate the diff (time since previous update)
+        const diff = marketValuesLastUpdated - previousMarketValuesLastUpdated;
+        setFreshnessHistory((prev) => {
+          const newHistory = [diff, ...prev.marketValues];
+          return {
+            ...prev,
+            marketValues: newHistory.slice(0, 3), // Keep only last 3
+          };
+        });
+      }
+
+      if (
+        previousBalancesLastUpdated !== undefined &&
+        balancesLastUpdated !== undefined &&
+        balancesLastUpdated !== previousBalancesLastUpdated
+      ) {
+        // Data was updated, calculate the diff (time since previous update)
+        const diff = balancesLastUpdated - previousBalancesLastUpdated;
+        setFreshnessHistory((prev) => {
+          const newHistory = [diff, ...prev.balances];
+          return {
+            ...prev,
+            balances: newHistory.slice(0, 3), // Keep only last 3
+          };
+        });
+      }
+
+      previousMarketValuesLastUpdated = marketValuesLastUpdated;
+      previousBalancesLastUpdated = balancesLastUpdated;
+
+      setFreshnessValues({
+        marketValues: marketValuesFreshness,
+        balances: balancesFreshness,
+      });
+    };
+
+    updateFreshness();
+    const interval = setInterval(updateFreshness, 1000);
+
+    return () => clearInterval(interval);
+  }, [chainId]);
+
+  // Check for URL changes and auto-disable matching flags
+  useEffect(() => {
+    // Read current state from storage
+    const currentState = _debugMulticall?.getDebugState() ?? {};
+    let updated = false;
+
+    if (prevPrimaryRpc !== primaryRpc) {
+      if (currentState.triggerPrimaryAsFailedInWorker) {
+        _debugMulticall?.setFlag("triggerPrimaryAsFailedInWorker", false);
+        updated = true;
+      }
+      if (currentState.triggerPrimaryAsFailedInMainThread) {
+        _debugMulticall?.setFlag("triggerPrimaryAsFailedInMainThread", false);
+        updated = true;
+      }
+      if (currentState.triggerPrimaryTimeoutInWorker) {
+        _debugMulticall?.setFlag("triggerPrimaryTimeoutInWorker", false);
+        updated = true;
+      }
+    }
+
+    if (prevSecondaryRpc !== secondaryRpc) {
+      if (currentState.triggerSecondaryFailedInWorker) {
+        _debugMulticall?.setFlag("triggerSecondaryFailedInWorker", false);
+        updated = true;
+      }
+      if (currentState.triggerSecondaryFailedInMainThread) {
+        _debugMulticall?.setFlag("triggerSecondaryFailedInMainThread", false);
+        updated = true;
+      }
+      if (currentState.triggerSecondaryTimeoutInWorker) {
+        _debugMulticall?.setFlag("triggerSecondaryTimeoutInWorker", false);
+        updated = true;
+      }
+    }
+
+    if (updated) {
+      // Read updated state after setting flags
+      setDebugState(_debugMulticall?.getDebugState() ?? {});
+    }
+  }, [primaryRpc, secondaryRpc, prevPrimaryRpc, prevSecondaryRpc]);
 
   // Update debug state when it changes
   const handleDebugFlagChange = useCallback(<K extends keyof MulticallDebugState>(flag: K, value: boolean) => {
@@ -118,7 +260,10 @@ export default function RpcDebug() {
         <Card title="RPC Debug">
           <div className="App-card-content">
             <div className="flex gap-8" style={GRID_STYLE}>
-              <RpcTable allRpcStats={allRpcStats} />
+              <div className="flex min-w-0 flex-col">
+                <RpcTable allRpcStats={allRpcStats} />
+                <DataFreshnessSection freshnessValues={freshnessValues} freshnessHistory={freshnessHistory} />
+              </div>
               <EventsPanel events={events} idleSeconds={idleSeconds} onClearEvents={() => setEvents([])} />
               <div className="min-w-0 flex-1">
                 <DebugControlsPanel
@@ -135,5 +280,92 @@ export default function RpcDebug() {
         </Card>
       </div>
     </AppPageLayout>
+  );
+}
+
+function DataFreshnessSection({
+  freshnessValues,
+  freshnessHistory,
+}: {
+  freshnessValues: { marketValues: number | undefined; balances: number | undefined };
+  freshnessHistory: {
+    marketValues: number[];
+    balances: number[];
+  };
+}) {
+  const formatFreshness = (ms: number | undefined) => {
+    if (ms === undefined) {
+      return "—";
+    }
+    if (ms < 1000) {
+      return `${ms}ms`;
+    }
+    if (ms < 60000) {
+      return `${(ms / 1000).toFixed(1)}s`;
+    }
+    return `${(ms / 60000).toFixed(1)}m`;
+  };
+
+  const getFreshnessColor = (ms: number | undefined) => {
+    if (ms === undefined) return "text-gray-500";
+    if (ms < 5000) return "text-green-400";
+    if (ms < 30000) return "text-yellow-400";
+    return "text-red-400";
+  };
+
+  const renderFreshnessRow = (label: string, current: number | undefined, history: number[]) => {
+    // Get last 3 history values (newest first, then pad if needed)
+    // History is already stored with newest first, so use as-is to show latest on left
+    const previousValues: (number | undefined)[] = [...history].slice(0, 3);
+    while (previousValues.length < 3) {
+      previousValues.push(undefined);
+    }
+
+    return (
+      <TableTr>
+        <TableTd padding="compact">
+          <div className="text-sm font-semibold text-white">{label}</div>
+        </TableTd>
+        <TableTd padding="compact">
+          <span className={`text-xs font-semibold ${getFreshnessColor(current)}`}>{formatFreshness(current)}</span>
+        </TableTd>
+        <TableTd padding="compact">
+          <div className="flex items-center justify-end gap-16">
+            {previousValues.map((value, index) =>
+              value !== undefined ? (
+                <span key={index} className={`text-xs font-semibold ${getFreshnessColor(value)}`}>
+                  {formatFreshness(value)}
+                </span>
+              ) : null
+            )}
+          </div>
+        </TableTd>
+      </TableTr>
+    );
+  };
+
+  return (
+    <div className="mt-8 flex min-h-0 flex-col overflow-hidden">
+      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+        <h3 className="text-xl muted font-bold uppercase">Data Freshness</h3>
+      </div>
+      <div className="min-h-0 overflow-y-auto">
+        <div className="overflow-x-auto">
+          <Table>
+            <thead className="sticky top-0 z-10 bg-slate-900">
+              <TableTheadTr>
+                <TableTh padding="compact">Data Type</TableTh>
+                <TableTh padding="compact">Current</TableTh>
+                <TableTh padding="compact">Previous</TableTh>
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {renderFreshnessRow("Market Values", freshnessValues.marketValues, freshnessHistory.marketValues)}
+              {renderFreshnessRow("Balances", freshnessValues.balances, freshnessHistory.balances)}
+            </tbody>
+          </Table>
+        </div>
+      </div>
+    </div>
   );
 }

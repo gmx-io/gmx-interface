@@ -1,30 +1,27 @@
 import orderBy from "lodash/orderBy";
 import { decodeFunctionResult, encodeFunctionData } from "viem";
 
-import {
-  ContractsChainId,
-  getChainName,
-  getProviderNameFromUrl,
-  getRpcProviders,
-  RpcConfig,
-  RpcPurpose,
-} from "config/rpc";
+import { ContractsChainId, isContractsChain } from "config/chains";
+import { isDevelopment } from "config/env";
+import { getChainName, getProviderNameFromUrl, getRpcProviders, RpcConfig, RpcPurpose } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { DEFAULT_FALLBACK_TRACKER_CONFIG, EndpointStats, FallbackTracker } from "lib/FallbackTracker/FallbackTracker";
-import { fetchEthCall } from "lib/rpc/fetchEthCall";
+import { EndpointStats, FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker/FallbackTracker";
+import { byBanTimestamp, byResponseTime } from "lib/FallbackTracker/utils";
+import { fetchBlockNumber, fetchEthCall } from "lib/rpc/fetchRpc";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { getMarketsByChainId } from "sdk/configs/markets";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
-// Default configuration for RpcTracker (partial - requires chainId and providers)
-export const DEFAULT_RPC_TRACKER_CONFIG = {
-  blockFromFutureThreshold: 1000,
-  blockLaggingThreshold: 50,
+export type RpcTrackerConfig = FallbackTrackerConfig & {
+  /** Omit RPC if block number is higher than average on this value */
+  blockFromFutureThreshold: number;
+  /** Omit RPC if block number is lower than highest valid on this value */
+  blockLaggingThreshold: number;
 };
 
-type RpcTrackerParams = {
-  chainId: ContractsChainId;
+type RpcTrackerParams = RpcTrackerConfig & {
+  chainId: number;
   /** Omit RPC if block number is higher than average on this value */
   blockFromFutureThreshold: number;
   /** Omit RPC if block number is lower than highest valid on this value */
@@ -43,14 +40,7 @@ export class RpcTracker {
   fallbackTracker: FallbackTracker<RpcCheckResult>;
 
   constructor(public readonly params: RpcTrackerParams) {
-    const chainProviders = [
-      getRpcProviders(this.params.chainId, "default"),
-      getRpcProviders(this.params.chainId, "largeAccount"),
-      getRpcProviders(this.params.chainId, "fallback"),
-      getRpcProviders(this.params.chainId, "express"),
-    ]
-      .flat()
-      .filter((value): value is RpcConfig => value !== undefined);
+    const chainProviders = this.getChainProviders();
 
     if (chainProviders.length === 0) {
       throw new Error(`No RPC providers found for chainId: ${this.params.chainId}`);
@@ -68,8 +58,14 @@ export class RpcTracker {
     const secondaryProvider = chainProviders[1] || defaultProvider;
 
     this.fallbackTracker = new FallbackTracker<RpcCheckResult>({
-      ...DEFAULT_FALLBACK_TRACKER_CONFIG,
       trackerKey: `RpcTracker.${getChainName(this.params.chainId)}`,
+      trackInterval: this.params.trackInterval,
+      checkTimeout: this.params.checkTimeout,
+      cacheTimeout: this.params.cacheTimeout,
+      disableUnusedTrackingTimeout: this.params.disableUnusedTrackingTimeout,
+      failuresBeforeBan: this.params.failuresBeforeBan,
+      setEndpointsThrottle: this.params.setEndpointsThrottle,
+      delay: this.params.delay,
       primary: defaultProvider.url,
       secondary: secondaryProvider.url,
       endpoints: chainProviders.map((provider) => provider.url),
@@ -78,6 +74,17 @@ export class RpcTracker {
       selectNextSecondary: this.selectNextSecondary,
       getEndpointName: getProviderNameFromUrl,
     });
+  }
+
+  getChainProviders(): RpcConfig[] {
+    return [
+      getRpcProviders(this.params.chainId, "default"),
+      getRpcProviders(this.params.chainId, "largeAccount"),
+      getRpcProviders(this.params.chainId, "fallback"),
+      getRpcProviders(this.params.chainId, "express"),
+    ]
+      .flat()
+      .filter((value): value is RpcConfig => value !== undefined);
   }
 
   get trackerKey() {
@@ -92,30 +99,62 @@ export class RpcTracker {
     return this.providersMap[endpoint];
   }
 
+  private checkForSkip(endpoint: string): void {
+    const rpcConfig = this.getRpcConfig(endpoint);
+
+    if (!rpcConfig?.isPublic && (!this.getIsLargeAccount() || rpcConfig?.purpose !== "largeAccount")) {
+      throw new Error("Skip private provider");
+    }
+  }
+
   public pickCurrentRpcUrls() {
-    return this.fallbackTracker.pick();
+    return this.fallbackTracker.getCurrentEndpoints();
   }
 
   public getExpressRpcUrl() {
-    const endpoints = this.fallbackTracker.pick().fallbacks;
+    const endpointsStats = this.fallbackTracker.getEndpointsStats();
 
-    const expressEndpoint = endpoints.find((endpoint) => this.providersMap[endpoint].purpose === "express");
+    const filtered = endpointsStats.filter((result) => {
+      const purpose = this.getRpcConfig(result.endpoint)?.purpose;
+      return purpose === "express" || purpose === "default";
+    });
 
-    if (expressEndpoint) {
-      return expressEndpoint;
-    }
+    const ranked = orderBy(
+      filtered,
+      [
+        (result) => {
+          const bannedTimestamp = result.banned?.timestamp;
+          if (!bannedTimestamp) {
+            return -Infinity;
+          }
+          return bannedTimestamp;
+        },
+        (result) => {
+          const purpose = this.getRpcConfig(result.endpoint)?.purpose;
+          return purpose === "express" ? 1 : 0;
+        },
+      ],
+      ["asc", "desc"]
+    );
 
-    return endpoints[0];
+    return ranked[0]?.endpoint ?? this.fallbackTracker.getCurrentEndpoints().primary;
   }
 
   checkRpc = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
-    const rpcConfig = this.providersMap[endpoint];
-
-    if (!rpcConfig.isPublic && (!this.getIsLargeAccount() || rpcConfig.purpose !== "largeAccount")) {
-      throw new Error("Skip private provider");
-    }
-
     const chainId = this.params.chainId;
+    const isContractChain = isContractsChain(chainId, isDevelopment());
+
+    if (isContractChain) {
+      return this.checkRpcForContractChain(endpoint, signal);
+    } else {
+      return this.checkRpcForSourceChain(endpoint, signal);
+    }
+  };
+
+  private checkRpcForContractChain = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
+    this.checkForSkip(endpoint);
+
+    const chainId = this.params.chainId as ContractsChainId;
     const startTime = Date.now();
 
     const markets = getMarketsByChainId(chainId);
@@ -132,6 +171,7 @@ export class RpcTracker {
       url: endpoint,
       to: getContract(chainId, "Multicall"),
       signal,
+      priority: "low",
       callData: encodeFunctionData({
         abi: abis.Multicall,
         functionName: "blockAndAggregate",
@@ -178,6 +218,25 @@ export class RpcTracker {
     };
   };
 
+  private checkRpcForSourceChain = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
+    this.checkForSkip(endpoint);
+
+    const startTime = Date.now();
+
+    const { blockNumber } = await fetchBlockNumber({
+      url: endpoint,
+      signal,
+      priority: "low",
+    });
+
+    const responseTime = Date.now() - startTime;
+
+    return {
+      responseTime,
+      blockNumber,
+    };
+  };
+
   selectNextPrimary = ({ endpointsStats }): string | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
@@ -190,27 +249,9 @@ export class RpcTracker {
     const ranked = orderBy(
       filtered,
       [
-        (result) => {
-          const bannedTimestamp = result.banned?.timestamp;
-          if (!bannedTimestamp) {
-            return -Infinity;
-          }
-          return bannedTimestamp;
-        },
-        (result) => {
-          const purpose = this.getRpcConfig(result.endpoint)?.purpose;
-
-          let score = 0;
-
-          if (this.getIsLargeAccount()) {
-            if (purpose === "largeAccount") {
-              score += 1;
-            }
-          }
-
-          return score;
-        },
-        (result) => result.checkResult?.stats?.responseTime ?? Infinity,
+        byBanTimestamp,
+        this.byMatchedPurpose(this.getIsLargeAccount() ? ["largeAccount", "default"] : ["default"]),
+        byResponseTime,
       ],
       ["asc", "desc", "asc"]
     );
@@ -230,30 +271,9 @@ export class RpcTracker {
     const ranked = orderBy(
       filtered,
       [
-        (result) => {
-          const bannedTimestamp = result.banned?.timestamp;
-          if (!bannedTimestamp) {
-            return -Infinity;
-          }
-          return bannedTimestamp;
-        },
-        (result) => {
-          const purpose = this.getRpcConfig(result.endpoint)?.purpose;
-
-          let score = 0;
-          if (this.getIsLargeAccount()) {
-            if (purpose === "largeAccount") {
-              score += 1;
-            }
-          } else {
-            if (purpose === "fallback") {
-              score += 1;
-            }
-          }
-
-          return score;
-        },
-        (result) => result.checkResult?.stats?.responseTime ?? Infinity,
+        byBanTimestamp,
+        this.byMatchedPurpose(this.getIsLargeAccount() ? ["largeAccount", "default"] : ["fallback", "default"]),
+        byResponseTime,
       ],
       ["asc", "desc", "asc"]
     );
@@ -302,5 +322,19 @@ export class RpcTracker {
     return mostRecentBlock - secondRecentBlock > this.params.blockFromFutureThreshold
       ? secondRecentBlock
       : mostRecentBlock;
+  };
+
+  byMatchedPurpose = (purposes: RpcPurpose[]): ((stats: EndpointStats<any>) => number) => {
+    return (stats) => {
+      const purpose = this.getRpcConfig(stats.endpoint)?.purpose;
+
+      for (const [index, filterPurpose] of purposes.toReversed().entries()) {
+        if (purpose === filterPurpose) {
+          return index + 1;
+        }
+      }
+
+      return 0;
+    };
   };
 }

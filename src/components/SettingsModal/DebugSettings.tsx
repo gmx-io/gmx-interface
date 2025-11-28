@@ -1,17 +1,15 @@
-import { t, Trans } from "@lingui/macro";
-import { useCallback, useState } from "react";
+import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
-import { ExpandableRow } from "components/ExpandableRow";
 import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDebugSettings";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
+import { RpcDebugSettings } from "./RpcDebugSettings";
 import { SettingsSection } from "./shared";
 
 interface DebugSettingsProps {
@@ -20,13 +18,6 @@ interface DebugSettingsProps {
 
 export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
   const settings = useSettings();
-  // eslint-disable-next-line react/hook-use-state
-  const [, setUpdateTrigger] = useState(false);
-  const [debugLinksExpanded, setDebugLinksExpanded] = useState(false);
-
-  const forceUpdate = useCallback(() => {
-    setUpdateTrigger((prev) => !prev);
-  }, []);
 
   return (
     <div className="font-medium">
@@ -49,80 +40,56 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Disable Share Modal PnL Check</Trans>
         </ToggleSwitch>
 
-        <ToggleSwitch
-          isChecked={_debugRpcTracker?.getFlag(RpcDebugFlags.LogRpcTracker)}
-          setIsChecked={(enabled) => {
-            _debugRpcTracker?.setFlag(RpcDebugFlags.LogRpcTracker, enabled);
-            forceUpdate();
-          }}
-        >
-          <Trans>RPC Tracker Logging</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch
-          isChecked={_debugRpcTracker?.getFlag(RpcDebugFlags.DebugLargeAccountRpc)}
-          setIsChecked={(enabled) => {
-            _debugRpcTracker?.setFlag(RpcDebugFlags.DebugLargeAccountRpc, enabled);
-            forceUpdate();
-          }}
-        >
-          <Trans>Debug Large Account RPC</Trans>
-        </ToggleSwitch>
-
-        <ToggleSwitch
-          isChecked={_debugRpcTracker?.getFlag(RpcDebugFlags.DebugFallbackRpc)}
-          setIsChecked={(enabled) => {
-            _debugRpcTracker?.setFlag(RpcDebugFlags.DebugFallbackRpc, enabled);
-            forceUpdate();
-          }}
-        >
-          <Trans>Debug Fallback RPC</Trans>
-        </ToggleSwitch>
-
-        <ExpandableRow
-          open={debugLinksExpanded}
-          title={t`Debug Links`}
-          onToggle={() => setDebugLinksExpanded((prev) => !prev)}
-          disableCollapseOnError={false}
-          contentClassName="flex flex-col gap-12 pt-8"
-          scrollIntoViewOnMobile
-        >
-          <Link
-            to="/rpc-debug"
-            className="link-underline text-12 text-typography-secondary hover:text-blue-300"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <Trans>RPC Debug</Trans>
-          </Link>
-          <Link
-            to="/permits"
-            className="link-underline text-12 text-typography-secondary hover:text-blue-300"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <Trans>Debug Permits</Trans>
-          </Link>
-          <Link
-            to="/monitor"
-            className="link-underline text-12 text-typography-secondary hover:text-blue-300"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <Trans>Monitoring</Trans>
-          </Link>
-        </ExpandableRow>
-
         <AbFlagSettings />
 
         <DebugSwapsSettings />
 
         <MetricsDebugSettings />
 
+        <RpcDebugSettings />
+
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
+      </SettingsSection>
+      <SettingsSection className="mt-16 gap-16">
+        <div className="text-14 font-medium text-typography-primary">
+          <Trans>Links</Trans>
+        </div>
+        <Link
+          to="/monitor"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>Markets Monitoring</Trans>
+        </Link>
+        <Link
+          to="/rpc-debug"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>RPC Monitoring</Trans>
+        </Link>
+        <Link
+          to="/oracle-keeper-debug"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>Oracle Keeper Monitoring</Trans>
+        </Link>
+        <Link
+          to="/permits"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>Permits Testing</Trans>
+        </Link>
       </SettingsSection>
     </div>
   );

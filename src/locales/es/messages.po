@@ -473,8 +473,8 @@ msgid "Unstaking"
 msgstr "Desestacando"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Monitoring"
-msgstr ""
+#~ msgid "Monitoring"
+#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1044,7 +1044,7 @@ msgstr "Reclamando tarifas de funding"
 msgid "All Time"
 msgstr "Todo el Tiempo"
 
-#: src/components/SettingsModal/DebugSettings.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "RPC Debug"
 msgstr ""
 
@@ -1328,6 +1328,10 @@ msgstr "GM es el token de proveedor de liquidez para mercados GMX V2. Acumula 63
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "El impacto de precio actual es {0}. Considera agregar un buffer de 0.30% para que la orden sea más probable que se procese."
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Public"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "Ocultar error"
@@ -1464,6 +1468,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "Liquidez de token de recepción insuficiente"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Permits Testing"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -2119,6 +2127,10 @@ msgstr "Suscribirse"
 msgid "Decentralized Finance Dashboard"
 msgstr "Panel de Finanzas Descentralizadas"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Current Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
@@ -2373,8 +2385,8 @@ msgid "Launch App"
 msgstr "Abrir App"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Large Account RPC"
-msgstr ""
+#~ msgid "Debug Large Account RPC"
+#~ msgstr ""
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
@@ -2621,9 +2633,13 @@ msgstr "<0>Sí, te animamos a construir sobre GMX o integrarlo en tu app DeFi. G
 msgid "Liquidation Fee"
 msgstr "Comisión de Liquidación"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Permits"
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "URL"
 msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Permits"
+#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -2701,6 +2717,7 @@ msgstr "Este intercambio se enruta a través de varias reservas GM para las comi
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3872,6 +3889,10 @@ msgstr "Precio de Liq."
 msgid "Trading Pair Price Alerts"
 msgstr "Alertas de Precio de Par de Trading"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Links"
+msgstr ""
+
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | Exchange Perpetuo Descentralizado"
@@ -4332,6 +4353,10 @@ msgstr "Aprobación GMX pendiente"
 #: src/components/MarketsList/MarketsList.tsx
 msgid "No markets found."
 msgstr "No se encontraron mercados."
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
@@ -4945,6 +4970,10 @@ msgstr "Es posible que no haya suficiente liquidez para ejecutar tu orden cuando
 msgid "AB Flags"
 msgstr ""
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr ""
@@ -4956,6 +4985,10 @@ msgstr "Las reclamaciones no están disponibles en Avalanche Fuji"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "Cancelar Intercambio TWAP"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add Endpoint"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5219,6 +5252,10 @@ msgstr "Retiro de Cuenta GMX"
 msgid "Governance Alerts"
 msgstr "Alertas de Gobernanza"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Purpose"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr ""
@@ -5284,8 +5321,8 @@ msgid "Ann. Performance"
 msgstr "Rendimiento Anualizado"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Fallback RPC"
-msgstr ""
+#~ msgid "Debug Fallback RPC"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5538,6 +5575,10 @@ msgstr "No se pudo encontrar una ruta de intercambio con suficiente liquidez"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time Limit"
 msgstr "Límite de Tiempo"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Oracle Keeper Monitoring"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -6442,12 +6483,16 @@ msgid "Copy error"
 msgstr "Error de copia"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "RPC Tracker Logging"
-msgstr ""
+#~ msgid "RPC Tracker Logging"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Proyectos desarrollados por la comunidad GMX. <0/>Por favor, ejerce precaución al interactuar con cualquier app, las apps son mantenidas completamente por desarrolladores de la comunidad."
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add RPC"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
@@ -6689,8 +6734,8 @@ msgid "Sell {operationTokenSymbol}"
 msgstr "Vender {operationTokenSymbol}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Links"
-msgstr ""
+#~ msgid "Debug Links"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -8079,6 +8124,10 @@ msgstr "Protocolo de Opciones Descentralizado"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
 msgstr "Actualizar Parte de Intercambio TWAP"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Markets Monitoring"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Part"

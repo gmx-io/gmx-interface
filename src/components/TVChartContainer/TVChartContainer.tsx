@@ -10,6 +10,7 @@ import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { useTradePageVersion } from "lib/useTradePageVersion";
+import { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Loader from "components/Loader/Loader";
@@ -64,7 +65,7 @@ export default function TVChartContainer({
 
   const [tradePageVersion] = useTradePageVersion();
 
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
 

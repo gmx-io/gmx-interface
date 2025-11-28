@@ -16,7 +16,7 @@ describe("FallbackTracker - endpoint selection and logic", () => {
 
   afterEach(() => {
     trackers.forEach((tracker) => {
-      tracker.stopTracking();
+      tracker.cleanup();
     });
     trackers.length = 0;
   });

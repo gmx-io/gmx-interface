@@ -1,15 +1,17 @@
 import { decodeFunctionResult } from "viem";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import * as chainsModule from "config/chains";
 import * as rpcConfigModule from "config/rpc";
 import { suppressConsole } from "lib/__testUtils__/_utils";
 import { abis } from "sdk/abis";
+import { SOURCE_SEPOLIA } from "sdk/configs/chains";
 import * as marketsModule from "sdk/configs/markets";
 import * as prebuiltModule from "sdk/prebuilt";
 
 import { RpcTracker } from "../RpcTracker";
 import { createMockRpcTrackerParams, createMockBlockAndAggregateResponse } from "./_utils";
-import * as fetchEthCallModule from "../fetchEthCall";
+import * as fetchRpcModule from "../fetchRpc";
 
 describe("RpcTracker - checkRpc", () => {
   suppressConsole();
@@ -30,7 +32,7 @@ describe("RpcTracker - checkRpc", () => {
       const blockNumber = 1000000;
       const sampleFieldValue = 1000000000000000000000n;
 
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockResolvedValue(
+      vi.spyOn(fetchRpcModule, "fetchEthCall").mockResolvedValue(
         createMockBlockAndAggregateResponse(blockNumber, sampleFieldValue)
       );
 
@@ -75,7 +77,7 @@ describe("RpcTracker - checkRpc", () => {
 
       expect(dataStoreDecoded).toBe(sampleFieldValue);
 
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockResolvedValue(mockResponse);
+      vi.spyOn(fetchRpcModule, "fetchEthCall").mockResolvedValue(mockResponse);
 
       const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
 
@@ -116,7 +118,7 @@ describe("RpcTracker - checkRpc", () => {
       expect(typeof dataStoreDecoded).toBe("bigint");
       expect(dataStoreDecoded).toBeGreaterThan(0n);
 
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockResolvedValue({
+      vi.spyOn(fetchRpcModule, "fetchEthCall").mockResolvedValue({
         result: realExampleResponse,
       });
 
@@ -127,12 +129,40 @@ describe("RpcTracker - checkRpc", () => {
     });
   });
 
-  describe("error handling", () => {
-    it("should skip private provider for non-large account", async () => {
-      const params = createMockRpcTrackerParams();
+  describe("checkRpcForSourceChain", () => {
+    beforeEach(() => {
+      vi.spyOn(chainsModule, "isContractsChain").mockReturnValue(false);
+    });
+
+    it("should successfully fetch block number for source chain", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
       const tracker = new RpcTracker(params);
 
-      const privateProviders = rpcConfigModule.getRpcProviders(params.chainId, "fallback").filter((p) => !p?.isPublic);
+      const publicProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "default").filter((p) => p?.isPublic);
+      const publicProvider = publicProviders[0];
+
+      const blockNumber = 5000000;
+
+      vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockResolvedValue({
+        blockNumber,
+      });
+
+      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+
+      expect(result.responseTime).toBeGreaterThanOrEqual(0);
+      expect(result.blockNumber).toBe(blockNumber);
+      expect(fetchRpcModule.fetchBlockNumber).toHaveBeenCalledWith({
+        url: publicProvider!.url,
+        signal: expect.any(AbortSignal),
+        priority: "low",
+      });
+    });
+
+    it("should skip private provider for non-large account on source chain", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
+      const tracker = new RpcTracker(params);
+
+      const privateProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "fallback").filter((p) => !p?.isPublic);
       const privateProvider = privateProviders[0];
 
       await expect(tracker.checkRpc(privateProvider!.url, new AbortController().signal)).rejects.toThrow(
@@ -140,25 +170,191 @@ describe("RpcTracker - checkRpc", () => {
       );
     });
 
-    it("should allow private provider for large account", async () => {
-      const params = createMockRpcTrackerParams();
-      const tracker = new RpcTracker(params);
+    it("should allow private provider for large account on source chain", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
 
+      const mockPrivateProvider = {
+        url: "https://private-large-account-rpc.com",
+        isPublic: false,
+        purpose: "largeAccount" as const,
+      };
+
+      vi.spyOn(rpcConfigModule, "getRpcProviders").mockImplementation((chainId: number, purpose: string) => {
+        if (chainId === SOURCE_SEPOLIA && purpose === "largeAccount") {
+          return [mockPrivateProvider];
+        }
+        if (chainId === SOURCE_SEPOLIA && purpose === "default") {
+          return [{ url: "https://public-rpc.com", isPublic: true, purpose: "default" as const }];
+        }
+        return [];
+      });
+
+      const tracker = new RpcTracker(params);
       tracker.getIsLargeAccount = () => true;
 
-      const privateProviders = rpcConfigModule
-        .getRpcProviders(params.chainId, "largeAccount")
-        .filter((p) => !p?.isPublic);
-      const privateProvider = privateProviders[0];
+      const blockNumber = 5000000;
+
+      vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockResolvedValue({
+        blockNumber,
+      });
+
+      const result = await tracker.checkRpc(mockPrivateProvider.url, new AbortController().signal);
+
+      expect(result.blockNumber).toBe(blockNumber);
+      expect(fetchRpcModule.fetchBlockNumber).toHaveBeenCalledWith({
+        url: mockPrivateProvider.url,
+        signal: expect.any(AbortSignal),
+        priority: "low",
+      });
+    });
+
+    it("should handle network errors from fetchBlockNumber", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
+      const tracker = new RpcTracker(params);
+
+      const publicProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "default").filter((p) => p?.isPublic);
+      const publicProvider = publicProviders[0];
+
+      vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockRejectedValue(new Error("Network error"));
+
+      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+    });
+
+    it("should handle invalid response (no result) from fetchBlockNumber", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
+      const tracker = new RpcTracker(params);
+
+      const publicProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "default").filter((p) => p?.isPublic);
+      const publicProvider = publicProviders[0];
+
+      vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockRejectedValue(new Error("No result in JSON-RPC response"));
+
+      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+    });
+
+    it("should handle AbortSignal correctly for source chain", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
+      const tracker = new RpcTracker(params);
+
+      const publicProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "default").filter((p) => p?.isPublic);
+      const publicProvider = publicProviders[0];
+
+      const abortController = new AbortController();
+      abortController.abort();
+
+      vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockImplementation(async ({ signal }) => {
+        if (signal?.aborted) {
+          const abortError = new Error("Aborted");
+          abortError.name = "AbortError";
+          throw abortError;
+        }
+        return { blockNumber: 5000000 };
+      });
+
+      await expect(tracker.checkRpc(publicProvider!.url, abortController.signal)).rejects.toThrow();
+    });
+
+    it("should correctly parse hex block number from eth_blockNumber response", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
+      const tracker = new RpcTracker(params);
+
+      const publicProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "default").filter((p) => p?.isPublic);
+      const publicProvider = publicProviders[0];
+
+      const hexBlockNumber = "0x4c4b40"; // 5000000 in decimal
+      const expectedBlockNumber = Number(BigInt(hexBlockNumber));
+
+      vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockResolvedValue({
+        blockNumber: expectedBlockNumber,
+      });
+
+      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+
+      expect(result.blockNumber).toBe(expectedBlockNumber);
+    });
+
+    it("should measure response time correctly for source chain", async () => {
+      const params = createMockRpcTrackerParams({ chainId: SOURCE_SEPOLIA as any });
+      const tracker = new RpcTracker(params);
+
+      const publicProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "default").filter((p) => p?.isPublic);
+      const publicProvider = publicProviders[0];
+
+      vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockImplementation(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        return { blockNumber: 5000000 };
+      });
+
+      const startTime = Date.now();
+      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+      const endTime = Date.now();
+
+      expect(result.responseTime).toBeGreaterThanOrEqual(50);
+      expect(result.responseTime).toBeLessThanOrEqual(endTime - startTime + 10); // Allow small margin
+    });
+  });
+
+  describe("error handling", () => {
+    beforeEach(() => {
+      vi.spyOn(chainsModule, "isContractsChain").mockReturnValue(true);
+    });
+
+    it("should skip private provider for non-large account", async () => {
+      const params = createMockRpcTrackerParams();
+
+      const mockPrivateProvider = {
+        url: "https://private-fallback-rpc.com",
+        isPublic: false,
+        purpose: "fallback" as const,
+      };
+
+      vi.spyOn(rpcConfigModule, "getRpcProviders").mockImplementation((chainId: number, purpose: string) => {
+        if (chainId === params.chainId && purpose === "fallback") {
+          return [mockPrivateProvider];
+        }
+        if (chainId === params.chainId && purpose === "default") {
+          return [{ url: "https://public-rpc.com", isPublic: true, purpose: "default" as const }];
+        }
+        return [];
+      });
+
+      const tracker = new RpcTracker(params);
+
+      await expect(tracker.checkRpc(mockPrivateProvider.url, new AbortController().signal)).rejects.toThrow(
+        "Skip private provider"
+      );
+    });
+
+    it("should allow private provider for large account", async () => {
+      const params = createMockRpcTrackerParams();
+
+      const mockPrivateProvider = {
+        url: "https://private-large-account-rpc.com",
+        isPublic: false,
+        purpose: "largeAccount" as const,
+      };
+
+      vi.spyOn(rpcConfigModule, "getRpcProviders").mockImplementation((chainId: number, purpose: string) => {
+        if (chainId === params.chainId && purpose === "largeAccount") {
+          return [mockPrivateProvider];
+        }
+        if (chainId === params.chainId && purpose === "default") {
+          return [{ url: "https://public-rpc.com", isPublic: true, purpose: "default" as const }];
+        }
+        return [];
+      });
+
+      const tracker = new RpcTracker(params);
+      tracker.getIsLargeAccount = () => true;
 
       const blockNumber = 1000000;
       const sampleFieldValue = 1000000000000000000000n;
 
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockResolvedValue(
+      vi.spyOn(fetchRpcModule, "fetchEthCall").mockResolvedValue(
         createMockBlockAndAggregateResponse(blockNumber, sampleFieldValue)
       );
 
-      const result = await tracker.checkRpc(privateProvider!.url, new AbortController().signal);
+      const result = await tracker.checkRpc(mockPrivateProvider.url, new AbortController().signal);
 
       expect(result.blockNumber).toBe(blockNumber);
     });
@@ -194,7 +390,7 @@ describe("RpcTracker - checkRpc", () => {
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
 
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockRejectedValue(new Error("Network error"));
+      vi.spyOn(fetchRpcModule, "fetchEthCall").mockRejectedValue(new Error("Network error"));
 
       await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
     });
@@ -209,7 +405,7 @@ describe("RpcTracker - checkRpc", () => {
       const blockNumber = 1000000;
       const invalidSampleFieldValue = 0n;
 
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockResolvedValue(
+      vi.spyOn(fetchRpcModule, "fetchEthCall").mockResolvedValue(
         createMockBlockAndAggregateResponse(blockNumber, invalidSampleFieldValue)
       );
 
@@ -226,7 +422,7 @@ describe("RpcTracker - checkRpc", () => {
       const abortController = new AbortController();
       abortController.abort();
 
-      vi.spyOn(fetchEthCallModule, "fetchEthCall").mockImplementation(async ({ signal }) => {
+      vi.spyOn(fetchRpcModule, "fetchEthCall").mockImplementation(async ({ signal }) => {
         if (signal?.aborted) {
           const abortError = new Error("Aborted");
           abortError.name = "AbortError";

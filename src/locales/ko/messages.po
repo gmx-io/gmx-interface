@@ -473,8 +473,8 @@ msgid "Unstaking"
 msgstr "언스테이킹 중"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Monitoring"
-msgstr ""
+#~ msgid "Monitoring"
+#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1044,7 +1044,7 @@ msgstr "펀딩 수수료 청구 중"
 msgid "All Time"
 msgstr "전체 기간"
 
-#: src/components/SettingsModal/DebugSettings.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "RPC Debug"
 msgstr ""
 
@@ -1328,6 +1328,10 @@ msgstr "GM은 GMX V2 마켓의 유동성 제공자 토큰입니다. V2 마켓 �
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "현재 가격 영향은 {0}입니다. 주문이 처리될 가능성을 높이기 위해 0.30% 버퍼를 추가하는 것을 고려하세요."
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Public"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "오류 숨기기"
@@ -1464,6 +1468,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "수취 토큰 유동성 부족"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Permits Testing"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -2119,6 +2127,10 @@ msgstr "구독"
 msgid "Decentralized Finance Dashboard"
 msgstr "탈중앙화 금융 대시보드"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Current Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
@@ -2373,8 +2385,8 @@ msgid "Launch App"
 msgstr "앱 실행하기"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Large Account RPC"
-msgstr ""
+#~ msgid "Debug Large Account RPC"
+#~ msgstr ""
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
@@ -2621,9 +2633,13 @@ msgstr "<0>네, GMX 위에 빌드하거나 DeFi 앱에 통합하는 것을 권�
 msgid "Liquidation Fee"
 msgstr "청산 수수료"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Permits"
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "URL"
 msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Permits"
+#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -2701,6 +2717,7 @@ msgstr "이 스왑은 가능한 최저 수수료와 가격 영향을 위해 여�
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3872,6 +3889,10 @@ msgstr "청산가"
 msgid "Trading Pair Price Alerts"
 msgstr "거래 쌍 가격 알림"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Links"
+msgstr ""
+
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | 탈중앙화 퍼페추얼 거래소"
@@ -4332,6 +4353,10 @@ msgstr "GMX 승인 대기 중"
 #: src/components/MarketsList/MarketsList.tsx
 msgid "No markets found."
 msgstr "시장 없음."
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
@@ -4945,6 +4970,10 @@ msgstr "가격 조건이 충족될 때 주문을 실행할 충분한 유동성�
 msgid "AB Flags"
 msgstr ""
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr ""
@@ -4956,6 +4985,10 @@ msgstr "Avalanche Fuji에서 청구 불가"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "TWAP 스왑 취소"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add Endpoint"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5219,6 +5252,10 @@ msgstr "GMX 계정에서 출금"
 msgid "Governance Alerts"
 msgstr "거버넌스 알림"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Purpose"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr ""
@@ -5284,8 +5321,8 @@ msgid "Ann. Performance"
 msgstr "연간 성과"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Fallback RPC"
-msgstr ""
+#~ msgid "Debug Fallback RPC"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5538,6 +5575,10 @@ msgstr "충분한 유동성을 가진 스왑 경로를 찾을 수 없음"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time Limit"
 msgstr "시간 제한"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Oracle Keeper Monitoring"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -6442,12 +6483,16 @@ msgid "Copy error"
 msgstr "복사 오류"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "RPC Tracker Logging"
-msgstr ""
+#~ msgid "RPC Tracker Logging"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "GMX 커뮤니티에서 개발된 프로젝트. <0/>앱과 상호작용할 때 주의해주세요. 앱은 커뮤니티 개발자가 완전히 유지합니다."
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add RPC"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
@@ -6689,8 +6734,8 @@ msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol} 판매"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Links"
-msgstr ""
+#~ msgid "Debug Links"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -8079,6 +8124,10 @@ msgstr "탈중앙화 옵션 프로토콜"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
 msgstr "TWAP 스왑 파트 업데이트"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Markets Monitoring"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Part"

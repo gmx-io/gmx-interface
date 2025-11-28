@@ -84,14 +84,14 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
             </thead>
             <tbody>
               {allRpcStats.map((rpc) => (
-                <TableTr key={rpc.endpoint}>
+                <TableTr key={rpc.endpoint + rpc.purpose}>
                   <TableTd padding="compact">
                     <div className="text-sm font-semibold text-white">{rpc.providerName}</div>
                   </TableTd>
                   <TableTd padding="compact">
                     <div className="text-xs flex flex-wrap gap-1">
-                      {rpc.isPrimary && <span className="text-cyan-400">Primary</span>}
-                      {rpc.isSecondary && <span className="text-purple-400">Secondary</span>}
+                      {rpc.isPrimary && <span className="text-green-400">Primary</span>}
+                      {rpc.isSecondary && <span className="text-yellow-300">Secondary</span>}
                     </div>
                   </TableTd>
                   <TableTd padding="compact">

@@ -129,7 +129,7 @@ function useMarketsValuesRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  const marketsValuesQuery = useMulticall(chainId, `useMarketsValuesRequest-${chainId}`, {
+  const marketsValuesQuery = useMulticall(chainId, `useMarketsValuesRequest`, {
     key:
       !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? [...marketsAddresses] : null,
 

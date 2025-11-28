@@ -21,7 +21,7 @@ import { getRpcProviderKey } from "config/localStorage";
 import { getChainName, getFallbackRpcUrl, getProviderNameFromUrl, getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
-import { FallbackTrackerRankingCounter } from "lib/metrics/types";
+import { RpcTrackerUpdateEndpointsEvent } from "lib/metrics/types";
 import { EMPTY_OBJECT } from "lib/objects";
 import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 import { sleep } from "lib/sleep";
@@ -190,22 +190,34 @@ async function getBestRpcProvidersForChain({ providers, chainId }: RpcTrackerSta
     nextSecondaryRpc = bestResponseTimeValidProbe;
   }
 
+  // Always store state for RPC Debug page (not just when logging)
+  const debugStats = orderBy(
+    probeStats.map((probe) => ({
+      url: probe.url,
+      isPrimary: probe.url === nextPrimaryRpc.url ? "✅" : "",
+      isValid: probe.isValid ? "✅" : "❌",
+      responseTime: probe.responseTime,
+      blockNumber: probe.blockNumber,
+      purpose: undefined,
+      isPublic: probe.isPublic ? "yes" : "no",
+    })),
+    ["responseTime"],
+    ["asc"]
+  );
+
+  // Store state for RPC Debug page
+  if (nextPrimaryRpc.url && nextSecondaryRpc.url && _debugRpcTracker) {
+    _debugRpcTracker.setOldRpcTrackerState(chainId, {
+      primary: nextPrimaryRpc.url,
+      secondary: nextSecondaryRpc.url,
+      debugStats,
+      timestamp: Date.now(),
+    });
+  }
+
   if (_debugRpcTracker?.getFlag(RpcDebugFlags.LogRpcTracker)) {
     // eslint-disable-next-line no-console
-    console.table(
-      orderBy(
-        probeStats.map((probe) => ({
-          url: probe.url,
-          isPrimary: probe.url === nextPrimaryRpc.url ? "✅" : "",
-          isValid: probe.isValid ? "✅" : "❌",
-          responseTime: probe.responseTime,
-          blockNumber: probe.blockNumber,
-          isPublic: probe.isPublic ? "yes" : "no",
-        })),
-        ["responseTime"],
-        ["asc"]
-      )
-    );
+    console.table(debugStats);
   }
 
   const bestBestBlockGap =
@@ -226,16 +238,16 @@ function setCurrentProviders(chainId: number, { primaryUrl, secondaryUrl, bestBe
 
   window.dispatchEvent(new CustomEvent(RPC_TRACKER_UPDATE_EVENT));
 
-  emitMetricCounter<FallbackTrackerRankingCounter>({
-    event: "fallbackTracker.ranking.updateEndpoints",
+  emitMetricCounter<RpcTrackerUpdateEndpointsEvent>({
+    event: "rpcTracker.endpoint.updated",
     data: {
+      isOld: true,
       chainId,
-      key: `OldRpcTracker:${getChainName(chainId)}`,
+      chainName: getChainName(chainId),
       primary: getProviderNameFromUrl(primaryUrl),
-      secondaryRpc: getProviderNameFromUrl(secondaryUrl),
+      secondary: getProviderNameFromUrl(secondaryUrl),
       primaryBlockGap: bestBestBlockGap ?? "unknown",
       secondaryBlockGap: "unknown",
-      isLargeAccount: getIsLargeAccount(),
     },
   });
 

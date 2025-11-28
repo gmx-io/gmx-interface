@@ -473,8 +473,8 @@ msgid "Unstaking"
 msgstr "取消质押"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Monitoring"
-msgstr ""
+#~ msgid "Monitoring"
+#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1044,7 +1044,7 @@ msgstr "申领资金费用"
 msgid "All Time"
 msgstr "所有时间"
 
-#: src/components/SettingsModal/DebugSettings.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "RPC Debug"
 msgstr ""
 
@@ -1328,6 +1328,10 @@ msgstr "GM 是 GMX V2 市场的流动性提供者代币。累积 V2 市场生成
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "当前价格影响为 {0}。考虑添加 0.30% 的缓冲，使订单更可能被处理。"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Public"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "隐藏错误"
@@ -1464,6 +1468,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "接收代币流动性不足"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Permits Testing"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -2119,6 +2127,10 @@ msgstr "订阅"
 msgid "Decentralized Finance Dashboard"
 msgstr "去中心化金融仪表板"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Current Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
@@ -2373,8 +2385,8 @@ msgid "Launch App"
 msgstr "启动应用程序"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Large Account RPC"
-msgstr ""
+#~ msgid "Debug Large Account RPC"
+#~ msgstr ""
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
@@ -2621,9 +2633,13 @@ msgstr "<0>是的，我们鼓励您在 GMX 上构建或将其集成到您的 DeF
 msgid "Liquidation Fee"
 msgstr "清算费用"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Permits"
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "URL"
 msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Permits"
+#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -2701,6 +2717,7 @@ msgstr "此交换通过多个 GM 池路由，以实现最低费用和价格影�
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3872,6 +3889,10 @@ msgstr "清算价格"
 msgid "Trading Pair Price Alerts"
 msgstr "交易对价格警报"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Links"
+msgstr ""
+
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | 去中心化永续交易所"
@@ -4332,6 +4353,10 @@ msgstr "待 GMX 批准"
 #: src/components/MarketsList/MarketsList.tsx
 msgid "No markets found."
 msgstr "未找到市场。"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Monitoring"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
@@ -4945,6 +4970,10 @@ msgstr "当满足价格条件时，可能没有足够的流动性来执行您的
 msgid "AB Flags"
 msgstr ""
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr ""
@@ -4956,6 +4985,10 @@ msgstr "Avalanche Fuji 上不可申领"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "取消 TWAP 交换"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add Endpoint"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5219,6 +5252,10 @@ msgstr "从 GMX 账户提取"
 msgid "Governance Alerts"
 msgstr "治理警报"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Purpose"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr ""
@@ -5284,8 +5321,8 @@ msgid "Ann. Performance"
 msgstr "年化表现"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Fallback RPC"
-msgstr ""
+#~ msgid "Debug Fallback RPC"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5538,6 +5575,10 @@ msgstr "找不到具有足够流动性的交换路径"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time Limit"
 msgstr "时间限制"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Oracle Keeper Monitoring"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -6442,12 +6483,16 @@ msgid "Copy error"
 msgstr "复制错误"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "RPC Tracker Logging"
-msgstr ""
+#~ msgid "RPC Tracker Logging"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "由 GMX 社区开发的项目。<0/>与任何应用互动时请谨慎，应用完全由社区开发者维护。"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add RPC"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
@@ -6689,8 +6734,8 @@ msgid "Sell {operationTokenSymbol}"
 msgstr "出售 {operationTokenSymbol}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
-msgid "Debug Links"
-msgstr ""
+#~ msgid "Debug Links"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -8079,6 +8124,10 @@ msgstr "去中心化期权协议"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
 msgstr "更新 TWAP 交换部分"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Markets Monitoring"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Part"

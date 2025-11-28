@@ -140,7 +140,7 @@ describe("FallbackTracker - endpoint banning", () => {
       tracker.reportFailure(config.primary);
 
       // Stop tracking should clear the throttle timeout
-      tracker.stopTracking();
+      tracker.cleanup();
 
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
 

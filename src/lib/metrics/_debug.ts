@@ -1,7 +1,7 @@
 import { isDevelopment } from "config/env";
-import { DEBUG_METRICS_KEY } from "config/localStorage";
 import { ErrorEvent } from "lib/metrics/types";
 import { BatchReportItem, CounterPayload, EventPayload, TimingPayload } from "lib/oracleKeeperFetcher";
+import { Storage } from "lib/storage/Storage";
 
 export enum MetricsDebugFlags {
   LogFreshnessMetrics = "LogFreshnessMetrics",
@@ -13,11 +13,21 @@ export enum MetricsDebugFlags {
   LogErrors = "LogErrors",
 }
 
+export type MetricsDebugState = {
+  [MetricsDebugFlags.LogFreshnessMetrics]: boolean;
+  [MetricsDebugFlags.LogTimings]: boolean;
+  [MetricsDebugFlags.LogEvents]: boolean;
+  [MetricsDebugFlags.LogBatchItems]: boolean;
+  [MetricsDebugFlags.LogQueueState]: boolean;
+  [MetricsDebugFlags.LogCounters]: boolean;
+  [MetricsDebugFlags.LogErrors]: boolean;
+};
+
 export class MetricsDebug {
-  private flags: Partial<Record<MetricsDebugFlags, boolean>>;
+  storage: Storage<MetricsDebugState>;
 
   constructor() {
-    this.flags = this.loadFlags();
+    this.storage = new Storage<MetricsDebugState>("debug-metrics");
   }
 
   log(...message: any[]): void {
@@ -30,34 +40,12 @@ export class MetricsDebug {
     console.warn(`[Metrics]`, ...message);
   }
 
-  loadFlags(): Partial<Record<MetricsDebugFlags, boolean>> {
-    try {
-      const stored = localStorage.getItem(DEBUG_METRICS_KEY);
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    } catch (error) {
-      //
-    }
-
-    return {};
-  }
-
-  private saveFlags(): void {
-    try {
-      localStorage.setItem(DEBUG_METRICS_KEY, JSON.stringify(this.flags));
-    } catch (error) {
-      //
-    }
-  }
-
   getFlag(flag: MetricsDebugFlags): boolean | undefined {
-    return this.flags[flag];
+    return this.storage.get(flag);
   }
 
   setFlag(flag: MetricsDebugFlags, value: boolean): void {
-    this.flags[flag] = value;
-    this.saveFlags();
+    this.storage.set(flag, value);
   }
 
   logBatchItem(payload: BatchReportItem[]): void {
@@ -80,7 +68,7 @@ export class MetricsDebug {
 
   logEvent(payload: EventPayload): void {
     if (this.getFlag(MetricsDebugFlags.LogEvents)) {
-      this.log("Event", payload);
+      this.log("Event", payload.event, payload);
     }
   }
 
@@ -97,13 +85,13 @@ export class MetricsDebug {
     }
 
     if (this.getFlag(MetricsDebugFlags.LogTimings)) {
-      this.log("Timing", payload);
+      this.log("Timing", `${payload.event} ${payload.time}ms`, payload);
     }
   }
 
   logCounter(payload: CounterPayload): void {
     if (this.getFlag(MetricsDebugFlags.LogCounters)) {
-      this.log("Counter", payload);
+      this.log("Counter", payload.event, payload);
     }
   }
 

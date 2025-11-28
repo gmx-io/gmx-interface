@@ -1,13 +1,20 @@
 import { differenceInMilliseconds } from "date-fns";
+import uniq from "lodash/uniq";
 
 import { getFallbackTrackerKey } from "config/localStorage";
 import { ErrorLike } from "lib/errors";
 import { sleepWithSignal } from "lib/sleep";
 import { combineAbortSignals } from "sdk/utils/abort";
 
-import { emitEndpointBanned, emitEndpointsUpdated, emitTrackingFinished, onFallbackTracker } from "./events";
+import {
+  addFallbackTrackerListenner,
+  emitEndpointBanned,
+  emitEndpointsUpdated,
+  emitReportEndpointFailure,
+  emitTrackingFinished,
+} from "./events";
 
-export const DEFAULT_FALLBACK_TRACKER_CONFIG = {
+export const DEFAULT_FALLBACK_TRACKER_CONFIG: FallbackTrackerConfig = {
   trackInterval: 10 * 1000, // 10 seconds
   checkTimeout: 10 * 1000, // 10 seconds
   cacheTimeout: 5 * 60 * 1000, // 5 minutes
@@ -18,13 +25,12 @@ export const DEFAULT_FALLBACK_TRACKER_CONFIG = {
     throttle: 2 * 1000, // 2 seconds
   },
   setEndpointsThrottle: 5 * 1000, // 5 seconds
-  maxStoredCheckStats: 1, // 10 check stats
+  delay: 5000, // Delay before starting tracking (in milliseconds)
 };
 
-export type FallbackTrackerParams<TCheckResult> = {
-  /** Storage key for endpoints state */
-  trackerKey: string;
+const STORED_CHECK_STATS_MAX_COUNT = 1;
 
+export type FallbackTrackerConfig = {
   /** Frequency of endpoint probing */
   trackInterval: number;
 
@@ -46,11 +52,16 @@ export type FallbackTrackerParams<TCheckResult> = {
     throttle: number;
   };
 
-  /** Maximum number of check stats to store */
-  maxStoredCheckStats: number;
-
   /** Throttle for setCurrentEndpoints calls */
   setEndpointsThrottle: number;
+
+  /** Delay before starting tracking (in milliseconds) */
+  delay?: number;
+};
+
+export type FallbackTrackerParams<TCheckResult> = FallbackTrackerConfig & {
+  /** Storage key for endpoints state */
+  trackerKey: string;
 
   /** Default primary endpoint */
   primary: string;
@@ -96,6 +107,7 @@ export type FallbackTrackerState<TCheckStats> = {
   }[];
 
   trackerTimeoutId: number | undefined;
+  startDelayTimeoutId: number | undefined;
   abortController: AbortController | undefined;
   setEndpointsThrottleTimeout: number | undefined;
   pendingEndpoints: { primary: string; secondary: string } | undefined;
@@ -160,7 +172,9 @@ export class FallbackTracker<TCheckStats> {
       throw new Error("Secondary endpoint is not in endpoints list");
     }
 
-    const stored = this.loadStorage(this.params.endpoints);
+    const endpoints = uniq([this.params.primary, this.params.secondary, ...this.params.endpoints]);
+
+    const stored = this.loadStorage(endpoints);
 
     if (stored) {
       primary = stored.primary;
@@ -173,7 +187,7 @@ export class FallbackTracker<TCheckStats> {
       primary,
       secondary,
       lastUsage: undefined,
-      endpointsState: this.params.endpoints.reduce(
+      endpointsState: endpoints.reduce(
         (acc, endpoint) => {
           acc[endpoint] = {
             endpoint,
@@ -187,6 +201,7 @@ export class FallbackTracker<TCheckStats> {
       ),
       checkStats: [],
       trackerTimeoutId: undefined,
+      startDelayTimeoutId: undefined,
       abortController: undefined,
       setEndpointsThrottleTimeout: undefined,
       pendingEndpoints: undefined,
@@ -234,6 +249,13 @@ export class FallbackTracker<TCheckStats> {
   }
 
   public reportFailure = (endpoint: string) => {
+    emitReportEndpointFailure({
+      endpoint,
+      trackerKey: this.trackerKey,
+    });
+  };
+
+  handleFailure = (endpoint: string) => {
     const endpointState = this.state.endpointsState[endpoint];
 
     if (!endpointState) {
@@ -282,7 +304,7 @@ export class FallbackTracker<TCheckStats> {
       cachedEndpointsState: this.getCachedEndpointsState(),
     });
 
-    emitEndpointBanned({ endpoint, trackerKey: this.trackerKey });
+    emitEndpointBanned({ endpoint, reason, trackerKey: this.trackerKey });
 
     this.warn(`Ban endpoint "${endpoint}" with reason "${reason}"`);
 
@@ -293,7 +315,7 @@ export class FallbackTracker<TCheckStats> {
     this.selectBestEndpoints({ keepPrimary, keepSecondary });
   };
 
-  public pick = (): CurrentEndpoints => {
+  public getCurrentEndpoints = (): CurrentEndpoints => {
     this.state.lastUsage = Date.now();
 
     return {
@@ -307,22 +329,45 @@ export class FallbackTracker<TCheckStats> {
   };
 
   public startTracking() {
-    this.track({ warmUp: true });
+    const delay = this.params.delay ?? 0;
+
+    if (delay > 0) {
+      this.state.startDelayTimeoutId = window.setTimeout(() => {
+        this.state.startDelayTimeoutId = undefined;
+        this.track({ warmUp: true });
+      }, delay);
+    } else {
+      this.track({ warmUp: true });
+    }
   }
 
-  public track({ warmUp = false } = {}) {
-    if (!this.shouldTrack({ warmUp })) {
-      return;
-    }
-
+  public stopTracking() {
     if (this.state.trackerTimeoutId) {
       clearTimeout(this.state.trackerTimeoutId);
       this.state.trackerTimeoutId = undefined;
     }
 
+    if (this.state.startDelayTimeoutId) {
+      clearTimeout(this.state.startDelayTimeoutId);
+      this.state.startDelayTimeoutId = undefined;
+    }
+  }
+
+  public track({ warmUp = false } = {}) {
+    if (this.state.trackerTimeoutId) {
+      clearTimeout(this.state.trackerTimeoutId);
+      this.state.trackerTimeoutId = undefined;
+    }
+
+    // Schedule next track call if not tracking
+    if (!this.shouldTrack({ warmUp })) {
+      this.state.trackerTimeoutId = window.setTimeout(() => this.track(), this.params.trackInterval);
+      return;
+    }
+
     this.checkEndpoints()
       .then(() => {
-        emitTrackingFinished({ trackerKey: this.trackerKey });
+        emitTrackingFinished({ trackerKey: this.trackerKey, endpointsStats: this.getEndpointsStats() });
         this.selectBestEndpoints();
       })
       .finally(() => {
@@ -330,8 +375,14 @@ export class FallbackTracker<TCheckStats> {
       });
   }
 
-  public stopTracking() {
+  public cleanup() {
     this.state.cleanupEvents();
+
+    // Clear start delay timeout
+    if (this.state.startDelayTimeoutId) {
+      clearTimeout(this.state.startDelayTimeoutId);
+      this.state.startDelayTimeoutId = undefined;
+    }
 
     // Abort any pending probes.
     if (this.state.trackerTimeoutId) {
@@ -504,9 +555,11 @@ export class FallbackTracker<TCheckStats> {
       timestamp: checkTimestamp,
     });
 
-    if (this.state.checkStats.length > this.params.maxStoredCheckStats) {
+    if (this.state.checkStats.length > STORED_CHECK_STATS_MAX_COUNT) {
       this.state.checkStats.shift();
     }
+
+    return results;
   }
 
   shouldTrack({ warmUp = false }: { warmUp?: boolean } = {}) {
@@ -520,10 +573,8 @@ export class FallbackTracker<TCheckStats> {
   }
 
   selfSubscribe() {
-    return onFallbackTracker("reportEndpointFailure", ({ trackerKey, endpoint }) => {
-      if (trackerKey === this.trackerKey) {
-        this.reportFailure(endpoint);
-      }
+    return addFallbackTrackerListenner("reportEndpointFailure", this.trackerKey, ({ endpoint }) => {
+      this.handleFailure(endpoint);
     });
   }
 

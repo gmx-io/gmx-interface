@@ -6,11 +6,17 @@ import {
   useCurrentRpcUrls as old_useCurrentRpcUrls,
 } from "ab/testRpcFallbackUpdates/disabled/oldRpcTracker";
 import { getIsFlagEnabled } from "config/ab";
-import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
-import { getRpcProviders } from "config/rpc";
+import { CONTRACTS_CHAIN_IDS, ContractsChainId, isContractsChain, SOURCE_CHAIN_IDS } from "config/chains";
+import {
+  getExpressRpcUrl,
+  getRpcProviders,
+  RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS,
+  RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS,
+} from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { onFallbackTracker } from "lib/FallbackTracker/events";
-import { DEFAULT_RPC_TRACKER_CONFIG, RpcTracker } from "lib/rpc/RpcTracker";
+import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
+import { RpcTracker } from "lib/rpc/RpcTracker";
 
 import { _debugRpcTracker } from "./_debug";
 
@@ -23,35 +29,28 @@ function initRpcTrackers() {
     return;
   }
 
-  for (const chainId of CONTRACTS_CHAIN_IDS) {
+  const chainIds = CONTRACTS_CHAIN_IDS.concat(SOURCE_CHAIN_IDS);
+
+  for (const chainId of chainIds) {
+    const config = isContractsChain(chainId)
+      ? RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS
+      : RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS;
+
     const tracker = new RpcTracker({
-      ...DEFAULT_RPC_TRACKER_CONFIG,
+      ...config,
       chainId: chainId as ContractsChainId,
     });
+
     RPC_TRACKERS_BY_KEY[tracker.trackerKey] = tracker;
     RPC_TRACKER_KEYS_BY_CHAIN_ID[chainId] = tracker.trackerKey;
+
+    subscribeForRpcTrackerMetrics(tracker);
+    _debugRpcTracker?.subscribeForRpcTrackerDebugging(tracker);
 
     tracker.fallbackTracker.startTracking();
   }
 
   isInitialized = true;
-
-  if (_debugRpcTracker?.isEnabled) {
-    onFallbackTracker("endpointsUpdated", ({ trackerKey }) => {
-      const tracker = getRpcTracker(trackerKey);
-
-      if (tracker) {
-        _debugRpcTracker?.debugRpcTrackerState(tracker);
-      }
-    });
-
-    onFallbackTracker("trackingFinished", ({ trackerKey }) => {
-      const tracker = getRpcTracker(trackerKey);
-      if (tracker) {
-        _debugRpcTracker?.debugRpcTrackerState(tracker);
-      }
-    });
-  }
 }
 
 if (getIsFlagEnabled("testRpcFallbackUpdates")) {
@@ -99,6 +98,14 @@ function _getCurrentRpcUrls(chainId: number) {
   return { primary, secondary, trackerKey: "unknown" };
 }
 
+export function getCurrentExpressRpcUrl(chainId: number) {
+  const tracker = getRpcTrackerByChainId(chainId);
+  if (tracker) {
+    return tracker.getExpressRpcUrl();
+  }
+  return getExpressRpcUrl(chainId);
+}
+
 function _useCurrentRpcUrls(chainId: number) {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
     primary: string;
@@ -109,23 +116,26 @@ function _useCurrentRpcUrls(chainId: number) {
     let isMounted = true;
 
     setBestRpcUrls(_getCurrentRpcUrls(chainId));
+    const tracker = getRpcTrackerByChainId(chainId);
 
-    const unsubscribe = onFallbackTracker("endpointsUpdated", ({ trackerKey, primary, secondary }) => {
-      if (!isMounted) {
-        return;
+    if (!tracker) {
+      return;
+    }
+
+    const unsubscribe = addFallbackTrackerListenner(
+      "endpointsUpdated",
+      tracker.trackerKey,
+      ({ primary, secondary }) => {
+        if (!isMounted) {
+          return;
+        }
+
+        setBestRpcUrls({
+          primary,
+          secondary,
+        });
       }
-
-      const tracker = getRpcTracker(trackerKey);
-
-      if (!tracker) {
-        return;
-      }
-
-      setBestRpcUrls({
-        primary,
-        secondary,
-      });
-    });
+    );
 
     return () => {
       isMounted = false;

@@ -4,10 +4,11 @@ import { vi } from "vitest";
 import * as rpcConfigModule from "config/rpc";
 import type { RpcConfig } from "config/rpc";
 import type { CheckResult, EndpointStats } from "lib/FallbackTracker";
+import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "lib/FallbackTracker/FallbackTracker";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { ARBITRUM } from "sdk/configs/chains";
 
-import type { RpcCheckResult } from "../RpcTracker";
+import type { RpcCheckResult, RpcTrackerConfig } from "../RpcTracker";
 
 export const testChainId = ARBITRUM;
 
@@ -45,11 +46,40 @@ export const createMockRpcTrackerParams = (overrides?: {
   chainId?: ContractsChainId;
   blockFromFutureThreshold?: number;
   blockLaggingThreshold?: number;
-}) => ({
+  trackInterval?: number;
+  checkTimeout?: number;
+  cacheTimeout?: number;
+  disableUnusedTrackingTimeout?: number;
+  setEndpointsThrottle?: number;
+  delay?: number;
+  failuresBeforeBan?: {
+    count?: number;
+    window?: number;
+    throttle?: number;
+  };
+}): RpcTrackerConfig & { chainId: ContractsChainId } => ({
   chainId: testChainId as ContractsChainId,
   blockFromFutureThreshold: 1000,
   blockLaggingThreshold: 50,
-  ...overrides,
+  trackInterval: DEFAULT_FALLBACK_TRACKER_CONFIG.trackInterval,
+  checkTimeout: DEFAULT_FALLBACK_TRACKER_CONFIG.checkTimeout,
+  cacheTimeout: DEFAULT_FALLBACK_TRACKER_CONFIG.cacheTimeout,
+  disableUnusedTrackingTimeout: DEFAULT_FALLBACK_TRACKER_CONFIG.disableUnusedTrackingTimeout,
+  setEndpointsThrottle: DEFAULT_FALLBACK_TRACKER_CONFIG.setEndpointsThrottle,
+  delay: DEFAULT_FALLBACK_TRACKER_CONFIG.delay,
+  failuresBeforeBan: {
+    count: (overrides?.failuresBeforeBan?.count ?? DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.count) as number,
+    window: (overrides?.failuresBeforeBan?.window ??
+      DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.window) as number,
+    throttle: (overrides?.failuresBeforeBan?.throttle ??
+      DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.throttle) as number,
+  },
+  ...(overrides
+    ? (() => {
+        const { failuresBeforeBan: _, ...rest } = overrides;
+        return rest;
+      })()
+    : {}),
 });
 
 export const createMockRpcCheckResult = (overrides?: Partial<RpcCheckResult>): RpcCheckResult => ({

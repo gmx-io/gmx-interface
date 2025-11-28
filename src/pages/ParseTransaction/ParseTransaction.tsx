@@ -25,6 +25,7 @@ import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { defined } from "lib/guards";
 import { formatFactor, formatUsd } from "lib/numbers";
 import { ParseTransactionEvent, parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
+import { ContractsChainId, getChainIdBySlug, getChainSlug } from "sdk/configs/chains";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -34,7 +35,6 @@ import { TokenSymbolWithIcon } from "components/TokenSymbolWithIcon/TokenSymbolW
 
 import CopyIcon from "img/ic_copy.svg?react";
 
-import { getChainSlug } from "../../../sdk/src/configs/chains";
 import {
   formatAmountByCollateralToken,
   formatAmountByCollateralToken15Shift,
@@ -98,7 +98,7 @@ export function ParseTransactionPage() {
   const [, copyToClipboard] = useCopyToClipboard();
 
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
-  const chainId = getChainIdBySlug(network) ?? ARBITRUM;
+  const chainId = (getChainIdBySlug(network) as ContractsChainId) ?? ARBITRUM;
 
   const client = usePublicClient({
     chainId,
@@ -212,7 +212,7 @@ export function ParseTransactionPage() {
 
   const orderLifecycleEventsByHash = orderLifecycleEventsMap ?? {};
 
-  if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
+  if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
         Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia

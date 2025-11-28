@@ -259,38 +259,44 @@ export type OrderCancelledEvent = {
 };
 
 // Fallback tracking
-export type FallbackTrackerBannedEvent = {
-  event: "fallbackTracker.endpoint.banned";
+export type RpcTrackerEndpointBannedEvent = {
+  event: "rpcTracker.endpoint.banned";
   isError: false;
   data: {
-    key: string;
+    chainId: number;
+    chainName: string;
     endpoint: string;
     reason: string;
   };
 };
 
-export type FallbackTrackerRankingCounter = {
-  event: "fallbackTracker.ranking.updateEndpoints";
-  data: {
-    chainId: number;
-    key: string;
-    primary: string;
-    secondaryRpc: string;
-    primaryBlockGap: number | "unknown";
-    secondaryBlockGap: number | "unknown";
-    isLargeAccount: boolean;
-  };
-};
-
 export type RpcTrackerUpdateEndpointsEvent = {
-  event: "rpcTracker.updateEndpoints";
+  event: "rpcTracker.endpoint.updated";
   isError: false;
   data: {
+    isOld: boolean;
     chainName: string;
+    chainId: number;
     primary: string;
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
+  };
+};
+
+export type RpcTrackerEndpointTiming = {
+  event: "rpcTracker.endpoint.timing";
+  data: {
+    endpoint: string;
+    chainId: number;
+  };
+};
+
+export type RpcTrackerEndpointBlockGap = {
+  event: "rpcTracker.endpoint.blockGap";
+  data: {
+    endpoint: string;
+    chainId: number;
   };
 };
 

@@ -1,6 +1,8 @@
 import sample from "lodash/sample";
 
 import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
+import { RpcTrackerConfig } from "lib/rpc/RpcTracker";
+import { RpcConfig } from "lib/rpc/types";
 import { mustNeverExist } from "lib/types";
 import {
   AnyChainId,
@@ -18,6 +20,7 @@ import {
 
 export * from "sdk/configs/chains";
 export { getChainName } from "sdk/configs/chains";
+export type { RpcConfig } from "lib/rpc/types";
 
 const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS
   ? JSON.parse(import.meta.env.VITE_APP_ARBITRUM_RPC_URLS)
@@ -31,8 +34,11 @@ const ENV_BOTANIX_RPC_URLS = import.meta.env.VITE_APP_BOTANIX_RPC_URLS
   ? JSON.parse(import.meta.env.VITE_APP_BOTANIX_RPC_URLS)
   : undefined;
 
-const debugAlchemy = true;
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io", "gmxalt.io"];
+
+if (_debugRpcTracker?.getFlag(RpcDebugFlags.DebugAlchemy)) {
+  ALCHEMY_WHITELISTED_DOMAINS.push(self.location.host);
+}
 
 // Chains that support Alchemy WebSocket endpoints
 export const ALCHEMY_WS_SUPPORT_CHAINS = [
@@ -45,23 +51,36 @@ export const ALCHEMY_WS_SUPPORT_CHAINS = [
   SOURCE_BSC_MAINNET,
 ];
 
-export type RpcConfig = {
-  url: string;
-  isPublic: boolean;
-  purpose: string;
+export const RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS: RpcTrackerConfig = {
+  trackInterval: 10 * 1000, // 10 sec
+  delay: 5000, // 5 sec
+  checkTimeout: 10 * 1000, // 10 sec
+  cacheTimeout: 5 * 60 * 1000, // 5 min
+  disableUnusedTrackingTimeout: 1 * 60 * 1000, // 1 min
+  failuresBeforeBan: {
+    count: 3,
+    window: 60 * 1000, // 1 min
+    throttle: 2 * 1000,
+  },
+  setEndpointsThrottle: 5 * 1000, // 5 sec
+  blockFromFutureThreshold: 1000,
+  blockLaggingThreshold: 50,
 };
 
-export type ContractChainRpcConfig = {
-  default: string[];
-  fallback: string[];
-  largeAccount: string[];
-  express: string[];
-};
-
-export type SourceChainRpcConfig = {
-  default: string[];
-  fallback: string[];
-  largeAccount: string[];
+export const RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS: RpcTrackerConfig = {
+  trackInterval: 20 * 1000, // 20 sec
+  delay: 5000, // 5 sec
+  checkTimeout: 10 * 1000, // 10 sec
+  cacheTimeout: 5 * 60 * 1000, // 5 min
+  disableUnusedTrackingTimeout: 1 * 60 * 1000, // 1 min
+  failuresBeforeBan: {
+    count: 3,
+    window: 60 * 1000, // 1 min
+    throttle: 2 * 1000,
+  },
+  setEndpointsThrottle: 5 * 1000, // 5 sec
+  blockFromFutureThreshold: 1000,
+  blockLaggingThreshold: 50,
 };
 
 const RPC_CONFIGS: Record<number, RpcConfig[]> = {
@@ -72,7 +91,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
       // "https://1rpc.io/arb", has CORS issue
       "https://arbitrum-one.public.blastapi.io",
       // "https://arbitrum.drpc.org",
-      "https://rpc.ankr.com/arbitrum",
+      // "https://rpc.ankr.com/arbitrum",
     ].map((url) => ({
       url,
       isPublic: true,
@@ -94,26 +113,8 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     // Express
     getAlchemyProvider(ARBITRUM, "express"),
 
-    // Debug
-    ...(_debugRpcTracker?.getFlag(RpcDebugFlags.DebugLargeAccountRpc)
-      ? [
-          {
-            url: "https://arbitrum-one.public.blastapi.io",
-            isPublic: true,
-            purpose: "largeAccount",
-          },
-        ]
-      : []),
-
-    ...(_debugRpcTracker?.getFlag(RpcDebugFlags.DebugFallbackRpc)
-      ? [
-          {
-            url: "https://arbitrum-one.public.blastapi.io",
-            isPublic: true,
-            purpose: "fallback",
-          },
-        ]
-      : []),
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(ARBITRUM) ?? []),
   ],
   [AVALANCHE]: [
     ...["https://api.avax.network/ext/bc/C/rpc"].map((url) => ({
@@ -136,6 +137,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Express
     getAlchemyProvider(AVALANCHE, "express"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(AVALANCHE) ?? []),
   ],
   [AVALANCHE_FUJI]: [
     ...["https://avalanche-fuji-c-chain.publicnode.com", "https://api.avax-test.network/ext/bc/C/rpc"].map((url) => ({
@@ -154,6 +158,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
       isPublic: false,
       purpose: "fallback",
     })),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(AVALANCHE_FUJI) ?? []),
   ],
   [ARBITRUM_SEPOLIA]: [
     ...[
@@ -171,6 +178,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Express
     getAlchemyProvider(ARBITRUM_SEPOLIA, "express"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(ARBITRUM_SEPOLIA) ?? []),
   ],
   [BOTANIX]: [
     ...["https://rpc.ankr.com/botanix_mainnet"].map((url) => ({
@@ -193,6 +203,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Express
     getAlchemyProvider(BOTANIX, "express"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(BOTANIX) ?? []),
   ],
 
   // SOURCE CHAINS
@@ -213,6 +226,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Large account
     getAlchemyProvider(SOURCE_BASE_MAINNET, "largeAccount"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_BASE_MAINNET) ?? []),
   ],
   [SOURCE_OPTIMISM_SEPOLIA]: [
     ...["https://sepolia.optimism.io", "https://optimism-sepolia.drpc.org", "https://optimism-sepolia.therpc.io"].map(
@@ -228,6 +244,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Large account
     getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "largeAccount"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_OPTIMISM_SEPOLIA) ?? []),
   ],
   [SOURCE_SEPOLIA]: [
     ...["https://sepolia.drpc.org"].map((url) => ({
@@ -241,6 +260,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Large account
     getAlchemyProvider(SOURCE_SEPOLIA, "largeAccount"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_SEPOLIA) ?? []),
   ],
   [SOURCE_BSC_MAINNET]: [
     ...[
@@ -259,6 +281,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 
     // Large account
     getAlchemyProvider(SOURCE_BSC_MAINNET, "largeAccount"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_BSC_MAINNET) ?? []),
   ],
 
   // ADDITIONAL CHAINS
@@ -268,6 +293,9 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
       isPublic: true,
       purpose: "default",
     })),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(ETH_MAINNET) ?? []),
   ],
 };
 
@@ -307,6 +335,10 @@ export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig
   return config.filter((rpc) => rpc.purpose === purpose);
 }
 
+export function getAllRpcProviders(chainId: number): RpcConfig[] {
+  return Object.values(RPC_CONFIGS[chainId]);
+}
+
 export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
   const config = WS_RPC_CONFIGS[chainId];
 
@@ -339,7 +371,7 @@ export function getAlchemyProvider(
 
   let alchemyKey: string;
 
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host) || debugAlchemy) {
+  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
     switch (purpose) {
       case "fallback":
         alchemyKey = "NnWkTZJp8dNKXlCIfJwej";

@@ -5,7 +5,7 @@ import { AnyChainId, AVALANCHE_FUJI } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getExpressRpcUrl, getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/useRpcUrls";
+import { getCurrentExpressRpcUrl, getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
@@ -26,7 +26,9 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
 
 export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
   const network = Network.from(chainId);
-  const wsProviderConfig = getWsRpcProviders(chainId, getIsLargeAccount() ? "largeAccount" : "fallback")[0];
+  const wsProviderConfig =
+    getWsRpcProviders(chainId, getIsLargeAccount() ? "largeAccount" : "fallback")[0] ??
+    getWsRpcProviders(chainId, "fallback")[0];
 
   if (wsProviderConfig) {
     return new ethers.WebSocketProvider(wsProviderConfig.url, network, { staticNetwork: network });
@@ -56,7 +58,7 @@ export function getFallbackProvider(chainId: number) {
 }
 
 export function getExpressProvider(chainId: number): JsonRpcProvider | undefined {
-  const providerUrl: string | undefined = getExpressRpcUrl(chainId);
+  const providerUrl: string | undefined = getCurrentExpressRpcUrl(chainId);
 
   if (!providerUrl) {
     return;

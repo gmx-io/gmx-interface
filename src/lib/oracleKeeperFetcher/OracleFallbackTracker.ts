@@ -1,33 +1,30 @@
 import orderBy from "lodash/orderBy";
 
 import { ContractsChainId } from "config/rpc";
-import { DEFAULT_FALLBACK_TRACKER_CONFIG, FallbackTracker } from "lib/FallbackTracker";
+import { FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker";
+import { byBanTimestamp, byResponseTime } from "lib/FallbackTracker/utils";
+import { ORACLE_FALLBACK_TRACKER_CONFIG } from "sdk/configs/oracleKeeper";
 
 type OracleCheckResult = {
-  endpoint: string;
-  isValid: boolean;
-  responseTime: number | undefined;
-  timestamp: number;
+  responseTime: number;
 };
 
-type OracleFallbackTrackerParams = {
+type OracleFallbackTrackerParams = FallbackTrackerConfig & {
   chainId: ContractsChainId;
   mainUrl: string;
   fallbacks: string[];
 };
 
-export class OracleFallbackTracker {
+export class OracleKeeperFallbackTracker {
   fallbackTracker: FallbackTracker<OracleCheckResult>;
 
   constructor(public readonly params: OracleFallbackTrackerParams) {
-    const endpoints = [this.params.mainUrl, ...this.params.fallbacks].filter((s) => s !== undefined);
-
     this.fallbackTracker = new FallbackTracker<OracleCheckResult>({
-      ...DEFAULT_FALLBACK_TRACKER_CONFIG,
+      ...ORACLE_FALLBACK_TRACKER_CONFIG,
       trackerKey: `OracleFallbackTracker:${this.params.chainId}`,
       primary: this.params.mainUrl,
       secondary: this.params.fallbacks[0] ?? this.params.mainUrl,
-      endpoints,
+      endpoints: [this.params.mainUrl, ...this.params.fallbacks],
       checkEndpoint: this.checkEndpoint,
       selectNextPrimary: this.selectEndpoint,
       selectNextSecondary: this.selectEndpoint,
@@ -35,62 +32,42 @@ export class OracleFallbackTracker {
   }
 
   public getCurrentEndpoints() {
-    return this.fallbackTracker.pick();
+    return this.fallbackTracker.getCurrentEndpoints();
   }
 
   public reportFailure(endpoint: string) {
     this.fallbackTracker.reportFailure(endpoint);
   }
 
-  public track(options?: { warmUp?: boolean }) {
-    this.fallbackTracker.track(options);
-  }
-
-  public stopTracking() {
-    this.fallbackTracker.stopTracking();
+  public startTracking() {
+    this.fallbackTracker.startTracking();
   }
 
   checkEndpoint = async (endpoint: string, signal: AbortSignal): Promise<OracleCheckResult> => {
     const startTime = Date.now();
 
-    try {
-      const response = await fetch(`${endpoint}/tickers`, { signal });
+    const response = await fetch(`${endpoint}/tickers`, { signal });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch tickers");
-      }
-
-      const tickers = await response.json();
-
-      if (!tickers.length) {
-        throw new Error("No tickers found");
-      }
-
-      const responseTime = Date.now() - startTime;
-
-      return {
-        endpoint,
-        isValid: true,
-        responseTime,
-        timestamp: Date.now(),
-      };
-    } catch (error: any) {
-      if (error.name === "AbortError") {
-        throw error;
-      }
-
-      return {
-        endpoint,
-        isValid: false,
-        responseTime: undefined,
-        timestamp: Date.now(),
-      };
+    if (!response.ok) {
+      throw new Error("Failed to fetch tickers");
     }
+
+    const tickers = await response.json();
+
+    if (!tickers.length) {
+      throw new Error("No tickers found");
+    }
+
+    const responseTime = Date.now() - startTime;
+
+    return {
+      responseTime,
+    };
   };
 
   selectEndpoint = ({ endpointsStats }) => {
-    const ranked = orderBy(endpointsStats, [(stat) => stat.checkResult?.stats?.responseTime ?? Infinity], ["asc"]);
+    const ranked = orderBy(endpointsStats, [byBanTimestamp, byResponseTime], ["asc", "asc"]);
 
-    return ranked[1]?.endpoint;
+    return ranked[0]?.endpoint;
   };
 }

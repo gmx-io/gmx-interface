@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { suppressConsole } from "lib/__testUtils__/_utils";
+
 import { fallbackTrackerEventKeys } from "../events";
 import { FallbackTracker } from "../FallbackTracker";
 import { createMockConfig, testEndpoints } from "./_utils";
@@ -7,6 +9,8 @@ import { createMockConfig, testEndpoints } from "./_utils";
 const trackers: FallbackTracker<any>[] = [];
 
 describe("FallbackTracker", () => {
+  suppressConsole();
+
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
@@ -14,7 +18,7 @@ describe("FallbackTracker", () => {
 
   afterEach(() => {
     trackers.forEach((tracker) => {
-      tracker.stopTracking();
+      tracker.cleanup();
     });
     trackers.length = 0;
   });
