@@ -147,7 +147,7 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     "https://arbitrum-sepolia-rpc.publicnode.com",
   ],
   [SOURCE_BASE_MAINNET]: [
-    "https://base.llamarpc.com",
+    // "https://base.llamarpc.com",
     "https://base-rpc.publicnode.com",
     "https://base.drpc.org",
     "https://mainnet.base.org",
