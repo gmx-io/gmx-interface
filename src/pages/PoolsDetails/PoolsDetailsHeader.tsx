@@ -11,12 +11,7 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getGlvMarketShortening,
-  getGlvOrMarketAddress,
-  getMarketIndexName,
-  getMarketPoolName,
-} from "domain/synthetics/markets";
+import { getMarketBadge, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -108,15 +103,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
             >
               <div className="flex items-center gap-20">
                 {iconName && (
-                  <TokenIcon
-                    symbol={iconName}
-                    displaySize={40}
-                    badge={
-                      isGlv
-                        ? getGlvMarketShortening(chainId, getGlvOrMarketAddress(glvOrMarketInfo))
-                        : ([glvOrMarketInfo.longToken.symbol, glvOrMarketInfo.shortToken.symbol] as const)
-                    }
-                  />
+                  <TokenIcon symbol={iconName} displaySize={40} badge={getMarketBadge(chainId, glvOrMarketInfo)} />
                 )}
                 <div className={cx("flex flex-col gap-4 pr-20 font-medium")}>
                   <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>

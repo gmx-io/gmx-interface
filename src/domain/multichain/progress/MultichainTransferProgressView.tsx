@@ -17,8 +17,8 @@ import {
   getMarketIndexToken,
   getIsSpotOnlyMarket,
   isMarketTokenAddress,
-  getMarketIndexTokenSymbol,
   getTokenAddressByMarket,
+  getTokenSymbolByMarket,
 } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
@@ -206,7 +206,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           <TokenIcon
             symbol={
               isMarketTokenAddress(chainId, task.token.address)
-                ? getMarketIndexTokenSymbol(chainId, task.token.address)
+                ? getTokenSymbolByMarket(chainId, task.token.address, "index")
                 : task.token.symbol
             }
             displaySize={16}

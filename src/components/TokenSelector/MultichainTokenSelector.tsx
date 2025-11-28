@@ -13,6 +13,7 @@ import {
 } from "config/chains";
 import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
+import { getMarketBadge } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, type Token, type TokenData, type TokensData } from "domain/tokens";
 import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
@@ -22,9 +23,7 @@ import { searchBy } from "lib/searchBy";
 import {
   getIsSpotOnlyMarket,
   getMarketIndexToken,
-  getMarketIndexTokenSymbol,
-  getMarketLongTokenSymbol,
-  getMarketShortTokenSymbol,
+  getTokenSymbolByMarket,
   isMarketTokenAddress,
   MARKETS,
 } from "sdk/configs/markets";
@@ -244,7 +243,7 @@ export function MultichainTokenSelector({
         ) : (
           <span className="inline-flex items-center">
             <TokenIcon
-              symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)}
+              symbol={getTokenSymbolByMarket(chainId, tokenAddress, "index")}
               className="mr-4"
               displaySize={20}
               chainIdBadge={payChainId}
@@ -454,16 +453,11 @@ export function AvailableToTradeTokenList({
               {token.isPlatformToken && isMarketTokenAddress(chainId, token.address) ? (
                 <>
                   <TokenIcon
-                    symbol={getMarketIndexTokenSymbol(chainId, token.address)}
+                    symbol={getTokenSymbolByMarket(chainId, token.address, "index")}
                     className="size-40"
                     displaySize={40}
                     chainIdBadge={token.chainId}
-                    badge={
-                      [
-                        getMarketLongTokenSymbol(chainId, token.address),
-                        getMarketShortTokenSymbol(chainId, token.address),
-                      ] as [string, string]
-                    }
+                    badge={getMarketBadge(chainId, token.address)}
                   />
 
                   <div>

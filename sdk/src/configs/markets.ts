@@ -1267,33 +1267,21 @@ export function getMarketIndexToken(chainId: number, marketTokenAddress: string)
   return getToken(chainId, indexTokenAddress);
 }
 
-export function getMarketIndexTokenSymbol(chainId: number, marketTokenAddress: string): string {
-  const indexToken = getMarketIndexToken(chainId, marketTokenAddress);
-  if (!indexToken) {
-    return "";
-  }
-
-  return indexToken.symbol;
-}
-
-export function getMarketLongTokenSymbol(chainId: number, marketTokenAddress: string): string {
-  const longTokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, "long");
-
-  return getToken(chainId, convertTokenAddress(chainId, longTokenAddress, "native")).symbol;
-}
-
-export function getMarketShortTokenSymbol(chainId: number, marketTokenAddress: string): string {
-  const shortTokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, "short");
-
-  return getToken(chainId, convertTokenAddress(chainId, shortTokenAddress, "native")).symbol;
+export function getTokenSymbolByMarket(
+  chainId: number,
+  marketTokenAddress: string,
+  tokenType: "long" | "short" | "index"
+): string {
+  const tokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, tokenType);
+  return getToken(chainId, tokenAddress).symbol;
 }
 
 export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
-  return MARKETS[chainId as ContractsChainId]?.[marketTokenAddress]?.indexTokenAddress === zeroAddress;
+  return MARKETS[chainId as ContractsChainId][marketTokenAddress].indexTokenAddress === zeroAddress;
 }
 
 export function getMarketIsSameCollaterals(chainId: number, marketTokenAddress: string): boolean {
-  const market = MARKETS[chainId]?.[marketTokenAddress];
+  const market = MARKETS[chainId][marketTokenAddress];
   if (!market) {
     return false;
   }

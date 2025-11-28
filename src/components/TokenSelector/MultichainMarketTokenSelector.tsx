@@ -17,7 +17,7 @@ import { convertToUsd } from "domain/tokens";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { USD_DECIMALS } from "sdk/configs/factors";
-import { getMarketIndexTokenSymbol } from "sdk/configs/markets";
+import { getTokenSymbolByMarket } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketPoolName } from "sdk/utils/markets";
 
@@ -261,7 +261,7 @@ function AvailableToTradeTokenList({
                     "GLV"
                   ) : (
                     <>
-                      {getMarketIndexTokenSymbol(chainId, token.address)}
+                      {getTokenSymbolByMarket(chainId, token.address, "index")}
                       <span className="text-slate-100">/USD</span>
                     </>
                   )}

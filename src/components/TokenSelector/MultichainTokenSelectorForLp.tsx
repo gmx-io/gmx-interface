@@ -14,7 +14,7 @@ import { type Token, type TokensData } from "domain/tokens";
 import {
   getIsSpotOnlyMarket,
   getMarketIndexToken,
-  getMarketIndexTokenSymbol,
+  getTokenSymbolByMarket,
   isMarketTokenAddress,
 } from "sdk/configs/markets";
 import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
@@ -153,7 +153,7 @@ export function MultichainTokenSelectorForLp({
         ) : (
           <span className="inline-flex items-center">
             <TokenIcon
-              symbol={getMarketIndexTokenSymbol(chainId, tokenAddress)}
+              symbol={getTokenSymbolByMarket(chainId, tokenAddress, "index")}
               className="mr-4"
               displaySize={20}
               chainIdBadge={payChainId}

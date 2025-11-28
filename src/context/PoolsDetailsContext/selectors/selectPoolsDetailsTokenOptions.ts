@@ -3,7 +3,7 @@ import uniqBy from "lodash/uniqBy";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { Token, getGmToken } from "domain/tokens";
-import { getMarketIndexTokenSymbol } from "sdk/configs/markets";
+import { getTokenSymbolByMarket } from "sdk/configs/markets";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 
 import { selectPoolsDetailsPaySource } from "./baseSelectors";
@@ -48,7 +48,7 @@ export const selectPoolsDetailsTokenOptions = createSelector((q): Array<Token & 
       ...glvInfo.markets
         .map((m): (Token & { isMarketToken?: boolean }) | undefined => {
           const token = getGmToken(chainId, m.address);
-          const indexTokenSymbol = getMarketIndexTokenSymbol(chainId, m.address);
+          const indexTokenSymbol = getTokenSymbolByMarket(chainId, m.address, "index");
           const market = marketsInfoData?.[m.address];
 
           const hasSomeBalance = (multichainMarketTokensBalances[m.address]?.totalBalance ?? 0n) > 0n;
