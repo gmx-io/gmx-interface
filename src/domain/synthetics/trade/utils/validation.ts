@@ -71,13 +71,23 @@ export function getExpressError(p: {
 
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
+  const gasPaymentTokenSymbol = getToken(chainId, expressParams?.gasPaymentParams.gasPaymentTokenAddress)?.symbol;
+
   const isInsufficientNativeTokenBalance =
     nativeToken?.balance === undefined || nativeToken.balance < expressParams?.gasPaymentParams.gasPaymentTokenAmount;
 
-  if (expressParams.gasPaymentValidations.isOutGasTokenBalance && isInsufficientNativeTokenBalance) {
-    return [
-      t`Insufficient ${getToken(chainId, expressParams?.gasPaymentParams.gasPaymentTokenAddress)?.symbol} balance to pay for gas`,
-    ];
+  const isNativeExpressError =
+    expressParams.gasPaymentValidations.isOutGasTokenBalance && isInsufficientNativeTokenBalance;
+
+  if (isNativeExpressError) {
+    return [t`Insufficient ${gasPaymentTokenSymbol} balance to pay for gas`];
+  }
+
+  const isMultichainExpressError =
+    expressParams.gasPaymentValidations.isOutGasTokenBalance && expressParams.isGmxAccount;
+
+  if (isMultichainExpressError) {
+    return [t`Insufficient ${gasPaymentTokenSymbol} balance to pay for gas`];
   }
 
   return [undefined];

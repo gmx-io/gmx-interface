@@ -57,10 +57,6 @@ msgstr "아래 옵션 중 하나를 사용하여 다른 네트워크에서 {nati
 msgid "Buy order executed."
 msgstr "매수 주문이 실행되었습니다."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#~ msgid "Claims are disabled"
-#~ msgstr "청구가 비활성화되었습니다"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -157,6 +153,11 @@ msgstr ""
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
 msgstr "종가 가격 영향"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {gasPaymentTokenSymbol} balance to pay for gas"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime LP rewards:"
@@ -2037,10 +2038,6 @@ msgstr ""
 msgid "Display Settings"
 msgstr "표시 설정"
 
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-#~ msgstr "$500,000 인센티브 프로그램 자격을 얻으려면 GLV 토큰을 3개월 동안 보유하세요."
-
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "총계:"
@@ -3866,7 +3863,6 @@ msgid "There is no price impact for increase orders, orders are filled at the ma
 msgstr "증가 주문에는 가격 영향이 없으며, 마크 가격으로 채워집니다. 가격 영향은 감소 주문 중 적용됩니다. <0>더 읽기</0>."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "가스 지불을 위한 {0} 잔액 부족"
 
@@ -6335,10 +6331,6 @@ msgstr "귀하의 피드백을 소중히 여깁니다"
 msgid "Stop Loss"
 msgstr "손절"
 
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution (test)"
-#~ msgstr "GLP 분배 (테스트)"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr "벌어들인 것을 더 유지하세요"
@@ -6725,10 +6717,6 @@ msgstr "사용 가능한 유동성은 예비금과 미결제약정의 최대값�
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "시프트"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution"
-#~ msgstr "GLP 분배"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7732,10 +7720,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "총 통계"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Claimed {0} successfully."
-#~ msgstr "{0} 청구 성공."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
