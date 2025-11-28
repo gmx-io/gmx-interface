@@ -1500,6 +1500,10 @@ msgstr ""
 msgid "V2 Avalanche"
 msgstr ""
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
+msgid "Metrics Debug"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr ""
@@ -2666,6 +2670,7 @@ msgstr ""
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr ""
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
@@ -2916,6 +2921,10 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter referral code"
+msgstr ""
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
@@ -5159,6 +5168,10 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable External Swaps"
+msgstr ""
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7590,6 +7603,10 @@ msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
 msgid "No open positions at GMX currently"
+msgstr ""
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
 msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx

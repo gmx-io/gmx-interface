@@ -4,6 +4,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
+import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDebugSettings";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
@@ -40,6 +41,8 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         <AbFlagSettings />
 
         <DebugSwapsSettings />
+
+        <MetricsDebugSettings />
 
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
       </SettingsSection>
