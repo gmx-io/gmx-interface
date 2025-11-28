@@ -57,10 +57,6 @@ msgstr "Sie können {nativeTokenSymbol} von anderen Netzwerken zu {chainName} ü
 msgid "Buy order executed."
 msgstr "Kauforder ausgeführt."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Claims are disabled"
-msgstr "Ansprüche sind deaktiviert"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -397,6 +393,14 @@ msgstr "Max {0} Short überschritten"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "Unzureichendes GM-Guthaben"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Select at least one distribution to claim."
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
@@ -794,7 +798,7 @@ msgstr "MARKT"
 msgid "What did you like the most about our service?"
 msgstr "Was hat dir an unserem Service am besten gefallen?"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr ""
 
@@ -1122,7 +1126,7 @@ msgstr ""
 msgid "Collateral"
 msgstr "Kollateral"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "Akzeptieren Sie die Einlösebedingungen, um fortzufahren."
 
@@ -1518,6 +1522,10 @@ msgstr "Aktualisierung der Order(s) fehlgeschlagen"
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
+msgid "Metrics Debug"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Marktverringerung fehlgeschlagen"
@@ -1534,7 +1542,7 @@ msgstr "NFT Wallet"
 msgid "GMX Proposals Voting page"
 msgstr "GMX-Vorschläge Abstimmungsseite"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
 msgstr ""
 
@@ -1803,6 +1811,10 @@ msgstr "Rabatte Verteilungs-Historie"
 msgid "V1 Interface"
 msgstr "V1-Schnittstelle"
 
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLP Reimbursement (test)"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2054,10 +2066,6 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display Settings"
 msgstr "Anzeigeeinstellungen"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-msgstr "Halten Sie die GLV-Tokens drei Monate, um für das $500.000-Anreizprogramm berechtigt zu sein."
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -2712,6 +2720,7 @@ msgstr "Kaufanfrage erfüllen."
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr "Dieser Tausch wird durch mehrere GM-Pools geleitet, um die niedrigstmöglichen Gebühren und Preisimpact zu erzielen."
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
@@ -2966,6 +2975,10 @@ msgstr "Markt"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter referral code"
 msgstr "Empfehlungscode eingeben"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
@@ -5018,6 +5031,10 @@ msgstr "Top PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "Es könnte nicht genügend Liquidität vorhanden sein, um deinen Auftrag auszuführen, wenn die Preisbedingungen erfüllt sind."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Ansprüche sind auf Avalanche Fuji nicht verfügbar"
@@ -5285,6 +5302,10 @@ msgstr "Wie wahrscheinlich ist es, dass du unseren Service einem Freund oder Kol
 msgid "Enable External Swaps"
 msgstr "Externe Swaps aktivieren"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Unzureichende Liquidität zum Swappen von Kollateral"
@@ -5369,6 +5390,10 @@ msgstr "Ann. Performance"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} Orders wurden nicht aktualisiert, da das maximale Order-Limit erreicht wurde"
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "{0} distributions have been claimed successfully."
+msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
@@ -6471,10 +6496,6 @@ msgstr "Wir schätzen dein Feedback"
 msgid "Stop Loss"
 msgstr "Stop Loss"
 
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution (test)"
-msgstr "GLP-Verteilung (Test)"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr "behalten Sie mehr von dem, was Sie verdienen"
@@ -6767,7 +6788,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr "Tausch fehlgeschlagen."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr ""
 
@@ -6778,6 +6799,10 @@ msgstr "Seite veraltet, bitte aktualisieren"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX-Vorschläge"
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive (test)"
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6881,10 +6906,6 @@ msgstr ""
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "Verschieben"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution"
-msgstr "GLP-Verteilung"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7012,6 +7033,10 @@ msgstr "Bonus-Rebate"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "Du hast eine bestehende Position im {0}-Marktpool, aber es fehlt an Liquidität für diesen Auftrag."
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
@@ -7180,6 +7205,7 @@ msgstr "Wähle, ob du von dezentralen oder zentralen Exchanges kaufst."
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX-Konto"
@@ -7443,7 +7469,7 @@ msgstr "Stop-Loss abbrechen"
 msgid "Limit Decrease"
 msgstr "Limit-Verringerung"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "Warten auf die verbleibenden Safe-Bestätigungen."
 
@@ -7455,7 +7481,7 @@ msgstr "Stabilize-Protokoll"
 msgid "All assets"
 msgstr "Alle Assets"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr ""
 
@@ -7785,6 +7811,10 @@ msgstr "Unbekannte Order"
 msgid "No open positions at GMX currently"
 msgstr "Derzeit keine offenen Positionen bei GMX"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr "Max. Aktionsanzahl erreicht. <0>Hier klicken</0> zum Aktualisieren."
@@ -7912,10 +7942,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Gesamtstatistiken"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully."
-msgstr "{0} erfolgreich eingelöst."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"

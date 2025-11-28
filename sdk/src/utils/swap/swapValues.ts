@@ -156,7 +156,7 @@ export function getSwapAmountsByToValue(p: {
     return getSwapAmountsByToValueDefault(p);
   }
 
-  const swapStrategy = buildReverseSwapStrategy({
+  const swapStrategyReverse = buildReverseSwapStrategy({
     amountOut,
     tokenIn,
     tokenOut,
@@ -164,6 +164,17 @@ export function getSwapAmountsByToValue(p: {
     chainId,
     externalSwapQuoteParams,
     swapOptimizationOrder,
+    swapPricingType: SwapPricingType.Swap,
+  });
+
+  const swapStrategy = buildSwapStrategy({
+    amountIn: swapStrategyReverse.amountIn,
+    tokenIn,
+    tokenOut,
+    marketsInfoData,
+    chainId,
+    swapOptimizationOrder,
+    externalSwapQuoteParams,
     swapPricingType: SwapPricingType.Swap,
   });
 
@@ -186,7 +197,6 @@ export function getSwapAmountsByToValue(p: {
 
   let amountIn = swapStrategy.amountIn;
   let usdIn = swapStrategy.usdIn;
-  let minOutputAmount = 0n;
 
   if (isLimit) {
     if (!triggerRatio) {
@@ -204,12 +214,6 @@ export function getSwapAmountsByToValue(p: {
     usdIn = convertToUsd(amountIn, tokenIn.decimals, swapStrategy.priceIn)!;
     if (allowedSwapSlippageBps !== undefined) {
       usdIn += bigMath.mulDiv(usdIn, allowedSwapSlippageBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
-    } else {
-      usdIn =
-        usdIn +
-        swapStrategy.swapPathStats.totalSwapFeeUsd +
-        uiFeeUsd -
-        swapStrategy.swapPathStats.totalSwapPriceImpactDeltaUsd;
     }
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, swapStrategy.priceIn)!;
   } else {
@@ -217,20 +221,23 @@ export function getSwapAmountsByToValue(p: {
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, swapStrategy.priceIn)!;
   }
 
+  let minOutputAmount = amountOut;
+
   if (amountIn < 0) {
     amountIn = 0n;
     usdIn = 0n;
+    minOutputAmount = 0n;
   }
 
   return {
-    amountIn: swapStrategy.amountIn,
+    amountIn,
     amountOut: swapStrategy.amountOut,
-    usdIn,
+    usdIn: swapStrategy.usdIn,
     minOutputAmount,
     usdOut: swapStrategy.usdOut,
     priceIn: swapStrategy.priceIn,
     priceOut: swapStrategy.priceOut,
-    swapStrategy,
+    swapStrategy: swapStrategy,
   };
 }
 
@@ -510,8 +517,6 @@ function getSwapAmountsByToValueDefault(p: {
     usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
     if (allowedSwapSlippageBps !== undefined) {
       usdIn += bigMath.mulDiv(usdIn, allowedSwapSlippageBps ?? 0n, BASIS_POINTS_DIVISOR_BIGINT);
-    } else {
-      usdIn = usdIn + swapPathStats.totalSwapFeeUsd + uiFeeUsd - swapPathStats.totalSwapPriceImpactDeltaUsd;
     }
     amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   } else {

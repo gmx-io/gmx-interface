@@ -57,10 +57,6 @@ msgstr "您可以使用以下任何选项将 {nativeTokenSymbol} 从其他网络
 msgid "Buy order executed."
 msgstr "买入订单已执行。"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Claims are disabled"
-msgstr "申领已禁用"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -397,6 +393,14 @@ msgstr "超过最大 {0} 做空"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "GM 余额不足"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Select at least one distribution to claim."
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
@@ -794,7 +798,7 @@ msgstr "市场"
 msgid "What did you like the most about our service?"
 msgstr "您最喜欢我们服务的哪些方面？"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr ""
 
@@ -1122,7 +1126,7 @@ msgstr ""
 msgid "Collateral"
 msgstr "抵押品"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "接受申领条款以继续。"
 
@@ -1518,6 +1522,10 @@ msgstr "更新订单失败"
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
+msgid "Metrics Debug"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "市场减少失败"
@@ -1534,7 +1542,7 @@ msgstr "NFT 钱包"
 msgid "GMX Proposals Voting page"
 msgstr "GMX 提案投票页面"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
 msgstr ""
 
@@ -1803,6 +1811,10 @@ msgstr "返利分配历史"
 msgid "V1 Interface"
 msgstr "V1 接口"
 
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLP Reimbursement (test)"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2054,10 +2066,6 @@ msgstr ""
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display Settings"
 msgstr "显示设置"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-msgstr "持有 GLV 代币三个月以符合 500,000 美元激励计划的资格。"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -2712,6 +2720,7 @@ msgstr "履行买入请求。"
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr "此交换通过多个 GM 池路由，以实现最低费用和价格影响。"
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
@@ -2966,6 +2975,10 @@ msgstr "市场"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter referral code"
 msgstr "输入推荐码"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
@@ -5018,6 +5031,10 @@ msgstr "最高 PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "当满足价格条件时，可能没有足够的流动性来执行您的订单。"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Avalanche Fuji 上不可申领"
@@ -5285,6 +5302,10 @@ msgstr "您有多大可能向朋友或同事推荐我们的服务？"
 msgid "Enable External Swaps"
 msgstr "启用外部交换"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr "流动性不足以交换抵押品"
@@ -5369,6 +5390,10 @@ msgstr "年化表现"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} 个订单未更新，因为达到最大订单限制"
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "{0} distributions have been claimed successfully."
+msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
@@ -6471,10 +6496,6 @@ msgstr "我们重视您的反馈"
 msgid "Stop Loss"
 msgstr "止损"
 
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution (test)"
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr ""
@@ -6767,7 +6788,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr "交换失败。"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr ""
 
@@ -6778,6 +6799,10 @@ msgstr "页面已过期，请刷新"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX 提案"
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive (test)"
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6881,10 +6906,6 @@ msgstr ""
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "转移"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution"
-msgstr "GLP 分配"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7012,6 +7033,10 @@ msgstr "奖金返利"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "您在 {0} 市场池中有现有仓位，但此订单缺少流动性。"
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
@@ -7180,6 +7205,7 @@ msgstr "选择从去中心化或中心化交易所购买。"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX 账户"
@@ -7443,7 +7469,7 @@ msgstr "取消止损"
 msgid "Limit Decrease"
 msgstr "限价减少"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "等待剩余 Safe 确认。"
 
@@ -7455,7 +7481,7 @@ msgstr "稳定协议"
 msgid "All assets"
 msgstr "所有资产"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr ""
 
@@ -7785,6 +7811,10 @@ msgstr "未知订单"
 msgid "No open positions at GMX currently"
 msgstr "目前 GMX 无未平仓位"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr "达到最大操作次数。<0>点击这里</0> 更新。"
@@ -7912,10 +7942,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "总统计"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully."
-msgstr "成功申领 {0}。"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"

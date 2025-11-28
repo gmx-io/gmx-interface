@@ -57,10 +57,6 @@ msgstr "You can transfer {nativeTokenSymbol} from other networks to {chainName} 
 msgid "Buy order executed."
 msgstr "Buy order executed."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Claims are disabled"
-msgstr "Claims are disabled"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -397,6 +393,14 @@ msgstr "Max {0} short exceeded"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "Insufficient GM balance"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Select at least one distribution to claim."
+msgstr "Select at least one distribution to claim."
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive"
+msgstr "GLV Bonus Incentive"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps from the included markets. Backed by {0} and {1}."
@@ -794,7 +798,7 @@ msgstr "MARKET"
 msgid "What did you like the most about our service?"
 msgstr "What did you like the most about our service?"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr "View breakdown"
 
@@ -1122,7 +1126,7 @@ msgstr "Allow all my tokens to be transferred to a new account"
 msgid "Collateral"
 msgstr "Collateral"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept the claim terms to continue."
 msgstr "Accept the claim terms to continue."
 
@@ -1518,6 +1522,10 @@ msgstr "Failed to update order(s)"
 msgid "V2 Avalanche"
 msgstr "V2 Avalanche"
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
+msgid "Metrics Debug"
+msgstr "Metrics Debug"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "Failed Market Decrease"
@@ -1534,7 +1542,7 @@ msgstr "NFT Wallet"
 msgid "GMX Proposals Voting page"
 msgstr "GMX Proposals Voting page"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
 msgstr "GLP Reimbursement"
 
@@ -1803,6 +1811,10 @@ msgstr "Rebates Distribution History"
 msgid "V1 Interface"
 msgstr "V1 Interface"
 
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLP Reimbursement (test)"
+msgstr "GLP Reimbursement (test)"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2054,10 +2066,6 @@ msgstr "Botanix currently has no GLV vault(s) active. You can provide liquidity 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display Settings"
 msgstr "Display Settings"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-msgstr "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
@@ -2712,6 +2720,7 @@ msgstr "Fulfilling buy request."
 msgid "This swap is routed through several GM pools for the lowest possible fees and price impact."
 msgstr "This swap is routed through several GM pools for the lowest possible fees and price impact."
 
+#: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "{0}"
@@ -2966,6 +2975,10 @@ msgstr "Market"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter referral code"
 msgstr "Enter referral code"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Executed"
+msgstr "Executed"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Read the rules"
@@ -5018,6 +5031,10 @@ msgstr "Top PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "There may not be sufficient liquidity to execute your order when the price conditions are met."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Include rPnL in Leverage Display"
+msgstr "Include rPnL in Leverage Display"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims are not available on Avalanche Fuji"
 msgstr "Claims are not available on Avalanche Fuji"
@@ -5285,6 +5302,10 @@ msgstr "How likely are you to recommend our service to a friend or colleague?"
 msgid "Enable External Swaps"
 msgstr "Enable External Swaps"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Created"
+msgstr "Created"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Insufficient liquidity to swap collateral"
@@ -5369,6 +5390,10 @@ msgstr "Ann. Performance"
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} orders were not updated as max order limit reached"
+
+#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
+msgid "{0} distributions have been claimed successfully."
+msgstr "{0} distributions have been claimed successfully."
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
@@ -6471,10 +6496,6 @@ msgstr "We Value Your Feedback"
 msgid "Stop Loss"
 msgstr "Stop Loss"
 
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution (test)"
-msgstr "GLP Distribution (test)"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr "keep more of what you earn"
@@ -6767,7 +6788,7 @@ msgstr "Creating code"
 msgid "Swap failed."
 msgstr "Swap failed."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Accept claim terms"
 msgstr "Accept claim terms"
 
@@ -6778,6 +6799,10 @@ msgstr "Page outdated, please refresh"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX Proposals"
+
+#: src/components/UserIncentiveDistribution/utils.tsx
+msgid "GLV Bonus Incentive (test)"
+msgstr "GLV Bonus Incentive (test)"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -6881,10 +6906,6 @@ msgstr "Buying"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "shift"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-msgid "GLP Distribution"
-msgstr "GLP Distribution"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7012,6 +7033,10 @@ msgstr "Bonus Rebate"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL Amounts"
+msgstr "Show rPnL Amounts"
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
@@ -7180,6 +7205,7 @@ msgstr "Choose to buy from decentralized or centralized exchanges."
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX Account"
@@ -7443,7 +7469,7 @@ msgstr "Cancel Stop Loss"
 msgid "Limit Decrease"
 msgstr "Limit Decrease"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Waiting for the remaining Safe confirmations."
 msgstr "Waiting for the remaining Safe confirmations."
 
@@ -7455,7 +7481,7 @@ msgstr "Stabilize Protocol"
 msgid "All assets"
 msgstr "All assets"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr "Hide breakdown"
 
@@ -7785,6 +7811,10 @@ msgstr "Unknown order"
 msgid "No open positions at GMX currently"
 msgstr "No open positions at GMX currently"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Cancelled"
+msgstr "Cancelled"
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Max Action Count Reached. <0>Click here</0> to update."
 msgstr "Max Action Count Reached. <0>Click here</0> to update."
@@ -7912,10 +7942,6 @@ msgstr "Total Pending Rewards"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Total Stats"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-msgid "Claimed {0} successfully."
-msgstr "Claimed {0} successfully."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
