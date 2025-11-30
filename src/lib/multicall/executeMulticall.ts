@@ -49,8 +49,12 @@ const CALL_COUNT_MAIN_THREAD_THRESHOLD = 10;
 
 const store: {
   current: MulticallFetcherConfig;
+  priorities: {
+    [chainId: number]: "urgent" | "background";
+  };
 } = {
   current: {},
+  priorities: {},
 };
 
 function executeChainsMulticalls() {
@@ -61,15 +65,21 @@ function executeChainsMulticalls() {
 
   for (const [chainIdStr, calls] of entries(store.current)) {
     const chainId = parseInt(chainIdStr);
-    const task = executeChainMulticall(chainId, calls);
+    const priority = store.priorities[chainId] || "urgent";
+    const task = executeChainMulticall(chainId, calls, priority);
     tasks.push(task);
   }
   store.current = {};
+  store.priorities = {};
 
   return Promise.allSettled(tasks);
 }
 
-async function executeChainMulticall(chainId: number, calls: MulticallFetcherConfig[number]) {
+async function executeChainMulticall(
+  chainId: number,
+  calls: MulticallFetcherConfig[number],
+  priority: "urgent" | "background"
+) {
   const MAX_CALLS_PER_BATCH = 500;
 
   const callChunks = chunk(entries(calls), MAX_CALLS_PER_BATCH);
@@ -77,6 +87,17 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
     requestConfig: getRequest(chunk),
     callCount: chunk.length,
   }));
+
+  const totalCallsCount = batchedRequests.reduce((sum, batch) => sum + batch.callCount, 0);
+
+  emitMetricCounter<MulticallBatchedCallCounter>({
+    event: "multicall.batched.call",
+    data: {
+      chainId,
+      priority,
+      callsCount: totalCallsCount,
+    },
+  });
 
   const batchPromises = batchedRequests.map(async ({ requestConfig, callCount }) => {
     let responseOrFailure: MulticallResult<any> | undefined;
@@ -89,11 +110,15 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
       return `Executing multicall for chainId: ${chainId}. Call count: ${callCount}. Execution in ${executionIn}.`;
     });
 
+    const batchStartTime = performance.now();
+
     if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isOldIOS()) {
       responseOrFailure = await executeMulticallWorker(chainId, requestConfig);
     } else {
       responseOrFailure = await executeMulticallMainThread(chainId, requestConfig);
     }
+
+    const batchDuration = performance.now() - batchStartTime;
 
     debugLog(() => {
       const executionIn = callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD ? "worker" : "main thread";
@@ -102,6 +127,27 @@ async function executeChainMulticall(chainId: number, calls: MulticallFetcherCon
 
       return `Multicall execution for chainId: ${chainId} took ${duration}ms in ${executionIn}. Call count: ${callCount}.`;
     });
+
+    if (responseOrFailure?.success) {
+      emitMetricTiming<MulticallBatchedTiming>({
+        event: "multicall.batched.timing",
+        time: Math.round(batchDuration),
+        data: {
+          chainId,
+          priority,
+          callsCount: callCount,
+        },
+      });
+    } else {
+      emitMetricCounter<MulticallBatchedErrorCounter>({
+        event: "multicall.batched.error",
+        data: {
+          chainId,
+          priority,
+          callsCount: callCount,
+        },
+      });
+    }
 
     return responseOrFailure;
   });
@@ -180,6 +226,8 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     }
   };
 
+  store.priorities[chainId] = priority;
+
   for (const [callGroupName, callGroup] of entries(request)) {
     for (const [callName, call] of entries(callGroup.calls)) {
       if (!call) {
@@ -239,40 +287,7 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
     throttledExecuteBackgroundChainsMulticalls();
   }
 
-  emitMetricCounter<MulticallBatchedCallCounter>({
-    event: "multicall.batched.call",
-    data: {
-      chainId,
-      priority,
-    },
-  });
-
-  const durationStart = performance.now();
-
-  return promise.then((result) => {
-    const duration = performance.now() - durationStart;
-
-    if (result.success) {
-      emitMetricTiming<MulticallBatchedTiming>({
-        event: "multicall.batched.timing",
-        time: Math.round(duration),
-        data: {
-          chainId,
-          priority,
-        },
-      });
-    } else {
-      emitMetricCounter<MulticallBatchedErrorCounter>({
-        event: "multicall.batched.error",
-        data: {
-          chainId,
-          priority,
-        },
-      });
-    }
-
-    return result;
-  }) as Promise<any>;
+  return promise as any;
 }
 
 function combineCallResults(batchedResponsesOrFailures: (MulticallResult<any> | undefined)[]) {

@@ -10,7 +10,7 @@ import {
   BOTANIX,
   ContractsChainId,
   getChainName,
-  getConstant,
+  getChainNativeTokenSymbol,
 } from "config/chains";
 import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
@@ -53,7 +53,7 @@ export default function BuyGMX() {
   const { active } = useWallet();
   const icons = getIcons(chainId);
   const chainName = getChainName(chainId);
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+  const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
   const externalLinks = EXTERNAL_LINKS[chainId];
   const location = useLocation();
 

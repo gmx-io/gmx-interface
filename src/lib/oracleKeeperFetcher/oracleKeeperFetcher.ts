@@ -1,16 +1,18 @@
+import { ContractsChainId } from "config/chains";
 import { isLocal } from "config/env";
-import { getOracleKeeperFallbackStateKey } from "config/localStorage";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
+import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
+import { metrics, OracleKeeperFailureCounter, OracleKeeperMetricMethodId } from "lib/metrics";
 import {
-  metrics,
-  OracleKeeperFailureCounter,
-  OracleKeeperFallbackCounter,
-  OracleKeeperMetricMethodId,
-} from "lib/metrics";
-import { getOracleKeeperFallbackUrls, getOracleKeeperUrl } from "sdk/configs/oracleKeeper";
+  getOracleKeeperFallbackUrls,
+  getOracleKeeperUrl,
+  ORACLE_FALLBACK_TRACKER_CONFIG,
+} from "sdk/configs/oracleKeeper";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { buildUrl } from "sdk/utils/buildUrl";
 
+import { _debugOracleKeeper, OracleKeeperDebugEventType, OracleKeeperDebugFlags } from "./_debug";
+import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
 import {
   ApyInfo,
   ApyPeriod,
@@ -37,147 +39,108 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
-type FallbackState = {
-  fallbackEndpoint: string;
-  timestamp: number;
-};
-
 export const failsPerMinuteToFallback = 3;
 
+/**
+ * 
+ *  metrics.pushCounter<OracleKeeperFailureCounter>("oracleKeeper.failure", {
+      chainId: this.chainId,
+      method,
+    });
+
+     metrics.pushCounter<OracleKeeperFallbackCounter>("oracleKeeper.fallback", {
+        chainId: this.chainId,
+      });
+
+ */
+
 export class OracleKeeperFetcher implements OracleFetcher {
-  private readonly chainId: number;
+  chainId: ContractsChainId;
+  mainUrl: string;
+  oracleTracker: OracleKeeperFallbackTracker;
 
-  private isFallback: boolean;
-  private fallbackUrls: string[];
-  private fallbackThrottleTimerId: number | undefined;
-  private fallbackIndex: number;
-  private failTimes: number[];
-  private mainUrl: string;
-
-  constructor(p: { chainId: number }) {
+  constructor(p: { chainId: ContractsChainId }) {
     this.chainId = p.chainId;
-    this.fallbackUrls = getOracleKeeperFallbackUrls(this.chainId);
     this.mainUrl = getOracleKeeperUrl(this.chainId);
-    this.isFallback = false;
-    this.failTimes = [];
 
-    const storedState = this.loadStoredFallbackState();
-
-    if (storedState) {
-      this.isFallback = true;
-      this.fallbackIndex = this.fallbackUrls.indexOf(storedState.fallbackEndpoint);
-    }
-
-    const mainUrlIndex = this.fallbackUrls.indexOf(this.mainUrl);
-
-    if (this.fallbackIndex === -1 || this.fallbackIndex === mainUrlIndex) {
-      this.isFallback = false;
-      this.fallbackIndex = 0;
-    }
+    this.oracleTracker = new OracleKeeperFallbackTracker({
+      ...ORACLE_FALLBACK_TRACKER_CONFIG,
+      chainId: this.chainId,
+      mainUrl: this.mainUrl,
+      fallbacks: getOracleKeeperFallbackUrls(this.chainId),
+    });
   }
 
   get url() {
-    return this.isFallback ? this.fallbackUrls[this.fallbackIndex] : this.mainUrl;
-  }
-
-  get storageKey() {
-    return JSON.stringify(getOracleKeeperFallbackStateKey(this.chainId));
-  }
-
-  loadStoredFallbackState() {
-    const stored = localStorage.getItem(this.storageKey);
-    if (!stored) return null;
-
-    try {
-      const parsed = JSON.parse(stored) as FallbackState;
-
-      const isValidFallback = parsed.fallbackEndpoint && this.fallbackUrls.includes(parsed.fallbackEndpoint);
-
-      return isValidFallback ? parsed : null;
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn("Failed to load fallback state from localStorage", error);
-      return null;
-    }
-  }
-
-  saveStoredFallbackState(fallbackEndpoint: string) {
-    try {
-      const state: FallbackState = {
-        fallbackEndpoint,
-        timestamp: Date.now(),
-      };
-      localStorage.setItem(this.storageKey, JSON.stringify(state));
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn("Failed to save fallback state to localStorage", error);
-    }
+    return this.oracleTracker.getCurrentEndpoints().primary;
   }
 
   handleFailure(method: OracleKeeperMetricMethodId) {
-    if (this.fallbackThrottleTimerId) {
-      return;
-    }
-
     metrics.pushCounter<OracleKeeperFailureCounter>("oracleKeeper.failure", {
       chainId: this.chainId,
       method,
     });
 
-    this.failTimes.push(Date.now());
-
-    this.failTimes = this.failTimes.filter((time) => time > Date.now() - 60000);
-
-    if (this.failTimes.length >= failsPerMinuteToFallback) {
-      if (this.isFallback) {
-        this.fallbackIndex = (this.fallbackIndex + 1) % this.fallbackUrls.length;
-      } else {
-        // First fallback url should be different from the main url
-        this.fallbackIndex = this.fallbackUrls.findIndex((url) => url !== this.mainUrl);
-      }
-
-      // eslint-disable-next-line no-console
-      console.warn(`oracle keeper fallback ${this.chainId} to ${this.fallbackIndex}`);
-      this.isFallback = true;
-      this.failTimes = [];
-
-      metrics.pushCounter<OracleKeeperFallbackCounter>("oracleKeeper.fallback", {
-        chainId: this.chainId,
-      });
-
-      this.saveStoredFallbackState(this.fallbackUrls[this.fallbackIndex]);
-    }
-
-    this.fallbackThrottleTimerId = window.setTimeout(() => {
-      this.fallbackThrottleTimerId = undefined;
-    }, 2000);
+    this.oracleTracker.reportFailure(this.url);
   }
 
   fetchTickers(): Promise<TickersResponse> {
-    return fetch(buildUrl(this.url!, "/prices/tickers"))
-      .then((res) => res.json())
+    _debugOracleKeeper?.dispatchEvent({
+      type: "tickers-start",
+      chainId: this.chainId,
+      endpoint: this.url,
+    });
+
+    return this.request("/prices/tickers", {
+      validate: (res) => {
+        if (!res.length) {
+          return new Error("Invalid tickers response");
+        }
+
+        return undefined;
+      },
+    })
       .then((res) => {
         if (!res.length) {
           throw new Error("Invalid tickers response");
         }
 
+        if (_debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerTickersFailure)) {
+          return Promise.reject(new Error("Debug: Triggered tickers failure"));
+        }
+
+        // Check for partial tickers debug flag
+        if (_debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerPartialTickers)) {
+          this._dispatchDebug("tickers-partial");
+          return res.slice(0, Math.floor(res.length / 2));
+        }
+
+        this._dispatchDebug("tickers-success");
+
         return res;
       })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        this.handleFailure("tickers");
-
-        throw e;
+      .catch((error) => {
+        this._dispatchDebug("tickers-failed");
+        throw error;
       });
   }
 
-  fetch24hPrices(): Promise<DayPriceCandle[]> {
-    return fetch(buildUrl(this.url!, "/prices/24h"))
+  request = (
+    path: `/${string}`,
+    opts: {
+      query?: Record<string, string | number | undefined | boolean>;
+      validate?: (res: any) => Error | undefined;
+    }
+  ) => {
+    const endpoints = this.oracleTracker.getCurrentEndpoints();
+
+    return fetch(buildUrl(endpoints.primary, path, opts.query))
       .then((res) => res.json())
       .then((res) => {
-        if (!res?.length) {
-          throw new Error("Invalid 24h prices response");
+        const error = opts.validate?.(res);
+
+        if (error) {
+          throw error;
         }
 
         return res;
@@ -185,9 +148,31 @@ export class OracleKeeperFetcher implements OracleFetcher {
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e);
-        this.handleFailure("24hPrices");
+        emitReportEndpointFailure({
+          endpoint: endpoints.primary,
+          trackerKey: this.oracleTracker.fallbackTracker.trackerKey,
+        });
         throw e;
       });
+  };
+
+  post = (path: `/${string}`, body: any) => {
+    const endpoints = this.oracleTracker.getCurrentEndpoints();
+    return fetch(buildUrl(endpoints.primary, path), {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+  };
+
+  fetch24hPrices(): Promise<DayPriceCandle[]> {
+    return this.request("/prices/24h", {
+      validate: (res) => {
+        if (!res?.length) {
+          return new Error("Invalid 24h prices response");
+        }
+        return undefined;
+      },
+    });
   }
 
   fetchPostBatchReport(body: BatchReportBody): Promise<Response> {
@@ -195,13 +180,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       return Promise.resolve(new Response());
     }
 
-    return fetch(buildUrl(this.url!, "/report/ui/batch_report"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    return this.post("/report/ui/batch_report", body);
   }
 
   fetchPostFeedback(body: UserFeedbackBody, debug): Promise<Response> {
@@ -210,101 +189,48 @@ export class OracleKeeperFetcher implements OracleFetcher {
       console.log("sendFeedback", body);
     }
 
-    return fetch(buildUrl(this.url!, "/report/ui/feedback"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
+    return this.post("/report/ui/feedback", body);
   }
 
   fetchApys(period: ApyPeriod): Promise<ApyInfo> {
-    return fetch(buildUrl(this.url!, "/apy", { period }), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        this.handleFailure("candles");
-        throw e;
-      });
+    return this.request("/apy", { query: { period } });
   }
 
   async fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>> {
     tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
 
-    return fetch(buildUrl(this.url!, "/prices/candles", { tokenSymbol, period, limit }))
-      .then((res) => res.json())
-      .then((res) => {
-        if (!Array.isArray(res.candles) || (res.candles.length === 0 && limit > 0)) {
-          throw new Error("Invalid candles response");
-        }
+    return this.request("/prices/candles", { query: { tokenSymbol, period, limit } }).then((res) => {
+      if (!Array.isArray(res.candles) || (res.candles.length === 0 && limit > 0)) {
+        throw new Error("Invalid candles response");
+      }
 
-        return res.candles.map(parseOracleCandle);
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        this.handleFailure("candles");
-        throw e;
-      });
+      return res.candles.map(parseOracleCandle);
+    });
   }
 
   async fetchIncentivesRewards(): Promise<RawIncentivesStats | null> {
-    return fetch(
-      buildUrl(this.url!, "/incentives", {
-        ignoreStartDate: undefined,
-      })
-    )
-      .then((res) => res.json())
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        this.handleFailure("incentives");
-        return null;
-      });
+    return this.request("/incentives", { query: { ignoreStartDate: undefined } });
   }
 
   async fetchUiVersion(currentVersion: number, active: boolean): Promise<number> {
-    return fetch(buildUrl(this.url!, `/ui/min_version?client_version=${currentVersion}&active=${active}`))
-      .then((res) => res.json())
-      .then((res) => res.version);
+    return this.request("/ui/min_version", { query: { client_version: currentVersion, active } }).then(
+      (res) => res.version
+    );
   }
 
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse> {
-    return fetch(buildUrl(this.url!, "/performance/annualized", { period, address }), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        this.handleFailure("annualized");
-        throw e;
-      });
+    return this.request("/performance/annualized", { query: { period, address } });
   }
 
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse> {
-    return fetch(buildUrl(this.url!, "/performance/snapshots", { period, address }), {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        this.handleFailure("snapshots");
-        throw e;
-      });
+    return this.request("/performance/snapshots", { query: { period, address } });
+  }
+
+  _dispatchDebug(type: OracleKeeperDebugEventType) {
+    _debugOracleKeeper?.dispatchEvent({
+      type,
+      chainId: this.chainId,
+      endpoint: this.url,
+    });
   }
 }

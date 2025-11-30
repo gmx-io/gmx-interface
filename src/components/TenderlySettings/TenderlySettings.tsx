@@ -1,7 +1,9 @@
+import { t, Trans } from "@lingui/macro";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
+import { ExpandableRow } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
@@ -23,6 +25,10 @@ export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boo
   const [projectSlug, setProjectSlug] = useState(tenderlyProjectSlug ?? "");
   const [accessKey, setAccessKey] = useState(tenderlyAccessKey ?? "");
 
+  const toggleTenderlySettings = useCallback((value: boolean) => {
+    setIsShown(value);
+  }, []);
+
   useEffect(() => {
     if (isSettingsVisible) {
       setAccountSlug(tenderlyAccountSlug ?? "");
@@ -32,35 +38,30 @@ export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boo
   }, [isSettingsVisible, tenderlyAccessKey, tenderlyAccountSlug, tenderlyProjectSlug]);
 
   return (
-    <div>
-      <div className="cursor-pointer underline" onClick={() => setIsShown((old) => !old)}>
-        {isShown ? "Hide" : "Show"} Tenderly Settings
-      </div>
-      {isShown && (
-        <>
-          <br />
-          <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
-          <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
-          <TenderlyInput
-            name="Access Key"
-            placeholder="xxxx-xxxx-xxxx"
-            value={accessKey}
-            onChange={setTenderlyAccessKey}
-          />
-          <div>
-            <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
-              <span>Simulate TXs</span>
-            </ToggleSwitch>
-          </div>
-          <br />
+    <ExpandableRow
+      open={isShown}
+      title={t`Tenderly Settings`}
+      onToggle={toggleTenderlySettings}
+      disableCollapseOnError={false}
+      contentClassName="flex flex-col gap-16 pt-8"
+      scrollIntoViewOnMobile
+    >
+      <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
+      <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
+      <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
+      <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
+        <Trans>Simulate TXs</Trans>
+      </ToggleSwitch>
+      <div className="text-typography-secondary">
+        <Trans>
           See{" "}
           <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
             Tenderly Docs
           </ExternalLink>
           .
-        </>
-      )}
-    </div>
+        </Trans>
+      </div>
+    </ExpandableRow>
   );
 }
 

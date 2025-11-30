@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, BOTANIX, EXECUTION_FEE_CONFIG_V2 } from "config/chains";
+import { ARBITRUM, BOTANIX, getExecutionFeeConfig } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -12,8 +12,8 @@ import {
   EXTERNAL_SWAPS_ENABLED_KEY,
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
-  SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
+  SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
@@ -136,10 +136,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
     getExecutionFeeBufferBpsKey(chainId),
-    EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps
+    getExecutionFeeConfig(chainId)?.defaultBufferBps
   );
 
-  const shouldUseExecutionFeeBuffer = Boolean(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
+  const shouldUseExecutionFeeBuffer = Boolean(getExecutionFeeConfig(chainId)?.defaultBufferBps);
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
@@ -234,13 +234,13 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
-      setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId].defaultBufferBps);
+      setExecutionFeeBufferBps(getExecutionFeeConfig(chainId)?.defaultBufferBps ?? 0);
     }
   }, [chainId, executionFeeBufferBps, setExecutionFeeBufferBps, shouldUseExecutionFeeBuffer]);
 
   useEffect(() => {
     if (!hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey && chainId === ARBITRUM) {
-      setExecutionFeeBufferBps(EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps);
+      setExecutionFeeBufferBps(getExecutionFeeConfig(chainId)?.defaultBufferBps ?? 0);
       setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(true);
     }
   }, [

@@ -15,14 +15,19 @@ export function useFreshnessMetricsControl() {
 
   useEffect(() => {
     const isTradePage = location.pathname.startsWith("/trade");
+    const isRpcDebugPage = location.pathname.startsWith("/rpc-debug");
+    const isOracleKeeperDebugPage = location.pathname.startsWith("/oracle-keeper-debug");
     const wasTradePage = prevPathname?.startsWith("/trade") && !isTradePage;
+    const wasRpcDebugPage = prevPathname?.startsWith("/rpc-debug") && !isRpcDebugPage;
+    const wasOracleKeeperDebugPage = prevPathname?.startsWith("/oracle-keeper-debug") && !isOracleKeeperDebugPage;
 
-    if (isTradePage) {
+    const shouldShow = isTradePage || isRpcDebugPage || isOracleKeeperDebugPage;
+
+    if (isTradePage || isRpcDebugPage || isOracleKeeperDebugPage) {
       freshnessMetrics.setEnabled(true);
     } else {
       freshnessMetrics.setEnabled(false);
-      // Clear cache when leaving trade page
-      if (wasTradePage) {
+      if ((wasTradePage || wasRpcDebugPage || wasOracleKeeperDebugPage) && !shouldShow) {
         freshnessMetrics.clearAll();
       }
     }

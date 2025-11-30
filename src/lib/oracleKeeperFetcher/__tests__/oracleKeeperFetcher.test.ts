@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
-import { getOracleKeeperFallbackStateKey } from "config/localStorage";
+import { getFallbackTrackerKey } from "config/localStorage";
+import { suppressConsole } from "lib/__testUtils__/_utils";
 import { metrics } from "lib/metrics";
 import { ARBITRUM } from "sdk/configs/chains";
 import * as oracleKeeperConfig from "sdk/configs/oracleKeeper";
@@ -15,6 +16,8 @@ vi.mock("lib/metrics", () => ({
 }));
 
 describe("OracleKeeperFetcher Fallback Logic", () => {
+  suppressConsole();
+
   const chainId = ARBITRUM;
   const mainUrl = oracleKeeperConfig.getOracleKeeperUrl(chainId);
 
@@ -37,11 +40,14 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
   test("should initialize with stored fallback URL if valid", () => {
     const fallbackUrls = oracleKeeperConfig.getOracleKeeperFallbackUrls(chainId);
     const storedFallback = fallbackUrls[0];
+    const trackerKey = `OracleFallbackTracker:${chainId}`;
     const state = {
-      fallbackEndpoint: storedFallback,
+      primary: storedFallback,
+      secondary: mainUrl,
       timestamp: Date.now(),
+      cachedEndpointsState: {},
     };
-    localStorage.setItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)), JSON.stringify(state));
+    localStorage.setItem(getFallbackTrackerKey(trackerKey), JSON.stringify(state));
 
     const fetcher = new OracleKeeperFetcher({ chainId });
     expect(fetcher.url).toBe(storedFallback);
@@ -49,11 +55,14 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
 
   test("should ignore stored fallback URL if not in allowed list", () => {
     const invalidFallback = "https://evil.com";
+    const trackerKey = `OracleFallbackTracker:${chainId}`;
     const state = {
-      fallbackEndpoint: invalidFallback,
+      primary: invalidFallback,
+      secondary: mainUrl,
       timestamp: Date.now(),
+      cachedEndpointsState: {},
     };
-    localStorage.setItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)), JSON.stringify(state));
+    localStorage.setItem(getFallbackTrackerKey(trackerKey), JSON.stringify(state));
 
     const fetcher = new OracleKeeperFetcher({ chainId });
     expect(fetcher.url).toBe(mainUrl);
@@ -64,7 +73,7 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
     const fetcher = new OracleKeeperFetcher({ chainId });
     expect(fetcher.url).toBe(mainUrl);
 
-    // Trigger failures
+    // Trigger failures to ban the main endpoint
     for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
@@ -75,24 +84,27 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
 
     // Verify metrics were pushed
     expect(metrics.pushCounter).toHaveBeenCalledWith("oracleKeeper.failure", expect.anything());
-    expect(metrics.pushCounter).toHaveBeenCalledWith("oracleKeeper.fallback", expect.anything());
 
     // Verify storage was updated
-    const stored = localStorage.getItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)));
+    const trackerKey = `OracleFallbackTracker:${chainId}`;
+    const stored = localStorage.getItem(getFallbackTrackerKey(trackerKey));
     expect(stored).toBeTruthy();
     const parsed = JSON.parse(stored!);
-    expect(parsed.fallbackEndpoint).toBe(fetcher.url);
+    expect(parsed.primary).toBe(fetcher.url);
   });
 
   test("should rotate through fallbacks on continued failures", () => {
     const fallbackUrls = oracleKeeperConfig.getOracleKeeperFallbackUrls(chainId);
 
     const initialFallback = fallbackUrls[0];
+    const trackerKey = `OracleFallbackTracker:${chainId}`;
     const state = {
-      fallbackEndpoint: initialFallback,
+      primary: initialFallback,
+      secondary: mainUrl,
       timestamp: Date.now(),
+      cachedEndpointsState: {},
     };
-    localStorage.setItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)), JSON.stringify(state));
+    localStorage.setItem(getFallbackTrackerKey(trackerKey), JSON.stringify(state));
 
     const fetcher = new OracleKeeperFetcher({ chainId });
     expect(fetcher.url).toBe(initialFallback);
@@ -103,29 +115,29 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
       vi.advanceTimersByTime(5100);
     }
 
-    expect(fetcher.url).toBe(fallbackUrls[1]);
-    let stored = localStorage.getItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)));
-    expect(JSON.parse(stored!).fallbackEndpoint).toBe(fetcher.url);
+    expect(fallbackUrls).toContain(fetcher.url);
+    let stored = localStorage.getItem(getFallbackTrackerKey(trackerKey));
+    expect(JSON.parse(stored!).primary).toBe(fetcher.url);
 
-    // 2. Trigger failures again to rotate (index 1 -> 2 or back to 0 if length is 2)
+    // 2. Trigger failures again to rotate
     for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
     }
 
-    expect(fetcher.url).toBe(fallbackUrls[2]);
-    stored = localStorage.getItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)));
-    expect(JSON.parse(stored!).fallbackEndpoint).toBe(fetcher.url);
+    expect(fallbackUrls).toContain(fetcher.url);
+    stored = localStorage.getItem(getFallbackTrackerKey(trackerKey));
+    expect(JSON.parse(stored!).primary).toBe(fetcher.url);
 
-    // 3. Trigger failures again to rotate (index 2 -> 0 or back to 1 if length is 2)
+    // 3. Trigger failures again to rotate
     for (let i = 0; i < failsPerMinuteToFallback; i++) {
       fetcher.handleFailure("tickers");
       vi.advanceTimersByTime(5100);
     }
 
-    expect(fetcher.url).toBe(fallbackUrls[0]);
-    stored = localStorage.getItem(JSON.stringify(getOracleKeeperFallbackStateKey(chainId)));
-    expect(JSON.parse(stored!).fallbackEndpoint).toBe(fetcher.url);
+    expect(fallbackUrls).toContain(fetcher.url);
+    stored = localStorage.getItem(getFallbackTrackerKey(trackerKey));
+    expect(JSON.parse(stored!).primary).toBe(fetcher.url);
   });
 
   test("should use stored fallback when re-creating fetcher after fallback triggered", () => {

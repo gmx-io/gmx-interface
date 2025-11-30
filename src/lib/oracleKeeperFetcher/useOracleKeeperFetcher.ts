@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { ContractsChainId } from "config/chains";
 import { OracleKeeperMetricMethodId } from "lib/metrics";
 import { OracleFetcher, OracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
@@ -15,7 +16,7 @@ export function registerOracleKeeperFailure(chainId: number, method: OracleKeepe
   fetcher.handleFailure(method);
 }
 
-export function useOracleKeeperFetcher(chainId: number): OracleFetcher {
+export function useOracleKeeperFetcher(chainId: ContractsChainId): OracleFetcher {
   return useMemo(() => {
     if (!oracleKeeperFetchersCached[chainId]) {
       oracleKeeperFetchersCached[chainId] = new OracleKeeperFetcher({

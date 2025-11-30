@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM, getConstant } from "config/chains";
+import { ARBITRUM, getChainNativeTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGmxPrice } from "domain/legacy";
@@ -36,9 +36,9 @@ import ShareIcon from "img/ic_share.svg?react";
 import esGmxIcon from "img/tokens/ic_esgmx.svg";
 import gmxIcon from "img/tokens/ic_gmx.svg";
 
+import { BaseAssetCard } from "../BaseAssetCard";
 import { GMX_DAO_LINKS } from "./constants";
 import { StakeModal, StakeModalTabConfig } from "./StakeModal";
-import { BaseAssetCard } from "../BaseAssetCard";
 
 export function GmxAssetCard({
   processedData,
@@ -52,7 +52,7 @@ export function GmxAssetCard({
   const { setPendingTxns } = usePendingTxns();
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+  const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeValue, setStakeValue] = useState("");

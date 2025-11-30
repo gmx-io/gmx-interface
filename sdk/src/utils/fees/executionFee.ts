@@ -1,4 +1,4 @@
-import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee, MIN_EXECUTION_FEE_USD } from "configs/chains";
+import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee, getMinExecutionFeeUsd } from "configs/chains";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
@@ -30,7 +30,7 @@ export function getExecutionFee(
   // #endregion
 
   // avoid botanix gas spikes when chain is not actively used
-  const minGasCostUsd = MIN_EXECUTION_FEE_USD[chainId];
+  const minGasCostUsd = getMinExecutionFeeUsd(chainId as ContractsChainId);
   const minGasCost = convertToTokenAmount(minGasCostUsd, nativeToken.decimals, nativeToken.prices.minPrice);
 
   let feeTokenAmountPerExecution = gasLimit * gasPrice;
@@ -43,8 +43,8 @@ export function getExecutionFee(
 
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 
-  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
-  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
+  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
+  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
 
   return {
     feeUsd,

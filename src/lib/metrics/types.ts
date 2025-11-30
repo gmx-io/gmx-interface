@@ -258,6 +258,48 @@ export type OrderCancelledEvent = {
   data: OrderMetricData & ErrorData;
 };
 
+// Fallback tracking
+export type RpcTrackerEndpointBannedEvent = {
+  event: "rpcTracker.endpoint.banned";
+  isError: false;
+  data: {
+    chainId: number;
+    chainName: string;
+    endpoint: string;
+    reason: string;
+  };
+};
+
+export type RpcTrackerUpdateEndpointsEvent = {
+  event: "rpcTracker.endpoint.updated";
+  isError: false;
+  data: {
+    isOld: boolean;
+    chainName: string;
+    chainId: number;
+    primary: string;
+    secondary: string;
+    primaryBlockGap: number | "unknown";
+    secondaryBlockGap: number | "unknown";
+  };
+};
+
+export type RpcTrackerEndpointTiming = {
+  event: "rpcTracker.endpoint.timing";
+  data: {
+    endpoint: string;
+    chainId: number;
+  };
+};
+
+export type RpcTrackerEndpointBlockGap = {
+  event: "rpcTracker.endpoint.blockGap";
+  data: {
+    endpoint: string;
+    chainId: number;
+  };
+};
+
 // Multicall tracking
 export type MulticallTimeoutEvent = {
   event: "multicall.timeout";
@@ -490,6 +532,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
@@ -534,6 +577,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
@@ -557,6 +601,7 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
@@ -580,16 +625,6 @@ export type MulticallFallbackRpcModeCounter = {
   data: {
     chainId: number;
     isInMainThread: boolean;
-  };
-};
-
-export type RpcTrackerRankingCounter = {
-  event: "rpcTracker.ranking.setBestRpc";
-  data: {
-    chainId: number;
-    rpcProvider: string;
-    bestBlockGap: number | "unknown";
-    isLargeAccount: boolean;
   };
 };
 

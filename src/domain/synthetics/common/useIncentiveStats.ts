@@ -6,11 +6,12 @@ import useSWR from "swr";
 import { useChainId } from "lib/chains";
 import type { RawIncentivesStats } from "lib/oracleKeeperFetcher";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { ContractsChainId } from "sdk/configs/chains";
 
 export default function useIncentiveStats(overrideChainId?: number) {
   const { chainId: defaultChainId } = useChainId();
   const chainId = overrideChainId ?? defaultChainId;
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
   return (
     useSWR<RawIncentivesStats | null>(["incentiveStats", chainId], async () => {

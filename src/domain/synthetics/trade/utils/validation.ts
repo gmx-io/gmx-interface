@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 
-import { IS_NETWORK_DISABLED, getChainName } from "config/chains";
+import { AnyChainId, ContractsChainId, getChainName, isChainDisabled } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
@@ -20,7 +20,7 @@ import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domai
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS, getToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import {
   ExternalSwapQuote,
@@ -43,8 +43,8 @@ export type ValidationResult =
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
 
-  if (IS_NETWORK_DISABLED[chainId]) {
-    return [t`App disabled, pending ${getChainName(chainId)} upgrade`];
+  if (isChainDisabled(chainId as ContractsChainId)) {
+    return [t`App disabled, pending ${getChainName(chainId as AnyChainId)} upgrade`];
   }
 
   if (hasOutdatedUi) {
