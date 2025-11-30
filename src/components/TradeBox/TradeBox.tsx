@@ -103,6 +103,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
@@ -124,7 +125,7 @@ import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
-import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
+import { CollateralSelectorRow, useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
@@ -1029,6 +1030,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 
+  const collateralWarnings = useCollateralWarnings();
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 py-12 pb-16">
@@ -1096,14 +1099,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isPosition && (
                   <>
                     {isIncrease && isLeverageSliderEnabled && (
-                      <LeverageField
-                        className="grow"
-                        marks={leverageSliderMarks}
-                        value={leverageOption}
-                        onChange={setLeverageOption}
-                        isPositive={isLong}
-                        isSlim
-                      />
+                      <LeverageField marks={leverageSliderMarks} value={leverageOption} onChange={setLeverageOption} />
                     )}
                     {showHighLeverageWarning && (
                       <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
@@ -1128,13 +1124,17 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                       />
                     )}
 
-                    <MarketPoolSelectorRow />
+                    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                      <MarketPoolSelectorRow />
+                      <CollateralSelectorRow
+                        selectedMarketAddress={marketInfo?.marketTokenAddress}
+                        onSelectCollateralAddress={onSelectCollateralAddress}
+                        isMarket={isMarket}
+                      />
 
-                    <CollateralSelectorRow
-                      selectedMarketAddress={marketInfo?.marketTokenAddress}
-                      onSelectCollateralAddress={onSelectCollateralAddress}
-                      isMarket={isMarket}
-                    />
+                      <TradeboxPoolWarnings />
+                      {collateralWarnings}
+                    </div>
                   </>
                 )}
 

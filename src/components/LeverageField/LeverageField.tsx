@@ -1,4 +1,3 @@
-import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
@@ -7,12 +6,9 @@ const defaultMarks = [0.1, 25, 50];
 const DEFAULT_LEVERAGE = 20;
 
 type Props = {
-  isPositive?: boolean;
   value?: number;
   onChange: (value: number) => void;
   marks: number[];
-  className?: string;
-  isSlim?: boolean;
 };
 
 function clampLeverage(value: number, min: number, max: number) {
@@ -24,7 +20,7 @@ function formatLeverage(value: number) {
   return parseFloat(value.toFixed(2)).toString();
 }
 
-export function LeverageField({ isPositive, value, onChange, marks, className, isSlim }: Props) {
+export function LeverageField({ value, onChange, marks }: Props) {
   const finalMarks = useMemo(() => (marks?.length ? marks : defaultMarks), [marks]);
   const minMark = finalMarks[0] ?? DEFAULT_LEVERAGE;
   const maxMark = finalMarks.at(-1) ?? DEFAULT_LEVERAGE;
@@ -87,19 +83,7 @@ export function LeverageField({ isPositive, value, onChange, marks, className, i
   }, [commitValue]);
 
   return (
-    <div
-      className={cx(
-        "flex w-full flex-col rounded-8 pl-3 pr-2",
-        {
-          "mb-14 mt-6": !isSlim,
-          "mb-0 mt-0": isSlim,
-          positive: isPositive,
-          negative: !isPositive,
-        },
-        className
-      )}
-      data-qa="leverage-slider"
-    >
+    <div data-qa="leverage-slider">
       <SuggestionInput
         value={inputValue}
         setValue={handleInputChange}
@@ -108,7 +92,7 @@ export function LeverageField({ isPositive, value, onChange, marks, className, i
         suggestionWithSuffix
         suffix="x"
         inputClassName="w-full text-right"
-        className="leading-none !rounded-4 px-0 py-2"
+        className="leading-none !rounded-4 px-0 py-[1.5px]"
       />
     </div>
   );

@@ -15,8 +15,8 @@ import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/S
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { BlockField } from "components/BlockField/BlockField";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
-import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
@@ -34,18 +34,17 @@ export function CollateralSelectorRow(p: Props) {
 
   const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
-  const warnings = useCollateralWarnings();
   const collateralInTooltipContent = useCollateralInTooltipContent();
 
   return (
-    <>
-      <SyntheticsInfoRow
+    <div className="flex flex-col gap-8">
+      <BlockField
         label={
-          <TooltipWithPortal position="left-start" content={collateralInTooltipContent} variant="icon">
+          <TooltipWithPortal position="left-start" content={collateralInTooltipContent} variant="none">
             <Trans>Collateral In</Trans>
           </TooltipWithPortal>
         }
-        value={
+        content={
           <CollateralSelector
             onSelect={onSelectCollateralAddress}
             options={availableTokens}
@@ -54,12 +53,11 @@ export function CollateralSelectorRow(p: Props) {
           />
         }
       />
-      {warnings}
-    </>
+    </div>
   );
 }
 
-function useCollateralWarnings() {
+export function useCollateralWarnings() {
   const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
   const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const { isMarket } = useSelector(selectTradeboxTradeFlags);

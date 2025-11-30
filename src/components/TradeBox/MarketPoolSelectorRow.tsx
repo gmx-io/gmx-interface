@@ -10,10 +10,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketPoolName } from "domain/synthetics/markets";
 import { getByKey } from "lib/objects";
 
-import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+import { BlockField } from "components/BlockField/BlockField";
 
 import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
-import { TradeboxPoolWarnings } from "../TradeboxPoolWarnings/TradeboxPoolWarnings";
 
 export function MarketPoolSelectorRow() {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
@@ -25,23 +24,21 @@ export function MarketPoolSelectorRow() {
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
 
   return (
-    <>
-      <SyntheticsInfoRow
+    <div className="flex flex-col gap-8">
+      <BlockField
         label={t`Pool`}
-        value={
-          <>
-            <PoolSelector2
-              selectedPoolName={poolName}
-              options={relatedMarketStats}
-              tradeType={tradeType}
-              positionStats={relatedMarketsPositionStats}
-              onSelect={setMarketAddress}
-            />
-          </>
+        content={
+          <PoolSelector2
+            selectedPoolName={poolName}
+            options={relatedMarketStats}
+            tradeType={tradeType}
+            positionStats={relatedMarketsPositionStats}
+            onSelect={setMarketAddress}
+            handleClassName="text-12"
+            chevronClassName="w-10"
+          />
         }
       />
-
-      <TradeboxPoolWarnings />
-    </>
+    </div>
   );
 }

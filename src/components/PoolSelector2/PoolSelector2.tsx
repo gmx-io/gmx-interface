@@ -34,6 +34,10 @@ type Props = {
   };
   tradeType: TradeType;
   onSelect: (marketAddress: string) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
+  handleClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  chevronClassName?: string;
 };
 
 export function PoolSelector2(props: Props) {
@@ -41,7 +45,14 @@ export function PoolSelector2(props: Props) {
   const disabled = props.options?.length === 1;
 
   return (
-    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled} qa="pool-selector">
+    <SelectorBase
+      label={props.selectedPoolName}
+      modalLabel={t`Select pool`}
+      disabled={disabled}
+      qa="pool-selector"
+      handleClassName={props.handleClassName}
+      chevronClassName={props.chevronClassName}
+    >
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </SelectorBase>
   );
