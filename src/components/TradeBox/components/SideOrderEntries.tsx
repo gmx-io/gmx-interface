@@ -134,7 +134,7 @@ function SideOrderEntry({
               setValue={onPercentageSetValue}
               suggestionList={SUGGESTION_PERCENTAGE_LIST}
               placeholder={t`Size`}
-              symbol="%"
+              suffix="%"
             />
           </TooltipWithPortal>
         </div>

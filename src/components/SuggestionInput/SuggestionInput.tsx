@@ -13,7 +13,7 @@ type Props = {
   setValue?: (value: string) => void;
   placeholder?: string;
   suggestionList?: number[];
-  symbol?: string;
+  suffix?: string;
   isError?: boolean;
   inputClassName?: string;
   onBlur?: () => void;
@@ -21,6 +21,7 @@ type Props = {
   className?: string;
   label?: React.ReactNode;
   onPanelVisibleChange?: (isPanelVisible: boolean) => void;
+  suggestionWithSuffix?: boolean;
 };
 
 export default function SuggestionInput({
@@ -28,7 +29,7 @@ export default function SuggestionInput({
   value,
   setValue,
   suggestionList,
-  symbol,
+  suffix,
   isError,
   inputClassName,
   onBlur,
@@ -37,6 +38,7 @@ export default function SuggestionInput({
   label,
   onPanelVisibleChange,
   inputId,
+  suggestionWithSuffix,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -96,7 +98,7 @@ export default function SuggestionInput({
   return (
     <div className="Suggestion-input-wrapper">
       <div
-        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !symbol })}
+        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !suffix })}
         onClick={() => inputRef.current?.focus()}
         ref={refs.setReference}
       >
@@ -112,9 +114,9 @@ export default function SuggestionInput({
           onValueChange={handleChange}
           onKeyDown={handleKeyDown}
         />
-        {symbol && (
+        {suffix && (
           <div className="pr-7 text-typography-secondary">
-            <span>{symbol}</span>
+            <span>{suffix}</span>
           </div>
         )}
       </div>
@@ -124,7 +126,8 @@ export default function SuggestionInput({
             <ul className="Suggestion-list">
               {suggestionList.map((suggestion) => (
                 <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>
-                  {suggestion}%
+                  {suggestion}
+                  {suggestionWithSuffix ? suffix : "%"}
                 </li>
               ))}
             </ul>

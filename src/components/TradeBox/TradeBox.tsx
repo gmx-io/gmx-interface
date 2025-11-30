@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
@@ -93,9 +93,8 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
+import { LeverageField } from "components/LeverageField/LeverageField";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
-import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -188,8 +187,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setTriggerPriceInputValue,
     triggerRatioInputValue,
     setTriggerRatioInputValue,
-    leverageInputValue,
-    setLeverageInputValue,
     leverageOption,
     setLeverageOption,
     isSwitchTokensAllowed,
@@ -709,35 +706,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     [isCursorInside, wrappedOnSubmit, submitButtonState, shouldDisableValidation]
   );
 
-  const handleLeverageInputBlur = useCallback(() => {
-    if (leverageOption === 0) {
-      setLeverageOption(leverageSliderMarks[0]);
-      return;
-    }
-
-    if (leverageInputValue === "" && leverageOption !== undefined) {
-      setLeverageInputValue(leverageOption.toString());
-    }
-  }, [leverageInputValue, leverageOption, leverageSliderMarks, setLeverageInputValue, setLeverageOption]);
-
-  const handleLeverageInputKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        e.preventDefault();
-
-        const isAlt = e.altKey;
-        const direction = e.key === "ArrowUp" ? 1 : -1;
-        const increment = isAlt ? 0.1 : 1;
-        const diff = direction * increment;
-        const newValue = Math.round(((leverageOption ?? leverageSliderMarks[0]) + diff) * 10) / 10;
-        const clampedValue = Math.min(Math.max(newValue, leverageSliderMarks[0]), leverageSliderMarks.at(-1)!);
-
-        setLeverageOption(clampedValue);
-      }
-    },
-    [leverageOption, leverageSliderMarks, setLeverageOption]
-  );
-
   const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
 
   function renderTokenInputs() {
@@ -1128,25 +1096,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isPosition && (
                   <>
                     {isIncrease && isLeverageSliderEnabled && (
-                      <div className="flex items-start gap-12">
-                        <LeverageSlider
-                          className="grow"
-                          marks={leverageSliderMarks}
-                          value={leverageOption}
-                          onChange={setLeverageOption}
-                          isPositive={isLong}
-                          isSlim
-                        />
-                        <SuggestionInput
-                          className="w-48 !rounded-8 py-5"
-                          inputClassName="text-clip"
-                          value={leverageInputValue}
-                          setValue={setLeverageInputValue}
-                          onBlur={handleLeverageInputBlur}
-                          onKeyDown={handleLeverageInputKeyDown}
-                          symbol="x"
-                        />
-                      </div>
+                      <LeverageField
+                        className="grow"
+                        marks={leverageSliderMarks}
+                        value={leverageOption}
+                        onChange={setLeverageOption}
+                        isPositive={isLong}
+                        isSlim
+                      />
                     )}
                     {showHighLeverageWarning && (
                       <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>

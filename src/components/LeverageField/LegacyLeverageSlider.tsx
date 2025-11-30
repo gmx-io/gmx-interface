@@ -4,7 +4,7 @@ import Slider, { Handle, SliderTooltip } from "rc-slider";
 import { forwardRef, useCallback, useEffect, useMemo } from "react";
 
 import "rc-slider/assets/index.css";
-import "./LeverageSlider.scss";
+import "./LegacyLeverageSlider.scss";
 
 const defaultMarks = [0.1, 25, 50];
 const DEFAULT_LEVERAGE_KEY = 20;
@@ -35,7 +35,7 @@ function getMarksWithLabel(marks: number[]) {
   );
 }
 
-export function LeverageSlider(p: Props) {
+export function LegacyLeverageSlider(p: Props) {
   const { onChange, value, marks } = p;
   const finalMarks = marks ?? defaultMarks;
 
@@ -75,7 +75,7 @@ export function LeverageSlider(p: Props) {
   return (
     <div
       className={cx(
-        "LeverageSlider",
+        "LegacyLeverageSlider",
         {
           positive: p.isPositive,
           negative: !p.isPositive,
