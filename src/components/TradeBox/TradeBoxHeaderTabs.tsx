@@ -58,8 +58,8 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           onChange={onTradeTypeChange}
           size="l"
           qa="trade-direction"
-          className="rounded-none bg-transparent grow rounded-8 border-0 border-none bg-slate-800 p-0"
-          regularOptionClassname="grow first:rounded-l-8 last:rounded-r-8"
+          className="rounded-none bg-transparent grow overflow-hidden rounded-8 border-0 border-none bg-slate-800 p-0"
+          regularOptionClassname="grow"
         />
         <Tabs
           options={swapTabOptions}
@@ -67,8 +67,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           onChange={onTradeTypeChange}
           size="l"
           qa="trade-direction-swap"
-          className="rounded-none bg-transparent flex-none rounded-8 border-0 border-none bg-slate-800 p-0"
-          regularOptionClassname="rounded-8"
+          className="rounded-none bg-transparent flex-none overflow-hidden rounded-8 border-0 border-none bg-slate-800 p-0"
         />
       </div>
     );
