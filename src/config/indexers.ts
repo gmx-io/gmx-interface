@@ -10,7 +10,7 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-250410222518-4486206/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@5b0ab2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@7e33a2/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -20,7 +20,7 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-referrals/master-240415215829-f6877d6/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-avalanche-stats/master-250410222549-4486206/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@5b0ab2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@7e33a2/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {
@@ -28,15 +28,15 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-fuji-referrals/synts-stats-230726124533-065cd0d/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-fuji-stats/master-250708141244-939c871/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji@5b0ab2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji@7e33a2/api/graphql",
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@5b0ab2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@7e33a2/api/graphql",
   },
 
   [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@5b0ab2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@7e33a2/api/graphql",
     stats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
     syntheticsStats:
