@@ -11,6 +11,7 @@ import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/expre
 import { CreateDepositParams, RawCreateDepositParams } from "domain/synthetics/markets";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
+import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { estimateSourceChainDepositFees, SourceChainDepositFees } from "./feeEstimation/estimateSourceChainDepositFees";
 import { signCreateDeposit } from "./signCreateDeposit";
@@ -53,6 +54,7 @@ export async function createSourceChainDepositTxn({
         tokenAmount,
         globalExpressParams,
       });
+  const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
 
   const adjusterParams: CreateDepositParams = { ...params, executionFee: ensuredFees.executionFee };
 
@@ -87,14 +89,14 @@ export async function createSourceChainDepositTxn({
     action,
   });
 
-  const sourceChainTokenId = getMappedTokenId(chainId, tokenAddress, srcChainId);
+  const sourceChainTokenId = getMappedTokenId(chainId, unwrappedTokenAddress, srcChainId);
 
   if (!sourceChainTokenId) {
     throw new Error("Token ID not found");
   }
 
   let value = ensuredFees.txnEstimatedNativeFee;
-  if (tokenAddress === zeroAddress) {
+  if (unwrappedTokenAddress === zeroAddress) {
     value += tokenAmount;
   }
 

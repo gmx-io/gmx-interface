@@ -12,6 +12,7 @@ import type { CreateGlvDepositParams, RawCreateGlvDepositParams } from "domain/s
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
+import { convertTokenAddress } from "sdk/configs/tokens";
 
 import {
   estimateSourceChainGlvDepositFees,
@@ -61,7 +62,7 @@ export async function createSourceChainGlvDepositTxn({
         globalExpressParams,
         glvMarketCount,
       });
-
+  const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
   const adjusterParams: CreateGlvDepositParams = { ...params, executionFee: ensuredFees.executionFee };
 
   const signature = await signCreateGlvDeposit({
@@ -94,14 +95,14 @@ export async function createSourceChainGlvDepositTxn({
     action,
   });
 
-  const sourceChainTokenId = getMappedTokenId(chainId, tokenAddress, srcChainId);
+  const sourceChainTokenId = getMappedTokenId(chainId, unwrappedTokenAddress, srcChainId);
 
   if (!sourceChainTokenId) {
     throw new Error("Token ID not found");
   }
 
   let value = ensuredFees.txnEstimatedNativeFee;
-  if (tokenAddress === zeroAddress) {
+  if (unwrappedTokenAddress === zeroAddress) {
     value += tokenAmount;
   }
 
