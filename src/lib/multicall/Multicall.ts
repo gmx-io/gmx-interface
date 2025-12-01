@@ -21,7 +21,8 @@ import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
 
-export const MAX_TIMEOUT = 20000;
+export const MAX_PRIMARY_TIMEOUT = 10_000;
+export const MAX_FALLBACK_TIMEOUT = 10_000;
 
 export type MulticallProviderUrls = {
   primary: string;
@@ -53,7 +54,7 @@ export class Multicall {
         retryCount: 0,
         retryDelay: 10000000,
         batch: BATCH_CONFIGS[chainId].http,
-        timeout: MAX_TIMEOUT,
+        timeout: MAX_PRIMARY_TIMEOUT,
       }),
       pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
@@ -283,12 +284,12 @@ export class Multicall {
       const debugShouldTimeout = isWebWorker && debugState?.triggerSecondaryTimeoutInWorker;
 
       if (debugShouldTimeout) {
-        await sleep(MAX_TIMEOUT * 2);
+        await sleep(MAX_PRIMARY_TIMEOUT * 2);
       }
 
       return Promise.race([
         fallbackClient.multicall({ contracts: encodedPayload as any }),
-        sleep(MAX_TIMEOUT).then(() => {
+        sleep(MAX_PRIMARY_TIMEOUT).then(() => {
           sendDebugEvent("secondary-timeout", { providerUrl: fallbackProviderUrl });
           return Promise.reject(new Error("multicall timeout"));
         }),
@@ -359,13 +360,13 @@ export class Multicall {
     const debugShouldTimeout = isWebWorker && debugState?.triggerPrimaryTimeoutInWorker;
 
     if (debugShouldTimeout) {
-      await sleep(MAX_TIMEOUT * 2);
+      await sleep(MAX_PRIMARY_TIMEOUT * 2);
     }
 
     sendDebugEvent("primary-start", { providerUrl });
     const result = await Promise.race([
       client.multicall({ contracts: encodedPayload as any }),
-      sleep(MAX_TIMEOUT).then(() => {
+      sleep(MAX_PRIMARY_TIMEOUT).then(() => {
         sendDebugEvent("primary-timeout", { providerUrl });
 
         emitReportEndpointFailure({
