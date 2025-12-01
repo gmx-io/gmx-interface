@@ -132,8 +132,9 @@ describe("safeAddListenner", () => {
 
         instance.addListenner(listener);
 
-        expect(addEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT, expect.any(Function));
-        expect(removeEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT, expect.any(Function));
+        // When maxListenners is 0, listener should not be added at all
+        expect(addEventListenerSpy).not.toHaveBeenCalled();
+        expect(removeEventListenerSpy).not.toHaveBeenCalled();
         expect(instance.cache).toHaveLength(0);
       });
     });

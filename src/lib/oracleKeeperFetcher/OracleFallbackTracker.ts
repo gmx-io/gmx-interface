@@ -2,7 +2,7 @@ import orderBy from "lodash/orderBy";
 
 import { ContractsChainId, getChainName } from "config/rpc";
 import { FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker";
-import { byBanTimestamp, byResponseTime } from "lib/FallbackTracker/utils";
+import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { ORACLE_FALLBACK_TRACKER_CONFIG } from "sdk/configs/oracleKeeper";
 
 type OracleCheckResult = {
@@ -70,7 +70,12 @@ export class OracleKeeperFallbackTracker {
   };
 
   selectEndpoint = ({ endpointsStats }) => {
-    const ranked = orderBy(endpointsStats, [byBanTimestamp, byResponseTime], ["asc", "asc"]);
+    const avgResponseTime = getAvgResponseTime(endpointsStats);
+    const ranked = orderBy(
+      endpointsStats,
+      [scoreNotBanned, scoreBySpeedAndConsistency(avgResponseTime)],
+      ["asc", "desc"]
+    );
 
     return ranked[0]?.endpoint;
   };

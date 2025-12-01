@@ -1112,7 +1112,7 @@ describe("Selection logic", () => {
 
       const stats = [
         createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
-          checkResult: { success: true, stats: { responseTime: 100, blockNumber: undefined } },
+          checkResult: { success: true, stats: { responseTime: 100, blockNumber: 0 } },
         }),
       ];
 
@@ -1199,7 +1199,7 @@ describe("Selection logic", () => {
 
       const stats = [
         createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
-          checkResult: { success: true, stats: { responseTime: 100, blockNumber: undefined } },
+          checkResult: { success: true, stats: { responseTime: 100, blockNumber: 0 } },
         }),
       ];
 

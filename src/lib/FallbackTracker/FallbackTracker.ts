@@ -29,7 +29,7 @@ export const DEFAULT_FALLBACK_TRACKER_CONFIG: FallbackTrackerConfig = {
   delay: 5000, // Delay before starting tracking (in milliseconds)
 };
 
-const STORED_CHECK_STATS_MAX_COUNT = 1;
+const STORED_CHECK_STATS_MAX_COUNT = 10;
 
 export type FallbackTrackerConfig = {
   // Frequency of endpoint probing
@@ -134,7 +134,7 @@ export type CheckResult<TCheckStats> = {
 };
 
 export type EndpointStats<TCheckStats> = EndpointState & {
-  checkResult: CheckResult<TCheckStats> | undefined;
+  checkResults: CheckResult<TCheckStats>[];
 };
 
 export type StoredState = {
@@ -234,11 +234,15 @@ export class FallbackTracker<TCheckStats> {
       return undefined;
     }
 
-    const lastCheckResults = this.getLastCheckResults();
+    const startWindow = Date.now() - this.params.trackInterval * STORED_CHECK_STATS_MAX_COUNT;
 
     return {
       ...state,
-      checkResult: lastCheckResults?.[endpoint] ?? undefined,
+      checkResults: this.state.checkStats
+        // Filter out old too old check stats
+        .filter((checkStat) => checkStat.timestamp >= startWindow)
+        .map((checkStat) => checkStat.results[endpoint])
+        .filter((checkResult): checkResult is CheckResult<TCheckStats> => checkResult !== undefined),
     };
   }
 
@@ -552,7 +556,6 @@ export class FallbackTracker<TCheckStats> {
 
     if (fulfilledResults.length === 0) {
       NetworkStatusObserver.getInstance().setTrackingFailed(this.trackerKey, true);
-      return;
     } else {
       NetworkStatusObserver.getInstance().setTrackingFailed(this.trackerKey, false);
     }

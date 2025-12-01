@@ -89,7 +89,7 @@ class RpcTrackerDebug {
     const debugStats = endpoints.map((endpoint) => {
       const endpointStats = fallbackTracker.getEndpointStats(endpoint);
       const rpcConfig = rpcTracker.getRpcConfig(endpoint);
-      const checkResult = endpointStats?.checkResult;
+      const checkResult = endpointStats?.checkResults?.[0];
 
       return {
         url: getProviderNameFromUrl(endpoint),

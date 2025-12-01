@@ -38,7 +38,9 @@ describe("FallbackTracker - endpoint selection and logic", () => {
       const stats = tracker.getEndpointStats(config.primary);
 
       expect(stats).toBeDefined();
-      expect(stats?.checkResult).toEqual(checkResult);
+      expect(stats?.checkResults).toBeDefined();
+      expect(stats?.checkResults).toHaveLength(1);
+      expect(stats?.checkResults[0]).toEqual(checkResult);
       expect(stats?.endpoint).toBe(config.primary);
     });
 
@@ -50,7 +52,8 @@ describe("FallbackTracker - endpoint selection and logic", () => {
       const stats = tracker.getEndpointStats(config.primary);
 
       expect(stats).toBeDefined();
-      expect(stats?.checkResult).toBeUndefined();
+      expect(stats?.checkResults).toBeDefined();
+      expect(stats?.checkResults).toHaveLength(0);
       expect(stats?.endpoint).toBe(config.primary);
     });
 
@@ -81,7 +84,9 @@ describe("FallbackTracker - endpoint selection and logic", () => {
       const stats = tracker.getEndpointStats(config.primary);
 
       expect(stats?.failureTimestamps).toHaveLength(1);
-      expect(stats?.checkResult).toEqual(checkResult);
+      expect(stats?.checkResults).toBeDefined();
+      expect(stats?.checkResults).toHaveLength(1);
+      expect(stats?.checkResults[0]).toEqual(checkResult);
     });
   });
 

@@ -6,7 +6,7 @@ import { isDevelopment } from "config/env";
 import { getChainName, getProviderNameFromUrl, getRpcProviders, RpcConfig, RpcPurpose } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { EndpointStats, FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker/FallbackTracker";
-import { byBanTimestamp, byResponseTime } from "lib/FallbackTracker/utils";
+import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { fetchBlockNumber, fetchEthCall } from "lib/rpc/fetchRpc";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -25,8 +25,8 @@ type RpcTrackerParams = RpcTrackerConfig & {
 };
 
 export type RpcCheckResult = {
-  responseTime: number | undefined;
-  blockNumber: number | undefined;
+  responseTime: number;
+  blockNumber: number;
 };
 
 export type RpcStats = EndpointStats<RpcCheckResult>;
@@ -242,14 +242,13 @@ export class RpcTracker {
       return purpose && allowedPurposes.includes(purpose as RpcPurpose);
     });
 
+    // Calculate avgResponseTime from filtered stats (only endpoints that can be selected as primary)
+    const avgResponseTime = getAvgResponseTime(filtered);
+    const purposeOrder: RpcPurpose[] = this.getIsLargeAccount() ? ["largeAccount", "default"] : ["default"];
     const ranked = orderBy(
       filtered,
-      [
-        byBanTimestamp,
-        this.byMatchedPurpose(this.getIsLargeAccount() ? ["largeAccount", "default"] : ["default"]),
-        byResponseTime,
-      ],
-      ["asc", "desc", "asc"]
+      [scoreNotBanned, this.byMatchedPurpose(purposeOrder), scoreBySpeedAndConsistency(avgResponseTime)],
+      ["desc", "desc", "desc"]
     );
 
     return ranked[0]?.endpoint;
@@ -264,14 +263,14 @@ export class RpcTracker {
       return purpose && allowedPurposes.includes(purpose as RpcPurpose);
     });
 
+    // Calculate avgResponseTime from filtered stats (only endpoints that can be selected as secondary)
+    const avgResponseTime = getAvgResponseTime(filtered);
+    // Sort by: 1) not banned (asc - lower banned timestamp is better), 2) purpose priority (desc - higher priority is better), 3) speed/consistency score (desc - higher score is better)
+    const purposeOrder: RpcPurpose[] = this.getIsLargeAccount() ? ["largeAccount", "default"] : ["fallback", "default"];
     const ranked = orderBy(
       filtered,
-      [
-        byBanTimestamp,
-        this.byMatchedPurpose(this.getIsLargeAccount() ? ["largeAccount", "default"] : ["fallback", "default"]),
-        byResponseTime,
-      ],
-      ["asc", "desc", "asc"]
+      [scoreNotBanned, this.byMatchedPurpose(purposeOrder), scoreBySpeedAndConsistency(avgResponseTime)],
+      ["desc", "desc", "desc"]
     );
 
     return ranked[0]?.endpoint;
@@ -281,9 +280,10 @@ export class RpcTracker {
     const bestValidBlock = this.getBestValidBlock(endpointsStats);
 
     let validStats = endpointsStats.filter((result) => {
-      const isSuccess = result.checkResult?.success;
+      const lastCheckResult = result.checkResults?.[0];
 
-      const rpcBlockNumber = result.checkResult?.stats?.blockNumber;
+      const isSuccess = lastCheckResult?.success;
+      const rpcBlockNumber = lastCheckResult?.stats?.blockNumber;
 
       const isFromFuture =
         bestValidBlock && rpcBlockNumber && rpcBlockNumber - bestValidBlock > this.params.blockFromFutureThreshold;
@@ -302,10 +302,10 @@ export class RpcTracker {
   };
 
   getBestValidBlock = (rpcStats: RpcStats[]): number | undefined => {
-    const sorted = orderBy(rpcStats, [(result) => result.checkResult?.stats?.blockNumber ?? 0], ["desc"]);
+    const sorted = orderBy(rpcStats, [(result) => result.checkResults?.[0]?.stats?.blockNumber ?? 0], ["desc"]);
 
-    const mostRecentBlock = sorted[0]?.checkResult?.stats?.blockNumber;
-    const secondRecentBlock = sorted[1]?.checkResult?.stats?.blockNumber;
+    const mostRecentBlock = sorted[0]?.checkResults?.[0]?.stats?.blockNumber;
+    const secondRecentBlock = sorted[1]?.checkResults?.[0]?.stats?.blockNumber;
 
     if (typeof mostRecentBlock !== "number") {
       return undefined;
@@ -324,7 +324,8 @@ export class RpcTracker {
     return (stats) => {
       const purpose = this.getRpcConfig(stats.endpoint)?.purpose;
 
-      for (const [index, filterPurpose] of purposes.toReversed().entries()) {
+      const reversedPurposes = [...purposes].toReversed();
+      for (const [index, filterPurpose] of reversedPurposes.entries()) {
         if (purpose === filterPurpose) {
           return index + 1;
         }

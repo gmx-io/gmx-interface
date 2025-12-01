@@ -65,7 +65,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
 
       endpointsStats.forEach((endpointStats: RpcStats) => {
         const blockGap = getBlockGap(bestBlock, endpointStats);
-        const responseTime = endpointStats.checkResult?.stats?.responseTime;
+        const responseTime = endpointStats.checkResults?.[0]?.stats?.responseTime;
 
         if (responseTime) {
           metrics.pushTiming<RpcTrackerEndpointTiming>("rpcTracker.endpoint.timing", responseTime, {
@@ -92,8 +92,8 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
 }
 
 const getBestBlock = (endpointsStats: RpcStats[]): number | undefined => {
-  return orderBy(endpointsStats, [(stat) => stat.checkResult?.stats?.blockNumber ?? 0], ["desc"])[0]?.checkResult?.stats
-    ?.blockNumber;
+  return orderBy(endpointsStats, [(stat) => stat.checkResults?.[0]?.stats?.blockNumber ?? 0], ["desc"])[0]
+    ?.checkResults?.[0]?.stats?.blockNumber;
 };
 
 const getBlockGap = (bestBlock: number | undefined, endpointStats: RpcStats | undefined): number | "unknown" => {
@@ -101,7 +101,7 @@ const getBlockGap = (bestBlock: number | undefined, endpointStats: RpcStats | un
     return "unknown";
   }
 
-  const blockNumber = endpointStats?.checkResult?.stats?.blockNumber;
+  const blockNumber = endpointStats?.checkResults?.[0]?.stats?.blockNumber;
 
   if (typeof blockNumber !== "number" || !bestBlock) {
     return "unknown";

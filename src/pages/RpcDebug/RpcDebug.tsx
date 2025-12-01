@@ -114,6 +114,8 @@ export default function RpcDebug() {
         const allStats = fallbackTracker.getEndpointsStats();
         const statsWithDetails = allStats.map((stats) => {
           const rpcConfig = tracker.getRpcConfig(stats.endpoint);
+          // Get latest responseTime (first in checkResults array, which is sorted from newest to oldest)
+          const latestCheckResult = stats.checkResults[0];
           return {
             endpoint: stats.endpoint,
             providerName: getProviderNameFromUrl(stats.endpoint),
@@ -121,8 +123,8 @@ export default function RpcDebug() {
             isPublic: rpcConfig?.isPublic ?? false,
             failureCount: stats.failureTimestamps?.length ?? 0,
             banTime: stats.banned?.timestamp,
-            responseTime: stats.checkResult?.stats?.responseTime,
-            blockNumber: stats.checkResult?.stats?.blockNumber,
+            responseTime: latestCheckResult?.success ? latestCheckResult.stats?.responseTime : undefined,
+            blockNumber: latestCheckResult?.success ? latestCheckResult.stats?.blockNumber : undefined,
             isPrimary: stats.endpoint === primaryRpc,
             isSecondary: stats.endpoint === secondaryRpc,
           };
@@ -267,7 +269,6 @@ export default function RpcDebug() {
     setDebugState((prev) => ({ ...prev, [flag]: value }));
   }, []);
 
-  // Update NetworkStatusObserver state
   useEffect(() => {
     const updateNetworkObserverState = () => {
       const observer = NetworkStatusObserver.getInstance();

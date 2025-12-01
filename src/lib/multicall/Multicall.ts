@@ -365,7 +365,6 @@ export class Multicall {
 
     sendDebugEvent("primary-start", { providerUrl });
     const result = await Promise.race([
-      client.multicall({ contracts: encodedPayload as any }),
       sleep(MAX_PRIMARY_TIMEOUT).then(() => {
         sendDebugEvent("primary-timeout", { providerUrl });
 
@@ -376,6 +375,7 @@ export class Multicall {
 
         return Promise.reject(new Error("multicall timeout"));
       }),
+      client.multicall({ contracts: encodedPayload as any }),
     ])
       .then((response) => {
         sendTiming({

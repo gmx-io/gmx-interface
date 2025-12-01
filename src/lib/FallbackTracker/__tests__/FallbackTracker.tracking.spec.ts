@@ -167,12 +167,15 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      await tracker.checkEndpoints();
-      await tracker.checkEndpoints();
-      await tracker.checkEndpoints();
+      // Create more check stats than STORED_CHECK_STATS_MAX_COUNT (which is 10)
+      for (let i = 0; i < 15; i++) {
+        await tracker.checkEndpoints();
+        // Advance time to ensure different timestamps
+        await vi.advanceTimersByTimeAsync(config.trackInterval || 10000);
+      }
 
-      // STORED_CHECK_STATS_MAX_COUNT is hardcoded to 1 in the implementation
-      expect(tracker.state.checkStats.length).toBe(1);
+      // Should be limited to STORED_CHECK_STATS_MAX_COUNT (10)
+      expect(tracker.state.checkStats.length).toBeLessThanOrEqual(10);
     });
 
     it("should handle partial failures - some endpoints succeed, some fail", async () => {

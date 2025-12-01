@@ -90,7 +90,7 @@ export const createMockRpcCheckResult = (overrides?: Partial<RpcCheckResult>): R
 
 export const createMockEndpointStats = (
   endpoint: string,
-  overrides?: Omit<Partial<EndpointStats<RpcCheckResult>>, "checkResult"> & {
+  overrides?: Omit<Partial<EndpointStats<RpcCheckResult>>, "checkResults"> & {
     checkResult?: Partial<CheckResult<RpcCheckResult>>;
   }
 ): EndpointStats<RpcCheckResult> => {
@@ -111,7 +111,7 @@ export const createMockEndpointStats = (
     banned: undefined,
     failureTimestamps: [],
     failureThrottleTimeout: undefined,
-    checkResult,
+    checkResults: [checkResult],
     ...restOverrides,
   };
 };
