@@ -36,7 +36,6 @@ import {
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
-  selectTradeboxLeverageSliderMarks,
   selectTradeboxMarkPrice,
   selectTradeboxMaxLeverage,
   selectTradeboxNextPositionValues,
@@ -93,7 +92,6 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import { LeverageField } from "components/LeverageField/LeverageField";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
@@ -118,14 +116,12 @@ import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useShowHighLeverageWarning } from "./hooks/useShowHighLeverageWarning";
-import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
-import { CollateralSelectorRow, useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorRow";
+import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorRow";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
@@ -152,7 +148,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;
+  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isTwap } = tradeFlags;
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
@@ -175,7 +171,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setFromTokenInputValue: setFromTokenInputValueRaw,
     toTokenInputValue,
     setToTokenInputValue: setToTokenInputValueRaw,
-    setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
     isFromTokenGmxAccount,
     setIsFromTokenGmxAccount,
@@ -243,7 +238,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
 
-  const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
   const maxLeverage = useSelector(selectTradeboxMaxLeverage);
 
   const maxAllowedLeverage = maxLeverage / 2;
@@ -998,22 +992,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const setKeepLeverage = useSelector(selectTradeboxSetKeepLeverage);
   const settingsWarningDotVisible = useSelector(selectSettingsWarningDotVisible);
 
-  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings({
-    expressParams: submitButtonState.expressParams,
-    payTokenAddress: fromTokenAddress,
-    isWrapOrUnwrap,
-    isGmxAccount: isFromTokenGmxAccount,
-  });
-
-  const showSectionBetweenInputsAndButton =
-    isPosition ||
-    priceImpactWarningState.shouldShowWarning ||
-    (!isTrigger && !isSwap) ||
-    (isSwap && isLimit) ||
-    isTwap ||
-    maxAutoCancelOrdersWarning ||
-    shouldShowOneClickTradingWarning;
-
   const tabsOptions = useMemo(() => {
     const modeToOptions = (mode: TradeMode) => ({
       value: mode,
@@ -1034,7 +1012,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 py-12 pb-16">
+      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
         <div className="flex flex-col gap-12 px-12">
           <div className="flex items-center justify-between">
             <Tabs
@@ -1084,74 +1062,60 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </ColorfulBanner>
             )}
 
-            {showSectionBetweenInputsAndButton && (
-              <div className="flex flex-col gap-14">
-                {maxAutoCancelOrdersWarning}
-                {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
-                  <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
-                    <Trans>
-                      The actual execution price may differ from the set limit price due to fees and price impact. This
-                      ensures that you receive at least the minimum receive amount.
-                    </Trans>
-                  </AlertInfoCard>
-                )}
-
-                {isPosition && (
-                  <>
-                    {isIncrease && isLeverageSliderEnabled && (
-                      <LeverageField marks={leverageSliderMarks} value={leverageOption} onChange={setLeverageOption} />
-                    )}
-                    {showHighLeverageWarning && (
-                      <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
-                        <Trans>Using high leverage increases the risk of liquidation.</Trans>
-                      </AlertInfoCard>
-                    )}
-                    {isTrigger && (
-                      <SyntheticsInfoRow
-                        label={t`Market`}
-                        value={
-                          <MarketSelector
-                            chainId={chainId}
-                            label={t`Market`}
-                            selectedIndexName={
-                              toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
-                            }
-                            markets={sortedAllMarkets ?? EMPTY_ARRAY}
-                            isSideMenu
-                            onSelectMarket={handleSelectMarket}
-                          />
-                        }
-                      />
-                    )}
-
-                    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-                      <MarketPoolSelectorRow />
-                      <CollateralSelectorRow
-                        selectedMarketAddress={marketInfo?.marketTokenAddress}
-                        onSelectCollateralAddress={onSelectCollateralAddress}
-                        isMarket={isMarket}
-                      />
-
-                      <TradeboxPoolWarnings />
-                      {collateralWarnings}
-                    </div>
-                  </>
-                )}
-
-                {isTwap && (
-                  <TwapRows
-                    duration={duration}
-                    numberOfParts={numberOfParts}
-                    setNumberOfParts={setNumberOfParts}
-                    setDuration={setDuration}
-                    sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
-                    marketInfo={marketInfo}
-                    type={isSwap ? "swap" : "increase"}
-                    isLong={isLong}
-                  />
-                )}
-              </div>
+            {maxAutoCancelOrdersWarning}
+            {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+              <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
+                <Trans>
+                  The actual execution price may differ from the set limit price due to fees and price impact. This
+                  ensures that you receive at least the minimum receive amount.
+                </Trans>
+              </AlertInfoCard>
             )}
+
+            {showHighLeverageWarning && (
+              <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
+                <Trans>Using high leverage increases the risk of liquidation.</Trans>
+              </AlertInfoCard>
+            )}
+            {isTrigger && (
+              <SyntheticsInfoRow
+                label={t`Market`}
+                value={
+                  <MarketSelector
+                    chainId={chainId}
+                    label={t`Market`}
+                    selectedIndexName={
+                      toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
+                    }
+                    markets={sortedAllMarkets ?? EMPTY_ARRAY}
+                    isSideMenu
+                    onSelectMarket={handleSelectMarket}
+                  />
+                }
+              />
+            )}
+
+            {isPosition ? (
+              <>
+                <TradeboxPoolWarnings />
+
+                {collateralWarnings}
+              </>
+            ) : null}
+
+            {isTwap && (
+              <TwapRows
+                duration={duration}
+                numberOfParts={numberOfParts}
+                setNumberOfParts={setNumberOfParts}
+                setDuration={setDuration}
+                sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
+                marketInfo={marketInfo}
+                type={isSwap ? "swap" : "increase"}
+                isLong={isLong}
+              />
+            )}
+
             <div className="flex flex-col gap-14">
               {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
                 <ToggleSwitch

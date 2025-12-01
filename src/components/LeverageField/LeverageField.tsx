@@ -6,7 +6,7 @@ const defaultMarks = [0.1, 25, 50];
 const DEFAULT_LEVERAGE = 20;
 
 type Props = {
-  value?: number;
+  value: number | null;
   onChange: (value: number) => void;
   marks: number[];
 };
@@ -26,7 +26,7 @@ export function LeverageField({ value, onChange, marks }: Props) {
   const maxMark = finalMarks.at(-1) ?? DEFAULT_LEVERAGE;
 
   const [inputValue, setInputValue] = useState<string>(() => {
-    if (value !== undefined) {
+    if (value !== null) {
       return formatLeverage(clampLeverage(value, minMark, maxMark));
     }
 
@@ -34,7 +34,7 @@ export function LeverageField({ value, onChange, marks }: Props) {
   });
 
   useEffect(() => {
-    if (value !== undefined) {
+    if (value !== null) {
       setInputValue(formatLeverage(clampLeverage(value, minMark, maxMark)));
     }
   }, [value, minMark, maxMark]);
@@ -85,7 +85,8 @@ export function LeverageField({ value, onChange, marks }: Props) {
   return (
     <div data-qa="leverage-slider">
       <SuggestionInput
-        value={inputValue}
+        suggestionsPlacement="bottom-start"
+        value={inputValue ?? "N/A"}
         setValue={handleInputChange}
         onBlur={handleBlur}
         suggestionList={finalMarks}

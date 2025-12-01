@@ -40,8 +40,8 @@ export function CollateralSelectorRow(p: Props) {
     <div className="flex flex-col gap-8">
       <BlockField
         label={
-          <TooltipWithPortal position="left-start" content={collateralInTooltipContent} variant="none">
-            <Trans>Collateral In</Trans>
+          <TooltipWithPortal position="bottom-end" content={collateralInTooltipContent} variant="none">
+            <Trans>Collateral</Trans>
           </TooltipWithPortal>
         }
         content={

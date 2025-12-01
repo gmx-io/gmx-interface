@@ -1105,6 +1105,7 @@ msgstr "Allow all my tokens to be transferred to a new account"
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Collateral"
@@ -3632,7 +3633,6 @@ msgstr "Earn"
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr "Collateral In"
 

@@ -1,4 +1,4 @@
-import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, offset, Placement, shift, useFloating } from "@floating-ui/react";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 
@@ -22,6 +22,7 @@ type Props = {
   label?: React.ReactNode;
   onPanelVisibleChange?: (isPanelVisible: boolean) => void;
   suggestionWithSuffix?: boolean;
+  suggestionsPlacement?: Placement;
 };
 
 export default function SuggestionInput({
@@ -39,6 +40,7 @@ export default function SuggestionInput({
   onPanelVisibleChange,
   inputId,
   suggestionWithSuffix,
+  suggestionsPlacement = "bottom-end",
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -91,7 +93,7 @@ export default function SuggestionInput({
 
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(4), flip(), shift()],
-    placement: "bottom-end",
+    placement: suggestionsPlacement,
     whileElementsMounted: autoUpdate,
   });
 
