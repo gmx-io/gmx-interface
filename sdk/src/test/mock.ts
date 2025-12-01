@@ -229,7 +229,7 @@ export function mockMarketsInfoData(
       lentPositionImpactPoolAmount: expandDecimals(1, 23),
       positionImpactExponentFactorPositive: expandDecimals(2, 30),
       positionImpactExponentFactorNegative: expandDecimals(2, 30),
-      useOpenInterestInTokensForBalance: false,
+      useOpenInterestInTokensForBalance: true,
 
       swapFeeFactorForBalanceWasImproved: expandDecimals(2, 27),
       swapFeeFactorForBalanceWasNotImproved: expandDecimals(2, 27),
