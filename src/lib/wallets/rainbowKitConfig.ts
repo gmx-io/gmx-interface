@@ -13,10 +13,10 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
 import { createPublicClient, fallback, http, PublicClient, Transport } from "viem";
-import { arbitrum, arbitrumSepolia, avalanche, avalancheFuji, base, bsc, optimismSepolia, sepolia } from "viem/chains";
 
-import { botanix, getViemChain, RPC_PROVIDERS } from "config/chains";
+import { getViemChain, isTestnetChain, RPC_PROVIDERS } from "config/chains";
 import { isDevelopment } from "config/env";
+import { VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
@@ -48,38 +48,27 @@ const othersWalletList: WalletList = [
   },
 ];
 
-export const getRainbowKitConfig = once(() =>
-  getDefaultConfig({
+export const getRainbowKitConfig = once(() => {
+  const chains = Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter(
+    (chain) => isDevelopment() || !isTestnetChain(chain.id)
+  ) as [Chain, ...Chain[]];
+
+  const transports = chains.reduce(
+    (acc, chain) => {
+      acc[chain.id] = fallback([...RPC_PROVIDERS[chain.id].map((url: string) => http(url))]);
+      return acc;
+    },
+    {} as Record<number, Transport>
+  );
+
+  return getDefaultConfig({
     appName: APP_NAME,
     projectId: WALLET_CONNECT_PROJECT_ID,
-    chains: [
-      arbitrum,
-      avalanche,
-      botanix as Chain,
-      base,
-      bsc,
-      ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
-    ],
-    transports: [
-      arbitrum,
-      avalanche,
-      avalancheFuji,
-      arbitrumSepolia,
-      base,
-      optimismSepolia,
-      sepolia,
-      botanix,
-      bsc,
-    ].reduce(
-      (acc, chain) => {
-        acc[chain.id] = fallback([...RPC_PROVIDERS[chain.id].map((url: string) => http(url))]);
-        return acc;
-      },
-      {} as Record<number, Transport>
-    ),
+    chains: chains,
+    transports: transports,
     wallets: [...popularWalletList, ...othersWalletList],
-  })
-);
+  });
+});
 
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 

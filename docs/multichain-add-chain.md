@@ -6,6 +6,7 @@ Take a look into a BSC addition [pr](https://github.com/gmx-io/gmx-interface/pul
 
 1. Add new chain in [`sdk/src/configs/chainIds.ts`](../sdk/src/configs/chainIds.ts). Depending whether its a source chain call it `SOURCE_<CHAIN_NAME>_MAINNET` or just `<CHAIN_NAME>` if its a settlement chain.
 2. Add to `SourceChainId` type and `ChainName` in [`sdk/src/configs/chains.ts`](../sdk/src/configs/chains.ts). Types are done in such way typescript errors will occur in all places you need to add new chain. So just use tscheck with watch mode to list them.
+   - Add the chain to `VIEM_CHAIN_BY_CHAIN_ID` mapping in [`sdk/src/configs/chains.ts`](../sdk/src/configs/chains.ts). Import the chain from `viem/chains` (or define it if it's a custom chain like `botanix`) and add it to the mapping. This is required for wallet configuration to work automatically.
 3. RPC Configuration in [`src/config/chains.ts`](../src/config/chains.ts):
    - Add public RPC URLs to `RPC_PROVIDERS` array
    - Add alchemy url getters like `getAlchemy<Chain>HttpUrl` and `getAlchemy<Chain>WsUrl`. IMPORTANT: do not forget to ask @Divhead to activate the chain in alchemy dashboard.
@@ -21,11 +22,7 @@ Take a look into a BSC addition [pr](https://github.com/gmx-io/gmx-interface/pul
    - Import chain icon SVG and add icon mapping to `ICONS` and `CHAIN_ID_TO_NETWORK_ICON` in [`src/config/icons.ts`](../src/config/icons.ts)
    - Add network icon and select option with color in [`src/config/networkOptions.ts`](../src/config/networkOptions.ts)
    - Add explorer name and transaction URL builder to `CHAIN_ID_TO_EXPLORER_NAME` and `CHAIN_ID_TO_TX_URL_BUILDER` in [`src/lib/chains/blockExplorers.tsx`](../src/lib/chains/blockExplorers.tsx)
-9. Wallet Configuration:
-   - Import the chain from `viem/chains` in [`src/lib/wallets/rainbowKitConfig.ts`](../src/lib/wallets/rainbowKitConfig.ts)
-   - Add the chain to the `chains` array in [`getRainbowKitConfig`](../src/lib/wallets/rainbowKitConfig.ts)
-   - Add transport configuration for the chain in the `transports` object
-10. Landing page:
+9. Landing page:
     1. Update `BLOCKCHAIN_COUNT` constant in [`landing/src/pages/Home/HeroSection/AnimatedTitle.tsx`](../landing/src/pages/Home/HeroSection/AnimatedTitle.tsx)
     2. Add new enum value to `RedirectChainIds` in [`landing/src/pages/Home/hooks/useGoToTrade.tsx`](../landing/src/pages/Home/hooks/useGoToTrade.tsx)
     3. Add redirect mapping in [`REDIRECT_MAP`](../landing/src/pages/Home/hooks/useGoToTrade.tsx) in the same file
