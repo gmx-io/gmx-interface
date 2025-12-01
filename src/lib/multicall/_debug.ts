@@ -1,4 +1,5 @@
 import { isDevelopment, isWebWorker } from "config/env";
+import { MULTICALL_DEBUG_STATE_KEY } from "config/localStorage";
 import { Storage } from "lib/storage/Storage";
 
 export type MulticallDebugState = {
@@ -37,7 +38,7 @@ class MulticallDebug {
   private listeners: Array<(event: MulticallDebugEvent) => void> = [];
 
   constructor() {
-    this.storage = new Storage<MulticallDebugState>("multicallDebugState");
+    this.storage = new Storage<MulticallDebugState>(MULTICALL_DEBUG_STATE_KEY);
 
     if (!isWebWorker) {
       this.selfSubscribe();

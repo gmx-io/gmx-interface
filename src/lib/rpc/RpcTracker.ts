@@ -14,18 +14,14 @@ import { getMarketsByChainId } from "sdk/configs/markets";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
 export type RpcTrackerConfig = FallbackTrackerConfig & {
-  /** Omit RPC if block number is higher than average on this value */
+  // Omit RPC if block number is higher than second best block
   blockFromFutureThreshold: number;
-  /** Omit RPC if block number is lower than highest valid on this value */
+  // Omit RPC if block number is lower than highest valid on this value
   blockLaggingThreshold: number;
 };
 
 type RpcTrackerParams = RpcTrackerConfig & {
   chainId: number;
-  /** Omit RPC if block number is higher than average on this value */
-  blockFromFutureThreshold: number;
-  /** Omit RPC if block number is lower than highest valid on this value */
-  blockLaggingThreshold: number;
 };
 
 export type RpcCheckResult = {

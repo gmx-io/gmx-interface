@@ -2,6 +2,7 @@ import orderBy from "lodash/orderBy";
 
 import { ContractsChainId, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
+import { DEBUG_RPC_ENDPOINTS_KEY, RPC_DEBUG_STATE_KEY } from "config/localStorage";
 import { getProviderNameFromUrl } from "config/rpc";
 import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
@@ -53,9 +54,9 @@ class RpcTrackerDebug {
   debugRpcEndpointsStorage: Storage<DebugRpcEndpointsState>;
 
   constructor() {
-    this.storage = new Storage<RpcDebugState>("rpcDebugState");
+    this.storage = new Storage<RpcDebugState>(RPC_DEBUG_STATE_KEY);
     this.oldRpcTrackerState = new Map();
-    this.debugRpcEndpointsStorage = new Storage<DebugRpcEndpointsState>("debugRpcEndpoints");
+    this.debugRpcEndpointsStorage = new Storage<DebugRpcEndpointsState>(DEBUG_RPC_ENDPOINTS_KEY);
   }
 
   private getEndpointsState(): Record<number, DebugRpcEndpoint[]> {

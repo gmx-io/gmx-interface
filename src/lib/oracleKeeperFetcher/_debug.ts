@@ -1,4 +1,5 @@
 import { isDevelopment } from "config/env";
+import { ORACLE_KEEPER_DEBUG_STATE_KEY } from "config/localStorage";
 import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
 
@@ -39,7 +40,7 @@ class OracleKeeperDebug {
   private listeners: Array<(event: OracleKeeperDebugEvent) => void> = [];
 
   constructor() {
-    this.storage = new Storage<OracleKeeperDebugState>("oracleKeeperDebugState");
+    this.storage = new Storage<OracleKeeperDebugState>(ORACLE_KEEPER_DEBUG_STATE_KEY);
   }
 
   getFlag(flag: OracleKeeperDebugFlags) {

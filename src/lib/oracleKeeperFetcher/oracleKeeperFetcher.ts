@@ -51,7 +51,6 @@ export const failsPerMinuteToFallback = 3;
      metrics.pushCounter<OracleKeeperFallbackCounter>("oracleKeeper.fallback", {
         chainId: this.chainId,
       });
-
  */
 
 export class OracleKeeperFetcher implements OracleFetcher {
@@ -109,7 +108,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
           return Promise.reject(new Error("Debug: Triggered tickers failure"));
         }
 
-        // Check for partial tickers debug flag
         if (_debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerPartialTickers)) {
           this._dispatchDebug("tickers-partial");
           return res.slice(0, Math.floor(res.length / 2));

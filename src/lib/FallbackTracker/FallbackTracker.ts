@@ -31,58 +31,58 @@ export const DEFAULT_FALLBACK_TRACKER_CONFIG: FallbackTrackerConfig = {
 const STORED_CHECK_STATS_MAX_COUNT = 1;
 
 export type FallbackTrackerConfig = {
-  /** Frequency of endpoint probing */
+  // Frequency of endpoint probing
   trackInterval: number;
 
-  /** Pause probing if no requests for the best endpoint for this time */
+  // Pause probing if no requests for the best endpoint for this time
   disableUnusedTrackingTimeout: number;
 
-  /** Time after which endpoint saved in the localStorage is considered stale */
+  // Time after which endpoint saved in the localStorage is considered stale
   cacheTimeout: number;
 
-  /** Abort endpoint probe if it takes longer */
+  // Abort endpoint probe if it takes longer
   checkTimeout: number;
 
   failuresBeforeBan: {
-    /** Number of failures before banning endpoint */
+    // Number of failures before banning endpoint
     count: number;
-    /** Time window for counting failures */
+    // Time window for counting failures
     window: number;
-    /** Throttle for counting failures */
+    // Throttle for counting failures
     throttle: number;
   };
 
-  /** Throttle for setCurrentEndpoints calls */
+  // Throttle for setCurrentEndpoints calls
   setEndpointsThrottle: number;
 
-  /** Delay before starting tracking (in milliseconds) */
+  // Delay before starting tracking (in milliseconds)
   delay?: number;
 };
 
 export type FallbackTrackerParams<TCheckResult> = FallbackTrackerConfig & {
-  /** Storage key for endpoints state */
+  // Storage key for endpoints state
   trackerKey: string;
 
-  /** Default primary endpoint */
+  // Default primary endpoint
   primary: string;
 
-  /** Default secondary endpoint */
+  // Default secondary endpoint
   secondary: string;
 
-  /** All endpoints to track */
+  // All endpoints to track
   endpoints: string[];
 
-  /** Check endpoint implementation */
+  // Check endpoint implementation
   checkEndpoint: (endpoint: string, signal: AbortSignal) => Promise<TCheckResult>;
 
-  /** Ranking implementation for primary endpoint */
+  // Ranking implementation for primary endpoint
   selectNextPrimary: (params: {
     endpointsStats: EndpointStats<TCheckResult>[];
     primary: string;
     secondary: string;
   }) => string | undefined;
 
-  /** Ranking implementation for secondary endpoint */
+  // Ranking implementation for secondary endpoint
   selectNextSecondary: (params: {
     endpointsStats: EndpointStats<TCheckResult>[];
     primary: string;

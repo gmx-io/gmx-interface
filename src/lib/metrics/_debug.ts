@@ -1,4 +1,5 @@
 import { isDevelopment } from "config/env";
+import { DEBUG_METRICS_KEY } from "config/localStorage";
 import { ErrorEvent } from "lib/metrics/types";
 import { BatchReportItem, CounterPayload, EventPayload, TimingPayload } from "lib/oracleKeeperFetcher";
 import { Storage } from "lib/storage/Storage";
@@ -27,7 +28,7 @@ export class MetricsDebug {
   storage: Storage<MetricsDebugState>;
 
   constructor() {
-    this.storage = new Storage<MetricsDebugState>("debug-metrics");
+    this.storage = new Storage<MetricsDebugState>(DEBUG_METRICS_KEY);
   }
 
   log(...message: any[]): void {
