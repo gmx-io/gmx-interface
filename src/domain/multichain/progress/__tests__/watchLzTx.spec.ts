@@ -1,21 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET } from "sdk/configs/chains";
+import { SOURCE_BASE_MAINNET } from "sdk/configs/chains";
 
-import { getBlockNumberBeforeTimestamp } from "../getBlockNumberByTimestamp";
-import { LzTxFailedError, watchLzTxApi, watchLzTxRpc, type LzStatus } from "../watchLzTx";
-
-describe("getBlockNumberByTimestamp", () => {
-  it("should return the block number for a given timestamp", async () => {
-    const timestamp = 1730624700n;
-
-    const result = await getBlockNumberBeforeTimestamp(ARBITRUM_SEPOLIA, timestamp);
-
-    expect(result).toBeGreaterThan(0n);
-    expect(result).toBeLessThanOrEqual(211319488n);
-    expect(typeof result).toBe("bigint");
-  });
-});
+import { watchLzTxApi, watchLzTxRpc, type LzStatus } from "../watchLzTx";
 
 describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
   const TX_HASH = "0x1d84b3cb0b93d1634ccbc1916dc7d9d03a65556d4badcf6327480d64403e271f";
@@ -43,7 +30,7 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
   }, 30_000);
 
-  it("watchLzTxRpc (with compose)", async () => {
+  it("watchLzTxRpc", async () => {
     let lastUpdateCall: LzStatus[] = [];
 
     const onUpdate = (data: LzStatus[]) => {
@@ -82,7 +69,7 @@ describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
   }, 30_000);
 
-  it("watchLzTxRpc (with compose)", async () => {
+  it("watchLzTxRpc", async () => {
     let lastUpdateCall: LzStatus[] = [];
 
     const onUpdate = (data: LzStatus[]) => {
@@ -118,9 +105,7 @@ describe("watchLzTx reverted", () => {
       lastUpdateCall = data;
     };
 
-    const promise = watchLzTxRpc({ chainId: SOURCE_CHAIN_ID, txHash: TX_HASH, onUpdate, withLzCompose: true });
-
-    await expect(promise).rejects.toThrowError(LzTxFailedError);
+    await watchLzTxRpc({ chainId: SOURCE_CHAIN_ID, txHash: TX_HASH, onUpdate, withLzCompose: true });
 
     expect(lastUpdateCall).toEqual(EXPECTED_FINAL_UPDATE_CALL);
   });

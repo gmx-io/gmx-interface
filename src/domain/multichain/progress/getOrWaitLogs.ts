@@ -1,8 +1,11 @@
 import { AbiEvent } from "abitype";
 import { MaybeExtractEventArgsFromAbi, GetLogsReturnType, parseEventLogs, ContractEventName } from "viem";
-import { getLogs } from "viem/actions";
 
+import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+
+const DEFAULT_TIMEOUT = 60000;
+const DEFAULT_FINISH = () => true;
 
 export async function getOrWaitLogs<T extends AbiEvent>({
   chainId,
@@ -10,9 +13,9 @@ export async function getOrWaitLogs<T extends AbiEvent>({
   event,
   address,
   args,
-  finish = () => true,
+  finish = DEFAULT_FINISH,
   abortSignal,
-  timeout = 60000,
+  timeout = DEFAULT_TIMEOUT,
 }: {
   chainId: number;
   fromBlock: bigint;
@@ -23,9 +26,9 @@ export async function getOrWaitLogs<T extends AbiEvent>({
   abortSignal?: AbortSignal;
   timeout?: number;
 }): Promise<GetLogsReturnType<T>> {
-  const timeoutSignal = timeout ? AbortSignal.timeout(timeout) : undefined;
+  const timeoutSignal = timeout ? createTimeoutSignal(timeout) : undefined;
 
-  const logs = await getLogs(getPublicClientWithRpc(chainId), {
+  const logs = await getPublicClientWithRpc(chainId).getLogs({
     fromBlock,
     event,
     args,
@@ -64,7 +67,7 @@ export async function getOrWaitLogs<T extends AbiEvent>({
     },
   });
 
-  AbortSignal.any([abortSignal, timeoutSignal].filter(Boolean) as AbortSignal[]).addEventListener("abort", () => {
+  createAnySignal([abortSignal, timeoutSignal]).addEventListener("abort", () => {
     unsub();
     reject(new Error("Abort signal received"));
   });

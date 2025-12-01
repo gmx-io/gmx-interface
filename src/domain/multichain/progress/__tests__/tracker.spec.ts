@@ -6,7 +6,7 @@ import { expandDecimals } from "lib/numbers";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
-import { GlvBuyTask } from "../GmOrGlvBuyProgress";
+import { GlvBuyTask, GmBuyTask } from "../GmOrGlvBuyProgress";
 import { GlvSellTask, GmSellTask } from "../GmOrGlvSellProgress";
 import { BridgeInFailed, ConversionFailed } from "../MultichainTransferProgress";
 
@@ -120,6 +120,55 @@ describe.concurrent("LongCrossChainTask", () => {
         chainId: settlementChainId,
         operation: Operation.Deposit,
         creationTx: initialTxHash,
+      })
+    );
+  });
+
+  it("gm buy 0.5 USDC to GM: ETH/USD base -> arb", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_BASE_MAINNET;
+    const settlementChainId = ARBITRUM;
+    const initialTxHash = "0x601a827c0d47385ea36da126e35d2708715f6c78bdffa5842c949d044e8a5b00";
+    const token = getGmToken(ARBITRUM, "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336");
+    const amount = 500000n; // 0.5 USDC
+
+    const progress = new GmBuyTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).rejects.toThrowError(
+      new ConversionFailed({
+        chainId: settlementChainId,
+        operation: Operation.Deposit,
+        creationTx: initialTxHash,
+      })
+    );
+  });
+
+  it("gm buy 0.5 USDC to GM: ETH/USD base -> arb", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_BASE_MAINNET;
+    const settlementChainId = ARBITRUM;
+    const initialTxHash = "0x610ca0f4f5a7f3e6c741d1f5f2d10e173ce6e8862fb63651ad11abcf45b2159e";
+    const token = getGmToken(ARBITRUM, "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336");
+    const amount = 500000n; // 0.5 USDC
+
+    const progress = new GmBuyTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).rejects.toThrowError(
+      new BridgeInFailed({
+        chainId: settlementChainId,
+        fundsLeftIn: "lz",
       })
     );
   });

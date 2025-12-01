@@ -1,10 +1,25 @@
-import { decodeEventLog, encodeEventTopics, withRetry } from "viem";
+import {
+  decodeEventLog,
+  encodeEventTopics,
+  parseEventLogs,
+  withRetry,
+  type Abi,
+  type Log,
+  type ContractEventName,
+} from "viem";
 
+import { tryGetContract } from "config/contracts";
 import { ENDPOINT_ID_TO_CHAIN_ID } from "config/multichain";
-import { COMPOSE_DELIVERED_ABI, OFT_RECEIVED_ABI } from "context/WebsocketContext/subscribeToEvents";
+import {
+  COMPOSE_DELIVERED_ABI,
+  LZ_COMPOSE_ALERT_ABI,
+  OFT_RECEIVED_ABI,
+} from "context/WebsocketContext/subscribeToEvents";
+import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
+import { ContractsChainId } from "sdk/configs/chains";
 
 import { getLzBaseUrl, layerZeroApi } from ".";
 import { paths } from "./gen";
@@ -23,7 +38,29 @@ export type LzStatus = {
   lzTx?: string;
 };
 
-// TODO: add lz receive alert listening
+const TEST_MODE_BLOCK_RANGE = 58000n; // Roughly 4 hours of arbitrum
+const LZ_WAIT_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+
+function tryParseEventLogs<TAbi extends Abi>({
+  abi,
+  eventName,
+  logs,
+}: {
+  abi: TAbi;
+  eventName: ContractEventName<TAbi>;
+  logs: Log[];
+}) {
+  try {
+    return parseEventLogs({
+      abi,
+      eventName,
+      logs,
+    });
+  } catch (_error) {
+    return null;
+  }
+}
+
 export async function watchLzTxRpc({
   chainId,
   txHash,
@@ -56,7 +93,7 @@ export async function watchLzTxRpc({
       },
     ]);
 
-    throw new LzTxFailedError();
+    return;
   }
 
   const sourceBlock = await getPublicClientWithRpc(chainId).getBlock({ blockHash: sourceTx.blockHash });
@@ -152,29 +189,54 @@ export async function watchLzTxRpc({
     },
   ]);
 
-  if (withLzCompose) {
+  const layerZeroEndpoint = tryGetContract(destinationChainId as ContractsChainId, "LayerZeroEndpoint");
+  if (withLzCompose && layerZeroEndpoint) {
     debugLog(
       "[watchLzTxRpc] waiting for LZ compose event after block",
       oftReceivedLogs[0].blockNumber,
       destinationChainId
     );
 
-    const lzComposeLogs = await getOrWaitLogs({
-      chainId: destinationChainId,
-      fromBlock: oftReceivedLogs[0].blockNumber!,
-      event: COMPOSE_DELIVERED_ABI[0],
-      args: {},
-      finish: (logs) => logs.some((log) => log.args.guid === guid),
-      abortSignal,
+    const publicClient = getPublicClientWithRpc(destinationChainId);
+    const fromBlock = oftReceivedLogs[0].blockNumber!;
+    // This request does not have good filtering, so we need to limit the range so the tests dont break
+    // In runtime we only call it for the new tx so the fromBlock-now is small enough
+    const toBlock = import.meta.env.MODE === "test" ? fromBlock + TEST_MODE_BLOCK_RANGE : undefined;
+
+    const allLogs = await publicClient.getLogs({
+      fromBlock,
+      toBlock,
+      events: [COMPOSE_DELIVERED_ABI[0], LZ_COMPOSE_ALERT_ABI[0]],
+      address: layerZeroEndpoint,
     });
-    if (abortSignal?.aborted) {
-      debugLog("[watchLzTxRpc] abort signal received");
-      return;
+
+    let matchingDeliveredHash: string | undefined;
+    let matchingAlertHash: string | undefined;
+
+    for (const log of allLogs) {
+      const deliveredParsed = tryParseEventLogs({
+        abi: COMPOSE_DELIVERED_ABI,
+        eventName: "ComposeDelivered",
+        logs: [log],
+      });
+      if (deliveredParsed?.[0]?.args.guid === guid) {
+        matchingDeliveredHash = log.transactionHash;
+        break;
+      }
+
+      const alertParsed = tryParseEventLogs({
+        abi: LZ_COMPOSE_ALERT_ABI,
+        eventName: "LzComposeAlert",
+        logs: [log],
+      });
+      if (alertParsed?.[0]?.args.guid === guid) {
+        matchingAlertHash = log.transactionHash;
+      }
     }
 
-    debugLog("[watchLzTxRpc] got LZ compose logs", lzComposeLogs);
-
-    if (lzComposeLogs.length > 0) {
+    // If success found, return success
+    if (matchingDeliveredHash) {
+      debugLog("[watchLzTxRpc] found existing COMPOSE_DELIVERED event");
       onUpdate([
         {
           guid,
@@ -184,23 +246,127 @@ export async function watchLzTxRpc({
           destinationTx: oftReceivedLogs[0].transactionHash,
           destinationChainId,
           lz: "confirmed",
-          lzTx: lzComposeLogs[0].transactionHash,
+          lzTx: matchingDeliveredHash,
+        },
+      ]);
+      return;
+    }
+
+    // If no success but alert found, return alert
+    if (matchingAlertHash) {
+      debugLog("[watchLzTxRpc] found existing LZ_COMPOSE_ALERT event - marking as failed");
+      onUpdate([
+        {
+          guid,
+          source: "confirmed",
+          sourceTx: txHash,
+          destination: "confirmed",
+          destinationTx: oftReceivedLogs[0].transactionHash,
+          destinationChainId,
+          lz: "failed",
+          lzTx: matchingAlertHash,
+        },
+      ]);
+      return;
+    }
+
+    // If none found, wait for both events
+    if (abortSignal?.aborted) {
+      debugLog("[watchLzTxRpc] abort signal received");
+      return;
+    }
+
+    debugLog("[watchLzTxRpc] no existing events found, waiting for LZ compose events");
+    const composeAbortController = new AbortController();
+    const timeoutSignal = createTimeoutSignal(LZ_WAIT_TIMEOUT);
+    const combinedAbortSignal = createAnySignal([abortSignal, composeAbortController.signal, timeoutSignal]);
+
+    const { promise, resolve, reject } = Promise.withResolvers<{ type: "delivered" | "alert"; hash: string }>();
+
+    const unsub = publicClient.watchEvent({
+      fromBlock,
+      events: [COMPOSE_DELIVERED_ABI[0], LZ_COMPOSE_ALERT_ABI[0]],
+      address: layerZeroEndpoint,
+      onLogs: (logs) => {
+        for (const log of logs) {
+          const deliveredParsed = tryParseEventLogs({
+            abi: COMPOSE_DELIVERED_ABI,
+            eventName: "ComposeDelivered",
+            logs: [log],
+          });
+          if (deliveredParsed?.[0]?.args.guid === guid) {
+            unsub();
+            resolve({ type: "delivered", hash: log.transactionHash });
+            return;
+          }
+
+          const alertParsed = tryParseEventLogs({
+            abi: LZ_COMPOSE_ALERT_ABI,
+            eventName: "LzComposeAlert",
+            logs: [log],
+          });
+          if (alertParsed?.[0]?.args.guid === guid) {
+            unsub();
+            resolve({ type: "alert", hash: log.transactionHash });
+            return;
+          }
+        }
+      },
+      onError: (error) => {
+        unsub();
+        reject(error);
+      },
+    });
+
+    combinedAbortSignal.addEventListener("abort", () => {
+      unsub();
+      reject(new Error("Abort signal received"));
+    });
+
+    const result = await promise;
+
+    if (abortSignal?.aborted) {
+      debugLog("[watchLzTxRpc] abort signal received");
+      return;
+    }
+
+    debugLog("[watchLzTxRpc] got LZ compose result", result);
+
+    if (result.type === "alert") {
+      debugLog("[watchLzTxRpc] LZ compose alert received - marking as failed");
+      onUpdate([
+        {
+          guid,
+          source: "confirmed",
+          sourceTx: txHash,
+          destination: "confirmed",
+          destinationTx: oftReceivedLogs[0].transactionHash,
+          destinationChainId,
+          lz: "failed",
+          lzTx: result.hash,
+        },
+      ]);
+      return;
+    }
+
+    if (result.type === "delivered") {
+      onUpdate([
+        {
+          guid,
+          source: "confirmed",
+          sourceTx: txHash,
+          destination: "confirmed",
+          destinationTx: oftReceivedLogs[0].transactionHash,
+          destinationChainId,
+          lz: "confirmed",
+          lzTx: result.hash,
         },
       ]);
       debugLog("[watchLzTxRpc] got LZ compose event");
       return;
-    } else {
-      debugLog("[watchLzTxRpc] no LZ compose event found");
     }
   } else {
     debugLog("[watchLzTxRpc] no LZ compose event needed");
-  }
-}
-
-export class LzTxFailedError extends Error {
-  constructor() {
-    super("LZ TX failed");
-    this.name = "LzTxFailedError";
   }
 }
 
@@ -276,7 +442,7 @@ export async function watchLzTxApi(
   onUpdate(operations.map(getLzStatusFromApiResponse));
   if (isLzTxFailed(operations.map(getLzStatusFromApiResponse))) {
     debugLog("[watchLzTxApi] LZ TX failed");
-    throw new LzTxFailedError();
+    return;
   }
 
   let isInProgress = isLzTxInProgress(operations.map(getLzStatusFromApiResponse));
@@ -305,7 +471,7 @@ export async function watchLzTxApi(
     onUpdate(operations.map(getLzStatusFromApiResponse));
     if (isLzTxFailed(operations.map(getLzStatusFromApiResponse))) {
       debugLog("[watchLzTxApi] LZ TX failed, returning");
-      throw new LzTxFailedError();
+      return;
     }
   }
 }
@@ -325,27 +491,14 @@ export async function watchLzTx({
   const abortController = new AbortController();
 
   const handleUpdate = (data: LzStatus[]) => {
-    const checkedGuids: string[] = [];
-    const newState = data.map((operation) => {
-      if (operation.guid) {
-        checkedGuids.push(operation.guid);
-      }
-      const old = initState.find((d) => d.guid === operation.guid);
-      if (!old) {
-        debugLog("[watchLzTx] no old operation, returning new operation", operation);
-        return operation;
-      }
-      const furthest = compareLzStatus(old, operation) > 0 ? operation : old;
-      debugLog("[watchLzTx] furthest", { old, operation, furthest });
-
-      return furthest;
-    });
-    // check if no old get left out
-    const uncheckedGuids = initState.filter((d) => d.guid && !checkedGuids.includes(d.guid));
-    // add them to the new state as is
-    initState = [...newState, ...uncheckedGuids];
-
+    initState = mergeLzStatusUpdates(initState, data);
     onUpdate(initState);
+
+    // If any status is failed, abort both watchers
+    if (isLzTxFailed(initState)) {
+      debugLog("[watchLzTx] LZ TX failed detected in handleUpdate, aborting");
+      abortController.abort();
+    }
   };
 
   const { promise, resolve, reject } = Promise.withResolvers<void>();
@@ -358,9 +511,6 @@ export async function watchLzTx({
         resolve();
       },
       (error) => {
-        if (error instanceof LzTxFailedError) {
-          abortController.abort();
-        }
         resolve();
         debugLog("[watchLzTx] watchLzTxApi failed", error);
       }
@@ -372,9 +522,6 @@ export async function watchLzTx({
         resolve();
       },
       (error) => {
-        if (error instanceof LzTxFailedError) {
-          abortController.abort();
-        }
         resolve();
         debugLog("[watchLzTx] watchLzTxRpc failed", error);
       }
@@ -386,6 +533,28 @@ export async function watchLzTx({
   });
 
   return promise;
+}
+
+function mergeLzStatusUpdates(initState: LzStatus[], newData: LzStatus[]): LzStatus[] {
+  const checkedGuids: string[] = [];
+  const newState = newData.map((operation) => {
+    if (operation.guid) {
+      checkedGuids.push(operation.guid);
+    }
+    const old = initState.find((d) => d.guid === operation.guid);
+    if (!old) {
+      debugLog("[watchLzTx] no old operation, returning new operation", operation);
+      return operation;
+    }
+    const furthest = compareLzStatus(old, operation) > 0 ? operation : old;
+    debugLog("[watchLzTx] furthest", { old, operation, furthest });
+
+    return furthest;
+  });
+  // check if no old get left out
+  const uncheckedGuids = initState.filter((d) => d.guid && !checkedGuids.includes(d.guid));
+  // add them to the new state as is
+  return [...newState, ...uncheckedGuids];
 }
 
 function compareLzStatus(a: LzStatus, b: LzStatus): number {

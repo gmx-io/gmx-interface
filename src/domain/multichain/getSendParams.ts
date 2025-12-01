@@ -10,6 +10,12 @@ import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OftCmd, SEND_MODE_TAXI } from "./codecs/OftCmd";
 
 /**
+ * This is used for LZ receive receive gas (dont confuse with LZ compose gas)
+ * Stargate puts 150k for their contract so we copy it for our
+ */
+const LZ_RECEIVE_CUSTOM_GAS = 150000n;
+
+/**
  * Slippage is set to 0, meaning infinite slippage
  */
 export function getMultichainTransferSendParams({
@@ -65,8 +71,10 @@ export function getMultichainTransferSendParams({
     const builder = Options.newOptions();
 
     if (isManualGas) {
-      // TODO MLTCH remove hardcode
-      extraOptions = builder.addExecutorLzReceiveOption(150_000n).addExecutorComposeOption(0, composeGas!, 0n).toHex();
+      extraOptions = builder
+        .addExecutorLzReceiveOption(LZ_RECEIVE_CUSTOM_GAS)
+        .addExecutorComposeOption(0, composeGas!, 0n)
+        .toHex();
     } else {
       extraOptions = builder.addExecutorComposeOption(0, composeGas!, 0).toHex();
     }
