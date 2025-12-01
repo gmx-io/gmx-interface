@@ -302,6 +302,12 @@ msgstr "查看状态"
 msgid "Buyable"
 msgstr "可购买"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Missing required parameters"
+msgstr "缺少必需参数"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GLV?"
 msgstr ""
@@ -6005,6 +6011,7 @@ msgstr "价格影响 / 费用"
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 msgstr "GLV 从 GM 资金池的交易费用（开仓、平仓、借款、清算、交换）和交易者损失中赚取，并自动复合以实现无缝增长（历史平均年化表现 20-30%）。在 <0>资金池页面</0> 上查看实时收益、表现和投资组合价值。"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx

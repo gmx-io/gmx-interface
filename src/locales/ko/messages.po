@@ -302,6 +302,12 @@ msgstr "상태 보기."
 msgid "Buyable"
 msgstr "구매 가능"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Missing required parameters"
+msgstr "필수 매개변수가 누락되었습니다"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GLV?"
 msgstr ""
@@ -6005,6 +6011,7 @@ msgstr "가격 영향 / 수수료"
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 msgstr "GLV는 GM 풀 전반의 거래 수수료(개설, 종료, 대출, 청산, 스왑) 및 트레이더 손실로부터 벌어들이며, 원활한 성장을 위한 자동 복리화(역사적 평균 연간 성과 20-30%). <0>풀 페이지</0>에서 실시간 수익, 성과 및 포트폴리오 가치를 확인하세요."
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx

@@ -302,6 +302,12 @@ msgstr "Voir le statut"
 msgid "Buyable"
 msgstr "Achetable"
 
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Missing required parameters"
+msgstr "Paramètres requis manquants"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GLV?"
 msgstr ""
@@ -6005,6 +6011,7 @@ msgstr "Impact sur le prix / Frais"
 msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools, with auto-compounding for seamless growth (20-30% historical average annualized performance). View real-time earnings, performance, and portfolio value on the <0>Pools page</0>."
 msgstr "GLV gagne des frais de trading (ouverture, clôture, emprunt, liquidations, échanges) et des pertes des traders sur les pools GM, avec composition automatique pour une croissance fluide (20-30 % de performance annualisée moyenne historique). Voir les gains en temps réel, la performance et la valeur du portefeuille sur la page <0>Pools</0>."
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx

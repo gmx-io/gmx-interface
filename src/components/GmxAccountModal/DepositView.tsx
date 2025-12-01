@@ -401,7 +401,7 @@ export const DepositView = () => {
         helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
         setIsVisibleOrView("main");
       } else if (txnEvent.event === TxnEventName.Error) {
-        helperToast.error("Deposit failed", { toastId: "same-chain-gmx-account-deposit" });
+        helperToast.error(t`Deposit failed`, { toastId: "same-chain-gmx-account-deposit" });
       }
     },
     [setIsVisibleOrView]

@@ -161,7 +161,7 @@ export function BridgeOutModal({
     const expressTxnParams = await expressTxnParamsAsyncResult.promise;
 
     if (expressTxnParams === undefined) {
-      helperToast.error("Missing required parameters");
+      helperToast.error(t`Missing required parameters`);
       return;
     }
 

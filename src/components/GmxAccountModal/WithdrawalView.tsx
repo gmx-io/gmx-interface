@@ -537,7 +537,7 @@ export const WithdrawalView = () => {
       expressTxnParamsAsyncResult.promise === undefined ||
       provider === undefined
     ) {
-      helperToast.error("Missing required parameters");
+      helperToast.error(t`Missing required parameters`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -545,7 +545,7 @@ export const WithdrawalView = () => {
     const expressTxnParams = await expressTxnParamsAsyncResult.promise;
 
     if (expressTxnParams === undefined) {
-      helperToast.error("Missing required parameters");
+      helperToast.error(t`Missing required parameters`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
