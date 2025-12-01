@@ -324,7 +324,7 @@ export class RpcTracker {
     return (stats) => {
       const purpose = this.getRpcConfig(stats.endpoint)?.purpose;
 
-      const reversedPurposes = [...purposes].toReversed();
+      const reversedPurposes = [...purposes].reverse();
       for (const [index, filterPurpose] of reversedPurposes.entries()) {
         if (purpose === filterPurpose) {
           return index + 1;
