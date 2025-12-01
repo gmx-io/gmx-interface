@@ -101,7 +101,6 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     srcChainId,
     amountLD: marketTokenAmount,
     isToGmx: true,
-    // TODO MLTCH check that all gm and glv transfers are manual gas
     isManualGas: true,
     action,
     composeGas,

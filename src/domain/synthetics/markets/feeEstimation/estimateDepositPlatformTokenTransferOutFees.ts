@@ -29,7 +29,6 @@ export async function estimateDepositPlatformTokenTransferOutFees({
     srcChainId: fromChainId,
     amountLD: expandDecimals(1, marketTokenId.decimals),
     isToGmx: false,
-    // TODO MLTCH check that all gm and glv transfers are manual gas
     isManualGas: true,
   });
 
