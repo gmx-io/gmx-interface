@@ -292,11 +292,42 @@ export type RpcTrackerEndpointTiming = {
   };
 };
 
-export type RpcTrackerEndpointBlockGap = {
+export type RpcTrackerEndpointBlockGapTiming = {
   event: "rpcTracker.endpoint.blockGap";
   data: {
     endpoint: string;
     chainId: number;
+  };
+};
+
+export type OracleKeeperUpdateEndpointsEvent = {
+  event: "oracleKeeper.endpoint.updated";
+  isError: false;
+  data: {
+    chainId: number;
+    chainName: string;
+    primary: string;
+    secondary: string;
+  };
+};
+
+export type OracleKeeperEndpointBannedEvent = {
+  event: "oracleKeeper.endpoint.banned";
+  isError: false;
+  data: {
+    chainId: number;
+    chainName: string;
+    endpoint: string;
+    reason: string;
+  };
+};
+
+export type OracleKeeperFailureCounter = {
+  // Keep it for compatibility with old events
+  event: "oracleKeeper.failure";
+  data: {
+    chainId: number;
+    method: string;
   };
 };
 
@@ -578,21 +609,6 @@ export type MulticallBatchedCallCounter = {
     chainId: number;
     priority: string;
     callsCount: number;
-  };
-};
-
-export type OracleKeeperFallbackCounter = {
-  event: "oracleKeeper.fallback";
-  data: {
-    chainId: number;
-  };
-};
-
-export type OracleKeeperFailureCounter = {
-  event: "oracleKeeper.failure";
-  data: {
-    chainId: number;
-    method: string;
   };
 };
 

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SafeListennersCache, safeAddListenner } from "../safeAddListenner";
+import { SafeListennersCache, safeAddGlobalListenner } from "../safeAddListenner";
 
 describe("safeAddListenner", () => {
   const TEST_EVENT = "test-event";
@@ -143,7 +143,7 @@ describe("safeAddListenner", () => {
     it("should add a listener using the cache", () => {
       const listener = vi.fn();
 
-      safeAddListenner(TEST_EVENT, listener);
+      safeAddGlobalListenner(TEST_EVENT, listener);
 
       expect(addEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT, expect.any(Function));
       const instance = SafeListennersCache.getInstance(TEST_EVENT);
@@ -153,7 +153,7 @@ describe("safeAddListenner", () => {
     it("should use default maxListenners when not provided", () => {
       const listener = vi.fn();
 
-      safeAddListenner(TEST_EVENT, listener);
+      safeAddGlobalListenner(TEST_EVENT, listener);
 
       const instance = SafeListennersCache.getInstance(TEST_EVENT);
       expect(instance.maxListenners).toBe(1000);
@@ -162,7 +162,7 @@ describe("safeAddListenner", () => {
     it("should use custom maxListenners when provided", () => {
       const listener = vi.fn();
 
-      safeAddListenner(TEST_EVENT, listener, 50);
+      safeAddGlobalListenner(TEST_EVENT, listener, 50);
 
       const instance = SafeListennersCache.getInstance(TEST_EVENT);
       expect(instance.maxListenners).toBe(50);
@@ -173,9 +173,9 @@ describe("safeAddListenner", () => {
       const listener2 = vi.fn();
       const listener3 = vi.fn();
 
-      safeAddListenner(TEST_EVENT, listener1);
-      safeAddListenner(TEST_EVENT, listener2);
-      safeAddListenner(TEST_EVENT, listener3);
+      safeAddGlobalListenner(TEST_EVENT, listener1);
+      safeAddGlobalListenner(TEST_EVENT, listener2);
+      safeAddGlobalListenner(TEST_EVENT, listener3);
 
       expect(addEventListenerSpy).toHaveBeenCalledTimes(3);
       const instance = SafeListennersCache.getInstance(TEST_EVENT);
@@ -186,8 +186,8 @@ describe("safeAddListenner", () => {
       const listener1 = vi.fn();
       const listener2 = vi.fn();
 
-      safeAddListenner(TEST_EVENT, listener1);
-      safeAddListenner(TEST_EVENT_2, listener2);
+      safeAddGlobalListenner(TEST_EVENT, listener1);
+      safeAddGlobalListenner(TEST_EVENT_2, listener2);
 
       expect(addEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT, expect.any(Function));
       expect(addEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT_2, expect.any(Function));
@@ -203,7 +203,7 @@ describe("safeAddListenner", () => {
       const listeners = Array.from({ length: 4 }, () => vi.fn());
 
       listeners.forEach((listener) => {
-        safeAddListenner(TEST_EVENT, listener, maxListeners);
+        safeAddGlobalListenner(TEST_EVENT, listener, maxListeners);
       });
 
       expect(addEventListenerSpy).toHaveBeenCalledTimes(4);
@@ -216,7 +216,7 @@ describe("safeAddListenner", () => {
       const listener = vi.fn();
       const testEvent = new Event(TEST_EVENT);
 
-      safeAddListenner(TEST_EVENT, listener);
+      safeAddGlobalListenner(TEST_EVENT, listener);
 
       globalThis.dispatchEvent(testEvent);
 
@@ -229,8 +229,8 @@ describe("safeAddListenner", () => {
       });
       const normalListener = vi.fn();
 
-      safeAddListenner(TEST_EVENT, errorListener);
-      safeAddListenner(TEST_EVENT, normalListener);
+      safeAddGlobalListenner(TEST_EVENT, errorListener);
+      safeAddGlobalListenner(TEST_EVENT, normalListener);
 
       const testEvent = new Event(TEST_EVENT);
 

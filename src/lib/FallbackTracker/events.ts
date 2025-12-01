@@ -1,3 +1,5 @@
+import { safeAddGlobalListenner } from "lib/safeListenner/safeAddListenner";
+
 import { EndpointStats } from "./FallbackTracker";
 
 export type FallbackTrackerEventsTypes = {
@@ -65,7 +67,7 @@ export function addFallbackTrackerListenner<TEvent extends FallbackTrackerEventN
     listener(detail);
   };
 
-  globalThis.addEventListener(fallbackTrackerEventKeys[eventName], handler);
+  safeAddGlobalListenner(fallbackTrackerEventKeys[eventName], handler);
 
   return () => {
     globalThis.removeEventListener(fallbackTrackerEventKeys[eventName], handler);

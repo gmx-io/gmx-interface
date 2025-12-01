@@ -33,7 +33,7 @@ const getEventColor = (type: string) => {
 
 export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: OracleEndpointStats[] }) {
   return (
-    <div className="flex min-h-0 flex-col overflow-hidden">
+    <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase">Oracle Endpoints</h3>
       </div>
@@ -103,7 +103,7 @@ export function EventsPanel({
   onClearEvents: () => void;
 }) {
   return (
-    <div className="flex min-h-0 min-w-[480px] flex-col overflow-hidden">
+    <div className="flex min-h-0 min-w-[320px] flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase">Oracle Keeper Events</h3>
         <Button variant="secondary" onClick={onClearEvents}>

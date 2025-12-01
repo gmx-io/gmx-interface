@@ -13,6 +13,7 @@ import {
   emitReportEndpointFailure,
   emitTrackingFinished,
 } from "./events";
+import { NetworkStatusObserver } from "./NetworkStatusObserver";
 
 export const DEFAULT_FALLBACK_TRACKER_CONFIG: FallbackTrackerConfig = {
   trackInterval: 10 * 1000, // 10 seconds
@@ -105,7 +106,6 @@ export type FallbackTrackerState<TCheckStats> = {
       [endpoint: string]: CheckResult<TCheckStats>;
     };
   }[];
-
   trackerTimeoutId: number | undefined;
   startDelayTimeoutId: number | undefined;
   abortController: AbortController | undefined;
@@ -256,6 +256,10 @@ export class FallbackTracker<TCheckStats> {
   };
 
   handleFailure = (endpoint: string) => {
+    if (NetworkStatusObserver.getInstance().getIsGlobalNetworkDown()) {
+      return;
+    }
+
     const endpointState = this.state.endpointsState[endpoint];
 
     if (!endpointState) {
@@ -286,6 +290,10 @@ export class FallbackTracker<TCheckStats> {
   };
 
   public banEndpoint = (endpoint: string, reason: string) => {
+    if (NetworkStatusObserver.getInstance().getIsGlobalNetworkDown()) {
+      return;
+    }
+
     const endpointState = this.state.endpointsState[endpoint];
 
     if (!endpointState) {
@@ -351,6 +359,8 @@ export class FallbackTracker<TCheckStats> {
       clearTimeout(this.state.startDelayTimeoutId);
       this.state.startDelayTimeoutId = undefined;
     }
+
+    NetworkStatusObserver.getInstance().setActive(this.trackerKey, false);
   }
 
   public track({ warmUp = false } = {}) {
@@ -361,9 +371,12 @@ export class FallbackTracker<TCheckStats> {
 
     // Schedule next track call if not tracking
     if (!this.shouldTrack({ warmUp })) {
+      NetworkStatusObserver.getInstance().setActive(this.trackerKey, false);
       this.state.trackerTimeoutId = window.setTimeout(() => this.track(), this.params.trackInterval);
       return;
     }
+
+    NetworkStatusObserver.getInstance().setActive(this.trackerKey, true);
 
     this.checkEndpoints()
       .then(() => {
@@ -377,6 +390,8 @@ export class FallbackTracker<TCheckStats> {
 
   public cleanup() {
     this.state.cleanupEvents();
+
+    NetworkStatusObserver.getInstance().setActive(this.trackerKey, false);
 
     // Clear start delay timeout
     if (this.state.startDelayTimeoutId) {
@@ -518,7 +533,7 @@ export class FallbackTracker<TCheckStats> {
     const globalAbortController = new AbortController();
     this.state.abortController = globalAbortController;
 
-    const results = await Promise.allSettled(
+    const checkResults = await Promise.allSettled(
       endpoints.map((endpoint) => {
         const timeoutController = new AbortController();
         const combinedController = combineAbortSignals(globalAbortController.signal, timeoutController.signal);
@@ -531,27 +546,36 @@ export class FallbackTracker<TCheckStats> {
           this.params.checkEndpoint(endpoint, combinedController.signal),
         ]);
       })
-    ).then((checkResults) => {
-      return checkResults
-        .map((result, index): CheckResult<TCheckStats> => {
-          return {
-            endpoint: endpoints[index],
-            success: result.status === "fulfilled",
-            stats: result.status === "fulfilled" ? (result.value as TCheckStats) : undefined,
-            error: result.status === "rejected" ? result.reason : undefined,
-          };
-        })
-        .reduce(
-          (acc, result) => {
-            acc[result.endpoint] = result;
-            return acc;
-          },
-          {} as Record<string, CheckResult<TCheckStats>>
-        );
-    });
+    );
+
+    const fulfilledResults = checkResults.filter((result) => result.status === "fulfilled");
+
+    if (fulfilledResults.length === 0) {
+      NetworkStatusObserver.getInstance().setTrackingFailed(this.trackerKey, true);
+      return;
+    } else {
+      NetworkStatusObserver.getInstance().setTrackingFailed(this.trackerKey, false);
+    }
+
+    const resultsMap = checkResults
+      .map((result, index): CheckResult<TCheckStats> => {
+        return {
+          endpoint: endpoints[index],
+          success: result.status === "fulfilled",
+          stats: result.status === "fulfilled" ? (result.value as TCheckStats) : undefined,
+          error: result.status === "rejected" ? result.reason : undefined,
+        };
+      })
+      .reduce(
+        (acc, result) => {
+          acc[result.endpoint] = result;
+          return acc;
+        },
+        {} as Record<string, CheckResult<TCheckStats>>
+      );
 
     this.state.checkStats.push({
-      results,
+      results: resultsMap,
       timestamp: checkTimestamp,
     });
 
@@ -559,7 +583,7 @@ export class FallbackTracker<TCheckStats> {
       this.state.checkStats.shift();
     }
 
-    return results;
+    return resultsMap;
   }
 
   shouldTrack({ warmUp = false }: { warmUp?: boolean } = {}) {

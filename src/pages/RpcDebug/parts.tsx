@@ -63,7 +63,7 @@ const getThreadName = (isInWorker: boolean) => {
 
 export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
   return (
-    <div className="flex min-h-0 flex-col overflow-hidden">
+    <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase">RPC Endpoints</h3>
       </div>
@@ -83,8 +83,8 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
               </TableTheadTr>
             </thead>
             <tbody>
-              {allRpcStats.map((rpc) => (
-                <TableTr key={rpc.endpoint + rpc.purpose}>
+              {allRpcStats.map((rpc, index) => (
+                <TableTr key={`${rpc.endpoint}-${rpc.purpose}-${index}`}>
                   <TableTd padding="compact">
                     <div className="text-sm font-semibold text-white">{rpc.providerName}</div>
                   </TableTd>
@@ -155,7 +155,7 @@ export function EventsPanel({
   onClearEvents: () => void;
 }) {
   return (
-    <div className="flex min-h-0 min-w-[480px] flex-col overflow-hidden">
+    <div className="flex min-h-0 min-w-[320px] flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase">Multicall Events</h3>
         <Button variant="secondary" onClick={onClearEvents}>
@@ -357,6 +357,96 @@ export function DebugControlsPanel({
                   </div>
                 </TableTd>
               </TableTr>
+            </tbody>
+          </Table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function NetworkStatusSection({
+  networkObserverState,
+}: {
+  networkObserverState: Record<string, { trackingFailed: boolean; isActive: boolean }>;
+}) {
+  const trackerEntries = Object.entries(networkObserverState);
+  const activeTrackers = trackerEntries.filter(([, state]) => state.isActive);
+  const isGlobalNetworkDown = activeTrackers.length > 0 && activeTrackers.every(([, state]) => state.trackingFailed);
+  const failedTrackersCount = trackerEntries.filter(([, state]) => state.trackingFailed && state.isActive).length;
+  const totalActiveTrackersCount = activeTrackers.length;
+  const totalTrackersCount = trackerEntries.length;
+
+  const getStatusColor = (trackingFailed: boolean, isActive: boolean) => {
+    if (!isActive) {
+      return "text-gray-400";
+    }
+    return trackingFailed ? "text-red-400" : "text-green-400";
+  };
+
+  const getStatusText = (trackingFailed: boolean, isActive: boolean) => {
+    if (!isActive) {
+      return "Inactive";
+    }
+    return trackingFailed ? "Failed" : "OK";
+  };
+
+  return (
+    <div className="mt-8 flex min-h-0 flex-col overflow-hidden">
+      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+        <h3 className="text-xl muted font-bold uppercase">Network Status</h3>
+      </div>
+      <div className="max-h-[400px] min-h-0 flex-1 overflow-y-auto">
+        <div className="overflow-x-auto">
+          <Table>
+            <thead className="sticky top-0 z-10 bg-slate-900">
+              <TableTheadTr>
+                <TableTh padding="compact">Tracker</TableTh>
+                <TableTh padding="compact">Status</TableTh>
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              <TableTr>
+                <TableTd padding="compact">
+                  <div className="text-sm font-semibold text-white">Global Network</div>
+                </TableTd>
+                <TableTd padding="compact">
+                  <span className={`text-xs font-semibold ${isGlobalNetworkDown ? "text-red-400" : "text-green-400"}`}>
+                    {isGlobalNetworkDown ? "Down" : "Up"}
+                  </span>
+                </TableTd>
+              </TableTr>
+              <TableTr>
+                <TableTd padding="compact">
+                  <div className="text-sm font-semibold text-white">Summary</div>
+                </TableTd>
+                <TableTd padding="compact">
+                  <span className="text-xs text-white">
+                    {failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount}{" "}
+                    total)
+                  </span>
+                </TableTd>
+              </TableTr>
+              {trackerEntries.length === 0 ? (
+                <TableTr>
+                  <TableTd padding="compact" colSpan={2}>
+                    <span className="text-xs text-gray-500">No trackers registered</span>
+                  </TableTd>
+                </TableTr>
+              ) : (
+                trackerEntries.map(([trackerKey, state]) => (
+                  <TableTr key={trackerKey}>
+                    <TableTd padding="compact">
+                      <div className="text-xs text-white">{trackerKey}</div>
+                    </TableTd>
+                    <TableTd padding="compact">
+                      <span className={`text-xs font-semibold ${getStatusColor(state.trackingFailed, state.isActive)}`}>
+                        {getStatusText(state.trackingFailed, state.isActive)}
+                      </span>
+                    </TableTd>
+                  </TableTr>
+                ))
+              )}
             </tbody>
           </Table>
         </div>

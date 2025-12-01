@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens/useTokenRecentPricesData";
 import { useChainId } from "lib/chains";
+import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
 import {
@@ -12,6 +14,7 @@ import {
 } from "lib/oracleKeeperFetcher/_debug";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { usePrevious } from "lib/usePrevious";
+import { NetworkStatusSection } from "pages/RpcDebug/parts";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Card from "components/Card/Card";
@@ -40,6 +43,9 @@ export default function DebugOracleKeeper() {
   const [freshnessHistory, setFreshnessHistory] = useState<{
     tickers: number[];
   }>({ tickers: [] });
+  const [networkObserverState, setNetworkObserverState] = useState<
+    Record<string, { trackingFailed: boolean; isActive: boolean }>
+  >({});
 
   useEffect(() => {
     if (!_debugOracleKeeper) return;
@@ -162,18 +168,66 @@ export default function DebugOracleKeeper() {
     setDebugState((prev) => ({ ...prev, [flag]: value }));
   }, []);
 
+  // Update NetworkStatusObserver state
+  useEffect(() => {
+    const updateNetworkObserverState = () => {
+      const observer = NetworkStatusObserver.getInstance();
+      const states = observer.getAllTrackerStates();
+      setNetworkObserverState(states);
+    };
+
+    updateNetworkObserverState();
+
+    // Subscribe to all tracker events to update state
+    const observer = NetworkStatusObserver.getInstance();
+    const allTrackerKeys = Object.keys(observer.getAllTrackerStates());
+    const unsubscribes: (() => void)[] = [];
+
+    allTrackerKeys.forEach((trackerKey) => {
+      const unsubscribe = addFallbackTrackerListenner("trackingFinished", trackerKey, () => {
+        updateNetworkObserverState();
+      });
+      unsubscribes.push(unsubscribe);
+    });
+
+    // Update periodically and re-subscribe if new trackers are added
+    const interval = setInterval(() => {
+      const currentTrackerKeys = Object.keys(observer.getAllTrackerStates());
+      const newTrackerKeys = currentTrackerKeys.filter((key) => !allTrackerKeys.includes(key));
+
+      // Subscribe to new trackers
+      newTrackerKeys.forEach((trackerKey) => {
+        const unsubscribe = addFallbackTrackerListenner("trackingFinished", trackerKey, () => {
+          updateNetworkObserverState();
+        });
+        unsubscribes.push(unsubscribe);
+        allTrackerKeys.push(trackerKey);
+      });
+
+      updateNetworkObserverState();
+    }, 1000);
+
+    return () => {
+      unsubscribes.forEach((unsubscribe) => unsubscribe());
+      clearInterval(interval);
+    };
+  }, [chainId]);
+
   return (
     <AppPageLayout>
       <div className="default-container">
         <Card title="Oracle Keeper Debug">
           <div className="App-card-content">
             <div className="flex gap-8" style={GRID_STYLE}>
-              <div className="flex min-w-0 flex-col">
+              <div className="flex min-w-0 flex-[2] flex-col">
                 <OracleEndpointsTable allEndpointStats={allEndpointStats} />
+                <div className="mt-16 h-1 bg-slate-800"></div>
                 <DataFreshnessSection freshnessValues={freshnessValues} freshnessHistory={freshnessHistory} />
+                <div className="mt-16 h-1 bg-slate-800"></div>
+                <NetworkStatusSection networkObserverState={networkObserverState} />
               </div>
               <EventsPanel events={events} onClearEvents={() => setEvents([])} />
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0">
                 <DebugControlsPanel
                   chainId={chainId}
                   primaryEndpoint={endpoints.primary}
@@ -249,11 +303,11 @@ function DataFreshnessSection({
   };
 
   return (
-    <div className="mt-8 flex min-h-0 flex-col overflow-hidden">
+    <div className="mt-8 flex min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase">Data Freshness</h3>
       </div>
-      <div className="min-h-0 overflow-y-auto">
+      <div className="flex-shrink-0">
         <div className="overflow-x-auto">
           <Table>
             <thead className="sticky top-0 z-10 bg-slate-900">

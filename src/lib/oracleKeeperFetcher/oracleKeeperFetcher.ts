@@ -3,6 +3,7 @@ import { isLocal } from "config/env";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import { metrics, OracleKeeperFailureCounter, OracleKeeperMetricMethodId } from "lib/metrics";
+import { subscribeForOracleTrackerMetrics } from "lib/metrics/oracleTrackerMetrics";
 import {
   getOracleKeeperFallbackUrls,
   getOracleKeeperUrl,
@@ -41,18 +42,6 @@ function parseOracleCandle(rawCandle: number[]): Bar {
 
 export const failsPerMinuteToFallback = 3;
 
-/**
- * 
- *  metrics.pushCounter<OracleKeeperFailureCounter>("oracleKeeper.failure", {
-      chainId: this.chainId,
-      method,
-    });
-
-     metrics.pushCounter<OracleKeeperFallbackCounter>("oracleKeeper.fallback", {
-        chainId: this.chainId,
-      });
- */
-
 export class OracleKeeperFetcher implements OracleFetcher {
   chainId: ContractsChainId;
   mainUrl: string;
@@ -68,6 +57,9 @@ export class OracleKeeperFetcher implements OracleFetcher {
       mainUrl: this.mainUrl,
       fallbacks: getOracleKeeperFallbackUrls(this.chainId),
     });
+
+    this.oracleTracker.startTracking();
+    subscribeForOracleTrackerMetrics(this.oracleTracker);
   }
 
   get url() {

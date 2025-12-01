@@ -18,6 +18,10 @@ export class SafeListennersCache {
   }
 
   addListenner(listenner: (event: Event) => void) {
+    if (this.maxListenners === 0) {
+      return;
+    }
+
     // Wrap listener to catch errors
     const wrappedListener = (event: Event) => {
       try {
@@ -28,18 +32,7 @@ export class SafeListennersCache {
       }
     };
 
-    // Store mapping for removal
     this.wrappedListeners.set(listenner, wrappedListener);
-
-    // Check if we need to remove oldest listener
-    // Special case: if maxListenners is 0, we should remove the listener immediately after adding
-    if (this.maxListenners === 0) {
-      globalThis.addEventListener(this.event, wrappedListener);
-      // Immediately remove it
-      globalThis.removeEventListener(this.event, wrappedListener);
-      this.wrappedListeners.delete(listenner);
-      return;
-    }
 
     if (this.cache.length >= this.maxListenners) {
       // eslint-disable-next-line no-console
@@ -56,7 +49,7 @@ export class SafeListennersCache {
     }
 
     globalThis.addEventListener(this.event, wrappedListener);
-    // Store original listener in cache
+
     this.cache.push(listenner);
   }
 }
@@ -64,7 +57,7 @@ export class SafeListennersCache {
 /**
  * Prevents memory leaks by limiting the number of listeners for a given event.
  */
-export function safeAddListenner(event: string, listenner: (event: Event) => void, maxListenners?: number) {
+export function safeAddGlobalListenner(event: string, listenner: (event: Event) => void, maxListenners?: number) {
   const cache = SafeListennersCache.getInstance(event, maxListenners);
   cache.addListenner(listenner);
 }

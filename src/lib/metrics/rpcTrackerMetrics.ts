@@ -7,7 +7,7 @@ import { RpcStats, RpcTracker } from "lib/rpc/RpcTracker";
 import {
   metrics,
   RpcTrackerEndpointBannedEvent,
-  RpcTrackerEndpointBlockGap,
+  RpcTrackerEndpointBlockGapTiming,
   RpcTrackerEndpointTiming,
   RpcTrackerUpdateEndpointsEvent,
 } from ".";
@@ -75,7 +75,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
         }
 
         if (typeof blockGap === "number") {
-          metrics.pushTiming<RpcTrackerEndpointBlockGap>("rpcTracker.endpoint.blockGap", blockGap, {
+          metrics.pushTiming<RpcTrackerEndpointBlockGapTiming>("rpcTracker.endpoint.blockGap", blockGap, {
             endpoint: getProviderNameFromUrl(endpointStats.endpoint),
             chainId: tracker.params.chainId,
           });

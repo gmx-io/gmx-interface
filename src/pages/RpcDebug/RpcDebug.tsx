@@ -5,6 +5,8 @@ import { getProviderNameFromUrl } from "config/rpc";
 import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
+import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
 import { _debugMulticall, type MulticallDebugState } from "lib/multicall/_debug";
@@ -16,7 +18,15 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Card from "components/Card/Card";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
-import { DebugControlsPanel, EventsPanel, MarketsSection, RpcTable, type GroupedEvent, type RpcStats } from "./parts";
+import {
+  DebugControlsPanel,
+  EventsPanel,
+  MarketsSection,
+  NetworkStatusSection,
+  RpcTable,
+  type GroupedEvent,
+  type RpcStats,
+} from "./parts";
 
 const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 
@@ -40,6 +50,9 @@ export default function RpcDebug() {
     marketValues: number[];
     balances: number[];
   }>({ marketValues: [], balances: [] });
+  const [networkObserverState, setNetworkObserverState] = useState<
+    Record<string, { trackingFailed: boolean; isActive: boolean }>
+  >({});
 
   // Subscribe to debug events
   useEffect(() => {
@@ -254,15 +267,62 @@ export default function RpcDebug() {
     setDebugState((prev) => ({ ...prev, [flag]: value }));
   }, []);
 
+  // Update NetworkStatusObserver state
+  useEffect(() => {
+    const updateNetworkObserverState = () => {
+      const observer = NetworkStatusObserver.getInstance();
+      const states = observer.getAllTrackerStates();
+      setNetworkObserverState(states);
+    };
+
+    updateNetworkObserverState();
+
+    const observer = NetworkStatusObserver.getInstance();
+    const allTrackerKeys = Object.keys(observer.getAllTrackerStates());
+    const unsubscribes: (() => void)[] = [];
+
+    allTrackerKeys.forEach((trackerKey) => {
+      const unsubscribe = addFallbackTrackerListenner("trackingFinished", trackerKey, () => {
+        updateNetworkObserverState();
+      });
+      unsubscribes.push(unsubscribe);
+    });
+
+    // Update periodically and re-subscribe if new trackers are added
+    const interval = setInterval(() => {
+      const currentTrackerKeys = Object.keys(observer.getAllTrackerStates());
+      const newTrackerKeys = currentTrackerKeys.filter((key) => !allTrackerKeys.includes(key));
+
+      // Subscribe to new trackers
+      newTrackerKeys.forEach((trackerKey) => {
+        const unsubscribe = addFallbackTrackerListenner("trackingFinished", trackerKey, () => {
+          updateNetworkObserverState();
+        });
+        unsubscribes.push(unsubscribe);
+        allTrackerKeys.push(trackerKey);
+      });
+
+      updateNetworkObserverState();
+    }, 1000);
+
+    return () => {
+      unsubscribes.forEach((unsubscribe) => unsubscribe());
+      clearInterval(interval);
+    };
+  }, [chainId]);
+
   return (
     <AppPageLayout>
       <div className="default-container">
         <Card title="RPC Debug">
           <div className="App-card-content">
             <div className="flex gap-8" style={GRID_STYLE}>
-              <div className="flex min-w-0 flex-col">
+              <div className="flex min-w-0 flex-[2] flex-col">
                 <RpcTable allRpcStats={allRpcStats} />
+                <div className="mt-16 h-1 bg-slate-800"></div>
                 <DataFreshnessSection freshnessValues={freshnessValues} freshnessHistory={freshnessHistory} />
+                <div className="mt-16 h-1 bg-slate-800"></div>
+                <NetworkStatusSection networkObserverState={networkObserverState} />
               </div>
               <EventsPanel events={events} idleSeconds={idleSeconds} onClearEvents={() => setEvents([])} />
               <div className="min-w-0 flex-1">
@@ -275,6 +335,7 @@ export default function RpcDebug() {
                 />
               </div>
             </div>
+            <div className="mt-16 h-1 bg-slate-800"></div>
             <MarketsSection marketsInfoData={marketsInfoData} />
           </div>
         </Card>
@@ -345,11 +406,11 @@ function DataFreshnessSection({
   };
 
   return (
-    <div className="mt-8 flex min-h-0 flex-col overflow-hidden">
+    <div className="mt-8 flex min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase">Data Freshness</h3>
       </div>
-      <div className="min-h-0 overflow-y-auto">
+      <div className="flex-shrink-0">
         <div className="overflow-x-auto">
           <Table>
             <thead className="sticky top-0 z-10 bg-slate-900">
