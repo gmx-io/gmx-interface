@@ -4,25 +4,27 @@ import { getLogs } from "viem/actions";
 
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
-export async function getOrWaitLogs<T extends AbiEvent>(
-  {
-    chainId,
-    fromBlock,
-    event,
-    address,
-    args,
-    finish = () => true,
-    abortSignal,
-  }: {
-    chainId: number;
-    fromBlock: bigint;
-    event: T;
-    address?: string | string[];
-    args: MaybeExtractEventArgsFromAbi<[T], T["name"]>;
-    finish?: (logs: GetLogsReturnType<T>) => boolean;
-    abortSignal?: AbortSignal;
-  } // todo add timeout
-): Promise<GetLogsReturnType<T>> {
+export async function getOrWaitLogs<T extends AbiEvent>({
+  chainId,
+  fromBlock,
+  event,
+  address,
+  args,
+  finish = () => true,
+  abortSignal,
+  timeout = 60000,
+}: {
+  chainId: number;
+  fromBlock: bigint;
+  event: T;
+  address?: string | string[];
+  args: MaybeExtractEventArgsFromAbi<[T], T["name"]>;
+  finish?: (logs: GetLogsReturnType<T>) => boolean;
+  abortSignal?: AbortSignal;
+  timeout?: number;
+}): Promise<GetLogsReturnType<T>> {
+  const timeoutSignal = timeout ? AbortSignal.timeout(timeout) : undefined;
+
   const logs = await getLogs(getPublicClientWithRpc(chainId), {
     fromBlock,
     event,
@@ -62,7 +64,7 @@ export async function getOrWaitLogs<T extends AbiEvent>(
     },
   });
 
-  abortSignal?.addEventListener("abort", () => {
+  AbortSignal.any([abortSignal, timeoutSignal].filter(Boolean) as AbortSignal[]).addEventListener("abort", () => {
     unsub();
     reject(new Error("Abort signal received"));
   });
