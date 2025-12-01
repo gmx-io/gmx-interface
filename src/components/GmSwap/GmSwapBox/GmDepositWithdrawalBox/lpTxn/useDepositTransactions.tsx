@@ -397,21 +397,23 @@ export const useDepositTransactions = ({
           throw new Error("Technical fees are not set");
         }
 
+        if (!longTokenAddress || !shortTokenAddress) {
+          throw new Error("Long or short token address is not set");
+        }
+
         let tokenAddress: string;
         let tokenAmount: bigint;
         if ((rawParams as RawCreateGlvDepositParams).isMarketTokenDeposit) {
           tokenAddress = (rawParams as RawCreateGlvDepositParams).addresses.market;
-          tokenAmount = marketTokenAmount!;
+          tokenAmount = marketTokenAmount;
+        } else if (longTokenAmount > 0n) {
+          tokenAddress = longTokenAddress;
+          tokenAmount = longTokenAmount;
+        } else if (shortTokenAmount > 0n) {
+          tokenAddress = shortTokenAddress;
+          tokenAmount = shortTokenAmount;
         } else {
-          tokenAddress = longTokenAddress!;
-          tokenAmount = longTokenAmount!;
-        }
-        if (longTokenAmount! > 0n) {
-          tokenAddress = longTokenAddress!;
-          tokenAmount = longTokenAmount!;
-        } else if (shortTokenAmount! > 0n) {
-          tokenAddress = shortTokenAddress!;
-          tokenAmount = shortTokenAmount!;
+          throw new Error("No token amount specified for deposit");
         }
 
         promise = createSourceChainGlvDepositTxn({

@@ -13,19 +13,17 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/tokens";
-import { SwapPricingType } from "sdk/types/orders";
-import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
-import { getRawRelayerParams, GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express";
+import { GlobalExpressParams, RelayParamsPayload } from "../../express";
 import { convertToUsd, getMidPrice } from "../../tokens";
 import { signCreateDeposit } from "../signCreateDeposit";
 import { CreateDepositParams, RawCreateDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
 import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
+import { getFeeRelayParams } from "./getFeeRelayParams";
 import { stargateTransferFees } from "./stargateTransferFees";
 
 export type SourceChainDepositFees = {
@@ -185,36 +183,11 @@ async function estimateSourceChainDepositInitialTxFees({
   }
 
   // How much will take to send back the GM to source chain
-
-  const feeSwapStrategy =
-    wrappedPayTokenAddress === settlementNativeWrappedTokenData.address
-      ? null
-      : buildReverseSwapStrategy({
-          chainId,
-          amountOut: fullWntFee,
-          tokenIn: globalExpressParams.tokensData[wrappedPayTokenAddress],
-          tokenOut: settlementNativeWrappedTokenData,
-          marketsInfoData: globalExpressParams.marketsInfoData,
-          swapOptimizationOrder: ["length"],
-          externalSwapQuoteParams: undefined,
-          swapPricingType: SwapPricingType.AtomicSwap,
-        });
-
-  if (feeSwapStrategy && !feeSwapStrategy.swapPathStats) {
-    throw new Error("Fee swap strategy has no swap path stats");
-  }
-
-  const returnRawRelayParamsPayload: RawRelayParamsPayload = getRawRelayerParams({
+  const returnRawRelayParamsPayload = getFeeRelayParams({
     chainId,
-    gasPaymentTokenAddress: feeSwapStrategy?.swapPathStats!.tokenInAddress ?? settlementNativeWrappedTokenData.address,
-    relayerFeeTokenAddress: feeSwapStrategy?.swapPathStats!.tokenOutAddress ?? wrappedPayTokenAddress,
-    feeParams: {
-      feeToken: feeSwapStrategy?.swapPathStats!.tokenInAddress ?? wrappedPayTokenAddress,
-      feeAmount: feeSwapStrategy?.amountIn ?? fullWntFee,
-      feeSwapPath: feeSwapStrategy?.swapPathStats!.swapPath ?? [],
-    },
-    externalCalls: getEmptyExternalCallsPayload(),
-    tokenPermits: [],
+    fullWntFee,
+    globalExpressParams,
+    settlementWrappedTokenData: settlementNativeWrappedTokenData,
   });
 
   const returnRelayParamsPayload: RelayParamsPayload = {

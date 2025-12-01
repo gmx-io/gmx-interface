@@ -13,19 +13,17 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/tokens";
-import { SwapPricingType } from "sdk/types/orders";
-import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
-import { getRawRelayerParams, GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express";
+import { GlobalExpressParams, RelayParamsPayload } from "../../express";
 import { convertToUsd, getGmToken, getMidPrice } from "../../tokens";
 import { signCreateGlvDeposit } from "../signCreateGlvDeposit";
 import { CreateGlvDepositParams, RawCreateGlvDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
 import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
+import { getFeeRelayParams } from "./getFeeRelayParams";
 import { stargateTransferFees } from "./stargateTransferFees";
 
 export type SourceChainGlvDepositFees = {
@@ -199,30 +197,11 @@ async function estimateSourceChainGlvDepositInitialTxFees({
   }
 
   // How much will take to send back the GM to source chain
-  // pay in gas payment token
-
-  const feeSwapStrategy = buildReverseSwapStrategy({
+  const returnRawRelayParamsPayload = getFeeRelayParams({
     chainId,
-    amountOut: fullWntFee,
-    tokenIn: globalExpressParams.gasPaymentToken,
-    tokenOut: settlementWrappedTokenData,
-    marketsInfoData: globalExpressParams.marketsInfoData,
-    swapOptimizationOrder: ["length"],
-    externalSwapQuoteParams: undefined,
-    swapPricingType: SwapPricingType.AtomicSwap,
-  });
-
-  const returnRawRelayParamsPayload: RawRelayParamsPayload = getRawRelayerParams({
-    chainId,
-    gasPaymentTokenAddress: feeSwapStrategy.swapPathStats!.tokenInAddress,
-    relayerFeeTokenAddress: feeSwapStrategy.swapPathStats!.tokenOutAddress,
-    feeParams: {
-      feeToken: feeSwapStrategy.swapPathStats!.tokenInAddress,
-      feeAmount: feeSwapStrategy.amountIn,
-      feeSwapPath: feeSwapStrategy.swapPathStats!.swapPath,
-    },
-    externalCalls: getEmptyExternalCallsPayload(),
-    tokenPermits: [],
+    fullWntFee,
+    globalExpressParams,
+    settlementWrappedTokenData,
   });
 
   const returnRelayParamsPayload: RelayParamsPayload = {

@@ -8,16 +8,13 @@ import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
-import { SwapPricingType } from "sdk/types/orders";
-import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { getRawRelayerParams } from "../../express";
-import { GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express/types";
+import { GlobalExpressParams, RelayParamsPayload } from "../../express/types";
 import { signCreateWithdrawal } from "../signCreateWithdrawal";
 import { CreateGlvWithdrawalParams } from "../types";
+import { getFeeRelayParams } from "./getFeeRelayParams";
 import { stargateTransferFees } from "./stargateTransferFees";
 
 export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
@@ -26,7 +23,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
   marketTokenAmount,
   fullWntFee,
   params,
-  secondaryOrPrimaryOutputTokenAddress,
+  secondaryOrPrimaryOutputTokenAddress: _secondaryOrPrimaryOutputTokenAddress,
   globalExpressParams,
 }: {
   chainId: SettlementChainId;
@@ -44,43 +41,12 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
 }> {
   const settlementWrappedTokenData = globalExpressParams.tokensData[getWrappedToken(chainId).address];
 
-  const feeSwapStrategy = buildReverseSwapStrategy({
+  const returnRawRelayParamsPayload = getFeeRelayParams({
     chainId,
-    amountOut: fullWntFee,
-    tokenIn: globalExpressParams.tokensData[secondaryOrPrimaryOutputTokenAddress],
-    tokenOut: settlementWrappedTokenData,
-    marketsInfoData: globalExpressParams.marketsInfoData,
-    swapOptimizationOrder: ["length"],
-    externalSwapQuoteParams: undefined,
-    swapPricingType: SwapPricingType.AtomicSwap,
+    fullWntFee,
+    globalExpressParams,
+    settlementWrappedTokenData,
   });
-
-  const returnRawRelayParamsPayload: RawRelayParamsPayload =
-    convertTokenAddress(chainId, secondaryOrPrimaryOutputTokenAddress, "wrapped") === settlementWrappedTokenData.address
-      ? getRawRelayerParams({
-          chainId,
-          gasPaymentTokenAddress: settlementWrappedTokenData.address,
-          relayerFeeTokenAddress: settlementWrappedTokenData.address,
-          feeParams: {
-            feeToken: settlementWrappedTokenData.address,
-            feeAmount: fullWntFee,
-            feeSwapPath: [],
-          },
-          externalCalls: getEmptyExternalCallsPayload(),
-          tokenPermits: [],
-        })
-      : getRawRelayerParams({
-          chainId,
-          gasPaymentTokenAddress: feeSwapStrategy.swapPathStats!.tokenInAddress,
-          relayerFeeTokenAddress: feeSwapStrategy.swapPathStats!.tokenOutAddress,
-          feeParams: {
-            feeToken: feeSwapStrategy.swapPathStats!.tokenInAddress,
-            feeAmount: feeSwapStrategy.amountIn,
-            feeSwapPath: feeSwapStrategy.swapPathStats!.swapPath,
-          },
-          externalCalls: getEmptyExternalCallsPayload(),
-          tokenPermits: [],
-        });
 
   const returnRelayParamsPayload: RelayParamsPayload = {
     ...returnRawRelayParamsPayload,
