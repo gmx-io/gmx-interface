@@ -4,6 +4,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -50,6 +51,12 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     value: SOURCE_BSC_MAINNET,
     icon: getChainIcon(SOURCE_BSC_MAINNET),
     color: "#F7931A",
+  },
+  {
+    label: getChainName(SOURCE_ETHEREUM_MAINNET),
+    value: SOURCE_ETHEREUM_MAINNET,
+    icon: getChainIcon(SOURCE_ETHEREUM_MAINNET),
+    color: "#627EEA",
   },
 ];
 

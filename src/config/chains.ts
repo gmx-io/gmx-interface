@@ -8,14 +8,17 @@ import {
   ContractsChainId,
   CONTRACTS_CHAIN_IDS as SDK_CONTRACTS_CHAIN_IDS,
   CONTRACTS_CHAIN_IDS_DEV as SDK_CONTRACTS_CHAIN_IDS_DEV,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
+  ARBITRUM,
+  AVALANCHE,
+  AVALANCHE_FUJI,
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ETH_MAINNET } from "./static/chains";
 
 export { CHAIN_NAMES_MAP, getChainName } from "sdk/configs/chains";
 export * from "./static/chains";
@@ -119,8 +122,13 @@ const constants = {
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io", "gmxalt.io"];
 
-export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = {
-  [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
+export const RPC_PROVIDERS: Record<AnyChainId, string[]> = {
+  [SOURCE_ETHEREUM_MAINNET]: [
+    "https://eth.llamarpc.com",
+    "https://rpc.ankr.com/eth",
+    "https://eth.drpc.org",
+    "https://ethereum.publicnode.com",
+  ],
   [ARBITRUM]: [
     "https://arb1.arbitrum.io/rpc",
     "https://arbitrum-one-rpc.publicnode.com",
@@ -181,6 +189,7 @@ export const FALLBACK_PROVIDERS: Record<AnyChainId, string[]> = {
   ],
   [BOTANIX]: ENV_BOTANIX_RPC_URLS ? JSON.parse(ENV_BOTANIX_RPC_URLS) : [getAlchemyBotanixHttpUrl("fallback")],
   [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl("fallback")],
+  [SOURCE_ETHEREUM_MAINNET]: [getAlchemyEthereumMainnetHttpUrl("fallback")],
   [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("fallback")],
   [SOURCE_OPTIMISM_SEPOLIA]: [getAlchemyOptimismSepoliaHttpUrl("fallback")],
   [SOURCE_SEPOLIA]: [getAlchemySepoliaHttpUrl("fallback")],
@@ -191,6 +200,7 @@ export const PRIVATE_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
   [ARBITRUM]: [getAlchemyArbitrumHttpUrl("largeAccount")],
   [AVALANCHE]: [getAlchemyAvalancheHttpUrl("largeAccount")],
   [BOTANIX]: [getAlchemyBotanixHttpUrl("largeAccount")],
+  [SOURCE_ETHEREUM_MAINNET]: [getAlchemyEthereumMainnetHttpUrl("largeAccount")],
   [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("largeAccount")],
 };
 
@@ -198,6 +208,7 @@ export const EXPRESS_RPC_PROVIDERS: Partial<Record<AnyChainId, string[]>> = {
   [ARBITRUM]: [getAlchemyArbitrumHttpUrl("express")],
   [AVALANCHE]: [getAlchemyAvalancheHttpUrl("express")],
   [BOTANIX]: [getAlchemyBotanixHttpUrl("express")],
+  [SOURCE_ETHEREUM_MAINNET]: [getAlchemyEthereumMainnetHttpUrl("express")],
   [SOURCE_BASE_MAINNET]: [getAlchemyBaseMainnetHttpUrl("express")],
   [ARBITRUM_SEPOLIA]: [getAlchemyArbitrumSepoliaHttpUrl("express")],
 };
@@ -295,6 +306,14 @@ export function getAlchemyBscMainnetWsUrl(purpose: AlchemyKeyPurpose) {
   return `wss://bnb-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
 
+export function getAlchemyEthereumMainnetHttpUrl(purpose: AlchemyKeyPurpose) {
+  return `https://eth-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
+}
+
+export function getAlchemyEthereumMainnetWsUrl(purpose: AlchemyKeyPurpose) {
+  return `wss://eth-mainnet.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
+}
+
 export function getAlchemySepoliaHttpUrl(purpose: AlchemyKeyPurpose) {
   return `https://eth-sepolia.g.alchemy.com/v2/${getAlchemyKey(purpose)}`;
 }
@@ -313,6 +332,8 @@ export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testne
       return "https://testnet.snowtrace.io/";
     case ARBITRUM_SEPOLIA:
       return "https://sepolia.arbiscan.io/";
+    case SOURCE_ETHEREUM_MAINNET:
+      return "https://etherscan.io/";
     case SOURCE_OPTIMISM_SEPOLIA:
       return "https://sepolia-optimism.etherscan.io/";
     case SOURCE_SEPOLIA:
