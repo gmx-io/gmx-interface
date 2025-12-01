@@ -53,17 +53,17 @@ export const selectChartHeaderInfo = createSelector((q) => {
   const netRateHourlyLong = (fundingRateLong ?? 0n) + (borrowingRateLong ?? 0n);
   const netRateHourlyShort = (fundingRateShort ?? 0n) + (borrowingRateShort ?? 0n);
 
-  const longUsdVolume = getOpenInterestForBalance(marketInfo, true);
-  const shortUsdVolume = getOpenInterestForBalance(marketInfo, false);
-  const totalVolume = longUsdVolume + shortUsdVolume;
+  const longUsdInterest = getOpenInterestForBalance(marketInfo, true);
+  const shortUsdInterest = getOpenInterestForBalance(marketInfo, false);
+  const totalInterest = longUsdInterest + shortUsdInterest;
 
   const longOpenInterestPercentage =
-    totalVolume !== 0n
-      ? Math.max(Math.min(Math.round(Number(bigMath.mulDiv(longUsdVolume, 10000n, totalVolume)) / 100), 100), 0.01)
+    totalInterest !== 0n
+      ? Math.max(Math.min(Math.round(Number(bigMath.mulDiv(longUsdInterest, 10000n, totalInterest)) / 100), 100), 0.01)
       : 0;
 
   const shortOpenInterestPercentage =
-    totalVolume === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
+    totalInterest === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
 
   return {
     liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true),
@@ -74,8 +74,8 @@ export const selectChartHeaderInfo = createSelector((q) => {
     borrowingRateShort,
     fundingRateLong,
     fundingRateShort,
-    openInterestLong: longUsdVolume,
-    openInterestShort: shortUsdVolume,
+    openInterestLong: longUsdInterest,
+    openInterestShort: shortUsdInterest,
     decimals: marketInfo.indexToken.decimals,
     longOpenInterestPercentage,
     shortOpenInterestPercentage,
