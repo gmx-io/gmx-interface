@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId, RANDOM_WALLET } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -18,7 +18,7 @@ import { nowInSeconds } from "sdk/utils/time";
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
 import { GlobalExpressParams, RelayParamsPayload } from "../../express";
-import { convertToUsd, getGmToken, getMidPrice } from "../../tokens";
+import { convertToUsd, getMidPrice } from "../../tokens";
 import { signCreateGlvDeposit } from "../signCreateGlvDeposit";
 import { CreateGlvDepositParams, RawCreateGlvDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
@@ -181,16 +181,16 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     console.error(errorMessage);
     throw new Error(errorMessage);
   }
-  const initialToken = isValidMarketTokenDeposit
-    ? getGmToken(chainId, params.addresses.market)
-    : getToken(chainId, tokenAddress);
+
+  const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
   const initialWrappedTokenAddress = isValidMarketTokenDeposit
     ? undefined
     : convertTokenAddress(chainId, tokenAddress, "wrapped");
-  const sourceChainTokenId = getMappedTokenId(chainId, tokenAddress, srcChainId);
+  const settlementChainTokenId = getMultichainTokenId(chainId, unwrappedTokenAddress);
+  const sourceChainTokenId = getMappedTokenId(chainId, unwrappedTokenAddress, srcChainId);
 
-  if (!sourceChainTokenId) {
-    const errorMessage = `Source chain token ID not found. Token address: ${tokenAddress}, source chain ID: ${srcChainId}`;
+  if (!settlementChainTokenId || !sourceChainTokenId) {
+    const errorMessage = `Settlement or source chain token ID not found. Token address: ${tokenAddress}, source chain ID: ${srcChainId}`;
     // eslint-disable-next-line no-console
     console.error(errorMessage);
     throw new Error(errorMessage);
@@ -272,7 +272,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
   });
 
-  const amountLD = adjustForDecimals(tokenAmount, initialToken.decimals, sourceChainTokenId.decimals);
+  const amountLD = adjustForDecimals(tokenAmount, settlementChainTokenId.decimals, sourceChainTokenId.decimals);
 
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,

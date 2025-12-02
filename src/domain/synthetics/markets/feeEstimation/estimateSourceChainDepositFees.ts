@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId, RANDOM_WALLET } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -175,11 +175,11 @@ async function estimateSourceChainDepositInitialTxFees({
       `Token address not found in market config. Market config: ${JSON.stringify(marketConfig)}, token address: ${wrappedPayTokenAddress}`
     );
   }
-  const initialToken = getToken(chainId, wrappedPayTokenAddress);
+  const settlementChainTokenId = getMultichainTokenId(chainId, unwrappedPayTokenAddress);
   const sourceChainTokenId = getMappedTokenId(chainId, unwrappedPayTokenAddress, srcChainId);
 
-  if (!sourceChainTokenId) {
-    throw new Error("Source chain token ID not found");
+  if (!settlementChainTokenId || !sourceChainTokenId) {
+    throw new Error("Settlement or source chain token ID not found");
   }
 
   // How much will take to send back the GM to source chain
@@ -245,7 +245,7 @@ async function estimateSourceChainDepositInitialTxFees({
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
   });
 
-  const amountLD = adjustForDecimals(tokenAmount, initialToken.decimals, sourceChainTokenId.decimals);
+  const amountLD = adjustForDecimals(tokenAmount, settlementChainTokenId.decimals, sourceChainTokenId.decimals);
 
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,

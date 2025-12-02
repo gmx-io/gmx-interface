@@ -2,13 +2,14 @@ import { t } from "@lingui/macro";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams } from "domain/synthetics/express";
 import type { CreateGlvDepositParams, RawCreateGlvDepositParams } from "domain/synthetics/markets";
+import { adjustForDecimals } from "lib/numbers";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
@@ -84,26 +85,29 @@ export async function createSourceChainGlvDepositTxn({
     },
   };
 
+  const settlementChainTokenId = getMultichainTokenId(chainId, tokenAddress);
+  const sourceChainTokenId = getMappedTokenId(chainId, unwrappedTokenAddress, srcChainId);
+
+  if (!settlementChainTokenId || !sourceChainTokenId) {
+    throw new Error("Settlement or source chain token ID not found");
+  }
+
+  const amountLD = adjustForDecimals(tokenAmount, settlementChainTokenId.decimals, sourceChainTokenId.decimals);
+
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
     account: params.addresses.receiver,
     srcChainId,
-    amountLD: tokenAmount,
+    amountLD,
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
     isManualGas: params.isMarketTokenDeposit ? true : false,
     action,
   });
 
-  const sourceChainTokenId = getMappedTokenId(chainId, unwrappedTokenAddress, srcChainId);
-
-  if (!sourceChainTokenId) {
-    throw new Error("Token ID not found");
-  }
-
   let value = ensuredFees.txnEstimatedNativeFee;
   if (unwrappedTokenAddress === zeroAddress) {
-    value += tokenAmount;
+    value += amountLD;
   }
 
   const txnResult = await sendWalletTransaction({
