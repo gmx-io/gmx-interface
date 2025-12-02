@@ -3,311 +3,118 @@ export default [
     inputs: [
       {
         components: [
-          {
-            internalType: "contract Router",
-            name: "router",
-            type: "address",
-          },
-          {
-            internalType: "contract RoleStore",
-            name: "roleStore",
-            type: "address",
-          },
-          {
-            internalType: "contract DataStore",
-            name: "dataStore",
-            type: "address",
-          },
-          {
-            internalType: "contract EventEmitter",
-            name: "eventEmitter",
-            type: "address",
-          },
-          {
-            internalType: "contract IOracle",
-            name: "oracle",
-            type: "address",
-          },
-          {
-            internalType: "contract OrderVault",
-            name: "orderVault",
-            type: "address",
-          },
-          {
-            internalType: "contract IOrderHandler",
-            name: "orderHandler",
-            type: "address",
-          },
-          {
-            internalType: "contract ISwapHandler",
-            name: "swapHandler",
-            type: "address",
-          },
-          {
-            internalType: "contract IExternalHandler",
-            name: "externalHandler",
-            type: "address",
-          },
-          {
-            internalType: "contract MultichainVault",
-            name: "multichainVault",
-            type: "address",
-          },
+          { internalType: "contract Router", name: "router", type: "address" },
+          { internalType: "contract RoleStore", name: "roleStore", type: "address" },
+          { internalType: "contract DataStore", name: "dataStore", type: "address" },
+          { internalType: "contract EventEmitter", name: "eventEmitter", type: "address" },
+          { internalType: "contract IOracle", name: "oracle", type: "address" },
+          { internalType: "contract OrderVault", name: "orderVault", type: "address" },
+          { internalType: "contract IOrderHandler", name: "orderHandler", type: "address" },
+          { internalType: "contract ISwapHandler", name: "swapHandler", type: "address" },
+          { internalType: "contract IExternalHandler", name: "externalHandler", type: "address" },
+          { internalType: "contract MultichainVault", name: "multichainVault", type: "address" },
         ],
         internalType: "struct MultichainRouter.BaseConstructorParams",
         name: "params",
         type: "tuple",
       },
-      {
-        internalType: "contract IReferralStorage",
-        name: "_referralStorage",
-        type: "address",
-      },
+      { internalType: "contract IReferralStorage", name: "_referralStorage", type: "address" },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "currentTimestamp",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "deadline",
-        type: "uint256",
-      },
+      { internalType: "uint256", name: "currentTimestamp", type: "uint256" },
+      { internalType: "uint256", name: "deadline", type: "uint256" },
     ],
     name: "DeadlinePassed",
     type: "error",
   },
+  { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "DisabledFeature", type: "error" },
+  { inputs: [], name: "EmptyHoldingAddress", type: "error" },
+  { inputs: [], name: "EmptyOrder", type: "error" },
+  { inputs: [], name: "EmptyReceiver", type: "error" },
   {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "key",
-        type: "bytes32",
-      },
-    ],
-    name: "DisabledFeature",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "EmptyHoldingAddress",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "EmptyOrder",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "EmptyReceiver",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-    ],
+    inputs: [{ internalType: "address", name: "token", type: "address" }],
     name: "EmptyTokenTranferGasLimit",
     type: "error",
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "requiredRelayFee",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "availableFeeAmount",
-        type: "uint256",
-      },
+      { internalType: "uint256", name: "requiredRelayFee", type: "uint256" },
+      { internalType: "uint256", name: "availableFeeAmount", type: "uint256" },
     ],
     name: "InsufficientRelayFee",
     type: "error",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "desChainId",
-        type: "uint256",
-      },
-    ],
+    inputs: [{ internalType: "uint256", name: "desChainId", type: "uint256" }],
     name: "InvalidDestinationChainId",
     type: "error",
   },
   {
     inputs: [
-      {
-        internalType: "uint256",
-        name: "sendTokensLength",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "sendAmountsLength",
-        type: "uint256",
-      },
+      { internalType: "uint256", name: "sendTokensLength", type: "uint256" },
+      { internalType: "uint256", name: "sendAmountsLength", type: "uint256" },
     ],
     name: "InvalidExternalCalls",
     type: "error",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "expectedSpender",
-        type: "address",
-      },
+      { internalType: "address", name: "spender", type: "address" },
+      { internalType: "address", name: "expectedSpender", type: "address" },
     ],
     name: "InvalidPermitSpender",
     type: "error",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
-      },
-    ],
+    inputs: [{ internalType: "uint256", name: "srcChainId", type: "uint256" }],
     name: "InvalidSrcChainId",
     type: "error",
   },
+  { inputs: [{ internalType: "bytes32", name: "digest", type: "bytes32" }], name: "InvalidUserDigest", type: "error" },
   {
     inputs: [
-      {
-        internalType: "bytes32",
-        name: "digest",
-        type: "bytes32",
-      },
-    ],
-    name: "InvalidUserDigest",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "feeUsd",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "maxFeeUsd",
-        type: "uint256",
-      },
+      { internalType: "uint256", name: "feeUsd", type: "uint256" },
+      { internalType: "uint256", name: "maxFeeUsd", type: "uint256" },
     ],
     name: "MaxRelayFeeSwapForSubaccountExceeded",
     type: "error",
   },
-  {
-    inputs: [],
-    name: "NonEmptyExternalCallsForSubaccountOrder",
-    type: "error",
-  },
+  { inputs: [], name: "NonEmptyExternalCallsForSubaccountOrder", type: "error" },
+  { inputs: [], name: "RelayEmptyBatch", type: "error" },
+  { inputs: [], name: "TokenPermitsNotAllowedForMultichain", type: "error" },
   {
     inputs: [
-      {
-        internalType: "bytes32",
-        name: "code",
-        type: "bytes32",
-      },
-    ],
-    name: "ReferralCodeAlreadyExists",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "RelayEmptyBatch",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "TokenPermitsNotAllowedForMultichain",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "receiver",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "token", type: "address" },
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "TokenTransferError",
     type: "error",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "msgSender",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "role",
-        type: "string",
-      },
+      { internalType: "address", name: "msgSender", type: "address" },
+      { internalType: "string", name: "role", type: "string" },
     ],
     name: "Unauthorized",
     type: "error",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "feeToken",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "expectedFeeToken",
-        type: "address",
-      },
+      { internalType: "address", name: "feeToken", type: "address" },
+      { internalType: "address", name: "expectedFeeToken", type: "address" },
     ],
     name: "UnexpectedRelayFeeToken",
     type: "error",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "feeToken",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "expectedFeeToken",
-        type: "address",
-      },
+      { internalType: "address", name: "feeToken", type: "address" },
+      { internalType: "address", name: "expectedFeeToken", type: "address" },
     ],
     name: "UnsupportedRelayFeeToken",
     type: "error",
@@ -315,18 +122,8 @@ export default [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: false,
-        internalType: "string",
-        name: "reason",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "bytes",
-        name: "returndata",
-        type: "bytes",
-      },
+      { indexed: false, internalType: "string", name: "reason", type: "string" },
+      { indexed: false, internalType: "bytes", name: "returndata", type: "bytes" },
     ],
     name: "TokenTransferReverted",
     type: "event",
@@ -337,21 +134,9 @@ export default [
         components: [
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "tokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "providers",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "data",
-                type: "bytes[]",
-              },
+              { internalType: "address[]", name: "tokens", type: "address[]" },
+              { internalType: "address[]", name: "providers", type: "address[]" },
+              { internalType: "bytes[]", name: "data", type: "bytes[]" },
             ],
             internalType: "struct OracleUtils.SetPricesParams",
             name: "oracleParams",
@@ -359,36 +144,12 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "sendTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "uint256[]",
-                name: "sendAmounts",
-                type: "uint256[]",
-              },
-              {
-                internalType: "address[]",
-                name: "externalCallTargets",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "externalCallDataList",
-                type: "bytes[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundReceivers",
-                type: "address[]",
-              },
+              { internalType: "address[]", name: "sendTokens", type: "address[]" },
+              { internalType: "uint256[]", name: "sendAmounts", type: "uint256[]" },
+              { internalType: "address[]", name: "externalCallTargets", type: "address[]" },
+              { internalType: "bytes[]", name: "externalCallDataList", type: "bytes[]" },
+              { internalType: "address[]", name: "refundTokens", type: "address[]" },
+              { internalType: "address[]", name: "refundReceivers", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
@@ -396,46 +157,14 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "owner",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "value",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint8",
-                name: "v",
-                type: "uint8",
-              },
-              {
-                internalType: "bytes32",
-                name: "r",
-                type: "bytes32",
-              },
-              {
-                internalType: "bytes32",
-                name: "s",
-                type: "bytes32",
-              },
-              {
-                internalType: "address",
-                name: "token",
-                type: "address",
-              },
+              { internalType: "address", name: "owner", type: "address" },
+              { internalType: "address", name: "spender", type: "address" },
+              { internalType: "uint256", name: "value", type: "uint256" },
+              { internalType: "uint256", name: "deadline", type: "uint256" },
+              { internalType: "uint8", name: "v", type: "uint8" },
+              { internalType: "bytes32", name: "r", type: "bytes32" },
+              { internalType: "bytes32", name: "s", type: "bytes32" },
+              { internalType: "address", name: "token", type: "address" },
             ],
             internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
@@ -443,102 +172,38 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "feeToken",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "feeAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "feeSwapPath",
-                type: "address[]",
-              },
+              { internalType: "address", name: "feeToken", type: "address" },
+              { internalType: "uint256", name: "feeAmount", type: "uint256" },
+              { internalType: "address[]", name: "feeSwapPath", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "deadline",
-            type: "uint256",
-          },
-          {
-            internalType: "bytes",
-            name: "signature",
-            type: "bytes",
-          },
-          {
-            internalType: "uint256",
-            name: "desChainId",
-            type: "uint256",
-          },
+          { internalType: "uint256", name: "userNonce", type: "uint256" },
+          { internalType: "uint256", name: "deadline", type: "uint256" },
+          { internalType: "bytes", name: "signature", type: "bytes" },
+          { internalType: "uint256", name: "desChainId", type: "uint256" },
         ],
         internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
-      },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "srcChainId", type: "uint256" },
       {
         components: [
           {
             components: [
               {
                 components: [
-                  {
-                    internalType: "address",
-                    name: "receiver",
-                    type: "address",
-                  },
-                  {
-                    internalType: "address",
-                    name: "cancellationReceiver",
-                    type: "address",
-                  },
-                  {
-                    internalType: "address",
-                    name: "callbackContract",
-                    type: "address",
-                  },
-                  {
-                    internalType: "address",
-                    name: "uiFeeReceiver",
-                    type: "address",
-                  },
-                  {
-                    internalType: "address",
-                    name: "market",
-                    type: "address",
-                  },
-                  {
-                    internalType: "address",
-                    name: "initialCollateralToken",
-                    type: "address",
-                  },
-                  {
-                    internalType: "address[]",
-                    name: "swapPath",
-                    type: "address[]",
-                  },
+                  { internalType: "address", name: "receiver", type: "address" },
+                  { internalType: "address", name: "cancellationReceiver", type: "address" },
+                  { internalType: "address", name: "callbackContract", type: "address" },
+                  { internalType: "address", name: "uiFeeReceiver", type: "address" },
+                  { internalType: "address", name: "market", type: "address" },
+                  { internalType: "address", name: "initialCollateralToken", type: "address" },
+                  { internalType: "address[]", name: "swapPath", type: "address[]" },
                 ],
                 internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
                 name: "addresses",
@@ -546,86 +211,26 @@ export default [
               },
               {
                 components: [
-                  {
-                    internalType: "uint256",
-                    name: "sizeDeltaUsd",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "initialCollateralDeltaAmount",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "triggerPrice",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "acceptablePrice",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "executionFee",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "callbackGasLimit",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "minOutputAmount",
-                    type: "uint256",
-                  },
-                  {
-                    internalType: "uint256",
-                    name: "validFromTime",
-                    type: "uint256",
-                  },
+                  { internalType: "uint256", name: "sizeDeltaUsd", type: "uint256" },
+                  { internalType: "uint256", name: "initialCollateralDeltaAmount", type: "uint256" },
+                  { internalType: "uint256", name: "triggerPrice", type: "uint256" },
+                  { internalType: "uint256", name: "acceptablePrice", type: "uint256" },
+                  { internalType: "uint256", name: "executionFee", type: "uint256" },
+                  { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+                  { internalType: "uint256", name: "minOutputAmount", type: "uint256" },
+                  { internalType: "uint256", name: "validFromTime", type: "uint256" },
                 ],
                 internalType: "struct IBaseOrderUtils.CreateOrderParamsNumbers",
                 name: "numbers",
                 type: "tuple",
               },
-              {
-                internalType: "enum Order.OrderType",
-                name: "orderType",
-                type: "uint8",
-              },
-              {
-                internalType: "enum Order.DecreasePositionSwapType",
-                name: "decreasePositionSwapType",
-                type: "uint8",
-              },
-              {
-                internalType: "bool",
-                name: "isLong",
-                type: "bool",
-              },
-              {
-                internalType: "bool",
-                name: "shouldUnwrapNativeToken",
-                type: "bool",
-              },
-              {
-                internalType: "bool",
-                name: "autoCancel",
-                type: "bool",
-              },
-              {
-                internalType: "bytes32",
-                name: "referralCode",
-                type: "bytes32",
-              },
-              {
-                internalType: "bytes32[]",
-                name: "dataList",
-                type: "bytes32[]",
-              },
+              { internalType: "enum Order.OrderType", name: "orderType", type: "uint8" },
+              { internalType: "enum Order.DecreasePositionSwapType", name: "decreasePositionSwapType", type: "uint8" },
+              { internalType: "bool", name: "isLong", type: "bool" },
+              { internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" },
+              { internalType: "bool", name: "autoCancel", type: "bool" },
+              { internalType: "bytes32", name: "referralCode", type: "bytes32" },
+              { internalType: "bytes32[]", name: "dataList", type: "bytes32[]" },
             ],
             internalType: "struct IBaseOrderUtils.CreateOrderParams[]",
             name: "createOrderParamsList",
@@ -633,56 +238,20 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "bytes32",
-                name: "key",
-                type: "bytes32",
-              },
-              {
-                internalType: "uint256",
-                name: "sizeDeltaUsd",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "acceptablePrice",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "triggerPrice",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "minOutputAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "validFromTime",
-                type: "uint256",
-              },
-              {
-                internalType: "bool",
-                name: "autoCancel",
-                type: "bool",
-              },
-              {
-                internalType: "uint256",
-                name: "executionFeeIncrease",
-                type: "uint256",
-              },
+              { internalType: "bytes32", name: "key", type: "bytes32" },
+              { internalType: "uint256", name: "sizeDeltaUsd", type: "uint256" },
+              { internalType: "uint256", name: "acceptablePrice", type: "uint256" },
+              { internalType: "uint256", name: "triggerPrice", type: "uint256" },
+              { internalType: "uint256", name: "minOutputAmount", type: "uint256" },
+              { internalType: "uint256", name: "validFromTime", type: "uint256" },
+              { internalType: "bool", name: "autoCancel", type: "bool" },
+              { internalType: "uint256", name: "executionFeeIncrease", type: "uint256" },
             ],
             internalType: "struct IRelayUtils.UpdateOrderParams[]",
             name: "updateOrderParamsList",
             type: "tuple[]",
           },
-          {
-            internalType: "bytes32[]",
-            name: "cancelOrderKeys",
-            type: "bytes32[]",
-          },
+          { internalType: "bytes32[]", name: "cancelOrderKeys", type: "bytes32[]" },
         ],
         internalType: "struct IRelayUtils.BatchParams",
         name: "params",
@@ -690,13 +259,7 @@ export default [
       },
     ],
     name: "batch",
-    outputs: [
-      {
-        internalType: "bytes32[]",
-        name: "",
-        type: "bytes32[]",
-      },
-    ],
+    outputs: [{ internalType: "bytes32[]", name: "", type: "bytes32[]" }],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -706,21 +269,9 @@ export default [
         components: [
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "tokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "providers",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "data",
-                type: "bytes[]",
-              },
+              { internalType: "address[]", name: "tokens", type: "address[]" },
+              { internalType: "address[]", name: "providers", type: "address[]" },
+              { internalType: "bytes[]", name: "data", type: "bytes[]" },
             ],
             internalType: "struct OracleUtils.SetPricesParams",
             name: "oracleParams",
@@ -728,36 +279,12 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "sendTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "uint256[]",
-                name: "sendAmounts",
-                type: "uint256[]",
-              },
-              {
-                internalType: "address[]",
-                name: "externalCallTargets",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "externalCallDataList",
-                type: "bytes[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundReceivers",
-                type: "address[]",
-              },
+              { internalType: "address[]", name: "sendTokens", type: "address[]" },
+              { internalType: "uint256[]", name: "sendAmounts", type: "uint256[]" },
+              { internalType: "address[]", name: "externalCallTargets", type: "address[]" },
+              { internalType: "bytes[]", name: "externalCallDataList", type: "bytes[]" },
+              { internalType: "address[]", name: "refundTokens", type: "address[]" },
+              { internalType: "address[]", name: "refundReceivers", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
@@ -765,46 +292,14 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "owner",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "value",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint8",
-                name: "v",
-                type: "uint8",
-              },
-              {
-                internalType: "bytes32",
-                name: "r",
-                type: "bytes32",
-              },
-              {
-                internalType: "bytes32",
-                name: "s",
-                type: "bytes32",
-              },
-              {
-                internalType: "address",
-                name: "token",
-                type: "address",
-              },
+              { internalType: "address", name: "owner", type: "address" },
+              { internalType: "address", name: "spender", type: "address" },
+              { internalType: "uint256", name: "value", type: "uint256" },
+              { internalType: "uint256", name: "deadline", type: "uint256" },
+              { internalType: "uint8", name: "v", type: "uint8" },
+              { internalType: "bytes32", name: "r", type: "bytes32" },
+              { internalType: "bytes32", name: "s", type: "bytes32" },
+              { internalType: "address", name: "token", type: "address" },
             ],
             internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
@@ -812,66 +307,26 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "feeToken",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "feeAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "feeSwapPath",
-                type: "address[]",
-              },
+              { internalType: "address", name: "feeToken", type: "address" },
+              { internalType: "uint256", name: "feeAmount", type: "uint256" },
+              { internalType: "address[]", name: "feeSwapPath", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "deadline",
-            type: "uint256",
-          },
-          {
-            internalType: "bytes",
-            name: "signature",
-            type: "bytes",
-          },
-          {
-            internalType: "uint256",
-            name: "desChainId",
-            type: "uint256",
-          },
+          { internalType: "uint256", name: "userNonce", type: "uint256" },
+          { internalType: "uint256", name: "deadline", type: "uint256" },
+          { internalType: "bytes", name: "signature", type: "bytes" },
+          { internalType: "uint256", name: "desChainId", type: "uint256" },
         ],
         internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes32",
-        name: "key",
-        type: "bytes32",
-      },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "srcChainId", type: "uint256" },
+      { internalType: "bytes32", name: "key", type: "bytes32" },
     ],
     name: "cancelOrder",
     outputs: [],
@@ -884,21 +339,9 @@ export default [
         components: [
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "tokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "providers",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "data",
-                type: "bytes[]",
-              },
+              { internalType: "address[]", name: "tokens", type: "address[]" },
+              { internalType: "address[]", name: "providers", type: "address[]" },
+              { internalType: "bytes[]", name: "data", type: "bytes[]" },
             ],
             internalType: "struct OracleUtils.SetPricesParams",
             name: "oracleParams",
@@ -906,36 +349,12 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "sendTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "uint256[]",
-                name: "sendAmounts",
-                type: "uint256[]",
-              },
-              {
-                internalType: "address[]",
-                name: "externalCallTargets",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "externalCallDataList",
-                type: "bytes[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundReceivers",
-                type: "address[]",
-              },
+              { internalType: "address[]", name: "sendTokens", type: "address[]" },
+              { internalType: "uint256[]", name: "sendAmounts", type: "uint256[]" },
+              { internalType: "address[]", name: "externalCallTargets", type: "address[]" },
+              { internalType: "bytes[]", name: "externalCallDataList", type: "bytes[]" },
+              { internalType: "address[]", name: "refundTokens", type: "address[]" },
+              { internalType: "address[]", name: "refundReceivers", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
@@ -943,46 +362,14 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "owner",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "value",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint8",
-                name: "v",
-                type: "uint8",
-              },
-              {
-                internalType: "bytes32",
-                name: "r",
-                type: "bytes32",
-              },
-              {
-                internalType: "bytes32",
-                name: "s",
-                type: "bytes32",
-              },
-              {
-                internalType: "address",
-                name: "token",
-                type: "address",
-              },
+              { internalType: "address", name: "owner", type: "address" },
+              { internalType: "address", name: "spender", type: "address" },
+              { internalType: "uint256", name: "value", type: "uint256" },
+              { internalType: "uint256", name: "deadline", type: "uint256" },
+              { internalType: "uint8", name: "v", type: "uint8" },
+              { internalType: "bytes32", name: "r", type: "bytes32" },
+              { internalType: "bytes32", name: "s", type: "bytes32" },
+              { internalType: "address", name: "token", type: "address" },
             ],
             internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
@@ -990,100 +377,36 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "feeToken",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "feeAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "feeSwapPath",
-                type: "address[]",
-              },
+              { internalType: "address", name: "feeToken", type: "address" },
+              { internalType: "uint256", name: "feeAmount", type: "uint256" },
+              { internalType: "address[]", name: "feeSwapPath", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "deadline",
-            type: "uint256",
-          },
-          {
-            internalType: "bytes",
-            name: "signature",
-            type: "bytes",
-          },
-          {
-            internalType: "uint256",
-            name: "desChainId",
-            type: "uint256",
-          },
+          { internalType: "uint256", name: "userNonce", type: "uint256" },
+          { internalType: "uint256", name: "deadline", type: "uint256" },
+          { internalType: "bytes", name: "signature", type: "bytes" },
+          { internalType: "uint256", name: "desChainId", type: "uint256" },
         ],
         internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
-      },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "srcChainId", type: "uint256" },
       {
         components: [
           {
             components: [
-              {
-                internalType: "address",
-                name: "receiver",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "cancellationReceiver",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "callbackContract",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "uiFeeReceiver",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "market",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "initialCollateralToken",
-                type: "address",
-              },
-              {
-                internalType: "address[]",
-                name: "swapPath",
-                type: "address[]",
-              },
+              { internalType: "address", name: "receiver", type: "address" },
+              { internalType: "address", name: "cancellationReceiver", type: "address" },
+              { internalType: "address", name: "callbackContract", type: "address" },
+              { internalType: "address", name: "uiFeeReceiver", type: "address" },
+              { internalType: "address", name: "market", type: "address" },
+              { internalType: "address", name: "initialCollateralToken", type: "address" },
+              { internalType: "address[]", name: "swapPath", type: "address[]" },
             ],
             internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
             name: "addresses",
@@ -1091,86 +414,26 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "uint256",
-                name: "sizeDeltaUsd",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "initialCollateralDeltaAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "triggerPrice",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "acceptablePrice",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "executionFee",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "callbackGasLimit",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "minOutputAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "validFromTime",
-                type: "uint256",
-              },
+              { internalType: "uint256", name: "sizeDeltaUsd", type: "uint256" },
+              { internalType: "uint256", name: "initialCollateralDeltaAmount", type: "uint256" },
+              { internalType: "uint256", name: "triggerPrice", type: "uint256" },
+              { internalType: "uint256", name: "acceptablePrice", type: "uint256" },
+              { internalType: "uint256", name: "executionFee", type: "uint256" },
+              { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+              { internalType: "uint256", name: "minOutputAmount", type: "uint256" },
+              { internalType: "uint256", name: "validFromTime", type: "uint256" },
             ],
             internalType: "struct IBaseOrderUtils.CreateOrderParamsNumbers",
             name: "numbers",
             type: "tuple",
           },
-          {
-            internalType: "enum Order.OrderType",
-            name: "orderType",
-            type: "uint8",
-          },
-          {
-            internalType: "enum Order.DecreasePositionSwapType",
-            name: "decreasePositionSwapType",
-            type: "uint8",
-          },
-          {
-            internalType: "bool",
-            name: "isLong",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "shouldUnwrapNativeToken",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "autoCancel",
-            type: "bool",
-          },
-          {
-            internalType: "bytes32",
-            name: "referralCode",
-            type: "bytes32",
-          },
-          {
-            internalType: "bytes32[]",
-            name: "dataList",
-            type: "bytes32[]",
-          },
+          { internalType: "enum Order.OrderType", name: "orderType", type: "uint8" },
+          { internalType: "enum Order.DecreasePositionSwapType", name: "decreasePositionSwapType", type: "uint8" },
+          { internalType: "bool", name: "isLong", type: "bool" },
+          { internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" },
+          { internalType: "bool", name: "autoCancel", type: "bool" },
+          { internalType: "bytes32", name: "referralCode", type: "bytes32" },
+          { internalType: "bytes32[]", name: "dataList", type: "bytes32[]" },
         ],
         internalType: "struct IBaseOrderUtils.CreateOrderParams",
         name: "params",
@@ -1178,374 +441,98 @@ export default [
       },
     ],
     name: "createOrder",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
+    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
     name: "dataStore",
-    outputs: [
-      {
-        internalType: "contract DataStore",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract DataStore", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
+    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
     name: "digests",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "eventEmitter",
-    outputs: [
-      {
-        internalType: "contract EventEmitter",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract EventEmitter", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "externalHandler",
-    outputs: [
-      {
-        internalType: "contract IExternalHandler",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract IExternalHandler", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "bytes[]",
-        name: "data",
-        type: "bytes[]",
-      },
-    ],
+    inputs: [{ internalType: "bytes[]", name: "data", type: "bytes[]" }],
     name: "multicall",
-    outputs: [
-      {
-        internalType: "bytes[]",
-        name: "results",
-        type: "bytes[]",
-      },
-    ],
+    outputs: [{ internalType: "bytes[]", name: "results", type: "bytes[]" }],
     stateMutability: "payable",
     type: "function",
   },
   {
     inputs: [],
     name: "multichainVault",
-    outputs: [
-      {
-        internalType: "contract MultichainVault",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract MultichainVault", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "oracle",
-    outputs: [
-      {
-        internalType: "contract IOracle",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract IOracle", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "orderHandler",
-    outputs: [
-      {
-        internalType: "contract IOrderHandler",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract IOrderHandler", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "orderVault",
-    outputs: [
-      {
-        internalType: "contract OrderVault",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract OrderVault", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "referralStorage",
-    outputs: [
-      {
-        internalType: "contract IReferralStorage",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract IReferralStorage", name: "", type: "address" }],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            components: [
-              {
-                internalType: "address[]",
-                name: "tokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "providers",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "data",
-                type: "bytes[]",
-              },
-            ],
-            internalType: "struct OracleUtils.SetPricesParams",
-            name: "oracleParams",
-            type: "tuple",
-          },
-          {
-            components: [
-              {
-                internalType: "address[]",
-                name: "sendTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "uint256[]",
-                name: "sendAmounts",
-                type: "uint256[]",
-              },
-              {
-                internalType: "address[]",
-                name: "externalCallTargets",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "externalCallDataList",
-                type: "bytes[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundReceivers",
-                type: "address[]",
-              },
-            ],
-            internalType: "struct IRelayUtils.ExternalCalls",
-            name: "externalCalls",
-            type: "tuple",
-          },
-          {
-            components: [
-              {
-                internalType: "address",
-                name: "owner",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "value",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint8",
-                name: "v",
-                type: "uint8",
-              },
-              {
-                internalType: "bytes32",
-                name: "r",
-                type: "bytes32",
-              },
-              {
-                internalType: "bytes32",
-                name: "s",
-                type: "bytes32",
-              },
-              {
-                internalType: "address",
-                name: "token",
-                type: "address",
-              },
-            ],
-            internalType: "struct IRelayUtils.TokenPermit[]",
-            name: "tokenPermits",
-            type: "tuple[]",
-          },
-          {
-            components: [
-              {
-                internalType: "address",
-                name: "feeToken",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "feeAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "feeSwapPath",
-                type: "address[]",
-              },
-            ],
-            internalType: "struct IRelayUtils.FeeParams",
-            name: "fee",
-            type: "tuple",
-          },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "deadline",
-            type: "uint256",
-          },
-          {
-            internalType: "bytes",
-            name: "signature",
-            type: "bytes",
-          },
-          {
-            internalType: "uint256",
-            name: "desChainId",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct IRelayUtils.RelayParams",
-        name: "relayParams",
-        type: "tuple",
-      },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes32",
-        name: "referralCode",
-        type: "bytes32",
-      },
-    ],
-    name: "registerCode",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
     name: "roleStore",
-    outputs: [
-      {
-        internalType: "contract RoleStore",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract RoleStore", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "router",
-    outputs: [
-      {
-        internalType: "contract Router",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract Router", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "receiver",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "sendNativeToken",
     outputs: [],
@@ -1554,21 +541,9 @@ export default [
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "receiver",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "token", type: "address" },
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "sendTokens",
     outputs: [],
@@ -1577,16 +552,8 @@ export default [
   },
   {
     inputs: [
-      {
-        internalType: "address",
-        name: "receiver",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "uint256", name: "amount", type: "uint256" },
     ],
     name: "sendWnt",
     outputs: [],
@@ -1599,21 +566,9 @@ export default [
         components: [
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "tokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "providers",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "data",
-                type: "bytes[]",
-              },
+              { internalType: "address[]", name: "tokens", type: "address[]" },
+              { internalType: "address[]", name: "providers", type: "address[]" },
+              { internalType: "bytes[]", name: "data", type: "bytes[]" },
             ],
             internalType: "struct OracleUtils.SetPricesParams",
             name: "oracleParams",
@@ -1621,36 +576,12 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "sendTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "uint256[]",
-                name: "sendAmounts",
-                type: "uint256[]",
-              },
-              {
-                internalType: "address[]",
-                name: "externalCallTargets",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "externalCallDataList",
-                type: "bytes[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundReceivers",
-                type: "address[]",
-              },
+              { internalType: "address[]", name: "sendTokens", type: "address[]" },
+              { internalType: "uint256[]", name: "sendAmounts", type: "uint256[]" },
+              { internalType: "address[]", name: "externalCallTargets", type: "address[]" },
+              { internalType: "bytes[]", name: "externalCallDataList", type: "bytes[]" },
+              { internalType: "address[]", name: "refundTokens", type: "address[]" },
+              { internalType: "address[]", name: "refundReceivers", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
@@ -1658,46 +589,14 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "owner",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "value",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint8",
-                name: "v",
-                type: "uint8",
-              },
-              {
-                internalType: "bytes32",
-                name: "r",
-                type: "bytes32",
-              },
-              {
-                internalType: "bytes32",
-                name: "s",
-                type: "bytes32",
-              },
-              {
-                internalType: "address",
-                name: "token",
-                type: "address",
-              },
+              { internalType: "address", name: "owner", type: "address" },
+              { internalType: "address", name: "spender", type: "address" },
+              { internalType: "uint256", name: "value", type: "uint256" },
+              { internalType: "uint256", name: "deadline", type: "uint256" },
+              { internalType: "uint8", name: "v", type: "uint8" },
+              { internalType: "bytes32", name: "r", type: "bytes32" },
+              { internalType: "bytes32", name: "s", type: "bytes32" },
+              { internalType: "address", name: "token", type: "address" },
             ],
             internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
@@ -1705,66 +604,26 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "feeToken",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "feeAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "feeSwapPath",
-                type: "address[]",
-              },
+              { internalType: "address", name: "feeToken", type: "address" },
+              { internalType: "uint256", name: "feeAmount", type: "uint256" },
+              { internalType: "address[]", name: "feeSwapPath", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "deadline",
-            type: "uint256",
-          },
-          {
-            internalType: "bytes",
-            name: "signature",
-            type: "bytes",
-          },
-          {
-            internalType: "uint256",
-            name: "desChainId",
-            type: "uint256",
-          },
+          { internalType: "uint256", name: "userNonce", type: "uint256" },
+          { internalType: "uint256", name: "deadline", type: "uint256" },
+          { internalType: "bytes", name: "signature", type: "bytes" },
+          { internalType: "uint256", name: "desChainId", type: "uint256" },
         ],
         internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes32",
-        name: "referralCode",
-        type: "bytes32",
-      },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "srcChainId", type: "uint256" },
+      { internalType: "bytes32", name: "referralCode", type: "bytes32" },
     ],
     name: "setTraderReferralCode",
     outputs: [],
@@ -1774,13 +633,7 @@ export default [
   {
     inputs: [],
     name: "swapHandler",
-    outputs: [
-      {
-        internalType: "contract ISwapHandler",
-        name: "",
-        type: "address",
-      },
-    ],
+    outputs: [{ internalType: "contract ISwapHandler", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
@@ -1790,21 +643,9 @@ export default [
         components: [
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "tokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "providers",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "data",
-                type: "bytes[]",
-              },
+              { internalType: "address[]", name: "tokens", type: "address[]" },
+              { internalType: "address[]", name: "providers", type: "address[]" },
+              { internalType: "bytes[]", name: "data", type: "bytes[]" },
             ],
             internalType: "struct OracleUtils.SetPricesParams",
             name: "oracleParams",
@@ -1812,36 +653,12 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address[]",
-                name: "sendTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "uint256[]",
-                name: "sendAmounts",
-                type: "uint256[]",
-              },
-              {
-                internalType: "address[]",
-                name: "externalCallTargets",
-                type: "address[]",
-              },
-              {
-                internalType: "bytes[]",
-                name: "externalCallDataList",
-                type: "bytes[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundTokens",
-                type: "address[]",
-              },
-              {
-                internalType: "address[]",
-                name: "refundReceivers",
-                type: "address[]",
-              },
+              { internalType: "address[]", name: "sendTokens", type: "address[]" },
+              { internalType: "uint256[]", name: "sendAmounts", type: "uint256[]" },
+              { internalType: "address[]", name: "externalCallTargets", type: "address[]" },
+              { internalType: "bytes[]", name: "externalCallDataList", type: "bytes[]" },
+              { internalType: "address[]", name: "refundTokens", type: "address[]" },
+              { internalType: "address[]", name: "refundReceivers", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.ExternalCalls",
             name: "externalCalls",
@@ -1849,46 +666,14 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "owner",
-                type: "address",
-              },
-              {
-                internalType: "address",
-                name: "spender",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "value",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "deadline",
-                type: "uint256",
-              },
-              {
-                internalType: "uint8",
-                name: "v",
-                type: "uint8",
-              },
-              {
-                internalType: "bytes32",
-                name: "r",
-                type: "bytes32",
-              },
-              {
-                internalType: "bytes32",
-                name: "s",
-                type: "bytes32",
-              },
-              {
-                internalType: "address",
-                name: "token",
-                type: "address",
-              },
+              { internalType: "address", name: "owner", type: "address" },
+              { internalType: "address", name: "spender", type: "address" },
+              { internalType: "uint256", name: "value", type: "uint256" },
+              { internalType: "uint256", name: "deadline", type: "uint256" },
+              { internalType: "uint8", name: "v", type: "uint8" },
+              { internalType: "bytes32", name: "r", type: "bytes32" },
+              { internalType: "bytes32", name: "s", type: "bytes32" },
+              { internalType: "address", name: "token", type: "address" },
             ],
             internalType: "struct IRelayUtils.TokenPermit[]",
             name: "tokenPermits",
@@ -1896,103 +681,35 @@ export default [
           },
           {
             components: [
-              {
-                internalType: "address",
-                name: "feeToken",
-                type: "address",
-              },
-              {
-                internalType: "uint256",
-                name: "feeAmount",
-                type: "uint256",
-              },
-              {
-                internalType: "address[]",
-                name: "feeSwapPath",
-                type: "address[]",
-              },
+              { internalType: "address", name: "feeToken", type: "address" },
+              { internalType: "uint256", name: "feeAmount", type: "uint256" },
+              { internalType: "address[]", name: "feeSwapPath", type: "address[]" },
             ],
             internalType: "struct IRelayUtils.FeeParams",
             name: "fee",
             type: "tuple",
           },
-          {
-            internalType: "uint256",
-            name: "userNonce",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "deadline",
-            type: "uint256",
-          },
-          {
-            internalType: "bytes",
-            name: "signature",
-            type: "bytes",
-          },
-          {
-            internalType: "uint256",
-            name: "desChainId",
-            type: "uint256",
-          },
+          { internalType: "uint256", name: "userNonce", type: "uint256" },
+          { internalType: "uint256", name: "deadline", type: "uint256" },
+          { internalType: "bytes", name: "signature", type: "bytes" },
+          { internalType: "uint256", name: "desChainId", type: "uint256" },
         ],
         internalType: "struct IRelayUtils.RelayParams",
         name: "relayParams",
         type: "tuple",
       },
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "srcChainId",
-        type: "uint256",
-      },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "srcChainId", type: "uint256" },
       {
         components: [
-          {
-            internalType: "bytes32",
-            name: "key",
-            type: "bytes32",
-          },
-          {
-            internalType: "uint256",
-            name: "sizeDeltaUsd",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "acceptablePrice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "triggerPrice",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "minOutputAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "validFromTime",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "autoCancel",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "executionFeeIncrease",
-            type: "uint256",
-          },
+          { internalType: "bytes32", name: "key", type: "bytes32" },
+          { internalType: "uint256", name: "sizeDeltaUsd", type: "uint256" },
+          { internalType: "uint256", name: "acceptablePrice", type: "uint256" },
+          { internalType: "uint256", name: "triggerPrice", type: "uint256" },
+          { internalType: "uint256", name: "minOutputAmount", type: "uint256" },
+          { internalType: "uint256", name: "validFromTime", type: "uint256" },
+          { internalType: "bool", name: "autoCancel", type: "bool" },
+          { internalType: "uint256", name: "executionFeeIncrease", type: "uint256" },
         ],
         internalType: "struct IRelayUtils.UpdateOrderParams",
         name: "params",

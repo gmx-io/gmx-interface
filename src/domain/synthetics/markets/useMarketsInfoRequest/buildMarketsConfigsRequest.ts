@@ -193,13 +193,9 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.minCollateralFactorForOpenInterestShort],
         },
-        positionImpactExponentFactorPositive: {
+        positionImpactExponentFactor: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.positionImpactExponentFactorPositive],
-        },
-        positionImpactExponentFactorNegative: {
-          methodName: "getUint",
-          params: [prebuiltHashedKeys.positionImpactExponentFactorNegative],
+          params: [prebuiltHashedKeys.positionImpactExponentFactor],
         },
         swapFeeFactorForBalanceWasImproved: {
           methodName: "getUint",

@@ -217,13 +217,9 @@ export function hashMarketConfigKeys(market: MarketConfig) {
       ["bytes32", "address", "bool"],
       [MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY, marketAddress, false],
     ],
-    positionImpactExponentFactorPositive: [
-      ["bytes32", "address", "bool"],
-      [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress, true],
-    ],
-    positionImpactExponentFactorNegative: [
-      ["bytes32", "address", "bool"],
-      [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress, false],
+    positionImpactExponentFactor: [
+      ["bytes32", "address"],
+      [POSITION_IMPACT_EXPONENT_FACTOR_KEY, marketAddress],
     ],
     swapFeeFactorForBalanceWasImproved: [
       ["bytes32", "address", "bool"],

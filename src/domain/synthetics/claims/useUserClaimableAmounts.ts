@@ -62,14 +62,6 @@ type ClaimsConfigurationRequestConfig = MulticallRequestConfig<{
       };
     };
   };
-  claimTermsGlvBonusIncentiveDistribution: {
-    calls: {
-      getClaimTerms: {
-        methodName: string;
-        params: [string];
-      };
-    };
-  };
   claimTermsGlvBonusIncentiveDistributionTest: {
     calls: {
       getClaimTerms: {
@@ -132,16 +124,6 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
         getClaimsDisabled: {
           methodName: "getBool",
           params: [claimsDisabledKey(GLV_BONUS_INCENTIVE_DISTRIBUTION_ID)],
-        },
-      },
-    },
-    claimTermsGlvBonusIncentiveDistribution: {
-      contractAddress: getContract(chainId, "DataStore"),
-      abiId: "DataStore",
-      calls: {
-        getClaimTerms: {
-          methodName: "getString",
-          params: [claimTermsKey(GLV_BONUS_INCENTIVE_DISTRIBUTION_ID)],
         },
       },
     },
@@ -280,9 +262,6 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
         result.data.claimsDisabledGlvBonusIncentiveDistribution.getClaimsDisabled.returnValues[0]
       );
 
-      const claimTermsGlvBonusIncentiveDistribution =
-        result.data.claimTermsGlvBonusIncentiveDistribution.getClaimTerms.returnValues[0];
-
       const claimTermsGlpDistributionTest = result.data.claimTermsGlpDistributionTest.getClaimTerms.returnValues[0];
       const claimTermsGlvBonusIncentiveDistributionTest =
         result.data.claimTermsGlvBonusIncentiveDistributionTest.getClaimTerms.returnValues[0];
@@ -293,7 +272,7 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
           claimsDisabled: claimsDisabledGlpDistribution,
         },
         [GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString()]: {
-          claimTerms: claimTermsGlvBonusIncentiveDistribution,
+          claimTerms: undefined,
           claimsDisabled: claimsDisabledGlvBonusIncentiveDistribution,
         },
         [GLP_DISTRIBUTION_TEST_ID.toString()]: {

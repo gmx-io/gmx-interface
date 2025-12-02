@@ -136,10 +136,6 @@ export function getGlvByLabel(chainId: ContractsChainId, label: GlvLabel) {
   return glv;
 }
 
-export function getIsGlv(chainId: ContractsChainId, address: string) {
-  return Boolean(Object.keys(GLV_MARKETS[chainId]).find((key) => key.toLowerCase() === address.toLowerCase()));
-}
-
 export function getMarketUiConfig(chainId: number, marketAddress: string) {
   return MARKETS[chainId]?.[marketAddress];
 }

@@ -7,7 +7,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -53,17 +53,16 @@ export const selectChartHeaderInfo = createSelector((q) => {
   const netRateHourlyLong = (fundingRateLong ?? 0n) + (borrowingRateLong ?? 0n);
   const netRateHourlyShort = (fundingRateShort ?? 0n) + (borrowingRateShort ?? 0n);
 
-  const longUsdInterest = getOpenInterestForBalance(marketInfo, true);
-  const shortUsdInterest = getOpenInterestForBalance(marketInfo, false);
-  const totalInterest = longUsdInterest + shortUsdInterest;
+  const longUsdVolume = marketInfo.longInterestUsd;
+  const totalVolume = marketInfo.longInterestUsd + marketInfo.shortInterestUsd;
 
   const longOpenInterestPercentage =
-    totalInterest !== 0n
-      ? Math.max(Math.min(Math.round(Number(bigMath.mulDiv(longUsdInterest, 10000n, totalInterest)) / 100), 100), 0.01)
+    totalVolume !== 0n
+      ? Math.max(Math.min(Math.round(Number(bigMath.mulDiv(longUsdVolume, 10000n, totalVolume)) / 100), 100), 0.01)
       : 0;
 
   const shortOpenInterestPercentage =
-    totalInterest === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
+    totalVolume === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
 
   return {
     liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true),
@@ -74,8 +73,8 @@ export const selectChartHeaderInfo = createSelector((q) => {
     borrowingRateShort,
     fundingRateLong,
     fundingRateShort,
-    openInterestLong: longUsdInterest,
-    openInterestShort: shortUsdInterest,
+    openInterestLong: marketInfo.longInterestUsd,
+    openInterestShort: marketInfo.shortInterestUsd,
     decimals: marketInfo.indexToken.decimals,
     longOpenInterestPercentage,
     shortOpenInterestPercentage,
