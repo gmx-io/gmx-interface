@@ -1105,7 +1105,7 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Залог"
@@ -2072,7 +2072,7 @@ msgstr "Адрес"
 msgid "Claiming successful."
 msgstr "Клейм успешен."
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
 msgstr "У вас есть существующая позиция с {0} как коллатералем. Этот ордер не будет действителен для этой позиции. <0>Переключиться на коллатераль {1}</0>"
 
@@ -4062,7 +4062,7 @@ msgstr "Вакансии"
 msgid "Decentralized Options Strategies"
 msgstr "Децентрализованные Опционные Стратегии"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "У вас есть существующая позиция с {0} как коллатералем. Это действие не применится к этой позиции. <0>Переключиться на коллатераль {1}</0>"
 
@@ -6816,7 +6816,7 @@ msgstr "Лонг"
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/TradeBox/MarketPoolSelectorField.tsx
 msgid "Pool"
 msgstr "Пул"
 
@@ -7821,7 +7821,7 @@ msgstr "шорт"
 msgid "Very likely"
 msgstr "Очень вероятно"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "У вас есть существующий лимитный ордер с {symbol} как коллатералем. <0>Переключиться на коллатераль {symbol}</0>"
 

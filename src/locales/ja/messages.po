@@ -1105,7 +1105,7 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "担保"
@@ -2072,7 +2072,7 @@ msgstr "アドレス"
 msgid "Claiming successful."
 msgstr "請求に成功しました。"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
 msgstr "既存のポジションに{0}を担保として持っています。この注文はそのポジションに有効ではありません。<0>{1}担保に切り替え</0>"
 
@@ -4062,7 +4062,7 @@ msgstr "求人"
 msgid "Decentralized Options Strategies"
 msgstr "分散型オプションストラテジー"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "既存のポジションに{0}を担保として持っています。このアクションはそのポジションに適用されません。<0>{1}担保に切り替え</0>"
 
@@ -6816,7 +6816,7 @@ msgstr "ロング"
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/TradeBox/MarketPoolSelectorField.tsx
 msgid "Pool"
 msgstr "プール"
 
@@ -7821,7 +7821,7 @@ msgstr "ショート"
 msgid "Very likely"
 msgstr "非常に可能性が高い"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "{symbol}を担保とした既存の制限注文があります。<0>{symbol}担保に切り替え</0>"
 

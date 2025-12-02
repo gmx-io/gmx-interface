@@ -1105,7 +1105,7 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "抵押品"
@@ -2072,7 +2072,7 @@ msgstr "地址"
 msgid "Claiming successful."
 msgstr "申领成功。"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
 msgstr "您有一个现有仓位以 {0} 作为抵押品。此订单对该仓位无效。<0>切换到 {1} 抵押品</0>"
 
@@ -4062,7 +4062,7 @@ msgstr "职位"
 msgid "Decentralized Options Strategies"
 msgstr "去中心化期权策略"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "您有一个现有仓位以 {0} 作为抵押品。此操作不适用于该仓位。<0>切换到 {1} 抵押品</0>"
 
@@ -6816,7 +6816,7 @@ msgstr "做多"
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/TradeBox/MarketPoolSelectorField.tsx
 msgid "Pool"
 msgstr "池子"
 
@@ -7821,7 +7821,7 @@ msgstr "空头"
 msgid "Very likely"
 msgstr "很可能"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "您有一个现有限价订单以 {symbol} 作为抵押品。<0>切换到 {symbol} 抵押品</0>"
 

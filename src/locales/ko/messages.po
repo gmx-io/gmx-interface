@@ -1105,7 +1105,7 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "담보"
@@ -2072,7 +2072,7 @@ msgstr "주소"
 msgid "Claiming successful."
 msgstr "청구 성공."
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This Order will not be valid for that Position. <0>Switch to {1} collateral</0>"
 msgstr "{0}을 담보로 한 기존 포지션이 있습니다. 이 주문은 해당 포지션에 유효하지 않습니다. <0>{1} 담보로 전환</0>"
 
@@ -4062,7 +4062,7 @@ msgstr "구인"
 msgid "Decentralized Options Strategies"
 msgstr "탈중앙화 옵션 전략"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "{0}을 담보로 한 기존 포지션이 있습니다. 이 작업은 해당 포지션에 적용되지 않습니다. <0>{1} 담보로 전환</0>"
 
@@ -6816,7 +6816,7 @@ msgstr "롱"
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/TradeBox/MarketPoolSelectorField.tsx
 msgid "Pool"
 msgstr "풀"
 
@@ -7821,7 +7821,7 @@ msgstr "숏"
 msgid "Very likely"
 msgstr "매우 가능"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "{symbol}을 담보로 한 기존 한도 주문이 있습니다. <0>{symbol} 담보로 전환</0>"
 

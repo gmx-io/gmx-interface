@@ -14,7 +14,7 @@ import { BlockField } from "components/BlockField/BlockField";
 
 import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 
-export function MarketPoolSelectorRow() {
+export function MarketPoolSelectorField() {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
   const { marketAddress, setMarketAddress } = useSelector(selectTradeboxState);
   const tradeType = useSelector(selectTradeboxTradeType);

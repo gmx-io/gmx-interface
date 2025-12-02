@@ -28,7 +28,7 @@ export type Props = {
   isMarket: boolean;
 };
 
-export function CollateralSelectorRow(p: Props) {
+export function CollateralSelectorField(p: Props) {
   const { onSelectCollateralAddress } = p;
   const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
 

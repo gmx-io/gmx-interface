@@ -121,7 +121,7 @@ import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
-import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorRow";
+import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
 import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";

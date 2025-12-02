@@ -16,8 +16,8 @@ import { LeverageField } from "components/LeverageField/LeverageField";
 import { SwipeTabs } from "components/SwipeTabs/SwipeTabs";
 import Tabs from "components/Tabs/Tabs";
 import { useIsCurtainOpen } from "components/TradeBox/Curtain";
-import { MarketPoolSelectorRow } from "components/TradeBox/MarketPoolSelectorRow";
-import { CollateralSelectorRow } from "components/TradeBox/TradeBoxRows/CollateralSelectorRow";
+import { MarketPoolSelectorField } from "components/TradeBox/MarketPoolSelectorField";
+import { CollateralSelectorField } from "components/TradeBox/TradeBoxRows/CollateralSelectorField";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -92,11 +92,11 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
       ) : null}
 
       <div className="grow overflow-hidden">
-        <MarketPoolSelectorRow />
+        <MarketPoolSelectorField />
       </div>
 
       <div className="grow overflow-hidden">
-        <CollateralSelectorRow
+        <CollateralSelectorField
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
