@@ -119,6 +119,7 @@ export function getWithdrawalAmounts(p: {
         return values;
       }
       values.shortTokenUsd = 0n;
+      values.shortTokenAmount = 0n;
       values.shortTokenSwapPathStats = shortToLongSwapPathStats;
       values.longTokenUsd += shortToLongSwapPathStats.usdOut;
       values.longTokenAmount = convertToTokenAmount(
@@ -132,6 +133,7 @@ export function getWithdrawalAmounts(p: {
         return values;
       }
       values.longTokenUsd = 0n;
+      values.longTokenAmount = 0n;
       values.longTokenSwapPathStats = longToShortSwapPathStats;
       values.shortTokenUsd += longToShortSwapPathStats.usdOut;
       values.shortTokenAmount = convertToTokenAmount(
