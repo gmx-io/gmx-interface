@@ -1,8 +1,9 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { TradeType } from "sdk/types/trade";
 
 export const BEST_POOL_MARKER = "BEST_POOL";
@@ -73,7 +74,7 @@ export function usePoolSelection({
   currentPoolName,
   setMarketAddress,
 }: UsePoolSelectionParams): PoolSelectionResult {
-  const [isBestPoolMode, setIsBestPoolMode] = useState(false);
+  const [isBestPoolMode, setIsBestPoolMode] = useLocalStorageSerializeKey("is-best-pool-mode", true);
 
   const isLong = tradeType === TradeType.Long;
   const prevBestPoolAddressRef = useRef<string | undefined>(undefined);
@@ -120,7 +121,11 @@ export function usePoolSelection({
         setMarketAddress(bestPoolAddress);
       }
     }
-  }, [isBestPoolMode, bestPoolAddress, currentMarketAddress, setMarketAddress]);
+
+    if (currentMarketAddress !== bestPoolAddress) {
+      setIsBestPoolMode(false);
+    }
+  }, [isBestPoolMode, bestPoolAddress, currentMarketAddress, setMarketAddress, setIsBestPoolMode]);
 
   const handlePoolSelect = useCallback(
     (marketAddress: string) => {
@@ -137,13 +142,16 @@ export function usePoolSelection({
     [bestPoolAddress, setIsBestPoolMode, setMarketAddress]
   );
 
-  const selectedPoolName = isBestPoolMode ? t`Best pool` : currentPoolName;
+  const selectedPoolName =
+    isBestPoolMode && optionsWithBestPool.length > 1 && bestPoolAddress === currentMarketAddress
+      ? t`Best pool`
+      : currentPoolName;
 
   return {
     optionsWithBestPool,
     positionStatsWithBestPool,
     bestPoolAddress,
-    isBestPoolSelected: isBestPoolMode,
+    isBestPoolSelected: isBestPoolMode ?? true,
     handlePoolSelect,
     selectedPoolName,
   };
