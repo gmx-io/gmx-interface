@@ -16,6 +16,7 @@ export function useMaxAvailableAmount({
   minResidualAmount,
   isLoading,
   tokenBalanceType = TokenBalanceType.Wallet,
+  balance,
   srcChainId,
 }: {
   fromToken: TokenData | undefined;
@@ -24,9 +25,11 @@ export function useMaxAvailableAmount({
   fromTokenInputValue: string;
   minResidualAmount?: bigint;
   isLoading: boolean;
-  tokenBalanceType?: TokenBalanceType;
   srcChainId?: SourceChainId;
-}): {
+} & (
+  | { tokenBalanceType?: TokenBalanceType; balance?: undefined }
+  | { balance: bigint; tokenBalanceType?: undefined }
+)): {
   formattedBalance: string;
   formattedMaxAvailableAmount: string;
   showClickMax: boolean;
@@ -34,7 +37,7 @@ export function useMaxAvailableAmount({
   const { chainId } = useChainId();
   const isMetamaskMobile = useIsMetamaskMobile();
 
-  const fromTokenBalance = fromToken ? getBalanceByBalanceType(fromToken, tokenBalanceType) : undefined;
+  const fromTokenBalance = fromToken ? balance ?? getBalanceByBalanceType(fromToken, tokenBalanceType) : undefined;
 
   if (fromToken === undefined || fromTokenBalance === undefined || fromTokenBalance === 0n || isLoading) {
     return { formattedBalance: "", formattedMaxAvailableAmount: "", showClickMax: false };

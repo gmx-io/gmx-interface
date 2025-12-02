@@ -9,8 +9,7 @@ import {
   type SettlementChainId,
   type SourceChainId,
 } from "config/chains";
-import { isSourceChain } from "config/multichain";
-import { getSourceChainDecimalsMapped } from "config/multichain";
+import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
@@ -19,7 +18,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
+import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -122,7 +121,7 @@ export function BridgeInModal({
     minResidualAmount: undefined,
     isLoading: false,
     srcChainId: bridgeInChain,
-    tokenBalanceType: TokenBalanceType.SourceChain,
+    balance: bridgeInChainMarketTokenBalance,
   });
 
   useEffect(() => {
