@@ -272,10 +272,16 @@ async function estimateSourceChainDepositInitialTxFees({
     additionalValue,
   });
 
+  const estimatedReceivedAmount = adjustForDecimals(
+    initialQuoteOft.receipt.amountReceivedLD,
+    sourceChainTokenId.decimals,
+    settlementChainTokenId.decimals
+  );
+
   return {
     initialTxNativeFee,
     initialTxGasLimit: initialStargateTxnGasLimit,
-    initialTxReceivedAmount: initialQuoteOft.receipt.amountReceivedLD,
+    initialTxReceivedAmount: estimatedReceivedAmount,
     initialTransferComposeGas: initialComposeGas,
     relayParamsPayload: returnRelayParamsPayload,
   };
