@@ -322,6 +322,18 @@ function useExpressError({
   shortTokenAmount: bigint | undefined;
 }): string | undefined {
   return useMemo(() => {
+    if (paySource === "sourceChain") {
+      if (gasPaymentToken && technicalFees && "relayFeeUsd" in technicalFees) {
+        const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
+
+        if (technicalFees.relayParamsPayload.fee.feeAmount > gmxAccountBalance) {
+          return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees`;
+        }
+      }
+
+      return undefined;
+    }
+
     if (paySource !== "gmxAccount" || !technicalFees || !gasPaymentToken || !gasPaymentTokenAddress) {
       return undefined;
     }
