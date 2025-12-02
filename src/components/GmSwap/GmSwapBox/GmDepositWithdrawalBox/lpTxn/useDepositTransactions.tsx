@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
+import { zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -8,6 +9,7 @@ import {
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsFirstBuy,
   selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenAddress,
@@ -17,6 +19,7 @@ import {
   selectPoolsDetailsSelectedMarketInfoForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
+  selectPoolsDetailsSecondTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
@@ -91,6 +94,8 @@ export const useDepositTransactions = ({
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
+  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const paySource = useSelector(selectPoolsDetailsPaySource);
@@ -491,12 +496,24 @@ export const useDepositTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
+        const someInputTokenIsNative = firstTokenAddress === zeroAddress || secondTokenAddress === zeroAddress;
+
+        const maybeNativeLongTokenAddress =
+          someInputTokenIsNative && getWrappedToken(chainId).address === longTokenAddress
+            ? zeroAddress
+            : longTokenAddress;
+
+        const maybeNativeShortTokenAddress =
+          someInputTokenIsNative && getWrappedToken(chainId).address === shortTokenAddress
+            ? zeroAddress
+            : shortTokenAddress;
+
         promise = createGlvDepositTxn({
           chainId,
           signer,
           params: params as CreateGlvDepositParams,
-          longTokenAddress: longTokenAddress!,
-          shortTokenAddress: shortTokenAddress!,
+          longTokenAddress: maybeNativeLongTokenAddress!,
+          shortTokenAddress: maybeNativeShortTokenAddress!,
           longTokenAmount: longTokenAmount ?? 0n,
           shortTokenAmount: shortTokenAmount ?? 0n,
           marketTokenAmount: marketTokenAmount ?? 0n,
@@ -523,7 +540,6 @@ export const useDepositTransactions = ({
       account,
       marketInfo,
       amounts,
-      marketTokenAmount,
       tokensData,
       signer,
       isGlv,
@@ -534,18 +550,21 @@ export const useDepositTransactions = ({
       longTokenAmount,
       shortTokenAmount,
       technicalFees,
-      srcChainId,
       longTokenAddress,
       shortTokenAddress,
+      srcChainId,
+      marketTokenAmount,
       setMultichainTransferProgress,
       glvTokenAmount,
       multichainDepositExpressTxnParams.data,
       params,
+      addOptimisticTokensBalancesUpdates,
+      setPendingDeposit,
+      firstTokenAddress,
+      secondTokenAddress,
       shouldDisableValidation,
       blockTimestampData,
       setPendingTxns,
-      setPendingDeposit,
-      addOptimisticTokensBalancesUpdates,
     ]
   );
 
