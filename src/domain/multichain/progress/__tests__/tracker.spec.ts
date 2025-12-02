@@ -124,6 +124,25 @@ describe.concurrent("LongCrossChainTask", () => {
     );
   });
 
+  it("glv sell 7.45 GLV to ETH base -> arb", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_BASE_MAINNET;
+    const settlementChainId = ARBITRUM;
+    const initialTxHash = "0x2c424be93b041ba3b83be9cc9334be8e65c5108573a6a189fde62489f6dd7b62";
+    const token = getGlvToken(ARBITRUM, "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9");
+    const amount = 7450000000000000000n; // 7.45 GLV
+
+    const progress = new GlvSellTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
+  });
+
   it("gm buy 0.5 USDC to GM: ETH/USD base -> arb", { timeout: 30_000 }, async () => {
     const sourceChainId = SOURCE_BASE_MAINNET;
     const settlementChainId = ARBITRUM;
