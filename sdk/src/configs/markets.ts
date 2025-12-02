@@ -1241,17 +1241,17 @@ export function isMarketTokenAddress(chainId: number, marketTokenAddress: string
   return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
 }
 
-export function getTokenAddressByMarket(
+export function getTokenAddressByMarket<T extends "long" | "short" | "index">(
   chainId: number,
   marketTokenAddress: string,
-  tokenType: "long" | "short" | "index"
-): ERC20Address | NativeTokenSupportedAddress {
+  tokenType: T
+): T extends "index" ? NativeTokenSupportedAddress | ERC20Address : ERC20Address {
   const market = MARKETS[chainId as ContractsChainId][marketTokenAddress];
 
   if (tokenType === "index") {
-    return convertTokenAddress(chainId, market.indexTokenAddress, "native")! as
-      | ERC20Address
-      | NativeTokenSupportedAddress;
+    return convertTokenAddress(chainId, market.indexTokenAddress, "native")! as T extends "index"
+      ? NativeTokenSupportedAddress | ERC20Address
+      : ERC20Address;
   }
 
   if (tokenType === "long") {

@@ -41,10 +41,9 @@ import {
   RawCreateGlvWithdrawalParams,
   RawCreateWithdrawalParams,
 } from "domain/synthetics/markets/types";
-import { ERC20Address } from "domain/tokens";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { MARKETS } from "sdk/configs/markets";
+import { getTokenAddressByMarket } from "sdk/configs/markets";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { WithdrawalAmounts } from "sdk/types/trade";
 import { nowInSeconds } from "sdk/utils/time";
@@ -118,15 +117,12 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
   const glvInfo = isGlv ? glvOrMarketInfo : undefined;
 
-  const wrappedTokenAddress = getWrappedToken(chainId);
+  const wrappedNativeTokenAddress = getWrappedToken(chainId);
 
   const shouldUnwrapNativeToken =
-    paySource === "settlementChain"
-      ? (longTokenAmount > 0n && longTokenAddress === wrappedTokenAddress.address) ||
-        (shortTokenAmount > 0n && shortTokenAddress === wrappedTokenAddress.address)
-        ? true
-        : false
-      : false;
+    paySource === "settlementChain" &&
+    (firstTokenAddress === zeroAddress || secondTokenAddress === zeroAddress) &&
+    (longTokenAddress === wrappedNativeTokenAddress.address || shortTokenAddress === wrappedNativeTokenAddress.address);
 
   //#region GM Deposit
   if (isDeposit && !isGlv) {
@@ -174,14 +170,14 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         receiver: account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
-        market: marketOrGlvTokenAddress!,
-        initialLongToken: MARKETS[chainId][marketOrGlvTokenAddress!].longTokenAddress as ERC20Address,
-        initialShortToken: MARKETS[chainId][marketOrGlvTokenAddress!].shortTokenAddress as ERC20Address,
+        market: marketOrGlvTokenAddress,
+        initialLongToken: getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "long"),
+        initialShortToken: getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "short"),
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
       },
       minMarketTokens,
-      shouldUnwrapNativeToken: false,
+      shouldUnwrapNativeToken,
       callbackGasLimit: 0n,
       dataList,
     } satisfies RawCreateDepositParams;
@@ -241,10 +237,10 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
         initialLongToken: isMarketTokenDeposit
           ? zeroAddress
-          : (MARKETS[chainId][selectedMarketForGlv].longTokenAddress as ERC20Address),
+          : getTokenAddressByMarket(chainId, selectedMarketForGlv, "long"),
         initialShortToken: isMarketTokenDeposit
           ? zeroAddress
-          : (MARKETS[chainId][selectedMarketForGlv].shortTokenAddress as ERC20Address),
+          : getTokenAddressByMarket(chainId, selectedMarketForGlv, "short"),
         longTokenSwapPath: [],
         shortTokenSwapPath: [],
       },
@@ -350,7 +346,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
     let shouldUnwrapNativeTokenForGm = false;
     if (paySource === "settlementChain") {
       shouldUnwrapNativeTokenForGm =
-        longTokenAddress === zeroAddress || shortTokenAddress === zeroAddress ? true : false;
+        firstTokenAddress === zeroAddress || secondTokenAddress === zeroAddress ? true : false;
     }
 
     return {
