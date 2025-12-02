@@ -1,1469 +1,641 @@
 export default [
+  { inputs: [], name: "EmptyMarketTokenSupply", type: "error" },
   {
-    "inputs": [],
-    "name": "EmptyMarketTokenSupply",
-    "type": "error"
+    inputs: [
+      { internalType: "address", name: "glv", type: "address" },
+      { internalType: "address", name: "market", type: "address" },
+    ],
+    name: "GlvNegativeMarketPoolValue",
+    type: "error",
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "glv",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "market",
-        "type": "address"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
     ],
-    "name": "GlvNegativeMarketPoolValue",
-    "type": "error"
+    name: "getAccountGlvDeposits",
+    outputs: [
+      {
+        components: [
+          {
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "account", type: "address" },
+              { internalType: "address", name: "receiver", type: "address" },
+              { internalType: "address", name: "callbackContract", type: "address" },
+              { internalType: "address", name: "uiFeeReceiver", type: "address" },
+              { internalType: "address", name: "market", type: "address" },
+              { internalType: "address", name: "initialLongToken", type: "address" },
+              { internalType: "address", name: "initialShortToken", type: "address" },
+              { internalType: "address[]", name: "longTokenSwapPath", type: "address[]" },
+              { internalType: "address[]", name: "shortTokenSwapPath", type: "address[]" },
+            ],
+            internalType: "struct GlvDeposit.Addresses",
+            name: "addresses",
+            type: "tuple",
+          },
+          {
+            components: [
+              { internalType: "uint256", name: "marketTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "initialLongTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "initialShortTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minGlvTokens", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
+              { internalType: "uint256", name: "executionFee", type: "uint256" },
+              { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+              { internalType: "uint256", name: "srcChainId", type: "uint256" },
+            ],
+            internalType: "struct GlvDeposit.Numbers",
+            name: "numbers",
+            type: "tuple",
+          },
+          {
+            components: [
+              { internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" },
+              { internalType: "bool", name: "isMarketTokenDeposit", type: "bool" },
+            ],
+            internalType: "struct GlvDeposit.Flags",
+            name: "flags",
+            type: "tuple",
+          },
+          { internalType: "bytes32[]", name: "_dataList", type: "bytes32[]" },
+        ],
+        internalType: "struct GlvDeposit.Props[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "address", name: "account", type: "address" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
     ],
-    "name": "getAccountGlvDeposits",
-    "outputs": [
+    name: "getAccountGlvWithdrawals",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "callbackContract",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "uiFeeReceiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "market",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "initialLongToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "initialShortToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address[]",
-                "name": "longTokenSwapPath",
-                "type": "address[]"
-              },
-              {
-                "internalType": "address[]",
-                "name": "shortTokenSwapPath",
-                "type": "address[]"
-              }
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "market", type: "address" },
+              { internalType: "address", name: "account", type: "address" },
+              { internalType: "address", name: "receiver", type: "address" },
+              { internalType: "address", name: "callbackContract", type: "address" },
+              { internalType: "address", name: "uiFeeReceiver", type: "address" },
+              { internalType: "address[]", name: "longTokenSwapPath", type: "address[]" },
+              { internalType: "address[]", name: "shortTokenSwapPath", type: "address[]" },
             ],
-            "internalType": "struct GlvDeposit.Addresses",
-            "name": "addresses",
-            "type": "tuple"
+            internalType: "struct GlvWithdrawal.Addresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "marketTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "initialLongTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "initialShortTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minGlvTokens",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "executionFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "callbackGasLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "srcChainId",
-                "type": "uint256"
-              }
+            components: [
+              { internalType: "uint256", name: "glvTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minLongTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minShortTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
+              { internalType: "uint256", name: "executionFee", type: "uint256" },
+              { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+              { internalType: "uint256", name: "srcChainId", type: "uint256" },
             ],
-            "internalType": "struct GlvDeposit.Numbers",
-            "name": "numbers",
-            "type": "tuple"
+            internalType: "struct GlvWithdrawal.Numbers",
+            name: "numbers",
+            type: "tuple",
           },
           {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "shouldUnwrapNativeToken",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isMarketTokenDeposit",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct GlvDeposit.Flags",
-            "name": "flags",
-            "type": "tuple"
+            components: [{ internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" }],
+            internalType: "struct GlvWithdrawal.Flags",
+            name: "flags",
+            type: "tuple",
           },
-          {
-            "internalType": "bytes32[]",
-            "name": "_dataList",
-            "type": "bytes32[]"
-          }
+          { internalType: "bytes32[]", name: "_dataList", type: "bytes32[]" },
         ],
-        "internalType": "struct GlvDeposit.Props[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+        internalType: "struct GlvWithdrawal.Props[]",
+        name: "",
+        type: "tuple[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "address", name: "glv", type: "address" },
     ],
-    "name": "getAccountGlvWithdrawals",
-    "outputs": [
+    name: "getGlv",
+    outputs: [
       {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "market",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "callbackContract",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "uiFeeReceiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address[]",
-                "name": "longTokenSwapPath",
-                "type": "address[]"
-              },
-              {
-                "internalType": "address[]",
-                "name": "shortTokenSwapPath",
-                "type": "address[]"
-              }
-            ],
-            "internalType": "struct GlvWithdrawal.Addresses",
-            "name": "addresses",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "glvTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minLongTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minShortTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "executionFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "callbackGasLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "srcChainId",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct GlvWithdrawal.Numbers",
-            "name": "numbers",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "shouldUnwrapNativeToken",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct GlvWithdrawal.Flags",
-            "name": "flags",
-            "type": "tuple"
-          },
-          {
-            "internalType": "bytes32[]",
-            "name": "_dataList",
-            "type": "bytes32[]"
-          }
+        components: [
+          { internalType: "address", name: "glvToken", type: "address" },
+          { internalType: "address", name: "longToken", type: "address" },
+          { internalType: "address", name: "shortToken", type: "address" },
         ],
-        "internalType": "struct GlvWithdrawal.Props[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+        internalType: "struct Glv.Props",
+        name: "",
+        type: "tuple",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "glv",
-        "type": "address"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "bytes32", name: "salt", type: "bytes32" },
     ],
-    "name": "getGlv",
-    "outputs": [
+    name: "getGlvBySalt",
+    outputs: [
       {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "glvToken",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "longToken",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "shortToken",
-            "type": "address"
-          }
+        components: [
+          { internalType: "address", name: "glvToken", type: "address" },
+          { internalType: "address", name: "longToken", type: "address" },
+          { internalType: "address", name: "shortToken", type: "address" },
         ],
-        "internalType": "struct Glv.Props",
-        "name": "",
-        "type": "tuple"
-      }
+        internalType: "struct Glv.Props",
+        name: "",
+        type: "tuple",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "salt",
-        "type": "bytes32"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "bytes32", name: "key", type: "bytes32" },
     ],
-    "name": "getGlvBySalt",
-    "outputs": [
+    name: "getGlvDeposit",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "internalType": "address",
-            "name": "glvToken",
-            "type": "address"
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "account", type: "address" },
+              { internalType: "address", name: "receiver", type: "address" },
+              { internalType: "address", name: "callbackContract", type: "address" },
+              { internalType: "address", name: "uiFeeReceiver", type: "address" },
+              { internalType: "address", name: "market", type: "address" },
+              { internalType: "address", name: "initialLongToken", type: "address" },
+              { internalType: "address", name: "initialShortToken", type: "address" },
+              { internalType: "address[]", name: "longTokenSwapPath", type: "address[]" },
+              { internalType: "address[]", name: "shortTokenSwapPath", type: "address[]" },
+            ],
+            internalType: "struct GlvDeposit.Addresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
-            "internalType": "address",
-            "name": "longToken",
-            "type": "address"
+            components: [
+              { internalType: "uint256", name: "marketTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "initialLongTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "initialShortTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minGlvTokens", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
+              { internalType: "uint256", name: "executionFee", type: "uint256" },
+              { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+              { internalType: "uint256", name: "srcChainId", type: "uint256" },
+            ],
+            internalType: "struct GlvDeposit.Numbers",
+            name: "numbers",
+            type: "tuple",
           },
           {
-            "internalType": "address",
-            "name": "shortToken",
-            "type": "address"
-          }
+            components: [
+              { internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" },
+              { internalType: "bool", name: "isMarketTokenDeposit", type: "bool" },
+            ],
+            internalType: "struct GlvDeposit.Flags",
+            name: "flags",
+            type: "tuple",
+          },
+          { internalType: "bytes32[]", name: "_dataList", type: "bytes32[]" },
         ],
-        "internalType": "struct Glv.Props",
-        "name": "",
-        "type": "tuple"
-      }
+        internalType: "struct GlvDeposit.Props",
+        name: "",
+        type: "tuple",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "key",
-        "type": "bytes32"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
     ],
-    "name": "getGlvDeposit",
-    "outputs": [
+    name: "getGlvDeposits",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "callbackContract",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "uiFeeReceiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "market",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "initialLongToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "initialShortToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address[]",
-                "name": "longTokenSwapPath",
-                "type": "address[]"
-              },
-              {
-                "internalType": "address[]",
-                "name": "shortTokenSwapPath",
-                "type": "address[]"
-              }
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "account", type: "address" },
+              { internalType: "address", name: "receiver", type: "address" },
+              { internalType: "address", name: "callbackContract", type: "address" },
+              { internalType: "address", name: "uiFeeReceiver", type: "address" },
+              { internalType: "address", name: "market", type: "address" },
+              { internalType: "address", name: "initialLongToken", type: "address" },
+              { internalType: "address", name: "initialShortToken", type: "address" },
+              { internalType: "address[]", name: "longTokenSwapPath", type: "address[]" },
+              { internalType: "address[]", name: "shortTokenSwapPath", type: "address[]" },
             ],
-            "internalType": "struct GlvDeposit.Addresses",
-            "name": "addresses",
-            "type": "tuple"
+            internalType: "struct GlvDeposit.Addresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "marketTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "initialLongTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "initialShortTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minGlvTokens",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "executionFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "callbackGasLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "srcChainId",
-                "type": "uint256"
-              }
+            components: [
+              { internalType: "uint256", name: "marketTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "initialLongTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "initialShortTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minGlvTokens", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
+              { internalType: "uint256", name: "executionFee", type: "uint256" },
+              { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+              { internalType: "uint256", name: "srcChainId", type: "uint256" },
             ],
-            "internalType": "struct GlvDeposit.Numbers",
-            "name": "numbers",
-            "type": "tuple"
+            internalType: "struct GlvDeposit.Numbers",
+            name: "numbers",
+            type: "tuple",
           },
           {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "shouldUnwrapNativeToken",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isMarketTokenDeposit",
-                "type": "bool"
-              }
+            components: [
+              { internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" },
+              { internalType: "bool", name: "isMarketTokenDeposit", type: "bool" },
             ],
-            "internalType": "struct GlvDeposit.Flags",
-            "name": "flags",
-            "type": "tuple"
+            internalType: "struct GlvDeposit.Flags",
+            name: "flags",
+            type: "tuple",
           },
-          {
-            "internalType": "bytes32[]",
-            "name": "_dataList",
-            "type": "bytes32[]"
-          }
+          { internalType: "bytes32[]", name: "_dataList", type: "bytes32[]" },
         ],
-        "internalType": "struct GlvDeposit.Props",
-        "name": "",
-        "type": "tuple"
-      }
+        internalType: "struct GlvDeposit.Props[]",
+        name: "",
+        type: "tuple[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "address", name: "glv", type: "address" },
     ],
-    "name": "getGlvDeposits",
-    "outputs": [
+    name: "getGlvInfo",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "callbackContract",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "uiFeeReceiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "market",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "initialLongToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "initialShortToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address[]",
-                "name": "longTokenSwapPath",
-                "type": "address[]"
-              },
-              {
-                "internalType": "address[]",
-                "name": "shortTokenSwapPath",
-                "type": "address[]"
-              }
+            components: [
+              { internalType: "address", name: "glvToken", type: "address" },
+              { internalType: "address", name: "longToken", type: "address" },
+              { internalType: "address", name: "shortToken", type: "address" },
             ],
-            "internalType": "struct GlvDeposit.Addresses",
-            "name": "addresses",
-            "type": "tuple"
+            internalType: "struct Glv.Props",
+            name: "glv",
+            type: "tuple",
           },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "marketTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "initialLongTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "initialShortTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minGlvTokens",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "executionFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "callbackGasLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "srcChainId",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct GlvDeposit.Numbers",
-            "name": "numbers",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "shouldUnwrapNativeToken",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "isMarketTokenDeposit",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct GlvDeposit.Flags",
-            "name": "flags",
-            "type": "tuple"
-          },
-          {
-            "internalType": "bytes32[]",
-            "name": "_dataList",
-            "type": "bytes32[]"
-          }
+          { internalType: "address[]", name: "markets", type: "address[]" },
         ],
-        "internalType": "struct GlvDeposit.Props[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+        internalType: "struct GlvReader.GlvInfo",
+        name: "",
+        type: "tuple",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "glv",
-        "type": "address"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
     ],
-    "name": "getGlvInfo",
-    "outputs": [
+    name: "getGlvInfoList",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glvToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "longToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "shortToken",
-                "type": "address"
-              }
+            components: [
+              { internalType: "address", name: "glvToken", type: "address" },
+              { internalType: "address", name: "longToken", type: "address" },
+              { internalType: "address", name: "shortToken", type: "address" },
             ],
-            "internalType": "struct Glv.Props",
-            "name": "glv",
-            "type": "tuple"
+            internalType: "struct Glv.Props",
+            name: "glv",
+            type: "tuple",
           },
-          {
-            "internalType": "address[]",
-            "name": "markets",
-            "type": "address[]"
-          }
+          { internalType: "address[]", name: "markets", type: "address[]" },
         ],
-        "internalType": "struct GlvReader.GlvInfo",
-        "name": "",
-        "type": "tuple"
-      }
+        internalType: "struct GlvReader.GlvInfo[]",
+        name: "",
+        type: "tuple[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "bytes32", name: "key", type: "bytes32" },
     ],
-    "name": "getGlvInfoList",
-    "outputs": [
+    name: "getGlvShift",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glvToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "longToken",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "shortToken",
-                "type": "address"
-              }
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "fromMarket", type: "address" },
+              { internalType: "address", name: "toMarket", type: "address" },
             ],
-            "internalType": "struct Glv.Props",
-            "name": "glv",
-            "type": "tuple"
+            internalType: "struct GlvShift.Addresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
-            "internalType": "address[]",
-            "name": "markets",
-            "type": "address[]"
-          }
+            components: [
+              { internalType: "uint256", name: "marketTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minMarketTokens", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
+            ],
+            internalType: "struct GlvShift.Numbers",
+            name: "numbers",
+            type: "tuple",
+          },
         ],
-        "internalType": "struct GlvReader.GlvInfo[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+        internalType: "struct GlvShift.Props",
+        name: "",
+        type: "tuple",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "key",
-        "type": "bytes32"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
     ],
-    "name": "getGlvShift",
-    "outputs": [
+    name: "getGlvShifts",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "fromMarket",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "toMarket",
-                "type": "address"
-              }
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "fromMarket", type: "address" },
+              { internalType: "address", name: "toMarket", type: "address" },
             ],
-            "internalType": "struct GlvShift.Addresses",
-            "name": "addresses",
-            "type": "tuple"
+            internalType: "struct GlvShift.Addresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "marketTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minMarketTokens",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              }
+            components: [
+              { internalType: "uint256", name: "marketTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minMarketTokens", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
             ],
-            "internalType": "struct GlvShift.Numbers",
-            "name": "numbers",
-            "type": "tuple"
-          }
+            internalType: "struct GlvShift.Numbers",
+            name: "numbers",
+            type: "tuple",
+          },
         ],
-        "internalType": "struct GlvShift.Props",
-        "name": "",
-        "type": "tuple"
-      }
+        internalType: "struct GlvShift.Props[]",
+        name: "",
+        type: "tuple[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "address[]", name: "marketAddresses", type: "address[]" },
       {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
-      }
-    ],
-    "name": "getGlvShifts",
-    "outputs": [
-      {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "fromMarket",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "toMarket",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct GlvShift.Addresses",
-            "name": "addresses",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "marketTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minMarketTokens",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct GlvShift.Numbers",
-            "name": "numbers",
-            "type": "tuple"
-          }
+        components: [
+          { internalType: "uint256", name: "min", type: "uint256" },
+          { internalType: "uint256", name: "max", type: "uint256" },
         ],
-        "internalType": "struct GlvShift.Props[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+        internalType: "struct Price.Props[]",
+        name: "indexTokenPrices",
+        type: "tuple[]",
+      },
+      {
+        components: [
+          { internalType: "uint256", name: "min", type: "uint256" },
+          { internalType: "uint256", name: "max", type: "uint256" },
+        ],
+        internalType: "struct Price.Props",
+        name: "longTokenPrice",
+        type: "tuple",
+      },
+      {
+        components: [
+          { internalType: "uint256", name: "min", type: "uint256" },
+          { internalType: "uint256", name: "max", type: "uint256" },
+        ],
+        internalType: "struct Price.Props",
+        name: "shortTokenPrice",
+        type: "tuple",
+      },
+      { internalType: "address", name: "glv", type: "address" },
+      { internalType: "bool", name: "maximize", type: "bool" },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    name: "getGlvTokenPrice",
+    outputs: [
+      { internalType: "uint256", name: "", type: "uint256" },
+      { internalType: "uint256", name: "", type: "uint256" },
+      { internalType: "uint256", name: "", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "address[]", name: "marketAddresses", type: "address[]" },
       {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "address[]",
-        "name": "marketAddresses",
-        "type": "address[]"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "min",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "max",
-            "type": "uint256"
-          }
+        components: [
+          { internalType: "uint256", name: "min", type: "uint256" },
+          { internalType: "uint256", name: "max", type: "uint256" },
         ],
-        "internalType": "struct Price.Props[]",
-        "name": "indexTokenPrices",
-        "type": "tuple[]"
+        internalType: "struct Price.Props[]",
+        name: "indexTokenPrices",
+        type: "tuple[]",
       },
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "min",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "max",
-            "type": "uint256"
-          }
+        components: [
+          { internalType: "uint256", name: "min", type: "uint256" },
+          { internalType: "uint256", name: "max", type: "uint256" },
         ],
-        "internalType": "struct Price.Props",
-        "name": "longTokenPrice",
-        "type": "tuple"
+        internalType: "struct Price.Props",
+        name: "longTokenPrice",
+        type: "tuple",
       },
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "min",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "max",
-            "type": "uint256"
-          }
+        components: [
+          { internalType: "uint256", name: "min", type: "uint256" },
+          { internalType: "uint256", name: "max", type: "uint256" },
         ],
-        "internalType": "struct Price.Props",
-        "name": "shortTokenPrice",
-        "type": "tuple"
+        internalType: "struct Price.Props",
+        name: "shortTokenPrice",
+        type: "tuple",
       },
-      {
-        "internalType": "address",
-        "name": "glv",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "maximize",
-        "type": "bool"
-      }
+      { internalType: "address", name: "glv", type: "address" },
+      { internalType: "bool", name: "maximize", type: "bool" },
     ],
-    "name": "getGlvTokenPrice",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    name: "getGlvValue",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "address[]",
-        "name": "marketAddresses",
-        "type": "address[]"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "min",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "max",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Price.Props[]",
-        "name": "indexTokenPrices",
-        "type": "tuple[]"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "min",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "max",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Price.Props",
-        "name": "longTokenPrice",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "min",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "max",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct Price.Props",
-        "name": "shortTokenPrice",
-        "type": "tuple"
-      },
-      {
-        "internalType": "address",
-        "name": "glv",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "maximize",
-        "type": "bool"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "bytes32", name: "key", type: "bytes32" },
     ],
-    "name": "getGlvValue",
-    "outputs": [
+    name: "getGlvWithdrawal",
+    outputs: [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
+        components: [
+          {
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "market", type: "address" },
+              { internalType: "address", name: "account", type: "address" },
+              { internalType: "address", name: "receiver", type: "address" },
+              { internalType: "address", name: "callbackContract", type: "address" },
+              { internalType: "address", name: "uiFeeReceiver", type: "address" },
+              { internalType: "address[]", name: "longTokenSwapPath", type: "address[]" },
+              { internalType: "address[]", name: "shortTokenSwapPath", type: "address[]" },
+            ],
+            internalType: "struct GlvWithdrawal.Addresses",
+            name: "addresses",
+            type: "tuple",
+          },
+          {
+            components: [
+              { internalType: "uint256", name: "glvTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minLongTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minShortTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
+              { internalType: "uint256", name: "executionFee", type: "uint256" },
+              { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+              { internalType: "uint256", name: "srcChainId", type: "uint256" },
+            ],
+            internalType: "struct GlvWithdrawal.Numbers",
+            name: "numbers",
+            type: "tuple",
+          },
+          {
+            components: [{ internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" }],
+            internalType: "struct GlvWithdrawal.Flags",
+            name: "flags",
+            type: "tuple",
+          },
+          { internalType: "bytes32[]", name: "_dataList", type: "bytes32[]" },
+        ],
+        internalType: "struct GlvWithdrawal.Props",
+        name: "",
+        type: "tuple",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "key",
-        "type": "bytes32"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
     ],
-    "name": "getGlvWithdrawal",
-    "outputs": [
+    name: "getGlvWithdrawals",
+    outputs: [
       {
-        "components": [
+        components: [
           {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "market",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "callbackContract",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "uiFeeReceiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address[]",
-                "name": "longTokenSwapPath",
-                "type": "address[]"
-              },
-              {
-                "internalType": "address[]",
-                "name": "shortTokenSwapPath",
-                "type": "address[]"
-              }
+            components: [
+              { internalType: "address", name: "glv", type: "address" },
+              { internalType: "address", name: "market", type: "address" },
+              { internalType: "address", name: "account", type: "address" },
+              { internalType: "address", name: "receiver", type: "address" },
+              { internalType: "address", name: "callbackContract", type: "address" },
+              { internalType: "address", name: "uiFeeReceiver", type: "address" },
+              { internalType: "address[]", name: "longTokenSwapPath", type: "address[]" },
+              { internalType: "address[]", name: "shortTokenSwapPath", type: "address[]" },
             ],
-            "internalType": "struct GlvWithdrawal.Addresses",
-            "name": "addresses",
-            "type": "tuple"
+            internalType: "struct GlvWithdrawal.Addresses",
+            name: "addresses",
+            type: "tuple",
           },
           {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "glvTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minLongTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minShortTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "executionFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "callbackGasLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "srcChainId",
-                "type": "uint256"
-              }
+            components: [
+              { internalType: "uint256", name: "glvTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minLongTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "minShortTokenAmount", type: "uint256" },
+              { internalType: "uint256", name: "updatedAtTime", type: "uint256" },
+              { internalType: "uint256", name: "executionFee", type: "uint256" },
+              { internalType: "uint256", name: "callbackGasLimit", type: "uint256" },
+              { internalType: "uint256", name: "srcChainId", type: "uint256" },
             ],
-            "internalType": "struct GlvWithdrawal.Numbers",
-            "name": "numbers",
-            "type": "tuple"
+            internalType: "struct GlvWithdrawal.Numbers",
+            name: "numbers",
+            type: "tuple",
           },
           {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "shouldUnwrapNativeToken",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct GlvWithdrawal.Flags",
-            "name": "flags",
-            "type": "tuple"
+            components: [{ internalType: "bool", name: "shouldUnwrapNativeToken", type: "bool" }],
+            internalType: "struct GlvWithdrawal.Flags",
+            name: "flags",
+            type: "tuple",
           },
-          {
-            "internalType": "bytes32[]",
-            "name": "_dataList",
-            "type": "bytes32[]"
-          }
+          { internalType: "bytes32[]", name: "_dataList", type: "bytes32[]" },
         ],
-        "internalType": "struct GlvWithdrawal.Props",
-        "name": "",
-        "type": "tuple"
-      }
+        internalType: "struct GlvWithdrawal.Props[]",
+        name: "",
+        type: "tuple[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
   {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
-      }
+    inputs: [
+      { internalType: "contract DataStore", name: "dataStore", type: "address" },
+      { internalType: "uint256", name: "start", type: "uint256" },
+      { internalType: "uint256", name: "end", type: "uint256" },
     ],
-    "name": "getGlvWithdrawals",
-    "outputs": [
+    name: "getGlvs",
+    outputs: [
       {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "address",
-                "name": "glv",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "market",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "callbackContract",
-                "type": "address"
-              },
-              {
-                "internalType": "address",
-                "name": "uiFeeReceiver",
-                "type": "address"
-              },
-              {
-                "internalType": "address[]",
-                "name": "longTokenSwapPath",
-                "type": "address[]"
-              },
-              {
-                "internalType": "address[]",
-                "name": "shortTokenSwapPath",
-                "type": "address[]"
-              }
-            ],
-            "internalType": "struct GlvWithdrawal.Addresses",
-            "name": "addresses",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "glvTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minLongTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "minShortTokenAmount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "updatedAtTime",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "executionFee",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "callbackGasLimit",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "srcChainId",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct GlvWithdrawal.Numbers",
-            "name": "numbers",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "bool",
-                "name": "shouldUnwrapNativeToken",
-                "type": "bool"
-              }
-            ],
-            "internalType": "struct GlvWithdrawal.Flags",
-            "name": "flags",
-            "type": "tuple"
-          },
-          {
-            "internalType": "bytes32[]",
-            "name": "_dataList",
-            "type": "bytes32[]"
-          }
+        components: [
+          { internalType: "address", name: "glvToken", type: "address" },
+          { internalType: "address", name: "longToken", type: "address" },
+          { internalType: "address", name: "shortToken", type: "address" },
         ],
-        "internalType": "struct GlvWithdrawal.Props[]",
-        "name": "",
-        "type": "tuple[]"
-      }
+        internalType: "struct Glv.Props[]",
+        name: "",
+        type: "tuple[]",
+      },
     ],
-    "stateMutability": "view",
-    "type": "function"
+    stateMutability: "view",
+    type: "function",
   },
-  {
-    "inputs": [
-      {
-        "internalType": "contract DataStore",
-        "name": "dataStore",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "end",
-        "type": "uint256"
-      }
-    ],
-    "name": "getGlvs",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "glvToken",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "longToken",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "shortToken",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct Glv.Props[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  }
 ] as const;

@@ -65,6 +65,3 @@ export function getIncentivesV2Url(chainId: number): string {
 
   return ARBITRUM_INCENTIVES_V2_URL;
 }
-
-export const GLP_REIMBURSEMENT_TERMS_URL =
-  "https://gateway.pinata.cloud/ipfs/bafkreiemqapoduhh2j5spg7ndmkqdx2l5s2uloqqcv4egu5qiy5oiv4kaq";

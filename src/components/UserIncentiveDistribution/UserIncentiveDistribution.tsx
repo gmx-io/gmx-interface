@@ -5,8 +5,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
-import { getIsGlv } from "config/markets";
+import { ARBITRUM, AVALANCHE_FUJI, getExplorerUrl } from "config/chains";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
@@ -33,7 +32,6 @@ import usePagination from "components/Referrals/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TokenIcon from "components/TokenIcon/TokenIcon";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -48,7 +46,6 @@ import ClaimableAmounts from "./ClaimableAmounts";
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
 function getNormalizedIncentive(
-  chainId: ContractsChainId,
   incentive: Distribution,
   tokens: Token[],
   gmMarkets: MarketsData | undefined,
@@ -69,13 +66,8 @@ function getNormalizedIncentive(
           )
         : BigInt(incentive.amountsInUsd?.[index] ?? 0);
 
-    let symbol: string | undefined = tokenInfo ? tokenInfo.symbol : marketToken?.name;
-    if (!symbol) {
-      symbol = getIsGlv(chainId, tokenAddress) ? "GLV" : undefined;
-    }
-
     return {
-      symbol,
+      symbol: tokenInfo ? tokenInfo.symbol : marketToken?.name,
       decimals: tokenInfo ? tokenInfo.decimals : GM_DECIMALS,
       amount: BigInt(incentive.amounts[index]),
       amountInUsd,
@@ -105,9 +97,9 @@ export default function UserIncentiveDistribution() {
   const normalizedIncentiveData: NormalizedIncentiveData[] = useMemo(
     () =>
       userIncentiveData?.data?.map((incentive) =>
-        getNormalizedIncentive(chainId, incentive, tokens, gmMarkets, marketTokensData)
+        getNormalizedIncentive(incentive, tokens, gmMarkets, marketTokensData)
       ) ?? [],
-    [userIncentiveData?.data, chainId, tokens, gmMarkets, marketTokensData]
+    [userIncentiveData?.data, tokens, gmMarkets, marketTokensData]
   );
 
   const { currentPage, getCurrentData, setCurrentPage, pageCount } = usePagination(
@@ -220,24 +212,15 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const tooltipData = INCENTIVE_TOOLTIP_MAP[String(typeId)];
 
   const renderTotalTooltipContent = useCallback(() => {
-    return tokenIncentiveDetails.map((tokenInfo) => {
-      const symbol = tokenInfo.symbol;
-
-      return (
-        <StatsTooltipRow
-          key={tokenInfo.id}
-          showDollar={false}
-          label={
-            <div className="flex items-center gap-4">
-              {symbol ? <TokenIcon symbol={symbol} displaySize={16} /> : null}
-              <span>{symbol}</span>
-            </div>
-          }
-          value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
-          valueClassName="numbers"
-        />
-      );
-    });
+    return tokenIncentiveDetails.map((tokenInfo) => (
+      <StatsTooltipRow
+        key={tokenInfo.id}
+        showDollar={false}
+        label={tokenInfo.symbol}
+        value={formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
+        valueClassName="numbers"
+      />
+    ));
   }, [tokenIncentiveDetails]);
   const renderTooltipTypeContent = useCallback(
     () =>

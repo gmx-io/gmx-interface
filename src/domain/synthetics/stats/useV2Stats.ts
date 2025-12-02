@@ -5,7 +5,6 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 import useV2FeesInfo from "./useV2FeesInfo";
 import { useMarketsInfoRequest } from "../markets";
-import { getOpenInterestForBalance } from "../markets/utils";
 import useUsers from "../stats/useUsers";
 import useVolumeInfo from "../stats/useVolumeInfo";
 import { useTokensDataRequest } from "../tokens";
@@ -37,11 +36,11 @@ export default function useV2Stats(chainId: ContractsChainId): DashboardOverview
     }, 0n);
 
     const totalLongInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc + getOpenInterestForBalance(market, true);
+      return acc + BigInt(market.longInterestUsd ?? 0);
     }, 0n);
 
     const totalShortInterestUsd = allMarkets.reduce((acc, market) => {
-      return acc + getOpenInterestForBalance(market, false);
+      return acc + BigInt(market.shortInterestUsd ?? 0);
     }, 0n);
 
     return {
