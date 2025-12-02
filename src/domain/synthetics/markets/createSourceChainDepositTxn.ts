@@ -80,7 +80,7 @@ export async function createSourceChainDepositTxn({
     },
   };
 
-  const settlementChainTokenId = getMultichainTokenId(chainId, tokenAddress);
+  const settlementChainTokenId = getMultichainTokenId(chainId, unwrappedTokenAddress);
   const sourceChainTokenId = getMappedTokenId(chainId, unwrappedTokenAddress, srcChainId);
 
   if (!settlementChainTokenId || !sourceChainTokenId) {
