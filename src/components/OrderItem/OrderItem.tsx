@@ -35,7 +35,7 @@ import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/s
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd, MaxUint256 } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
@@ -428,7 +428,10 @@ function TriggerPrice({
       </span>
     );
 
-    return !isSetAcceptablePriceImpactEnabled ? (
+    const isDefaultAcceptablePrice =
+      positionOrder.acceptablePrice === 0n || positionOrder.acceptablePrice === MaxUint256;
+
+    return !isSetAcceptablePriceImpactEnabled || isDefaultAcceptablePrice ? (
       handle
     ) : (
       <TooltipWithPortal
@@ -488,6 +491,9 @@ function TriggerPrice({
       positionOrder?.indexToken?.visualMultiplier
     );
 
+    const isDefaultAcceptablePrice =
+      positionOrder.acceptablePrice === 0n || positionOrder.acceptablePrice === MaxUint256;
+
     const handle = (
       <span>
         {positionOrder.triggerThresholdType}{" "}
@@ -497,7 +503,7 @@ function TriggerPrice({
         })}
       </span>
     );
-    return !isSetAcceptablePriceImpactEnabled ? (
+    return !isSetAcceptablePriceImpactEnabled || isDefaultAcceptablePrice ? (
       handle
     ) : (
       <TooltipWithPortal
