@@ -34,8 +34,9 @@ export function MarketPoolSelectorRow() {
             tradeType={tradeType}
             positionStats={relatedMarketsPositionStats}
             onSelect={setMarketAddress}
-            handleClassName="whitespace-nowrap text-12"
-            chevronClassName="w-10"
+            handleClassName="inline-block overflow-hidden text-ellipsis whitespace-nowrap text-12"
+            chevronClassName="w-12 text-typography-secondary max-lg:ml-4"
+            wrapperClassName="overflow-hidden"
           />
         }
       />

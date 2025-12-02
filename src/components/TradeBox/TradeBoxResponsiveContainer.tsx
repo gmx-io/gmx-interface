@@ -17,7 +17,7 @@ export function TradeBoxResponsiveContainer() {
   }
 
   return (
-    <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox">
+    <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox" hideChevron>
       <TradeBox isMobile={isTablet} />
     </Curtain>
   );

@@ -38,6 +38,8 @@ type Props = {
   handleClassName?: string;
   // eslint-disable-next-line react/no-unused-prop-types
   chevronClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  wrapperClassName?: string;
 };
 
 export function PoolSelector2(props: Props) {
@@ -52,6 +54,7 @@ export function PoolSelector2(props: Props) {
       qa="pool-selector"
       handleClassName={props.handleClassName}
       chevronClassName={props.chevronClassName}
+      wrapperClassName={props.wrapperClassName}
     >
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </SelectorBase>

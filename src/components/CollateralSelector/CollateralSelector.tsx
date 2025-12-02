@@ -43,7 +43,7 @@ export function CollateralSelector(props: Props) {
       label={props.selectedTokenSymbol}
       modalLabel={t`Collateral In`}
       qa="collateral-in-selector"
-      chevronClassName="w-10"
+      chevronClassName="w-12 text-typography-secondary max-lg:ml-4"
       handleClassName="text-12"
     >
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}

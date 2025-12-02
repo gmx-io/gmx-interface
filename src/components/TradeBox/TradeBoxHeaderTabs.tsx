@@ -15,8 +15,11 @@ import { useLocalizedMap } from "lib/i18n";
 import { LeverageField } from "components/LeverageField/LeverageField";
 import { SwipeTabs } from "components/SwipeTabs/SwipeTabs";
 import Tabs from "components/Tabs/Tabs";
+import { useIsCurtainOpen } from "components/TradeBox/Curtain";
 import { MarketPoolSelectorRow } from "components/TradeBox/MarketPoolSelectorRow";
 import { CollateralSelectorRow } from "components/TradeBox/TradeBoxRows/CollateralSelectorRow";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import {
   mobileTradeTypeClassNames,
@@ -88,11 +91,11 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         </div>
       ) : null}
 
-      <div className="grow">
+      <div className="grow overflow-hidden">
         <MarketPoolSelectorRow />
       </div>
 
-      <div className="grow">
+      <div className="grow overflow-hidden">
         <CollateralSelectorRow
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           onSelectCollateralAddress={onSelectCollateralAddress}
@@ -108,11 +111,18 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     </div>
   ) : null;
 
+  const [isCurtainOpen, setIsCurtainOpen] = useIsCurtainOpen();
+
+  const handleToggleCurtain = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsCurtainOpen(!isCurtainOpen);
+  };
+
   if (!isInCurtain) {
     return (
       <>
         {fieldsRow}
-        <div className="flex flex-col gap-8 bg-slate-900 p-12">
+        <div className="flex flex-col gap-8 bg-slate-900 p-12 pb-0">
           <div className="flex items-stretch gap-12">
             <Tabs
               options={longShortTabsOptions}
@@ -138,18 +148,29 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   }
 
   return (
-    <div className="flex flex-col gap-8 bg-slate-900">
-      <div className="p-12">{fields}</div>
-      <div className="border-b-1/2 border-t-1/2 border-slate-600">
-        <SwipeTabs
-          options={OPTIONS}
-          optionLabels={localizedTradeTypeLabels}
-          option={tradeType}
-          onChange={onTradeTypeChange}
-          optionClassnames={mobileTradeTypeClassNames}
-          optionContentClassnames={mobileTradeTypeContentClassNames}
-          qa="trade-direction"
-        />
+    <div className="flex flex-col bg-slate-900">
+      {isCurtainOpen ? <div className="p-12">{fields}</div> : null}
+      <div className="flex border-b-1/2 border-t-1/2 border-slate-600 pr-8">
+        <div className="grow">
+          <SwipeTabs
+            options={OPTIONS}
+            optionLabels={localizedTradeTypeLabels}
+            option={tradeType}
+            onChange={onTradeTypeChange}
+            optionClassnames={mobileTradeTypeClassNames}
+            optionContentClassnames={mobileTradeTypeContentClassNames}
+            qa="trade-direction"
+          />
+        </div>
+
+        <button onClick={handleToggleCurtain} className="group shrink-0 px-10">
+          <ChevronDownIcon
+            className={cx(
+              "size-18 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
+              isCurtainOpen ? undefined : "rotate-180"
+            )}
+          />
+        </button>
       </div>
     </div>
   );

@@ -40,10 +40,22 @@ export function CollateralSelectorRow(p: Props) {
     <div className="flex flex-col gap-8">
       <BlockField
         label={
-          <TooltipWithPortal position="bottom-end" content={collateralInTooltipContent} variant="none">
-            <Trans>Collateral</Trans>
+          <TooltipWithPortal
+            position="bottom-end"
+            content={collateralInTooltipContent}
+            variant="none"
+            className="overflow-hidden"
+            handleClassName="!flex overflow-hidden"
+            contentClassName="overflow-hidden"
+          >
+            <span className="overflow-hidden text-ellipsis">
+              <Trans>Collateral</Trans>
+            </span>
           </TooltipWithPortal>
         }
+        labelClassName="overflow-hidden shrink-1 grow-0 flex"
+        contentClassName="shrink-0 min-w-[unset]"
+        className="overflow-hidden"
         content={
           <CollateralSelector
             onSelect={onSelectCollateralAddress}
