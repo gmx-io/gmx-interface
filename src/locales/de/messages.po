@@ -1494,6 +1494,10 @@ msgstr "Du wirst {indexSymbol} long von deiner Long-Position sein, während du {
 msgid "Failed to update order(s)"
 msgstr "Aktualisierung der Order(s) fehlgeschlagen"
 
+#: src/components/PoolSelector2/PoolSelector2.tsx
+msgid "Best Pool"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4628,6 +4632,11 @@ msgstr "Swap-Markt: Tausche Token zum aktuellen Marktpreis."
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/KAP"
+
+#: src/domain/synthetics/trade/usePoolSelection.ts
+#: src/domain/synthetics/trade/usePoolSelection.ts
+msgid "Best pool"
+msgstr ""
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx

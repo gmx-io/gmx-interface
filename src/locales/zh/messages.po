@@ -1494,6 +1494,10 @@ msgstr "您将从多头仓位做多 {indexSymbol}，同时从 {collateralSymbol}
 msgid "Failed to update order(s)"
 msgstr "更新订单失败"
 
+#: src/components/PoolSelector2/PoolSelector2.tsx
+msgid "Best Pool"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4628,6 +4632,11 @@ msgstr "交换市场：以当前市场价格交换代币。"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/上限"
+
+#: src/domain/synthetics/trade/usePoolSelection.ts
+#: src/domain/synthetics/trade/usePoolSelection.ts
+msgid "Best pool"
+msgstr ""
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx

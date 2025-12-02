@@ -1494,6 +1494,10 @@ msgstr "Вы будете в лонге {indexSymbol} из вашей длинн
 msgid "Failed to update order(s)"
 msgstr "Не удалось обновить ордер(а)"
 
+#: src/components/PoolSelector2/PoolSelector2.tsx
+msgid "Best Pool"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4628,6 +4632,11 @@ msgstr "Рыночный обмен: Обмен токенов по текуще
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/КАП"
+
+#: src/domain/synthetics/trade/usePoolSelection.ts
+#: src/domain/synthetics/trade/usePoolSelection.ts
+msgid "Best pool"
+msgstr ""
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx

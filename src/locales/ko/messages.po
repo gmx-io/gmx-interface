@@ -1494,6 +1494,10 @@ msgstr "롱 포지션에서 {indexSymbol} 롱이 되고, {collateralSymbol} 담�
 msgid "Failed to update order(s)"
 msgstr "주문 업데이트 실패"
 
+#: src/components/PoolSelector2/PoolSelector2.tsx
+msgid "Best Pool"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4628,6 +4632,11 @@ msgstr "스왑 시장: 현재 시장 가격으로 토큰 스왑."
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/수용량"
+
+#: src/domain/synthetics/trade/usePoolSelection.ts
+#: src/domain/synthetics/trade/usePoolSelection.ts
+msgid "Best pool"
+msgstr ""
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx

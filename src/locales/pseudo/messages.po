@@ -1494,6 +1494,10 @@ msgstr ""
 msgid "Failed to update order(s)"
 msgstr ""
 
+#: src/components/PoolSelector2/PoolSelector2.tsx
+msgid "Best Pool"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -4627,6 +4631,11 @@ msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
+msgstr ""
+
+#: src/domain/synthetics/trade/usePoolSelection.ts
+#: src/domain/synthetics/trade/usePoolSelection.ts
+msgid "Best pool"
 msgstr ""
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
