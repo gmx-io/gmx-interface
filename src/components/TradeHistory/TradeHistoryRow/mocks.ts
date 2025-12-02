@@ -389,7 +389,7 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Avalanche",
@@ -866,7 +866,7 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Avalanche",
@@ -1339,7 +1339,7 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Dogecoin",
@@ -1811,7 +1811,7 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -2274,7 +2274,7 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Ethereum",
@@ -2745,7 +2745,7 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -3227,7 +3227,7 @@ export const executeOrderDecreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Uniswap",
@@ -3719,7 +3719,7 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Arbitrum",
@@ -4209,7 +4209,7 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -4683,7 +4683,7 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "XRP",
@@ -5162,7 +5162,7 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Chainlink",
@@ -5703,7 +5703,7 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Ethereum",
@@ -6277,7 +6277,7 @@ export const createOrderStopMarketLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",
@@ -6503,7 +6503,7 @@ export const executeOrderStopMarketLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    useOpenInterestInTokensForBalance: false,
+    useOpenInterestInTokensForBalance: true,
   } satisfies ToMock<MarketInfo>,
   indexToken: {
     name: "Bitcoin",

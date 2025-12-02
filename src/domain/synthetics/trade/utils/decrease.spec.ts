@@ -114,7 +114,7 @@ const marketInfo: MarketInfo = {
   maxLendableImpactUsd: BigInt("0x00"),
   positionImpactExponentFactorPositive: BigInt("0x193e5939a08ce9dbd480000000"),
   positionImpactExponentFactorNegative: BigInt("0x193e5939a08ce9dbd480000000"),
-  useOpenInterestInTokensForBalance: false,
+  useOpenInterestInTokensForBalance: true,
   swapFeeFactorForBalanceWasImproved: BigInt("0x019d971e4fe8401e74000000"),
   swapFeeFactorForBalanceWasNotImproved: BigInt("0x024306c4097859c43c000000"),
   swapImpactFactorPositive: BigInt("0x0ad78ebc5ac6200000"),
