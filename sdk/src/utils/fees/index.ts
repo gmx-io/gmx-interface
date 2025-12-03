@@ -4,6 +4,7 @@ import { MarketInfo } from "types/markets";
 import { SwapPricingType } from "types/orders";
 import { SwapStats } from "types/trade";
 import { bigMath } from "utils/bigmath";
+import { getOpenInterestForBalance } from "utils/markets";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
 
 export * from "./estimateOraclePriceCount";
@@ -65,7 +66,10 @@ export function getPositionFee(
 }
 
 export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
-  const { fundingFactorPerSecond, longsPayShorts, longInterestUsd, shortInterestUsd } = marketInfo;
+  const { fundingFactorPerSecond, longsPayShorts } = marketInfo;
+
+  const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
+  const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
 
   const payingInterestUsd = longsPayShorts ? longInterestUsd : shortInterestUsd;
   const receivingInterestUsd = longsPayShorts ? shortInterestUsd : longInterestUsd;

@@ -30,44 +30,39 @@ export const useClaimExecutionFee = ({
   const gasPrice = useGasPrice(chainId);
 
   const enabled = useMemo(() => {
-    if (
-      gasPrice === undefined ||
-      claimableAmountsDataByDistributionId === undefined ||
-      claimsConfigByDistributionId === undefined ||
-      signer === undefined ||
-      account === undefined ||
-      selectedDistributionIds.length === 0
-    ) {
-      return false;
-    }
-
-    return selectedDistributionIds.every((distributionId) => {
-      if (claimsConfigByDistributionId[distributionId]?.claimTerms) {
-        return signatures[distributionId] !== undefined;
-      }
-
-      return true;
-    });
+    return (
+      gasPrice !== undefined &&
+      claimableAmountsDataByDistributionId !== undefined &&
+      claimsConfigByDistributionId !== undefined &&
+      signer !== undefined &&
+      account !== undefined &&
+      selectedDistributionIds.length > 0
+    );
   }, [
-    signatures,
-    selectedDistributionIds,
     gasPrice,
     claimsConfigByDistributionId,
     claimableAmountsDataByDistributionId,
     signer,
     account,
+    selectedDistributionIds.length,
   ]);
 
   return useSWR(enabled ? [account, selectedDistributionIds, chainId, signer] : null, {
     refreshInterval: undefined,
     fetcher: async () => {
-      if (claimableAmountsDataByDistributionId === undefined || signer === undefined || account === undefined) {
+      if (
+        claimableAmountsDataByDistributionId === undefined ||
+        claimsConfigByDistributionId === undefined ||
+        signer === undefined ||
+        account === undefined
+      ) {
         return 0n;
       }
 
       const callData = getClaimTransactionCallData({
         selectedDistributionIds,
         claimableAmountsDataByDistributionId,
+        claimsConfigByDistributionId,
         account,
         signatures,
       });

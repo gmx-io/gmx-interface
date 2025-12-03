@@ -218,6 +218,17 @@ export function getOpenInterestInTokens(marketInfo: MarketInfo, isLong: boolean)
   return isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
 }
 
+export function getOpenInterestForBalance(marketInfo: MarketInfo, isLong: boolean): bigint {
+  if (marketInfo.useOpenInterestInTokensForBalance) {
+    const interestInTokens = isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
+    const indexTokenPrice = getMidPrice(marketInfo.indexToken.prices);
+
+    return convertToUsd(interestInTokens, marketInfo.indexToken.decimals, indexTokenPrice)!;
+  }
+
+  return isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
+}
+
 export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: boolean) {
   // for long positions, pick the larger price to maximize pnl
   // for short positions, pick the smaller price to maximize pnl
