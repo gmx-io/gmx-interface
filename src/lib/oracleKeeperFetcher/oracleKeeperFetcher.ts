@@ -89,7 +89,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
     const endpoints = this.oracleTracker.getCurrentEndpoints();
 
     return withFallback({
-      retryCount: 0,
       endpoints: [endpoints.primary, ...endpoints.fallbacks],
       fn: (endpoint) => {
         if (opts.debugId) {

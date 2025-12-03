@@ -1,112 +1,59 @@
 type WithFallbackOptions<TReturn, TEndpoint> = {
   fn: (endpoint: TEndpoint) => Promise<TReturn>;
-  retryCount: number;
-  shouldRetry?: (error?: Error, result?: TReturn) => boolean;
   shouldFallback?: (error?: Error, result?: TReturn) => boolean;
   endpoints: TEndpoint[];
   onFallback?: (ctx: WithFallbackContext<TEndpoint>) => void;
-  onRetry?: (ctx: WithFallbackContext<TEndpoint>) => void;
 };
 
 export type WithFallbackContext<TEndpoint> = {
   endpoint: TEndpoint;
-  retryCount: number;
   fallbacks: TEndpoint[];
 };
 
-// Maximum recursion depth to prevent stack overflow
-// Calculated as: retryCount × endpoints.length (worst case: all retries + all fallbacks)
-const MAX_RECURSION_DEPTH = 30;
-
-export function withFallback<TReturn, TEndpoint>({
+export async function withFallback<TReturn, TEndpoint>({
   fn,
-  shouldRetry,
   shouldFallback,
   onFallback,
-  onRetry,
-  retryCount,
-  endpoints: fallbacks,
-}: WithFallbackOptions<TReturn, TEndpoint>) {
-  if (retryCount < 0) {
-    throw new Error("retryCount must be >= 0");
-  }
-
-  if (fallbacks.length === 0) {
+  endpoints,
+}: WithFallbackOptions<TReturn, TEndpoint>): Promise<TReturn> {
+  if (endpoints.length === 0) {
     throw new Error("At least one endpoint is required");
   }
 
-  let recursionDepth = 0;
+  for (const [i, endpoint] of endpoints.entries()) {
+    const isLast = i === endpoints.length - 1;
+    const remainingFallbacks = isLast ? [] : endpoints.slice(i + 1);
 
-  const call = (ctx: { endpoint: TEndpoint; retryCount: number; fallbacks: TEndpoint[] }) => {
-    recursionDepth++;
+    try {
+      const result = await fn(endpoint);
 
-    const handleResult = (error?: Error, result?: TReturn) => {
-      const needRetry = typeof shouldRetry === "function" ? shouldRetry(error) : Boolean(error);
-      const isLastRetry = ctx.retryCount == 0;
+      const needFallback = typeof shouldFallback === "function" ? shouldFallback(undefined, result) : false;
 
-      if (needRetry && !isLastRetry) {
-        if (recursionDepth >= MAX_RECURSION_DEPTH) {
-          if (error) {
-            return Promise.reject(error);
-          }
-          return Promise.resolve(result);
-        }
-
-        onRetry?.(ctx);
-
-        return call({
-          retryCount: ctx.retryCount - 1,
-          fallbacks: ctx.fallbacks,
-          endpoint: ctx.endpoint,
+      if (needFallback && !isLast) {
+        onFallback?.({
+          endpoint,
+          fallbacks: remainingFallbacks,
         });
+        continue;
       }
 
-      const needFallback = typeof shouldFallback === "function" ? shouldFallback(error) : Boolean(error);
-      const isLastFallback = ctx.fallbacks.length == 0;
+      return result;
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error(String(error));
 
-      if (needFallback && !isLastFallback) {
-        if (recursionDepth >= MAX_RECURSION_DEPTH) {
-          if (error) {
-            return Promise.reject(error);
-          }
-          return Promise.resolve(result);
-        }
+      const needFallback = typeof shouldFallback === "function" ? shouldFallback(err) : true;
 
-        const nextFallback = ctx.fallbacks[0];
-        const nextFallbacks = ctx.fallbacks.slice(1);
-
-        onFallback?.(ctx);
-
-        return call({
-          // reset retry count on fallback
-          retryCount: retryCount,
-          fallbacks: nextFallbacks,
-          endpoint: nextFallback,
+      if (needFallback && !isLast) {
+        onFallback?.({
+          endpoint,
+          fallbacks: remainingFallbacks,
         });
+        continue;
       }
 
-      // Reset recursion depth on final resolution (success or final error)
-      if (error) {
-        recursionDepth = 0;
-        return Promise.reject(error);
-      }
+      throw err;
+    }
+  }
 
-      recursionDepth = 0;
-      return Promise.resolve(result);
-    };
-
-    return fn(ctx.endpoint)
-      .then((result) => {
-        return handleResult(undefined, result);
-      })
-      .catch((error) => {
-        return handleResult(error);
-      });
-  };
-
-  return call({
-    retryCount: retryCount,
-    endpoint: fallbacks[0],
-    fallbacks: fallbacks.slice(1),
-  });
+  throw new Error("All endpoints failed") as never;
 }

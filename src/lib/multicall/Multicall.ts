@@ -251,7 +251,6 @@ export class Multicall {
     };
 
     return withFallback({
-      retryCount: 0,
       endpoints: [providerUrl, ...providerUrls.fallbacks],
       onFallback: () => {
         if (!this.abFlags.testRpcFallbackUpdates) {
