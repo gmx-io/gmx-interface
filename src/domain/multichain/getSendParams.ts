@@ -27,6 +27,7 @@ export function getMultichainTransferSendParams({
   isToGmx,
   action,
   isManualGas = false,
+  nativeDropAmount = 0n,
 }: {
   dstChainId: AnyChainId;
   account: string;
@@ -36,6 +37,7 @@ export function getMultichainTransferSendParams({
   isToGmx: boolean;
   isManualGas?: boolean;
   action?: MultichainAction;
+  nativeDropAmount?: bigint;
 }): SendParam {
   const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
 
@@ -65,7 +67,7 @@ export function getMultichainTransferSendParams({
       throw new Error("Source chain is not supported");
     }
 
-    const data = action ? CodecUiHelper.encodeMultichainActionData(action) : undefined;
+    const data = action ? CodecUiHelper.encodeMultichainComposeActionData(action) : undefined;
 
     composeMsg = CodecUiHelper.encodeDepositMessage(account, data);
     const builder = Options.newOptions();
@@ -73,10 +75,10 @@ export function getMultichainTransferSendParams({
     if (isManualGas) {
       extraOptions = builder
         .addExecutorLzReceiveOption(LZ_RECEIVE_CUSTOM_GAS)
-        .addExecutorComposeOption(0, composeGas!, 0n)
+        .addExecutorComposeOption(0, composeGas!, nativeDropAmount)
         .toHex();
     } else {
-      extraOptions = builder.addExecutorComposeOption(0, composeGas!, 0).toHex();
+      extraOptions = builder.addExecutorComposeOption(0, composeGas!, nativeDropAmount).toHex();
     }
   } else {
     const builder = Options.newOptions();

@@ -128,7 +128,7 @@ export function usePoolsDetailsState({
   const [focusedInput, setFocusedInput] = useState<FocusedInput>("market");
 
   let [rawPaySource, setPaySource] = useLocalStorageSerializeKeySafe<GmPaySource>(
-    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, "paySource"],
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, "paySource"],
     "settlementChain"
   );
 

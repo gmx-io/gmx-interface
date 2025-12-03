@@ -53,7 +53,7 @@ import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSou
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
 import { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
-import { TokenBalanceType } from "domain/tokens";
+import { ERC20Address, NativeTokenSupportedAddress, TokenBalanceType } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
@@ -247,7 +247,8 @@ export const useDepositTransactions = ({
           throw new Error("Technical fees are not set");
         }
 
-        let tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
+        let tokenAddress: ERC20Address | NativeTokenSupportedAddress =
+          longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
         tokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 

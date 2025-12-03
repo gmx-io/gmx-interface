@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
+import { getChainName, getViemChain } from "config/chains";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
@@ -18,9 +19,15 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccount,
+  selectChainId,
+  selectSrcChainId,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
+import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
 import type { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvAndGmMarketsInfoData, MarketsInfoData } from "domain/synthetics/markets";
@@ -30,9 +37,11 @@ import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstim
 import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
+import { useChainId } from "lib/chains";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { GmSwapFees } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -176,6 +185,13 @@ export const useGmSwapSubmitState = ({
     shortTokenAmount,
   });
 
+  const sourceChainError = useSourceChainError({
+    networkFeeUsd:
+      logicalFees?.logicalNetworkFee?.deltaUsd !== undefined
+        ? bigMath.abs(logicalFees.logicalNetworkFee.deltaUsd)
+        : undefined,
+  });
+
   const formattedEstimationError = useMemo(() => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
@@ -188,7 +204,7 @@ export const useGmSwapSubmitState = ({
     return undefined;
   }, [estimationError, gasPaymentToken]);
 
-  const error = commonError || swapError || expressError || formattedEstimationError;
+  const error = commonError || swapError || expressError || sourceChainError || formattedEstimationError;
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove({
     routerAddress,
@@ -322,18 +338,6 @@ function useExpressError({
   shortTokenAmount: bigint | undefined;
 }): string | undefined {
   return useMemo(() => {
-    if (paySource === "sourceChain") {
-      if (gasPaymentToken && technicalFees && "relayFeeUsd" in technicalFees) {
-        const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
-
-        if (technicalFees.relayParamsPayload.fee.feeAmount > gmxAccountBalance) {
-          return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees`;
-        }
-      }
-
-      return undefined;
-    }
-
     if (paySource !== "gmxAccount" || !technicalFees || !gasPaymentToken || !gasPaymentTokenAddress) {
       return undefined;
     }
@@ -394,4 +398,35 @@ function useExpressError({
     longTokenAmount,
     shortTokenAmount,
   ]);
+}
+
+function useSourceChainError({ networkFeeUsd }: { networkFeeUsd: bigint | undefined }): string | undefined {
+  const { chainId, srcChainId } = useChainId();
+  const account = useSelector(selectAccount);
+  const paySource = useSelector(selectPoolsDetailsPaySource);
+  const sourceChainNativeTokenBalance = useNativeTokenBalance(srcChainId, account);
+  const sourceChainNativeTokenBalanceUsd = useNativeTokenMultichainUsd({
+    sourceChainId: srcChainId,
+    sourceChainTokenAmount: sourceChainNativeTokenBalance,
+    targetChainId: chainId,
+  });
+
+  return useMemo(() => {
+    if (
+      paySource !== "sourceChain" ||
+      srcChainId === undefined ||
+      networkFeeUsd === undefined ||
+      sourceChainNativeTokenBalanceUsd === undefined
+    ) {
+      return undefined;
+    }
+
+    const symbol = getViemChain(srcChainId).nativeCurrency.symbol;
+
+    if (sourceChainNativeTokenBalanceUsd < networkFeeUsd) {
+      return t`${symbol} balance on ${getChainName(srcChainId)} chain is insufficient to cover network fee`;
+    }
+
+    return undefined;
+  }, [paySource, srcChainId, networkFeeUsd, sourceChainNativeTokenBalanceUsd]);
 }

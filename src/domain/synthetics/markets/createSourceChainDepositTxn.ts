@@ -97,6 +97,7 @@ export async function createSourceChainDepositTxn({
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
     action,
+    nativeDropAmount: relayParams.fee.feeAmount,
   });
 
   let value = ensuredFees.txnEstimatedNativeFee;

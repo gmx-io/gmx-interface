@@ -146,7 +146,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         return undefined;
       }
 
-      const actionHash = CodecUiHelper.encodeMultichainActionData({
+      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
@@ -208,7 +208,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         return undefined;
       }
 
-      const actionHash = CodecUiHelper.encodeMultichainActionData({
+      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
@@ -256,7 +256,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   //#region GM Withdrawal
   if (isWithdrawal && !isGlv) {
     // Raw GM Withdrawal Params
-    if (!longTokenAddress || !shortTokenAddress) {
+    if (!longTokenAddress || !shortTokenAddress || !amounts) {
       return undefined;
     }
     const withdrawalAmounts = amounts as WithdrawalAmounts;
@@ -324,7 +324,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
       const providerData = numberToHex(dstEid, { size: 32 });
 
-      const actionHash = CodecUiHelper.encodeMultichainActionData({
+      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
@@ -369,7 +369,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
   //#region GLV Withdrawal
   if (isWithdrawal && isGlv) {
-    if (!longTokenAddress || !shortTokenAddress) {
+    if (!longTokenAddress || !shortTokenAddress || !amounts) {
       return undefined;
     }
 
@@ -442,7 +442,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
       const providerData = numberToHex(dstEid, { size: 32 });
 
-      const actionHash = CodecUiHelper.encodeMultichainActionData({
+      const actionHash = CodecUiHelper.encodeMultichainBridgeOutActionData({
         actionType: MultichainActionType.BridgeOut,
         actionData: {
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),

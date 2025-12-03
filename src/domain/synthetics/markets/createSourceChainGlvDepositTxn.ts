@@ -7,7 +7,7 @@ import { MultichainAction, MultichainActionType } from "domain/multichain/codecs
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
-import { GlobalExpressParams } from "domain/synthetics/express";
+import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import type { CreateGlvDepositParams, RawCreateGlvDepositParams } from "domain/synthetics/markets";
 import { adjustForDecimals } from "lib/numbers";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
@@ -65,12 +65,13 @@ export async function createSourceChainGlvDepositTxn({
       });
   const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
   const adjusterParams: CreateGlvDepositParams = { ...params, executionFee: ensuredFees.executionFee };
+  const relayParams: RelayParamsPayload = ensuredFees.relayParamsPayload;
 
   const signature = await signCreateGlvDeposit({
     chainId,
     srcChainId,
     signer,
-    relayParams: ensuredFees.relayParamsPayload,
+    relayParams,
     transferRequests,
     params: adjusterParams,
   });
@@ -78,7 +79,7 @@ export async function createSourceChainGlvDepositTxn({
   const action: MultichainAction = {
     actionType: MultichainActionType.GlvDeposit,
     actionData: {
-      relayParams: ensuredFees.relayParamsPayload,
+      relayParams,
       transferRequests,
       params: adjusterParams,
       signature,
@@ -103,6 +104,7 @@ export async function createSourceChainGlvDepositTxn({
     isToGmx: true,
     isManualGas: params.isMarketTokenDeposit ? true : false,
     action,
+    nativeDropAmount: relayParams.fee.feeAmount,
   });
 
   let value = ensuredFees.txnEstimatedNativeFee;

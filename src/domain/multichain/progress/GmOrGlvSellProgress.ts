@@ -186,6 +186,9 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
       return;
     }
 
+    const successfulWithdrawalEventName = this.isGlv ? "GlvWithdrawalExecuted" : "WithdrawalExecuted";
+    const failedWithdrawalEventName = this.isGlv ? "GlvWithdrawalCancelled" : "WithdrawalCancelled";
+
     const logs = await getOrWaitLogs({
       chainId,
       fromBlock,
@@ -195,9 +198,7 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
         name: "EventLog2",
       }),
       args: {
-        eventNameHash: this.isGlv
-          ? ["GlvWithdrawalExecuted", "GlvWithdrawalCancelled"]
-          : ["WithdrawalExecuted", "WithdrawalCancelled"],
+        eventNameHash: [successfulWithdrawalEventName, failedWithdrawalEventName],
         topic1: withdrawalKey,
       },
     });
@@ -217,8 +218,8 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
       return;
     }
 
-    if (withdrawalExecutedLog.args.eventName === "GlvWithdrawalCancelled") {
-      debugLog("GlvWithdrawalCancelled");
+    if (withdrawalExecutedLog.args.eventName === failedWithdrawalEventName) {
+      debugLog(failedWithdrawalEventName);
       this.reject(
         "finished",
         new MultichainTransferProgress.errors.ConversionFailed({
@@ -231,7 +232,7 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
       return;
     }
 
-    debugLog("withdrawalExecutedLog");
+    debugLog(successfulWithdrawalEventName);
 
     const sameTxLogs = await fetchLogsInTx(chainId, withdrawalExecutedLog.transactionHash);
 

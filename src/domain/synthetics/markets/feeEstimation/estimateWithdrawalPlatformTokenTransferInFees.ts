@@ -4,19 +4,18 @@ import { MultichainAction, MultichainActionType } from "domain/multichain/codecs
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
+import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express/types";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { GlobalExpressParams, RelayParamsPayload } from "../../express/types";
 import { signCreateWithdrawal } from "../signCreateWithdrawal";
 import { CreateWithdrawalParams } from "../types";
-import { getFeeRelayParams } from "./getFeeRelayParams";
+import { stargateTransferFees } from "./stargateTransferFees";
 
 export async function estimateWithdrawalPlatformTokenTransferInFees({
   chainId,
@@ -42,15 +41,21 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
 }> {
   const settlementWrappedTokenData = globalExpressParams.tokensData[getWrappedToken(chainId).address];
 
-  const returnRawRelayParamsPayload = getFeeRelayParams({
+  const rawRelayParamsPayload = getRawRelayerParams({
     chainId,
-    fullWntFee,
-    globalExpressParams,
-    settlementWrappedTokenData,
+    gasPaymentTokenAddress: settlementWrappedTokenData.address,
+    relayerFeeTokenAddress: settlementWrappedTokenData.address,
+    feeParams: {
+      feeToken: settlementWrappedTokenData.address,
+      feeAmount: fullWntFee,
+      feeSwapPath: [],
+    },
+    externalCalls: getEmptyExternalCallsPayload(),
+    tokenPermits: [],
   });
 
-  const returnRelayParamsPayload: RelayParamsPayload = {
-    ...returnRawRelayParamsPayload,
+  const relayParamsPayload: RelayParamsPayload = {
+    ...rawRelayParamsPayload,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
   };
 
@@ -71,7 +76,7 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
     chainId,
     srcChainId,
     signer: RANDOM_WALLET,
-    relayParams: returnRelayParamsPayload,
+    relayParams: relayParamsPayload,
     transferRequests,
     params,
     shouldUseSignerMethod: true,
@@ -80,7 +85,7 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
   const action: MultichainAction = {
     actionType: MultichainActionType.Withdrawal,
     actionData: {
-      relayParams: returnRelayParamsPayload,
+      relayParams: relayParamsPayload,
       transferRequests,
       params,
       signature,
@@ -94,13 +99,9 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
     srcChainId,
     tokenAddress: params.addresses.market,
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
-  }).catch(() => {
-    // eslint-disable-next-line no-console
-    console.warn("[multichain-lp] Failed to estimate compose gas on settlement chain");
-    return applyGasLimitBuffer(5889082n);
   });
 
-  const returnTransferSendParams = getMultichainTransferSendParams({
+  const sendParams = getMultichainTransferSendParams({
     dstChainId: chainId,
     account: RANDOM_WALLET.address,
     srcChainId,
@@ -109,54 +110,28 @@ export async function estimateWithdrawalPlatformTokenTransferInFees({
     isManualGas: true,
     action,
     composeGas,
+    nativeDropAmount: fullWntFee,
   });
 
-  const sourceChainClient = getPublicClientWithRpc(srcChainId);
   const sourceChainTokenId = getMappedTokenId(chainId, params.addresses.market, srcChainId);
   if (!sourceChainTokenId) {
     throw new Error("Source chain token ID not found");
   }
 
-  const platformTokenTransferInQuoteSend = await sourceChainClient
-    .readContract({
-      address: sourceChainTokenId.stargate,
-      abi: abis.IStargate,
-      functionName: "quoteSend",
-      args: [returnTransferSendParams, false],
-    })
-    .catch(() => {
-      // eslint-disable-next-line no-console
-      console.warn("[multichain-lp] Failed to quote send on source chain");
-      return sendQuoteFromNative(366102683193600n);
-    });
-
-  // No need to quote OFT because we are using our own contracts that do not apply any fees
-
-  const platformTokenTransferInNativeFee = platformTokenTransferInQuoteSend.nativeFee;
-
-  // The txn of stargate itself what will it take
-  const platformTokenTransferInGasLimit = await sourceChainClient
-    .estimateContractGas({
-      address: sourceChainTokenId.stargate,
-      abi: abis.IStargate,
-      functionName: "send",
+  const { nativeFee: platformTokenTransferInNativeFee, transferGasLimit: platformTokenTransferInGasLimit } =
+    await stargateTransferFees({
+      chainId: srcChainId,
+      stargateAddress: sourceChainTokenId.stargate,
+      sendParams,
+      tokenAddress: params.addresses.market,
+      isPlatformToken: true,
       account: params.addresses.receiver,
-      args: [returnTransferSendParams, platformTokenTransferInQuoteSend, params.addresses.receiver],
-      value: platformTokenTransferInQuoteSend.nativeFee,
-      // No need to override state because we are using the users account on source chain
-      // where tokens already are an initial state
-    })
-    .catch(() => {
-      // eslint-disable-next-line no-console
-      console.warn("[multichain-lp] Failed to estimate contract gas on source chain");
-      return 525841n;
-    })
-    .then(applyGasLimitBuffer);
+    });
 
   return {
     platformTokenTransferInGasLimit,
     platformTokenTransferInNativeFee,
     platformTokenTransferInComposeGas: composeGas,
-    relayParamsPayload: returnRelayParamsPayload,
+    relayParamsPayload,
   };
 }

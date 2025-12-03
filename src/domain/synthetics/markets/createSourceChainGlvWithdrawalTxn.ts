@@ -103,6 +103,7 @@ export async function createSourceChainGlvWithdrawalTxn({
     isToGmx: true,
     isManualGas: true,
     action,
+    nativeDropAmount: relayParams.fee.feeAmount,
   });
 
   const sourceChainTokenId = getMappedTokenId(chainId, glvTokenAddress, srcChainId);

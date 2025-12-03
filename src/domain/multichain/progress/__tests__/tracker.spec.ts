@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET, SOURCE_SEPOLIA } from "config/chains";
 import { getGlvToken, getGmToken } from "domain/tokens";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, numberToBigint } from "lib/numbers";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
@@ -188,6 +188,31 @@ describe.concurrent("LongCrossChainTask", () => {
       new BridgeInFailed({
         chainId: settlementChainId,
         fundsLeftIn: "lz",
+      })
+    );
+  });
+
+  it("gm sell 0.1000 GM: ETH/USD base -> arb", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_BASE_MAINNET;
+    const settlementChainId = ARBITRUM;
+    const initialTxHash = "0x6230e246f57d977cd3be83772fec594d68e4fe3a55b9094a43f994d33d54ceeb";
+    const token = getGmToken(ARBITRUM, "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336");
+    const amount = numberToBigint(0.1, 18);
+
+    const progress = new GmSellTask({
+      settlementChainId,
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).rejects.toThrowError(
+      new ConversionFailed({
+        chainId: settlementChainId,
+        operation: Operation.Withdrawal,
+        creationTx: initialTxHash,
       })
     );
   });

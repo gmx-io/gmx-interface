@@ -23,7 +23,7 @@ export async function estimateDepositPlatformTokenTransferOutFees({
     throw new Error("Settlement chain market token ID not found");
   }
 
-  const returnTransferSendParams = getMultichainTransferSendParams({
+  const sendParams = getMultichainTransferSendParams({
     dstChainId: toChainId,
     account: RANDOM_WALLET.address,
     srcChainId: fromChainId,
@@ -35,8 +35,10 @@ export async function estimateDepositPlatformTokenTransferOutFees({
   const { nativeFee: returnTransferNativeFee, transferGasLimit: returnTransferGasLimit } = await stargateTransferFees({
     chainId: fromChainId,
     stargateAddress: marketTokenId.stargate,
-    sendParams: returnTransferSendParams,
+    sendParams,
     tokenAddress: marketTokenId.address,
+    isPlatformToken: true,
+    forceFullOverride: true,
   });
 
   return {

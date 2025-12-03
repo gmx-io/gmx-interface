@@ -8,22 +8,23 @@ import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/es
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { SendParam } from "domain/multichain/types";
+import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
+import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
 import { adjustForDecimals } from "lib/numbers";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/tokens";
+import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
-import { GlobalExpressParams, RelayParamsPayload } from "../../express";
 import { convertToUsd, getMidPrice } from "../../tokens";
 import { signCreateGlvDeposit } from "../signCreateGlvDeposit";
 import { CreateGlvDepositParams, RawCreateGlvDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
 import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
-import { getFeeRelayParams } from "./getFeeRelayParams";
 import { stargateTransferFees } from "./stargateTransferFees";
 
 export type SourceChainGlvDepositFees = {
@@ -197,15 +198,21 @@ async function estimateSourceChainGlvDepositInitialTxFees({
   }
 
   // How much will take to send back the GM to source chain
-  const returnRawRelayParamsPayload = getFeeRelayParams({
+  const rawRelayParamsPayload = getRawRelayerParams({
     chainId,
-    fullWntFee,
-    globalExpressParams,
-    settlementWrappedTokenData,
+    gasPaymentTokenAddress: settlementWrappedTokenData.address,
+    relayerFeeTokenAddress: settlementWrappedTokenData.address,
+    feeParams: {
+      feeToken: settlementWrappedTokenData.address,
+      feeAmount: fullWntFee,
+      feeSwapPath: [],
+    },
+    externalCalls: getEmptyExternalCallsPayload(),
+    tokenPermits: [],
   });
 
-  const returnRelayParamsPayload: RelayParamsPayload = {
-    ...returnRawRelayParamsPayload,
+  const relayParamsPayload: RelayParamsPayload = {
+    ...rawRelayParamsPayload,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
   };
 
@@ -247,7 +254,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     chainId,
     srcChainId,
     signer: RANDOM_WALLET,
-    relayParams: returnRelayParamsPayload,
+    relayParams: relayParamsPayload,
     transferRequests,
     params,
     shouldUseSignerMethod: true,
@@ -256,7 +263,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
   const action: MultichainAction = {
     actionType: MultichainActionType.GlvDeposit,
     actionData: {
-      relayParams: returnRelayParamsPayload,
+      relayParams: relayParamsPayload,
       transferRequests,
       params,
       signature,
@@ -283,25 +290,25 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     isToGmx: true,
     isManualGas: params.isMarketTokenDeposit ? true : false,
     action,
+    nativeDropAmount: fullWntFee,
   });
 
   const {
     nativeFee: initialTxNativeFee,
-    quoteOft: initialQuoteOft,
+    amountReceivedLD: initialAmountReceivedLD,
     transferGasLimit: initialStargateTxnGasLimit,
   } = await stargateTransferFees({
     chainId: srcChainId,
     stargateAddress: sourceChainTokenId.stargate,
     sendParams,
     tokenAddress: sourceChainTokenId.address,
-    useSendToken: isValidMarketTokenDeposit ? false : true,
-    disableOverrides: isValidMarketTokenDeposit ? true : false,
+    isPlatformToken: isValidMarketTokenDeposit ? true : false,
     account: params.addresses.receiver,
     additionalValue: sourceChainTokenId.address === zeroAddress ? amountLD : undefined,
   });
 
   const estimatedReceivedAmount = adjustForDecimals(
-    initialQuoteOft.receipt.amountReceivedLD,
+    initialAmountReceivedLD,
     sourceChainTokenId.decimals,
     settlementChainTokenId.decimals
   );
@@ -310,7 +317,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     initialTxNativeFee,
     initialTxGasLimit: initialStargateTxnGasLimit,
     initialTransferComposeGas: initialComposeGas,
-    relayParamsPayload: returnRelayParamsPayload,
+    relayParamsPayload: relayParamsPayload,
     initialTxReceivedAmount: estimatedReceivedAmount,
   };
 }

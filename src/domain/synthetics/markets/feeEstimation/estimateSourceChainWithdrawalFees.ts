@@ -4,12 +4,12 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getStargatePoolAddress, RANDOM_WALLET } from "config/multichain";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { SendParam } from "domain/multichain/types";
+import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { expandDecimals } from "lib/numbers";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
-import { GlobalExpressParams, RelayParamsPayload } from "../../express";
 import { convertToUsd, getMidPrice } from "../../tokens";
 import { CreateWithdrawalParams, RawCreateWithdrawalParams } from "../types";
 import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
@@ -167,7 +167,6 @@ async function estimateSingleTokenReturnTransfer({
     stargateAddress,
     sendParams,
     tokenAddress,
-    useSendToken: true,
     additionalValue,
   });
 
