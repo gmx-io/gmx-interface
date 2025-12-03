@@ -6,7 +6,9 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import {
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarkPrice,
   selectTradeboxState,
+  selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
@@ -17,6 +19,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { MarginToPayField } from "./MarginToPayField";
+import { PriceField, PriceDisplayMode } from "./PriceField";
 import { SizeField, SizeDisplayMode } from "./SizeField";
 
 type Props = {
@@ -31,6 +34,8 @@ type Props = {
   gasPaymentTokenAmountForMax?: bigint;
   isGasPaymentTokenAmountForMaxApproximate?: boolean;
   isExpressLoading?: boolean;
+  triggerPriceInputValue?: string;
+  onTriggerPriceInputChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export function TradeboxMarginFields({
@@ -45,12 +50,16 @@ export function TradeboxMarginFields({
   gasPaymentTokenAmountForMax,
   isGasPaymentTokenAmountForMaxApproximate,
   isExpressLoading,
+  triggerPriceInputValue,
+  onTriggerPriceInputChange,
 }: Props) {
   const tokensData = useTokensData();
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const gasPaymentTokenData = useSelector(selectGasPaymentToken);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const markPrice = useSelector(selectTradeboxMarkPrice);
 
   const { fromTokenAddress, toTokenAddress } = useSelector(selectTradeboxState);
 
@@ -60,7 +69,11 @@ export function TradeboxMarginFields({
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
 
   const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("token");
+  const [priceDisplayMode, setPriceDisplayMode] = useState<PriceDisplayMode>("usd");
   const [marginPercentage, setMarginPercentage] = useState<number>(0);
+
+  const { isLimit } = tradeFlags;
+  const showPriceField = isLimit && triggerPriceInputValue !== undefined;
 
   // Calculate margin percentage from input value
   useEffect(() => {
@@ -151,6 +164,18 @@ export function TradeboxMarginFields({
         onFocus={() => setFocusedInput("to")}
         qa="position-size"
       />
+
+      {showPriceField && onTriggerPriceInputChange && (
+        <PriceField
+          indexToken={toToken}
+          markPrice={markPrice}
+          displayMode={priceDisplayMode}
+          onDisplayModeChange={setPriceDisplayMode}
+          inputValue={triggerPriceInputValue}
+          onInputValueChange={onTriggerPriceInputChange}
+          qa="trigger-price"
+        />
+      )}
 
       <MarginPercentageSlider
         value={marginPercentage}

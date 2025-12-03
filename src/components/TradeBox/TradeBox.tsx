@@ -1055,11 +1055,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   gasPaymentTokenAmountForMax={gasPaymentTokenAmountForMax}
                   isGasPaymentTokenAmountForMaxApproximate={isGasPaymentTokenAmountForMaxApproximate}
                   isExpressLoading={submitButtonState.isExpressLoading}
+                  triggerPriceInputValue={triggerPriceInputValue}
+                  onTriggerPriceInputChange={handleTriggerPriceInputChange}
                 />
               )}
               {isTrigger && renderDecreaseSizeInput()}
               {isSwap && isLimit && renderTriggerRatioInput()}
-              {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+              {isTrigger && renderTriggerPriceInput()}
             </div>
 
             {twapRecommendation && (
