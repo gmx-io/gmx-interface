@@ -442,13 +442,18 @@ export function useGmxAccountWithdrawNetworks() {
   const sourceChains = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] || {}).map(Number);
 
   const networks = useMemo(() => {
-    return sourceChains.map((sourceChainId) => {
-      return {
-        id: sourceChainId,
-        name: getChainName(sourceChainId),
-      };
-    });
-  }, [sourceChains]);
+    return sourceChains
+      .map((sourceChainId) => {
+        return {
+          id: sourceChainId,
+          name: getChainName(sourceChainId),
+        };
+      })
+      .concat({
+        id: chainId,
+        name: getChainName(chainId),
+      });
+  }, [chainId, sourceChains]);
 
   return networks;
 }

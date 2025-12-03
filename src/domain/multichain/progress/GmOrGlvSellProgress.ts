@@ -282,6 +282,7 @@ export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmO
     );
 
     if (multichainBridgeActionLogs.some((log) => log.args.eventName === "MultichainBridgeAction")) {
+      // TODO MLTCH the return trasnfers happen in the same tx, we need to fix this
       await this.watchReturnTransits(chainId, withdrawalExecutedLog.transactionHash);
     }
   }

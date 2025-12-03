@@ -4,7 +4,7 @@ import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
-import { Address, encodeAbiParameters, zeroAddress } from "viem";
+import { Address, encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -74,8 +74,10 @@ import {
 import { bigintToNumber, expandDecimals, formatAmountFree, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { sendWalletTransaction } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
+import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -521,6 +523,37 @@ export const WithdrawalView = () => {
       return;
     }
 
+    if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) === chainId) {
+      if (!bridgeOutParams) {
+        helperToast.error(t`Missing required parameters`);
+
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      await wrapChainAction(chainId, setSettlementChainId, async (signer) => {
+        try {
+          await sendWalletTransaction({
+            chainId,
+            to: getContract(chainId, "MultichainTransferRouter"),
+            signer,
+            callData: encodeFunctionData({
+              abi: abis.MultichainTransferRouter,
+              functionName: "transferOut",
+              args: [bridgeOutParams],
+            }),
+          });
+        } catch (error) {
+          alert("Failed to send withdrawal. Retry");
+        } finally {
+          setIsSubmitting(false);
+        }
+      });
+
+      return;
+    }
+
     const metricData = initMultichainWithdrawalMetricData({
       settlementChain: chainId,
       sourceChain: withdrawalViewChain,
@@ -749,40 +782,42 @@ export const WithdrawalView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
-  } else if (
-    (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
-      errors?.isOutOfTokenError?.isGasPaymentToken) &&
-    !expressTxnParamsAsyncResult.isLoading
-  ) {
-    buttonState = {
-      text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
-      disabled: true,
-    };
-  } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
-    buttonState = {
-      text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
-      disabled: true,
-    };
-  } else if (showWntWarning) {
-    buttonState = {
-      text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
-      disabled: true,
-    };
-  } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
-    buttonState = {
-      text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
-      disabled: true,
-    };
-  } else if (!expressTxnParamsAsyncResult.data) {
-    buttonState = {
-      text: (
-        <>
-          <Trans>Loading</Trans>
-          <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
-      disabled: true,
-    };
+  } else if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) !== chainId) {
+    if (
+      (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
+        errors?.isOutOfTokenError?.isGasPaymentToken) &&
+      !expressTxnParamsAsyncResult.isLoading
+    ) {
+      buttonState = {
+        text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
+        disabled: true,
+      };
+    } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
+      buttonState = {
+        text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
+        disabled: true,
+      };
+    } else if (showWntWarning) {
+      buttonState = {
+        text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
+        disabled: true,
+      };
+    } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
+      buttonState = {
+        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
+        disabled: true,
+      };
+    } else if (!expressTxnParamsAsyncResult.data) {
+      buttonState = {
+        text: (
+          <>
+            <Trans>Loading</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
   }
 
   const hasSelectedToken = selectedTokenAddress !== undefined;

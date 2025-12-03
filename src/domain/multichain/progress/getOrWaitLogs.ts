@@ -1,10 +1,12 @@
 import { AbiEvent } from "abitype";
-import { MaybeExtractEventArgsFromAbi, GetLogsReturnType, parseEventLogs, ContractEventName } from "viem";
+import { MaybeExtractEventArgsFromAbi, GetLogsReturnType } from "viem";
 
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
+import { sleep } from "lib/sleep";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
-const DEFAULT_TIMEOUT = 60000;
+const POLLING_INTERVAL = 2_000; // 2 seconds
+const DEFAULT_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 const DEFAULT_FINISH = () => true;
 
 export async function getOrWaitLogs<T extends AbiEvent>({
@@ -27,50 +29,35 @@ export async function getOrWaitLogs<T extends AbiEvent>({
   timeout?: number;
 }): Promise<GetLogsReturnType<T>> {
   const timeoutSignal = timeout ? createTimeoutSignal(timeout) : undefined;
+  const combinedSignal = createAnySignal([abortSignal, timeoutSignal]);
 
-  const logs = await getPublicClientWithRpc(chainId).getLogs({
-    fromBlock,
-    event,
-    args,
-    address,
-  });
+  return new Promise(async (resolve, reject) => {
+    combinedSignal.addEventListener("abort", () => {
+      reject(new Error("Abort signal received"));
+    });
 
-  if (logs.length) {
-    return logs as unknown as GetLogsReturnType<T>;
-  }
+    while (!combinedSignal.aborted) {
+      try {
+        const logs = await getPublicClientWithRpc(chainId).getLogs({
+          fromBlock,
+          event,
+          args,
+          address,
+        });
 
-  if (abortSignal?.aborted) {
-    return [];
-  }
-
-  const { promise, resolve, reject } = Promise.withResolvers<GetLogsReturnType<T>>();
-
-  const unsub = getPublicClientWithRpc(chainId).watchEvent({
-    fromBlock,
-    event,
-    args,
-    address,
-    onLogs: (logs) => {
-      const parsedLogs = parseEventLogs<[T]>({
-        abi: [event],
-        eventName: event.name as ContractEventName<[T]>,
-        logs,
-        args,
-      }) as unknown as GetLogsReturnType<T>;
-      if (finish(parsedLogs)) {
-        unsub();
-        resolve(parsedLogs);
+        if (logs.length) {
+          const typedLogs = logs as unknown as GetLogsReturnType<T>;
+          if (finish(typedLogs)) {
+            resolve(typedLogs);
+            return;
+          }
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("getOrWaitLogs error", error);
       }
-    },
-    onError: (error) => {
-      reject(error);
-    },
-  });
 
-  createAnySignal([abortSignal, timeoutSignal]).addEventListener("abort", () => {
-    unsub();
-    reject(new Error("Abort signal received"));
+      await sleep(POLLING_INTERVAL);
+    }
   });
-
-  return promise;
 }

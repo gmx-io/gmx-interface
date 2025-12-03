@@ -123,6 +123,7 @@ export async function watchLzTxRpc({
     })
   );
 
+  // TODO MLTCH wait for all OFTSent events to be confirmed
   const oftSentEvent = oftSentEvents.at(0);
   if (!oftSentEvent) {
     debugLog("[watchLzTxRpc] no OFTSent event found");

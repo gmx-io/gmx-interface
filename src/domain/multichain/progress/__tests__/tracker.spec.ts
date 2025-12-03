@@ -241,4 +241,65 @@ describe.concurrent("LongCrossChainTask", () => {
       })
     );
   });
+
+  it("gm buy 3.0482 GM: ETH/USD[WETH-USDC.SG] sepolia -> arb sep successful", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_SEPOLIA;
+    const settlementChainId = ARBITRUM_SEPOLIA;
+    const initialTxHash = "0x5e38289a7794007c17ad6c72ecd423303055373c51e2efb3f0dab04e695f96ac";
+    const token = getGmToken(ARBITRUM_SEPOLIA, "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc");
+    const amount = numberToBigint(3.0482, 18);
+
+    const progress = new GmBuyTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
+  });
+
+  it("gm sell 0.1000 GM: ETH/USD[WETH-USDC.SG] arb sep -> sepolia successful", { timeout: 30_000 }, async () => {
+    const settlementChainId = ARBITRUM_SEPOLIA;
+    const sourceChainId = SOURCE_SEPOLIA;
+    const initialTxHash = "0x904650289ec101699d63dded838d46f1107b034d51e31a11a659d5c25a56bb5f";
+    const token = getGmToken(ARBITRUM_SEPOLIA, "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc");
+    const amount = numberToBigint(0.1, 18);
+
+    const progress = new GmSellTask({
+      settlementChainId,
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
+  });
+
+  it(
+    "gm sell to PAIR 0.1000 GM: ETH/USD[WETH-USDC.SG] arb sep -> sepolia successful",
+    { timeout: 30_000 },
+    async () => {
+      const settlementChainId = ARBITRUM_SEPOLIA;
+      const sourceChainId = SOURCE_SEPOLIA;
+      const initialTxHash = "0x3f0f5393b51b448deca10cf2515bfbd871612efdd7b574a1b786d8ee784411aa";
+      const token = getGmToken(ARBITRUM_SEPOLIA, "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc");
+      const amount = numberToBigint(0.1, 18);
+
+      const progress = new GmSellTask({
+        settlementChainId,
+        sourceChainId,
+        initialTxHash,
+        token,
+        amount,
+        estimatedFeeUsd: 0n,
+      });
+
+      await expect(progress.getStepPromise("finished")).resolves.toBeUndefined();
+    }
+  );
 });
