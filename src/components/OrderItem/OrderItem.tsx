@@ -13,6 +13,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
@@ -35,7 +36,7 @@ import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/s
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
-import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd, MaxUint256 } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
@@ -428,10 +429,9 @@ function TriggerPrice({
       </span>
     );
 
-    const isDefaultAcceptablePrice =
-      positionOrder.acceptablePrice === 0n || positionOrder.acceptablePrice === MaxUint256;
+    const isBoundary = isBoundaryAcceptablePrice(positionOrder.acceptablePrice);
 
-    return !isSetAcceptablePriceImpactEnabled || isDefaultAcceptablePrice ? (
+    return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
       handle
     ) : (
       <TooltipWithPortal
@@ -491,8 +491,7 @@ function TriggerPrice({
       positionOrder?.indexToken?.visualMultiplier
     );
 
-    const isDefaultAcceptablePrice =
-      positionOrder.acceptablePrice === 0n || positionOrder.acceptablePrice === MaxUint256;
+    const isBoundary = isBoundaryAcceptablePrice(positionOrder.acceptablePrice);
 
     const handle = (
       <span>
@@ -503,7 +502,7 @@ function TriggerPrice({
         })}
       </span>
     );
-    return !isSetAcceptablePriceImpactEnabled || isDefaultAcceptablePrice ? (
+    return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
       handle
     ) : (
       <TooltipWithPortal
