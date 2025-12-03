@@ -11,6 +11,7 @@ import {
   FallbackTracker,
   FallbackTrackerConfig,
 } from "lib/FallbackTracker/FallbackTracker";
+import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { fetchBlockNumber, fetchEthCall } from "lib/rpc/fetchRpc";
 import { abis } from "sdk/abis";
@@ -27,6 +28,7 @@ export type RpcTrackerConfig = FallbackTrackerConfig & {
 
 export type RpcTrackerParams = RpcTrackerConfig & {
   chainId: number;
+  networkStatusObserver: NetworkStatusObserver;
 };
 
 export type RpcCheckResult = {
@@ -74,6 +76,7 @@ export class RpcTracker {
       selectNextPrimary: this.selectNextPrimary,
       selectNextFallbacks: this.selectNextFallbacks,
       getEndpointName: getProviderNameFromUrl,
+      networkStatusObserver: this.params.networkStatusObserver,
     });
   }
 

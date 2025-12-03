@@ -1,6 +1,7 @@
 import { ContractsChainId } from "config/chains";
 import { isLocal } from "config/env";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
+import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { withFallback } from "lib/FallbackTracker/withFallback";
 import { metrics, OracleKeeperFailureCounter } from "lib/metrics";
 import { subscribeForOracleTrackerMetrics } from "lib/metrics/oracleTrackerMetrics";
@@ -56,6 +57,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       chainId: this.chainId,
       mainUrl: this.mainUrl,
       fallbacks: getOracleKeeperFallbackUrls(this.chainId),
+      networkStatusObserver: NetworkStatusObserver.getInstance(),
     });
 
     this.oracleTracker.startTracking();

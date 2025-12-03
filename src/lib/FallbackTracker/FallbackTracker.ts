@@ -82,6 +82,8 @@ export type FallbackTrackerParams<TCheckResult> = FallbackTrackerConfig & {
   }) => string[] | undefined;
 
   getEndpointName?: (endpoint: string) => string | undefined;
+
+  networkStatusObserver: NetworkStatusObserver;
 };
 
 export type FallbackTrackerState<TCheckStats> = {
@@ -146,8 +148,11 @@ export type CurrentEndpoints<TCheckStats> = {
 
 export class FallbackTracker<TCheckStats> {
   state: FallbackTrackerState<TCheckStats>;
+  private readonly networkStatusObserver: NetworkStatusObserver;
 
   constructor(public readonly params: FallbackTrackerParams<TCheckStats>) {
+    this.networkStatusObserver = params.networkStatusObserver;
+
     let primary = this.params.primary;
 
     if (!this.params.endpoints.length) {
@@ -246,7 +251,7 @@ export class FallbackTracker<TCheckStats> {
   };
 
   handleFailure = (endpoint: string) => {
-    if (NetworkStatusObserver.getInstance().getIsGlobalNetworkDown()) {
+    if (this.networkStatusObserver.getIsGlobalNetworkDown()) {
       return;
     }
 
@@ -280,7 +285,7 @@ export class FallbackTracker<TCheckStats> {
   };
 
   public banEndpoint = (endpoint: string, reason: string) => {
-    if (NetworkStatusObserver.getInstance().getIsGlobalNetworkDown()) {
+    if (this.networkStatusObserver.getIsGlobalNetworkDown()) {
       return;
     }
 
@@ -347,7 +352,7 @@ export class FallbackTracker<TCheckStats> {
       this.state.startDelayTimeoutId = undefined;
     }
 
-    NetworkStatusObserver.getInstance().setActive(this.trackerKey, false);
+    this.networkStatusObserver.setActive(this.trackerKey, false);
   }
 
   public track({ warmUp = false } = {}) {
@@ -358,12 +363,12 @@ export class FallbackTracker<TCheckStats> {
 
     // Schedule next track call if not tracking
     if (!this.shouldTrack({ warmUp })) {
-      NetworkStatusObserver.getInstance().setActive(this.trackerKey, false);
+      this.networkStatusObserver.setActive(this.trackerKey, false);
       this.state.trackerTimeoutId = window.setTimeout(() => this.track(), this.params.trackInterval);
       return;
     }
 
-    NetworkStatusObserver.getInstance().setActive(this.trackerKey, true);
+    this.networkStatusObserver.setActive(this.trackerKey, true);
 
     this.checkEndpoints()
       .then(() => {
@@ -378,7 +383,7 @@ export class FallbackTracker<TCheckStats> {
   public cleanup() {
     this.state.cleanupEvents();
 
-    NetworkStatusObserver.getInstance().setActive(this.trackerKey, false);
+    this.networkStatusObserver.setActive(this.trackerKey, false);
 
     // Clear start delay timeout
     if (this.state.startDelayTimeoutId) {
@@ -530,9 +535,9 @@ export class FallbackTracker<TCheckStats> {
     const fulfilledResults = checkResults.filter((result) => result.status === "fulfilled");
 
     if (fulfilledResults.length === 0) {
-      NetworkStatusObserver.getInstance().setTrackingFailed(this.trackerKey, true);
+      this.networkStatusObserver.setTrackingFailed(this.trackerKey, true);
     } else {
-      NetworkStatusObserver.getInstance().setTrackingFailed(this.trackerKey, false);
+      this.networkStatusObserver.setTrackingFailed(this.trackerKey, false);
     }
 
     const resultsMap = checkResults

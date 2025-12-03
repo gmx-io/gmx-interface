@@ -15,6 +15,7 @@ import {
 } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
 import { RpcTracker } from "lib/rpc/RpcTracker";
 
@@ -29,6 +30,7 @@ function initRpcTrackers() {
     return;
   }
 
+  const networkStatusObserver = NetworkStatusObserver.getInstance();
   const chainIds = CONTRACTS_CHAIN_IDS.concat(SOURCE_CHAIN_IDS);
 
   for (const chainId of chainIds) {
@@ -39,6 +41,7 @@ function initRpcTrackers() {
     const tracker = new RpcTracker({
       ...config,
       chainId: chainId as ContractsChainId,
+      networkStatusObserver,
     });
 
     RPC_TRACKERS_BY_KEY[tracker.trackerKey] = tracker;

@@ -27,10 +27,21 @@ const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 export default function DebugOracleKeeper() {
   const { chainId } = useChainId();
   const fetcher = useOracleKeeperFetcher(chainId) as any;
-  const endpoints = fetcher.oracleTracker.fallbackTracker.getCurrentEndpoints();
+  const [endpoints, setEndpoints] = useState(() => fetcher.oracleTracker.fallbackTracker.getCurrentEndpoints());
   const prevPrimaryEndpoint = usePrevious(endpoints.primary);
   const secondaryEndpoint = endpoints.fallbacks[0];
   useTokenRecentPricesRequest(chainId);
+
+  useEffect(() => {
+    const updateEndpoints = () => {
+      setEndpoints(fetcher.oracleTracker.fallbackTracker.getCurrentEndpoints());
+    };
+
+    updateEndpoints();
+    const interval = setInterval(updateEndpoints, 5000);
+
+    return () => clearInterval(interval);
+  }, [fetcher]);
 
   const [debugState, setDebugState] = useState<Partial<OracleKeeperDebugState>>(
     _debugOracleKeeper?.getDebugState() ?? {}
@@ -73,10 +84,12 @@ export default function DebugOracleKeeper() {
       const allStats = fallbackTracker.getEndpointsStats();
       const statsWithDetails = endpoints.map((endpoint) => {
         const endpointStats = allStats.find((s) => s.endpoint === endpoint);
+        // Get latest checkResult (first in checkResults array, which is sorted from newest to oldest)
+        const latestCheckResult = endpointStats?.checkResults?.[0];
         return {
           endpoint,
-          success: endpointStats?.checkResult?.success ?? false,
-          responseTime: endpointStats?.checkResult?.stats?.responseTime,
+          success: latestCheckResult?.success ?? false,
+          responseTime: latestCheckResult?.success ? latestCheckResult.stats?.responseTime : undefined,
           bannedTimestamp: endpointStats?.banned?.timestamp,
           failureCount: endpointStats?.failureTimestamps?.length ?? 0,
           isPrimary: endpoint === primary,

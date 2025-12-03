@@ -1,4 +1,4 @@
-import { isNotZero, safeDivide } from "lib/numbers";
+import { isNonZero, safeDivide } from "lib/numbers";
 
 import type { EndpointStats } from "./FallbackTracker";
 
@@ -26,7 +26,7 @@ export function getAvgResponseTime(stats: EndpointStats<{ responseTime: number }
     }
   }
 
-  if (!isNotZero(totalChecks)) {
+  if (!isNonZero(totalChecks)) {
     return 0;
   }
 
@@ -40,7 +40,7 @@ export function scoreBySpeedAndConsistency(avgResponseTime: number) {
   return function calculateScore(stats: EndpointStats<{ responseTime: number }>): number {
     const totalChecks = stats.checkResults.length;
 
-    const isScoreAvailable = isNotZero(avgResponseTime) && isNotZero(totalChecks);
+    const isScoreAvailable = isNonZero(avgResponseTime) && isNonZero(totalChecks);
 
     if (!isScoreAvailable) {
       return 0;
@@ -56,11 +56,16 @@ export function scoreBySpeedAndConsistency(avgResponseTime: number) {
       }
     }
 
+    // If no successful checks, there's no speed data, so return 0
+    if (!isNonZero(successfulCount)) {
+      return 0;
+    }
+
     // Success rate - normalized to [0, 1]
     const stabilityScore = successfulCount / totalChecks;
 
     // Calculate average response time for successful checks only
-    const endpointAvgTime = isNotZero(successfulCount) ? safeDivide(endpointTimeSum, successfulCount) : 0;
+    const endpointAvgTime = safeDivide(endpointTimeSum, successfulCount);
 
     // Exponential decay for speed score - normalized to [0, 1]
     // Fast responses (low time) → high score, slow responses (high time) → low score

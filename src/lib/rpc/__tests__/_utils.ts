@@ -5,10 +5,11 @@ import * as rpcConfigModule from "config/rpc";
 import type { RpcConfig } from "config/rpc";
 import type { CheckResult, EndpointStats } from "lib/FallbackTracker";
 import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "lib/FallbackTracker/FallbackTracker";
+import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { ARBITRUM } from "sdk/configs/chains";
 
-import type { RpcCheckResult, RpcTrackerConfig } from "../RpcTracker";
+import type { RpcCheckResult, RpcTrackerParams } from "../RpcTracker";
 
 export const testChainId = ARBITRUM;
 
@@ -57,7 +58,8 @@ export const createMockRpcTrackerParams = (overrides?: {
     window?: number;
     throttle?: number;
   };
-}): RpcTrackerConfig & { chainId: ContractsChainId } => ({
+  networkStatusObserver?: NetworkStatusObserver;
+}): RpcTrackerParams => ({
   chainId: testChainId as ContractsChainId,
   blockFromFutureThreshold: 1000,
   blockLaggingThreshold: 50,
@@ -74,9 +76,10 @@ export const createMockRpcTrackerParams = (overrides?: {
     throttle: (overrides?.failuresBeforeBan?.throttle ??
       DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.throttle) as number,
   },
+  networkStatusObserver: overrides?.networkStatusObserver ?? new NetworkStatusObserver(),
   ...(overrides
     ? (() => {
-        const { failuresBeforeBan: _, ...rest } = overrides;
+        const { failuresBeforeBan: _, networkStatusObserver: __, ...rest } = overrides;
         return rest;
       })()
     : {}),

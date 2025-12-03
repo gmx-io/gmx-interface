@@ -2,6 +2,7 @@ import orderBy from "lodash/orderBy";
 
 import { ContractsChainId, getChainName } from "config/rpc";
 import { CurrentEndpoints, EndpointStats, FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker";
+import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { ORACLE_FALLBACK_TRACKER_CONFIG } from "sdk/configs/oracleKeeper";
 
@@ -13,6 +14,7 @@ type OracleFallbackTrackerParams = FallbackTrackerConfig & {
   chainId: ContractsChainId;
   mainUrl: string;
   fallbacks: string[];
+  networkStatusObserver: NetworkStatusObserver;
 };
 
 export type OracleEndpointStats = EndpointStats<OracleCheckResult>;
@@ -35,6 +37,7 @@ export class OracleKeeperFallbackTracker {
       checkEndpoint: this.checkEndpoint,
       selectNextPrimary: this.selectNextPrimaryEndpoint,
       selectNextFallbacks: this.selectNextFallbacks,
+      networkStatusObserver: this.params.networkStatusObserver,
     });
   }
 

@@ -1,7 +1,8 @@
 import { vi } from "vitest";
 
 import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "../FallbackTracker";
-import type { CheckResult, FallbackTrackerParams } from "../FallbackTracker";
+import type { CheckResult, EndpointStats, FallbackTrackerParams } from "../FallbackTracker";
+import { NetworkStatusObserver } from "../NetworkStatusObserver";
 
 export const testEndpoints = {
   primary: "https://primary.com",
@@ -33,14 +34,13 @@ export const createMockConfig = (
     trackerKey: "test.tracker",
     primary: testEndpoints.primary,
     endpoints: [testEndpoints.primary, testEndpoints.secondary, testEndpoints.fallback],
+    networkStatusObserver: new NetworkStatusObserver(),
     checkEndpoint: vi.fn().mockImplementation(async (endpoint: string, signal: AbortSignal) => {
-      // Handle abort signal
       if (signal.aborted) {
         const abortError = new Error("Aborted");
         abortError.name = "AbortError";
         throw abortError;
       }
-      // Default successful response
       return { responseTime: 100, isValid: true };
     }),
     selectNextPrimary: vi.fn().mockImplementation(() => {
@@ -65,3 +65,14 @@ export const createMockConfig = (
 
   return config;
 };
+
+export const createMockEndpointStats = <TCheckStats>(
+  overrides?: Partial<EndpointStats<TCheckStats>>
+): EndpointStats<TCheckStats> => ({
+  endpoint: testEndpoints.endpoint1,
+  banned: undefined,
+  failureTimestamps: [],
+  failureThrottleTimeout: undefined,
+  checkResults: [],
+  ...overrides,
+});

@@ -28,12 +28,10 @@ const MIN_EXCEEDING_THRESHOLD = "0.01";
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
-export type Zero = 0;
-
 declare const __nonZero: unique symbol;
 export type NonZero<T extends number | bigint> = T & { readonly [__nonZero]: true };
 
-export function isNotZero<T extends number | bigint>(value: T): value is NonZero<T> {
+export function isNonZero<T extends number | bigint>(value: T): value is NonZero<T> {
   return value !== 0 && value !== 0n;
 }
 

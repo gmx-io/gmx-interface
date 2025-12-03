@@ -17,10 +17,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
     localStorage.clear();
     vi.clearAllMocks();
 
-    // Reset singleton instance
-    NetworkStatusObserver._instance = undefined;
-    observer = NetworkStatusObserver.getInstance();
-    observer.trackerStates = {};
+    observer = new NetworkStatusObserver();
   });
 
   afterEach(() => {
@@ -35,6 +32,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
   describe("tracking lifecycle and isActive", () => {
     it("should set isActive to true when tracking starts", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
@@ -49,6 +47,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should set isActive to false when tracking stops", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
@@ -65,6 +64,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should set isActive to false when cleanup is called", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
@@ -81,6 +81,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should set isActive to false when shouldTrack returns false", () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
@@ -96,6 +97,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
   describe("trackingFailed state", () => {
     it("should set trackingFailed to false when all endpoints succeed", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
@@ -110,6 +112,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should set trackingFailed to true when all endpoints fail", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Endpoint failed")),
       });
       const tracker = new FallbackTracker(config);
@@ -124,6 +127,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should set trackingFailed to false when at least one endpoint succeeds", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockImplementation((endpoint: string) => {
           if (endpoint === testEndpoints.primary) {
             return Promise.resolve({ responseTime: 100, isValid: true });
@@ -143,6 +147,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should update trackingFailed state after each check cycle", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
       const tracker = new FallbackTracker(config);
@@ -171,6 +176,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
   describe("banning with NetworkStatusObserver", () => {
     it("should not ban endpoint when global network is down", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("All endpoints failed")),
       });
@@ -179,6 +185,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("All endpoints failed")),
       });
@@ -207,6 +214,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should ban endpoint when global network is up", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -215,6 +223,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -243,6 +252,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should ban endpoint when only one tracker is active and it's not failed", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -267,6 +277,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should not ban endpoint when only one tracker is active and it's failed", async () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("All endpoints failed")),
       });
@@ -294,6 +305,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
   describe("getIsGlobalNetworkDown with multiple trackers", () => {
     it("should return false when at least one active tracker succeeds", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Failed")),
       });
@@ -302,6 +314,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -318,6 +331,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should return true when all active trackers fail", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Failed")),
       });
@@ -326,6 +340,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Failed")),
       });
@@ -342,6 +357,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should ignore inactive trackers when determining global network status", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Failed")),
       });
@@ -350,6 +366,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -367,6 +384,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should return false when no active trackers exist", () => {
       const config = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
       });
       const tracker = new FallbackTracker(config);
@@ -380,6 +398,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
   describe("complex scenarios", () => {
     it("should handle tracker recovery after global network failure", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Failed")),
       });
@@ -388,6 +407,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Failed")),
       });
@@ -414,6 +434,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should handle multiple trackers with mixed success/failure", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -422,6 +443,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Failed")),
       });
@@ -430,6 +452,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker2.state.lastUsage = Date.now();
 
       const config3 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker3",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -450,6 +473,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
 
     it("should prevent banning when global network goes down during failure sequence", async () => {
       const config1 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker1",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
@@ -458,6 +482,7 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker1.state.lastUsage = Date.now();
 
       const config2 = createMockConfig({
+        networkStatusObserver: observer,
         trackerKey: "tracker2",
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
       });
