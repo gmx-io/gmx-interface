@@ -1,0 +1,76 @@
+$blue: var(--color-blue-300);
+
+.MarginPercentageSlider {
+  .rc-slider-tooltip-inner {
+    box-shadow: none;
+    padding: 0.465rem 0.8rem;
+  }
+
+  .rc-slider-tooltip {
+    z-index: 5;
+    background: rgb(49, 54, 85);
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
+  }
+
+  .rc-slider-tooltip-placement-top .rc-slider-tooltip-arrow {
+    border-top-color: var(--color-slate-600);
+  }
+
+  .rc-slider-rail {
+    border-radius: 2px;
+    height: 4px;
+    background: var(--color-slate-800);
+  }
+
+  .rc-slider-track {
+    border-radius: 2px;
+    height: 4px;
+    background-color: $blue;
+  }
+
+  .rc-slider-dot {
+    border: 1.5px solid var(--color-slate-800);
+    border-radius: 50%;
+    width: 4px;
+    height: 4px;
+    background: var(--color-slate-900);
+    box-sizing: content-box;
+    top: -1px;
+  }
+
+  .rc-slider-dot-active {
+    border-color: $blue;
+  }
+
+  .rc-slider-handle {
+    background-color: var(--color-slate-800);
+    border: solid 2px $blue;
+    width: 8px;
+    height: 8px;
+    box-sizing: content-box;
+    top: 6px;
+
+    &:active {
+      box-shadow: unset;
+    }
+  }
+
+  .rc-slider-mark-text,
+  .rc-slider-mark-text-active {
+    color: var(--color-slate-100);
+    opacity: 0.7;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: left;
+  }
+
+  .rc-slider-mark-text:nth-child(2n) {
+    display: none;
+  }
+
+  .rc-slider-mark-text:hover,
+  .rc-slider-mark-text-active:hover {
+    opacity: 1;
+  }
+}

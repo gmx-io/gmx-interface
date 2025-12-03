@@ -925,6 +925,8 @@ msgstr "Sie navigieren zu GMX Solana, das von einem separaten Team betrieben wir
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
 msgid "Pay"
 msgstr "Bezahlen"
 
@@ -1897,6 +1899,7 @@ msgstr "Der USD-Wert der Gebühren wird zum Zeitpunkt ihrer Erhebung berechnet u
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
 msgid "Max"
 msgstr "Max"
 
@@ -1966,6 +1969,7 @@ msgstr "Kaufe GMX auf {chainName}"
 #: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/TradeboxMarginFields/SizeField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4137,6 +4141,10 @@ msgstr "Limit erstellen"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
+msgstr ""
+
+#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+msgid "Margin to Pay"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx

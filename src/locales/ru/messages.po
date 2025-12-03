@@ -925,6 +925,8 @@ msgstr "Вы собираетесь перейти на GMX Solana, которы
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
 msgid "Pay"
 msgstr "Оплатить"
 
@@ -1897,6 +1899,7 @@ msgstr "Стоимость комиссий в USD рассчитывается 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
 msgid "Max"
 msgstr "Макс"
 
@@ -1966,6 +1969,7 @@ msgstr "Купить GMX на {chainName}"
 #: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/TradeboxMarginFields/SizeField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4137,6 +4141,10 @@ msgstr "Создать Лимит"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
+msgstr ""
+
+#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+msgid "Margin to Pay"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx

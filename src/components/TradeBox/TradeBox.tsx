@@ -101,6 +101,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import { TradeboxMarginFields } from "components/TradeboxMarginFields";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -1040,7 +1041,22 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           </div>
           <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
-              {(isSwap || isIncrease) && renderTokenInputs()}
+              {isSwap && renderTokenInputs()}
+              {isIncrease && (
+                <TradeboxMarginFields
+                  onSelectFromTokenAddress={handleSelectFromTokenAddress}
+                  onDepositTokenAddress={onDepositTokenAddress}
+                  fromTokenInputValue={fromTokenInputValue}
+                  setFromTokenInputValue={setFromTokenInputValue}
+                  setFocusedInput={setFocusedInput}
+                  toTokenInputValue={toTokenInputValue}
+                  setToTokenInputValue={setToTokenInputValue}
+                  expressOrdersEnabled={expressOrdersEnabled}
+                  gasPaymentTokenAmountForMax={gasPaymentTokenAmountForMax}
+                  isGasPaymentTokenAmountForMaxApproximate={isGasPaymentTokenAmountForMaxApproximate}
+                  isExpressLoading={submitButtonState.isExpressLoading}
+                />
+              )}
               {isTrigger && renderDecreaseSizeInput()}
               {isSwap && isLimit && renderTriggerRatioInput()}
               {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
