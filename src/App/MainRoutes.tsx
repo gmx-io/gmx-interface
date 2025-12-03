@@ -190,7 +190,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/complete_account_transfer/:sender/:receiver">
         <CompleteAccountTransfer />
       </Route>
-      f
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
