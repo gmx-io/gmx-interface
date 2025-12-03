@@ -925,8 +925,8 @@ msgstr "You're about to navigate to GMX Solana, which is operated by a separate 
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
 msgid "Pay"
 msgstr "Pay"
 
@@ -4143,7 +4143,7 @@ msgstr "Create Limit"
 msgid "Transfer already initiated"
 msgstr "Transfer already initiated"
 
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
 msgid "Margin to Pay"
 msgstr "Margin to Pay"
 

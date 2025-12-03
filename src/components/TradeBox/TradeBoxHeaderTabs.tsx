@@ -131,7 +131,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
               size="l"
               qa="trade-direction"
               className="grow overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
-              regularOptionClassname="grow"
+              regularOptionClassname="grow mb-0"
             />
             <Tabs
               options={swapTabOptions}
@@ -140,6 +140,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
               size="l"
               qa="trade-direction-swap"
               className="flex-none overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
+              regularOptionClassname="mb-0"
             />
           </div>
         </div>

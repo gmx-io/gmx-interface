@@ -925,8 +925,8 @@ msgstr "Sie navigieren zu GMX Solana, das von einem separaten Team betrieben wir
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
 msgid "Pay"
 msgstr "Bezahlen"
 
@@ -4143,7 +4143,7 @@ msgstr "Limit erstellen"
 msgid "Transfer already initiated"
 msgstr ""
 
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
 msgid "Margin to Pay"
 msgstr ""
 

@@ -51,8 +51,8 @@ export function MarginPercentageSlider({ value, onChange, onMaxClick, className 
   }, []);
 
   return (
-    <div className={cx("MarginPercentageSlider flex items-center gap-16 px-12", className)}>
-      <div className="flex-1 px-4">
+    <div className={cx("MarginPercentageSlider flex items-center gap-16", className)}>
+      <div className="h-28 flex-1 px-4">
         <Slider
           min={0}
           max={100}
@@ -63,17 +63,27 @@ export function MarginPercentageSlider({ value, onChange, onMaxClick, className 
           marks={marks}
         />
       </div>
-      <div className="flex shrink-0 items-center gap-8">
-        <span className="min-w-36 text-right text-13 text-typography-secondary">{Math.round(sliderValue)}%</span>
-        {onMaxClick && (
-          <button
-            type="button"
-            className="cursor-pointer rounded-4 border-none bg-slate-600 px-12 py-4 text-13 font-medium text-typography-primary transition-colors hover:bg-slate-500"
-            onClick={onMaxClick}
-          >
-            <Trans>Max</Trans>
-          </button>
-        )}
+      <div className="flex shrink-0 items-center gap-8 rounded-8 bg-slate-800 px-8 py-6">
+        <span className="min-w-36 text-right text-13 text-typography-primary">
+          {Math.round(sliderValue)}
+          <span className="ml-1 text-typography-secondary">%</span>
+        </span>
+
+        <button
+          type="button"
+          className={cx(
+            "cursor-pointer rounded-full border-none bg-slate-600 px-8 py-2 text-12",
+            "font-medium text-typography-primary",
+            {
+              "cursor-pointer hover:bg-slate-500": onMaxClick,
+              "cursor-not-allowed text-typography-secondary": !onMaxClick,
+            }
+          )}
+          onClick={onMaxClick}
+          disabled={!onMaxClick}
+        >
+          <Trans>Max</Trans>
+        </button>
       </div>
     </div>
   );

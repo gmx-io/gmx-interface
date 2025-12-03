@@ -55,6 +55,10 @@ $blue: var(--color-blue-300);
     }
   }
 
+  .rc-slider-mark {
+    top: 12px !important;
+  }
+
   .rc-slider-mark-text,
   .rc-slider-mark-text-active {
     color: var(--color-slate-100);
@@ -67,6 +71,16 @@ $blue: var(--color-blue-300);
 
   .rc-slider-mark-text:nth-child(2n) {
     display: none;
+  }
+
+  .rc-slider-mark-text:first-child {
+    left: 3px !important;
+  }
+
+  .rc-slider-mark-text:last-child {
+    right: -3px !important;
+    left: unset !important;
+    transform: translateX(0) !important;
   }
 
   .rc-slider-mark-text:hover,

@@ -925,8 +925,8 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
 msgid "Pay"
 msgstr ""
 
@@ -4143,7 +4143,7 @@ msgstr ""
 msgid "Transfer already initiated"
 msgstr ""
 
-#: src/components/TradeboxMarginFields/TradeboxMarginFields.tsx
+#: src/components/TradeboxMarginFields/MarginToPayField.tsx
 msgid "Margin to Pay"
 msgstr ""
 
