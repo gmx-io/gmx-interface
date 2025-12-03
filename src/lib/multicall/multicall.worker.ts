@@ -4,15 +4,16 @@ import {
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "lib/metrics/emitMetricEvent";
+import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 
 import { MULTICALL_DEBUG_EVENT_NAME } from "./_debug";
 import type { MulticallDebugState } from "./_debug";
-import { Multicall, MulticallProviderUrls } from "./Multicall";
+import { Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 
 async function executeMulticall(
   chainId: number,
-  providerUrls: MulticallProviderUrls,
+  providerUrls: CurrentRpcEndpoints,
   request: MulticallRequestConfig<any>,
   abFlags: Record<string, boolean>,
   isLargeAccount: boolean,

@@ -6,22 +6,19 @@ export type MulticallDebugState = {
   triggerPrimaryAsFailedInWorker?: boolean;
   triggerPrimaryAsFailedInMainThread?: boolean;
   triggerPrimaryTimeoutInWorker?: boolean;
-  triggerSecondaryFailedInMainThread?: boolean;
-  triggerSecondaryFailedInWorker?: boolean;
-  triggerSecondaryTimeoutInWorker?: boolean;
 };
 
 export const MULTICALL_DEBUG_EVENT_NAME = "multicall:debug";
 
 export type MulticallDebugEventType =
   | "primary-start"
-  | "secondary-start"
   | "primary-success"
-  | "secondary-success"
   | "primary-failed"
-  | "secondary-failed"
   | "primary-timeout"
-  | "secondary-timeout"
+  | "fallback-start"
+  | "fallback-success"
+  | "fallback-failed"
+  | "fallback-timeout"
   | "worker-fallback";
 
 export type MulticallDebugEvent = {

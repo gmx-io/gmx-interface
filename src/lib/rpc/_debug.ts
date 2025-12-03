@@ -84,7 +84,7 @@ class RpcTrackerDebug {
     const fallbackTracker = rpcTracker.fallbackTracker;
     const endpoints = fallbackTracker.params.endpoints;
     const primary = fallbackTracker.state.primary;
-    const secondary = fallbackTracker.state.secondary;
+    const fallbacks = fallbackTracker.state.fallbacks;
 
     const debugStats = endpoints.map((endpoint) => {
       const endpointStats = fallbackTracker.getEndpointStats(endpoint);
@@ -106,7 +106,7 @@ class RpcTrackerDebug {
     (window as any).rpcTracker = (window as any).rpcTracker || {};
     (window as any).rpcTracker[chainId] = {
       primary,
-      secondary,
+      fallbacks,
       debugStats,
       trackerState: fallbackTracker.state,
     };
@@ -116,7 +116,7 @@ class RpcTrackerDebug {
     // eslint-disable-next-line no-console
     console.log(`
     primary: ${debugStats.findIndex((stat) => stat.url === primary) + 1} ${primary}
-    secondary: ${debugStats.findIndex((stat) => stat.url === secondary) + 1} ${secondary}
+    fallbacks: ${fallbacks.map((fb) => `${debugStats.findIndex((stat) => stat.url === fb) + 1} ${fb}`).join(", ")}
     `);
     // eslint-disable-next-line no-console
     console.table(orderBy(debugStats, ["responseTime"], ["asc"]));

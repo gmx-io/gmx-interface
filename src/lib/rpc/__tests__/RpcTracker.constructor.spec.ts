@@ -55,7 +55,7 @@ describe("RpcTracker - constructor", () => {
       const tracker = new RpcTracker(params);
 
       expect(tracker.fallbackTracker.params.primary).toBe("https://single-provider.com");
-      expect(tracker.fallbackTracker.params.secondary).toBe("https://single-provider.com");
+      expect(tracker.fallbackTracker.params.endpoints).toContain("https://single-provider.com");
     });
   });
 

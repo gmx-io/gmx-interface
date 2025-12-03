@@ -29,7 +29,7 @@ export default function DebugOracleKeeper() {
   const fetcher = useOracleKeeperFetcher(chainId) as any;
   const endpoints = fetcher.oracleTracker.fallbackTracker.getCurrentEndpoints();
   const prevPrimaryEndpoint = usePrevious(endpoints.primary);
-  const prevSecondaryEndpoint = usePrevious(endpoints.secondary);
+  const secondaryEndpoint = endpoints.fallbacks[0];
   useTokenRecentPricesRequest(chainId);
 
   const [debugState, setDebugState] = useState<Partial<OracleKeeperDebugState>>(
@@ -68,7 +68,7 @@ export default function DebugOracleKeeper() {
       const fallbackTracker = fetcher.oracleTracker.fallbackTracker;
       const endpoints = fallbackTracker.params.endpoints;
       const primary = fallbackTracker.state.primary;
-      const secondary = fallbackTracker.state.secondary;
+      const fallbacks = fallbackTracker.state.fallbacks;
 
       const allStats = fallbackTracker.getEndpointsStats();
       const statsWithDetails = endpoints.map((endpoint) => {
@@ -80,7 +80,7 @@ export default function DebugOracleKeeper() {
           bannedTimestamp: endpointStats?.banned?.timestamp,
           failureCount: endpointStats?.failureTimestamps?.length ?? 0,
           isPrimary: endpoint === primary,
-          isSecondary: endpoint === secondary,
+          isSecondary: fallbacks.includes(endpoint),
         };
       });
 
@@ -92,7 +92,7 @@ export default function DebugOracleKeeper() {
     const interval = setInterval(updateStats, 1000);
 
     return () => clearInterval(interval);
-  }, [fetcher, endpoints.primary, endpoints.secondary]);
+  }, [fetcher, endpoints.primary, endpoints.fallbacks]);
 
   useEffect(() => {
     let previousTickersLastUpdated: number | undefined = undefined;
@@ -147,21 +147,10 @@ export default function DebugOracleKeeper() {
       }
     }
 
-    if (prevSecondaryEndpoint !== endpoints.secondary) {
-      if (currentState.triggerTickersFailure) {
-        _debugOracleKeeper.setFlag(OracleKeeperDebugFlags.TriggerTickersFailure, false);
-        updated = true;
-      }
-      if (currentState.triggerPartialTickers) {
-        _debugOracleKeeper.setFlag(OracleKeeperDebugFlags.TriggerPartialTickers, false);
-        updated = true;
-      }
-    }
-
     if (updated) {
       setDebugState(_debugOracleKeeper.getDebugState());
     }
-  }, [endpoints.primary, endpoints.secondary, prevPrimaryEndpoint, prevSecondaryEndpoint]);
+  }, [endpoints.primary, prevPrimaryEndpoint]);
 
   const handleDebugFlagChange = useCallback(<K extends keyof OracleKeeperDebugState>(flag: K, value: boolean) => {
     _debugOracleKeeper?.setFlag(flag, value);
@@ -231,7 +220,7 @@ export default function DebugOracleKeeper() {
                 <DebugControlsPanel
                   chainId={chainId}
                   primaryEndpoint={endpoints.primary}
-                  secondaryEndpoint={endpoints.secondary}
+                  secondaryEndpoint={secondaryEndpoint}
                   debugState={debugState}
                   onDebugFlagChange={handleDebugFlagChange}
                 />

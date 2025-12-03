@@ -26,7 +26,8 @@ export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTr
     "endpointsUpdated",
     tracker.trackerKey,
     (p) => {
-      const { primary, secondary } = p;
+      const { primary, fallbacks } = p;
+      const secondary = fallbacks[0];
 
       metrics.pushEvent<OracleKeeperUpdateEndpointsEvent>({
         event: "oracleKeeper.endpoint.updated",
@@ -35,7 +36,7 @@ export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTr
           chainId: tracker.params.chainId,
           chainName: getChainName(tracker.params.chainId),
           primary: getProviderNameFromUrl(primary),
-          secondary: getProviderNameFromUrl(secondary),
+          secondary: secondary ? getProviderNameFromUrl(secondary) : "none",
         },
       });
     }

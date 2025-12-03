@@ -28,11 +28,11 @@ describe("FallbackTracker - initialization and storage", () => {
     trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
-    expect(tracker.state.secondary).toBe(config.secondary);
+    expect(Array.isArray(tracker.state.fallbacks)).toBe(true);
     expect(tracker.state.lastUsage).toBeUndefined();
     expect(Object.keys(tracker.state.endpointsState)).toHaveLength(3);
     expect(tracker.state.endpointsState[config.primary]).toBeDefined();
-    expect(tracker.state.endpointsState[config.secondary]).toBeDefined();
+    expect(tracker.state.endpointsState[testEndpoints.secondary]).toBeDefined();
   });
 
   it("should throw error when endpoints array is empty", () => {
@@ -50,20 +50,11 @@ describe("FallbackTracker - initialization and storage", () => {
     expect(() => new FallbackTracker(config)).toThrow("Primary endpoint is not in endpoints list");
   });
 
-  it("should throw error when secondary endpoint is not in endpoints list", () => {
-    const config = createMockConfig({
-      secondary: testEndpoints.invalid,
-      endpoints: [testEndpoints.primary, testEndpoints.secondary],
-    });
-
-    expect(() => new FallbackTracker(config)).toThrow("Secondary endpoint is not in endpoints list");
-  });
-
   it("should load state from localStorage when valid and not expired", () => {
     const config = createMockConfig();
     const storedState = {
       primary: testEndpoints.secondary,
-      secondary: testEndpoints.primary,
+      fallbacks: [testEndpoints.primary],
       timestamp: Date.now(),
       cachedEndpointsState: {},
     };
@@ -73,14 +64,14 @@ describe("FallbackTracker - initialization and storage", () => {
     trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(storedState.primary);
-    expect(tracker.state.secondary).toBe(storedState.secondary);
+    expect(tracker.state.fallbacks).toEqual(storedState.fallbacks);
   });
 
   it("should ignore localStorage when expired", () => {
     const config = createMockConfig();
     const storedState = {
       primary: testEndpoints.secondary,
-      secondary: testEndpoints.primary,
+      fallbacks: [testEndpoints.primary],
       timestamp: Date.now() - config.cacheTimeout - 1000,
     };
     localStorage.setItem(getFallbackTrackerKey(config.trackerKey), JSON.stringify(storedState));
@@ -89,7 +80,7 @@ describe("FallbackTracker - initialization and storage", () => {
     trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
-    expect(tracker.state.secondary).toBe(config.secondary);
+    expect(Array.isArray(tracker.state.fallbacks)).toBe(true);
   });
 
   it("should ignore localStorage when invalid (missing fields)", () => {
@@ -100,14 +91,14 @@ describe("FallbackTracker - initialization and storage", () => {
     trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
-    expect(tracker.state.secondary).toBe(config.secondary);
+    expect(Array.isArray(tracker.state.fallbacks)).toBe(true);
   });
 
   it("should ignore localStorage when invalid (endpoints not in valid list)", () => {
     const config = createMockConfig();
     const storedState = {
       primary: testEndpoints.invalid,
-      secondary: testEndpoints.primary,
+      fallbacks: [testEndpoints.primary],
       timestamp: Date.now(),
     };
     localStorage.setItem(getFallbackTrackerKey(config.trackerKey), JSON.stringify(storedState));
@@ -116,7 +107,7 @@ describe("FallbackTracker - initialization and storage", () => {
     trackers.push(tracker);
 
     expect(tracker.state.primary).toBe(config.primary);
-    expect(tracker.state.secondary).toBe(config.secondary);
+    expect(Array.isArray(tracker.state.fallbacks)).toBe(true);
   });
 
   it("should initialize endpointsState for all endpoints with default values", () => {
@@ -143,7 +134,7 @@ describe("FallbackTracker - initialization and storage", () => {
 
       tracker.saveStorage({
         primary: config.primary,
-        secondary: config.secondary,
+        fallbacks: tracker.state.fallbacks,
         cachedEndpointsState: tracker.getCachedEndpointsState(),
       });
 
@@ -158,14 +149,14 @@ describe("FallbackTracker - initialization and storage", () => {
 
       tracker.saveStorage({
         primary: config.primary,
-        secondary: config.secondary,
+        fallbacks: tracker.state.fallbacks,
         cachedEndpointsState: tracker.getCachedEndpointsState(),
       });
 
       const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
       expect(savedData.timestamp).toBeDefined();
       expect(savedData.primary).toBe(config.primary);
-      expect(savedData.secondary).toBe(config.secondary);
+      expect(Array.isArray(savedData.fallbacks)).toBe(true);
     });
 
     it("should handle localStorage errors gracefully", () => {
@@ -180,7 +171,7 @@ describe("FallbackTracker - initialization and storage", () => {
       expect(() => {
         tracker.saveStorage({
           primary: config.primary,
-          secondary: config.secondary,
+          fallbacks: tracker.state.fallbacks,
           cachedEndpointsState: tracker.getCachedEndpointsState(),
         });
       }).not.toThrow();

@@ -67,9 +67,6 @@ export type FallbackTrackerParams<TCheckResult> = FallbackTrackerConfig & {
   // Default primary endpoint
   primary: string;
 
-  // Default secondary endpoint
-  secondary: string;
-
   // All endpoints to track
   endpoints: string[];
 
@@ -77,25 +74,19 @@ export type FallbackTrackerParams<TCheckResult> = FallbackTrackerConfig & {
   checkEndpoint: (endpoint: string, signal: AbortSignal) => Promise<TCheckResult>;
 
   // Ranking implementation for primary endpoint
-  selectNextPrimary: (params: {
-    endpointsStats: EndpointStats<TCheckResult>[];
-    primary: string;
-    secondary: string;
-  }) => string | undefined;
+  selectNextPrimary: (params: { endpointsStats: EndpointStats<TCheckResult>[]; primary: string }) => string | undefined;
 
-  // Ranking implementation for secondary endpoint
-  selectNextSecondary: (params: {
+  selectNextFallbacks: (params: {
     endpointsStats: EndpointStats<TCheckResult>[];
     primary: string;
-    secondary: string;
-  }) => string | undefined;
+  }) => string[] | undefined;
 
   getEndpointName?: (endpoint: string) => string | undefined;
 };
 
 export type FallbackTrackerState<TCheckStats> = {
   primary: string;
-  secondary: string;
+  fallbacks: string[];
   lastUsage: number | undefined;
   endpointsState: {
     [endpoint: string]: EndpointState;
@@ -110,7 +101,7 @@ export type FallbackTrackerState<TCheckStats> = {
   startDelayTimeoutId: number | undefined;
   abortController: AbortController | undefined;
   setEndpointsThrottleTimeout: number | undefined;
-  pendingEndpoints: { primary: string; secondary: string } | undefined;
+  pendingEndpoints: { primary: string; fallbacks: string[] } | undefined;
   cleanupEvents: () => void;
 };
 
@@ -139,18 +130,18 @@ export type EndpointStats<TCheckStats> = EndpointState & {
 
 export type StoredState = {
   primary: string;
-  secondary: string;
+  fallbacks: string[];
   timestamp: number;
   cachedEndpointsState: {
     [endpoint: string]: Pick<EndpointState, "banned">;
   };
 };
 
-export type CurrentEndpoints = {
+export type CurrentEndpoints<TCheckStats> = {
   primary: string;
-  secondary: string;
   fallbacks: string[];
   trackerKey: string;
+  endpointsStats: EndpointStats<TCheckStats>[];
 };
 
 export class FallbackTracker<TCheckStats> {
@@ -158,7 +149,6 @@ export class FallbackTracker<TCheckStats> {
 
   constructor(public readonly params: FallbackTrackerParams<TCheckStats>) {
     let primary = this.params.primary;
-    let secondary = this.params.secondary;
 
     if (!this.params.endpoints.length) {
       throw new Error("No endpoints provided");
@@ -168,24 +158,20 @@ export class FallbackTracker<TCheckStats> {
       throw new Error("Primary endpoint is not in endpoints list");
     }
 
-    if (!this.params.endpoints.includes(this.params.secondary)) {
-      throw new Error("Secondary endpoint is not in endpoints list");
-    }
-
-    const endpoints = uniq([this.params.primary, this.params.secondary, ...this.params.endpoints]);
+    const endpoints = uniq([this.params.primary, ...this.params.endpoints]);
 
     const stored = this.loadStorage(endpoints);
 
     if (stored) {
       primary = stored.primary;
-      secondary = stored.secondary;
     }
 
     const cachedEndpointsState = stored?.cachedEndpointsState ?? {};
+    const fallbacks = stored?.fallbacks ?? this.params.endpoints.filter((endpoint) => endpoint !== primary);
 
     this.state = {
       primary,
-      secondary,
+      fallbacks,
       lastUsage: undefined,
       endpointsState: endpoints.reduce(
         (acc, endpoint) => {
@@ -312,7 +298,7 @@ export class FallbackTracker<TCheckStats> {
 
     this.saveStorage({
       primary: this.state.primary,
-      secondary: this.state.secondary,
+      fallbacks: this.state.fallbacks,
       cachedEndpointsState: this.getCachedEndpointsState(),
     });
 
@@ -321,22 +307,19 @@ export class FallbackTracker<TCheckStats> {
     this.warn(`Ban endpoint "${endpoint}" with reason "${reason}"`);
 
     const keepPrimary = this.state.primary !== endpoint;
-    const keepSecondary = this.state.secondary !== endpoint;
 
     // Avoid switching not banned endpoints.
-    this.selectBestEndpoints({ keepPrimary, keepSecondary });
+    this.selectBestEndpoints({ keepPrimary });
   };
 
-  public getCurrentEndpoints = (): CurrentEndpoints => {
+  public getCurrentEndpoints = (): CurrentEndpoints<TCheckStats> => {
     this.state.lastUsage = Date.now();
 
     return {
       primary: this.state.primary,
-      secondary: this.state.secondary,
-      fallbacks: this.params.endpoints.filter(
-        (endpoint) => endpoint !== this.state.primary && endpoint !== this.state.secondary
-      ),
+      fallbacks: this.state.fallbacks,
       trackerKey: this.trackerKey,
+      endpointsStats: this.getEndpointsStats(),
     };
   };
 
@@ -431,75 +414,67 @@ export class FallbackTracker<TCheckStats> {
     this.state.pendingEndpoints = undefined;
   }
 
-  selectBestEndpoints = ({
-    keepPrimary = false,
-    keepSecondary = false,
-  }: { keepPrimary?: boolean; keepSecondary?: boolean } = {}) => {
+  selectBestEndpoints = ({ keepPrimary = false }: { keepPrimary?: boolean } = {}) => {
     if (this.params.endpoints.length === 1) {
       this.state.primary = this.params.endpoints[0];
-      this.state.secondary = this.params.endpoints[0];
+      this.state.fallbacks = [];
       return;
     }
 
     const endpointsStats = this.getEndpointsStats();
-
-    const statsForPrimary = keepSecondary
-      ? endpointsStats.filter((s) => s.endpoint !== this.state.secondary)
-      : endpointsStats;
 
     let nextPrimary: string | undefined = this.state.primary;
     if (!keepPrimary) {
       try {
         nextPrimary =
           this.params.selectNextPrimary({
-            endpointsStats: statsForPrimary,
-            primary: this.state.primary,
-            secondary: this.state.secondary,
+            endpointsStats,
+            primary: nextPrimary,
           }) ?? nextPrimary;
       } catch (error) {
         this.warn(`Error in selectNextPrimary: ${error instanceof Error ? error.message : String(error)}`);
       }
     }
 
-    const statsForSecondary = endpointsStats.filter((s) => s.endpoint !== nextPrimary);
+    const statsForFallbacks = endpointsStats.filter((s) => s.endpoint !== nextPrimary);
 
-    let nextSecondary: string | undefined = this.state.secondary;
-
-    if (!keepSecondary) {
-      try {
-        nextSecondary =
-          this.params.selectNextSecondary({
-            endpointsStats: statsForSecondary,
-            primary: this.state.primary,
-            secondary: this.state.secondary,
-          }) ?? nextSecondary;
-      } catch (error) {
-        this.warn(`Error in selectNextSecondary: ${error instanceof Error ? error.message : String(error)}`);
-      }
+    let nextFallbacks: string[] = this.state.fallbacks;
+    try {
+      nextFallbacks =
+        this.params.selectNextFallbacks({
+          endpointsStats: statsForFallbacks,
+          primary: nextPrimary,
+        }) ?? nextFallbacks;
+    } catch (error) {
+      this.warn(`Error in selectNextFallbacks: ${error instanceof Error ? error.message : String(error)}`);
     }
 
-    this.setCurrentEndpoints(nextPrimary, nextSecondary);
+    this.setCurrentEndpoints(nextPrimary, nextFallbacks);
   };
 
-  setCurrentEndpoints(primary: string, secondary: string) {
-    if (primary === this.state.primary && secondary === this.state.secondary) {
+  setCurrentEndpoints(primary: string, fallbacks: string[]) {
+    if (
+      primary === this.state.primary &&
+      fallbacks.length === this.state.fallbacks.length &&
+      fallbacks.every((fallback, index) => fallback === this.state.fallbacks[index])
+    ) {
       return;
     }
 
-    const applyEndpoints = (primary: string, secondary: string) => {
+    const applyEndpoints = (primary: string, fallbacks: string[]) => {
       this.state.primary = primary;
-      this.state.secondary = secondary;
+      this.state.fallbacks = fallbacks;
 
       this.saveStorage({
         primary: primary,
-        secondary: secondary,
+        fallbacks: fallbacks,
         cachedEndpointsState: this.getCachedEndpointsState(),
       });
 
       emitEndpointsUpdated({
         trackerKey: this.trackerKey,
         primary: primary,
-        secondary: secondary,
+        fallbacks: fallbacks,
         endpointsStats: this.getEndpointsStats(),
       });
 
@@ -508,12 +483,12 @@ export class FallbackTracker<TCheckStats> {
 
     // Throttle with trailing edge: process immediately on first call
     if (!this.state.setEndpointsThrottleTimeout) {
-      applyEndpoints(primary, secondary);
+      applyEndpoints(primary, fallbacks);
 
       this.state.setEndpointsThrottleTimeout = window.setTimeout(() => {
         // Trailing edge: process last endpoints if there was a call during throttle period
         if (this.state.pendingEndpoints) {
-          applyEndpoints(this.state.pendingEndpoints.primary, this.state.pendingEndpoints.secondary);
+          applyEndpoints(this.state.pendingEndpoints.primary, this.state.pendingEndpoints.fallbacks);
         }
 
         this.state.setEndpointsThrottleTimeout = undefined;
@@ -522,7 +497,7 @@ export class FallbackTracker<TCheckStats> {
     }
 
     // During throttle period: save endpoints for trailing edge processing
-    this.state.pendingEndpoints = { primary, secondary };
+    this.state.pendingEndpoints = { primary, fallbacks };
   }
 
   async checkEndpoints() {
@@ -632,13 +607,13 @@ export class FallbackTracker<TCheckStats> {
       }
 
       const primary = parsed.primary;
-      const secondary = parsed.secondary;
+      const fallbacks = parsed.fallbacks || [];
 
       if (
         !primary ||
-        !secondary ||
+        !Array.isArray(fallbacks) ||
         !validEndpoints.includes(primary) ||
-        !validEndpoints.includes(secondary) ||
+        fallbacks.some((endpoint) => !validEndpoints.includes(endpoint)) ||
         Object.keys(parsed.cachedEndpointsState).some((endpoint) => !validEndpoints.includes(endpoint))
       ) {
         throw new Error("Invalid endpoints state");
@@ -646,7 +621,7 @@ export class FallbackTracker<TCheckStats> {
 
       return {
         primary,
-        secondary,
+        fallbacks,
         timestamp: parsed.timestamp,
         cachedEndpointsState: parsed.cachedEndpointsState,
       };
@@ -655,10 +630,10 @@ export class FallbackTracker<TCheckStats> {
     }
   }
 
-  saveStorage({ primary, secondary, cachedEndpointsState }: Omit<StoredState, "timestamp">) {
+  saveStorage({ primary, fallbacks, cachedEndpointsState }: Omit<StoredState, "timestamp">) {
     const state: StoredState = {
       primary,
-      secondary,
+      fallbacks,
       timestamp: Date.now(),
       cachedEndpointsState,
     };

@@ -214,27 +214,23 @@ describe("FallbackTracker - endpoint banning", () => {
 
       tracker.banEndpoint(config.primary, "Test ban");
 
-      expect(selectSpy).toHaveBeenCalledWith({ keepPrimary: false, keepSecondary: true });
+      expect(selectSpy).toHaveBeenCalledWith({ keepPrimary: false });
     });
 
-    it("should trigger selectBestEndpoints when banning secondary endpoint", () => {
+    it("should trigger selectBestEndpoints with keepPrimary: true when banning fallback or unused endpoint", () => {
       const config = createMockConfig();
-      const tracker = new FallbackTracker(config);
-      const selectSpy = vi.spyOn(tracker, "selectBestEndpoints");
+      const tracker1 = new FallbackTracker(config);
+      const tracker2 = new FallbackTracker(config);
+      const selectSpy1 = vi.spyOn(tracker1, "selectBestEndpoints");
+      const selectSpy2 = vi.spyOn(tracker2, "selectBestEndpoints");
 
-      tracker.banEndpoint(config.secondary, "Test ban");
+      // Banning fallback endpoint
+      tracker1.banEndpoint(testEndpoints.secondary, "Test ban");
+      expect(selectSpy1).toHaveBeenCalledWith({ keepPrimary: true });
 
-      expect(selectSpy).toHaveBeenCalledWith({ keepPrimary: true, keepSecondary: false });
-    });
-
-    it("should keep primary and secondary when banning not used endpoint", () => {
-      const config = createMockConfig();
-      const tracker = new FallbackTracker(config);
-      const selectSpy = vi.spyOn(tracker, "selectBestEndpoints");
-
-      tracker.banEndpoint(testEndpoints.fallback, "Test ban");
-
-      expect(selectSpy).toHaveBeenCalledWith({ keepPrimary: true, keepSecondary: true });
+      // Banning unused endpoint
+      tracker2.banEndpoint(testEndpoints.fallback, "Test ban");
+      expect(selectSpy2).toHaveBeenCalledWith({ keepPrimary: true });
     });
 
     // Error handling

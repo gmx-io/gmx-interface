@@ -77,25 +77,27 @@ export function getRpcTrackerByChainId(chainId: number): RpcTracker | undefined 
 }
 
 function _getCurrentRpcUrls(chainId: number) {
-  // Check rpc providers existence to throw an error if no providers are configured for chainId
-  const defaultRpcProviders = getRpcProviders(chainId, "default");
-  const privateRpcProviders = getIsLargeAccount()
-    ? getRpcProviders(chainId, "largeAccount")
-    : getRpcProviders(chainId, "fallback");
-
-  let primary = defaultRpcProviders?.[0]?.url;
-
-  if (!primary) {
-    throw new Error(`No RPC providers found for chainId: ${chainId}`);
-  }
-  let secondary = privateRpcProviders?.[0]?.url ?? primary;
-
   const tracker = getRpcTrackerByChainId(chainId);
   if (tracker) {
     return tracker.pickCurrentRpcUrls();
   }
 
-  return { primary, secondary, trackerKey: "unknown" };
+  // Check rpc providers existence to throw an error if no providers are configured for chainId
+  const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((p) => p.url);
+  const privateRpcProviders = getIsLargeAccount()
+    ? getRpcProviders(chainId, "largeAccount")?.map((p) => p.url)
+    : getRpcProviders(chainId, "fallback")?.map((p) => p.url);
+
+  let primary = defaultRpcProviders[0];
+
+  if (!primary) {
+    throw new Error(`No RPC providers found for chainId: ${chainId}`);
+  }
+  const fallbacks = [...defaultRpcProviders, ...(privateRpcProviders ?? [])].filter(
+    (url) => url !== primary && url !== undefined
+  );
+
+  return { primary, fallbacks, trackerKey: "unknown", endpointsStats: [] };
 }
 
 export function getCurrentExpressRpcUrl(chainId: number) {
@@ -109,7 +111,7 @@ export function getCurrentExpressRpcUrl(chainId: number) {
 function _useCurrentRpcUrls(chainId: number) {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
     primary: string;
-    secondary: string;
+    fallbacks: string[];
   }>(() => _getCurrentRpcUrls(chainId));
 
   useEffect(() => {
@@ -125,14 +127,14 @@ function _useCurrentRpcUrls(chainId: number) {
     const unsubscribe = addFallbackTrackerListenner(
       "endpointsUpdated",
       tracker.trackerKey,
-      ({ primary, secondary }) => {
+      ({ primary, fallbacks }) => {
         if (!isMounted) {
           return;
         }
 
         setBestRpcUrls({
           primary,
-          secondary,
+          fallbacks,
         });
       }
     );

@@ -20,10 +20,12 @@ import { getContract, getDataStoreContract, getMulticallContract } from "config/
 import { getRpcProviderKey } from "config/localStorage";
 import { getChainName, getFallbackRpcUrl, getProviderNameFromUrl, getRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { EndpointStats } from "lib/FallbackTracker";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { RpcTrackerUpdateEndpointsEvent } from "lib/metrics/types";
 import { EMPTY_OBJECT } from "lib/objects";
 import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
+import { RpcCheckResult } from "lib/rpc/RpcTracker";
 import { sleep } from "lib/sleep";
 import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
@@ -440,7 +442,13 @@ function initTrackerState() {
   }, {} as RpcTrackerState);
 }
 
-export function getCurrentRpcUrls(rawChainId: number): { primary: string; secondary: string; trackerKey: string } {
+export function getCurrentRpcUrls(rawChainId: number): {
+  primary: string;
+  fallbacks: string[];
+  trackerKey: string;
+  // Always empty for old tracker
+  endpointsStats: EndpointStats<RpcCheckResult>[];
+} {
   const chainId = rawChainId as AnyChainId;
   const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((provider) => provider.url);
 
@@ -459,13 +467,13 @@ export function getCurrentRpcUrls(rawChainId: number): { primary: string; second
   const primary = trackerState?.[chainId]?.currentPrimaryUrl ?? defaultRpcProviders?.[0];
   const secondary = trackerState?.[chainId]?.currentSecondaryUrl ?? privateRpcProviders?.[0] ?? primary;
 
-  return { primary, secondary, trackerKey: "OldRpcTracker" };
+  return { primary, fallbacks: [secondary], trackerKey: "OldRpcTracker", endpointsStats: [] };
 }
 
 export function useCurrentRpcUrls(chainId: number | undefined): { primary?: string; secondary?: string } {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
     primary?: string;
-    secondary?: string;
+    fallbacks?: string[];
   }>(chainId ? () => getCurrentRpcUrls(chainId) : EMPTY_OBJECT);
 
   useEffect(() => {

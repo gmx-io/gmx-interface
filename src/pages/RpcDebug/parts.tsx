@@ -228,7 +228,7 @@ export function EventsPanel({
 export function DebugControlsPanel({
   chainId,
   primaryRpc,
-  secondaryRpc,
+  secondaryRpc: _secondaryRpc,
   debugState,
   onDebugFlagChange,
 }: {
@@ -277,21 +277,6 @@ export function DebugControlsPanel({
                       >
                         Force Primary Failure
                       </Button>
-                      <Button
-                        variant="secondary"
-                        className="w-full"
-                        onClick={() => {
-                          if (!secondaryRpc) {
-                            return;
-                          }
-                          emitReportEndpointFailure({
-                            endpoint: secondaryRpc,
-                            trackerKey: getRpcTrackerByChainId(chainId)?.trackerKey ?? "unknown",
-                          });
-                        }}
-                      >
-                        Force Secondary Failure
-                      </Button>
                     </div>
                   </div>
                 </TableTd>
@@ -318,20 +303,6 @@ export function DebugControlsPanel({
                           >
                             Primary timeout
                           </ToggleSwitch>
-                          <ToggleSwitch
-                            isChecked={debugState.triggerSecondaryFailedInWorker ?? false}
-                            setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryFailedInWorker", checked)}
-                            textClassName="text-base text-white"
-                          >
-                            Secondary failed
-                          </ToggleSwitch>
-                          <ToggleSwitch
-                            isChecked={debugState.triggerSecondaryTimeoutInWorker ?? false}
-                            setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryTimeoutInWorker", checked)}
-                            textClassName="text-base text-white"
-                          >
-                            Secondary timeout
-                          </ToggleSwitch>
                         </div>
                       </div>
                       <div>
@@ -343,13 +314,6 @@ export function DebugControlsPanel({
                             textClassName="text-base text-white"
                           >
                             Primary failed
-                          </ToggleSwitch>
-                          <ToggleSwitch
-                            isChecked={debugState.triggerSecondaryFailedInMainThread ?? false}
-                            setIsChecked={(checked) => onDebugFlagChange("triggerSecondaryFailedInMainThread", checked)}
-                            textClassName="text-base text-white"
-                          >
-                            Secondary failed
                           </ToggleSwitch>
                         </div>
                       </div>

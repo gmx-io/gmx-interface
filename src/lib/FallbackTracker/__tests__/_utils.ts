@@ -32,7 +32,6 @@ export const createMockConfig = (
     ...DEFAULT_FALLBACK_TRACKER_CONFIG,
     trackerKey: "test.tracker",
     primary: testEndpoints.primary,
-    secondary: testEndpoints.secondary,
     endpoints: [testEndpoints.primary, testEndpoints.secondary, testEndpoints.fallback],
     checkEndpoint: vi.fn().mockImplementation(async (endpoint: string, signal: AbortSignal) => {
       // Handle abort signal
@@ -48,8 +47,8 @@ export const createMockConfig = (
       // Default: return undefined to keep current primary
       return undefined;
     }),
-    selectNextSecondary: vi.fn().mockImplementation(() => {
-      // Default: return undefined to keep current secondary
+    selectNextFallbacks: vi.fn().mockImplementation(() => {
+      // Default: return undefined to keep current fallbacks
       return undefined;
     }),
   };

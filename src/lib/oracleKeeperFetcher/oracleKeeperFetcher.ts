@@ -1,8 +1,8 @@
 import { ContractsChainId } from "config/chains";
 import { isLocal } from "config/env";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
-import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
-import { metrics, OracleKeeperFailureCounter, OracleKeeperMetricMethodId } from "lib/metrics";
+import { withFallback } from "lib/FallbackTracker/withFallback";
+import { metrics, OracleKeeperFailureCounter } from "lib/metrics";
 import { subscribeForOracleTrackerMetrics } from "lib/metrics/oracleTrackerMetrics";
 import {
   getOracleKeeperFallbackUrls,
@@ -12,7 +12,7 @@ import {
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { buildUrl } from "sdk/utils/buildUrl";
 
-import { _debugOracleKeeper, OracleKeeperDebugEventType, OracleKeeperDebugFlags } from "./_debug";
+import { _debugOracleKeeper, OracleKeeperDebugFlags } from "./_debug";
 import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
 import {
   ApyInfo,
@@ -66,53 +66,13 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return this.oracleTracker.getCurrentEndpoints().primary;
   }
 
-  handleFailure(method: OracleKeeperMetricMethodId) {
+  handleFailure(path: string) {
     metrics.pushCounter<OracleKeeperFailureCounter>("oracleKeeper.failure", {
       chainId: this.chainId,
-      method,
+      method: path.split("?")[0],
     });
 
     this.oracleTracker.reportFailure(this.url);
-  }
-
-  fetchTickers(): Promise<TickersResponse> {
-    _debugOracleKeeper?.dispatchEvent({
-      type: "tickers-start",
-      chainId: this.chainId,
-      endpoint: this.url,
-    });
-
-    return this.request("/prices/tickers", {
-      validate: (res) => {
-        if (!res.length) {
-          return new Error("Invalid tickers response");
-        }
-
-        return undefined;
-      },
-    })
-      .then((res) => {
-        if (!res.length) {
-          throw new Error("Invalid tickers response");
-        }
-
-        if (_debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerTickersFailure)) {
-          return Promise.reject(new Error("Debug: Triggered tickers failure"));
-        }
-
-        if (_debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerPartialTickers)) {
-          this._dispatchDebug("tickers-partial");
-          return res.slice(0, Math.floor(res.length / 2));
-        }
-
-        this._dispatchDebug("tickers-success");
-
-        return res;
-      })
-      .catch((error) => {
-        this._dispatchDebug("tickers-failed");
-        throw error;
-      });
   }
 
   request = (
@@ -120,30 +80,73 @@ export class OracleKeeperFetcher implements OracleFetcher {
     opts: {
       query?: Record<string, string | number | undefined | boolean>;
       validate?: (res: any) => Error | undefined;
+      // For simplicity, support only tickers debug id for now
+      debugId?: "tickers";
     }
   ) => {
     const endpoints = this.oracleTracker.getCurrentEndpoints();
 
-    return fetch(buildUrl(endpoints.primary, path, opts.query))
-      .then((res) => res.json())
-      .then((res) => {
-        const error = opts.validate?.(res);
-
-        if (error) {
-          throw error;
+    return withFallback({
+      retryCount: 0,
+      endpoints: [endpoints.primary, ...endpoints.fallbacks],
+      fn: (endpoint) => {
+        if (opts.debugId) {
+          _debugOracleKeeper?.dispatchEvent({
+            type: `${opts.debugId}-start`,
+            chainId: this.chainId,
+            endpoint,
+          });
         }
 
-        return res;
-      })
-      .catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error(e);
-        emitReportEndpointFailure({
-          endpoint: endpoints.primary,
-          trackerKey: this.oracleTracker.fallbackTracker.trackerKey,
-        });
-        throw e;
-      });
+        return fetch(buildUrl(endpoint, path, opts.query))
+          .then((res) => res.json())
+          .then((res) => {
+            const error = opts.validate?.(res);
+
+            if (error) {
+              throw error;
+            }
+
+            if (
+              opts.debugId === "tickers" &&
+              _debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerTickersFailure)
+            ) {
+              return Promise.reject(new Error("Debug: Triggered tickers failure"));
+            }
+
+            if (opts.debugId) {
+              _debugOracleKeeper?.dispatchEvent({
+                type: `${opts.debugId}-success`,
+                chainId: this.chainId,
+                endpoint,
+              });
+            }
+
+            if (
+              opts.debugId === "tickers" &&
+              _debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerPartialTickers)
+            ) {
+              return res.slice(0, Math.floor(res.length / 2));
+            }
+
+            return res;
+          })
+          .catch((e) => {
+            if (opts.debugId) {
+              _debugOracleKeeper?.dispatchEvent({
+                type: `${opts.debugId}-failed`,
+                chainId: this.chainId,
+                endpoint,
+              });
+            }
+
+            // eslint-disable-next-line no-console
+            console.error(e);
+            this.handleFailure(path);
+            throw e;
+          });
+      },
+    });
   };
 
   post = (path: `/${string}`, body: any) => {
@@ -153,6 +156,25 @@ export class OracleKeeperFetcher implements OracleFetcher {
       body: JSON.stringify(body),
     });
   };
+
+  fetchTickers(): Promise<TickersResponse> {
+    return this.request("/prices/tickers", {
+      validate: (res) => {
+        if (!res.length) {
+          return new Error("Invalid tickers response");
+        }
+
+        return undefined;
+      },
+      debugId: "tickers",
+    })
+      .then((res) => {
+        return res;
+      })
+      .catch((error) => {
+        throw error;
+      });
+  }
 
   fetch24hPrices(): Promise<DayPriceCandle[]> {
     return this.request("/prices/24h", {
@@ -214,13 +236,5 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse> {
     return this.request("/performance/snapshots", { query: { period, address } });
-  }
-
-  _dispatchDebug(type: OracleKeeperDebugEventType) {
-    _debugOracleKeeper?.dispatchEvent({
-      type,
-      chainId: this.chainId,
-      endpoint: this.url,
-    });
   }
 }

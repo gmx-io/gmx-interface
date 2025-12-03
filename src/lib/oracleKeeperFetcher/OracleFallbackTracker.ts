@@ -1,7 +1,7 @@
 import orderBy from "lodash/orderBy";
 
 import { ContractsChainId, getChainName } from "config/rpc";
-import { FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker";
+import { CurrentEndpoints, EndpointStats, FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker";
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { ORACLE_FALLBACK_TRACKER_CONFIG } from "sdk/configs/oracleKeeper";
 
@@ -15,6 +15,10 @@ type OracleFallbackTrackerParams = FallbackTrackerConfig & {
   fallbacks: string[];
 };
 
+export type OracleEndpointStats = EndpointStats<OracleCheckResult>;
+
+export type OracleCurrentEndpoints = CurrentEndpoints<OracleCheckResult>;
+
 export class OracleKeeperFallbackTracker {
   fallbackTracker: FallbackTracker<OracleCheckResult>;
 
@@ -27,11 +31,10 @@ export class OracleKeeperFallbackTracker {
       ...ORACLE_FALLBACK_TRACKER_CONFIG,
       trackerKey: `OracleFallbackTracker:${getChainName(this.params.chainId)}`,
       primary: this.params.mainUrl,
-      secondary: this.params.fallbacks[0] ?? this.params.mainUrl,
       endpoints: [this.params.mainUrl, ...this.params.fallbacks],
       checkEndpoint: this.checkEndpoint,
-      selectNextPrimary: this.selectEndpoint,
-      selectNextSecondary: this.selectEndpoint,
+      selectNextPrimary: this.selectNextPrimaryEndpoint,
+      selectNextFallbacks: this.selectNextFallbacks,
     });
   }
 
@@ -69,14 +72,24 @@ export class OracleKeeperFallbackTracker {
     };
   };
 
-  selectEndpoint = ({ endpointsStats }) => {
+  selectNextPrimaryEndpoint = ({ endpointsStats }: { endpointsStats: OracleEndpointStats[] }) => {
     const avgResponseTime = getAvgResponseTime(endpointsStats);
     const ranked = orderBy(
       endpointsStats,
       [scoreNotBanned, scoreBySpeedAndConsistency(avgResponseTime)],
-      ["asc", "desc"]
+      ["desc", "desc"]
     );
 
     return ranked[0]?.endpoint;
+  };
+
+  selectNextFallbacks = ({ endpointsStats }: { endpointsStats: OracleEndpointStats[] }) => {
+    const avgResponseTime = getAvgResponseTime(endpointsStats);
+    const ranked = orderBy(
+      endpointsStats,
+      [scoreNotBanned, scoreBySpeedAndConsistency(avgResponseTime)],
+      ["desc", "desc"]
+    );
+    return ranked.map((result) => result.endpoint);
   };
 }

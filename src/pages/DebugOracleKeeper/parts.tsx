@@ -162,7 +162,7 @@ export function EventsPanel({
 export function DebugControlsPanel({
   chainId,
   primaryEndpoint,
-  secondaryEndpoint,
+  secondaryEndpoint: _secondaryEndpoint,
   debugState,
   onDebugFlagChange,
 }: {
@@ -203,22 +203,6 @@ export function DebugControlsPanel({
                         }}
                       >
                         Force Primary Failure
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        className="w-full"
-                        onClick={() => {
-                          if (!secondaryEndpoint) {
-                            return;
-                          }
-                          const fetcherInstance = fetcher as any;
-                          emitReportEndpointFailure({
-                            endpoint: secondaryEndpoint,
-                            trackerKey: fetcherInstance.oracleTracker?.fallbackTracker?.trackerKey ?? "unknown",
-                          });
-                        }}
-                      >
-                        Force Secondary Failure
                       </Button>
                     </div>
                   </div>

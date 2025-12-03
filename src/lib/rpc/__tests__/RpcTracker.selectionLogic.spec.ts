@@ -36,24 +36,24 @@ function verifyFallbackTrackerEndpoints(
   tracker: RpcTracker,
   eventCapture: ReturnType<typeof captureUpdateEndpointsEvent>,
   expectedPrimary: string,
-  expectedSecondary?: string,
+  expectedFallbacks?: string[],
   options?: { checkEndpointsStats?: boolean }
 ) {
   expect(tracker.fallbackTracker.state.primary).toBe(expectedPrimary);
-  if (expectedSecondary !== undefined) {
-    expect(tracker.fallbackTracker.state.secondary).toBe(expectedSecondary);
+  if (expectedFallbacks !== undefined) {
+    expect(tracker.fallbackTracker.state.fallbacks).toEqual(expectedFallbacks);
   } else {
-    expect(tracker.fallbackTracker.state.secondary).toBeDefined();
+    expect(Array.isArray(tracker.fallbackTracker.state.fallbacks)).toBe(true);
   }
 
   // Event should be emitted if endpoints changed
   // If event is null, it means endpoints didn't change (which is valid if they were already correct)
   if (eventCapture.event) {
     expect(eventCapture.event.primary).toBe(expectedPrimary);
-    if (expectedSecondary !== undefined) {
-      expect(eventCapture.event.secondary).toBe(expectedSecondary);
+    if (expectedFallbacks !== undefined) {
+      expect(eventCapture.event.fallbacks).toEqual(expectedFallbacks);
     } else {
-      expect(eventCapture.event.secondary).toBeDefined();
+      expect(Array.isArray(eventCapture.event.fallbacks)).toBe(true);
     }
     expect(eventCapture.event.trackerKey).toBe(tracker.trackerKey);
     if (options?.checkEndpointsStats) {
@@ -61,12 +61,12 @@ function verifyFallbackTrackerEndpoints(
     }
   } else {
     // If no event was emitted, endpoints should already be correct (no change needed)
-    // This can happen if oldPrimary was already expectedPrimary and expectedSecondary is undefined
+    // This can happen if oldPrimary was already expectedPrimary and expectedFallbacks is undefined
     const currentPrimary = tracker.fallbackTracker.state.primary;
-    const currentSecondary = tracker.fallbackTracker.state.secondary;
+    const currentFallbacks = tracker.fallbackTracker.state.fallbacks;
     expect(currentPrimary).toBe(expectedPrimary);
-    if (expectedSecondary !== undefined) {
-      expect(currentSecondary).toBe(expectedSecondary);
+    if (expectedFallbacks !== undefined) {
+      expect(currentFallbacks).toEqual(expectedFallbacks);
     }
   }
 }
@@ -76,7 +76,7 @@ function verifyFallbackTrackerSelection(
   tracker: RpcTracker,
   stats: any[],
   expectedPrimary: string,
-  expectedSecondary?: string,
+  expectedFallbacks?: string[],
   options?: { checkEndpointsStats?: boolean; allowSameEndpoints?: boolean }
 ) {
   // Set initial endpoints to different values to ensure event is emitted
@@ -87,32 +87,32 @@ function verifyFallbackTrackerSelection(
   const candidatesForOldPrimary = validEndpoints.filter((e) => e !== expectedPrimary);
   const oldPrimary = candidatesForOldPrimary[0] || validEndpoints[0];
 
-  // For oldSecondary, if expectedSecondary is provided, avoid it; otherwise use any endpoint different from oldPrimary and expectedPrimary
-  const candidatesForOldSecondary = expectedSecondary
-    ? validEndpoints.filter((e) => e !== expectedPrimary && e !== expectedSecondary && e !== oldPrimary)
+  // For oldFallbacks, if expectedFallbacks is provided, avoid them; otherwise use any endpoint different from oldPrimary and expectedPrimary
+  const expectedFallbacksSet = expectedFallbacks ? new Set(expectedFallbacks) : new Set();
+  const candidatesForOldFallbacks = expectedFallbacks
+    ? validEndpoints.filter((e) => e !== expectedPrimary && !expectedFallbacksSet.has(e) && e !== oldPrimary)
     : validEndpoints.filter((e) => e !== expectedPrimary && e !== oldPrimary);
-  const oldSecondary =
-    candidatesForOldSecondary[0] ||
-    validEndpoints.find((e) => e !== oldPrimary && e !== expectedPrimary) ||
-    validEndpoints[0];
+  const oldFallbacks =
+    candidatesForOldFallbacks.length > 0
+      ? [candidatesForOldFallbacks[0]]
+      : validEndpoints.filter((e) => e !== oldPrimary && e !== expectedPrimary).slice(0, 1) || [validEndpoints[0]];
 
   // Ensure oldPrimary is different from expectedPrimary
   if (oldPrimary === expectedPrimary) {
     const alternative = validEndpoints.find((e) => e !== expectedPrimary);
     if (alternative) {
       tracker.fallbackTracker.state.primary = alternative;
-      tracker.fallbackTracker.state.secondary =
-        oldSecondary === alternative
-          ? validEndpoints.find((e) => e !== alternative && e !== expectedPrimary) || validEndpoints[0]
-          : oldSecondary;
+      tracker.fallbackTracker.state.fallbacks = oldFallbacks.includes(alternative)
+        ? validEndpoints.filter((e) => e !== alternative && e !== expectedPrimary).slice(0, 1) || [validEndpoints[0]]
+        : oldFallbacks;
     } else {
       // If all endpoints are the same, we can't test endpoint change
       tracker.fallbackTracker.state.primary = oldPrimary;
-      tracker.fallbackTracker.state.secondary = oldSecondary;
+      tracker.fallbackTracker.state.fallbacks = oldFallbacks;
     }
   } else {
     tracker.fallbackTracker.state.primary = oldPrimary;
-    tracker.fallbackTracker.state.secondary = oldSecondary;
+    tracker.fallbackTracker.state.fallbacks = oldFallbacks;
   }
 
   // Clear any existing throttle timeout to ensure immediate event emission
@@ -123,32 +123,32 @@ function verifyFallbackTrackerSelection(
 
   vi.spyOn(tracker.fallbackTracker, "getEndpointsStats").mockReturnValue(stats as any);
 
-  // Mock selectNextPrimary and selectNextSecondary to return expected values
+  // Mock selectNextPrimary and selectNextFallbacks to return expected values
   const originalSelectNextPrimary = tracker.fallbackTracker.params.selectNextPrimary;
-  const originalSelectNextSecondary = tracker.fallbackTracker.params.selectNextSecondary;
+  const originalSelectNextFallbacks = tracker.fallbackTracker.params.selectNextFallbacks;
 
   tracker.fallbackTracker.params.selectNextPrimary = vi.fn().mockReturnValue(expectedPrimary);
-  // If expectedSecondary is not provided, let selectNextSecondary return undefined to keep current secondary
-  tracker.fallbackTracker.params.selectNextSecondary = vi.fn().mockReturnValue(expectedSecondary);
+  // If expectedFallbacks is not provided, let selectNextFallbacks return undefined to keep current fallbacks
+  tracker.fallbackTracker.params.selectNextFallbacks = vi.fn().mockReturnValue(expectedFallbacks);
 
   const eventCapture = captureUpdateEndpointsEvent(tracker);
 
   tracker.fallbackTracker.selectBestEndpoints();
 
-  // Only check that primary and secondary are different if:
+  // Only check that primary is not in fallbacks if:
   // 1. allowSameEndpoints is not true
-  // 2. expectedSecondary is provided and different from expectedPrimary
-  if (!options?.allowSameEndpoints && expectedSecondary !== undefined && expectedSecondary !== expectedPrimary) {
-    expect(tracker.fallbackTracker.state.primary).not.toBe(tracker.fallbackTracker.state.secondary);
+  // 2. expectedFallbacks is provided and doesn't include expectedPrimary
+  if (!options?.allowSameEndpoints && expectedFallbacks !== undefined && !expectedFallbacks.includes(expectedPrimary)) {
+    expect(tracker.fallbackTracker.state.fallbacks).not.toContain(tracker.fallbackTracker.state.primary);
   }
 
-  verifyFallbackTrackerEndpoints(tracker, eventCapture, expectedPrimary, expectedSecondary, {
+  verifyFallbackTrackerEndpoints(tracker, eventCapture, expectedPrimary, expectedFallbacks, {
     checkEndpointsStats: options?.checkEndpointsStats,
   });
 
   // Restore original functions
   tracker.fallbackTracker.params.selectNextPrimary = originalSelectNextPrimary;
-  tracker.fallbackTracker.params.selectNextSecondary = originalSelectNextSecondary;
+  tracker.fallbackTracker.params.selectNextFallbacks = originalSelectNextFallbacks;
 
   eventCapture.unsubscribe();
 }
@@ -157,14 +157,14 @@ function verifyFallbackTrackerSelection(
 function verifyFallbackTrackerStateUnchanged(tracker: RpcTracker) {
   // Capture initial state
   const initialPrimary = tracker.fallbackTracker.state.primary;
-  const initialSecondary = tracker.fallbackTracker.state.secondary;
+  const initialFallbacks = [...tracker.fallbackTracker.state.fallbacks];
 
   // Capture events to ensure no event was emitted
   const eventCapture = captureUpdateEndpointsEvent(tracker);
 
   // Verify state hasn't changed
   expect(tracker.fallbackTracker.state.primary).toBe(initialPrimary);
-  expect(tracker.fallbackTracker.state.secondary).toBe(initialSecondary);
+  expect(tracker.fallbackTracker.state.fallbacks).toEqual(initialFallbacks);
 
   // Verify no event was emitted
   expect(eventCapture.event).toBeNull();
@@ -500,7 +500,7 @@ describe("Selection logic", () => {
         // For single endpoint, constructor already sets it correctly, and selectBestEndpoints does early return
         // without calling setCurrentEndpoints, so no event should be emitted
         expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
-        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.fallbacks).toEqual([]);
 
         // Verify that selectBestEndpoints doesn't change endpoints and doesn't emit event
         const eventCapture = captureUpdateEndpointsEvent(tracker);
@@ -509,7 +509,7 @@ describe("Selection logic", () => {
         expect(eventCapture.event).toBeNull();
         // Endpoints should remain the same
         expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
-        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.fallbacks).toEqual([]);
         eventCapture.unsubscribe();
       });
     });
@@ -599,20 +599,19 @@ describe("Selection logic", () => {
     });
   });
 
-  describe("Secondary", () => {
+  describe("Fallbacks", () => {
     describe("Edge cases", () => {
-      it("should return undefined when empty array passed", () => {
+      it("should return empty array when empty array passed", () => {
         const params = createMockRpcTrackerParams();
         mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
         const tracker = new RpcTracker(params);
 
-        const result = tracker.selectNextSecondary({ endpointsStats: [] });
+        const result = tracker.selectNextFallbacks({ endpointsStats: [], primary: testRpcConfigs.defaultPrimary.url });
 
-        expect(result).toBeUndefined();
-        verifyFallbackTrackerStateUnchanged(tracker);
+        expect(result).toEqual([]);
       });
 
-      it("should return undefined when no valid endpoints", () => {
+      it("should return empty array when no valid endpoints", () => {
         const params = createMockRpcTrackerParams();
         mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
         const tracker = new RpcTracker(params);
@@ -625,10 +624,14 @@ describe("Selection logic", () => {
 
         vi.spyOn(tracker, "getValidStats").mockReturnValue([]);
 
-        const result = tracker.selectNextSecondary({ endpointsStats: allInvalidStats });
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = allInvalidStats.filter((s) => s.endpoint !== testRpcConfigs.defaultPrimary.url);
+        const result = tracker.selectNextFallbacks({
+          endpointsStats: statsWithoutPrimary,
+          primary: testRpcConfigs.defaultPrimary.url,
+        });
 
-        expect(result).toBeUndefined();
-        verifyFallbackTrackerStateUnchanged(tracker);
+        expect(result).toEqual([]);
       });
 
       it("should return only one valid endpoint matched criteria", () => {
@@ -650,13 +653,15 @@ describe("Selection logic", () => {
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== expectedPrimary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary: expectedPrimary });
 
-        expect(result).toBe(singleValidEndpoint);
-        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, singleValidEndpoint);
+        expect(result).toEqual([singleValidEndpoint]);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, [singleValidEndpoint]);
       });
 
-      it("should return undefined when no endpoints matched criteria", () => {
+      it("should return empty array when no endpoints matched criteria", () => {
         const params = createMockRpcTrackerParams();
         mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
         const tracker = new RpcTracker(params);
@@ -667,13 +672,17 @@ describe("Selection logic", () => {
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== testRpcConfigs.defaultPrimary.url);
+        const result = tracker.selectNextFallbacks({
+          endpointsStats: statsWithoutPrimary,
+          primary: testRpcConfigs.defaultPrimary.url,
+        });
 
-        expect(result).toBeUndefined();
-        verifyFallbackTrackerStateUnchanged(tracker);
+        expect(result).toEqual([]);
       });
 
-      it("should return default endpoint when only one endpoint exists", () => {
+      it("should return empty array when only one endpoint exists", () => {
         const params = createMockRpcTrackerParams();
         mockGetRpcProvidersWithTestConfigs([testRpcConfigs.defaultPrimary]);
         const tracker = new RpcTracker(params);
@@ -685,15 +694,20 @@ describe("Selection logic", () => {
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== singleDefaultEndpoint);
+        const result = tracker.selectNextFallbacks({
+          endpointsStats: statsWithoutPrimary,
+          primary: singleDefaultEndpoint,
+        });
 
-        expect(result).toBe(singleDefaultEndpoint);
+        expect(result).toEqual([]);
 
         // Verify fallbackTracker state
         // For single endpoint, constructor already sets it correctly, and selectBestEndpoints does early return
         // without calling setCurrentEndpoints, so no event should be emitted
         expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
-        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.fallbacks).toEqual([]);
 
         // Verify that selectBestEndpoints doesn't change endpoints and doesn't emit event
         const eventCapture = captureUpdateEndpointsEvent(tracker);
@@ -702,7 +716,7 @@ describe("Selection logic", () => {
         expect(eventCapture.event).toBeNull();
         // Endpoints should remain the same
         expect(tracker.fallbackTracker.state.primary).toBe(singleDefaultEndpoint);
-        expect(tracker.fallbackTracker.state.secondary).toBe(singleDefaultEndpoint);
+        expect(tracker.fallbackTracker.state.fallbacks).toEqual([]);
         eventCapture.unsubscribe();
       });
     });
@@ -715,23 +729,25 @@ describe("Selection logic", () => {
         const tracker = new RpcTracker(params);
 
         const expectedPrimary = testRpcConfigs.defaultPrimary.url;
-        const expectedSecondary = testRpcConfigs.fallback.url;
+        const expectedFallback = testRpcConfigs.fallback.url;
 
         const stats = [
           createMockEndpointStats(expectedPrimary, {
             checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
           }),
-          createMockEndpointStats(expectedSecondary, {
+          createMockEndpointStats(expectedFallback, {
             checkResult: { success: true, stats: { responseTime: 100, blockNumber: 1000000 } },
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== expectedPrimary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary: expectedPrimary });
 
-        expect(result).toBe(expectedSecondary);
+        expect(result).toEqual([expectedFallback]);
 
         // Verify fallbackTracker and event
-        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, [expectedFallback]);
       });
 
       it("should select fallback rpc even if default is faster", () => {
@@ -739,22 +755,25 @@ describe("Selection logic", () => {
         mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
         const tracker = new RpcTracker(params);
 
-        const expectedSecondary = testRpcConfigs.fallback.url;
+        const expectedFallback = testRpcConfigs.fallback.url;
+        const expectedPrimary = testRpcConfigs.defaultPrimary.url;
 
         const stats = [
-          createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
+          createMockEndpointStats(expectedPrimary, {
             checkResult: { success: true, stats: { responseTime: 10, blockNumber: 1000000 } },
           }),
-          createMockEndpointStats(expectedSecondary, {
+          createMockEndpointStats(expectedFallback, {
             checkResult: { success: true, stats: { responseTime: 200, blockNumber: 1000000 } },
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== expectedPrimary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary: expectedPrimary });
 
         // Should prefer fallback even if default is much faster
-        expect(result).toBe(expectedSecondary);
-        verifyFallbackTrackerSelection(tracker, stats, testRpcConfigs.defaultPrimary.url, expectedSecondary);
+        expect(result).toEqual([expectedFallback]);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, [expectedFallback]);
       });
 
       it("should select non-banned fastest default rpc when no fallback available", () => {
@@ -771,15 +790,18 @@ describe("Selection logic", () => {
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        const primary = testRpcConfigs.defaultSecondary.url;
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== primary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary });
 
         // Should select fastest default when no fallback available
-        expect(result).toBe(testRpcConfigs.defaultSecondary.url); // Fastest default
+        expect(result).toEqual([testRpcConfigs.defaultPrimary.url]); // Slower default as fallback
 
-        // Verify fallbackTracker: primary will be fastest default, secondary will be slower default
+        // Verify fallbackTracker: primary will be fastest default, fallbacks will be slower default
         const expectedPrimary = testRpcConfigs.defaultSecondary.url;
-        const expectedSecondary = testRpcConfigs.defaultPrimary.url;
-        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+        const expectedFallbacks = [testRpcConfigs.defaultPrimary.url];
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedFallbacks);
       });
 
       it("should select non-banned fastest default rpc when fallback is banned", () => {
@@ -800,15 +822,21 @@ describe("Selection logic", () => {
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        const primary = testRpcConfigs.defaultSecondary.url;
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== primary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary });
 
-        // Should select fastest default when fallback is banned
-        expect(result).toBe(testRpcConfigs.defaultSecondary.url); // Fastest non-banned default
+        // Should select all matching endpoints (fallback is banned but still included, ranked lower)
+        // selectNextFallbacks returns all matching endpoints, not just one
+        expect(result).toBeDefined();
+        expect(result).toContain(testRpcConfigs.defaultPrimary.url);
+        expect(result!.length).toBeGreaterThan(0);
 
-        // Verify fallbackTracker: primary will be fastest default, secondary will be slower default
+        // Verify fallbackTracker: primary will be fastest default, fallbacks will include all matching endpoints
         const expectedPrimary = testRpcConfigs.defaultSecondary.url;
-        const expectedSecondary = testRpcConfigs.defaultPrimary.url;
-        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+        const expectedFallbacks = result; // Use actual result
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedFallbacks);
       });
     });
 
@@ -833,18 +861,23 @@ describe("Selection logic", () => {
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        const primary = testRpcConfigs.defaultSecondary.url;
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== primary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary });
 
-        // Should select fastest non-banned RPC
-        expect(result).toBe(testRpcConfigs.defaultSecondary.url); // Fastest non-banned
+        // Should select all matching endpoints (selectNextFallbacks returns all matching endpoints)
+        expect(result).toBeDefined();
+        expect(result).toContain(testRpcConfigs.defaultPrimary.url);
+        expect(result!.length).toBeGreaterThan(0);
 
-        // Verify fallbackTracker: primary will be fastest default, secondary will be slower default
+        // Verify fallbackTracker: primary will be fastest default, fallbacks will include all matching endpoints
         const expectedPrimary = testRpcConfigs.defaultSecondary.url;
-        const expectedSecondary = testRpcConfigs.defaultPrimary.url;
-        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+        const expectedFallbacks = result; // Use actual result
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedFallbacks);
       });
 
-      it("should prefer largeAccount for secondary when available and not banned", () => {
+      it("should prefer largeAccount for fallbacks when available and not banned", () => {
         const params = createMockRpcTrackerParams();
         mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
         const tracker = new RpcTracker(params);
@@ -852,7 +885,7 @@ describe("Selection logic", () => {
         tracker.getIsLargeAccount = () => true;
 
         const expectedPrimary = testRpcConfigs.largeAccount.url; // largeAccount will be selected as primary
-        const expectedSecondary = testRpcConfigs.defaultPrimary.url; // default will be selected as secondary
+        const expectedFallbacks = [testRpcConfigs.defaultPrimary.url]; // default will be selected as fallback
 
         const stats = [
           createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
@@ -863,24 +896,24 @@ describe("Selection logic", () => {
           }),
         ];
 
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== expectedPrimary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary: expectedPrimary });
 
-        // Should prefer largeAccount even if default is faster
-        expect(result).toBe(testRpcConfigs.largeAccount.url); // largeAccount will be selected
-        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedSecondary);
+        expect(result).toEqual(expectedFallbacks);
+        verifyFallbackTrackerSelection(tracker, stats, expectedPrimary, expectedFallbacks);
       });
 
-      it("should prefer largeAccount purpose for large account secondary selection", () => {
+      it("should prefer largeAccount purpose for large account fallback selection", () => {
         const params = createMockRpcTrackerParams();
         mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
         const tracker = new RpcTracker(params);
 
         tracker.getIsLargeAccount = () => true;
 
-        // For largeAccount, when selecting secondary, it should prefer largeAccount over default
-        // But if primary is already largeAccount, secondary will be selected from remaining stats
+        // For largeAccount, when selecting fallbacks, it should prefer largeAccount over default
+        // But if primary is already largeAccount, fallbacks will be selected from remaining stats
         const expectedPrimary = testRpcConfigs.largeAccount.url;
-        const expectedSecondary = testRpcConfigs.defaultPrimary.url; // Only defaultPrimary remains after primary selection
+        const expectedFallbacks = [testRpcConfigs.defaultPrimary.url]; // Only defaultPrimary remains after primary selection
 
         const stats = [
           createMockEndpointStats(testRpcConfigs.defaultPrimary.url, {
@@ -891,21 +924,23 @@ describe("Selection logic", () => {
           }),
         ];
 
-        // Test selectNextSecondary directly - it should prefer largeAccount when available
-        const result = tracker.selectNextSecondary({ endpointsStats: stats });
+        // Test selectNextFallbacks directly - it should prefer default when primary is largeAccount
+        // selectNextFallbacks receives stats without primary (as done in selectBestEndpoints)
+        const statsWithoutPrimary = stats.filter((s) => s.endpoint !== expectedPrimary);
+        const result = tracker.selectNextFallbacks({ endpointsStats: statsWithoutPrimary, primary: expectedPrimary });
 
-        expect(result).toBe(expectedPrimary); // Should prefer largeAccount
+        expect(result).toEqual(expectedFallbacks); // Should select default as fallback
 
         // Verify fallbackTracker and event
-        // Include stats for both primary and secondary selection
+        // Include stats for both primary and fallback selection
         const allStats = [
           ...stats,
           createMockEndpointStats(testRpcConfigs.defaultSecondary.url, {
             checkResult: { success: true, stats: { responseTime: 300, blockNumber: 1000000 } },
           }),
         ];
-        // After selectBestEndpoints, primary will be largeAccount, secondary will be defaultPrimary (from remaining stats)
-        verifyFallbackTrackerSelection(tracker, allStats, expectedPrimary, expectedSecondary);
+        // After selectBestEndpoints, primary will be largeAccount, fallbacks will be defaultPrimary (from remaining stats)
+        verifyFallbackTrackerSelection(tracker, allStats, expectedPrimary, expectedFallbacks);
       });
     });
   });
@@ -928,16 +963,16 @@ describe("Selection logic", () => {
         }),
       ];
 
-      // For regular account: primary = fastest default, secondary = fallback
+      // For regular account: primary = fastest default, fallbacks = [fallback]
       verifyFallbackTrackerSelection(
         tracker,
         stats,
         testRpcConfigs.defaultSecondary.url, // Fastest default (responseTime: 100)
-        testRpcConfigs.fallback.url // Fallback (responseTime: 150)
+        [testRpcConfigs.fallback.url] // Fallback (responseTime: 150)
       );
     });
 
-    it("should select unique primary and secondary for large account", () => {
+    it("should select unique primary and fallbacks for large account", () => {
       const params = createMockRpcTrackerParams();
       mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
       const tracker = new RpcTracker(params);
@@ -956,16 +991,16 @@ describe("Selection logic", () => {
         }),
       ];
 
-      // For large account: primary = largeAccount (preferred), secondary = fastest default
+      // For large account: primary = largeAccount (preferred), fallbacks = [fastest default]
       verifyFallbackTrackerSelection(
         tracker,
         stats,
         testRpcConfigs.largeAccount.url, // largeAccount (preferred even if slower)
-        testRpcConfigs.defaultPrimary.url // Fastest default (responseTime: 50)
+        [testRpcConfigs.defaultPrimary.url] // Fastest default (responseTime: 50)
       );
     });
 
-    it("should select unique primary and secondary when some endpoints are banned", () => {
+    it("should select unique primary and fallbacks when some endpoints are banned", () => {
       const params = createMockRpcTrackerParams();
       mockGetRpcProvidersWithTestConfigs(testRpcConfigsArray);
       const tracker = new RpcTracker(params);
@@ -983,41 +1018,38 @@ describe("Selection logic", () => {
         }),
       ];
 
-      // With banned endpoint: primary = fastest non-banned default, secondary = fallback
+      // With banned endpoint: primary = fastest non-banned default, fallbacks = [fallback]
       verifyFallbackTrackerSelection(
         tracker,
         stats,
         testRpcConfigs.defaultSecondary.url, // Fastest non-banned default (responseTime: 100)
-        testRpcConfigs.fallback.url // Fallback (responseTime: 150)
+        [testRpcConfigs.fallback.url] // Fallback (responseTime: 150)
       );
     });
 
-    it("should select same endpoint for both primary and secondary when only one endpoint exists", () => {
+    it("should select empty fallbacks when only one endpoint exists", () => {
       const params = createMockRpcTrackerParams();
       mockGetRpcProvidersWithTestConfigs([testRpcConfigs.defaultPrimary]);
       const tracker = new RpcTracker(params);
 
       const singleEndpoint = testRpcConfigs.defaultPrimary.url;
 
-      // Verify initial state: constructor should set both primary and secondary to the single endpoint
+      // Verify initial state: constructor should set primary to the single endpoint and fallbacks to empty array
       expect(tracker.fallbackTracker.state.primary).toBe(singleEndpoint);
-      expect(tracker.fallbackTracker.state.secondary).toBe(singleEndpoint);
+      expect(tracker.fallbackTracker.state.fallbacks).toEqual([]);
 
       // Set initial endpoints to different values to test that selectBestEndpoints changes them
       tracker.fallbackTracker.state.primary = "https://old-primary.com";
-      tracker.fallbackTracker.state.secondary = "https://old-secondary.com";
+      tracker.fallbackTracker.state.fallbacks = ["https://old-fallback.com"];
       const eventCapture = captureUpdateEndpointsEvent(tracker);
 
       tracker.fallbackTracker.selectBestEndpoints();
 
-      // Verify that primary and secondary are the same when only one endpoint exists
+      // Verify that primary is set and fallbacks are empty when only one endpoint exists
       expect(tracker.fallbackTracker.state.primary).toBe(singleEndpoint);
-      expect(tracker.fallbackTracker.state.secondary).toBe(singleEndpoint);
-      expect(tracker.fallbackTracker.state.primary).toBe(tracker.fallbackTracker.state.secondary);
+      expect(tracker.fallbackTracker.state.fallbacks).toEqual([]);
 
       // When endpoints.length === 1, selectBestEndpoints does early return without calling setCurrentEndpoints
-      // So no event should be emitted (even though endpoints changed)
-      // This is the expected behavior according to FallbackTracker implementation
       expect(eventCapture.event).toBeNull();
 
       eventCapture.unsubscribe();

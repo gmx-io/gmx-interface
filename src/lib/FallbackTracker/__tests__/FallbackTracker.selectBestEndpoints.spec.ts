@@ -25,15 +25,28 @@ describe("FallbackTracker", () => {
 
   describe("selectBestEndpoints", () => {
     describe("basic functionality", () => {
+      it("should execute immediately on first call (leading edge)", () => {
+        const config = createMockConfig({
+          selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
+        });
+        const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
+
+        tracker.selectBestEndpoints();
+
+        expect(config.selectNextPrimary).toHaveBeenCalled();
+        expect(config.selectNextFallbacks).toHaveBeenCalled();
+      });
+
       it("should call selectNextPrimary with correct parameters", () => {
         const config = createMockConfig({
           selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-          selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
-        const originalSecondary = tracker.state.secondary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
 
         tracker.selectBestEndpoints();
@@ -41,52 +54,48 @@ describe("FallbackTracker", () => {
         expect(config.selectNextPrimary).toHaveBeenCalledWith({
           endpointsStats: expect.any(Array),
           primary: originalPrimary,
-          secondary: originalSecondary,
         });
-        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(testEndpoints.fallback, testEndpoints.primary);
+        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(testEndpoints.fallback, [testEndpoints.primary]);
       });
 
-      it("should call selectNextSecondary with correct parameters", () => {
+      it("should call selectNextFallbacks with correct parameters", () => {
         const config = createMockConfig({
           selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-          selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
-        const originalPrimary = tracker.state.primary;
-        const originalSecondary = tracker.state.secondary;
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
 
         tracker.selectBestEndpoints();
 
-        expect(config.selectNextSecondary).toHaveBeenCalledWith({
+        expect(config.selectNextFallbacks).toHaveBeenCalledWith({
           endpointsStats: expect.any(Array),
-          primary: originalPrimary,
-          secondary: originalSecondary,
+          primary: testEndpoints.fallback, // selectNextFallbacks is called after selectNextPrimary
         });
-        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(testEndpoints.fallback, testEndpoints.primary);
+        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(testEndpoints.fallback, [testEndpoints.primary]);
       });
 
-      it("should filter out secondary from primary selection when keepSecondary is true", () => {
+      it("should filter out primary from fallbacks selection", () => {
         const config = createMockConfig({
           selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-          selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
 
-        tracker.selectBestEndpoints({ keepSecondary: true });
+        tracker.selectBestEndpoints();
 
-        const selectNextPrimaryMock = config.selectNextPrimary as ReturnType<typeof vi.fn>;
-        const callArgs = selectNextPrimaryMock.mock.calls[0][0];
-        const hasSecondary = callArgs.endpointsStats.some((s) => s.endpoint === tracker.state.secondary);
-        expect(hasSecondary).toBe(false);
+        const selectNextFallbacksMock = config.selectNextFallbacks as ReturnType<typeof vi.fn>;
+        const callArgs = selectNextFallbacksMock.mock.calls[0][0];
+        const hasPrimary = callArgs.endpointsStats.some((s) => s.endpoint === tracker.state.primary);
+        expect(hasPrimary).toBe(false);
       });
 
       it("should keep primary when keepPrimary is true", () => {
         const config = createMockConfig({
           selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-          selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.primary),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
@@ -96,7 +105,20 @@ describe("FallbackTracker", () => {
         tracker.selectBestEndpoints({ keepPrimary: true });
 
         expect(config.selectNextPrimary).not.toHaveBeenCalled();
-        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, expect.any(String));
+        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, expect.any(Array));
+      });
+
+      it("should update primary endpoint when valid", () => {
+        const config = createMockConfig({
+          selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
+        });
+        const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
+
+        tracker.selectBestEndpoints();
+
+        expect(tracker.state.primary).toBe(testEndpoints.fallback);
       });
 
       it("should handle single endpoint case", () => {
@@ -104,9 +126,8 @@ describe("FallbackTracker", () => {
         const config = createMockConfig({
           endpoints: [singleEndpoint],
           primary: singleEndpoint,
-          secondary: singleEndpoint,
           selectNextPrimary: vi.fn(),
-          selectNextSecondary: vi.fn(),
+          selectNextFallbacks: vi.fn(),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
@@ -115,10 +136,48 @@ describe("FallbackTracker", () => {
         tracker.selectBestEndpoints();
 
         expect(config.selectNextPrimary).not.toHaveBeenCalled();
-        expect(config.selectNextSecondary).not.toHaveBeenCalled();
+        expect(config.selectNextFallbacks).not.toHaveBeenCalled();
         expect(setCurrentEndpointsSpy).not.toHaveBeenCalled();
         expect(tracker.state.primary).toBe(singleEndpoint);
-        expect(tracker.state.secondary).toBe(singleEndpoint);
+        expect(tracker.state.fallbacks).toEqual([]);
+      });
+
+      it("should allow consecutive selectBestEndpoints calls without throttling", () => {
+        const config = createMockConfig({
+          selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
+        });
+        const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
+
+        tracker.selectBestEndpoints();
+        tracker.selectBestEndpoints();
+        tracker.selectBestEndpoints();
+
+        expect((config.selectNextPrimary as ReturnType<typeof vi.fn>).mock.calls.length).toBe(3);
+      });
+
+      it("should save state to localStorage and emit event after update", () => {
+        const config = createMockConfig({
+          selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.primary]),
+        });
+        const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
+        const setItemSpy = vi.spyOn(localStorage, "setItem");
+        const dispatchSpy = vi.spyOn(window, "dispatchEvent");
+
+        tracker.selectBestEndpoints();
+
+        expect(setItemSpy).toHaveBeenCalled();
+        const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
+        expect(savedData.primary).toBe(tracker.state.primary);
+        expect(Array.isArray(savedData.fallbacks)).toBe(true);
+
+        expect(dispatchSpy).toHaveBeenCalled();
+        const event = dispatchSpy.mock.calls[0][0] as CustomEvent;
+        expect(event.detail.primary).toBe(tracker.state.primary);
+        expect(Array.isArray(event.detail.fallbacks)).toBe(true);
       });
     });
 
@@ -128,7 +187,7 @@ describe("FallbackTracker", () => {
           selectNextPrimary: vi.fn().mockImplementation(() => {
             throw new Error("Test error in selectNextPrimary");
           }),
-          selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.fallback),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.fallback]),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
@@ -139,52 +198,52 @@ describe("FallbackTracker", () => {
         tracker.selectBestEndpoints();
 
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Error in selectNextPrimary"));
-        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, testEndpoints.fallback);
+        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, [testEndpoints.fallback]);
         expect(tracker.state.primary).toBe(originalPrimary);
       });
 
-      it("should ignore errors in selectNextSecondary and keep current secondary", () => {
+      it("should ignore errors in selectNextFallbacks and keep current fallbacks", () => {
         const config = createMockConfig({
           selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.fallback),
-          selectNextSecondary: vi.fn().mockImplementation(() => {
-            throw new Error("Test error in selectNextSecondary");
+          selectNextFallbacks: vi.fn().mockImplementation(() => {
+            throw new Error("Test error in selectNextFallbacks");
           }),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
-        const originalSecondary = tracker.state.secondary;
+        const originalFallbacks = [...tracker.state.fallbacks];
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
         const warnSpy = vi.spyOn(tracker, "warn");
 
         tracker.selectBestEndpoints();
 
-        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Error in selectNextSecondary"));
-        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(testEndpoints.fallback, originalSecondary);
-        expect(tracker.state.secondary).toBe(originalSecondary);
+        expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Error in selectNextFallbacks"));
+        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(testEndpoints.fallback, originalFallbacks);
+        expect(tracker.state.fallbacks).toEqual(originalFallbacks);
       });
 
-      it("should handle errors in both selectNextPrimary and selectNextSecondary", () => {
+      it("should handle errors in both selectNextPrimary and selectNextFallbacks", () => {
         const config = createMockConfig({
           selectNextPrimary: vi.fn().mockImplementation(() => {
             throw new Error("Test error in selectNextPrimary");
           }),
-          selectNextSecondary: vi.fn().mockImplementation(() => {
-            throw new Error("Test error in selectNextSecondary");
+          selectNextFallbacks: vi.fn().mockImplementation(() => {
+            throw new Error("Test error in selectNextFallbacks");
           }),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
         const originalPrimary = tracker.state.primary;
-        const originalSecondary = tracker.state.secondary;
+        const originalFallbacks = [...tracker.state.fallbacks];
         const setCurrentEndpointsSpy = vi.spyOn(tracker, "setCurrentEndpoints");
         const warnSpy = vi.spyOn(tracker, "warn");
 
         tracker.selectBestEndpoints();
 
         expect(warnSpy).toHaveBeenCalledTimes(2);
-        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, originalSecondary);
+        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, originalFallbacks);
         expect(tracker.state.primary).toBe(originalPrimary);
-        expect(tracker.state.secondary).toBe(originalSecondary);
+        expect(tracker.state.fallbacks).toEqual(originalFallbacks);
       });
 
       it("should handle non-Error exceptions in selectNextPrimary", () => {
@@ -192,7 +251,7 @@ describe("FallbackTracker", () => {
           selectNextPrimary: vi.fn().mockImplementation(() => {
             throw "String error";
           }),
-          selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.fallback),
+          selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.fallback]),
         });
         const tracker = new FallbackTracker(config);
         trackers.push(tracker);
@@ -203,7 +262,7 @@ describe("FallbackTracker", () => {
         tracker.selectBestEndpoints();
 
         expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Error in selectNextPrimary"));
-        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, testEndpoints.fallback);
+        expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(originalPrimary, [testEndpoints.fallback]);
       });
     });
   });
@@ -217,41 +276,41 @@ describe("FallbackTracker", () => {
       vi.useRealTimers();
     });
 
-    it("should not update if primary and secondary are unchanged", () => {
+    it("should not update if primary and fallbacks are unchanged", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
       const originalPrimary = tracker.state.primary;
-      const originalSecondary = tracker.state.secondary;
+      const originalFallbacks = [...tracker.state.fallbacks];
       const saveStorageSpy = vi.spyOn(tracker, "saveStorage");
       const dispatchSpy = vi.spyOn(globalThis, "dispatchEvent");
 
-      tracker.setCurrentEndpoints(originalPrimary, originalSecondary);
+      tracker.setCurrentEndpoints(originalPrimary, originalFallbacks);
 
       expect(saveStorageSpy).not.toHaveBeenCalled();
       expect(dispatchSpy).not.toHaveBeenCalled();
       expect(tracker.state.primary).toBe(originalPrimary);
-      expect(tracker.state.secondary).toBe(originalSecondary);
+      expect(tracker.state.fallbacks).toEqual(originalFallbacks);
     });
 
     it("should update endpoints immediately on first call (leading edge)", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
       const newPrimary = testEndpoints.fallback;
-      const newSecondary = testEndpoints.primary;
+      const newFallbacks = [testEndpoints.primary];
       const saveStorageSpy = vi.spyOn(tracker, "saveStorage");
       const dispatchSpy = vi.spyOn(globalThis, "dispatchEvent");
 
-      tracker.setCurrentEndpoints(newPrimary, newSecondary);
+      tracker.setCurrentEndpoints(newPrimary, newFallbacks);
 
       expect(tracker.state.primary).toBe(newPrimary);
-      expect(tracker.state.secondary).toBe(newSecondary);
+      expect(tracker.state.fallbacks).toEqual(newFallbacks);
       expect(saveStorageSpy).toHaveBeenCalledTimes(1);
       expect(dispatchSpy).toHaveBeenCalledTimes(1);
 
       const event = dispatchSpy.mock.calls[0][0] as CustomEvent;
       expect(event.type).toBe(fallbackTrackerEventKeys.endpointsUpdated);
       expect(event.detail.primary).toBe(newPrimary);
-      expect(event.detail.secondary).toBe(newSecondary);
+      expect(event.detail.fallbacks).toEqual(newFallbacks);
     });
 
     it("should throttle subsequent calls and process last one on trailing edge", () => {
@@ -263,25 +322,25 @@ describe("FallbackTracker", () => {
       const dispatchSpy = vi.spyOn(globalThis, "dispatchEvent");
 
       // First call - should execute immediately
-      tracker.setCurrentEndpoints(testEndpoints.fallback, testEndpoints.primary);
+      tracker.setCurrentEndpoints(testEndpoints.fallback, [testEndpoints.primary]);
       expect(saveStorageSpy).toHaveBeenCalledTimes(1);
       expect(dispatchSpy).toHaveBeenCalledTimes(1);
 
       // Second call during throttle - should be saved for trailing edge
-      tracker.setCurrentEndpoints(testEndpoints.secondary, testEndpoints.fallback);
+      tracker.setCurrentEndpoints(testEndpoints.secondary, [testEndpoints.fallback]);
       expect(saveStorageSpy).toHaveBeenCalledTimes(1); // Still 1
       expect(dispatchSpy).toHaveBeenCalledTimes(1); // Still 1
       expect(tracker.state.pendingEndpoints).toEqual({
         primary: testEndpoints.secondary,
-        secondary: testEndpoints.fallback,
+        fallbacks: [testEndpoints.fallback],
       });
 
       // Third call during throttle - should overwrite pending
-      tracker.setCurrentEndpoints(testEndpoints.primary, testEndpoints.secondary);
+      tracker.setCurrentEndpoints(testEndpoints.primary, [testEndpoints.secondary]);
       expect(saveStorageSpy).toHaveBeenCalledTimes(1); // Still 1
       expect(tracker.state.pendingEndpoints).toEqual({
         primary: testEndpoints.primary,
-        secondary: testEndpoints.secondary,
+        fallbacks: [testEndpoints.secondary],
       });
 
       // Advance timer to trigger trailing edge
@@ -290,60 +349,46 @@ describe("FallbackTracker", () => {
       expect(saveStorageSpy).toHaveBeenCalledTimes(2);
       expect(dispatchSpy).toHaveBeenCalledTimes(2);
       expect(tracker.state.primary).toBe(testEndpoints.primary);
-      expect(tracker.state.secondary).toBe(testEndpoints.secondary);
+      expect(tracker.state.fallbacks).toEqual([testEndpoints.secondary]);
       expect(tracker.state.pendingEndpoints).toBeUndefined();
       expect(tracker.state.setEndpointsThrottleTimeout).toBeUndefined();
     });
 
-    it("should call saveStorage with correct parameters", () => {
+    it("should call saveStorage, emit event, and save to localStorage with correct data", () => {
       const config = createMockConfig();
       const tracker = new FallbackTracker(config);
       const newPrimary = testEndpoints.fallback;
-      const newSecondary = testEndpoints.primary;
+      const newFallbacks = [testEndpoints.primary];
       const saveStorageSpy = vi.spyOn(tracker, "saveStorage");
+      const dispatchSpy = vi.spyOn(globalThis, "dispatchEvent");
+      const setItemSpy = vi.spyOn(localStorage, "setItem");
 
-      tracker.setCurrentEndpoints(newPrimary, newSecondary);
+      tracker.setCurrentEndpoints(newPrimary, newFallbacks);
 
+      // Verify saveStorage was called with correct parameters
       expect(saveStorageSpy).toHaveBeenCalledWith({
         primary: newPrimary,
-        secondary: newSecondary,
+        fallbacks: newFallbacks,
         cachedEndpointsState: expect.any(Object),
       });
-    });
 
-    it("should emit updateEndpoints event with correct data", () => {
-      const config = createMockConfig();
-      const tracker = new FallbackTracker(config);
-      const newPrimary = testEndpoints.fallback;
-      const newSecondary = testEndpoints.primary;
-      const dispatchSpy = vi.spyOn(globalThis, "dispatchEvent");
-
-      tracker.setCurrentEndpoints(newPrimary, newSecondary);
-
+      // Verify event was emitted with correct data
       expect(dispatchSpy).toHaveBeenCalled();
       const event = dispatchSpy.mock.calls[0][0] as CustomEvent;
       expect(event.type).toBe(fallbackTrackerEventKeys.endpointsUpdated);
       expect(event.detail).toEqual({
         trackerKey: tracker.trackerKey,
         primary: newPrimary,
-        secondary: newSecondary,
+        fallbacks: newFallbacks,
         endpointsStats: expect.any(Array),
       });
-    });
 
-    it("should save to localStorage via saveStorage", () => {
-      const config = createMockConfig();
-      const tracker = new FallbackTracker(config);
-      const newPrimary = testEndpoints.fallback;
-      const newSecondary = testEndpoints.primary;
-      const setItemSpy = vi.spyOn(localStorage, "setItem");
-
-      tracker.setCurrentEndpoints(newPrimary, newSecondary);
-
+      // Verify localStorage was updated
       expect(setItemSpy).toHaveBeenCalled();
       const savedData = JSON.parse(setItemSpy.mock.calls[0][1]);
       expect(savedData.primary).toBe(newPrimary);
-      expect(savedData.secondary).toBe(newSecondary);
+      expect(Array.isArray(savedData.fallbacks)).toBe(true);
+      expect(savedData.fallbacks).toEqual(newFallbacks);
       expect(savedData.timestamp).toBeDefined();
       expect(savedData.cachedEndpointsState).toBeDefined();
     });

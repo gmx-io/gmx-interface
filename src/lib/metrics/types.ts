@@ -20,15 +20,6 @@ export type GlobalMetricData = {
   srcChainId?: SourceChainId;
 };
 
-export type OracleKeeperMetricMethodId =
-  | "tickers"
-  | "24hPrices"
-  | "candles"
-  | "incentives"
-  | "uiVersion"
-  | "annualized"
-  | "snapshots";
-
 export enum OrderStage {
   Submitted = "submitted",
   Simulated = "simulated",

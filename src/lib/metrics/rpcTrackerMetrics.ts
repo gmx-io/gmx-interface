@@ -34,12 +34,13 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
     "endpointsUpdated",
     tracker.trackerKey,
     (p) => {
-      const { primary, secondary, endpointsStats } = p;
+      const { primary, fallbacks, endpointsStats } = p;
 
       const bestBlock = getBestBlock(endpointsStats);
 
       const primaryStats = endpointsStats.find((stat) => stat.endpoint === primary);
-      const secondaryStats = endpointsStats.find((stat) => stat.endpoint === secondary);
+      const secondary = fallbacks[0];
+      const secondaryStats = secondary ? endpointsStats.find((stat) => stat.endpoint === secondary) : undefined;
 
       metrics.pushEvent<RpcTrackerUpdateEndpointsEvent>({
         event: "rpcTracker.endpoint.updated",
@@ -49,7 +50,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
           chainId: tracker.params.chainId,
           chainName: getChainName(tracker.params.chainId),
           primary: getProviderNameFromUrl(primary),
-          secondary: getProviderNameFromUrl(secondary),
+          secondary: secondary ? getProviderNameFromUrl(secondary) : "none",
           primaryBlockGap: getBlockGap(bestBlock, primaryStats),
           secondaryBlockGap: getBlockGap(bestBlock, secondaryStats),
         },

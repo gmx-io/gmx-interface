@@ -8,12 +8,13 @@ import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { getCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 import { sleep } from "lib/sleep";
 
 import { _debugMulticall, MULTICALL_DEBUG_EVENT_NAME, type MulticallDebugEvent } from "./_debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
-import { MAX_FALLBACK_TIMEOUT, MulticallProviderUrls } from "./Multicall";
+import { MAX_FALLBACK_TIMEOUT } from "./Multicall";
 import { MAX_PRIMARY_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -105,20 +106,20 @@ export async function executeMulticallWorker(
   chainId: number,
   request: MulticallRequestConfig<any>
 ): Promise<MulticallResult<any> | undefined> {
-  // If worker is not available (e.g., in tests), fallback to main thread
+  // If worker is not available, fallback to main thread
   if (!executorWorker) {
     return await executeMulticallMainThread(chainId, request);
   }
 
   const id = uniqueId("multicall-");
 
-  const providerUrls: MulticallProviderUrls = getCurrentRpcUrls(chainId);
+  const currentRpcEndpoints = getCurrentRpcUrls(chainId) as CurrentRpcEndpoints;
   const debugState = _debugMulticall?.getDebugState();
 
   executorWorker.postMessage({
     id,
     chainId,
-    providerUrls,
+    providerUrls: currentRpcEndpoints,
     request,
     abFlags: getAbFlags(),
     isLargeAccount: getIsLargeAccount(),

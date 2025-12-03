@@ -425,7 +425,6 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         endpoints: [testEndpoints.primary],
         primary: testEndpoints.primary,
-        secondary: testEndpoints.primary,
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
@@ -466,7 +465,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
@@ -497,7 +496,6 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         endpoints: [testEndpoints.primary],
         primary: testEndpoints.primary,
-        secondary: testEndpoints.primary,
         checkEndpoint: vi.fn(),
       });
       const tracker = new FallbackTracker(config);
@@ -513,7 +511,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
@@ -531,7 +529,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         trackInterval: 1000,
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
@@ -552,7 +550,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         checkEndpoint: vi.fn().mockRejectedValue(new Error("Check failed")),
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
@@ -598,7 +596,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
@@ -617,7 +615,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
@@ -642,7 +640,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const config = createMockConfig({
         checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
         selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
-        selectNextSecondary: vi.fn().mockReturnValue(testEndpoints.secondary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
       });
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);

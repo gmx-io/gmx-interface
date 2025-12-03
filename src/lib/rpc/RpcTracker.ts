@@ -5,7 +5,12 @@ import { ContractsChainId, isContractsChain } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainName, getProviderNameFromUrl, getRpcProviders, RpcConfig, RpcPurpose } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { EndpointStats, FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker/FallbackTracker";
+import {
+  CurrentEndpoints,
+  EndpointStats,
+  FallbackTracker,
+  FallbackTrackerConfig,
+} from "lib/FallbackTracker/FallbackTracker";
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { fetchBlockNumber, fetchEthCall } from "lib/rpc/fetchRpc";
 import { abis } from "sdk/abis";
@@ -20,7 +25,7 @@ export type RpcTrackerConfig = FallbackTrackerConfig & {
   blockLaggingThreshold: number;
 };
 
-type RpcTrackerParams = RpcTrackerConfig & {
+export type RpcTrackerParams = RpcTrackerConfig & {
   chainId: number;
 };
 
@@ -30,6 +35,8 @@ export type RpcCheckResult = {
 };
 
 export type RpcStats = EndpointStats<RpcCheckResult>;
+
+export type CurrentRpcEndpoints = CurrentEndpoints<RpcCheckResult>;
 
 export class RpcTracker {
   providersMap: Record<string, RpcConfig>;
@@ -51,7 +58,6 @@ export class RpcTracker {
     );
 
     const defaultProvider = chainProviders[0];
-    const secondaryProvider = chainProviders[1] || defaultProvider;
 
     this.fallbackTracker = new FallbackTracker<RpcCheckResult>({
       trackerKey: `RpcTracker.${getChainName(this.params.chainId)}`,
@@ -63,11 +69,10 @@ export class RpcTracker {
       setEndpointsThrottle: this.params.setEndpointsThrottle,
       delay: this.params.delay,
       primary: defaultProvider.url,
-      secondary: secondaryProvider.url,
       endpoints: chainProviders.map((provider) => provider.url),
       checkEndpoint: this.checkRpc,
       selectNextPrimary: this.selectNextPrimary,
-      selectNextSecondary: this.selectNextSecondary,
+      selectNextFallbacks: this.selectNextFallbacks,
       getEndpointName: getProviderNameFromUrl,
     });
   }
@@ -254,26 +259,29 @@ export class RpcTracker {
     return ranked[0]?.endpoint;
   };
 
-  selectNextSecondary = ({ endpointsStats }): string | undefined => {
+  selectNextFallbacks = ({ endpointsStats, primary }): string[] | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
     const filtered = validStats.filter((result) => {
-      const purpose = this.getRpcConfig(result.endpoint)?.purpose;
       const allowedPurposes = this.getIsLargeAccount() ? ["default", "largeAccount"] : ["default", "fallback"];
-      return purpose && allowedPurposes.includes(purpose as RpcPurpose);
+      const purpose = this.getRpcConfig(result.endpoint)?.purpose;
+      const byPorpose = purpose && allowedPurposes.includes(purpose as RpcPurpose);
+      const primaryBlockNumber = endpointsStats.find((result) => result.endpoint === primary)?.checkResults?.[0]?.stats
+        ?.blockNumber;
+      const currentBlockNumber = result.checkResults?.[0]?.stats?.blockNumber;
+      const byBlockNumber = !primaryBlockNumber || (currentBlockNumber && primaryBlockNumber === currentBlockNumber);
+      return byPorpose && byBlockNumber;
     });
 
-    // Calculate avgResponseTime from filtered stats (only endpoints that can be selected as secondary)
     const avgResponseTime = getAvgResponseTime(filtered);
-    // Sort by: 1) not banned (asc - lower banned timestamp is better), 2) purpose priority (desc - higher priority is better), 3) speed/consistency score (desc - higher score is better)
-    const purposeOrder: RpcPurpose[] = this.getIsLargeAccount() ? ["largeAccount", "default"] : ["fallback", "default"];
+    const purposeOrder: RpcPurpose[] = this.getIsLargeAccount() ? ["largeAccount", "default"] : ["default", "fallback"];
     const ranked = orderBy(
       filtered,
       [scoreNotBanned, this.byMatchedPurpose(purposeOrder), scoreBySpeedAndConsistency(avgResponseTime)],
       ["desc", "desc", "desc"]
     );
 
-    return ranked[0]?.endpoint;
+    return ranked.map((result) => result.endpoint);
   };
 
   getValidStats = (endpointsStats: RpcStats[]): RpcStats[] => {

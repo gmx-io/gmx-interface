@@ -10,7 +10,7 @@ export type FallbackTrackerEventsTypes = {
   // Outgoing
   endpointsUpdated: {
     primary: string;
-    secondary: string;
+    fallbacks: string[];
     endpointsStats: EndpointStats<any>[];
   };
   endpointBanned: {

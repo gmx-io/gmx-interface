@@ -32,9 +32,9 @@ const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 
 export default function RpcDebug() {
   const { chainId } = useChainId();
-  const { primary: primaryRpc, secondary: secondaryRpc } = getCurrentRpcUrls(chainId);
+  const { primary: primaryRpc, fallbacks } = getCurrentRpcUrls(chainId);
+  const secondaryRpc = fallbacks[0];
   const prevPrimaryRpc = usePrevious(primaryRpc);
-  const prevSecondaryRpc = usePrevious(secondaryRpc);
   const { tokensData } = useTokensDataRequest(chainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
@@ -126,7 +126,7 @@ export default function RpcDebug() {
             responseTime: latestCheckResult?.success ? latestCheckResult.stats?.responseTime : undefined,
             blockNumber: latestCheckResult?.success ? latestCheckResult.stats?.blockNumber : undefined,
             isPrimary: stats.endpoint === primaryRpc,
-            isSecondary: stats.endpoint === secondaryRpc,
+            isSecondary: fallbacks.includes(stats.endpoint),
           };
         });
         setAllRpcStats(statsWithDetails);
@@ -159,7 +159,7 @@ export default function RpcDebug() {
     const interval = setInterval(updateStats, 1000);
 
     return () => clearInterval(interval);
-  }, [chainId, primaryRpc, secondaryRpc]);
+  }, [chainId, primaryRpc, fallbacks]);
 
   // Update freshness values periodically and track last 3 diffs when data is updated
   useEffect(() => {
@@ -242,26 +242,11 @@ export default function RpcDebug() {
       }
     }
 
-    if (prevSecondaryRpc !== secondaryRpc) {
-      if (currentState.triggerSecondaryFailedInWorker) {
-        _debugMulticall?.setFlag("triggerSecondaryFailedInWorker", false);
-        updated = true;
-      }
-      if (currentState.triggerSecondaryFailedInMainThread) {
-        _debugMulticall?.setFlag("triggerSecondaryFailedInMainThread", false);
-        updated = true;
-      }
-      if (currentState.triggerSecondaryTimeoutInWorker) {
-        _debugMulticall?.setFlag("triggerSecondaryTimeoutInWorker", false);
-        updated = true;
-      }
-    }
-
     if (updated) {
       // Read updated state after setting flags
       setDebugState(_debugMulticall?.getDebugState() ?? {});
     }
-  }, [primaryRpc, secondaryRpc, prevPrimaryRpc, prevSecondaryRpc]);
+  }, [primaryRpc, prevPrimaryRpc]);
 
   // Update debug state when it changes
   const handleDebugFlagChange = useCallback(<K extends keyof MulticallDebugState>(flag: K, value: boolean) => {
