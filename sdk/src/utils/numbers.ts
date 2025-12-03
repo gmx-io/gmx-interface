@@ -19,6 +19,7 @@ export const BN_ONE = 1n;
 export const BN_NEGATIVE_ONE = -1n;
 
 export const MaxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+export const MaxInt256 = BigInt("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
 export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 

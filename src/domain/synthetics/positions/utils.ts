@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
-import { ethers } from "ethers";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { isBoundaryAcceptablePrice } from "domain/prices";
 import { MarketInfo, getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { CHART_PERIODS } from "lib/legacy";
@@ -92,7 +92,7 @@ export function formatLiquidationPrice(
 }
 
 export function formatAcceptablePrice(acceptablePrice?: bigint, opts: { visualMultiplier?: number } = {}) {
-  if (acceptablePrice !== undefined && (acceptablePrice == 0n || acceptablePrice >= ethers.MaxInt256)) {
+  if (acceptablePrice !== undefined && isBoundaryAcceptablePrice(acceptablePrice)) {
     return "NA";
   }
 
