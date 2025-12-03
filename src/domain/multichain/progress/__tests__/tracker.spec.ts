@@ -216,4 +216,29 @@ describe.concurrent("LongCrossChainTask", () => {
       })
     );
   });
+
+  it("gm buy 0.0305 GM: ETH/USD[WETH-USDC.SG] sepolia -> arb sep canceled deposit", { timeout: 30_000 }, async () => {
+    const sourceChainId = SOURCE_SEPOLIA;
+    const settlementChainId = ARBITRUM_SEPOLIA;
+    const initialTxHash = "0xf923a609caa61ab78617340e4a083200e6d3d408a4396be92fe6a2a283dd0ea3";
+    const token = getGmToken(ARBITRUM_SEPOLIA, "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc");
+    const amount = numberToBigint(0.0305, 18);
+
+    const progress = new GmBuyTask({
+      sourceChainId,
+      initialTxHash,
+      token,
+      amount,
+      settlementChainId,
+      estimatedFeeUsd: 0n,
+    });
+
+    await expect(progress.getStepPromise("finished")).rejects.toThrowError(
+      new ConversionFailed({
+        chainId: settlementChainId,
+        operation: Operation.Deposit,
+        creationTx: initialTxHash,
+      })
+    );
+  });
 });

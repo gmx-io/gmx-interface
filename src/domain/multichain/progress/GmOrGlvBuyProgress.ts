@@ -217,6 +217,9 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       return;
     }
 
+    const successfulDepositEventName = this.isGlv ? "GlvDepositExecuted" : "DepositExecuted";
+    const failedDepositEventName = this.isGlv ? "GlvDepositCancelled" : "DepositCancelled";
+
     const logs = await getOrWaitLogs({
       chainId,
       fromBlock,
@@ -226,9 +229,7 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
         name: "EventLog2",
       }),
       args: {
-        eventNameHash: this.isGlv
-          ? ["GlvDepositExecuted", "GlvDepositCancelled"]
-          : ["DepositExecuted", "DepositCancelled"],
+        eventNameHash: [successfulDepositEventName, failedDepositEventName],
         topic1: depositKey,
       },
     });
@@ -248,8 +249,8 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       return;
     }
 
-    if (depositExecutedLog.args.eventName === "GlvDepositCancelled") {
-      debugLog("GlvDepositCancelled");
+    if (depositExecutedLog.args.eventName === failedDepositEventName) {
+      debugLog(failedDepositEventName);
       this.reject(
         "finished",
         new MultichainTransferProgress.errors.ConversionFailed({
@@ -262,7 +263,7 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
       return;
     }
 
-    debugLog("depositExecutedLog");
+    debugLog(successfulDepositEventName);
 
     const sameTxLogs = await fetchLogsInTx(chainId, depositExecutedLog.transactionHash);
 
