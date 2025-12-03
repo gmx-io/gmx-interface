@@ -8,7 +8,7 @@ import type { OrderMetricId } from "lib/metrics/types";
 import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -51,13 +51,17 @@ export async function createDepositTxn({
 
   await validateSignerAddress(signer, params.addresses.receiver);
 
-  const isNativeLongDeposit = Boolean(
-    params.addresses.initialLongToken === NATIVE_TOKEN_ADDRESS && longTokenAmount != undefined && longTokenAmount > 0
-  );
-  const isNativeShortDeposit = Boolean(
-    params.addresses.initialShortToken === NATIVE_TOKEN_ADDRESS && shortTokenAmount != undefined && shortTokenAmount > 0
-  );
+  const isNativeLongDeposit =
+    getWrappedToken(chainId).address === params.addresses.initialLongToken &&
+    params.shouldUnwrapNativeToken &&
+    longTokenAmount != undefined &&
+    longTokenAmount > 0;
 
+  const isNativeShortDeposit =
+    getWrappedToken(chainId).address === params.addresses.initialShortToken &&
+    params.shouldUnwrapNativeToken &&
+    shortTokenAmount != undefined &&
+    shortTokenAmount > 0;
   let wntDeposit = 0n;
 
   if (isNativeLongDeposit) {

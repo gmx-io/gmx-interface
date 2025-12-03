@@ -6,7 +6,7 @@ import { GmPaySource } from "domain/synthetics/markets/types";
 import { TokensData } from "domain/synthetics/tokens";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useLocalStorageSerializeKeySafe } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { useReactRouterSearchParam } from "lib/useReactRouterSearchParam";
 import useRouteQuery from "lib/useRouteQuery";
@@ -127,8 +127,8 @@ export function usePoolsDetailsState({
   const isDeposit = operation === Operation.Deposit;
   const [focusedInput, setFocusedInput] = useState<FocusedInput>("market");
 
-  let [rawPaySource, setPaySource] = useLocalStorageSerializeKey<GmPaySource>(
-    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, "paySource"],
+  let [rawPaySource, setPaySource] = useLocalStorageSerializeKeySafe<GmPaySource>(
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, "paySource"],
     "settlementChain"
   );
 
@@ -144,7 +144,7 @@ export function usePoolsDetailsState({
     [mode, operation, rawPaySource, setPaySource, srcChainId]
   );
 
-  const [inputTokenAddresses, setInputTokenAddresses] = useLocalStorageSerializeKey<
+  const [inputTokenAddresses, setInputTokenAddresses] = useLocalStorageSerializeKeySafe<
     | {
         first: ERC20Address | NativeTokenSupportedAddress | undefined;
         second: ERC20Address | NativeTokenSupportedAddress | undefined;
@@ -163,8 +163,8 @@ export function usePoolsDetailsState({
           return { first: address, second: undefined };
         }
 
-        const firstTokenAddress = prev?.first;
-        const secondTokenAddress = prev?.second === prev?.first ? undefined : prev?.second;
+        const firstTokenAddress = prev.first;
+        const secondTokenAddress = prev.second === prev.first ? undefined : prev.second;
 
         if (secondTokenAddress && secondTokenAddress === address) {
           // Swap
@@ -183,8 +183,8 @@ export function usePoolsDetailsState({
           return { first: undefined, second: address };
         }
 
-        const firstTokenAddress = prev?.first;
-        const secondTokenAddress = prev?.second === prev?.first ? undefined : prev?.second;
+        const firstTokenAddress = prev.first;
+        const secondTokenAddress = prev.second === prev.first ? undefined : prev.second;
 
         if (firstTokenAddress && firstTokenAddress === address) {
           // Swap

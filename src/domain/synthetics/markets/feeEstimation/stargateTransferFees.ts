@@ -1,9 +1,9 @@
-import { maxUint256, zeroHash } from "viem";
+import { maxUint256, StateOverride, zeroHash } from "viem";
 
 import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
-import { OFTFeeDetail, QuoteOft, SendParam } from "domain/multichain/types";
+import { SendParam } from "domain/multichain/types";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
@@ -41,8 +41,8 @@ export async function stargateTransferFees({
   stargateAddress,
   sendParams,
   tokenAddress,
-  disableOverrides = false,
-  useSendToken = false,
+  isPlatformToken = false,
+  forceFullOverride = false,
   additionalValue = 0n,
   account = RANDOM_WALLET.address,
 }: {
@@ -56,42 +56,44 @@ export async function stargateTransferFees({
    * From chain token address
    */
   tokenAddress: string;
+  isPlatformToken?: boolean;
   /**
-   * Disable state overrides (useful when estimating from real user account)
+   * For platform tokens this can only be turned on if we transfer from settlement chain. Because on settlement chains stargate != token address, so we can safely override token code.
+   * For trade tokens does changes nothing.
    */
-  disableOverrides?: boolean;
-  /**
-   * Use sendToken function instead of send
-   */
-  useSendToken?: boolean;
+  forceFullOverride?: boolean;
   /**
    * Additional value to add to nativeFee (e.g., for native token transfers)
    */
   additionalValue?: bigint;
+  /**
+   * Always pass account if platform token is used, because we dont override account balance for platform tokens.
+   */
   account?: string;
 }): Promise<{
   nativeFee: bigint;
-  quoteOft: QuoteOft;
+  amountReceivedLD: bigint;
   transferGasLimit: bigint;
 }> {
   const client = getPublicClientWithRpc(chainId);
+  if (isPlatformToken && !account) {
+    throw new Error("Account is required if platform token is used");
+  }
 
   // Read quotes in parallel
-  const [nativeFee, quoteOftRaw] = await Promise.all([
+  const [nativeFee, amountReceivedLD] = await Promise.all([
     fetchLayerZeroNativeFee({ chainId, stargateAddress, sendParams }),
-    client.readContract({
-      address: stargateAddress,
-      abi: abis.IStargate,
-      functionName: "quoteOFT",
-      args: [sendParams],
-    }),
+    isPlatformToken
+      ? Promise.resolve(sendParams.amountLD)
+      : client
+          .readContract({
+            address: stargateAddress,
+            abi: abis.IStargate,
+            functionName: "quoteOFT",
+            args: [sendParams],
+          })
+          .then((result) => result[2].amountReceivedLD),
   ]);
-
-  const quoteOft: QuoteOft = {
-    limit: quoteOftRaw[0],
-    oftFeeDetails: quoteOftRaw[1] as OFTFeeDetail[],
-    receipt: quoteOftRaw[2],
-  };
 
   const value = nativeFee + additionalValue;
 
@@ -99,34 +101,48 @@ export async function stargateTransferFees({
     .estimateContractGas({
       address: stargateAddress,
       abi: abis.IStargate,
-      functionName: useSendToken ? "sendToken" : "send",
+      functionName: isPlatformToken ? "send" : "sendToken",
       account: account,
       args: [sendParams, sendQuoteFromNative(nativeFee), account],
       value,
-      stateOverride: disableOverrides
-        ? undefined
-        : [
-            {
-              address: account,
-              balance: maxUint256,
-            },
-            {
-              address: tokenAddress,
-              code: OVERRIDE_ERC20_BYTECODE,
-              state: [
-                {
-                  slot: RANDOM_SLOT,
-                  value: zeroHash,
-                },
-              ],
-            },
-          ],
+      stateOverride:
+        isPlatformToken && !forceFullOverride
+          ? getPlatformTokenStateOverride(account)
+          : getTradeTokenStateOverride(account, tokenAddress),
     })
     .then(applyGasLimitBuffer);
 
   return {
     nativeFee,
-    quoteOft,
+    amountReceivedLD,
     transferGasLimit,
   };
+}
+
+function getPlatformTokenStateOverride(account: string): StateOverride {
+  return [
+    {
+      address: account,
+      balance: maxUint256,
+    },
+  ];
+}
+
+function getTradeTokenStateOverride(account: string, tokenAddress: string): StateOverride {
+  return [
+    {
+      address: account,
+      balance: maxUint256,
+    },
+    {
+      address: tokenAddress,
+      code: OVERRIDE_ERC20_BYTECODE,
+      state: [
+        {
+          slot: RANDOM_SLOT,
+          value: zeroHash,
+        },
+      ],
+    },
+  ];
 }

@@ -41,7 +41,7 @@ export function getEstimateMultichainDepositNetworkComposeGasParameters({
 > {
   const unwrappedTokenAddress = convertTokenAddress(chainId, maybeWrappedTokenAddress, "native");
 
-  const data = action ? CodecUiHelper.encodeMultichainActionData(action) : undefined;
+  const data = action ? CodecUiHelper.encodeMultichainComposeActionData(action) : undefined;
   const composeFromWithMsg = CodecUiHelper.composeDepositMessage(chainId as SettlementChainId, account, data);
 
   const settlementChainEndpointId = getLayerZeroEndpointId(chainId);

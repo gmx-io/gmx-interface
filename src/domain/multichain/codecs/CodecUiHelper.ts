@@ -57,22 +57,6 @@ type DepositAction = {
   actionData: DepositActionData;
 };
 
-type BridgeOutActionData = {
-  desChainId: ContractsChainId;
-  deadline: bigint;
-  provider: string;
-  providerData: string;
-  minAmountOut: bigint;
-  secondaryProvider: string;
-  secondaryProviderData: string;
-  secondaryMinAmountOut: bigint;
-};
-
-type BridgeOutAction = {
-  actionType: MultichainActionType.BridgeOut;
-  actionData: BridgeOutActionData;
-};
-
 type GlvDepositActionData = CommonActionData & {
   transferRequests: TransferRequests;
   params: CreateGlvDepositParams;
@@ -103,13 +87,31 @@ type GlvWithdrawalAction = {
   actionData: GlvWithdrawalActionData;
 };
 
+/**
+ * Compose actions
+ */
 export type MultichainAction =
   | SetTraderReferralCodeAction
   | DepositAction
-  | BridgeOutAction
   | GlvDepositAction
   | WithdrawalAction
   | GlvWithdrawalAction;
+
+type BridgeOutActionData = {
+  desChainId: ContractsChainId;
+  deadline: bigint;
+  provider: string;
+  providerData: string;
+  minAmountOut: bigint;
+  secondaryProvider: string;
+  secondaryProviderData: string;
+  secondaryMinAmountOut: bigint;
+};
+
+type BridgeOutAction = {
+  actionType: MultichainActionType.BridgeOut;
+  actionData: BridgeOutActionData;
+};
 
 export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
 // TODO MLTCH also implement     bytes32 public constant MAX_DATA_LENGTH = keccak256(abi.encode("MAX_DATA_LENGTH"));
@@ -142,7 +144,7 @@ export class CodecUiHelper {
     return layerZeroEndpoint;
   }
 
-  public static encodeMultichainActionData(action: MultichainAction): string {
+  public static encodeMultichainComposeActionData(action: MultichainAction): string {
     let actionData: Hex | undefined;
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
       actionData = encodeAbiParameters(
@@ -158,41 +160,6 @@ export class CodecUiHelper {
           action.actionData.params,
         ]
       );
-    } else if (action.actionType === MultichainActionType.BridgeOut) {
-      if (action.actionData.secondaryProvider === zeroAddress || action.actionData.secondaryProviderData === "0x") {
-        actionData = encodeAbiParameters(
-          [
-            { type: "uint256", name: "desChainId" },
-            { type: "uint256", name: "deadline" },
-            { type: "address", name: "provider" },
-            { type: "bytes", name: "providerData" },
-            { type: "uint256", name: "minAmountOut" },
-          ],
-          [
-            BigInt(action.actionData.desChainId),
-            action.actionData.deadline,
-            action.actionData.provider,
-            action.actionData.providerData,
-            action.actionData.minAmountOut,
-          ]
-        );
-      } else {
-        actionData = encodeAbiParameters(
-          [BRIDGE_OUT_PARAMS],
-          [
-            {
-              desChainId: BigInt(action.actionData.desChainId),
-              deadline: action.actionData.deadline,
-              provider: action.actionData.provider,
-              providerData: action.actionData.providerData,
-              minAmountOut: action.actionData.minAmountOut,
-              secondaryProvider: action.actionData.secondaryProvider,
-              secondaryProviderData: action.actionData.secondaryProviderData,
-              secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
-            },
-          ]
-        );
-      }
     } else if (action.actionType === MultichainActionType.GlvDeposit) {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],
@@ -224,6 +191,62 @@ export class CodecUiHelper {
 
     if (!actionData) {
       throw new Error("Unsupported multichain action type");
+    }
+
+    /**
+     * Setting non-0 will check if LZ underpays native token and this might lock users funds in gmx contract
+     * Setting to 0 will just try with whatever funds LZ gave us, usually the amount we asked for.
+     */
+    const expectedNativeValue = 0n;
+
+    const data = encodeAbiParameters(
+      [{ type: "uint8" }, { type: "uint256" }, { type: "bytes" }],
+      [action.actionType, expectedNativeValue, actionData]
+    );
+
+    return data;
+  }
+
+  public static encodeMultichainBridgeOutActionData(action: BridgeOutAction): string {
+    let actionData: Hex;
+
+    if (action.actionData.secondaryProvider === zeroAddress || action.actionData.secondaryProviderData === "0x") {
+      actionData = encodeAbiParameters(
+        [
+          { type: "uint256", name: "desChainId" },
+          { type: "uint256", name: "deadline" },
+          { type: "address", name: "provider" },
+          { type: "bytes", name: "providerData" },
+          { type: "uint256", name: "minAmountOut" },
+        ],
+        [
+          BigInt(action.actionData.desChainId),
+          action.actionData.deadline,
+          action.actionData.provider,
+          action.actionData.providerData,
+          action.actionData.minAmountOut,
+        ]
+      );
+    } else {
+      if (action.actionData.provider === action.actionData.secondaryProvider) {
+        throw new Error("Provider and secondary provider cannot be the same");
+      }
+
+      actionData = encodeAbiParameters(
+        [BRIDGE_OUT_PARAMS],
+        [
+          {
+            desChainId: BigInt(action.actionData.desChainId),
+            deadline: action.actionData.deadline,
+            provider: action.actionData.provider,
+            providerData: action.actionData.providerData,
+            minAmountOut: action.actionData.minAmountOut,
+            secondaryProvider: action.actionData.secondaryProvider,
+            secondaryProviderData: action.actionData.secondaryProviderData,
+            secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
+          },
+        ]
+      );
     }
 
     const data = encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);

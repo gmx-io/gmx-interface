@@ -37,14 +37,14 @@ export const useDepositWithdrawalFees = ({
     | undefined;
   srcChainId: SourceChainId | undefined;
 }): { logicalFees?: GmSwapFees } => {
-  const txnEstimatedNativeFeeUsd = useNativeTokenMultichainUsd({
+  const sourceChainEstimatedNativeFeeUsd = useNativeTokenMultichainUsd({
     sourceChainTokenAmount:
       technicalFees && "txnEstimatedNativeFee" in technicalFees ? technicalFees.txnEstimatedNativeFee : undefined,
     sourceChainId: srcChainId,
     targetChainId: chainId,
   });
 
-  const txnEstimatedGasUsd = useGasMultichainUsd({
+  const sourceChainTxnEstimatedGasUsd = useGasMultichainUsd({
     sourceChainGas:
       technicalFees && "txnEstimatedGasLimit" in technicalFees ? technicalFees.txnEstimatedGasLimit : undefined,
     sourceChainId: srcChainId,
@@ -66,16 +66,18 @@ export const useDepositWithdrawalFees = ({
       shouldRoundUp: true,
     });
 
-    const logicalNetworkFee = getFeeItem(
-      "feeTokenAmount" in technicalFees
-        ? convertToUsd(
-            technicalFees.feeTokenAmount * -1n,
-            getWrappedToken(chainId).decimals,
-            getMidPrice(tokensData[getWrappedToken(chainId).address].prices)
-          )!
-        : (technicalFees.relayFeeUsd + (txnEstimatedNativeFeeUsd ?? 0n) + (txnEstimatedGasUsd ?? 0n)) * -1n,
-      basisUsd
-    )!;
+    let logicalNetworkFeeUsd = 0n;
+    if ("feeTokenAmount" in technicalFees) {
+      logicalNetworkFeeUsd = convertToUsd(
+        technicalFees.feeTokenAmount * -1n,
+        getWrappedToken(chainId).decimals,
+        getMidPrice(tokensData[getWrappedToken(chainId).address].prices)
+      )!;
+    } else {
+      logicalNetworkFeeUsd = ((sourceChainEstimatedNativeFeeUsd ?? 0n) + (sourceChainTxnEstimatedGasUsd ?? 0n)) * -1n;
+    }
+
+    const logicalNetworkFee = getFeeItem(logicalNetworkFeeUsd, basisUsd)!;
     // TODO ADD stargate protocol fees
     const logicalProtocolFee = getTotalFeeItem([swapFee, uiFee, swapPriceImpact].filter(Boolean) as FeeItem[]);
 
@@ -95,9 +97,9 @@ export const useDepositWithdrawalFees = ({
     gasLimits,
     gasPrice,
     isDeposit,
+    sourceChainEstimatedNativeFeeUsd,
+    sourceChainTxnEstimatedGasUsd,
     technicalFees,
     tokensData,
-    txnEstimatedGasUsd,
-    txnEstimatedNativeFeeUsd,
   ]);
 };

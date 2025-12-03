@@ -10,6 +10,12 @@ import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OftCmd, SEND_MODE_TAXI } from "./codecs/OftCmd";
 
 /**
+ * This is used for LZ receive receive gas (dont confuse with LZ compose gas)
+ * Stargate puts 150k for their contract so we copy it for our
+ */
+const LZ_RECEIVE_CUSTOM_GAS = 150000n;
+
+/**
  * Slippage is set to 0, meaning infinite slippage
  */
 export function getMultichainTransferSendParams({
@@ -21,6 +27,7 @@ export function getMultichainTransferSendParams({
   isToGmx,
   action,
   isManualGas = false,
+  nativeDropAmount = 0n,
 }: {
   dstChainId: AnyChainId;
   account: string;
@@ -30,6 +37,7 @@ export function getMultichainTransferSendParams({
   isToGmx: boolean;
   isManualGas?: boolean;
   action?: MultichainAction;
+  nativeDropAmount?: bigint;
 }): SendParam {
   const oftCmd: OftCmd = new OftCmd(SEND_MODE_TAXI, []);
 
@@ -59,16 +67,18 @@ export function getMultichainTransferSendParams({
       throw new Error("Source chain is not supported");
     }
 
-    const data = action ? CodecUiHelper.encodeMultichainActionData(action) : undefined;
+    const data = action ? CodecUiHelper.encodeMultichainComposeActionData(action) : undefined;
 
     composeMsg = CodecUiHelper.encodeDepositMessage(account, data);
     const builder = Options.newOptions();
 
     if (isManualGas) {
-      // TODO MLTCH remove hardcode
-      extraOptions = builder.addExecutorLzReceiveOption(150_000n).addExecutorComposeOption(0, composeGas!, 0n).toHex();
+      extraOptions = builder
+        .addExecutorLzReceiveOption(LZ_RECEIVE_CUSTOM_GAS)
+        .addExecutorComposeOption(0, composeGas!, nativeDropAmount)
+        .toHex();
     } else {
-      extraOptions = builder.addExecutorComposeOption(0, composeGas!, 0).toHex();
+      extraOptions = builder.addExecutorComposeOption(0, composeGas!, nativeDropAmount).toHex();
     }
   } else {
     const builder = Options.newOptions();

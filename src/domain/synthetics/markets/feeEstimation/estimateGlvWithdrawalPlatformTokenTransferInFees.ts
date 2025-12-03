@@ -1,21 +1,18 @@
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { RANDOM_WALLET } from "config/multichain";
-import { getMappedTokenId } from "config/multichain";
+import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
+import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express/types";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
-import { SwapPricingType } from "sdk/types/orders";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { getRawRelayerParams } from "../../express";
-import { GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express/types";
 import { signCreateWithdrawal } from "../signCreateWithdrawal";
 import { CreateGlvWithdrawalParams } from "../types";
 import { stargateTransferFees } from "./stargateTransferFees";
@@ -26,7 +23,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
   marketTokenAmount,
   fullWntFee,
   params,
-  secondaryOrPrimaryOutputTokenAddress,
+  secondaryOrPrimaryOutputTokenAddress: _secondaryOrPrimaryOutputTokenAddress,
   globalExpressParams,
 }: {
   chainId: SettlementChainId;
@@ -44,46 +41,21 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
 }> {
   const settlementWrappedTokenData = globalExpressParams.tokensData[getWrappedToken(chainId).address];
 
-  const feeSwapStrategy = buildReverseSwapStrategy({
+  const rawRelayParamsPayload = getRawRelayerParams({
     chainId,
-    amountOut: fullWntFee,
-    tokenIn: globalExpressParams.tokensData[secondaryOrPrimaryOutputTokenAddress],
-    tokenOut: settlementWrappedTokenData,
-    marketsInfoData: globalExpressParams.marketsInfoData,
-    swapOptimizationOrder: ["length"],
-    externalSwapQuoteParams: undefined,
-    swapPricingType: SwapPricingType.AtomicSwap,
+    gasPaymentTokenAddress: settlementWrappedTokenData.address,
+    relayerFeeTokenAddress: settlementWrappedTokenData.address,
+    feeParams: {
+      feeToken: settlementWrappedTokenData.address,
+      feeAmount: fullWntFee,
+      feeSwapPath: [],
+    },
+    externalCalls: getEmptyExternalCallsPayload(),
+    tokenPermits: [],
   });
 
-  const returnRawRelayParamsPayload: RawRelayParamsPayload =
-    convertTokenAddress(chainId, secondaryOrPrimaryOutputTokenAddress, "wrapped") === settlementWrappedTokenData.address
-      ? getRawRelayerParams({
-          chainId,
-          gasPaymentTokenAddress: settlementWrappedTokenData.address,
-          relayerFeeTokenAddress: settlementWrappedTokenData.address,
-          feeParams: {
-            feeToken: settlementWrappedTokenData.address,
-            feeAmount: fullWntFee,
-            feeSwapPath: [],
-          },
-          externalCalls: getEmptyExternalCallsPayload(),
-          tokenPermits: [],
-        })
-      : getRawRelayerParams({
-          chainId,
-          gasPaymentTokenAddress: feeSwapStrategy.swapPathStats!.tokenInAddress,
-          relayerFeeTokenAddress: feeSwapStrategy.swapPathStats!.tokenOutAddress,
-          feeParams: {
-            feeToken: feeSwapStrategy.swapPathStats!.tokenInAddress,
-            feeAmount: feeSwapStrategy.amountIn,
-            feeSwapPath: feeSwapStrategy.swapPathStats!.swapPath,
-          },
-          externalCalls: getEmptyExternalCallsPayload(),
-          tokenPermits: [],
-        });
-
-  const returnRelayParamsPayload: RelayParamsPayload = {
-    ...returnRawRelayParamsPayload,
+  const relayParamsPayload: RelayParamsPayload = {
+    ...rawRelayParamsPayload,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
   };
 
@@ -104,7 +76,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     chainId,
     srcChainId,
     signer: RANDOM_WALLET,
-    relayParams: returnRelayParamsPayload,
+    relayParams: relayParamsPayload,
     transferRequests,
     params,
     shouldUseSignerMethod: true,
@@ -113,7 +85,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
   const action: MultichainAction = {
     actionType: MultichainActionType.GlvWithdrawal,
     actionData: {
-      relayParams: returnRelayParamsPayload,
+      relayParams: relayParamsPayload,
       transferRequests,
       params,
       signature,
@@ -129,31 +101,31 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
   });
 
-  const returnTransferSendParams = getMultichainTransferSendParams({
+  const sendParams = getMultichainTransferSendParams({
     dstChainId: chainId,
     account: RANDOM_WALLET.address,
     srcChainId,
     amountLD: marketTokenAmount,
     isToGmx: true,
-    // TODO MLTCH check that all gm and glv transfers are manual gas
     isManualGas: true,
     action,
     composeGas,
+    nativeDropAmount: fullWntFee,
   });
 
-  const tokenId = getMappedTokenId(chainId, params.addresses.glv, srcChainId);
+  const sourceChainTokenId = getMappedTokenId(chainId, params.addresses.glv, srcChainId);
 
-  if (!tokenId) {
-    throw new Error("Token ID not found");
+  if (!sourceChainTokenId) {
+    throw new Error("Source chain token ID not found");
   }
 
   const { nativeFee: platformTokenTransferInNativeFee, transferGasLimit: platformTokenTransferInGasLimit } =
     await stargateTransferFees({
       chainId: srcChainId,
-      stargateAddress: tokenId.stargate,
-      sendParams: returnTransferSendParams,
+      stargateAddress: sourceChainTokenId.stargate,
+      sendParams,
       tokenAddress: params.addresses.glv,
-      disableOverrides: true,
+      isPlatformToken: true,
       account: params.addresses.receiver,
     });
 
@@ -161,6 +133,6 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     platformTokenTransferInGasLimit,
     platformTokenTransferInNativeFee,
     platformTokenTransferInComposeGas: composeGas,
-    relayParamsPayload: returnRelayParamsPayload,
+    relayParamsPayload,
   };
 }

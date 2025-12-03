@@ -18,7 +18,12 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { getMarketIsSameCollaterals, isMarketTokenAddress, MARKETS } from "sdk/configs/markets";
+import {
+  getMarketIsSameCollaterals,
+  getTokenAddressByMarket,
+  isMarketTokenAddress,
+  MARKETS,
+} from "sdk/configs/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/types/orders";
 
@@ -94,7 +99,7 @@ export const selectPoolsDetailsLongTokenAddress = createSelector((q): ERC20Addre
   }
 
   if (isMarketTokenAddress(chainId, glvOrMarketAddress)) {
-    return MARKETS[chainId][glvOrMarketAddress].longTokenAddress as ERC20Address;
+    return getTokenAddressByMarket(chainId, glvOrMarketAddress, "long");
   }
 
   const glvInfo = q(selectPoolsDetailsGlvInfo);
@@ -106,7 +111,7 @@ export const selectPoolsDetailsLongTokenAddress = createSelector((q): ERC20Addre
   return glvInfo.longTokenAddress as ERC20Address;
 });
 
-export const selectPoolsDetailsShortTokenAddress = createSelector((q) => {
+export const selectPoolsDetailsShortTokenAddress = createSelector((q): ERC20Address | undefined => {
   const chainId = q(selectChainId);
   const glvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
 
@@ -115,7 +120,7 @@ export const selectPoolsDetailsShortTokenAddress = createSelector((q) => {
   }
 
   if (isMarketTokenAddress(chainId, glvOrMarketAddress)) {
-    return MARKETS[chainId][glvOrMarketAddress].shortTokenAddress;
+    return getTokenAddressByMarket(chainId, glvOrMarketAddress, "short");
   }
 
   const glvInfo = q(selectPoolsDetailsGlvInfo);
@@ -124,7 +129,7 @@ export const selectPoolsDetailsShortTokenAddress = createSelector((q) => {
     return undefined;
   }
 
-  return glvInfo.shortTokenAddress;
+  return glvInfo.shortTokenAddress as ERC20Address;
 });
 
 export const selectPoolsDetailsGlvTokenAddress = createSelector((q) => {

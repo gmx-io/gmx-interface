@@ -193,7 +193,7 @@ export const botanix: Chain = defineChain({
   },
 });
 
-const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
+export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,

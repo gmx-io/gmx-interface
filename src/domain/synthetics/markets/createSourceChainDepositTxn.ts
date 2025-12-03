@@ -2,15 +2,17 @@ import { t } from "@lingui/macro";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId, IStargateAbi } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId, IStargateAbi } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateDepositParams, RawCreateDepositParams } from "domain/synthetics/markets";
+import { adjustForDecimals } from "lib/numbers";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
+import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { estimateSourceChainDepositFees, SourceChainDepositFees } from "./feeEstimation/estimateSourceChainDepositFees";
 import { signCreateDeposit } from "./signCreateDeposit";
@@ -53,6 +55,7 @@ export async function createSourceChainDepositTxn({
         tokenAmount,
         globalExpressParams,
       });
+  const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
 
   const adjusterParams: CreateDepositParams = { ...params, executionFee: ensuredFees.executionFee };
 
@@ -77,25 +80,29 @@ export async function createSourceChainDepositTxn({
     },
   };
 
+  const settlementChainTokenId = getMultichainTokenId(chainId, unwrappedTokenAddress);
+  const sourceChainTokenId = getMappedTokenId(chainId, unwrappedTokenAddress, srcChainId);
+
+  if (!settlementChainTokenId || !sourceChainTokenId) {
+    throw new Error("Settlement or source chain token ID not found");
+  }
+
+  const amountLD = adjustForDecimals(tokenAmount, settlementChainTokenId.decimals, sourceChainTokenId.decimals);
+
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
     account: params.addresses.receiver,
     srcChainId,
-    amountLD: tokenAmount,
+    amountLD,
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
     action,
+    nativeDropAmount: relayParams.fee.feeAmount,
   });
 
-  const sourceChainTokenId = getMappedTokenId(chainId, tokenAddress, srcChainId);
-
-  if (!sourceChainTokenId) {
-    throw new Error("Token ID not found");
-  }
-
   let value = ensuredFees.txnEstimatedNativeFee;
-  if (tokenAddress === zeroAddress) {
-    value += tokenAmount;
+  if (unwrappedTokenAddress === zeroAddress) {
+    value += amountLD;
   }
 
   const txnResult = await sendWalletTransaction({

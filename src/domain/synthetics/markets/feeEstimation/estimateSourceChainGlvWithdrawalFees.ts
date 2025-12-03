@@ -1,4 +1,5 @@
 import { SettlementChainId, SourceChainId } from "config/chains";
+import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { getToken } from "sdk/configs/tokens";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
@@ -6,7 +7,6 @@ import { Operation } from "components/GmSwap/GmSwapBox/types";
 import { estimateGlvWithdrawalPlatformTokenTransferInFees } from "./estimateGlvWithdrawalPlatformTokenTransferInFees";
 import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
 import { estimateSourceChainWithdrawalReturnTokenTransferFees } from "./estimateSourceChainWithdrawalFees";
-import { GlobalExpressParams, RelayParamsPayload } from "../../express";
 import { convertToUsd, getMidPrice } from "../../tokens";
 import { CreateGlvWithdrawalParams, RawCreateGlvWithdrawalParams } from "../types";
 

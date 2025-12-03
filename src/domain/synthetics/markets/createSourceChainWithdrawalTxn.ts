@@ -97,6 +97,7 @@ export async function createSourceChainWithdrawalTxn({
     isToGmx: true,
     isManualGas: true,
     action,
+    nativeDropAmount: relayParams.fee.feeAmount,
   });
 
   const sourceChainTokenId = getMappedTokenId(chainId, marketTokenAddress, srcChainId);

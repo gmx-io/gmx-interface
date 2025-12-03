@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
+import { zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -8,6 +9,7 @@ import {
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsFirstBuy,
   selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenAddress,
@@ -17,6 +19,7 @@ import {
   selectPoolsDetailsSelectedMarketInfoForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
+  selectPoolsDetailsSecondTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
@@ -50,7 +53,7 @@ import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSou
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
 import { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
-import { TokenBalanceType } from "domain/tokens";
+import { ERC20Address, NativeTokenSupportedAddress, TokenBalanceType } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
@@ -91,6 +94,8 @@ export const useDepositTransactions = ({
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
+  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const paySource = useSelector(selectPoolsDetailsPaySource);
@@ -242,7 +247,8 @@ export const useDepositTransactions = ({
           throw new Error("Technical fees are not set");
         }
 
-        let tokenAddress = longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
+        let tokenAddress: ERC20Address | NativeTokenSupportedAddress =
+          longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
         tokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
@@ -397,21 +403,23 @@ export const useDepositTransactions = ({
           throw new Error("Technical fees are not set");
         }
 
+        if (!longTokenAddress || !shortTokenAddress) {
+          throw new Error("Long or short token address is not set");
+        }
+
         let tokenAddress: string;
         let tokenAmount: bigint;
         if ((rawParams as RawCreateGlvDepositParams).isMarketTokenDeposit) {
           tokenAddress = (rawParams as RawCreateGlvDepositParams).addresses.market;
-          tokenAmount = marketTokenAmount!;
+          tokenAmount = marketTokenAmount;
+        } else if (longTokenAmount > 0n) {
+          tokenAddress = longTokenAddress;
+          tokenAmount = longTokenAmount;
+        } else if (shortTokenAmount > 0n) {
+          tokenAddress = shortTokenAddress;
+          tokenAmount = shortTokenAmount;
         } else {
-          tokenAddress = longTokenAddress!;
-          tokenAmount = longTokenAmount!;
-        }
-        if (longTokenAmount! > 0n) {
-          tokenAddress = longTokenAddress!;
-          tokenAmount = longTokenAmount!;
-        } else if (shortTokenAmount! > 0n) {
-          tokenAddress = shortTokenAddress!;
-          tokenAmount = shortTokenAmount!;
+          throw new Error("No token amount specified for deposit");
         }
 
         promise = createSourceChainGlvDepositTxn({
@@ -489,12 +497,24 @@ export const useDepositTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
+        const someInputTokenIsNative = firstTokenAddress === zeroAddress || secondTokenAddress === zeroAddress;
+
+        const maybeNativeLongTokenAddress =
+          someInputTokenIsNative && getWrappedToken(chainId).address === longTokenAddress
+            ? zeroAddress
+            : longTokenAddress;
+
+        const maybeNativeShortTokenAddress =
+          someInputTokenIsNative && getWrappedToken(chainId).address === shortTokenAddress
+            ? zeroAddress
+            : shortTokenAddress;
+
         promise = createGlvDepositTxn({
           chainId,
           signer,
           params: params as CreateGlvDepositParams,
-          longTokenAddress: longTokenAddress!,
-          shortTokenAddress: shortTokenAddress!,
+          longTokenAddress: maybeNativeLongTokenAddress!,
+          shortTokenAddress: maybeNativeShortTokenAddress!,
           longTokenAmount: longTokenAmount ?? 0n,
           shortTokenAmount: shortTokenAmount ?? 0n,
           marketTokenAmount: marketTokenAmount ?? 0n,
@@ -521,7 +541,6 @@ export const useDepositTransactions = ({
       account,
       marketInfo,
       amounts,
-      marketTokenAmount,
       tokensData,
       signer,
       isGlv,
@@ -532,18 +551,21 @@ export const useDepositTransactions = ({
       longTokenAmount,
       shortTokenAmount,
       technicalFees,
-      srcChainId,
       longTokenAddress,
       shortTokenAddress,
+      srcChainId,
+      marketTokenAmount,
       setMultichainTransferProgress,
       glvTokenAmount,
       multichainDepositExpressTxnParams.data,
       params,
+      addOptimisticTokensBalancesUpdates,
+      setPendingDeposit,
+      firstTokenAddress,
+      secondTokenAddress,
       shouldDisableValidation,
       blockTimestampData,
       setPendingTxns,
-      setPendingDeposit,
-      addOptimisticTokensBalancesUpdates,
     ]
   );
 

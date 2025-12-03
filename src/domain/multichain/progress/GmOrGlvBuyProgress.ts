@@ -110,10 +110,10 @@ export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOr
             return;
           }
 
-          const composeTxs = lzStatus?.lzTx;
-          if (composeTxs) {
-            debugLog("watchComposeTx", dstChainId, composeTxs);
-            this.watchComposeTx(dstChainId, composeTxs);
+          const composeTx = lzStatus?.lzTx;
+          if (composeTx) {
+            debugLog("watchComposeTx", dstChainId, composeTx);
+            this.watchComposeTx(dstChainId, composeTx);
           }
         } else {
           debugLog("lz not successfull or not found", lzStatus?.destination);

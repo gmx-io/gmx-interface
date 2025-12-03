@@ -2,25 +2,24 @@ import { zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId, RANDOM_WALLET } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { SendParam } from "domain/multichain/types";
+import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
+import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
 import { adjustForDecimals } from "lib/numbers";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/tokens";
-import { SwapPricingType } from "sdk/types/orders";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
-import { buildReverseSwapStrategy } from "sdk/utils/swap/buildSwapStrategy";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { Operation } from "components/GmSwap/GmSwapBox/types";
 
-import { getRawRelayerParams, GlobalExpressParams, RawRelayParamsPayload, RelayParamsPayload } from "../../express";
 import { convertToUsd, getMidPrice } from "../../tokens";
 import { signCreateDeposit } from "../signCreateDeposit";
 import { CreateDepositParams, RawCreateDepositParams } from "../types";
@@ -177,48 +176,29 @@ async function estimateSourceChainDepositInitialTxFees({
       `Token address not found in market config. Market config: ${JSON.stringify(marketConfig)}, token address: ${wrappedPayTokenAddress}`
     );
   }
-  const initialToken = getToken(chainId, wrappedPayTokenAddress);
+  const settlementChainTokenId = getMultichainTokenId(chainId, unwrappedPayTokenAddress);
   const sourceChainTokenId = getMappedTokenId(chainId, unwrappedPayTokenAddress, srcChainId);
 
-  if (!sourceChainTokenId) {
-    throw new Error("Source chain token ID not found");
+  if (!settlementChainTokenId || !sourceChainTokenId) {
+    throw new Error("Settlement or source chain token ID not found");
   }
 
   // How much will take to send back the GM to source chain
-
-  const feeSwapStrategy =
-    wrappedPayTokenAddress === settlementNativeWrappedTokenData.address
-      ? null
-      : buildReverseSwapStrategy({
-          chainId,
-          amountOut: fullWntFee,
-          tokenIn: globalExpressParams.tokensData[wrappedPayTokenAddress],
-          tokenOut: settlementNativeWrappedTokenData,
-          marketsInfoData: globalExpressParams.marketsInfoData,
-          swapOptimizationOrder: ["length"],
-          externalSwapQuoteParams: undefined,
-          swapPricingType: SwapPricingType.AtomicSwap,
-        });
-
-  if (feeSwapStrategy && !feeSwapStrategy.swapPathStats) {
-    throw new Error("Fee swap strategy has no swap path stats");
-  }
-
-  const returnRawRelayParamsPayload: RawRelayParamsPayload = getRawRelayerParams({
+  const rawRelayParamsPayload = getRawRelayerParams({
     chainId,
-    gasPaymentTokenAddress: feeSwapStrategy?.swapPathStats!.tokenInAddress ?? settlementNativeWrappedTokenData.address,
-    relayerFeeTokenAddress: feeSwapStrategy?.swapPathStats!.tokenOutAddress ?? wrappedPayTokenAddress,
+    gasPaymentTokenAddress: settlementNativeWrappedTokenData.address,
+    relayerFeeTokenAddress: settlementNativeWrappedTokenData.address,
     feeParams: {
-      feeToken: feeSwapStrategy?.swapPathStats!.tokenInAddress ?? wrappedPayTokenAddress,
-      feeAmount: feeSwapStrategy?.amountIn ?? fullWntFee,
-      feeSwapPath: feeSwapStrategy?.swapPathStats!.swapPath ?? [],
+      feeToken: settlementNativeWrappedTokenData.address,
+      feeAmount: fullWntFee,
+      feeSwapPath: [],
     },
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
   });
 
-  const returnRelayParamsPayload: RelayParamsPayload = {
-    ...returnRawRelayParamsPayload,
+  const relayParamsPayload: RelayParamsPayload = {
+    ...rawRelayParamsPayload,
     deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
   };
 
@@ -244,7 +224,7 @@ async function estimateSourceChainDepositInitialTxFees({
     chainId,
     srcChainId,
     signer: RANDOM_WALLET,
-    relayParams: returnRelayParamsPayload,
+    relayParams: relayParamsPayload,
     transferRequests,
     params,
     shouldUseSignerMethod: true,
@@ -253,7 +233,7 @@ async function estimateSourceChainDepositInitialTxFees({
   const action: MultichainAction = {
     actionType: MultichainActionType.Deposit,
     actionData: {
-      relayParams: returnRelayParamsPayload,
+      relayParams: relayParamsPayload,
       transferRequests,
       params,
       signature,
@@ -272,7 +252,7 @@ async function estimateSourceChainDepositInitialTxFees({
     settlementChainPublicClient: getPublicClientWithRpc(chainId),
   });
 
-  const amountLD = adjustForDecimals(tokenAmount, initialToken.decimals, sourceChainTokenId.decimals);
+  const amountLD = adjustForDecimals(tokenAmount, settlementChainTokenId.decimals, sourceChainTokenId.decimals);
 
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: chainId,
@@ -282,28 +262,34 @@ async function estimateSourceChainDepositInitialTxFees({
     composeGas: initialComposeGas,
     isToGmx: true,
     action,
+    nativeDropAmount: fullWntFee,
   });
 
   const additionalValue = unwrappedPayTokenAddress === zeroAddress ? amountLD : 0n;
 
   const {
     nativeFee: initialTxNativeFee,
-    quoteOft: initialQuoteOft,
+    amountReceivedLD: initialAmountReceivedLD,
     transferGasLimit: initialStargateTxnGasLimit,
   } = await stargateTransferFees({
     chainId: srcChainId,
     stargateAddress: sourceChainTokenId.stargate,
     sendParams,
     tokenAddress: sourceChainTokenId.address,
-    useSendToken: true,
     additionalValue,
   });
+
+  const estimatedReceivedAmount = adjustForDecimals(
+    initialAmountReceivedLD,
+    sourceChainTokenId.decimals,
+    settlementChainTokenId.decimals
+  );
 
   return {
     initialTxNativeFee,
     initialTxGasLimit: initialStargateTxnGasLimit,
-    initialTxReceivedAmount: initialQuoteOft.receipt.amountReceivedLD,
+    initialTxReceivedAmount: estimatedReceivedAmount,
     initialTransferComposeGas: initialComposeGas,
-    relayParamsPayload: returnRelayParamsPayload,
+    relayParamsPayload: relayParamsPayload,
   };
 }
