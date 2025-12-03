@@ -1,7 +1,9 @@
 /* eslint-disable no-console */
+import cx from "classnames";
 import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import useSWR from "swr";
 import { encodeAbiParameters, getAbiItem, isAddress } from "viem";
 import { useAccount } from "wagmi";
 
@@ -17,6 +19,7 @@ import { abis } from "sdk/abis";
 
 import AddressView from "components/AddressView/AddressView";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Loader from "components/Loader/Loader";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -27,178 +30,153 @@ type EventLogEntry = {
   eventType: "EventLog1" | "EventLog2";
   txHash: string;
   blockNumber: bigint;
+  logIndex: number;
   timestamp: number;
   eventData: any;
   topics: string[];
 };
 
-function useAccountEvents(account: string | undefined, chainId: ContractsChainId) {
-  const [events, setEvents] = useState<EventLogEntry[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fromBlock, setFromBlock] = useState<bigint | null>(null);
-  const [fromTimestamp, setFromTimestamp] = useState<number | null>(null);
+type EventLogEntryWithoutTimestamp = Omit<EventLogEntry, "timestamp">;
+
+type AccountEventsData = {
+  events: EventLogEntryWithoutTimestamp[];
+  fromBlock: bigint;
+  fromTimestamp: number;
+};
+
+const blockTimestampCache = new Map<string, Map<bigint, number>>();
+
+function getCacheKey(chainId: ContractsChainId, blockNumbers: bigint[]): string {
+  const sorted = [...blockNumbers].sort((a, b) => Number(a - b));
+  return `${chainId}-${sorted.map(String).join(",")}`;
+}
+
+function useBlockTimestamps(chainId: ContractsChainId, blockNumbers: bigint[]) {
+  const [timestampsMap, setTimestampsMap] = useState<Map<bigint, number>>(new Map());
 
   useEffect(() => {
-    if (!account) {
+    if (blockNumbers.length === 0) {
+      setTimestampsMap(new Map());
       return;
     }
 
-    let isMounted = true;
+    const cacheKey = getCacheKey(chainId, blockNumbers);
+    const cached = blockTimestampCache.get(cacheKey);
 
-    async function fetchEvents() {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const eventEmitterAddress = getContract(chainId, "EventEmitter");
-        const client = getPublicClientWithRpc(chainId);
-
-        // Get current block and calculate block from 7 days ago
-        const currentBlock = await client.getBlockNumber();
-        const currentBlockData = await client.getBlock({ blockNumber: currentBlock });
-        const daysBack = 7;
-        const secondsInDay = 86400n;
-        const timestamp7DaysAgo = currentBlockData.timestamp - BigInt(daysBack) * secondsInDay;
-        const startBlock = await getBlockNumberBeforeTimestamp(chainId, timestamp7DaysAgo);
-        const startBlockData = await client.getBlock({ blockNumber: startBlock });
-
-        setFromBlock(startBlock);
-        setFromTimestamp(Number(startBlockData.timestamp));
-
-        console.log(`Fetching events from block ${startBlock} to ${currentBlock}`);
-
-        // Encode account address as bytes32 for topic filtering using viem
-        if (!account) {
-          throw new Error("Account is required");
-        }
-        const accountTopicBytes32 = encodeAbiParameters([{ type: "address" }], [account]);
-
-        // Fetch EventLog1 and EventLog2 in parallel
-        const eventLog1AbiItem = getAbiItem({ abi: abis.EventEmitter, name: "EventLog1" });
-        const eventLog2AbiItem = getAbiItem({ abi: abis.EventEmitter, name: "EventLog2" });
-
-        const [logs1Result, logs2Result] = await Promise.allSettled([
-          client.getLogs({
-            address: eventEmitterAddress,
-            event: eventLog1AbiItem,
-            args: {
-              topic1: accountTopicBytes32,
-            },
-            fromBlock: startBlock,
-            toBlock: currentBlock,
-          }),
-          client.getLogs({
-            address: eventEmitterAddress,
-            event: eventLog2AbiItem,
-            args: {
-              topic2: accountTopicBytes32,
-            },
-            fromBlock: startBlock,
-            toBlock: currentBlock,
-          }),
-        ]);
-
-        const allLogs: Array<{
-          eventName: string;
-          eventType: "EventLog1" | "EventLog2";
-          txHash: string;
-          blockNumber: bigint;
-          eventData: any;
-          topics: string[];
-        }> = [];
-
-        // Process EventLog1 results
-        if (logs1Result.status === "fulfilled") {
-          for (const log of logs1Result.value) {
-            allLogs.push({
-              eventName: String(log.args.eventName),
-              eventType: "EventLog1",
-              txHash: log.transactionHash,
-              blockNumber: log.blockNumber,
-              eventData: log.args.eventData,
-              topics: log.topics,
-            });
-          }
-        } else {
-          console.error("Error fetching EventLog1:", logs1Result.reason);
-        }
-
-        // Process EventLog2 results
-        if (logs2Result.status === "fulfilled") {
-          for (const log of logs2Result.value) {
-            allLogs.push({
-              eventName: String(log.args.eventName),
-              eventType: "EventLog2",
-              txHash: log.transactionHash,
-              blockNumber: log.blockNumber,
-              eventData: log.args.eventData,
-              topics: log.topics,
-            });
-          }
-        } else {
-          console.error("Error fetching EventLog2:", logs2Result.reason);
-        }
-
-        // Return logs immediately with placeholder timestamps, sorted by block number (newest first)
-        const initialEvents: EventLogEntry[] = allLogs
-          .map((log) => ({
-            ...log,
-            timestamp: 0,
-          }))
-          .sort((a, b) => Number(b.blockNumber - a.blockNumber));
-
-        if (!isMounted) return;
-
-        setEvents(initialEvents);
-        setLoading(false);
-
-        // Fetch blocks asynchronously and update events once loaded
-        const uniqueBlockNumbers = Array.from(new Set(allLogs.map((log) => log.blockNumber)));
-        const blockMap = new Map<bigint, number>();
-
-        // Fetch all blocks in parallel without blocking the return
-        Promise.all(
-          uniqueBlockNumbers.map(async (blockNumber) => {
-            try {
-              const block = await client.getBlock({ blockNumber });
-              blockMap.set(blockNumber, Number(block.timestamp));
-            } catch (err) {
-              console.error(`Error fetching block ${blockNumber}:`, err);
-            }
-          })
-        ).then(() => {
-          if (!isMounted) return;
-
-          // Update events with real timestamps once blocks are loaded
-          // Keep sorted by block number (newest first)
-          const eventsWithTimestamps: EventLogEntry[] = allLogs
-            .map((log) => ({
-              ...log,
-              timestamp: blockMap.get(log.blockNumber) ?? 0,
-            }))
-            .sort((a, b) => Number(b.blockNumber - a.blockNumber));
-
-          setEvents(eventsWithTimestamps);
-        });
-      } catch (err) {
-        if (!isMounted) return;
-
-        const error = err instanceof Error ? err : new Error(String(err));
-        setError(error.message);
-        setLoading(false);
-        console.error("Error fetching events:", error);
-      }
+    if (cached) {
+      setTimestampsMap(cached);
+      return;
     }
 
-    fetchEvents();
+    const client = getPublicClientWithRpc(chainId);
+    const uniqueBlockNumbers = Array.from(new Set(blockNumbers));
 
-    return () => {
-      isMounted = false;
-    };
-  }, [account, chainId]);
+    Promise.all(
+      uniqueBlockNumbers.map(async (blockNumber) => {
+        try {
+          const block = await client.getBlock({ blockNumber });
+          return [blockNumber, Number(block.timestamp)] as const;
+        } catch (err) {
+          console.error(`Error fetching block ${blockNumber}:`, err);
+          return [blockNumber, 0] as const;
+        }
+      })
+    ).then((timestamps) => {
+      const newMap = new Map(timestamps);
+      blockTimestampCache.set(cacheKey, newMap);
+      setTimestampsMap(newMap);
+    });
+  }, [chainId, blockNumbers]);
 
-  return { events, loading, error, fromBlock, fromTimestamp };
+  return timestampsMap;
+}
+
+async function fetchAccountEvents(account: string, chainId: ContractsChainId): Promise<AccountEventsData> {
+  const eventEmitterAddress = getContract(chainId, "EventEmitter");
+  const client = getPublicClientWithRpc(chainId);
+
+  const currentBlock = await client.getBlockNumber();
+  const currentBlockData = await client.getBlock({ blockNumber: currentBlock });
+  const daysBack = 7;
+  const secondsInDay = 86400n;
+  const timestamp7DaysAgo = currentBlockData.timestamp - BigInt(daysBack) * secondsInDay;
+  const startBlock = await getBlockNumberBeforeTimestamp(chainId, timestamp7DaysAgo);
+  const startBlockData = await client.getBlock({ blockNumber: startBlock });
+
+  console.log(`Fetching events from block ${startBlock} to ${currentBlock}`);
+
+  const accountTopicBytes32 = encodeAbiParameters([{ type: "address" }], [account]);
+
+  const eventLog1AbiItem = getAbiItem({ abi: abis.EventEmitter, name: "EventLog1" });
+  const eventLog2AbiItem = getAbiItem({ abi: abis.EventEmitter, name: "EventLog2" });
+
+  const [logs1Result, logs2Result] = await Promise.allSettled([
+    client.getLogs({
+      address: eventEmitterAddress,
+      event: eventLog1AbiItem,
+      args: {
+        topic1: accountTopicBytes32,
+      },
+      fromBlock: startBlock,
+      toBlock: currentBlock,
+    }),
+    client.getLogs({
+      address: eventEmitterAddress,
+      event: eventLog2AbiItem,
+      args: {
+        topic2: accountTopicBytes32,
+      },
+      fromBlock: startBlock,
+      toBlock: currentBlock,
+    }),
+  ]);
+
+  const allLogs: EventLogEntryWithoutTimestamp[] = [];
+
+  if (logs1Result.status === "fulfilled") {
+    for (const log of logs1Result.value) {
+      allLogs.push({
+        eventName: String(log.args.eventName),
+        eventType: "EventLog1",
+        txHash: log.transactionHash,
+        blockNumber: log.blockNumber,
+        logIndex: log.logIndex,
+        eventData: log.args.eventData,
+        topics: log.topics,
+      });
+    }
+  } else {
+    console.error("Error fetching EventLog1:", logs1Result.reason);
+  }
+
+  if (logs2Result.status === "fulfilled") {
+    for (const log of logs2Result.value) {
+      allLogs.push({
+        eventName: String(log.args.eventName),
+        eventType: "EventLog2",
+        txHash: log.transactionHash,
+        blockNumber: log.blockNumber,
+        logIndex: log.logIndex,
+        eventData: log.args.eventData,
+        topics: log.topics,
+      });
+    }
+  } else {
+    console.error("Error fetching EventLog2:", logs2Result.reason);
+  }
+
+  const sortedEvents = allLogs.sort((a, b) => {
+    const blockDiff = Number(b.blockNumber - a.blockNumber);
+    if (blockDiff !== 0) return blockDiff;
+    // new events first
+    return b.logIndex - a.logIndex;
+  });
+
+  return {
+    events: sortedEvents,
+    fromBlock: startBlock,
+    fromTimestamp: Number(startBlockData.timestamp),
+  };
 }
 
 export function AccountEvents() {
@@ -214,10 +192,32 @@ export function AccountEvents() {
     return walletAddress;
   }, [params.account, walletAddress]);
 
-  const { events, loading, error, fromBlock, fromTimestamp } = useAccountEvents(
-    account,
-    initialChainId as ContractsChainId
+  const swrKey = account && initialChainId ? ["accountEvents", account, initialChainId] : null;
+
+  const { data, error, isLoading, mutate } = useSWR<AccountEventsData>(
+    swrKey,
+    ([, account, chainId]: [string, string, ContractsChainId]) => fetchAccountEvents(account, chainId),
+    {
+      keepPreviousData: true,
+    }
   );
+
+  const eventsWithoutTimestamps = useMemo(() => data?.events ?? [], [data?.events]);
+  const fromBlock = data?.fromBlock ?? null;
+  const fromTimestamp = data?.fromTimestamp ?? null;
+
+  const uniqueBlockNumbers = useMemo(() => {
+    return Array.from(new Set(eventsWithoutTimestamps.map((event) => event.blockNumber)));
+  }, [eventsWithoutTimestamps]);
+
+  const blockTimestampsMap = useBlockTimestamps(initialChainId, uniqueBlockNumbers);
+
+  const events: EventLogEntry[] = useMemo(() => {
+    return eventsWithoutTimestamps.map((event) => ({
+      ...event,
+      timestamp: blockTimestampsMap.get(event.blockNumber) ?? 0,
+    }));
+  }, [eventsWithoutTimestamps, blockTimestampsMap]);
 
   const formatEventData = (eventData: unknown) => {
     if (!eventData) return "N/A";
@@ -226,7 +226,6 @@ export function AccountEvents() {
       const parsed = parseEventLogData(eventData as Parameters<typeof parseEventLogData>[0]);
       const parts: string[] = [];
 
-      // Iterate through all item types
       const itemTypes: Array<keyof EventLogData> = [
         "addressItems",
         "uintItems",
@@ -241,14 +240,12 @@ export function AccountEvents() {
         const section = parsed[key];
         if (!section) continue;
 
-        // Process items (object with key-value pairs)
         if (section.items) {
           for (const [itemKey, value] of Object.entries(section.items)) {
             parts.push(`${itemKey}: ${String(value)}`);
           }
         }
 
-        // Process arrayItems (object with key-array pairs)
         if (section.arrayItems) {
           for (const [itemKey, values] of Object.entries(section.arrayItems)) {
             const formattedValues = Array.isArray(values) ? values.map(String).join(", ") : String(values);
@@ -297,19 +294,34 @@ export function AccountEvents() {
           className="p-12"
         />
 
-        {loading && (
-          <div className="flex justify-center p-40">
-            <Loader />
+        {error && (
+          <div className="mb-20 p-20 text-center text-red-500">
+            Error: {error instanceof Error ? error.message : String(error)}
+            <div className="mt-8">
+              <Button variant="secondary" onClick={() => mutate()} disabled={isLoading}>
+                {isLoading ? "Loading..." : "Retry"}
+              </Button>
+            </div>
           </div>
         )}
 
-        {error && <div className="p-20 text-center text-red-500">Error: {error}</div>}
-
-        {!loading && !error && (
-          <div className="text-body-medium mb-20">Found {events.length} events in the past 7 days</div>
+        {!error && (
+          <>
+            <div className="mb-20 flex items-center justify-between">
+              <div className="text-body-medium">Found {events.length} events in the past 7 days</div>
+              <Button variant="secondary" onClick={() => mutate()} disabled={isLoading}>
+                {isLoading ? "Loading..." : "Refresh"}
+              </Button>
+            </div>
+            {isLoading && events.length === 0 && (
+              <div className="mb-20 flex justify-center">
+                <Loader />
+              </div>
+            )}
+          </>
         )}
 
-        {!loading && events.length > 0 && (
+        {!isLoading && events.length > 0 && (
           <Table>
             <thead>
               <TableTr>
@@ -321,43 +333,57 @@ export function AccountEvents() {
               </TableTr>
             </thead>
             <tbody>
-              {events.map((event, idx) => (
-                <TableTr key={`${event.txHash}-${idx}`}>
-                  <TableTd>
-                    <div className="font-medium">{event.eventName}</div>
-                  </TableTd>
-                  <TableTd>
-                    <div className="text-12 text-typography-secondary">{event.eventType}</div>
-                  </TableTd>
-                  <TableTd>
-                    <div>
-                      {event.timestamp === 0 ? (
-                        <span className="text-typography-secondary">...</span>
-                      ) : (
-                        format(event.timestamp * 1000, "dd MMM yyyy, HH:mm:ss")
-                      )}
-                    </div>
-                  </TableTd>
-                  <TableTd>
-                    <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId](event.txHash)}>
-                      {event.txHash.slice(0, 10)}...
-                    </ExternalLink>
-                  </TableTd>
-                  <TableTd>
-                    <div
-                      className="max-w-400 overflow-hidden text-ellipsis text-12"
-                      title={formatEventData(event.eventData)}
-                    >
-                      {formatEventData(event.eventData)}
-                    </div>
-                  </TableTd>
-                </TableTr>
-              ))}
+              {events.map((event) => {
+                const eventNameLower = event.eventName.toLowerCase();
+                const isCancelled = eventNameLower.includes("cancelled") || eventNameLower.includes("failed");
+                const isCreated = eventNameLower.includes("created");
+                const isExecuted = eventNameLower.includes("executed");
+
+                return (
+                  <TableTr
+                    key={`${event.txHash}-${event.logIndex}`}
+                    className={cx({
+                      "!bg-red-500/20": isCancelled,
+                      "!bg-blue-500/20": isCreated,
+                      "!bg-green-500/20": isExecuted,
+                    })}
+                  >
+                    <TableTd>
+                      <div className="font-medium">{event.eventName}</div>
+                    </TableTd>
+                    <TableTd>
+                      <div className="text-12 text-typography-secondary">{event.eventType}</div>
+                    </TableTd>
+                    <TableTd>
+                      <div>
+                        {event.timestamp === 0 ? (
+                          <span className="text-typography-secondary">...</span>
+                        ) : (
+                          format(event.timestamp * 1000, "dd MMM yyyy, HH:mm:ss")
+                        )}
+                      </div>
+                    </TableTd>
+                    <TableTd>
+                      <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId](event.txHash)}>
+                        {event.txHash.slice(0, 10)}...
+                      </ExternalLink>
+                    </TableTd>
+                    <TableTd>
+                      <div
+                        className="max-w-400 overflow-hidden text-ellipsis text-12"
+                        title={formatEventData(event.eventData)}
+                      >
+                        {formatEventData(event.eventData)}
+                      </div>
+                    </TableTd>
+                  </TableTr>
+                );
+              })}
             </tbody>
           </Table>
         )}
 
-        {!loading && !error && events.length === 0 && (
+        {!isLoading && !error && events.length === 0 && (
           <div className="p-40 text-center text-typography-secondary">
             No events found for this account in the past 7 days
           </div>
