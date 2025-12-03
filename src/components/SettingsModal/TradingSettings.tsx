@@ -210,10 +210,19 @@ export function TradingSettings({
         <InputSetting
           title={<Trans>Default Allowed Slippage</Trans>}
           description={
-            <Trans>
-              The maximum allowed percentage difference between the mark price and the execution price for market
-              orders.
-            </Trans>
+            <div>
+              <Trans>
+                Slippage is the difference between your expected and actual execution price due to price volatility.
+                Orders won't execute if slippage exceeds your allowed maximum.
+                <br />
+                <br />
+                Note: slippage is different from price impact, which is based on open interest imbalances.
+              </Trans>{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">
+                <Trans>Read more</Trans>
+              </ExternalLink>
+              .
+            </div>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
           value={parseFloat(String(settings.savedAllowedSlippage))}
