@@ -3649,6 +3649,10 @@ msgstr "シフト注文が実行されました。"
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "ランキング資格を得るための最小\"資本使用額\"{0}にまだ達していません。"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
+msgstr ""
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
 msgstr "既存の実行可能トリガー注文"

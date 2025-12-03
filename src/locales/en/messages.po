@@ -3649,6 +3649,10 @@ msgstr "Shift order executed."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
+msgstr "{symbol} balance on {0} chain is insufficient to cover network fee"
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
 msgstr "Existing executable trigger orders"
