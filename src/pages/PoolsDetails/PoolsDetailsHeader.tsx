@@ -179,11 +179,13 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                       ) : undefined
                     }
                     tooltipContent={
-                      <MultichainBalanceTooltip
-                        multichainBalances={multichainMarketTokenBalances}
-                        symbol={glvOrGm}
-                        decimals={PLATFORM_TOKEN_DECIMALS}
-                      />
+                      totalBalance === undefined || totalBalance === 0n ? undefined : (
+                        <MultichainBalanceTooltip
+                          multichainBalances={multichainMarketTokenBalances}
+                          symbol={glvOrGm}
+                          decimals={PLATFORM_TOKEN_DECIMALS}
+                        />
+                      )
                     }
                   />
                 )}
