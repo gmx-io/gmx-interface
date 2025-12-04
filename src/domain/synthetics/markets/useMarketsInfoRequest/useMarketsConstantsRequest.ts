@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
+import { getIsFlagEnabled } from "config/ab";
 import { USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -16,6 +17,8 @@ export type MarketsConstantsResult = {
 };
 
 export function useMarketsConstantsRequest(chainId: ContractsChainId): MarketsConstantsResult {
+  const isAbFlagEnabled = getIsFlagEnabled("useOpenInterestInTokensForBalance");
+
   const { data, error } = useMulticall(chainId, "useMarketsConstants", {
     key: [],
 
@@ -34,17 +37,22 @@ export function useMarketsConstantsRequest(chainId: ContractsChainId): MarketsCo
       },
     },
     parseResponse: (res) => {
+      const onChainValue = res.data.dataStore.useOpenInterestInTokensForBalance.returnValues[0];
       return {
-        useOpenInterestInTokensForBalance: res.data.dataStore.useOpenInterestInTokensForBalance.returnValues[0],
+        useOpenInterestInTokensForBalance: onChainValue,
       };
     },
   });
 
   return useMemo(
     () => ({
-      data: data || undefined,
+      data: data
+        ? {
+            useOpenInterestInTokensForBalance: isAbFlagEnabled ? true : data.useOpenInterestInTokensForBalance,
+          }
+        : undefined,
       error,
     }),
-    [data, error]
+    [data, error, isAbFlagEnabled]
   );
 }
