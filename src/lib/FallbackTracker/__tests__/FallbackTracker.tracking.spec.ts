@@ -373,13 +373,11 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       trackers.push(tracker);
 
       const firstAbortController = new AbortController();
-      tracker.state.abortController = firstAbortController;
       const firstCheckPromise = tracker.checkEndpoints(firstAbortController);
       await vi.advanceTimersByTimeAsync(10);
 
       // Start second check which should abort the first
       const secondAbortController = new AbortController();
-      tracker.state.abortController = secondAbortController;
       const secondCheckPromise = tracker.checkEndpoints(secondAbortController);
       await vi.advanceTimersByTimeAsync(10);
 
