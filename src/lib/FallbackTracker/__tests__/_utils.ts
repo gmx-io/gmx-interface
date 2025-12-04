@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "../FallbackTracker";
+import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "../const";
 import type { CheckResult, EndpointStats, FallbackTrackerParams } from "../FallbackTracker";
 import { NetworkStatusObserver } from "../NetworkStatusObserver";
 

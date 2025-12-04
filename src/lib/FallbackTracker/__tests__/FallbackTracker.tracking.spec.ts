@@ -77,12 +77,10 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       trackers.push(tracker);
 
       const firstController = new AbortController();
-      tracker.state.abortController = firstController;
       tracker.checkEndpoints(firstController);
 
       // Start second check which should abort the first
       const secondController = new AbortController();
-      tracker.state.abortController = secondController;
       const secondCheckPromise = tracker.checkEndpoints(secondController);
 
       // Wait a bit to ensure abort happens

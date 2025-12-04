@@ -69,5 +69,5 @@ export function addFallbackTrackerListenner<TEvent extends FallbackTrackerEventN
 
   const cleanup = safeAddGlobalListenner(fallbackTrackerEventKeys[eventName], handler);
 
-  return cleanup;
+  return cleanup || (() => void 0);
 }

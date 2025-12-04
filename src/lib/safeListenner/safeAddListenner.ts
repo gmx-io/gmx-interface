@@ -17,9 +17,9 @@ export class SafeListennersCache {
     return this.instances[event];
   }
 
-  addListenner(listenner: (event: Event) => void): () => void {
+  addListenner(listenner: (event: Event) => void): (() => void) | undefined {
     if (this.maxListenners === 0) {
-      return () => void 0;
+      return undefined;
     }
 
     // Wrap listener to catch errors
@@ -74,7 +74,11 @@ export class SafeListennersCache {
  * Prevents memory leaks by limiting the number of listeners for a given event.
  * Returns a cleanup function that removes the listener.
  */
-export function safeAddGlobalListenner(event: string, listenner: (event: Event) => void, maxListenners?: number) {
+export function safeAddGlobalListenner(
+  event: string,
+  listenner: (event: Event) => void,
+  maxListenners?: number
+): (() => void) | undefined {
   const cache = SafeListennersCache.getInstance(event, maxListenners);
   return cache.addListenner(listenner);
 }

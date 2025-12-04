@@ -1,5 +1,6 @@
 import { isNonZero, safeDivide } from "lib/numbers";
 
+import { SPEED_WEIGHT, STABILITY_WEIGHT } from "./const";
 import type { EndpointStats } from "./FallbackTracker";
 
 export function scoreNotBanned(stats: EndpointStats<any>): number {
@@ -34,9 +35,6 @@ export function getAvgResponseTime(stats: EndpointStats<{ responseTime: number }
 }
 
 export function scoreBySpeedAndConsistency(avgResponseTime: number) {
-  const STABILITY_WEIGHT = 0.7;
-  const SPEED_WEIGHT = 0.5;
-
   return function calculateScore(stats: EndpointStats<{ responseTime: number }>): number {
     const totalChecks = stats.checkResults.length;
 

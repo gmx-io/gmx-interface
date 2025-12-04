@@ -4,7 +4,7 @@ import { vi } from "vitest";
 import * as rpcConfigModule from "config/rpc";
 import type { RpcConfig } from "config/rpc";
 import type { CheckResult, EndpointStats } from "lib/FallbackTracker";
-import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "lib/FallbackTracker/FallbackTracker";
+import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "lib/FallbackTracker/const";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { ARBITRUM } from "sdk/configs/chains";
