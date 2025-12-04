@@ -165,7 +165,7 @@ addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
   chainAddresses: {
     [ARBITRUM]: {
       address: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
-      stargate: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
+      stargate: "0x27Ef981E6fcB274a6C5C75983725d265Fd3dCdac",
     },
     [SOURCE_BASE_MAINNET]: {
       address: "0xbCB170fEDDa90cd7593f016DFdabA032Ca1F222b",
