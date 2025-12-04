@@ -1133,42 +1133,41 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 isLong={isLong}
               />
             )}
-
-            <div className="flex flex-col gap-14">
-              {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
-                <ToggleSwitch
-                  isChecked={keepLeverageChecked}
-                  setIsChecked={setKeepLeverage}
-                  disabled={decreaseAmounts?.isFullClose}
-                >
-                  <span className="text-14 text-typography-secondary">
-                    <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
-                  </span>
-                </ToggleSwitch>
-              )}
-
-              {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
-
-              {priceImpactWarningState.shouldShowWarning && (
-                <HighPriceImpactOrFeesWarningCard
-                  priceImpactWarningState={priceImpactWarningState}
-                  swapPriceImpact={fees?.swapPriceImpact}
-                  swapProfitFee={fees?.swapProfitFee}
-                  executionFeeUsd={executionFee?.feeUsd}
-                  externalSwapFeeItem={fees?.externalSwapFee}
-                />
-              )}
-
-              <div>{button}</div>
-              <ExpressTradingWarningCard
-                expressParams={submitButtonState.expressParams}
-                payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
-                isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
-                disabled={shouldShowDepositButton}
-                isGmxAccount={isFromTokenGmxAccount}
-              />
-            </div>
           </div>
+        </div>
+        <div className="flex flex-col gap-14 border-t-1/2 border-t-slate-600 px-12 pt-12">
+          {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
+            <ToggleSwitch
+              isChecked={keepLeverageChecked}
+              setIsChecked={setKeepLeverage}
+              disabled={decreaseAmounts?.isFullClose}
+            >
+              <span className="text-14 text-typography-secondary">
+                <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
+              </span>
+            </ToggleSwitch>
+          )}
+
+          {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
+
+          {priceImpactWarningState.shouldShowWarning && (
+            <HighPriceImpactOrFeesWarningCard
+              priceImpactWarningState={priceImpactWarningState}
+              swapPriceImpact={fees?.swapPriceImpact}
+              swapProfitFee={fees?.swapProfitFee}
+              executionFeeUsd={executionFee?.feeUsd}
+              externalSwapFeeItem={fees?.externalSwapFee}
+            />
+          )}
+
+          <div>{button}</div>
+          <ExpressTradingWarningCard
+            expressParams={submitButtonState.expressParams}
+            payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
+            isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
+            disabled={shouldShowDepositButton}
+            isGmxAccount={isFromTokenGmxAccount}
+          />
         </div>
       </div>
 

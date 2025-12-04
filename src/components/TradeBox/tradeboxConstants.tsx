@@ -41,7 +41,7 @@ export const tradeTypeClassNames = {
     regular: "border-b-transparent",
   },
   [TradeType.Swap]: {
-    active: "!bg-blue-300/10 border-b-blue-300 pb-9 !text-blue-100",
+    active: "!bg-blue-300/10 border-b-blue-300 pb-9 !text-blue-300",
     regular: "border-b-transparent",
   },
 };
