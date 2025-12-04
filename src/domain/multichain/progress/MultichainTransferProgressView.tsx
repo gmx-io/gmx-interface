@@ -323,16 +323,20 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                   valueClassName="flex items-center"
                   value={formatUsd(task.estimatedFeeUsd)}
                 />
-                <SyntheticsInfoRow
-                  label={<Trans>Estimated time</Trans>}
-                  valueClassName="flex items-center"
-                  value={<Trans>~5 minutes</Trans>}
-                />
-                <SyntheticsInfoRow
-                  label={<Trans>Time elapsed</Trans>}
-                  valueClassName="flex items-center"
-                  value={elapsedTime}
-                />
+                {finishedState !== "completed" && (
+                  <>
+                    <SyntheticsInfoRow
+                      label={<Trans>Estimated time</Trans>}
+                      valueClassName="flex items-center"
+                      value={<Trans>~5 minutes</Trans>}
+                    />
+                    <SyntheticsInfoRow
+                      label={<Trans>Time elapsed</Trans>}
+                      valueClassName="flex items-center"
+                      value={elapsedTime}
+                    />
+                  </>
+                )}
                 <SyntheticsInfoRow
                   label={<Trans>Bridge TX hash</Trans>}
                   valueClassName="flex items-center"
