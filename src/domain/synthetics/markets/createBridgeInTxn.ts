@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId } from "config/multichain";
+import { getMappedTokenId, MultichainTokenId } from "config/multichain";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
@@ -15,21 +15,24 @@ import { abis } from "sdk/abis";
 
 import { fetchLayerZeroNativeFee } from "./feeEstimation/stargateTransferFees";
 
-export async function createBridgeInTxn({
+export async function getBridgeInTxnParams({
   chainId,
   srcChainId,
-  signer,
   account,
   tokenAddress,
   tokenAmount,
 }: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
-  signer: WalletSigner;
   account: string;
   tokenAddress: string;
   tokenAmount: bigint;
-}) {
+}): Promise<{
+  sendParams: SendParam;
+  sourceChainTokenId: MultichainTokenId;
+  nativeFee: bigint;
+  value: bigint;
+}> {
   const composeGas = await estimateMultichainDepositNetworkComposeGas({
     chainId,
     account,
@@ -61,6 +64,37 @@ export async function createBridgeInTxn({
     sendParams,
   });
   const value = nativeFee + (tokenAddress === zeroAddress ? tokenAmount : 0n);
+
+  return {
+    sendParams,
+    sourceChainTokenId,
+    nativeFee,
+    value,
+  };
+}
+
+export async function createBridgeInTxn({
+  chainId,
+  srcChainId,
+  signer,
+  account,
+  tokenAddress,
+  tokenAmount,
+}: {
+  chainId: SettlementChainId;
+  srcChainId: SourceChainId;
+  signer: WalletSigner;
+  account: string;
+  tokenAddress: string;
+  tokenAmount: bigint;
+}) {
+  const { sendParams, sourceChainTokenId, nativeFee, value } = await getBridgeInTxnParams({
+    chainId,
+    srcChainId,
+    account,
+    tokenAddress,
+    tokenAmount,
+  });
 
   try {
     const txnResult = await sendWalletTransaction({

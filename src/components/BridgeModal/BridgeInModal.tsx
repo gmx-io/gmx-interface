@@ -15,14 +15,17 @@ import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
+import { useSourceChainError } from "domain/multichain/useSourceChainError";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
-import { createBridgeInTxn } from "domain/synthetics/markets/createBridgeInTxn";
+import { createBridgeInTxn, getBridgeInTxnParams } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { EMPTY_OBJECT } from "lib/objects";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
@@ -124,6 +127,53 @@ export function BridgeInModal({
     balance: bridgeInChainMarketTokenBalance,
   });
 
+  const nativeFeeAsyncResult = useThrottledAsync(
+    async ({ params: p }) => {
+      if (!p.account || !p.glvOrMarketAddress || p.bridgeInAmount === undefined || !p.bridgeInChain || !p.chainId) {
+        return undefined;
+      }
+
+      const { nativeFee } = await getBridgeInTxnParams({
+        chainId: p.chainId as SettlementChainId,
+        srcChainId: p.bridgeInChain,
+        account: p.account,
+        tokenAddress: p.glvOrMarketAddress,
+        tokenAmount: p.bridgeInAmount,
+      });
+
+      return nativeFee;
+    },
+    {
+      params:
+        account && glvOrMarketAddress && bridgeInAmount !== undefined && bridgeInChain && chainId
+          ? {
+              account,
+              glvOrMarketAddress,
+              bridgeInAmount,
+              bridgeInChain,
+              chainId,
+            }
+          : undefined,
+      throttleMs: 5000,
+      leading: true,
+      trailing: false,
+    }
+  );
+
+  const nativeFee = nativeFeeAsyncResult.data;
+  const nativeFeeUsd = useNativeTokenMultichainUsd({
+    sourceChainId: bridgeInChain,
+    sourceChainTokenAmount: nativeFee,
+    targetChainId: chainId,
+  });
+
+  const nativeBalanceError = useSourceChainError({
+    networkFeeUsd: nativeFeeUsd,
+    paySource: "sourceChain",
+    chainId,
+    srcChainId: bridgeInChain,
+  });
+
   useEffect(() => {
     if (bridgeInChain !== undefined || !multichainMarketTokenBalances?.balances) {
       return;
@@ -213,6 +263,13 @@ export function BridgeInModal({
       };
     }
 
+    if (nativeBalanceError) {
+      return {
+        text: nativeBalanceError,
+        disabled: true,
+      };
+    }
+
     return {
       text: t`Deposit`,
       disabled: false,
@@ -224,6 +281,7 @@ export function BridgeInModal({
     bridgeInChainMarketTokenBalance,
     bridgeInAmount,
     sourceChainDecimals,
+    nativeBalanceError,
   ]);
 
   if (!glvOrMarketInfo) {
@@ -273,6 +331,7 @@ export function BridgeInModal({
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}
         </Button>
+        <SyntheticsInfoRow label={t`Network Fee`} value={formatUsd(nativeFeeUsd)} />
         <SyntheticsInfoRow
           label={t`GMX Account Balance`}
           value={
