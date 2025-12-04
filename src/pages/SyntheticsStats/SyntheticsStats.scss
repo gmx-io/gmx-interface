@@ -21,6 +21,9 @@
 .MarketCard-config-tooltip {
   .Tooltip-popup {
     min-width: 34rem;
+    max-height: 80vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 }
 

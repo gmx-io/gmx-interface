@@ -2,7 +2,7 @@ import { MarketInfo } from "types/markets";
 import { TokenData } from "types/tokens";
 import { TradeFees } from "types/trade";
 import { bigMath } from "utils/bigmath";
-import { getTokenPoolType } from "utils/markets";
+import { getOpenInterestForBalance, getTokenPoolType } from "utils/markets";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "utils/tokens";
 import { bigNumberify } from "utils/tradeHistory";
@@ -144,7 +144,8 @@ export function getPriceImpactForPosition(
   isLong: boolean,
   opts: { fallbackToZero?: boolean } = {}
 ) {
-  const { longInterestUsd, shortInterestUsd } = marketInfo;
+  const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
+  const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
 
   const { currentLongUsd, currentShortUsd, nextLongUsd, nextShortUsd } = getNextOpenInterestParams({
     currentLongUsd: longInterestUsd,
@@ -160,7 +161,8 @@ export function getPriceImpactForPosition(
     nextShortUsd,
     factorPositive: marketInfo.positionImpactFactorPositive,
     factorNegative: marketInfo.positionImpactFactorNegative,
-    exponentFactor: marketInfo.positionImpactExponentFactor,
+    exponentFactorPositive: marketInfo.positionImpactExponentFactorPositive,
+    exponentFactorNegative: marketInfo.positionImpactExponentFactorNegative,
     fallbackToZero: opts.fallbackToZero,
   });
 
@@ -191,7 +193,8 @@ export function getPriceImpactForPosition(
     nextShortUsd: virtualInventoryParams.nextShortUsd,
     factorPositive: marketInfo.positionImpactFactorPositive,
     factorNegative: marketInfo.positionImpactFactorNegative,
-    exponentFactor: marketInfo.positionImpactExponentFactor,
+    exponentFactorPositive: marketInfo.positionImpactExponentFactorPositive,
+    exponentFactorNegative: marketInfo.positionImpactExponentFactorNegative,
     fallbackToZero: opts.fallbackToZero,
   });
 
@@ -268,7 +271,8 @@ export function getPriceImpactForSwap(
     nextShortUsd: nextShortPoolUsd,
     factorPositive: marketInfo.swapImpactFactorPositive,
     factorNegative: marketInfo.swapImpactFactorNegative,
-    exponentFactor: marketInfo.swapImpactExponentFactor,
+    exponentFactorPositive: marketInfo.swapImpactExponentFactor,
+    exponentFactorNegative: marketInfo.swapImpactExponentFactor,
     fallbackToZero: opts.fallbackToZero,
   });
 
@@ -305,7 +309,8 @@ export function getPriceImpactForSwap(
     nextShortUsd: virtualInventoryParams.nextShortPoolUsd,
     factorPositive: marketInfo.swapImpactFactorPositive,
     factorNegative: marketInfo.swapImpactFactorNegative,
-    exponentFactor: marketInfo.swapImpactExponentFactor,
+    exponentFactorPositive: marketInfo.swapImpactExponentFactor,
+    exponentFactorNegative: marketInfo.swapImpactExponentFactor,
     fallbackToZero: opts.fallbackToZero,
   });
 
@@ -406,7 +411,8 @@ export function getPriceImpactUsd(p: {
   nextShortUsd: bigint;
   factorPositive: bigint;
   factorNegative: bigint;
-  exponentFactor: bigint;
+  exponentFactorPositive: bigint;
+  exponentFactorNegative: bigint;
   fallbackToZero?: boolean;
 }) {
   const { nextLongUsd, nextShortUsd } = p;
@@ -424,22 +430,22 @@ export function getPriceImpactUsd(p: {
 
   const currentDiff = bigMath.abs(p.currentLongUsd - p.currentShortUsd);
   const nextDiff = bigMath.abs(nextLongUsd - nextShortUsd);
-
   const isSameSideRebalance = p.currentLongUsd < p.currentShortUsd === nextLongUsd < nextShortUsd;
+  const balanceWasImproved = nextDiff < currentDiff;
 
   let priceImpactDeltaUsd: bigint;
 
-  const balanceWasImproved = nextDiff < currentDiff;
   if (isSameSideRebalance) {
     const hasPositiveImpact = nextDiff < currentDiff;
     const factor = hasPositiveImpact ? p.factorPositive : p.factorNegative;
+    const exponentFactor = hasPositiveImpact ? p.exponentFactorPositive : p.exponentFactorNegative;
 
     priceImpactDeltaUsd = calculateImpactForSameSideRebalance({
       currentDiff,
       nextDiff,
       hasPositiveImpact,
       factor,
-      exponentFactor: p.exponentFactor,
+      exponentFactor,
     });
   } else {
     priceImpactDeltaUsd = calculateImpactForCrossoverRebalance({
@@ -447,7 +453,8 @@ export function getPriceImpactUsd(p: {
       nextDiff,
       factorPositive: p.factorPositive,
       factorNegative: p.factorNegative,
-      exponentFactor: p.exponentFactor,
+      exponentFactorPositive: p.exponentFactorPositive,
+      exponentFactorNegative: p.exponentFactorNegative,
     });
   }
 
@@ -485,12 +492,13 @@ export function calculateImpactForCrossoverRebalance(p: {
   nextDiff: bigint;
   factorPositive: bigint;
   factorNegative: bigint;
-  exponentFactor: bigint;
+  exponentFactorPositive: bigint;
+  exponentFactorNegative: bigint;
 }) {
-  const { currentDiff, nextDiff, factorNegative, factorPositive, exponentFactor } = p;
+  const { currentDiff, nextDiff, factorNegative, factorPositive, exponentFactorPositive, exponentFactorNegative } = p;
 
-  const positiveImpact = applyImpactFactor(currentDiff, factorPositive, exponentFactor);
-  const negativeImpactUsd = applyImpactFactor(nextDiff, factorNegative, exponentFactor);
+  const positiveImpact = applyImpactFactor(currentDiff, factorPositive, exponentFactorPositive);
+  const negativeImpactUsd = applyImpactFactor(nextDiff, factorNegative, exponentFactorNegative);
 
   const deltaDiffUsd = bigMath.abs(positiveImpact - negativeImpactUsd);
 
