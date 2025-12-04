@@ -141,7 +141,10 @@ export function ExpandableRow({
       <AnimatePresence initial={false}>
         <div
           key="handle"
-          className={cx({ "mb-14": open, "rounded-8 border-1/2 border-slate-600 px-12 py-10": wrappedHandle })}
+          className={cx({
+            "mb-14": open,
+            "rounded-8 border-1/2 border-slate-600 bg-slate-950/50 px-12 py-10": wrappedHandle,
+          })}
         >
           <SyntheticsInfoRow
             className={cx("group relative !items-center gmx-hover:text-blue-300", {

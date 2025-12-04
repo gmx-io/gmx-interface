@@ -210,7 +210,23 @@ export function LimitAndTPSLGroup() {
     <ExpandableRow
       open={isTpSlVisible}
       title={
-        hasExistingLimitOrder ? <Trans>Limit / Take Profit / Stop Loss</Trans> : <Trans>Take Profit / Stop Loss</Trans>
+        <TooltipWithPortal
+          handle={
+            hasExistingLimitOrder ? (
+              <Trans>Limit / Take Profit / Stop Loss</Trans>
+            ) : (
+              <Trans>Take Profit / Stop Loss</Trans>
+            )
+          }
+          variant="iconStroke"
+          position="bottom"
+          content={
+            <Trans>
+              Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list
+              after opening a position.
+            </Trans>
+          }
+        />
       }
       hasError={hasError}
       disableCollapseOnError

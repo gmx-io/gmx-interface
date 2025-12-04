@@ -77,6 +77,10 @@ msgstr "PRIX"
 msgid "receive"
 msgstr "recevoir"
 
+#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Referrals Dashboard"
 msgstr "Tableau de bord des parrainages GMX"
@@ -4414,6 +4418,7 @@ msgstr ""
 msgid "Updating {orderText}."
 msgstr "Mise à jour de {orderText}."
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -4729,8 +4734,8 @@ msgid "This position was liquidated as the max. leverage of {formattedMaxLeverag
 msgstr "Cette position a été liquidée car l'effet de levier maximal de {formattedMaxLeverage} a été dépassé en tenant compte des frais."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {0}"
-msgstr "Échanger {0}"
+#~ msgid "Swap {0}"
+#~ msgstr "Échanger {0}"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}."
@@ -5830,8 +5835,8 @@ msgstr "Montant"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create {0} order"
-msgstr "Créer un ordre {0}"
+#~ msgid "Create {0} order"
+#~ msgstr "Créer un ordre {0}"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}{2}"
@@ -6992,6 +6997,7 @@ msgstr "Confirmation en cours..."
 msgid "Deposited:"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -7540,6 +7546,7 @@ msgstr "Générer un code de parrainage"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "Swap"
 msgstr "Échanger"
@@ -7667,8 +7674,8 @@ msgid "Dashboards"
 msgstr "Tableaux de bord"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create TWAP {0} order"
-msgstr "Créer un ordre TWAP {0}"
+#~ msgid "Create TWAP {0} order"
+#~ msgstr "Créer un ordre TWAP {0}"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied to your clipboard."

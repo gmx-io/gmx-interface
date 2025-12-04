@@ -77,6 +77,10 @@ msgstr "価格"
 msgid "receive"
 msgstr "受け取り"
 
+#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Referrals Dashboard"
 msgstr "GMX紹介ダッシュボード"
@@ -4414,6 +4418,7 @@ msgstr ""
 msgid "Updating {orderText}."
 msgstr "{orderText} を更新中。"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -4729,8 +4734,8 @@ msgid "This position was liquidated as the max. leverage of {formattedMaxLeverag
 msgstr "このポジションは手数料を考慮した上での最大レバレッジ倍率({formattedMaxLeverage})を超過したため清算されました。"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {0}"
-msgstr "{0}をスワップ"
+#~ msgid "Swap {0}"
+#~ msgstr "{0}をスワップ"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}."
@@ -5830,8 +5835,8 @@ msgstr "額"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create {0} order"
-msgstr "{0}の注文を作成"
+#~ msgid "Create {0} order"
+#~ msgstr "{0}の注文を作成"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}{2}"
@@ -6992,6 +6997,7 @@ msgstr "確認中..."
 msgid "Deposited:"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -7540,6 +7546,7 @@ msgstr "紹介コード生成"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "Swap"
 msgstr "スワップ"
@@ -7667,8 +7674,8 @@ msgid "Dashboards"
 msgstr "ダッシュボード"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create TWAP {0} order"
-msgstr "TWAP {0}注文を作成"
+#~ msgid "Create TWAP {0} order"
+#~ msgstr "TWAP {0}注文を作成"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied to your clipboard."

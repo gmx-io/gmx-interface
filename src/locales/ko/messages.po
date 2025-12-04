@@ -77,6 +77,10 @@ msgstr "가격"
 msgid "receive"
 msgstr "수령"
 
+#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Referrals Dashboard"
 msgstr "GMX 추천인 대시보드"
@@ -4414,6 +4418,7 @@ msgstr ""
 msgid "Updating {orderText}."
 msgstr " {orderText} 업데이트 중."
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -4729,8 +4734,8 @@ msgid "This position was liquidated as the max. leverage of {formattedMaxLeverag
 msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}가 초과되어 해당 포지션이 청산되었습니다."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {0}"
-msgstr "{0} 스왑"
+#~ msgid "Swap {0}"
+#~ msgstr "{0} 스왑"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}."
@@ -5830,8 +5835,8 @@ msgstr "수량"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create {0} order"
-msgstr "{0} 주문 생성"
+#~ msgid "Create {0} order"
+#~ msgstr "{0} 주문 생성"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}{2}"
@@ -6992,6 +6997,7 @@ msgstr "확인 중..."
 msgid "Deposited:"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -7540,6 +7546,7 @@ msgstr "추천 코드 생성"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "Swap"
 msgstr "스왑"
@@ -7667,8 +7674,8 @@ msgid "Dashboards"
 msgstr "대시보드"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create TWAP {0} order"
-msgstr "TWAP {0} 주문 생성"
+#~ msgid "Create TWAP {0} order"
+#~ msgstr "TWAP {0} 주문 생성"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied to your clipboard."
