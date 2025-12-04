@@ -55,7 +55,8 @@ export async function createBridgeInTxn({
   }
 
   const nativeFee = await fetchLayerZeroNativeFee({
-    chainId,
+    // We fetch the native fee from the source chain because we are sending from the source chain to the settlement chain
+    chainId: srcChainId,
     stargateAddress: sourceChainTokenId.stargate,
     sendParams,
   });
