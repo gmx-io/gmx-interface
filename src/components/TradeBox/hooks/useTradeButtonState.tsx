@@ -30,11 +30,9 @@ import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateC
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
   selectExternalSwapQuote,
-  selectTradeboxDecreasePositionAmounts,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
-  selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsWrapOrUnwrap,
@@ -46,6 +44,7 @@ import {
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
@@ -53,7 +52,7 @@ import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
+import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { getApprovalRequirements } from "domain/synthetics/tokens/utils";
@@ -69,7 +68,7 @@ import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { convertTokenAddress, getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { TokenData } from "sdk/types/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
@@ -81,7 +80,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { tradeTypeLabels } from "../tradeboxConstants";
+import { tradeModeLabels, tradeTypeLabels } from "../tradeboxConstants";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 interface TradeboxButtonStateOptions {
@@ -109,11 +108,13 @@ export function useTradeboxButtonState({
   const signer = useEthersSigner();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isLimit, isMarket, isTwap } = tradeFlags;
+  const { isSwap, isIncrease } = tradeFlags;
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const hasOutdatedUi = useHasOutdatedUi();
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
+  const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
   const { stage, collateralToken, tradeType, setStage } = useSelector(selectTradeboxState);
   const { isLeverageSliderEnabled } = useSettings();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
@@ -124,8 +125,6 @@ export function useTradeboxButtonState({
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
   const gasPaymentToken = useSelector(selectGasPaymentToken);
-  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const tokensData = useSelector(selectTokensData);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
@@ -490,25 +489,14 @@ export function useTradeboxButtonState({
     {
       if (buttonErrorText) {
         submitButtonText = buttonErrorText;
-      }
-
-      if (isMarket) {
-        if (isSwap) {
-          submitButtonText = t`Swap ${fromToken?.symbol}`;
-        } else {
-          if (!toToken?.symbol) {
-            submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ...`;
-          }
-          const prefix = toToken ? getTokenVisualMultiplier(toToken) : "";
-
-          submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken?.symbol}`;
-        }
-      } else if (isLimit) {
-        submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType, false)} order`;
-      } else if (isTwap) {
-        submitButtonText = t`Create TWAP ${isSwap ? "Swap" : "Increase"} order`;
       } else {
-        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType, false)} order`;
+        const modeLabel = localizedTradeModeLabels[tradeMode];
+
+        if (isSwap) {
+          submitButtonText = `${modeLabel}: ${t`Swap`} ${fromToken?.symbol}`;
+        } else {
+          submitButtonText = `${modeLabel}: ${localizedTradeTypeLabels[tradeType!]} ${isIncrease ? t`Increase` : t`Decrease`}`;
+        }
       }
     }
 
@@ -551,16 +539,12 @@ export function useTradeboxButtonState({
     isIncrease,
     sidecarEntries,
     chainId,
-    isMarket,
-    isLimit,
-    isTwap,
     isSwap,
     fromToken?.symbol,
-    toToken,
     localizedTradeTypeLabels,
+    localizedTradeModeLabels,
+    tradeMode,
     tradeType,
-    increaseAmounts?.limitOrderType,
-    decreaseAmounts?.triggerOrderType,
   ]);
 }
 
