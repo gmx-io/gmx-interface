@@ -17,6 +17,7 @@ import {
   formatBalanceAmount,
   formatFactor,
   formatPercentage,
+  formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
   numberToBigint,
@@ -411,5 +412,65 @@ describe("formatPercentage", () => {
     expect(
       formatPercentage(toBigNumberWithDecimals("0.999", PERCENT_PRECISION_DECIMALS), { bps: false, displayDecimals: 5 })
     ).toBe("0.99900%");
+  });
+});
+
+describe("formatTokenAmount", () => {
+  const BTC_DECIMALS = 8;
+  const ONE_BTC = 100_000_000n;
+
+  it("should format large token amounts with dynamic trimmed decimals", () => {
+    expect(formatTokenAmount(ONE_BTC, BTC_DECIMALS, "BTC")).toBe("1 BTC");
+    expect(formatTokenAmount(ONE_BTC * 10n, BTC_DECIMALS, "BTC")).toBe("10 BTC");
+    expect(formatTokenAmount(ONE_BTC * 100n, BTC_DECIMALS, "BTC")).toBe("100 BTC");
+  });
+
+  it("should dynamically increase decimals for small BTC amounts and trim trailing zeros", () => {
+    expect(formatTokenAmount(ONE_BTC / 10n, BTC_DECIMALS, "BTC")).toBe("0.1 BTC");
+    expect(formatTokenAmount(ONE_BTC / 100n, BTC_DECIMALS, "BTC")).toBe("0.01 BTC");
+    expect(formatTokenAmount(ONE_BTC / 1000n, BTC_DECIMALS, "BTC")).toBe("0.001 BTC");
+    expect(formatTokenAmount(ONE_BTC / 10_000n, BTC_DECIMALS, "BTC")).toBe("0.0001 BTC");
+    expect(formatTokenAmount(ONE_BTC / 100_000n, BTC_DECIMALS, "BTC")).toBe("0.00001 BTC");
+    expect(formatTokenAmount(ONE_BTC / 1_000_000n, BTC_DECIMALS, "BTC")).toBe("0.000001 BTC");
+    expect(formatTokenAmount(ONE_BTC / 10_000_000n, BTC_DECIMALS, "BTC")).toBe("0.0000001 BTC");
+    expect(formatTokenAmount(ONE_BTC / 100_000_000n, BTC_DECIMALS, "BTC")).toBe("0.00000001 BTC");
+  });
+
+  it("should fix the BTC precision issue - 0.00001907 BTC should not show as 0.0000", () => {
+    const smallBtcAmount = 1907n; // 0.00001907 BTC
+    expect(formatTokenAmount(smallBtcAmount, BTC_DECIMALS, "BTC")).toBe("0.00001907 BTC");
+  });
+
+  it("should respect explicitly provided displayDecimals (no trimming override)", () => {
+    const smallBtcAmount = 1900n;
+
+    expect(formatTokenAmount(smallBtcAmount, BTC_DECIMALS, "BTC", { displayDecimals: 4 })).toBe("0.0000 BTC");
+    expect(formatTokenAmount(smallBtcAmount, BTC_DECIMALS, "BTC", { displayDecimals: 8 })).toBe("0.00001900 BTC");
+  });
+
+  it("should handle stable tokens with fixed 2 decimals (no trimming)", () => {
+    const USDC_DECIMALS = 6;
+    const ONE_USDC = 1_000_000n;
+
+    expect(formatTokenAmount(ONE_USDC, USDC_DECIMALS, "USDC", { isStable: true })).toBe("1.00 USDC");
+    expect(formatTokenAmount(ONE_USDC / 10n, USDC_DECIMALS, "USDC", { isStable: true })).toBe("0.10 USDC");
+    expect(formatTokenAmount(ONE_USDC / 100n, USDC_DECIMALS, "USDC", { isStable: true })).toBe("0.01 USDC");
+    expect(formatTokenAmount(ONE_USDC / 1000n, USDC_DECIMALS, "USDC", { isStable: true })).toBe("0.00 USDC");
+    expect(formatTokenAmount(ONE_USDC / 10000n, USDC_DECIMALS, "USDC", { isStable: true })).toBe("0.00 USDC");
+  });
+
+  it("should handle zero amount correctly", () => {
+    expect(formatTokenAmount(0n, BTC_DECIMALS, "BTC")).toBe("0 BTC");
+    expect(formatTokenAmount(0n, BTC_DECIMALS, "BTC", { fallbackToZero: true })).toBe("0 BTC");
+  });
+
+  it("should handle undefined amount", () => {
+    expect(formatTokenAmount(undefined, BTC_DECIMALS, "BTC")).toBeUndefined();
+    expect(formatTokenAmount(undefined, BTC_DECIMALS, "BTC", { fallbackToZero: true })).toBe("0 BTC");
+  });
+
+  it("should handle negative amounts with trimming", () => {
+    const smallBtcAmount = -1907n;
+    expect(formatTokenAmount(smallBtcAmount, BTC_DECIMALS, "BTC")).toBe("-0.00001907 BTC");
   });
 });

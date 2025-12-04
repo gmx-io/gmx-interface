@@ -214,7 +214,7 @@ export function formatTokenAmount(
     maxThreshold,
   } = opts;
 
-  const displayDecimals = opts.displayDecimals ?? (opts.isStable ? 2 : 4);
+  const displayDecimals = opts.displayDecimals ?? (opts.isStable ? 2 : Math.min(8, tokenDecimals ?? 8));
 
   const symbolStr = symbol ? ` ${symbol}` : "";
 
@@ -235,9 +235,19 @@ export function formatTokenAmount(
   if (showAllSignificant) {
     amountStr = formatAmountFree(amount, tokenDecimals, tokenDecimals);
   } else {
-    const exceedingInfo = getLimitedDisplay(amount, tokenDecimals, { maxThreshold, minThreshold });
+    const exceedingInfo = getLimitedDisplay(amount, tokenDecimals, {
+      maxThreshold,
+      minThreshold,
+    });
     const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
-    amountStr = `${symbol}${sign}${formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas, undefined)}`;
+
+    const raw = formatAmount(exceedingInfo.value, tokenDecimals, displayDecimals, useCommas, undefined);
+
+    const shouldTrim = opts.displayDecimals === undefined && !opts.isStable;
+
+    const trimmed = shouldTrim ? raw.replace(/(?:\.0+|(\.\d*?[1-9])0+)$/, "$1") : raw;
+
+    amountStr = `${symbol}${sign}${trimmed}`;
   }
 
   return `${amountStr}${symbolStr}`;
