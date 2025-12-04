@@ -195,8 +195,11 @@ const ALL_CHAIN_CONFIGS = {
 
 export type ContractsChainName = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof CONTRACTS_CHAIN_CONFIGS]["name"];
 export type SourceChainName = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["name"];
+export type ChainName = ContractsChainName | SourceChainName | "Unknown";
 
-export type ChainName = ContractsChainName | SourceChainName;
+export type ContractsChainSlug = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof CONTRACTS_CHAIN_CONFIGS]["slug"];
+export type SourceChainSlug = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["slug"];
+export type ChainSlug = ContractsChainSlug | SourceChainSlug | "unknown";
 
 export const botanix: Chain = defineChain({
   id: BOTANIX,
@@ -242,11 +245,11 @@ const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
 };
 
 export function getChainName(chainId: number): ChainName {
-  return ALL_CHAIN_CONFIGS[chainId].name;
+  return ALL_CHAIN_CONFIGS[chainId]?.name ?? "Unknown";
 }
 
-export function getChainSlug(chainId: number): string {
-  return ALL_CHAIN_CONFIGS[chainId].slug;
+export function getChainSlug(chainId: number): ChainSlug {
+  return ALL_CHAIN_CONFIGS[chainId]?.slug ?? "unknown";
 }
 
 export function getChainIdBySlug(slug: string): AnyChainId | undefined {
@@ -260,11 +263,11 @@ export const getViemChain = (chainId: number): Chain => {
 };
 
 export function getHighExecutionFee(chainId: number) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].highExecutionFee;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.highExecutionFee ?? 5;
 }
 
 export function getExcessiveExecutionFee(chainId: number) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].excessiveExecutionFee;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.excessiveExecutionFee ?? 10;
 }
 
 export function isContractsChain(chainId: number, dev = false): chainId is ContractsChainId {

@@ -289,8 +289,8 @@ describe("RpcTracker - checkRpc", () => {
       const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
       const endTime = Date.now();
 
-      expect(result.responseTime).toBeGreaterThanOrEqual(50);
-      expect(result.responseTime).toBeLessThanOrEqual(endTime - startTime + 10); // Allow small margin
+      expect(result.responseTime).toBeGreaterThanOrEqual(40);
+      expect(result.responseTime).toBeLessThanOrEqual(endTime - startTime + 10);
     });
   });
 

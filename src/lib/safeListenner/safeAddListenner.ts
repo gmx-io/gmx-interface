@@ -17,9 +17,9 @@ export class SafeListennersCache {
     return this.instances[event];
   }
 
-  addListenner(listenner: (event: Event) => void) {
+  addListenner(listenner: (event: Event) => void): () => void {
     if (this.maxListenners === 0) {
-      return;
+      return () => void 0;
     }
 
     // Wrap listener to catch errors
@@ -51,13 +51,38 @@ export class SafeListennersCache {
     globalThis.addEventListener(this.event, wrappedListener);
 
     this.cache.push(listenner);
+
+    return () => {
+      this.removeListenner(listenner);
+    };
+  }
+
+  removeListenner(listenner: (event: Event) => void) {
+    const wrappedListener = this.wrappedListeners.get(listenner);
+    if (wrappedListener) {
+      globalThis.removeEventListener(this.event, wrappedListener);
+      this.wrappedListeners.delete(listenner);
+      const index = this.cache.indexOf(listenner);
+      if (index > -1) {
+        this.cache.splice(index, 1);
+      }
+    }
   }
 }
 
 /**
  * Prevents memory leaks by limiting the number of listeners for a given event.
+ * Returns a cleanup function that removes the listener.
  */
 export function safeAddGlobalListenner(event: string, listenner: (event: Event) => void, maxListenners?: number) {
   const cache = SafeListennersCache.getInstance(event, maxListenners);
-  cache.addListenner(listenner);
+  return cache.addListenner(listenner);
+}
+
+/**
+ * Removes a listener that was added via safeAddGlobalListenner
+ */
+export function safeRemoveGlobalListenner(event: string, listenner: (event: Event) => void) {
+  const cache = SafeListennersCache.getInstance(event);
+  cache.removeListenner(listenner);
 }

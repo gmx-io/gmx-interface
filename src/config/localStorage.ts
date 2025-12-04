@@ -85,7 +85,7 @@ export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 export const ORACLE_KEEPER_FALLBACK_STATE_KEY = "oracle-keeper-fallback-state";
 
-export const FALLBACK_TRACKER_PREFIX = "FallbackTracker";
+export const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
 /**
  * @deprecated

@@ -130,12 +130,42 @@ describe("safeAddListenner", () => {
         const instance = SafeListennersCache.getInstance(TEST_EVENT, 0);
         const listener = vi.fn();
 
-        instance.addListenner(listener);
+        const cleanup = instance.addListenner(listener);
 
         // When maxListenners is 0, listener should not be added at all
+        expect(cleanup).toBeUndefined();
         expect(addEventListenerSpy).not.toHaveBeenCalled();
         expect(removeEventListenerSpy).not.toHaveBeenCalled();
         expect(instance.cache).toHaveLength(0);
+      });
+
+      it("should return cleanup function that removes the listener", () => {
+        const instance = SafeListennersCache.getInstance(TEST_EVENT);
+        const listener = vi.fn();
+
+        const cleanup = instance.addListenner(listener);
+
+        expect(cleanup).toBeDefined();
+        expect(typeof cleanup).toBe("function");
+        expect(instance.cache).toHaveLength(1);
+
+        cleanup!();
+
+        expect(removeEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT, expect.any(Function));
+        expect(instance.cache).toHaveLength(0);
+      });
+
+      it("should prevent listener from being called after cleanup", () => {
+        const instance = SafeListennersCache.getInstance(TEST_EVENT);
+        const listener = vi.fn();
+
+        const cleanup = instance.addListenner(listener);
+
+        cleanup!();
+
+        globalThis.dispatchEvent(new Event(TEST_EVENT));
+
+        expect(listener).not.toHaveBeenCalled();
       });
     });
   });
@@ -242,6 +272,50 @@ describe("safeAddListenner", () => {
 
       expect(errorListener).toHaveBeenCalled();
       expect(normalListener).toHaveBeenCalled();
+    });
+
+    it("should return cleanup function", () => {
+      const listener = vi.fn();
+
+      const cleanup = safeAddGlobalListenner(TEST_EVENT, listener);
+
+      expect(cleanup).toBeDefined();
+      expect(typeof cleanup).toBe("function");
+    });
+
+    it("should return undefined when maxListenners is 0", () => {
+      const listener = vi.fn();
+
+      const cleanup = safeAddGlobalListenner(TEST_EVENT, listener, 0);
+
+      expect(cleanup).toBeUndefined();
+    });
+
+    it("should remove listener when cleanup function is called", () => {
+      const listener = vi.fn();
+
+      const cleanup = safeAddGlobalListenner(TEST_EVENT, listener);
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT, expect.any(Function));
+
+      cleanup!();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith(TEST_EVENT, expect.any(Function));
+
+      const instance = SafeListennersCache.getInstance(TEST_EVENT);
+      expect(instance.cache).toHaveLength(0);
+    });
+
+    it("should prevent listener from being called after cleanup", () => {
+      const listener = vi.fn();
+
+      const cleanup = safeAddGlobalListenner(TEST_EVENT, listener);
+
+      cleanup!();
+
+      globalThis.dispatchEvent(new Event(TEST_EVENT));
+
+      expect(listener).not.toHaveBeenCalled();
     });
   });
 

@@ -352,6 +352,11 @@ export class FallbackTracker<TCheckStats> {
       this.state.startDelayTimeoutId = undefined;
     }
 
+    if (this.state.abortController) {
+      this.state.abortController.abort();
+      this.state.abortController = undefined;
+    }
+
     this.networkStatusObserver.setActive(this.trackerKey, false);
   }
 
@@ -370,13 +375,22 @@ export class FallbackTracker<TCheckStats> {
 
     this.networkStatusObserver.setActive(this.trackerKey, true);
 
-    this.checkEndpoints()
+    if (this.state.abortController) {
+      this.state.abortController.abort();
+    }
+
+    const abortController = new AbortController();
+    this.state.abortController = abortController;
+
+    this.checkEndpoints(abortController)
       .then(() => {
         emitTrackingFinished({ trackerKey: this.trackerKey, endpointsStats: this.getEndpointsStats() });
         this.selectBestEndpoints();
       })
       .finally(() => {
-        this.state.trackerTimeoutId = window.setTimeout(() => this.track(), this.params.trackInterval);
+        if (this.state.abortController === abortController && this.state.trackerTimeoutId === undefined) {
+          this.state.trackerTimeoutId = window.setTimeout(() => this.track(), this.params.trackInterval);
+        }
       });
   }
 
@@ -505,22 +519,14 @@ export class FallbackTracker<TCheckStats> {
     this.state.pendingEndpoints = { primary, fallbacks };
   }
 
-  async checkEndpoints() {
+  async checkEndpoints(abortController: AbortController) {
     const checkTimestamp = Date.now();
     const endpoints = this.params.endpoints;
-
-    // Abort any pending checks.
-    if (this.state.abortController) {
-      this.state.abortController.abort();
-    }
-
-    const globalAbortController = new AbortController();
-    this.state.abortController = globalAbortController;
 
     const checkResults = await Promise.allSettled(
       endpoints.map((endpoint) => {
         const timeoutController = new AbortController();
-        const combinedController = combineAbortSignals(globalAbortController.signal, timeoutController.signal);
+        const combinedController = combineAbortSignals(abortController.signal, timeoutController.signal);
 
         return Promise.race([
           sleepWithSignal(this.params.checkTimeout, combinedController.signal).then(() => {

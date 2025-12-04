@@ -32,7 +32,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      await tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      await tracker.checkEndpoints(abortController);
 
       expect(config.checkEndpoint).toHaveBeenCalledTimes(config.endpoints.length);
       config.endpoints.forEach((endpoint) => {
@@ -49,12 +51,14 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
 
       expect(tracker.state.abortController).toBeUndefined();
 
-      await tracker.checkEndpoints();
-      const firstController = tracker.state.abortController;
+      const firstController = new AbortController();
+      tracker.state.abortController = firstController;
+      await tracker.checkEndpoints(firstController);
       expect(firstController).toBeDefined();
 
-      await tracker.checkEndpoints();
-      const secondController = tracker.state.abortController;
+      const secondController = new AbortController();
+      tracker.state.abortController = secondController;
+      await tracker.checkEndpoints(secondController);
 
       expect(firstController).not.toBe(secondController);
       expect(secondController).toBeDefined();
@@ -72,11 +76,14 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      tracker.checkEndpoints();
-      const firstController = tracker.state.abortController;
+      const firstController = new AbortController();
+      tracker.state.abortController = firstController;
+      tracker.checkEndpoints(firstController);
 
       // Start second check which should abort the first
-      const secondCheckPromise = tracker.checkEndpoints();
+      const secondController = new AbortController();
+      tracker.state.abortController = secondController;
+      const secondCheckPromise = tracker.checkEndpoints(secondController);
 
       // Wait a bit to ensure abort happens
       await vi.advanceTimersByTimeAsync(10);
@@ -97,7 +104,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      await tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      await tracker.checkEndpoints(abortController);
 
       const lastResults = tracker.getLastCheckResults();
       expect(lastResults).toBeDefined();
@@ -113,7 +122,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      await tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      await tracker.checkEndpoints(abortController);
 
       const lastResults = tracker.getLastCheckResults();
       expect(lastResults).toBeDefined();
@@ -136,7 +147,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      const checkPromise = tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      const checkPromise = tracker.checkEndpoints(abortController);
       await vi.advanceTimersByTimeAsync(150);
       await checkPromise;
 
@@ -154,7 +167,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      await tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      await tracker.checkEndpoints(abortController);
 
       expect(tracker.state.checkStats).toHaveLength(1);
       expect(tracker.state.checkStats[0].results).toBeDefined();
@@ -169,7 +184,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
 
       // Create more check stats than STORED_CHECK_STATS_MAX_COUNT (which is 10)
       for (let i = 0; i < 15; i++) {
-        await tracker.checkEndpoints();
+        const abortController = new AbortController();
+        tracker.state.abortController = abortController;
+        await tracker.checkEndpoints(abortController);
         // Advance time to ensure different timestamps
         await vi.advanceTimersByTimeAsync(config.trackInterval || 10000);
       }
@@ -190,7 +207,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      await tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      await tracker.checkEndpoints(abortController);
 
       const lastResults = tracker.getLastCheckResults();
       expect(lastResults).toBeDefined();
@@ -215,7 +234,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      const checkPromise = tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      const checkPromise = tracker.checkEndpoints(abortController);
       await vi.advanceTimersByTimeAsync(150);
       await checkPromise;
 
@@ -241,11 +262,13 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      const checkPromise = tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      const checkPromise = tracker.checkEndpoints(abortController);
       await vi.advanceTimersByTimeAsync(10); // Let checks start
 
       // Abort global controller
-      tracker.state.abortController?.abort();
+      abortController.abort();
 
       await vi.advanceTimersByTimeAsync(10);
 
@@ -283,7 +306,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      const checkPromise = tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      const checkPromise = tracker.checkEndpoints(abortController);
       await vi.advanceTimersByTimeAsync(10);
 
       // Primary should complete quickly, but we should wait for others
@@ -319,7 +344,9 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      const checkPromise = tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      const checkPromise = tracker.checkEndpoints(abortController);
       await vi.advanceTimersByTimeAsync(150);
       await checkPromise;
 
@@ -347,11 +374,15 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      const firstCheckPromise = tracker.checkEndpoints();
+      const firstAbortController = new AbortController();
+      tracker.state.abortController = firstAbortController;
+      const firstCheckPromise = tracker.checkEndpoints(firstAbortController);
       await vi.advanceTimersByTimeAsync(10);
 
       // Start second check which should abort the first
-      const secondCheckPromise = tracker.checkEndpoints();
+      const secondAbortController = new AbortController();
+      tracker.state.abortController = secondAbortController;
+      const secondCheckPromise = tracker.checkEndpoints(secondAbortController);
       await vi.advanceTimersByTimeAsync(10);
 
       expect(checkAborted).toBe(true);
@@ -373,8 +404,10 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
       const startTime = Date.now();
-      await tracker.checkEndpoints();
+      await tracker.checkEndpoints(abortController);
       const endTime = Date.now();
 
       // Should complete quickly
@@ -403,10 +436,12 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
 
-      const checkPromise = tracker.checkEndpoints();
+      const abortController = new AbortController();
+      tracker.state.abortController = abortController;
+      const checkPromise = tracker.checkEndpoints(abortController);
       await vi.advanceTimersByTimeAsync(10);
 
-      tracker.state.abortController?.abort();
+      abortController.abort();
       await vi.advanceTimersByTimeAsync(10);
 
       await checkPromise;

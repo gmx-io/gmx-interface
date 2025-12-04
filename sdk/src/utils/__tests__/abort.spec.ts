@@ -142,4 +142,37 @@ describe("combineAbortSignals", () => {
     expect(callCount1).toBeGreaterThan(0);
     expect(callCount2).toBeGreaterThan(0);
   });
+
+  it("should clean up listeners when later signal is already aborted", () => {
+    const controller1 = new AbortController();
+    const controller2 = new AbortController();
+
+    controller2.abort();
+
+    const removeEventListener1 = vi.spyOn(controller1.signal, "removeEventListener");
+    const addEventListener1 = vi.spyOn(controller1.signal, "addEventListener");
+
+    const combined = combineAbortSignals(controller1.signal, controller2.signal);
+
+    expect(combined.signal.aborted).toBe(true);
+    expect(addEventListener1).toHaveBeenCalled();
+    expect(removeEventListener1).toHaveBeenCalled();
+  });
+
+  it("should clean up listeners when middle signal is already aborted", () => {
+    const controller1 = new AbortController();
+    const controller2 = new AbortController();
+    const controller3 = new AbortController();
+
+    controller2.abort();
+
+    const removeEventListener1 = vi.spyOn(controller1.signal, "removeEventListener");
+    const addEventListener1 = vi.spyOn(controller1.signal, "addEventListener");
+
+    const combined = combineAbortSignals(controller1.signal, controller2.signal, controller3.signal);
+
+    expect(combined.signal.aborted).toBe(true);
+    expect(addEventListener1).toHaveBeenCalled();
+    expect(removeEventListener1).toHaveBeenCalled();
+  });
 });

@@ -56,7 +56,7 @@ export function addFallbackTrackerListenner<TEvent extends FallbackTrackerEventN
   eventName: TEvent,
   trackerKey: string,
   listener: (data: FallbackTrackerEventDetail<TEvent>) => void
-) {
+): () => void {
   const handler = (event: Event) => {
     const { detail } = event as CustomEvent<FallbackTrackerEventDetail<TEvent>>;
 
@@ -67,9 +67,7 @@ export function addFallbackTrackerListenner<TEvent extends FallbackTrackerEventN
     listener(detail);
   };
 
-  safeAddGlobalListenner(fallbackTrackerEventKeys[eventName], handler);
+  const cleanup = safeAddGlobalListenner(fallbackTrackerEventKeys[eventName], handler);
 
-  return () => {
-    globalThis.removeEventListener(fallbackTrackerEventKeys[eventName], handler);
-  };
+  return cleanup;
 }

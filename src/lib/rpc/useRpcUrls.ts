@@ -111,23 +111,33 @@ export function getCurrentExpressRpcUrl(chainId: number) {
   return getExpressRpcUrl(chainId);
 }
 
-function _useCurrentRpcUrls(chainId: number) {
+function _useCurrentRpcUrls(chainId: number): { primary: string; fallbacks: string[] } {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
     primary: string;
     fallbacks: string[];
-  }>(() => _getCurrentRpcUrls(chainId));
+  }>(() => {
+    const result = _getCurrentRpcUrls(chainId);
+    return {
+      primary: result.primary,
+      fallbacks: result.fallbacks,
+    };
+  });
 
   useEffect(() => {
     let isMounted = true;
 
-    setBestRpcUrls(_getCurrentRpcUrls(chainId));
+    const result = _getCurrentRpcUrls(chainId);
+    setBestRpcUrls({
+      primary: result.primary,
+      fallbacks: result.fallbacks,
+    });
     const tracker = getRpcTrackerByChainId(chainId);
 
     if (!tracker) {
       return;
     }
 
-    const unsubscribe = addFallbackTrackerListenner(
+    const unsubscribe: () => void = addFallbackTrackerListenner(
       "endpointsUpdated",
       tracker.trackerKey,
       ({ primary, fallbacks }) => {
