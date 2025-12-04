@@ -1,0 +1,100 @@
+import { isDevelopment, isWebWorker } from "config/env";
+import { MULTICALL_DEBUG_STATE_KEY } from "config/localStorage";
+import { Storage } from "lib/storage/Storage";
+
+export type MulticallDebugState = {
+  triggerPrimaryAsFailedInWorker?: boolean;
+  triggerPrimaryAsFailedInMainThread?: boolean;
+  triggerPrimaryTimeoutInWorker?: boolean;
+};
+
+export const MULTICALL_DEBUG_EVENT_NAME = "multicall:debug";
+
+export type MulticallDebugEventType =
+  | "primary-start"
+  | "primary-success"
+  | "primary-failed"
+  | "primary-timeout"
+  | "fallback-start"
+  | "fallback-success"
+  | "fallback-failed"
+  | "fallback-timeout"
+  | "worker-fallback";
+
+export type MulticallDebugEvent = {
+  type: MulticallDebugEventType;
+  isInWorker: boolean;
+  chainId?: number;
+  providerUrl?: string;
+  error?: Error;
+  timestamp: number;
+};
+
+class MulticallDebug {
+  storage: Storage<MulticallDebugState>;
+  private listeners: Array<(event: MulticallDebugEvent) => void> = [];
+
+  constructor() {
+    this.storage = new Storage<MulticallDebugState>(MULTICALL_DEBUG_STATE_KEY);
+
+    if (!isWebWorker) {
+      this.selfSubscribe();
+    }
+  }
+
+  getFlag(flag: keyof MulticallDebugState) {
+    return this.storage.get(flag) ?? false;
+  }
+
+  setFlag(flag: keyof MulticallDebugState, value: boolean) {
+    this.storage.set(flag, value);
+  }
+
+  getDebugState() {
+    return this.storage.getState();
+  }
+
+  selfSubscribe() {
+    globalThis.addEventListener(MULTICALL_DEBUG_EVENT_NAME, this.handleDebugEvent);
+  }
+
+  private handleDebugEvent = (event: Event) => {
+    const customEvent = event as CustomEvent<MulticallDebugEvent>;
+    const debugEvent = customEvent.detail;
+
+    this.listeners.forEach((listener) => {
+      try {
+        listener(debugEvent);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("[MulticallDevtools] Error in listener:", error);
+      }
+    });
+  };
+
+  onEvent(listener: (event: MulticallDebugEvent) => void): () => void {
+    this.listeners.push(listener);
+
+    return () => {
+      const index = this.listeners.indexOf(listener);
+      if (index > -1) {
+        this.listeners.splice(index, 1);
+      }
+    };
+  }
+
+  dispatchEvent(event: Omit<MulticallDebugEvent, "timestamp">) {
+    const debugEvent: MulticallDebugEvent = {
+      ...event,
+      timestamp: Date.now(),
+    };
+
+    const customEvent = new CustomEvent(MULTICALL_DEBUG_EVENT_NAME, {
+      detail: debugEvent,
+    });
+
+    globalThis.dispatchEvent(customEvent);
+  }
+}
+
+export const _debugMulticall = isDevelopment() ? new MulticallDebug() : undefined;

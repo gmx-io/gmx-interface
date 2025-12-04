@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
+import { ContractsChainId } from "config/chains";
 import { FreshnessMetricId, metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
-import { registerOracleKeeperFailure, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
+import { _debugOracleKeeper } from "lib/oracleKeeperFetcher/_debug";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/types/tokens";
@@ -22,7 +24,7 @@ export type TokenPricesDataResult = {
 const PRICES_CACHE: { [chainId: number]: TokenPricesData } = {};
 const PRICES_CACHE_UPDATED: { [chainId: number]: { [address: string]: number } } = {};
 
-export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
+export function useTokenRecentPricesRequest(chainId: ContractsChainId): TokenPricesDataResult {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 
@@ -81,8 +83,14 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           pricesCacheUpdatedRef: PRICES_CACHE_UPDATED[chainId],
         });
 
+        _debugOracleKeeper?.dispatchEvent({
+          type: "tickers-partial",
+          chainId: chainId,
+          endpoint: oracleKeeperFetcher.url,
+        });
+
         metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
-        registerOracleKeeperFailure(chainId, "tickers");
+        oracleKeeperFetcher.handleFailure("tickers");
 
         Object.keys(PRICES_CACHE_UPDATED[chainId]).forEach((address) => {
           const cacheUpdatedAt = PRICES_CACHE_UPDATED[chainId][address];

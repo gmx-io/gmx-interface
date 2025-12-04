@@ -31,21 +31,18 @@ export function MetricsDebugSettings() {
   };
 
   return (
-    <ExpandableRow
-      title={<Trans>Metrics Debug</Trans>}
-      open={open}
-      onToggle={setOpen}
-      contentClassName="flex flex-col gap-8"
-    >
-      {Object.values(MetricsDebugFlags).map((flag) => (
-        <ToggleSwitch
-          key={flag}
-          isChecked={_debugMetrics?.getFlag(flag) ?? false}
-          setIsChecked={(checked) => handleFlagChange(flag, checked)}
-        >
-          <Trans>{FLAG_LABELS[flag]}</Trans>
-        </ToggleSwitch>
-      ))}
+    <ExpandableRow title={<Trans>Metrics Debug</Trans>} open={open} onToggle={setOpen}>
+      <div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-12 pr-16">
+        {Object.values(MetricsDebugFlags).map((flag) => (
+          <ToggleSwitch
+            key={flag}
+            isChecked={_debugMetrics?.getFlag(flag) ?? false}
+            setIsChecked={(checked) => handleFlagChange(flag, checked)}
+          >
+            <Trans>{FLAG_LABELS[flag]}</Trans>
+          </ToggleSwitch>
+        ))}
+      </div>
     </ExpandableRow>
   );
 }

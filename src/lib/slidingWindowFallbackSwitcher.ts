@@ -29,6 +29,10 @@ export class SlidingWindowFallbackSwitcher {
     this.onRestore = options.onRestore;
   }
 
+  public getTriggerCount(): number {
+    return this.eventTimestamps.length;
+  }
+
   public trigger(): void {
     const now = Date.now();
     this.eventTimestamps.push(now);

@@ -110,6 +110,17 @@ class FreshnessMetrics {
   public isEnabled = (): boolean => {
     return this.state.enabled;
   };
+
+  public getLastUpdated = (chainId: number, metricId: FreshnessMetricId): number | undefined => {
+    if (!this.state.cache) {
+      return undefined;
+    }
+
+    const cacheKey = this.getCacheKey(chainId, metricId);
+    const lastUpdated = this.state.cache.get(cacheKey);
+
+    return lastUpdated;
+  };
 }
 
 export const freshnessMetrics = FreshnessMetrics.instance;

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { IS_LARGE_ACCOUNT_KEY } from "config/localStorage";
 import { useIsLargeAccountData } from "domain/synthetics/accountStats/useIsLargeAccountData";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 
 let isLargeAccount = getIsLargeAccountStoredValue();
 
@@ -13,7 +14,20 @@ function getIsLargeAccountStoredValue() {
 }
 
 export function getIsLargeAccount() {
+  if (_debugRpcTracker?.getFlag(RpcDebugFlags.DebugLargeAccount)) {
+    return true;
+  }
+
   return isLargeAccount;
+}
+
+export function setIsLargeAccount(value: boolean) {
+  isLargeAccount = value;
+  localStorage.setItem(JSON.stringify(IS_LARGE_ACCOUNT_KEY), value.toString());
+}
+
+export function resetIsLargeAccount() {
+  isLargeAccount = getIsLargeAccountStoredValue();
 }
 
 export function useIsLargeAccountTracker(account?: string) {
