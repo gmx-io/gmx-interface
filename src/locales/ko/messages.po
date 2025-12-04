@@ -305,6 +305,7 @@ msgstr "구매 가능"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Missing required parameters"
 msgstr "필수 매개변수가 누락되었습니다"
 
@@ -1131,10 +1132,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "담보"
-
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Accept the claim terms to continue."
-#~ msgstr "계속하려면 청구 조건을 수락하세요."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -2901,6 +2898,7 @@ msgstr "GMX를 어떻게 시작하나요?"
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3649,7 +3647,7 @@ msgstr "시프트 주문 실행됨."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "랭킹 자격을 위한 최소 \"자본 사용\" {0}에 도달하지 않았습니다."
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/domain/multichain/useSourceChainError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
@@ -6803,10 +6801,6 @@ msgstr ""
 msgid "Swap failed."
 msgstr "스왑 실패."
 
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Accept claim terms"
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
@@ -7483,10 +7477,6 @@ msgstr "스탑 로스 취소"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "지정가 감소"
-
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Waiting for the remaining Safe confirmations."
-#~ msgstr "남은 Safe 확인 대기 중."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"

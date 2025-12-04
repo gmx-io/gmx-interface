@@ -305,6 +305,7 @@ msgstr "可购买"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Missing required parameters"
 msgstr "缺少必需参数"
 
@@ -1131,10 +1132,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "抵押品"
-
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Accept the claim terms to continue."
-#~ msgstr "接受申领条款以继续。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -2901,6 +2898,7 @@ msgstr "如何在 GMX 上入门？"
 msgid "Total Staked"
 msgstr "总质押"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3649,7 +3647,7 @@ msgstr "转移订单已执行。"
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "您尚未达到排名所需的最低“资本使用” {0}。"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/domain/multichain/useSourceChainError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
@@ -6803,10 +6801,6 @@ msgstr ""
 msgid "Swap failed."
 msgstr "交换失败。"
 
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Accept claim terms"
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "页面已过期，请刷新"
@@ -7483,10 +7477,6 @@ msgstr "取消止损"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "限价减少"
-
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Waiting for the remaining Safe confirmations."
-#~ msgstr "等待剩余 Safe 确认。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"

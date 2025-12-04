@@ -305,6 +305,7 @@ msgstr "Доступно для покупки"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Missing required parameters"
 msgstr "Отсутствуют обязательные параметры"
 
@@ -1131,10 +1132,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Залог"
-
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Accept the claim terms to continue."
-#~ msgstr "Принять условия клейма для продолжения."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -2901,6 +2898,7 @@ msgstr "Как начать на GMX?"
 msgid "Total Staked"
 msgstr "Всего Стейкано"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3649,7 +3647,7 @@ msgstr "Ордер сдвига исполнен."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "Вы ещё не достигли минимума \"Использованного Капитала\" {0} для квалификации в рейтинге."
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/domain/multichain/useSourceChainError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
@@ -6803,10 +6801,6 @@ msgstr ""
 msgid "Swap failed."
 msgstr "Обмен не удался."
 
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Accept claim terms"
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Page outdated, please refresh"
 msgstr "Страница устарела, пожалуйста, обновите"
@@ -7483,10 +7477,6 @@ msgstr "Отменить стоп-лосс"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "Лимитное уменьшение"
-
-#: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
-#~ msgid "Waiting for the remaining Safe confirmations."
-#~ msgstr "Ожидание оставшихся подтверждений Safe."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
