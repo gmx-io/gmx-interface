@@ -77,7 +77,7 @@ msgstr "가격"
 msgid "receive"
 msgstr "수령"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
 
@@ -408,7 +408,6 @@ msgstr "최대 풀 USD 초과"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
@@ -676,13 +675,16 @@ msgstr "담보 수정"
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} 롱 스탑 마켓: 가격이 트리거 가격 미만일 때 숏 포지션 {0}."
 
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "SL Price"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GLV and GM both enable liquidity provision on GMX, allowing users to earn fees from three revenue sources that auto-compound into the token's price. GM tokens represent liquidity in a single pool that supports one specific market on GMX. GLV vaults contain multiple GM tokens in an auto-rebalancing composition, thereby aggregating liquidity across various markets that have the same backing tokens (ex: ETH-USDC, or BTC-USDC). GM enables users to provide isolated liquidity with exposure to a specific market, while GLV allows users to passively earn yield from a diverse range of highly utilized pools."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price above mark price"
@@ -1421,6 +1423,10 @@ msgstr ""
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "출금하려는 금액이 한도를 초과합니다. <0>{upperLimitFormatted}</0>보다 작은 금액을 시도하세요."
 
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "Gain"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
 msgstr "GMX 알림 발견"
@@ -1638,8 +1644,8 @@ msgid "RPnL"
 msgstr "RPnL"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
-msgstr "결합 손절이 최대(100%)입니다. 더 많은 주문을 추가하려면 기존 값을 감소시키세요."
+#~ msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
+#~ msgstr "결합 손절이 최대(100%)입니다. 더 많은 주문을 추가하려면 기존 값을 감소시키세요."
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -1970,8 +1976,6 @@ msgstr "{chainName}에서 GMX 구매"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -2354,8 +2358,8 @@ msgid "Bridge and swap"
 msgstr "브릿지 및 스왑"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above lowest limit price"
-msgstr "트리거 가격이 최저 지정가 가격 초과"
+#~ msgid "Trigger price above lowest limit price"
+#~ msgstr "트리거 가격이 최저 지정가 가격 초과"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2570,7 +2574,7 @@ msgstr "다른 토큰으로:"
 msgid "Returned Collateral"
 msgstr "반환된 담보"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "TP/SL 주문에 문제가 있습니다."
 
@@ -2664,8 +2668,8 @@ msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vest
 msgstr "GMX 채권은 Bond Protocol에서 할인과 짧은 베스팅 기간으로 구매할 수 있습니다:"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above highest limit price"
-msgstr "트리거 가격이 최고 지정가 가격 초과"
+#~ msgid "Trigger price above highest limit price"
+#~ msgstr "트리거 가격이 최고 지정가 가격 초과"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, staking and providing liquidity are fully permissionless. The GMX, GLV, and GM tokens are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some rare edge cases where your liquidity is being used for active trades. In that case, you can withdraw as soon as positions close."
@@ -2803,7 +2807,6 @@ msgid "Max close amount exceeded"
 msgstr "최대 닫기 금액 초과"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3131,8 +3134,8 @@ msgid "V1 esGMX"
 msgstr "V1 esGMX"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take Profit PnL"
-msgstr "이익 실현 PnL"
+#~ msgid "Take Profit PnL"
+#~ msgstr "이익 실현 PnL"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
@@ -3317,6 +3320,10 @@ msgstr "마켓 스왑 요청"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "{0} 시장 풀의 유동성 부족. 이 시장에 대해 다른 풀을 선택하세요.{1}"
+
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "Loss"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
@@ -4116,7 +4123,6 @@ msgid "Amount of traders you referred."
 msgstr "추천한 거래자 수"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
 msgstr "이익 실현"
@@ -4229,7 +4235,7 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "축적된 가격 영향 리베이트. 5일 후 청구 가능합니다.<0/><1/><2>더 읽기</2>."
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "이익 실현 / 손절"
 
@@ -4379,8 +4385,8 @@ msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>솔라나 지원</0><1>Botanix 지원</1><2>GMX 익스프레스</2>"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-msgstr "결합된 이익 실현이 최대(100%)입니다. 기존 값을 줄여 더 많은 주문을 추가하세요."
+#~ msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
+#~ msgstr "결합된 이익 실현이 최대(100%)입니다. 기존 값을 줄여 더 많은 주문을 추가하세요."
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
@@ -4718,8 +4724,8 @@ msgid "Swap Price Impact for External Swap Threshold"
 msgstr "외부 스왑 임계값에 대한 스왑 가격 영향"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Limit / Take Profit / Stop Loss"
-msgstr "지정가 / 이익 실현 / 손절"
+#~ msgid "Limit / Take Profit / Stop Loss"
+#~ msgstr "지정가 / 이익 실현 / 손절"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -4853,7 +4859,6 @@ msgstr "추천인 코드 업데이트 실패."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
@@ -5356,8 +5361,8 @@ msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Limit size is required"
-msgstr "지정가 크기가 필요합니다"
+#~ msgid "Limit size is required"
+#~ msgstr "지정가 크기가 필요합니다"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From Network"
@@ -6237,8 +6242,8 @@ msgid "365d Est. Fees"
 msgstr "365일 예상 수수료"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below highest limit price"
-msgstr "트리거 가격이 최고 지정가 미만"
+#~ msgid "Trigger price below highest limit price"
+#~ msgstr "트리거 가격이 최고 지정가 미만"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
@@ -6353,7 +6358,6 @@ msgid "We Value Your Feedback"
 msgstr "귀하의 피드백을 소중히 여깁니다"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "손절"
@@ -6395,6 +6399,10 @@ msgstr "주문 제출 오류"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"
 msgstr "기간"
+
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "TP Price"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -7337,8 +7345,8 @@ msgid "You have an existing position in the {0} market pool.<0>Switch to {1} mar
 msgstr "{0} 시장 풀에 기존 포지션이 있습니다.<0>{1} 시장 풀로 전환</0>"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop Loss PnL"
-msgstr "스탑 로스 PnL"
+#~ msgid "Stop Loss PnL"
+#~ msgstr "스탑 로스 PnL"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
@@ -7594,8 +7602,8 @@ msgid "The maximum allowed percentage difference between the mark price and the 
 msgstr "시장 주문의 마크 가격과 실행 가격 간 최대 허용 백분율 차이."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below lowest limit price"
-msgstr "트리거 가격이 최저 지정가 가격보다 낮음"
+#~ msgid "Trigger price below lowest limit price"
+#~ msgstr "트리거 가격이 최저 지정가 가격보다 낮음"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
@@ -7955,7 +7963,6 @@ msgstr "로딩 중"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"

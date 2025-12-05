@@ -77,7 +77,7 @@ msgstr "价格"
 msgid "receive"
 msgstr "接收"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
 
@@ -408,7 +408,6 @@ msgstr "超过池最大 USD"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
@@ -676,13 +675,16 @@ msgstr "编辑抵押品"
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} 多头止损市场：当价格低于触发价格时 {0} 空头仓位。"
 
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "SL Price"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GLV and GM both enable liquidity provision on GMX, allowing users to earn fees from three revenue sources that auto-compound into the token's price. GM tokens represent liquidity in a single pool that supports one specific market on GMX. GLV vaults contain multiple GM tokens in an auto-rebalancing composition, thereby aggregating liquidity across various markets that have the same backing tokens (ex: ETH-USDC, or BTC-USDC). GM enables users to provide isolated liquidity with exposure to a specific market, while GLV allows users to passively earn yield from a diverse range of highly utilized pools."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price above mark price"
@@ -1421,6 +1423,10 @@ msgstr ""
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "您尝试提取的金额超过限制。请尝试小于 <0>{upperLimitFormatted}</0> 的金额。"
 
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "Gain"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
 msgstr "发现 GMX 警报"
@@ -1638,8 +1644,8 @@ msgid "RPnL"
 msgstr "已实现盈亏"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
-msgstr "组合止损已达到最大 (100%)。减少现有值以添加更多订单。"
+#~ msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
+#~ msgstr "组合止损已达到最大 (100%)。减少现有值以添加更多订单。"
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -1970,8 +1976,6 @@ msgstr "在 {chainName} 上购买 GMX"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -2354,8 +2358,8 @@ msgid "Bridge and swap"
 msgstr "桥接和交换"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above lowest limit price"
-msgstr "触发价格高于最低限价"
+#~ msgid "Trigger price above lowest limit price"
+#~ msgstr "触发价格高于最低限价"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2570,7 +2574,7 @@ msgstr "以其他代币："
 msgid "Returned Collateral"
 msgstr "返回抵押品"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "TP/SL 订单存在问题。"
 
@@ -2664,8 +2668,8 @@ msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vest
 msgstr "GMX 债券可在 Bond Protocol 上以折扣和小授权期购买："
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above highest limit price"
-msgstr "触发价格高于最高限价"
+#~ msgid "Trigger price above highest limit price"
+#~ msgstr "触发价格高于最高限价"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, staking and providing liquidity are fully permissionless. The GMX, GLV, and GM tokens are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some rare edge cases where your liquidity is being used for active trades. In that case, you can withdraw as soon as positions close."
@@ -2803,7 +2807,6 @@ msgid "Max close amount exceeded"
 msgstr "最大关闭金额超出"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3131,8 +3134,8 @@ msgid "V1 esGMX"
 msgstr "V1 esGMX"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take Profit PnL"
-msgstr "止盈 PnL"
+#~ msgid "Take Profit PnL"
+#~ msgstr "止盈 PnL"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
@@ -3317,6 +3320,10 @@ msgstr "请求市场交换"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "{0} 市场池流动性不足。请为此市场选择不同的池。{1}"
+
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "Loss"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
@@ -4116,7 +4123,6 @@ msgid "Amount of traders you referred."
 msgstr "您推荐的交易者数量。"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
 msgstr "止盈"
@@ -4229,7 +4235,7 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "累积的价格影响返利。5 天后可申领。<0/><1/><2>阅读更多</2>。"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "止盈 / 止损"
 
@@ -4379,8 +4385,8 @@ msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>Solana 支持</0><1>Botanix 支持</1><2>GMX 快速</2>"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-msgstr "组合止盈已达到最大 (100%)。减少现有值以添加更多订单。"
+#~ msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
+#~ msgstr "组合止盈已达到最大 (100%)。减少现有值以添加更多订单。"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
@@ -4718,8 +4724,8 @@ msgid "Swap Price Impact for External Swap Threshold"
 msgstr "外部交换的交换价格影响阈值"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Limit / Take Profit / Stop Loss"
-msgstr "限价 / 止盈 / 止损"
+#~ msgid "Limit / Take Profit / Stop Loss"
+#~ msgstr "限价 / 止盈 / 止损"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -4853,7 +4859,6 @@ msgstr "推荐代码更新失败。"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
@@ -5356,8 +5361,8 @@ msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Limit size is required"
-msgstr "需要限价大小"
+#~ msgid "Limit size is required"
+#~ msgstr "需要限价大小"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From Network"
@@ -6237,8 +6242,8 @@ msgid "365d Est. Fees"
 msgstr "365 天预估费用"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below highest limit price"
-msgstr "触发价格低于最高限价"
+#~ msgid "Trigger price below highest limit price"
+#~ msgstr "触发价格低于最高限价"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
@@ -6353,7 +6358,6 @@ msgid "We Value Your Feedback"
 msgstr "我们重视您的反馈"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "止损"
@@ -6395,6 +6399,10 @@ msgstr "提交订单错误"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"
 msgstr "持续时间"
+
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "TP Price"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -7337,8 +7345,8 @@ msgid "You have an existing position in the {0} market pool.<0>Switch to {1} mar
 msgstr "您在 {0} 市场资金池中有现有仓位。<0>切换到 {1} 市场资金池</0>"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop Loss PnL"
-msgstr "止损盈亏"
+#~ msgid "Stop Loss PnL"
+#~ msgstr "止损盈亏"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
@@ -7594,8 +7602,8 @@ msgid "The maximum allowed percentage difference between the mark price and the 
 msgstr "市价订单标记价格与执行价格之间允许的最大百分比差异。"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below lowest limit price"
-msgstr "触发价格低于最低限价"
+#~ msgid "Trigger price below lowest limit price"
+#~ msgstr "触发价格低于最低限价"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
@@ -7955,7 +7963,6 @@ msgstr "加载中"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"

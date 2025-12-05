@@ -123,9 +123,9 @@ import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
-import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
 import "./TradeBox.scss";
 
@@ -1148,7 +1148,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             </ToggleSwitch>
           )}
 
-          {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
+          {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
 
           {priceImpactWarningState.shouldShowWarning && (
             <HighPriceImpactOrFeesWarningCard

@@ -5,38 +5,30 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxCollateralToken,
-  selectTradeboxFindSwapPath,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxMarkPrice,
   selectTradeboxMarketInfo,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
+  selectTradeboxMarkPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxMockPosition,
   selectTradeboxSidecarEntriesSetIsUntouched,
-  selectTradeboxSidecarOrdersExistingLimitEntries,
-  selectTradeboxSidecarOrdersExistingSlEntries,
-  selectTradeboxSidecarOrdersExistingTpEntries,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
-import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
-import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/synthetics/trade";
+import { getDecreasePositionAmounts } from "domain/synthetics/trade";
 import { usePrevious } from "lib/usePrevious";
 
-import { convertToTokenAmount } from "../tokens";
-import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
+import { SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
 import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { getCommonError, handleEntryError } from "./utils";
-import { isLimitOrderType } from "../orders";
 
 export * from "./types";
 
@@ -48,7 +40,6 @@ export function useSidecarOrders() {
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
-  const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
@@ -56,47 +47,7 @@ export function useSidecarOrders() {
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
-
-  const existingLimitOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingLimitEntries);
-  const existingSlOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingSlEntries);
-  const existingTpOrderEntries = useSelector(selectTradeboxSidecarOrdersExistingTpEntries);
-
-  const handleLimitErrors = useCallback(
-    (entry: SidecarLimitOrderEntry) =>
-      handleEntryError(entry, "limit", {
-        liqPrice: nextPositionValues?.nextLiqPrice,
-        triggerPrice,
-        isExistingLimits: true,
-        markPrice,
-        isLong,
-        isLimit,
-      }),
-    [isLong, isLimit, markPrice, triggerPrice, nextPositionValues]
-  );
-
-  const limitEntriesInfo = useSidecarOrdersGroup<SidecarLimitOrderEntry>({
-    prefix: "limit",
-    errorHandler: handleLimitErrors,
-    initialEntries: existingLimitOrderEntries,
-    canAddEntry: false,
-    enablePercentage: false,
-  });
-
-  const existingLimits = useMemo(() => {
-    return limitEntriesInfo.entries.filter((e) => e.txnType !== "cancel");
-  }, [limitEntriesInfo.entries]);
-
-  const [minLimitTrigerPrice, maxLimitTrigerPrice] = useMemo(() => {
-    const prices = existingLimits.reduce<bigint[]>((acc, { price }) => (price.value ? [...acc, price.value] : acc), []);
-
-    if (isLimit && triggerPrice !== undefined && triggerPrice !== null) {
-      prices.push(triggerPrice);
-    }
-
-    if (!prices.length) return [undefined, undefined];
-
-    return prices.reduce(([min, max], num) => [num < min ? num : min, num > max ? num : max], [prices[0], prices[0]]);
-  }, [existingLimits, isLimit, triggerPrice]);
+  const mockPositionInfo = useSelector(selectTradeboxMockPosition);
 
   const handleSLErrors = useCallback(
     (entry: SidecarSlTpOrderEntry) =>
@@ -106,22 +57,9 @@ export function useSidecarOrders() {
         markPrice,
         isLong,
         isLimit,
-        isExistingLimits: !!existingLimits.length,
         isExistingPosition: !!existingPosition,
-        maxLimitTrigerPrice,
-        minLimitTrigerPrice,
       }),
-    [
-      isLong,
-      isLimit,
-      triggerPrice,
-      markPrice,
-      existingPosition,
-      nextPositionValues,
-      maxLimitTrigerPrice,
-      minLimitTrigerPrice,
-      existingLimits,
-    ]
+    [isLong, isLimit, triggerPrice, markPrice, existingPosition, nextPositionValues]
   );
 
   const handleTPErrors = useCallback(
@@ -132,139 +70,30 @@ export function useSidecarOrders() {
         markPrice,
         isLong,
         isLimit,
-        isExistingLimits: !!existingLimits.length,
         isExistingPosition: !!existingPosition,
-        maxLimitTrigerPrice,
-        minLimitTrigerPrice,
       }),
-    [
-      isLong,
-      isLimit,
-      triggerPrice,
-      markPrice,
-      existingPosition,
-      nextPositionValues,
-      maxLimitTrigerPrice,
-      minLimitTrigerPrice,
-      existingLimits,
-    ]
+    [isLong, isLimit, triggerPrice, markPrice, existingPosition, nextPositionValues]
   );
 
   const takeProfitEntriesInfo = useSidecarOrdersGroup<SidecarSlTpOrderEntry>({
     prefix: "tp",
     errorHandler: handleTPErrors,
-    initialEntries: existingTpOrderEntries,
+    canAddEntry: false,
     enablePercentage: true,
   });
+
   const stopLossEntriesInfo = useSidecarOrdersGroup<SidecarSlTpOrderEntry>({
     prefix: "sl",
     errorHandler: handleSLErrors,
-    initialEntries: existingSlOrderEntries,
+    canAddEntry: false,
     enablePercentage: true,
   });
 
-  const mockPositionInfo = useSelector(selectTradeboxMockPosition);
-  const marketsInfoData = useSelector(selectMarketsInfoData);
-  const chainId = useSelector(selectChainId);
-  const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
-
-  const getIncreaseAmountsFromEntry = useCallback(
-    ({ sizeUsd, price, order }: SidecarOrderEntry) => {
-      if (
-        sizeUsd?.value === undefined ||
-        sizeUsd?.value === null ||
-        sizeUsd.error ||
-        price?.value === undefined ||
-        price?.value === null ||
-        price.error
-      )
-        return;
-
-      if (!marketInfo || !mockPositionInfo || !findSwapPath || !order) {
-        return;
-      }
-
-      const size = convertToTokenAmount(sizeUsd.value, order.indexToken.decimals, price.value);
-
-      return getIncreasePositionAmounts({
-        marketInfo,
-        indexToken: order.indexToken,
-        collateralToken: order.targetCollateralToken,
-        isLong: order.isLong,
-        initialCollateralToken: order.initialCollateralToken,
-        initialCollateralAmount: order.initialCollateralDeltaAmount,
-        indexTokenAmount: size,
-        triggerPrice: price.value,
-        position: mockPositionInfo,
-        externalSwapQuote: undefined,
-        findSwapPath,
-        userReferralInfo,
-        uiFeeFactor,
-        strategy: "independent",
-        marketsInfoData,
-        chainId,
-        externalSwapQuoteParams,
-        isSetAcceptablePriceImpactEnabled,
-        limitOrderType: isLimitOrderType(order.orderType)
-          ? (order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease)
-          : undefined,
-      });
-    },
-    [
-      marketInfo,
-      mockPositionInfo,
-      findSwapPath,
-      uiFeeFactor,
-      userReferralInfo,
-      marketsInfoData,
-      chainId,
-      externalSwapQuoteParams,
-      isSetAcceptablePriceImpactEnabled,
-    ]
-  );
-
-  const limit = useMemo(() => {
-    const entries = limitEntriesInfo.entries.map((entry) => {
-      return {
-        ...entry,
-        increaseAmounts: getIncreaseAmountsFromEntry(entry),
-        decreaseAmounts: undefined,
-      };
-    });
-
-    return {
-      ...limitEntriesInfo,
-      entries,
-      totalPnL: 0n,
-      totalPnLPercentage: 0n,
-    };
-  }, [getIncreaseAmountsFromEntry, limitEntriesInfo]);
-
-  const canCalculatePnL = !existingLimits.length && (!isLimit || !existingPosition);
-
-  const mockPositionInfoWithLimits = useMemo(() => {
-    if (!mockPositionInfo || !limit.entries.length) return mockPositionInfo;
-
-    const [limitSummaryCollateralDeltaAmount, limitSummarySizeDeltaInTokens, limitSummarySizeDeltaUsd] =
-      limit.entries.reduce(
-        ([collateral, tokens, usd], entry) => [
-          collateral + (entry.increaseAmounts?.collateralDeltaAmount || 0n),
-          tokens + (entry.increaseAmounts?.sizeDeltaInTokens || 0n),
-          usd + (entry.increaseAmounts?.sizeDeltaUsd || 0n),
-        ],
-        [0n, 0n, 0n]
-      );
-
-    return {
-      ...mockPositionInfo,
-      sizeInUsd: (mockPositionInfo?.sizeInUsd ?? 0n) + (limitSummarySizeDeltaUsd ?? 0n),
-      sizeInTokens: (mockPositionInfo?.sizeInTokens ?? 0n) + (limitSummarySizeDeltaInTokens ?? 0n),
-      collateralAmount: (mockPositionInfo?.collateralAmount ?? 0n) + (limitSummaryCollateralDeltaAmount ?? 0n),
-    };
-  }, [mockPositionInfo, limit.entries]);
-
   const getDecreaseAmountsFromEntry = useCallback(
-    ({ sizeUsd, price }: SidecarOrderEntry, triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease) => {
+    (
+      { sizeUsd, price }: SidecarSlTpOrderEntry,
+      triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease
+    ) => {
       if (
         sizeUsd?.value === undefined ||
         sizeUsd?.value === null ||
@@ -279,7 +108,7 @@ export function useSidecarOrders() {
       if (
         !increaseAmounts ||
         !collateralToken ||
-        !mockPositionInfoWithLimits ||
+        !mockPositionInfo ||
         minPositionSizeUsd === undefined ||
         minCollateralUsd === undefined
       ) {
@@ -290,7 +119,7 @@ export function useSidecarOrders() {
         marketInfo,
         collateralToken,
         isLong,
-        position: mockPositionInfoWithLimits,
+        position: mockPositionInfo,
         closeSizeUsd: sizeUsd.value,
         keepLeverage: true,
         triggerPrice: price.value,
@@ -306,7 +135,7 @@ export function useSidecarOrders() {
     },
     [
       collateralToken,
-      mockPositionInfoWithLimits,
+      mockPositionInfo,
       increaseAmounts,
       isLong,
       isLimit,
@@ -319,6 +148,8 @@ export function useSidecarOrders() {
       isSetAcceptablePriceImpactEnabled,
     ]
   );
+
+  const canCalculatePnL = !isLimit || !existingPosition;
 
   const stopLoss = useMemo(() => {
     const entries = stopLossEntriesInfo.entries.map((entry) => {
@@ -383,10 +214,9 @@ export function useSidecarOrders() {
   }, [getDecreaseAmountsFromEntry, takeProfitEntriesInfo, canCalculatePnL]);
 
   const reset = useCallback(() => {
-    limit.reset();
     stopLoss.reset();
     takeProfit.reset();
-  }, [limit, stopLoss, takeProfit]);
+  }, [stopLoss, takeProfit]);
 
   const doesEntriesChanged = useSidecarOrdersChanged();
   const prevDoesEntriesChanged = usePrevious(doesEntriesChanged);
@@ -394,11 +224,6 @@ export function useSidecarOrders() {
   useEffect(() => {
     if (prevDoesEntriesChanged === false && doesEntriesChanged) {
       reset();
-      /**
-       * We need to reset the untouched state to false, to prevent next init on [./useSidecarOrdersGroup.ts#L115]
-       * from UI perspective this prevents cursor focus loose without input change
-       */
-      setIsUntouched("limit", false);
       setIsUntouched("sl", false);
       setIsUntouched("tp", false);
     }
@@ -407,7 +232,6 @@ export function useSidecarOrders() {
   return {
     stopLoss,
     takeProfit,
-    limit,
     reset,
   };
 }

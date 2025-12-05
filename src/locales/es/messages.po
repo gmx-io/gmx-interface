@@ -77,7 +77,7 @@ msgstr "PRECIO"
 msgid "receive"
 msgstr "recibir"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
 
@@ -408,7 +408,6 @@ msgstr "USD de reserva máxima superado"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
@@ -676,13 +675,16 @@ msgstr "Editar Garantía"
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Mercado Stop Largo: {0} una posición corta cuando el precio está por debajo del precio de activación."
 
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "SL Price"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GLV and GM both enable liquidity provision on GMX, allowing users to earn fees from three revenue sources that auto-compound into the token's price. GM tokens represent liquidity in a single pool that supports one specific market on GMX. GLV vaults contain multiple GM tokens in an auto-rebalancing composition, thereby aggregating liquidity across various markets that have the same backing tokens (ex: ETH-USDC, or BTC-USDC). GM enables users to provide isolated liquidity with exposure to a specific market, while GLV allows users to passively earn yield from a diverse range of highly utilized pools."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price above mark price"
@@ -1421,6 +1423,10 @@ msgstr ""
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "La cantidad que intentas retirar excede el límite. Por favor, intenta una cantidad menor que <0>{upperLimitFormatted}</0>."
 
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "Gain"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
 msgstr "Descubre Alertas GMX"
@@ -1638,8 +1644,8 @@ msgid "RPnL"
 msgstr "RPnL"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
-msgstr "Los stop losses combinados están al máximo (100%). Reduce valores existentes para agregar más órdenes."
+#~ msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
+#~ msgstr "Los stop losses combinados están al máximo (100%). Reduce valores existentes para agregar más órdenes."
 
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
@@ -1970,8 +1976,6 @@ msgstr "Comprar GMX en {chainName}"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -2354,8 +2358,8 @@ msgid "Bridge and swap"
 msgstr "Puente y intercambio"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above lowest limit price"
-msgstr "Precio de activación por encima del precio límite más bajo"
+#~ msgid "Trigger price above lowest limit price"
+#~ msgstr "Precio de activación por encima del precio límite más bajo"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2570,7 +2574,7 @@ msgstr "En otros tokens:"
 msgid "Returned Collateral"
 msgstr "Garantía Devuelta"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "Hay problemas en las órdenes TP/SL."
 
@@ -2664,8 +2668,8 @@ msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vest
 msgstr "Bonos GMX pueden comprarse en Bond Protocol con descuento y un pequeño período de adquisición:"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above highest limit price"
-msgstr "Precio de activación por encima del precio límite más alto"
+#~ msgid "Trigger price above highest limit price"
+#~ msgstr "Precio de activación por encima del precio límite más alto"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, staking and providing liquidity are fully permissionless. The GMX, GLV, and GM tokens are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some rare edge cases where your liquidity is being used for active trades. In that case, you can withdraw as soon as positions close."
@@ -2803,7 +2807,6 @@ msgid "Max close amount exceeded"
 msgstr "Cantidad máxima de cierre excedida"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3131,8 +3134,8 @@ msgid "V1 esGMX"
 msgstr "V1 esGMX"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take Profit PnL"
-msgstr "GyP de Take Profit"
+#~ msgid "Take Profit PnL"
+#~ msgstr "GyP de Take Profit"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
@@ -3317,6 +3320,10 @@ msgstr "Solicitar Intercambio de Mercado"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "Liquidez insuficiente en la reserva de mercado {0}. Selecciona una reserva diferente para este mercado.{1}"
+
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "Loss"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
@@ -4116,7 +4123,6 @@ msgid "Amount of traders you referred."
 msgstr "Cantidad de traders que has referido."
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
 msgstr "Take Profit"
@@ -4229,7 +4235,7 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "Reembolsos de impacto de precio acumulados. Serán reclamables después de 5 días.<0/><1/><2>Leer más</2>."
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
 
@@ -4379,8 +4385,8 @@ msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>Soporte para Solana</0><1>Soporte para Botanix</1><2>GMX Express</2>"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-msgstr "Take profits combinados están al máximo (100%). Reduce valores existentes para agregar más órdenes."
+#~ msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
+#~ msgstr "Take profits combinados están al máximo (100%). Reduce valores existentes para agregar más órdenes."
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
@@ -4718,8 +4724,8 @@ msgid "Swap Price Impact for External Swap Threshold"
 msgstr "Impacto de Precio de Intercambio para Umbral de Intercambio Externo"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Limit / Take Profit / Stop Loss"
-msgstr "Límite / Take Profit / Stop Loss"
+#~ msgid "Limit / Take Profit / Stop Loss"
+#~ msgstr "Límite / Take Profit / Stop Loss"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -4853,7 +4859,6 @@ msgstr "Falló la actualización del código de referido."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
@@ -5356,8 +5361,8 @@ msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Limit size is required"
-msgstr "Se requiere tamaño límite"
+#~ msgid "Limit size is required"
+#~ msgstr "Se requiere tamaño límite"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From Network"
@@ -6237,8 +6242,8 @@ msgid "365d Est. Fees"
 msgstr "Comisiones Est. 365d"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below highest limit price"
-msgstr "Precio de activación por debajo del precio límite más alto"
+#~ msgid "Trigger price below highest limit price"
+#~ msgstr "Precio de activación por debajo del precio límite más alto"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
@@ -6353,7 +6358,6 @@ msgid "We Value Your Feedback"
 msgstr "Valoramos Tu Feedback"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "Stop Loss"
@@ -6395,6 +6399,10 @@ msgstr "Error al enviar la orden"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"
 msgstr "Duración"
+
+#: src/components/TradeBox/components/SideOrderEntries.tsx
+msgid "TP Price"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -7337,8 +7345,8 @@ msgid "You have an existing position in the {0} market pool.<0>Switch to {1} mar
 msgstr "Tienes una posición existente en el pool de mercado {0}.<0>Cambia a pool de mercado {1}</0>"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop Loss PnL"
-msgstr "PnL de Stop Loss"
+#~ msgid "Stop Loss PnL"
+#~ msgstr "PnL de Stop Loss"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
@@ -7594,8 +7602,8 @@ msgid "The maximum allowed percentage difference between the mark price and the 
 msgstr "La diferencia porcentual máxima permitida entre el precio de marca y el precio de ejecución para órdenes de mercado."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below lowest limit price"
-msgstr "Precio de activación por debajo del precio límite más bajo"
+#~ msgid "Trigger price below lowest limit price"
+#~ msgstr "Precio de activación por debajo del precio límite más bajo"
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
@@ -7955,7 +7963,6 @@ msgstr "Cargando"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
