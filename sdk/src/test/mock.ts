@@ -227,7 +227,9 @@ export function mockMarketsInfoData(
       maxLendableImpactFactorForWithdrawals: expandDecimals(1, 23),
       maxLendableImpactUsd: expandDecimals(1, 23),
       lentPositionImpactPoolAmount: expandDecimals(1, 23),
-      positionImpactExponentFactor: expandDecimals(2, 30),
+      positionImpactExponentFactorPositive: expandDecimals(2, 30),
+      positionImpactExponentFactorNegative: expandDecimals(2, 30),
+      useOpenInterestInTokensForBalance: true,
 
       swapFeeFactorForBalanceWasImproved: expandDecimals(2, 27),
       swapFeeFactorForBalanceWasNotImproved: expandDecimals(2, 27),
@@ -237,6 +239,9 @@ export function mockMarketsInfoData(
       swapImpactFactorPositive: expandDecimals(2, 23),
       swapImpactFactorNegative: expandDecimals(1, 23),
       swapImpactExponentFactor: expandDecimals(2, 30),
+
+      withdrawalFeeFactorBalanceWasImproved: expandDecimals(2, 27),
+      withdrawalFeeFactorBalanceWasNotImproved: expandDecimals(2, 27),
 
       // MarketInfo
       borrowingFactorPerSecondForLongs: 0n,

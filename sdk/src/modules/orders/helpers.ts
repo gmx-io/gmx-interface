@@ -1,6 +1,6 @@
 import type { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
-import { OrderType } from "types/orders";
+import { OrderType, SwapPricingType } from "types/orders";
 import { TokenData, TokensData, TokensRatio } from "types/tokens";
 import { SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
 import { getByKey } from "utils/objects";
@@ -162,7 +162,7 @@ export async function increaseOrderHelper(
       gasPrice,
       tokensData,
     },
-    isExpressFeeSwap: false,
+    swapPricingType: SwapPricingType.Swap,
   });
 
   const payOrSizeAmount = "payAmount" in params ? params.payAmount : params.sizeAmount;
@@ -293,7 +293,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       gasPrice,
       tokensData,
     },
-    isExpressFeeSwap: false,
+    swapPricingType: SwapPricingType.Swap,
   });
 
   const isWrapOrUnwrap = Boolean(

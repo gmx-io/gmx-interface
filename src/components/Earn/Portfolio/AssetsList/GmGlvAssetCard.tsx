@@ -1,5 +1,7 @@
 import { Trans } from "@lingui/macro";
 
+import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
+import { MultichainMarketTokenBalances } from "domain/multichain/types";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
@@ -9,17 +11,18 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { formatPercentage } from "lib/numbers";
-import { sendEarnPortfolioItemClickEvent, EarnPagePortfolioItemType } from "lib/userAnalytics/earnEvents";
+import { EarnPagePortfolioItemType, sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
+import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import MinusCircleIcon from "img/ic_minus_circle.svg?react";
 import NewLinkIcon from "img/ic_new_link.svg?react";
@@ -28,20 +31,32 @@ import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import { BaseAssetCard } from "./BaseAssetCard";
 
 type Props = {
-  token: TokenData | undefined;
   marketInfo: GlvOrMarketInfo;
   chainId: ContractsChainId;
   totalFeeApy: bigint | undefined;
   feeApy30d: bigint | undefined;
+  multichainMarketTokenBalances: MultichainMarketTokenBalances | undefined;
 };
 
-export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, feeApy30d }: Props) {
+export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, multichainMarketTokenBalances }: Props) {
   const marketAddress = getGlvOrMarketAddress(marketInfo);
 
   const isGlv = isGlvInfo(marketInfo);
   const indexToken = isGlv ? marketInfo.glvToken : marketInfo.indexToken;
   const longToken = marketInfo.longToken;
   const shortToken = marketInfo.shortToken;
+
+  const balance = multichainMarketTokenBalances?.totalBalance ?? 0n;
+  const balanceUsd = multichainMarketTokenBalances?.totalBalanceUsd ?? 0n;
+  const symbol = isGlv ? "GLV" : "GM";
+
+  const tooltipContent = (
+    <MultichainBalanceTooltip
+      multichainBalances={multichainMarketTokenBalances}
+      symbol={symbol}
+      decimals={PLATFORM_TOKEN_DECIMALS}
+    />
+  );
 
   const title = isGlv
     ? getGlvDisplayName(marketInfo)
@@ -100,17 +115,28 @@ export function GmGlvAssetCard({ token, marketInfo, chainId, totalFeeApy, feeApy
         <SyntheticsInfoRow
           label={<Trans>Balance</Trans>}
           value={
-            token?.balance ? (
-              <AmountWithUsdBalance
-                amount={token.balance}
-                decimals={token.decimals}
-                usd={
-                  token.prices?.minPrice && typeof token.balance === "bigint"
-                    ? convertToUsd(token.balance, token.decimals, token.prices.minPrice)
-                    : undefined
-                }
-                symbol={token.symbol}
-              />
+            balance !== 0n ? (
+              tooltipContent ? (
+                <TooltipWithPortal
+                  handle={
+                    <AmountWithUsdBalance
+                      amount={balance}
+                      decimals={PLATFORM_TOKEN_DECIMALS}
+                      usd={balanceUsd}
+                      symbol={symbol}
+                    />
+                  }
+                  content={tooltipContent}
+                  position="bottom-end"
+                />
+              ) : (
+                <AmountWithUsdBalance
+                  amount={balance}
+                  decimals={PLATFORM_TOKEN_DECIMALS}
+                  usd={balanceUsd}
+                  symbol={symbol}
+                />
+              )
             ) : (
               <span>-</span>
             )

@@ -1,48 +1,139 @@
 export default [
   {
     inputs: [
-      { internalType: "contract RoleStore", name: "_roleStore", type: "address" },
-      { internalType: "contract DataStore", name: "_dataStore", type: "address" },
-      { internalType: "contract EventEmitter", name: "_eventEmitter", type: "address" },
-      { internalType: "contract ClaimVault", name: "_claimVault", type: "address" },
+      {
+        internalType: "contract RoleStore",
+        name: "_roleStore",
+        type: "address",
+      },
+      {
+        internalType: "contract DataStore",
+        name: "_dataStore",
+        type: "address",
+      },
+      {
+        internalType: "contract EventEmitter",
+        name: "_eventEmitter",
+        type: "address",
+      },
+      {
+        internalType: "contract ClaimVault",
+        name: "_claimVault",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
-  { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "DisabledFeature", type: "error" },
   {
-    inputs: [{ internalType: "uint256", name: "existingDistributionId", type: "uint256" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "DisabledFeature",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "existingDistributionId",
+        type: "uint256",
+      },
+    ],
     name: "DuplicateClaimTerms",
     type: "error",
   },
-  { inputs: [], name: "EmptyAccount", type: "error" },
-  { inputs: [], name: "EmptyAmount", type: "error" },
   {
-    inputs: [{ internalType: "address", name: "token", type: "address" }],
+    inputs: [],
+    name: "EmptyAccount",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
     name: "EmptyClaimableAmount",
     type: "error",
   },
-  { inputs: [], name: "EmptyReceiver", type: "error" },
-  { inputs: [], name: "EmptyToken", type: "error" },
-  { inputs: [{ internalType: "address", name: "token", type: "address" }], name: "InsufficientFunds", type: "error" },
+  {
+    inputs: [],
+    name: "EmptyReceiver",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyToken",
+    type: "error",
+  },
   {
     inputs: [
-      { internalType: "address", name: "recoveredSigner", type: "address" },
-      { internalType: "address", name: "expectedSigner", type: "address" },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "InsufficientFunds",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recoveredSigner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
     ],
     name: "InvalidClaimTermsSignature",
     type: "error",
   },
   {
-    inputs: [{ internalType: "address", name: "expectedSigner", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "expectedSigner",
+        type: "address",
+      },
+    ],
     name: "InvalidClaimTermsSignatureForContract",
     type: "error",
   },
-  { inputs: [{ internalType: "string", name: "reason", type: "string" }], name: "InvalidParams", type: "error" },
   {
     inputs: [
-      { internalType: "address", name: "msgSender", type: "address" },
-      { internalType: "string", name: "role", type: "string" },
+      {
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+    ],
+    name: "InvalidParams",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "msgSender",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "role",
+        type: "string",
+      },
     ],
     name: "Unauthorized",
     type: "error",
@@ -51,17 +142,38 @@ export default [
     inputs: [
       {
         components: [
-          { internalType: "address", name: "token", type: "address" },
-          { internalType: "uint256", name: "distributionId", type: "uint256" },
-          { internalType: "bytes", name: "termsSignature", type: "bytes" },
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "distributionId",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "termsSignature",
+            type: "bytes",
+          },
+          {
+            internalType: "string",
+            name: "acceptedTerms",
+            type: "string",
+          },
         ],
         internalType: "struct ClaimHandler.ClaimParam[]",
         name: "params",
         type: "tuple[]",
       },
-      { internalType: "address", name: "receiver", type: "address" },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
     ],
-    name: "claimFunds",
+    name: "acceptTermsAndClaim",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -69,27 +181,55 @@ export default [
   {
     inputs: [],
     name: "claimVault",
-    outputs: [{ internalType: "contract ClaimVault", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract ClaimVault",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "dataStore",
-    outputs: [{ internalType: "contract DataStore", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract DataStore",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256", name: "distributionId", type: "uint256" },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "distributionId",
+        type: "uint256",
+      },
       {
         components: [
-          { internalType: "address", name: "account", type: "address" },
-          { internalType: "uint256", name: "amount", type: "uint256" },
+          {
+            internalType: "address",
+            name: "account",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
         ],
-        internalType: "struct ClaimHandler.DepositParam[]",
+        internalType: "struct ClaimUtils.DepositParam[]",
         name: "params",
         type: "tuple[]",
       },
@@ -102,30 +242,72 @@ export default [
   {
     inputs: [],
     name: "eventEmitter",
-    outputs: [{ internalType: "contract EventEmitter", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract EventEmitter",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "account", type: "address" },
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256[]", name: "distributionIds", type: "uint256[]" },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "uint256[]",
+        name: "distributionIds",
+        type: "uint256[]",
+      },
     ],
     name: "getClaimableAmount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "token", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
     name: "getTotalClaimableAmount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "distributionId", type: "uint256" }],
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "distributionId",
+        type: "uint256",
+      },
+    ],
     name: "removeTerms",
     outputs: [],
     stateMutability: "nonpayable",
@@ -134,14 +316,28 @@ export default [
   {
     inputs: [],
     name: "roleStore",
-    outputs: [{ internalType: "contract RoleStore", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract RoleStore",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "uint256", name: "distributionId", type: "uint256" },
-      { internalType: "string", name: "terms", type: "string" },
+      {
+        internalType: "uint256",
+        name: "distributionId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "terms",
+        type: "string",
+      },
     ],
     name: "setTerms",
     outputs: [],
@@ -150,13 +346,33 @@ export default [
   },
   {
     inputs: [
-      { internalType: "address", name: "token", type: "address" },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
       {
         components: [
-          { internalType: "address", name: "token", type: "address" },
-          { internalType: "uint256", name: "distributionId", type: "uint256" },
-          { internalType: "address", name: "fromAccount", type: "address" },
-          { internalType: "address", name: "toAccount", type: "address" },
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "distributionId",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "fromAccount",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "toAccount",
+            type: "address",
+          },
         ],
         internalType: "struct ClaimHandler.TransferClaimParam[]",
         name: "params",
@@ -170,17 +386,33 @@ export default [
   },
   {
     inputs: [
-      { internalType: "address", name: "token", type: "address" },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
       {
         components: [
-          { internalType: "address", name: "account", type: "address" },
-          { internalType: "uint256", name: "distributionId", type: "uint256" },
+          {
+            internalType: "address",
+            name: "account",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "distributionId",
+            type: "uint256",
+          },
         ],
         internalType: "struct ClaimHandler.WithdrawParam[]",
         name: "params",
         type: "tuple[]",
       },
-      { internalType: "address", name: "receiver", type: "address" },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
     ],
     name: "withdrawFunds",
     outputs: [],

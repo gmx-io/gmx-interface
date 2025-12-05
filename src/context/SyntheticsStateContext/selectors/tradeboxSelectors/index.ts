@@ -25,9 +25,7 @@ import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "dom
 import {
   TokenData,
   TokensRatio,
-  convertToTokenAmount,
   convertToUsd,
-  getIsEquivalentTokens,
   getIsStake,
   getIsUnstake,
   getIsUnwrap,
@@ -52,8 +50,10 @@ import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { BOTANIX } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
+import { TokenBalanceType } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import { selectIsExpressTransactionAvailable } from "../expressSelectors";
@@ -1256,16 +1256,16 @@ export const selectTradeboxFromToken = createSelector((q): TokenData | undefined
     return undefined;
   }
 
-  if (isFromTokenGmxAccount && !token.isGmxAccount) {
+  if (isFromTokenGmxAccount && token.balanceType !== TokenBalanceType.GmxAccount) {
     return {
       ...token,
-      isGmxAccount: true,
+      balanceType: TokenBalanceType.GmxAccount,
       balance: token.gmxAccountBalance,
     };
-  } else if (!isFromTokenGmxAccount && token.isGmxAccount) {
+  } else if (!isFromTokenGmxAccount && token.balanceType !== TokenBalanceType.Wallet) {
     return {
       ...token,
-      isGmxAccount: false,
+      balanceType: TokenBalanceType.Wallet,
       balance: token.walletBalance,
     };
   }

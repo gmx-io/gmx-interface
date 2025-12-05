@@ -4,11 +4,11 @@ import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
 import { isDevelopment } from "config/env";
-import { PoolsDetailsContextProvider } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import { AccountEvents } from "pages/AccountEvents/AccountEvents";
 import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
@@ -123,9 +123,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
 
       <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-          <PoolsDetailsContextProvider>
-            <PoolsDetails />
-          </PoolsDetailsContextProvider>
+          <PoolsDetails />
         </SyntheticsStateContextProvider>
       </Route>
 
@@ -217,6 +215,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/permits" key="permits">
           <TestPermits />
+        </Route>,
+        <Route exact path="/account-events/:account?" key="account-events">
+          <AccountEvents />
         </Route>,
       ]}
 

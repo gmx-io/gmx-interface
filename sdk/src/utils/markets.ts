@@ -1,7 +1,8 @@
 import { BASIS_POINTS_DIVISOR } from "configs/factors";
+import type { MarketConfig } from "configs/markets";
 import { getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { ContractMarketPrices, Market, MarketInfo } from "types/markets";
-import { Token, TokenPrices, TokensData } from "types/tokens";
+import type { ContractMarketPrices, Market, MarketInfo } from "types/markets";
+import type { Token, TokenPrices, TokensData } from "types/tokens";
 
 import { applyFactor, PRECISION } from "./numbers";
 import { getByKey } from "./objects";
@@ -145,6 +146,12 @@ export function getOppositeCollateral(marketInfo: MarketInfo, tokenAddress: stri
   return undefined;
 }
 
+export function getOppositeCollateralFromConfig(marketConfig: MarketConfig, tokenAddress: string) {
+  return marketConfig.shortTokenAddress === tokenAddress
+    ? marketConfig.longTokenAddress
+    : marketConfig.shortTokenAddress;
+}
+
 export function getAvailableUsdLiquidityForCollateral(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
@@ -209,6 +216,17 @@ export function getOpenInterestUsd(marketInfo: MarketInfo, isLong: boolean) {
 
 export function getOpenInterestInTokens(marketInfo: MarketInfo, isLong: boolean) {
   return isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
+}
+
+export function getOpenInterestForBalance(marketInfo: MarketInfo, isLong: boolean): bigint {
+  if (marketInfo.useOpenInterestInTokensForBalance) {
+    const interestInTokens = isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
+    const indexTokenPrice = getMidPrice(marketInfo.indexToken.prices);
+
+    return convertToUsd(interestInTokens, marketInfo.indexToken.decimals, indexTokenPrice)!;
+  }
+
+  return isLong ? marketInfo.longInterestUsd : marketInfo.shortInterestUsd;
 }
 
 export function getPriceForPnl(prices: TokenPrices, isLong: boolean, maximize: boolean) {

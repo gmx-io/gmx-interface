@@ -1,12 +1,5 @@
-import type { SourceChainId } from "config/chains";
+import type { AnyChainId, GmxAccountPseudoChainId, SourceChainId } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
-import type { IRelayUtils } from "typechain-types/LayerZeroProvider";
-import type {
-  MessagingFeeStructOutput,
-  OFTFeeDetailStruct,
-  OFTLimitStruct,
-  OFTReceiptStruct,
-} from "typechain-types-stargate/IStargate";
 
 export type TokenChainData = Token & {
   sourceChainId: SourceChainId;
@@ -37,16 +30,70 @@ export type MultichainFundingHistoryItem = {
   source?: "optimistic" | "ws";
 };
 
-export type StrippedGeneratedType<T> = Omit<T, keyof [] | `${number}`>;
-
-export type BridgeOutParams = StrippedGeneratedType<IRelayUtils.BridgeOutParamsStructOutput>;
+export type BridgeOutParams = {
+  token: string;
+  amount: bigint;
+  minAmountOut: bigint;
+  provider: string;
+  data: string;
+};
 
 export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110 | 30106 | 30102;
 
-export type QuoteOft = {
-  limit: OFTLimitStruct;
-  oftFeeDetails: OFTFeeDetailStruct[];
-  receipt: OFTReceiptStruct;
+export type OFTLimit = {
+  minAmountLD: bigint;
+  maxAmountLD: bigint;
 };
 
-export type QuoteSend = StrippedGeneratedType<MessagingFeeStructOutput>;
+export type OFTFeeDetail = {
+  feeAmountLD: bigint;
+  description: string;
+};
+
+export type OFTReceipt = {
+  amountSentLD: bigint;
+  amountReceivedLD: bigint;
+};
+
+export type QuoteOft = {
+  limit: OFTLimit;
+  oftFeeDetails: OFTFeeDetail[];
+  receipt: OFTReceipt;
+};
+
+export type TransferRequests = {
+  tokens: string[];
+  receivers: string[];
+  amounts: bigint[];
+};
+
+export type SendParam = {
+  dstEid: number;
+  to: string;
+  amountLD: bigint;
+  minAmountLD: bigint;
+  extraOptions: string;
+  composeMsg: string;
+  oftCmd: string;
+};
+
+export type MessagingFee = {
+  nativeFee: bigint;
+  lzTokenFee: bigint;
+};
+
+export type MultichainMarketTokenBalances = {
+  totalBalance: bigint;
+  totalBalanceUsd: bigint;
+  balances: Partial<
+    Record<
+      AnyChainId | GmxAccountPseudoChainId,
+      {
+        balance: bigint;
+        balanceUsd: bigint;
+      }
+    >
+  >;
+};
+
+export type MultichainMarketTokensBalances = Record<string, MultichainMarketTokenBalances>;

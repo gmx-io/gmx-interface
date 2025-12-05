@@ -81,7 +81,8 @@ const MARKETS_INFO_QUERY = gql`
       lentPositionImpactPoolAmount
       atomicSwapFeeFactor
       maxPositionImpactFactorForLiquidations
-      positionImpactExponentFactor
+      positionImpactExponentFactorPositive
+      positionImpactExponentFactorNegative
 
       swapFeeFactorForPositiveImpact
       swapFeeFactorForNegativeImpact
@@ -212,7 +213,8 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxLendableImpactFactorForWithdrawals: BigInt(mInfo.maxLendableImpactFactorForWithdrawals),
             maxLendableImpactUsd: BigInt(mInfo.maxLendableImpactUsd),
             lentPositionImpactPoolAmount: BigInt(mInfo.lentPositionImpactPoolAmount),
-            positionImpactExponentFactor: BigInt(mInfo.positionImpactExponentFactor),
+            positionImpactExponentFactorPositive: BigInt(mInfo.positionImpactExponentFactorPositive),
+            positionImpactExponentFactorNegative: BigInt(mInfo.positionImpactExponentFactorNegative),
 
             swapFeeFactorForBalanceWasImproved: BigInt(mInfo.swapFeeFactorForPositiveImpact),
             swapFeeFactorForBalanceWasNotImproved: BigInt(mInfo.swapFeeFactorForNegativeImpact),

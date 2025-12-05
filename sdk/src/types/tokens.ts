@@ -125,14 +125,23 @@ export type TokenPrices = {
   maxPrice: bigint;
 };
 
+export enum TokenBalanceType {
+  Wallet = 0,
+  GmxAccount = 1,
+  SourceChain = 2,
+}
+
 export type TokenAsyncData = {
   prices: TokenPrices;
-  isGmxAccount?: boolean;
   walletBalance?: bigint;
   gmxAccountBalance?: bigint;
   /**
-   * If isGmxAccount is true, then this is the gmx account balance
-   * If isGmxAccount is false, then this is the wallet balance
+   * In source chain decimals, use `getMappedTokenId` to get the decimals
+   */
+  sourceChainBalance?: bigint;
+  balanceType?: TokenBalanceType;
+  /**
+   * Balance according to the balanceType
    */
   balance?: bigint;
   totalSupply?: bigint;

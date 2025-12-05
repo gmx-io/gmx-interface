@@ -18,6 +18,7 @@ import { getMarketDivisor } from "../utils";
 import { buildMarketsConfigsRequest } from "./buildMarketsConfigsRequest";
 import { buildMarketsValuesRequest } from "./buildMarketsValuesRequest";
 import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
+import { useMarketsConstantsRequest } from "./useMarketsConstantsRequest";
 
 export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
@@ -32,6 +33,7 @@ export function useMarketsInfoRequest(
 
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
+  const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId);
 
   const isDependenciesLoading = !marketsAddresses || !tokensData;
 
@@ -50,7 +52,12 @@ export function useMarketsInfoRequest(
   });
 
   const mergedData = useMemo(() => {
-    if (!marketsAddresses || !tokensData || (!fastMarketInfoData && (!marketsValues.data || !marketsConfigs.data))) {
+    if (
+      !marketsAddresses ||
+      !tokensData ||
+      !marketsConstantsData ||
+      (!fastMarketInfoData && (!marketsValues.data || !marketsConfigs.data))
+    ) {
       return undefined;
     }
 
@@ -85,6 +92,7 @@ export function useMarketsInfoRequest(
         ...marketInfoFields,
         ...(claimableFunding || {}),
         ...market,
+        ...marketsConstantsData,
         longToken,
         shortToken,
         indexToken,
@@ -103,6 +111,7 @@ export function useMarketsInfoRequest(
     marketsData,
     chainId,
     claimableFundingData,
+    marketsConstantsData,
   ]);
 
   const error = marketsValues.error || marketsConfigs.error;
@@ -338,13 +347,18 @@ function useMarketsConfigsRequest({
               dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
             maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
             lentPositionImpactPoolAmount: dataStoreValues.lentPositionImpactPoolAmount.returnValues[0],
-            positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
+            positionImpactExponentFactorPositive: dataStoreValues.positionImpactExponentFactorPositive.returnValues[0],
+            positionImpactExponentFactorNegative: dataStoreValues.positionImpactExponentFactorNegative.returnValues[0],
             swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
             swapFeeFactorForBalanceWasNotImproved:
               dataStoreValues.swapFeeFactorForBalanceWasNotImproved.returnValues[0],
             swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
             swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
             atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
+            withdrawalFeeFactorBalanceWasImproved:
+              dataStoreValues.withdrawalFeeFactorBalanceWasImproved.returnValues[0],
+            withdrawalFeeFactorBalanceWasNotImproved:
+              dataStoreValues.withdrawalFeeFactorBalanceWasNotImproved.returnValues[0],
 
             swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
 

@@ -8,6 +8,7 @@ export const SWAP_IMPACT_FACTOR_KEY = hashString("SWAP_IMPACT_FACTOR");
 export const SWAP_IMPACT_EXPONENT_FACTOR_KEY = hashString("SWAP_IMPACT_EXPONENT_FACTOR");
 export const SWAP_FEE_FACTOR_KEY = hashString("SWAP_FEE_FACTOR");
 export const ATOMIC_SWAP_FEE_FACTOR_KEY = hashString("ATOMIC_SWAP_FEE_FACTOR");
+export const WITHDRAWAL_FEE_FACTOR_KEY = hashString("WITHDRAWAL_FEE_FACTOR");
 export const FEE_RECEIVER_DEPOSIT_FACTOR_KEY = hashString("FEE_RECEIVER_DEPOSIT_FACTOR");
 export const BORROWING_FEE_RECEIVER_FACTOR_KEY = hashString("BORROWING_FEE_RECEIVER_FACTOR");
 export const FEE_RECEIVER_WITHDRAWAL_FACTOR_KEY = hashString("FEE_RECEIVER_WITHDRAWAL_FACTOR");
@@ -113,6 +114,7 @@ export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME")
 export const GMX_SIMULATION_ORIGIN = "0x" + keccakString("GMX SIMULATION ORIGIN").slice(-40);
 export const CLAIM_TERMS_KEY = hashString("CLAIM_TERMS");
 export const GENERAL_CLAIM_FEATURE_DISABLED = hashString("GENERAL_CLAIM_FEATURE_DISABLED");
+export const USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE = hashString("USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE");
 
 export function subaccountExpiresAtKey(account: string, subaccount: string, actionType: string) {
   return hashData(
@@ -145,8 +147,8 @@ export function positionImpactFactorKey(market: string, isPositive: boolean) {
   return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_FACTOR_KEY, market, isPositive]);
 }
 
-export function positionImpactExponentFactorKey(market: string) {
-  return hashData(["bytes32", "address"], [POSITION_IMPACT_EXPONENT_FACTOR_KEY, market]);
+export function positionImpactExponentFactorKey(market: string, isPositive: boolean) {
+  return hashData(["bytes32", "address", "bool"], [POSITION_IMPACT_EXPONENT_FACTOR_KEY, market, isPositive]);
 }
 
 export function maxPositionImpactFactorKey(market: string, isPositive: boolean) {

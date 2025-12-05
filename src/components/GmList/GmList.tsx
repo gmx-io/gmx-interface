@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
   selectChainId,
   selectDepositMarketTokensData,
@@ -48,7 +49,7 @@ export type Props = {
   performanceSnapshots: PerformanceSnapshotsData | undefined;
 };
 
-export type SortField = "price" | "totalSupply" | "wallet" | "apy" | "performance" | "unspecified";
+export type SortField = "price" | "totalSupply" | "balance" | "apy" | "performance" | "unspecified";
 
 export function GmList({
   marketsTokensApyData,
@@ -64,6 +65,7 @@ export function GmList({
   const marketsInfo = useSelector(selectMarketsInfoData);
   const marketTokensData = useSelector(selectDepositMarketTokensData);
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensDataWithoutGlv);
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { active } = useWallet();
   const userEarnings = useUserEarnings(chainId, srcChainId);
@@ -85,6 +87,7 @@ export function GmList({
     tab,
     favoriteTokens,
     performance,
+    multichainMarketTokensBalances,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -95,8 +98,8 @@ export function GmList({
 
   const userTotalGmInfo = useMemo(() => {
     if (!active || !marketTokensData) return;
-    return getTotalGmInfo(marketTokensData);
-  }, [marketTokensData, active]);
+    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
+  }, [active, marketTokensData, multichainMarketTokensBalances]);
 
   const rows =
     currentData.length > 0 &&
@@ -181,12 +184,12 @@ export function GmList({
                       </Sorter>
                     </TableTh>
                     <TableTh>
-                      <Sorter {...getSorterProps("wallet")}>
+                      <Sorter {...getSorterProps("balance")}>
                         <GmTokensTotalBalanceInfo
                           balance={userTotalGmInfo?.balance}
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
-                          label={t`WALLET`}
+                          label={t`BALANCE`}
                         />
                       </Sorter>
                     </TableTh>

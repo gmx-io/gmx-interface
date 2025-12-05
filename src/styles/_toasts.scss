@@ -90,3 +90,7 @@
   font: normal normal normal 1.4rem/1.6rem "TTHoves";
   line-height: 2rem;
 }
+
+.Toastify__toast-body:not(:has(+ .close-toast-button)) {
+  padding-right: 12px;
+}

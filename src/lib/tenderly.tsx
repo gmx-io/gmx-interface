@@ -1,4 +1,5 @@
 import { BaseContract, Provider } from "ethers";
+import { numberToHex, type StateOverride } from "viem";
 
 import { isDevelopment } from "config/env";
 
@@ -9,8 +10,9 @@ import { estimateGasLimit } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
+import { ISigner } from "./transactions/iSigner";
 
-type TenderlyConfig = {
+export type TenderlyConfig = {
   accountSlug: string;
   projectSlug: string;
   accessKey: string;
@@ -34,20 +36,22 @@ export async function simulateCallDataWithTenderly({
   gasPriceData,
   gasLimit,
   comment,
+  stateOverride,
 }: {
   chainId: number;
   tenderlyConfig: TenderlyConfig;
-  provider: Provider;
+  provider: Provider | ISigner;
   to: string;
   data: string;
   from: string;
-  value: bigint | number | undefined;
-  blockNumber: number | undefined;
+  value: bigint | undefined;
+  blockNumber: "latest" | number | undefined;
   gasPriceData: GasPriceData | undefined;
-  gasLimit: bigint | number | undefined;
+  gasLimit: bigint | undefined;
   comment: string | undefined;
+  stateOverride?: StateOverride;
 }) {
-  if (!blockNumber) {
+  if (blockNumber === undefined) {
     blockNumber = await provider.getBlockNumber();
   }
 
@@ -76,6 +80,7 @@ export async function simulateCallDataWithTenderly({
     gasPriceData,
     blockNumber,
     comment,
+    stateOverride,
   });
 }
 
@@ -89,6 +94,7 @@ export const simulateTxWithTenderly = async (
     gasLimit?: bigint;
     value?: bigint;
     comment: string;
+    stateOverride?: StateOverride;
   }
 ) => {
   const config = getTenderlyConfig();
@@ -132,6 +138,7 @@ export const simulateTxWithTenderly = async (
     value: opts.value ?? 0n,
     blockNumber,
     comment: opts.comment,
+    stateOverride: opts.stateOverride,
   });
 
   return result;
@@ -148,26 +155,29 @@ async function processSimulation({
   gasPriceData,
   blockNumber,
   comment,
+  stateOverride,
 }: {
   config: TenderlyConfig;
   chainId: number;
   from: string;
   to: string;
   data: string;
-  value: bigint | number | undefined;
-  gasLimit: bigint | number | undefined;
-  gasPriceData: GasPriceData;
-  blockNumber: number;
+  value: bigint | undefined;
+  gasLimit: bigint | undefined;
+  gasPriceData: GasPriceData | undefined;
+  blockNumber: "latest" | number | undefined;
   comment: string | undefined;
+  stateOverride?: StateOverride;
 }) {
   const simulationParams = buildSimulationRequest(
     chainId,
     {
       from,
       to,
-      gas: gasLimit !== undefined ? BigInt(gasLimit) : undefined,
+      gas: gasLimit,
       input: data,
       value: Number(value),
+      stateOverride,
       ...gasPriceData,
     },
     blockNumber
@@ -190,10 +200,11 @@ async function processSimulation({
   );
 
   let success = false;
+  let json: any;
   try {
     if (!response.ok) throw new Error(`Failed to send transaction to Tenderly: ${response.statusText}`);
 
-    const json = await response.json();
+    json = await response.json();
     const url = `https://dashboard.tenderly.co/${config.accountSlug}/${config.projectSlug}/simulator/${json.simulation.id}`;
     sentReports.push({ url, comment: comment ?? "" });
     success = json.simulation.status;
@@ -224,7 +235,7 @@ async function processSimulation({
     );
   }
 
-  return { success };
+  return { success, raw: json };
 }
 
 // https://docs.tenderly.co/reference/api#/operations/simulateTransaction
@@ -237,13 +248,14 @@ function buildSimulationRequest(
     input: string;
     gas?: bigint;
     gasPrice?: bigint;
+    stateOverride?: StateOverride;
     /*
     api doesn't support these yet
     maxFeePerGas?: bigint;
     maxPriorityFeePerGas?: bigint;
     */
   },
-  blockNumber: number
+  blockNumber: "latest" | number | undefined
 ) {
   return {
     network_id: chainId.toString(),
@@ -258,10 +270,19 @@ function buildSimulationRequest(
     */
     value: params.value,
     input: params.input,
-    save: true,
-    save_if_fails: true,
+    save: import.meta.env.TENDERLY_TEST === "true" ? false : true,
+    save_if_fails: import.meta.env.TENDERLY_TEST === "true" ? false : true,
     simulation_type: "quick",
     block_number: blockNumber,
+    state_objects: params.stateOverride?.reduce((acc, curr) => {
+      acc[curr.address] = {
+        code: curr.code,
+        balance: curr.balance ? numberToHex(curr.balance) : undefined,
+        nonce: 0,
+        storage: curr.state ? Object.fromEntries(curr.state.map((s) => [s.slot, s.value])) : undefined,
+      };
+      return acc;
+    }, {}),
   };
 }
 

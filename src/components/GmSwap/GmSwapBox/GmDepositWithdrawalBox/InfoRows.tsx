@@ -1,23 +1,24 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
 
-import { ExecutionFee } from "domain/synthetics/fees";
 import { GmSwapFees } from "domain/synthetics/trade";
+import { formatDeltaUsd } from "lib/numbers";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
-import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
 
 import { Operation } from "../types";
 
 export function InfoRows({
   isDeposit,
   fees,
-  executionFee,
+  isLoading,
 }: {
   isDeposit: boolean;
   fees: GmSwapFees | undefined;
-  executionFee: ExecutionFee | undefined;
+  isLoading?: boolean;
 }) {
   const [isExecutionDetailsOpen, setIsExecutionDetailsOpen] = useState(false);
 
@@ -33,6 +34,7 @@ export function InfoRows({
         swapFee={fees?.swapFee}
         swapPriceImpact={fees?.swapPriceImpact}
         uiFee={fees?.uiFee}
+        isLoading={isLoading}
       />
 
       <ExpandableRow
@@ -41,7 +43,18 @@ export function InfoRows({
         onToggle={toggleExecutionDetails}
         contentClassName="flex flex-col gap-12"
       >
-        <NetworkFeeRow rowPadding executionFee={executionFee} />
+        <SyntheticsInfoRow
+          label={<Trans>Network Fee</Trans>}
+          value={
+            isLoading ? (
+              <UsdValueWithSkeleton usd={undefined} />
+            ) : fees?.logicalNetworkFee?.deltaUsd === undefined ? (
+              "..."
+            ) : (
+              formatDeltaUsd(fees.logicalNetworkFee.deltaUsd)
+            )
+          }
+        />
       </ExpandableRow>
     </div>
   );
