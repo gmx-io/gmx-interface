@@ -44,6 +44,9 @@ type AccountEventsData = {
   fromTimestamp: number;
 };
 
+const DAYS_BACK = 7;
+const SECONDS_IN_DAY = 86400;
+
 const blockTimestampCache = new Map<string, Map<bigint, number>>();
 
 function getCacheKey(chainId: ContractsChainId, blockNumbers: bigint[]): string {
@@ -97,9 +100,7 @@ async function fetchAccountEvents(account: string, chainId: ContractsChainId): P
 
   const currentBlock = await client.getBlockNumber();
   const currentBlockData = await client.getBlock({ blockNumber: currentBlock });
-  const daysBack = 7;
-  const secondsInDay = 86400n;
-  const timestamp7DaysAgo = currentBlockData.timestamp - BigInt(daysBack) * secondsInDay;
+  const timestamp7DaysAgo = currentBlockData.timestamp - BigInt(DAYS_BACK) * BigInt(SECONDS_IN_DAY);
   const startBlock = await getBlockNumberBeforeTimestamp(chainId, timestamp7DaysAgo);
   const startBlockData = await client.getBlock({ blockNumber: startBlock });
 
@@ -308,7 +309,9 @@ export function AccountEvents() {
         {!error && (
           <>
             <div className="mb-20 flex items-center justify-between">
-              <div className="text-body-medium">Found {events.length} events in the past 7 days</div>
+              <div className="text-body-medium">
+                Found {events.length} events in the past {DAYS_BACK} days
+              </div>
               <Button variant="secondary" onClick={() => mutate()} disabled={isLoading}>
                 {isLoading ? "Loading..." : "Refresh"}
               </Button>
