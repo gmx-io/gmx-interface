@@ -1,3 +1,4 @@
+import { Popover } from "@headlessui/react";
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -16,7 +17,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import NumberInput from "components/NumberInput/NumberInput";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
-import ChevronUpIcon from "img/ic_chevron_up.svg?react";
 
 export type TPSLDisplayMode = "percentage" | "usd";
 type LastEditedField = "price" | "gainLoss" | null;
@@ -31,7 +31,6 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
   const priceInputRef = useRef<HTMLInputElement>(null);
   const secondInputRef = useRef<HTMLInputElement>(null);
   const [displayMode, setDisplayMode] = useState<TPSLDisplayMode>("percentage");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [lastEditedField, setLastEditedField] = useState<LastEditedField>(null);
   const [gainLossInputValue, setGainLossInputValue] = useState<string>("");
 
@@ -192,14 +191,10 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
 
   const handleDisplayModeChange = useCallback(
     (mode: TPSLDisplayMode) => {
-      if (mode === displayMode) {
-        setIsDropdownOpen(false);
-        return;
-      }
+      if (mode === displayMode) return;
 
       const prevMode = displayMode;
       setDisplayMode(mode);
-      setIsDropdownOpen(false);
 
       if (lastEditedField === "gainLoss" && gainLossInputValue) {
         setGainLossInputValue(convertGainLossValue(gainLossInputValue, prevMode, mode));
@@ -256,40 +251,46 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
               placeholder={secondLabel}
             />
           </div>
-          <div className="relative" data-dropdown>
-            <button
-              type="button"
-              className="flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-13 text-typography-secondary hover:text-typography-primary"
-              onClick={() => setIsDropdownOpen((prev) => !prev)}
-            >
+          <Popover className="relative">
+            <Popover.Button className="flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-13 text-typography-secondary outline-none hover:text-typography-primary">
               {displayMode === "percentage" ? "%" : "$"}
-              {isDropdownOpen ? <ChevronUpIcon className="w-12" /> : <ChevronDownIcon className="w-12" />}
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 top-full z-10 mt-4 overflow-hidden rounded-8 border border-slate-600 bg-slate-800 shadow-lg">
-                <button
-                  type="button"
-                  className={cx(
-                    "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
-                    displayMode === "percentage" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
-                  )}
-                  onClick={() => handleDisplayModeChange("percentage")}
-                >
-                  %
-                </button>
-                <button
-                  type="button"
-                  className={cx(
-                    "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
-                    displayMode === "usd" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
-                  )}
-                  onClick={() => handleDisplayModeChange("usd")}
-                >
-                  $
-                </button>
-              </div>
-            )}
-          </div>
+              <ChevronDownIcon className="w-12" />
+            </Popover.Button>
+            <Popover.Panel className="absolute right-0 top-full z-10 mt-4 overflow-hidden rounded-8 border border-slate-600 bg-slate-800 shadow-lg">
+              {({ close }) => (
+                <>
+                  <button
+                    type="button"
+                    className={cx(
+                      "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
+                      displayMode === "percentage"
+                        ? "bg-slate-700 text-typography-primary"
+                        : "text-typography-secondary"
+                    )}
+                    onClick={() => {
+                      handleDisplayModeChange("percentage");
+                      close();
+                    }}
+                  >
+                    %
+                  </button>
+                  <button
+                    type="button"
+                    className={cx(
+                      "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
+                      displayMode === "usd" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
+                    )}
+                    onClick={() => {
+                      handleDisplayModeChange("usd");
+                      close();
+                    }}
+                  >
+                    $
+                  </button>
+                </>
+              )}
+            </Popover.Panel>
+          </Popover>
         </div>
       </div>
     </div>
