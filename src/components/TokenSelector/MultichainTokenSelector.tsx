@@ -15,7 +15,7 @@ import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";
 import { getMarketBadge } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { TokenBalanceType, type Token, type TokenData, type TokensData } from "domain/tokens";
+import { TokenBalanceType, Token, TokensData } from "domain/tokens";
 import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
@@ -41,6 +41,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { ConnectWalletModalContent } from "./ConnectWalletModalContent";
+import type { DisplayToken } from "./types";
 
 import "./TokenSelector.scss";
 
@@ -261,13 +262,6 @@ export function MultichainTokenSelector({
   );
 }
 
-type DisplayAvailableToTradeToken = TokenData & {
-  balance: bigint;
-  balanceUsd: bigint;
-  chainId: AnyChainId | GmxAccountPseudoChainId;
-  // TODO MLTCH maybe move it in TokenData
-  sourceChainDecimals?: number;
-};
 export function useAvailableToTradeTokenList({
   chainId,
   activeFilter,
@@ -294,7 +288,7 @@ export function useAvailableToTradeTokenList({
       return EMPTY_ARRAY;
     }
 
-    const concatenatedTokens: DisplayAvailableToTradeToken[] = [];
+    const concatenatedTokens: DisplayToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
       if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
@@ -364,7 +358,7 @@ export function useAvailableToTradeTokenList({
       }
     }
 
-    let filteredTokens: DisplayAvailableToTradeToken[];
+    let filteredTokens: DisplayToken[];
     if (!searchKeyword.trim()) {
       filteredTokens = concatenatedTokens;
     } else {
@@ -382,8 +376,8 @@ export function useAvailableToTradeTokenList({
       );
     }
 
-    const tokensWithBalance: DisplayAvailableToTradeToken[] = [];
-    const tokensWithoutBalance: DisplayAvailableToTradeToken[] = [];
+    const tokensWithBalance: DisplayToken[] = [];
+    const tokensWithoutBalance: DisplayToken[] = [];
 
     for (const token of filteredTokens) {
       const balance = token.balance;
@@ -395,14 +389,14 @@ export function useAvailableToTradeTokenList({
       }
     }
 
-    const sortedTokensWithBalance: DisplayAvailableToTradeToken[] = tokensWithBalance.sort((a, b) => {
+    const sortedTokensWithBalance: DisplayToken[] = tokensWithBalance.sort((a, b) => {
       if (a.balanceUsd === b.balanceUsd) {
         return 0;
       }
       return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
     });
 
-    const sortedTokensWithoutBalance: DisplayAvailableToTradeToken[] = tokensWithoutBalance.sort((a, b) => {
+    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort((a, b) => {
       if (extendedSortSequence) {
         // making sure to use the wrapped address if it exists in the extended sort sequence
         const aAddress =
@@ -438,7 +432,7 @@ export function AvailableToTradeTokenList({
 }: {
   chainId: ContractsChainId;
   onSelectTokenAddress: (tokenAddress: string, chainId: AnyChainId | GmxAccountPseudoChainId) => void;
-  tokens: DisplayAvailableToTradeToken[];
+  tokens: DisplayToken[];
 }) {
   return (
     <VerticalScrollFadeContainer>

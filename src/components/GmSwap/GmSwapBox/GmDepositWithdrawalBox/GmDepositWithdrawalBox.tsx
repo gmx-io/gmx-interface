@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
 import mapValues from "lodash/mapValues";
-import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo } from "react";
 
 import { getContract } from "config/contracts";
@@ -23,14 +22,11 @@ import {
   selectPoolsDetailsGlvTokenData,
   selectPoolsDetailsIsCrossChainMarket,
   selectPoolsDetailsIsMarketTokenDeposit,
-  selectPoolsDetailsLongTokenAddress,
-  selectPoolsDetailsMarketAndTradeTokensData,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsMarketOrGlvTokenData,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsMarketTokensData,
-  selectPoolsDetailsMultichainTokensArray,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSecondTokenAmount,
   selectPoolsDetailsSecondTokenData,
@@ -39,7 +35,6 @@ import {
   selectPoolsDetailsSetGlvOrMarketAddress,
   selectPoolsDetailsSetIsMarketForGlvSelectedManually,
   selectPoolsDetailsSetSelectedMarketAddressForGlv,
-  selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
@@ -69,7 +64,7 @@ import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
-import { isMarketTokenAddress, MARKETS } from "sdk/configs/markets";
+import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
@@ -113,8 +108,6 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const [firstTokenAddress, setFirstTokenAddress] = usePoolsDetailsFirstTokenAddress();
   const [secondTokenAddress] = usePoolsDetailsSecondTokenAddress();
-  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
-  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
 
   const [paySource, setPaySource] = usePoolsDetailsPaySource();
   const [firstTokenInputValue, setFirstTokenInputValue] = usePoolsDetailsFirstTokenInputValue();
@@ -129,7 +122,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
 
   const tradeTokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
-  const marketAndTradeTokensData = useSelector(selectPoolsDetailsMarketAndTradeTokensData);
+  const isMarketTransferrableToSourceChain = useSelector(selectPoolsDetailsIsCrossChainMarket);
   const firstToken = useSelector(selectPoolsDetailsFirstTokenData);
   const secondToken = useSelector(selectPoolsDetailsSecondTokenData);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
@@ -162,15 +155,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const indexName = useMemo(() => marketInfo && getMarketIndexName(marketInfo), [marketInfo]);
   const routerAddress = useMemo(() => getContract(chainId, "SyntheticsRouter"), [chainId]);
 
-  const sourceChainTokenOptions = useSelector(selectPoolsDetailsMultichainTokensArray).filter(
-    (t) =>
-      longTokenAddress &&
-      shortTokenAddress &&
-      (t.address === longTokenAddress ||
-        t.address === shortTokenAddress ||
-        t.wrappedAddress === longTokenAddress ||
-        t.wrappedAddress === shortTokenAddress)
-  );
+  const tokenOptions = useSelector(selectPoolsDetailsTokenOptions);
 
   const firstTokenUsd = convertToUsd(
     firstTokenAmount,
@@ -183,14 +168,6 @@ export function GmSwapBoxDepositWithdrawal() {
     secondToken?.decimals,
     isDeposit ? secondToken?.prices?.minPrice : secondToken?.prices?.maxPrice
   );
-
-  const tokenOptions = useSelector(selectPoolsDetailsTokenOptions);
-
-  const availableTokensData = useMemo(() => {
-    return pickBy(marketAndTradeTokensData, (token) => {
-      return tokenOptions.find((t) => t.address === token.address);
-    });
-  }, [marketAndTradeTokensData, tokenOptions]);
 
   const { longCollateralLiquidityUsd, shortCollateralLiquidityUsd } = useMemo(() => {
     if (!marketInfo) {
@@ -447,7 +424,7 @@ export function GmSwapBoxDepositWithdrawal() {
     marketTokensData,
   });
 
-  const isMarketTransferrableToSourceChain = useUpdatePaySourceForMultichain();
+  useUpdatePaySourceForMultichain();
 
   // #endregion
 
@@ -493,7 +470,6 @@ export function GmSwapBoxDepositWithdrawal() {
                   {firstTokenAddress && isSingle && isDeposit ? (
                     <MultichainTokenSelectorForLp
                       chainId={chainId}
-                      srcChainId={srcChainId}
                       tokenAddress={firstTokenAddress}
                       payChainId={
                         paySource === "gmxAccount"
@@ -502,11 +478,9 @@ export function GmSwapBoxDepositWithdrawal() {
                             ? srcChainId
                             : undefined
                       }
-                      tokensData={availableTokensData}
+                      tokens={tokenOptions}
                       onSelectTokenAddress={async (tokenAddress, isGmxAccount, newSrcChainId) => {
                         if (newSrcChainId === undefined) {
-                          await switchNetwork(chainId, true);
-                        } else if (isMarketTokenAddress(chainId, firstTokenAddress)) {
                           await switchNetwork(chainId, true);
                         } else if (newSrcChainId !== srcChainId && newSrcChainId !== undefined) {
                           await switchNetwork(newSrcChainId, true);
@@ -517,8 +491,6 @@ export function GmSwapBoxDepositWithdrawal() {
                         );
                         handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}
-                      multichainTokens={sourceChainTokenOptions}
-                      includeMultichainTokensInPay={isMarketTransferrableToSourceChain}
                     />
                   ) : isWithdrawal && firstTokenAddress && isSingle && tokenOptions.length > 1 ? (
                     <TokenSelector
@@ -748,6 +720,4 @@ function useUpdatePaySourceForMultichain() {
     },
     [isCrossChainMarket, paySource, setPaySource]
   );
-
-  return isCrossChainMarket;
 }

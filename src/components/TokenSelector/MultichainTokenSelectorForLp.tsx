@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
@@ -9,8 +9,8 @@ import {
   type SourceChainId,
 } from "config/chains";
 import { isSourceChain } from "config/multichain";
-import type { TokenChainData } from "domain/multichain/types";
-import { type Token, type TokensData } from "domain/tokens";
+import type { Token } from "domain/tokens";
+import { searchBy } from "lib/searchBy";
 import {
   getIsSpotOnlyMarket,
   getMarketIndexToken,
@@ -27,13 +27,13 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { ConnectWalletModalContent } from "./ConnectWalletModalContent";
-import { AvailableToTradeTokenList, useAvailableToTradeTokenList } from "./MultichainTokenSelector";
+import { AvailableToTradeTokenList } from "./MultichainTokenSelector";
+import type { DisplayToken } from "./types";
 
 import "./TokenSelector.scss";
 
 type Props = {
   chainId: ContractsChainId;
-  srcChainId: SourceChainId | undefined;
 
   label?: string;
   className?: string;
@@ -41,13 +41,9 @@ type Props = {
   tokenAddress: string;
   payChainId: AnyChainId | GmxAccountPseudoChainId | undefined;
 
-  tokensData: TokensData | undefined;
+  tokens: DisplayToken[];
 
   onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean, srcChainId: SourceChainId | undefined) => void;
-  extendedSortSequence?: string[] | undefined;
-
-  multichainTokens: TokenChainData[] | undefined;
-  includeMultichainTokensInPay?: boolean;
 
   isConnected?: boolean;
   walletIconUrls?: string[];
@@ -56,16 +52,12 @@ type Props = {
 
 export function MultichainTokenSelectorForLp({
   chainId,
-  srcChainId,
-  tokensData,
-  extendedSortSequence,
+  tokens,
   onSelectTokenAddress: propsOnSelectTokenAddress,
   tokenAddress,
   payChainId,
   className,
   label,
-  multichainTokens,
-  includeMultichainTokensInPay,
   isConnected,
   walletIconUrls,
   openConnectModal,
@@ -84,17 +76,13 @@ export function MultichainTokenSelectorForLp({
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount, tokenSrcChainId);
   };
 
-  const availableToTradeTokenList = useAvailableToTradeTokenList({
-    activeFilter: "pay",
-    srcChainId,
-    searchKeyword,
-    tokensData,
-    extendedSortSequence,
-    chainId,
-    multichainTokens,
-    includeMultichainTokensInPay,
-    includeSettlementChainTokens: true,
-  });
+  const availableToTradeTokenList = useMemo(() => {
+    if (searchKeyword.trim()) {
+      return searchBy(tokens, ["symbol", "name", "address"], searchKeyword);
+    }
+
+    return tokens;
+  }, [tokens, searchKeyword]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
