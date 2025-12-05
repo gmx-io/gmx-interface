@@ -57,10 +57,6 @@ msgstr "Puedes transferir {nativeTokenSymbol} desde otras redes a {chainName} ut
 msgid "Buy order executed."
 msgstr "Orden de compra ejecutada."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#~ msgid "Claims are disabled"
-#~ msgstr "Las reclamaciones están deshabilitadas"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -157,6 +153,11 @@ msgstr ""
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
 msgstr "Impacto de Precio al Cierre"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Insufficient {gasPaymentTokenSymbol} balance to pay for gas"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime LP rewards:"
@@ -2037,10 +2038,6 @@ msgstr ""
 msgid "Display Settings"
 msgstr "Ajustes de Visualización"
 
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-#~ msgstr "Mantén los tokens GLV por tres meses para ser elegible para el programa de incentivos de $500,000."
-
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Total:"
@@ -3870,7 +3867,6 @@ msgid "There is no price impact for increase orders, orders are filled at the ma
 msgstr "No hay impacto de precio para órdenes de aumento, las órdenes se llenan al precio de marca. El impacto de precio se aplica durante órdenes de disminución. <0>Leer más</0>."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "Saldo de {0} insuficiente para pagar gas"
 
@@ -6339,10 +6335,6 @@ msgstr "Valoramos Tu Feedback"
 msgid "Stop Loss"
 msgstr "Stop Loss"
 
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution (test)"
-#~ msgstr "Distribución GLP (prueba)"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
 msgstr "mantén más de lo que ganas"
@@ -6729,10 +6721,6 @@ msgstr "La liquidez disponible será la menor de la diferencia entre el valor m�
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "cambio"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution"
-#~ msgstr "Distribución GLP"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7736,10 +7724,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Estadísticas Totales"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Claimed {0} successfully."
-#~ msgstr "Reclamado {0} exitosamente."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
