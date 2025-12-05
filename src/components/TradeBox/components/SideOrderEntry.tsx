@@ -10,19 +10,10 @@ import {
 import { selectTradeboxMockPosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SidecarSlTpOrderEntry, SidecarOrderEntryGroupBase } from "domain/synthetics/sidecarOrders/types";
-import {
-  calculateDisplayDecimals,
-  expandDecimals,
-  formatAmount,
-  formatUsd,
-  formatPercentage,
-  parseValue,
-  removeTrailingZeros,
-} from "lib/numbers";
+import { calculateDisplayDecimals, expandDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 import NumberInput from "components/NumberInput/NumberInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import ChevronUpIcon from "img/ic_chevron_up.svg?react";
@@ -176,15 +167,6 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
     return formatGainLossValue(displayMode);
   }, [lastEditedField, gainLossInputValue, formatGainLossValue, displayMode]);
 
-  const secondFieldAlternateValue = useMemo(() => {
-    if (displayMode === "percentage") {
-      return realizedPnl != null ? formatUsd(realizedPnl) : undefined;
-    }
-    return realizedPnlPercentage != null ? formatPercentage(realizedPnlPercentage, { signed: true }) : undefined;
-  }, [displayMode, realizedPnl, realizedPnlPercentage]);
-
-  const pnlColorClass = realizedPnl == null ? "" : realizedPnl >= 0n ? "text-green-500" : "text-red-500";
-
   const convertGainLossValue = useCallback(
     (value: string, fromMode: TPSLDisplayMode, toMode: TPSLDisplayMode): string => {
       if (collateralUsd == null || collateralUsd === 0n) return "";
@@ -236,57 +218,48 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
     <div className="flex gap-4">
       <div
         className={cx(
-          "text-body-small flex flex-1 cursor-text flex-col justify-between gap-2 rounded-8 border bg-slate-800 p-12",
+          "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
           priceError ? "border-red-500" : "border-slate-800",
           "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
         )}
         onClick={handleBoxClick(priceInputRef)}
       >
-        <div className="flex justify-between">
-          <TooltipWithPortal disabled={!priceError} content={priceError} variant="none">
-            <div className={cx("text-typography-secondary", { "text-red-500": priceError })}>{label}</div>
-          </TooltipWithPortal>
-          <div className="text-12 text-typography-secondary">USD</div>
-        </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <div className="relative grow">
             <NumberInput
               value={entry.price?.input ?? ""}
-              className={cx("text-body-large h-28 w-full min-w-0 p-0 outline-none", { "text-red-500": priceError })}
+              className={cx("h-18 w-full min-w-0 p-0 text-13 outline-none", { "text-red-500": priceError })}
               inputRef={priceInputRef}
               onValueChange={handlePriceChange}
-              placeholder="0.0"
+              placeholder={label}
             />
           </div>
+          <span className="text-13 text-typography-secondary">USD</span>
         </div>
       </div>
 
       <div
         className={cx(
-          "text-body-small relative flex flex-1 cursor-text flex-col justify-between gap-2 rounded-8 border bg-slate-800 p-12",
+          "text-body-small relative flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3",
           "border-slate-800",
           "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
         )}
         onClick={handleBoxClick(secondInputRef)}
       >
-        <div className="flex justify-between">
-          <div className="text-typography-secondary">{secondLabel}</div>
-          <div className={cx("text-12 text-typography-secondary", pnlColorClass)}>{secondFieldAlternateValue}</div>
-        </div>
         <div className="flex items-center justify-between">
           <div className="relative grow">
             <NumberInput
               value={secondFieldValue}
-              className="text-body-large h-28 w-full min-w-0 p-0 outline-none"
+              className="h-18 w-full min-w-0 p-0 text-13 outline-none"
               inputRef={secondInputRef}
               onValueChange={handleGainLossChange}
-              placeholder="0.0"
+              placeholder={secondLabel}
             />
           </div>
           <div className="relative" data-dropdown>
             <button
               type="button"
-              className="flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none bg-slate-900 px-8 py-4 text-13 text-typography-secondary hover:text-typography-primary"
+              className="flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-13 text-typography-secondary hover:text-typography-primary"
               onClick={() => setIsDropdownOpen((prev) => !prev)}
             >
               {displayMode === "percentage" ? "%" : "$"}

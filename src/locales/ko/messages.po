@@ -675,7 +675,7 @@ msgstr "담보 수정"
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} 롱 스탑 마켓: 가격이 트리거 가격 미만일 때 숏 포지션 {0}."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "SL Price"
 msgstr ""
 
@@ -1423,7 +1423,7 @@ msgstr ""
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "출금하려는 금액이 한도를 초과합니다. <0>{upperLimitFormatted}</0>보다 작은 금액을 시도하세요."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Gain"
 msgstr ""
 
@@ -3321,7 +3321,7 @@ msgstr "마켓 스왑 요청"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "{0} 시장 풀의 유동성 부족. 이 시장에 대해 다른 풀을 선택하세요.{1}"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Loss"
 msgstr ""
 
@@ -6400,7 +6400,7 @@ msgstr "주문 제출 오류"
 msgid "Duration"
 msgstr "기간"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "TP Price"
 msgstr ""
 

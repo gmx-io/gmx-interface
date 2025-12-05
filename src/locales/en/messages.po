@@ -675,7 +675,7 @@ msgstr "Edit Collateral"
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "SL Price"
 msgstr "SL Price"
 
@@ -1423,7 +1423,7 @@ msgstr "Timestamp"
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Gain"
 msgstr "Gain"
 
@@ -3321,7 +3321,7 @@ msgstr "Request Market Swap"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Loss"
 msgstr "Loss"
 
@@ -6400,7 +6400,7 @@ msgstr "Error submitting order"
 msgid "Duration"
 msgstr "Duration"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "TP Price"
 msgstr "TP Price"
 

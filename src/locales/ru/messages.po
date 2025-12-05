@@ -675,7 +675,7 @@ msgstr "Редактирование залога"
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Лонг стоп-рынок: {0} короткую позицию, когда цена ниже триггерной цены."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "SL Price"
 msgstr ""
 
@@ -1423,7 +1423,7 @@ msgstr ""
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Сумма, которую вы пытаетесь вывести, превышает лимит. Пожалуйста, попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Gain"
 msgstr ""
 
@@ -3321,7 +3321,7 @@ msgstr "Запрос на Рыночный Обмен"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "Недостаточно ликвидности в пуле рынка {0}. Выберите другой пул для этого рынка.{1}"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Loss"
 msgstr ""
 
@@ -6400,7 +6400,7 @@ msgstr "Ошибка при отправке ордера"
 msgid "Duration"
 msgstr "Продолжительность"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "TP Price"
 msgstr ""
 

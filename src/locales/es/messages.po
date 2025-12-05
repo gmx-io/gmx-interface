@@ -675,7 +675,7 @@ msgstr "Editar Garantía"
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr "{typeString} Mercado Stop Largo: {0} una posición corta cuando el precio está por debajo del precio de activación."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "SL Price"
 msgstr ""
 
@@ -1423,7 +1423,7 @@ msgstr ""
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "La cantidad que intentas retirar excede el límite. Por favor, intenta una cantidad menor que <0>{upperLimitFormatted}</0>."
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Gain"
 msgstr ""
 
@@ -3321,7 +3321,7 @@ msgstr "Solicitar Intercambio de Mercado"
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "Liquidez insuficiente en la reserva de mercado {0}. Selecciona una reserva diferente para este mercado.{1}"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "Loss"
 msgstr ""
 
@@ -6400,7 +6400,7 @@ msgstr "Error al enviar la orden"
 msgid "Duration"
 msgstr "Duración"
 
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TradeBox/components/SideOrderEntry.tsx
 msgid "TP Price"
 msgstr ""
 

@@ -13,7 +13,7 @@ import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrde
 import { ExpandableRow } from "components/ExpandableRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { SideOrderEntry } from "../components/SideOrderEntries";
+import { SideOrderEntry } from "../components/SideOrderEntry";
 
 function SideOrders({ type }: { type: "stopLoss" | "takeProfit" }) {
   const { stopLoss, takeProfit } = useSidecarOrders();
