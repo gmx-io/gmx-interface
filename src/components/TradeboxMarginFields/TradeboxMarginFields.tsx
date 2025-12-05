@@ -13,7 +13,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
-import { formatAmountFree, parseValue } from "lib/numbers";
+import { formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -143,6 +143,70 @@ export function TradeboxMarginFields({
     [setFocusedInput, setToTokenInputValue]
   );
 
+  const handleSizeDisplayModeChange = useCallback(
+    (newMode: SizeDisplayMode) => {
+      if (newMode === sizeDisplayMode || !toToken || markPrice === undefined || markPrice === 0n) {
+        setSizeDisplayMode(newMode);
+        return;
+      }
+
+      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+
+      if (newMode === "token") {
+        const parsedUsd = parseValue(toTokenInputValue || "0", USD_DECIMALS);
+        if (parsedUsd !== undefined && parsedUsd > 0n) {
+          const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
+          setFocusedInput("to");
+          setToTokenInputValue(formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals), false);
+        }
+      } else {
+        const parsedTokens = parseValue(toTokenInputValue || "0", toToken.decimals);
+        if (parsedTokens !== undefined && parsedTokens > 0n) {
+          const sizeInUsd = (parsedTokens * visualMultiplier * markPrice) / 10n ** BigInt(toToken.decimals);
+          setFocusedInput("to");
+          setToTokenInputValue(formatAmountFree(sizeInUsd, USD_DECIMALS), false);
+        }
+      }
+
+      setSizeDisplayMode(newMode);
+    },
+    [sizeDisplayMode, toToken, markPrice, toTokenInputValue, setFocusedInput, setToTokenInputValue]
+  );
+
+  const handlePriceDisplayModeChange = useCallback(
+    (newMode: PriceDisplayMode) => {
+      if (newMode === priceDisplayMode || !toToken || markPrice === undefined || markPrice === 0n) {
+        setPriceDisplayMode(newMode);
+        return;
+      }
+
+      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+
+      if (newMode === "token") {
+        const parsedUsd = parseValue(triggerPriceInputValue || "0", USD_DECIMALS);
+        if (parsedUsd !== undefined && parsedUsd > 0n) {
+          const tokenValue = (parsedUsd * visualMultiplier * 10n ** BigInt(toToken.decimals)) / markPrice;
+          const newInputValue = formatAmountFree(tokenValue, toToken.decimals);
+          if (onTriggerPriceInputChange) {
+            onTriggerPriceInputChange({ target: { value: newInputValue } } as ChangeEvent<HTMLInputElement>);
+          }
+        }
+      } else {
+        const parsedTokens = parseValue(triggerPriceInputValue || "0", toToken.decimals);
+        if (parsedTokens !== undefined && parsedTokens > 0n) {
+          const usdValue = (parsedTokens * markPrice) / (10n ** BigInt(toToken.decimals) * visualMultiplier);
+          const newInputValue = formatAmountFree(usdValue, USD_DECIMALS);
+          if (onTriggerPriceInputChange) {
+            onTriggerPriceInputChange({ target: { value: newInputValue } } as ChangeEvent<HTMLInputElement>);
+          }
+        }
+      }
+
+      setPriceDisplayMode(newMode);
+    },
+    [priceDisplayMode, toToken, markPrice, triggerPriceInputValue, onTriggerPriceInputChange]
+  );
+
   return (
     <div className="flex flex-col gap-4">
       <MarginToPayField
@@ -158,7 +222,7 @@ export function TradeboxMarginFields({
         sizeInUsd={increaseAmounts?.sizeDeltaUsd}
         indexToken={toToken}
         displayMode={sizeDisplayMode}
-        onDisplayModeChange={setSizeDisplayMode}
+        onDisplayModeChange={handleSizeDisplayModeChange}
         inputValue={toTokenInputValue}
         onInputValueChange={handleSizeInputChange}
         onFocus={() => setFocusedInput("to")}
@@ -170,7 +234,7 @@ export function TradeboxMarginFields({
           indexToken={toToken}
           markPrice={markPrice}
           displayMode={priceDisplayMode}
-          onDisplayModeChange={setPriceDisplayMode}
+          onDisplayModeChange={handlePriceDisplayModeChange}
           inputValue={triggerPriceInputValue}
           onInputValueChange={onTriggerPriceInputChange}
           qa="trigger-price"
