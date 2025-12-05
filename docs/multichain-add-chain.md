@@ -31,3 +31,7 @@ Take a look into a BSC addition [pr](https://github.com/gmx-io/gmx-interface/pul
     6. Update [`landing/src/pages/Home/LaunchSection/LaunchSection.tsx`](../landing/src/pages/Home/LaunchSection/LaunchSection.tsx) to include the new chain card
 
 To make the funding history work update the squid according to its documentation.
+
+## Business updates
+
+- Rabby: to avoid platform token transaction being flagged as a scam, we need to ask Rabby team to add our new chain tokens to the allowlist.

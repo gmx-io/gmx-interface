@@ -3,23 +3,24 @@ import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
+import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
+  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsFirstBuy,
   selectPoolsDetailsIsMarketTokenDeposit,
-  selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketTokenAddress,
   selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsPaySource,
+  selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsSelectedMarketInfoForGlv,
   selectPoolsDetailsShortTokenAddress,
   selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
-  selectPoolsDetailsSecondTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
@@ -71,6 +72,7 @@ import { ExecutionFee } from "sdk/types/fees";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
+import type { TechnicalFees } from "../useTechnicalFeesAsyncResult";
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpressTxnParams";
 
@@ -582,7 +584,7 @@ export const useDepositTransactions = ({
 function useDepositTransferRequests({
   technicalFees,
 }: {
-  technicalFees: UseLpTransactionProps["technicalFees"];
+  technicalFees: TechnicalFees | undefined;
 }): TransferRequests | undefined {
   const chainId = useSelector(selectChainId);
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
@@ -633,19 +635,18 @@ function useDepositTransferRequests({
       let tokenAddress =
         longTokenAmount !== undefined && longTokenAmount > 0n ? initialLongTokenAddress : initialShortTokenAddress;
 
-      const estimatedReceivedAmount =
-        (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees | undefined)?.txnEstimatedReceivedAmount ??
-        0n;
-
       let amount = longTokenAmount !== undefined && longTokenAmount > 0n ? longTokenAmount : shortTokenAmount!;
 
-      return getTransferRequests([
-        {
-          to: vaultAddress,
-          token: tokenAddress,
-          amount: applySlippageToMinOut(1, estimatedReceivedAmount ?? amount),
-        },
-      ]);
+      const estimatedReceivedAmount = (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees | undefined)
+        ?.txnEstimatedReceivedAmount;
+
+      if (estimatedReceivedAmount !== undefined && estimatedReceivedAmount > amount) {
+        return undefined;
+      }
+
+      amount = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, estimatedReceivedAmount ?? amount);
+
+      return getTransferRequests([{ to: vaultAddress, token: tokenAddress, amount }]);
     }
 
     return getTransferRequests([

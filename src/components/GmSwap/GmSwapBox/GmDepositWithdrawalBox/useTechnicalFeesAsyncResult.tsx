@@ -47,6 +47,7 @@ import { useThrottledAsync } from "lib/useThrottledAsync";
 import { MARKETS } from "sdk/configs/markets";
 import { ExecutionFee } from "sdk/types/fees";
 import { WithdrawalAmounts } from "sdk/types/trade";
+import { absDiffBps } from "sdk/utils/numbers";
 
 import { Operation } from "../types";
 
@@ -76,7 +77,15 @@ export function useTechnicalFees(): TechnicalFees {
   const prevPaySource = usePrevious(paySource);
   const prevOperation = usePrevious(operation);
   const prevIsPair = usePrevious(isPair);
-  const forceRecalculate = prevPaySource !== paySource || prevOperation !== operation || prevIsPair !== isPair;
+  const prevFirstTokenAmount = usePrevious(firstTokenAmount);
+
+  const isAmountChangedSignificantly =
+    prevFirstTokenAmount !== undefined &&
+    firstTokenAmount !== undefined &&
+    absDiffBps(firstTokenAmount, prevFirstTokenAmount) > 100n;
+
+  const forceRecalculate =
+    prevPaySource !== paySource || prevOperation !== operation || prevIsPair !== isPair || isAmountChangedSignificantly;
 
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
@@ -248,8 +257,8 @@ export function useTechnicalFees(): TechnicalFees {
               paySource,
               srcChainId,
               tokenAddress: firstTokenAddress,
-              marketTokenAmount: marketOrGlvTokenAmount,
               tokenAmount: firstTokenAmount,
+              marketTokenAmount: marketOrGlvTokenAmount,
               operation,
               amounts,
               gasLimits,
@@ -259,6 +268,7 @@ export function useTechnicalFees(): TechnicalFees {
           : undefined,
       withLoading: false,
       forceRecalculate,
+      resetOnForceRecalculate: true,
     }
   );
 

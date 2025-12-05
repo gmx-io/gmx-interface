@@ -124,6 +124,7 @@ export function BridgeInModal({
     minResidualAmount: undefined,
     isLoading: false,
     srcChainId: bridgeInChain,
+    overrideBalance: true,
     balance: bridgeInChainMarketTokenBalance,
   });
 
