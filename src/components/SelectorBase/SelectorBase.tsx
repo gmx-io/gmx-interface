@@ -21,6 +21,7 @@ type Props = PropsWithChildren<{
   handleClassName?: string;
   chevronClassName?: string;
   desktopPanelClassName?: string;
+  wrapperClassName?: string;
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
@@ -185,7 +186,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   }
 
   return (
-    <Popover>
+    <Popover className={props.wrapperClassName}>
       {(popoverProps) => (
         <>
           <Popover.Button
@@ -198,7 +199,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             ref={refs.setReference}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
-            {props.label}
+            <span className="overflow-hidden text-ellipsis">{props.label}</span>
             <ChevronDownIcon
               className={cx(
                 "inline-block size-16 group-gmx-hover/selector-base:text-blue-300",
@@ -254,7 +255,7 @@ function SelectorBaseMobile(props: Props) {
   return (
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
-        {props.label}
+        <span className="overflow-hidden text-ellipsis">{props.label}</span>
         {!props.disabled && <ChevronDownIcon className={cx("inline-block size-16", props.chevronClassName)} />}
       </div>
 

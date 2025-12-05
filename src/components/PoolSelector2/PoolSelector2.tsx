@@ -8,6 +8,7 @@ import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/s
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
+import { BEST_POOL_MARKER } from "domain/synthetics/trade/usePoolSelection";
 import { formatAmountHuman, formatRatePercentage, formatUsd } from "lib/numbers";
 
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
@@ -25,6 +26,13 @@ import {
 
 import "./PoolSelector2.scss";
 
+function getPoolDisplayName(marketStat: MarketStat): string {
+  if (marketStat.marketInfo.marketTokenAddress === BEST_POOL_MARKER) {
+    return t`Best Pool`;
+  }
+  return getMarketPoolName(marketStat.marketInfo);
+}
+
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
   selectedPoolName: string | undefined;
@@ -34,6 +42,12 @@ type Props = {
   };
   tradeType: TradeType;
   onSelect: (marketAddress: string) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
+  handleClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  chevronClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  wrapperClassName?: string;
 };
 
 export function PoolSelector2(props: Props) {
@@ -41,7 +55,15 @@ export function PoolSelector2(props: Props) {
   const disabled = props.options?.length === 1;
 
   return (
-    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled} qa="pool-selector">
+    <SelectorBase
+      label={props.selectedPoolName}
+      modalLabel={t`Select pool`}
+      disabled={disabled}
+      qa="pool-selector"
+      handleClassName={props.handleClassName}
+      chevronClassName={props.chevronClassName}
+      wrapperClassName={props.wrapperClassName}
+    >
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </SelectorBase>
   );
@@ -70,8 +92,8 @@ function PoolSelector2Desktop(props: Props) {
             key={option.marketInfo.marketTokenAddress}
             marketStat={option}
             tradeType={props.tradeType}
-            isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
-            liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
+            isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.isEnoughLiquidity ?? true}
+            liquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.liquidity ?? 0n}
             data-qa="pool-selector-row"
             onSelect={() => {
               props.onSelect(option.marketInfo.marketTokenAddress);
@@ -96,7 +118,7 @@ function PoolListItemDesktop({
   onSelect: () => void;
 } & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
-  const poolName = getMarketPoolName(marketStat.marketInfo);
+  const poolName = getPoolDisplayName(marketStat);
   const formattedLiquidity = formatAmountHuman(liquidity, USD_DECIMALS);
 
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
@@ -146,8 +168,8 @@ function PoolSelector2Mobile(props: Props) {
           key={option.marketInfo.marketTokenAddress}
           marketStat={option}
           tradeType={props.tradeType}
-          isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
-          liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
+          isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.isEnoughLiquidity ?? true}
+          liquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.liquidity ?? 0n}
           onSelect={() => {
             props.onSelect(option.marketInfo.marketTokenAddress);
             close();
@@ -170,9 +192,10 @@ function PoolListItemMobile({
   onSelect: () => void;
 } & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
+  const isBestPool = marketStat.marketInfo.marketTokenAddress === BEST_POOL_MARKER;
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
-  const poolName = getMarketPoolName(marketStat.marketInfo);
+  const poolName = getPoolDisplayName(marketStat);
   const formattedLiquidity = formatUsd(liquidity);
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
 
@@ -195,7 +218,7 @@ function PoolListItemMobile({
             />
           )}
         </div>
-        <div className="PoolSelector2-mobile-pool-name">{poolName}</div>
+        <div className={cx("PoolSelector2-mobile-pool-name", { "text-blue-300": isBestPool })}>{poolName}</div>
       </div>
       <dl className="PoolSelector2-mobile-info">
         <dt>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</dt>

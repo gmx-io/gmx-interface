@@ -8,6 +8,7 @@ type Props = {
   onChange?: (option: any) => void;
   optionLabels?: Record<string | number, ReactNode> | string[];
   optionClassnames?: Record<string | number, string>;
+  optionContentClassnames?: Record<string | number, string>;
   icons?: Record<string, ReactNode>;
   qa?: string;
 };
@@ -23,7 +24,7 @@ function getTransformTemplate({ x }: Parameters<Exclude<MotionProps["transformTe
   return `translateX(${x})`;
 }
 
-export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, optionClassnames }: Props) {
+export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, optionClassnames, optionContentClassnames }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const optionsRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const bgRef = useRef<HTMLDivElement>(null);
@@ -229,7 +230,7 @@ export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, 
           <div
             className={cx(
               "relative z-10 flex grow items-center justify-center gap-8 px-15 pb-11 pt-11 text-center font-medium transition-colors",
-              isActive ? "text-typography-primary" : ""
+              isActive ? cx(optionContentClassnames?.[opt], "text-typography-primary") : ""
             )}
             onClick={() => onClick(opt)}
             key={opt}

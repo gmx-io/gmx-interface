@@ -1,19 +1,6 @@
 $blue: var(--color-blue-300);
-$gray: var(--color-slate-600);
 
-.LeverageSlider {
-  margin-top: 1.5rem;
-  margin-bottom: 3.4rem;
-
-  &.slim {
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  padding: 0 8px 0 12px;
-
-  user-select: none;
-
+.MarginPercentageSlider {
   .rc-slider-tooltip-inner {
     box-shadow: none;
     padding: 0.465rem 0.8rem;
@@ -21,7 +8,6 @@ $gray: var(--color-slate-600);
 
   .rc-slider-tooltip {
     z-index: 5;
-
     background: rgb(49, 54, 85);
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
   }
@@ -31,15 +17,15 @@ $gray: var(--color-slate-600);
   }
 
   .rc-slider-rail {
-    border-radius: 0;
+    border-radius: 2px;
     height: 4px;
     background: var(--color-slate-800);
   }
 
   .rc-slider-track {
-    border-radius: 0;
+    border-radius: 2px;
     height: 4px;
-    background-color: var(--color-blue-300);
+    background-color: $blue;
   }
 
   .rc-slider-dot {
@@ -51,9 +37,11 @@ $gray: var(--color-slate-600);
     box-sizing: content-box;
     top: -1px;
   }
+
   .rc-slider-dot-active {
-    border-color: var(--color-blue-300);
+    border-color: $blue;
   }
+
   .rc-slider-handle {
     background-color: var(--color-slate-800);
     border: solid 2px $blue;
@@ -67,6 +55,10 @@ $gray: var(--color-slate-600);
     }
   }
 
+  .rc-slider-mark {
+    top: 12px !important;
+  }
+
   .rc-slider-mark-text,
   .rc-slider-mark-text-active {
     color: var(--color-slate-100);
@@ -75,6 +67,20 @@ $gray: var(--color-slate-600);
     font-weight: 500;
     text-transform: uppercase;
     text-align: left;
+  }
+
+  .rc-slider-mark-text:nth-child(2n) {
+    display: none;
+  }
+
+  .rc-slider-mark-text:first-child {
+    left: 3px !important;
+  }
+
+  .rc-slider-mark-text:last-child {
+    right: -3px !important;
+    left: unset !important;
+    transform: translateX(0) !important;
   }
 
   .rc-slider-mark-text:hover,

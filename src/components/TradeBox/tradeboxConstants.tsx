@@ -33,18 +33,27 @@ export const tradeTypeLabels = {
  */
 export const tradeTypeClassNames = {
   [TradeType.Long]: {
-    active: "!bg-green-500/20 border-b-green-500 pb-9",
+    active: "!bg-green-900 border-b-green-500 pb-9 !text-green-100",
+    regular: "border-b-transparent",
   },
   [TradeType.Short]: {
-    active: "!bg-red-500/20 border-b-red-500 pb-9",
+    active: "!bg-red-900 border-b-red-500 pb-9 !text-red-100",
+    regular: "border-b-transparent",
   },
   [TradeType.Swap]: {
-    active: "!bg-blue-300/20 border-b-blue-300 pb-9",
+    active: "!bg-blue-300/10 border-b-blue-300 pb-9 !text-blue-300",
+    regular: "border-b-transparent",
   },
 };
 
 export const mobileTradeTypeClassNames = {
-  [TradeType.Long]: "!bg-green-500/20 border-b-2 border-b-green-500",
-  [TradeType.Short]: "!bg-red-500/20 border-b-2 border-b-red-500",
-  [TradeType.Swap]: "!bg-blue-300/20 border-b-2 border-b-blue-300",
+  [TradeType.Long]: "!bg-green-500/20 border-b-2 border-b-green-500 !text-green-100",
+  [TradeType.Short]: "!bg-red-500/20 border-b-2 border-b-red-500 !text-red-100",
+  [TradeType.Swap]: "!bg-blue-300/20 border-b-2 border-b-blue-300 !text-blue-100",
+};
+
+export const mobileTradeTypeContentClassNames = {
+  [TradeType.Long]: "text-green-100",
+  [TradeType.Short]: "text-red-100",
+  [TradeType.Swap]: "text-blue-100",
 };

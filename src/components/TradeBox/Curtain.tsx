@@ -23,9 +23,11 @@ export function Curtain({
   children,
   header,
   dataQa,
+  hideChevron,
 }: PropsWithChildren<{
   header: React.ReactNode;
   dataQa?: string;
+  hideChevron?: boolean;
 }>) {
   const curtainRef = useRef<HTMLDivElement>(null);
   const isPointerDownRef = useRef(false);
@@ -241,26 +243,29 @@ export function Curtain({
         >
           <div
             className={cx(
-              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600 bg-slate-800 pr-8 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
+              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
               {
                 "border-b-1/2 border-t-1/2 bg-slate-900": isOpen,
+                "pr-8": !hideChevron,
               }
             )}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
-            <div className="grow" onClick={headerClick}>
+            <div className="grow overflow-hidden" onClick={headerClick}>
               {header}
             </div>
-            <button onClick={handleToggle} className="group p-10">
-              <ChevronDownIcon
-                className={cx(
-                  "size-16 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
-                  isOpen ? undefined : "rotate-180"
-                )}
-              />
-            </button>
+            {!hideChevron && (
+              <button onClick={handleToggle} className="group p-10">
+                <ChevronDownIcon
+                  className={cx(
+                    "size-16 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
+                    isOpen ? undefined : "rotate-180"
+                  )}
+                />
+              </button>
+            )}
           </div>
 
           <div

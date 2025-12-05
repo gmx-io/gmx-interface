@@ -15,8 +15,8 @@ import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/S
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { BlockField } from "components/BlockField/BlockField";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
-import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
@@ -28,24 +28,35 @@ export type Props = {
   isMarket: boolean;
 };
 
-export function CollateralSelectorRow(p: Props) {
+export function CollateralSelectorField(p: Props) {
   const { onSelectCollateralAddress } = p;
   const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
 
   const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
-  const warnings = useCollateralWarnings();
   const collateralInTooltipContent = useCollateralInTooltipContent();
 
   return (
-    <>
-      <SyntheticsInfoRow
+    <div className="flex flex-col gap-8">
+      <BlockField
         label={
-          <TooltipWithPortal position="left-start" content={collateralInTooltipContent} variant="icon">
-            <Trans>Collateral In</Trans>
+          <TooltipWithPortal
+            position="bottom-end"
+            content={collateralInTooltipContent}
+            variant="none"
+            className="overflow-hidden"
+            handleClassName="!flex overflow-hidden"
+            contentClassName="overflow-hidden"
+          >
+            <span className="overflow-hidden text-ellipsis">
+              <Trans>Collateral</Trans>
+            </span>
           </TooltipWithPortal>
         }
-        value={
+        labelClassName="overflow-hidden shrink-1 grow-0 flex"
+        contentClassName="shrink-0 min-w-[unset]"
+        className="overflow-hidden"
+        content={
           <CollateralSelector
             onSelect={onSelectCollateralAddress}
             options={availableTokens}
@@ -54,12 +65,11 @@ export function CollateralSelectorRow(p: Props) {
           />
         }
       />
-      {warnings}
-    </>
+    </div>
   );
 }
 
-function useCollateralWarnings() {
+export function useCollateralWarnings() {
   const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
   const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const { isMarket } = useSelector(selectTradeboxTradeFlags);
