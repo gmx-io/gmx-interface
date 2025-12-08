@@ -64,9 +64,38 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
     );
   }, [mockPosition?.collateralAmount, mockPosition?.collateralToken]);
 
+  const entryPrice = mockPosition?.entryPrice;
+  const liquidationPrice = mockPosition?.liquidationPrice;
+
+  const effectiveLiquidationPrice = useMemo(() => {
+    if (liquidationPrice == null || liquidationPrice === 0n) return undefined;
+    if (entryPrice == null || entryPrice === 0n) return undefined;
+    const priceRange = isLong ? entryPrice - liquidationPrice : liquidationPrice - entryPrice;
+    if (priceRange <= 0n) return undefined;
+    const buffer = bigMath.mulDiv(priceRange, 100n, 10000n);
+    if (isLong) {
+      return liquidationPrice + buffer;
+    } else {
+      return liquidationPrice - buffer;
+    }
+  }, [liquidationPrice, entryPrice, isLong]);
+
   const formatGainLossValue = useCallback(
     (mode: TPSLDisplayMode): string => {
       if (mode === "percentage") {
+        if (isStopLoss && entryPrice != null && effectiveLiquidationPrice != null) {
+          const currentPrice = entry.price?.value;
+          if (currentPrice == null || currentPrice === 0n) return "";
+
+          const priceRange = isLong ? entryPrice - effectiveLiquidationPrice : effectiveLiquidationPrice - entryPrice;
+          if (priceRange <= 0n) return "";
+
+          const priceDiff = isLong ? entryPrice - currentPrice : currentPrice - entryPrice;
+          if (priceDiff <= 0n) return "";
+
+          const percentage = bigMath.mulDiv(priceDiff, 10000n, priceRange);
+          return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
+        }
         if (realizedPnlPercentage != null && realizedPnlPercentage !== 0n) {
           return String(removeTrailingZeros(formatAmount(bigMath.abs(realizedPnlPercentage), 2, 2)));
         }
@@ -77,7 +106,7 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
       }
       return "";
     },
-    [realizedPnl, realizedPnlPercentage]
+    [realizedPnl, realizedPnlPercentage, isStopLoss, entryPrice, effectiveLiquidationPrice, isLong, entry.price?.value]
   );
 
   const calculatePriceFromPnlUsd = useCallback(
@@ -104,11 +133,22 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
 
   const calculatePriceFromPnlPercentage = useCallback(
     (targetPnlPercentage: bigint): bigint | null => {
+      if (isStopLoss && entryPrice != null && effectiveLiquidationPrice != null) {
+        const priceRange = isLong ? entryPrice - effectiveLiquidationPrice : effectiveLiquidationPrice - entryPrice;
+        if (priceRange <= 0n) return null;
+
+        const priceDelta = bigMath.mulDiv(priceRange, targetPnlPercentage, 10000n);
+        const price = isLong ? entryPrice - priceDelta : entryPrice + priceDelta;
+
+        if (price <= 0n) return null;
+        return price;
+      }
+
       if (collateralUsd == null || collateralUsd === 0n) return null;
       const targetPnlUsd = bigMath.mulDiv(collateralUsd, targetPnlPercentage, 10000n);
       return calculatePriceFromPnlUsd(targetPnlUsd);
     },
-    [collateralUsd, calculatePriceFromPnlUsd]
+    [collateralUsd, calculatePriceFromPnlUsd, isStopLoss, entryPrice, effectiveLiquidationPrice, isLong]
   );
 
   const formatPrice = useCallback(
@@ -168,6 +208,41 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
 
   const convertGainLossValue = useCallback(
     (value: string, fromMode: TPSLDisplayMode, toMode: TPSLDisplayMode): string => {
+      if (
+        isStopLoss &&
+        entryPrice != null &&
+        effectiveLiquidationPrice != null &&
+        sizeInUsd != null &&
+        sizeInTokens != null &&
+        indexTokenDecimals != null
+      ) {
+        const priceRange = isLong ? entryPrice - effectiveLiquidationPrice : effectiveLiquidationPrice - entryPrice;
+        if (priceRange <= 0n) return "";
+
+        if (fromMode === "percentage" && toMode === "usd") {
+          const parsed = parseValue(value, 2);
+          if (parsed == null || parsed <= 0n) return "";
+          const priceDelta = bigMath.mulDiv(priceRange, parsed, 10000n);
+          const price = isLong ? entryPrice - priceDelta : entryPrice + priceDelta;
+          const positionValueAtPrice = bigMath.mulDiv(sizeInTokens, price, expandDecimals(1, indexTokenDecimals));
+          const pnlUsd = isLong ? sizeInUsd - positionValueAtPrice : positionValueAtPrice - sizeInUsd;
+          return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
+        }
+
+        if (fromMode === "usd" && toMode === "percentage") {
+          const parsed = parseValue(value, USD_DECIMALS);
+          if (parsed == null || parsed <= 0n) return "";
+          const price = calculatePriceFromPnlUsd(parsed);
+          if (price == null) return "";
+          const priceDiff = isLong ? entryPrice - price : price - entryPrice;
+          if (priceDiff <= 0n) return "";
+          const percentage = bigMath.mulDiv(priceDiff, 10000n, priceRange);
+          return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
+        }
+
+        return value;
+      }
+
       if (collateralUsd == null || collateralUsd === 0n) return "";
 
       if (fromMode === "percentage" && toMode === "usd") {
@@ -186,7 +261,17 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
 
       return value;
     },
-    [collateralUsd]
+    [
+      collateralUsd,
+      isStopLoss,
+      entryPrice,
+      effectiveLiquidationPrice,
+      isLong,
+      sizeInUsd,
+      sizeInTokens,
+      indexTokenDecimals,
+      calculatePriceFromPnlUsd,
+    ]
   );
 
   const handleDisplayModeChange = useCallback(

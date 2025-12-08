@@ -57,10 +57,6 @@ msgstr "Вы можете перевести {nativeTokenSymbol} из други
 msgid "Buy order executed."
 msgstr "Ордер на покупку исполнен."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#~ msgid "Claims are disabled"
-#~ msgstr "Клеймы отключены"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -1643,10 +1639,6 @@ msgstr "Путь обмена не найден"
 msgid "RPnL"
 msgstr "Реализованный PnL"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
-#~ msgstr "Комбинированные стоп-лоссы на максимуме (100%). Уменьшите существующие значения, чтобы добавить больше ордеров."
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "4-18 Places"
@@ -2054,10 +2046,6 @@ msgstr ""
 msgid "Display Settings"
 msgstr "Настройки отображения"
 
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-#~ msgstr "Держите токены GLV три месяца, чтобы получить право на программу стимулов на $500,000."
-
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Всего:"
@@ -2356,10 +2344,6 @@ msgstr "Вы подписываете каждую транзакцию офф-�
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Bridge and swap"
 msgstr "Бридж и обмен"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above lowest limit price"
-#~ msgstr "Триггерная цена выше минимальной лимитной цены"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2666,10 +2650,6 @@ msgstr "Купить GMX на централизованных биржах:"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr "Облигации GMX можно купить на Bond Protocol со скидкой и небольшим периодом вестинга:"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above highest limit price"
-#~ msgstr "Триггерная цена выше максимальной лимитной цены"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, staking and providing liquidity are fully permissionless. The GMX, GLV, and GM tokens are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some rare edge cases where your liquidity is being used for active trades. In that case, you can withdraw as soon as positions close."
@@ -3132,10 +3112,6 @@ msgstr "Средн. Размер"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Take Profit PnL"
-#~ msgstr "PnL Take Profit"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
@@ -4384,10 +4360,6 @@ msgstr "Создать Реферальный Код"
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>Поддержка Solana</0><1>Поддержка Botanix</1><2>GMX Express</2>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-#~ msgstr "Комбинированные take profit на максимуме (100%). Уменьшите существующие значения, чтобы добавить больше ордеров."
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "Сети"
@@ -4723,10 +4695,6 @@ msgstr "Ошибка ордера. Цены в настоящее время в�
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "Влияние цены обмена для порога внешнего обмена"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Limit / Take Profit / Stop Loss"
-#~ msgstr "Лимит / Тейк-профит / Стоп-лосс"
-
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
 msgstr "Стабильная доходность без управления"
@@ -4738,10 +4706,6 @@ msgstr "Спред"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "Эта позиция была ликвидирована, так как максимальное кредитное плечо {formattedMaxLeverage} было превышено с учетом комиссий."
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Swap {0}"
-#~ msgstr "Обмен {0}"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}."
@@ -5360,10 +5324,6 @@ msgstr "Только адреса с более чем {0} в \"Использу
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Limit size is required"
-#~ msgstr "Требуется лимит размера"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From Network"
 msgstr "Из сети"
@@ -5838,11 +5798,6 @@ msgstr "Обмен {fromAmount} на {toAmount}"
 msgid "Amount"
 msgstr "Сумма"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Create {0} order"
-#~ msgstr "Создать {0} ордер"
-
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}{2}"
 msgstr "Редактировать {0} {1}{2}"
@@ -6241,10 +6196,6 @@ msgstr "Депозит"
 msgid "365d Est. Fees"
 msgstr "Оценка комиссий за 365д"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below highest limit price"
-#~ msgstr "Цена триггера ниже наивысшей лимитной цены"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
 msgstr ""
@@ -6361,10 +6312,6 @@ msgstr "Мы ценим ваш отзыв"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "Стоп-лосс"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution (test)"
-#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
@@ -6756,10 +6703,6 @@ msgstr "Доступная ликвидность будет меньшей из
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "сдвиг"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution"
-#~ msgstr "Распределение GLP"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7344,10 +7287,6 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "У вас есть существующая позиция в пуле рынка {0}.<0>Переключиться на пул рынка {1}</0>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Stop Loss PnL"
-#~ msgstr "PnL стоп-лосса"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
 msgstr "Рынок - Лонг Уменьшение"
@@ -7601,10 +7540,6 @@ msgstr ""
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
 msgstr "Максимально допустимая процентная разница между ценой марки и ценой исполнения для рыночных ордеров."
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below lowest limit price"
-#~ msgstr "Триггерная цена ниже минимальной лимитной цены"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "Скидки GMX V2 автоматически применяются на каждой сделке и не отображаются в этой таблице."
@@ -7680,10 +7615,6 @@ msgstr "Последние 30д"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Панели"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Create TWAP {0} order"
-#~ msgstr "Создать TWAP {0} ордер"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied to your clipboard."
@@ -7765,10 +7696,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Общая статистика"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Claimed {0} successfully."
-#~ msgstr "Клеймлено {0} успешно."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"

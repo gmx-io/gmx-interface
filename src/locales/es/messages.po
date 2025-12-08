@@ -57,10 +57,6 @@ msgstr "Puedes transferir {nativeTokenSymbol} desde otras redes a {chainName} ut
 msgid "Buy order executed."
 msgstr "Orden de compra ejecutada."
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#~ msgid "Claims are disabled"
-#~ msgstr "Las reclamaciones están deshabilitadas"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -1643,10 +1639,6 @@ msgstr "No se encontró ruta de intercambio"
 msgid "RPnL"
 msgstr "RPnL"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
-#~ msgstr "Los stop losses combinados están al máximo (100%). Reduce valores existentes para agregar más órdenes."
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "4-18 Places"
@@ -2054,10 +2046,6 @@ msgstr ""
 msgid "Display Settings"
 msgstr "Ajustes de Visualización"
 
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-#~ msgstr "Mantén los tokens GLV por tres meses para ser elegible para el programa de incentivos de $500,000."
-
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "Total:"
@@ -2356,10 +2344,6 @@ msgstr "Firmas cada transacción off-chain. Las operaciones usan RPCs premium pa
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Bridge and swap"
 msgstr "Puente y intercambio"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above lowest limit price"
-#~ msgstr "Precio de activación por encima del precio límite más bajo"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2666,10 +2650,6 @@ msgstr "Comprar GMX en exchanges centralizados:"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr "Bonos GMX pueden comprarse en Bond Protocol con descuento y un pequeño período de adquisición:"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above highest limit price"
-#~ msgstr "Precio de activación por encima del precio límite más alto"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, staking and providing liquidity are fully permissionless. The GMX, GLV, and GM tokens are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some rare edge cases where your liquidity is being used for active trades. In that case, you can withdraw as soon as positions close."
@@ -3132,10 +3112,6 @@ msgstr "Tamaño Prom."
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Take Profit PnL"
-#~ msgstr "GyP de Take Profit"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
@@ -4384,10 +4360,6 @@ msgstr "Crear Código de Referido"
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>Soporte para Solana</0><1>Soporte para Botanix</1><2>GMX Express</2>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-#~ msgstr "Take profits combinados están al máximo (100%). Reduce valores existentes para agregar más órdenes."
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "Redes"
@@ -4723,10 +4695,6 @@ msgstr "Error de orden. Los precios son actualmente volátiles para este mercado
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "Impacto de Precio de Intercambio para Umbral de Intercambio Externo"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Limit / Take Profit / Stop Loss"
-#~ msgstr "Límite / Take Profit / Stop Loss"
-
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
 msgstr "Retornos estables sin gestión"
@@ -4738,10 +4706,6 @@ msgstr "Deslizamiento"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "Esta posición fue liquidada debido a que el apalancamiento máximo de {formattedMaxLeverage} fue superado al tener en cuenta las comisiones."
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Swap {0}"
-#~ msgstr "Intercambiar {0}"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}."
@@ -5360,10 +5324,6 @@ msgstr "Solo direcciones con más de {0} en \"Capital Usado\" son clasificadas."
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Limit size is required"
-#~ msgstr "Se requiere tamaño límite"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From Network"
 msgstr "Desde Red"
@@ -5838,11 +5798,6 @@ msgstr "Intercambiar {fromAmount} por {toAmount}"
 msgid "Amount"
 msgstr "Cantidad"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Create {0} order"
-#~ msgstr "Crear {0} orden"
-
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}{2}"
 msgstr "Editar {0} {1}{2}"
@@ -6241,10 +6196,6 @@ msgstr "Depositar"
 msgid "365d Est. Fees"
 msgstr "Comisiones Est. 365d"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below highest limit price"
-#~ msgstr "Precio de activación por debajo del precio límite más alto"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
 msgstr ""
@@ -6361,10 +6312,6 @@ msgstr "Valoramos Tu Feedback"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "Stop Loss"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution (test)"
-#~ msgstr "Distribución GLP (prueba)"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
@@ -6756,10 +6703,6 @@ msgstr "La liquidez disponible será la menor de la diferencia entre el valor m�
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "cambio"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution"
-#~ msgstr "Distribución GLP"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7344,10 +7287,6 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "Tienes una posición existente en el pool de mercado {0}.<0>Cambia a pool de mercado {1}</0>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Stop Loss PnL"
-#~ msgstr "PnL de Stop Loss"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
 msgstr "Mercado - Long Dec."
@@ -7601,10 +7540,6 @@ msgstr ""
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
 msgstr "La diferencia porcentual máxima permitida entre el precio de marca y el precio de ejecución para órdenes de mercado."
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below lowest limit price"
-#~ msgstr "Precio de activación por debajo del precio límite más bajo"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "Los descuentos de GMX V2 se aplican automáticamente en cada operación y no se muestran en esta tabla."
@@ -7680,10 +7615,6 @@ msgstr "Últimos 30d"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Paneles"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Create TWAP {0} order"
-#~ msgstr "Crear orden TWAP {0}"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied to your clipboard."
@@ -7765,10 +7696,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "Estadísticas Totales"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Claimed {0} successfully."
-#~ msgstr "Reclamado {0} exitosamente."
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"

@@ -57,10 +57,6 @@ msgstr "以下のオプションのいずれかを使用して、他のネット
 msgid "Buy order executed."
 msgstr "買い注文が実行されました。"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#~ msgid "Claims are disabled"
-#~ msgstr "請求が無効化されています"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -1643,10 +1639,6 @@ msgstr "スワップパスが見つかりません"
 msgid "RPnL"
 msgstr "RPnL"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
-#~ msgstr "組み合わせストップロスが最大(100%)です。既存値を減少させて注文を追加してください。"
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "4-18 Places"
@@ -2054,10 +2046,6 @@ msgstr ""
 msgid "Display Settings"
 msgstr "表示設定"
 
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Hold the GLV tokens for three months to be eligible for the $500,000 incentive program."
-#~ msgstr "500,000ドルのインセンティブプログラムの対象となるために、GLVトークンを3ヶ月保持してください。"
-
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "合計:"
@@ -2356,10 +2344,6 @@ msgstr "各取引をオフチェーンで署名します。取引はネットワ
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Bridge and swap"
 msgstr "ブリッジとスワップ"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above lowest limit price"
-#~ msgstr "トリガー価格が最低リミット価格を上回っています"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2666,10 +2650,6 @@ msgstr "中央集権型取引所からGMXを購入:"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr "GMXボンドはBond Protocolで割引と短いベスト期間で購入できます:"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above highest limit price"
-#~ msgstr "トリガー価格が最高リミット価格を上回っています"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, staking and providing liquidity are fully permissionless. The GMX, GLV, and GM tokens are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some rare edge cases where your liquidity is being used for active trades. In that case, you can withdraw as soon as positions close."
@@ -3132,10 +3112,6 @@ msgstr "平均サイズ"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Take Profit PnL"
-#~ msgstr "テイクプロフィット損益"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
@@ -4384,10 +4360,6 @@ msgstr "紹介コード作成"
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>Solanaサポート</0><1>Botanixサポート</1><2>GMXエクスプレス</2>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-#~ msgstr "組み合わせテイクプロフィットが最大(100%)です。既存の値を減少させて注文を追加してください。"
-
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "ネットワーク"
@@ -4723,10 +4695,6 @@ msgstr "注文エラー。この市場の価格が現在変動しています。
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "外部スワップ閾値のスワップ価格インパクト"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Limit / Take Profit / Stop Loss"
-#~ msgstr "指値 / テイクプロフィット / ストップロス"
-
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
 msgstr "管理なしの安定リターン"
@@ -4738,10 +4706,6 @@ msgstr "スプレッド"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "このポジションは手数料を考慮した上での最大レバレッジ倍率({formattedMaxLeverage})を超過したため清算されました。"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Swap {0}"
-#~ msgstr "{0}をスワップ"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}."
@@ -5360,10 +5324,6 @@ msgstr "\"資本使用\"が{0}を超えるアドレスのみがランク付け�
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Limit size is required"
-#~ msgstr "指値サイズが必要です"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From Network"
 msgstr "送信元ネットワーク"
@@ -5838,11 +5798,6 @@ msgstr "{fromAmount} を {toAmount} にスワップ"
 msgid "Amount"
 msgstr "額"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Create {0} order"
-#~ msgstr "{0}の注文を作成"
-
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit {0} {1}{2}"
 msgstr "{0} {1}{2} を編集"
@@ -6241,10 +6196,6 @@ msgstr "入金"
 msgid "365d Est. Fees"
 msgstr "365日推定手数料"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below highest limit price"
-#~ msgstr "トリガー価格が最高指値価格を下回る"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
 msgstr ""
@@ -6361,10 +6312,6 @@ msgstr "あなたのフィードバックを大切にします"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "ストップロス"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution (test)"
-#~ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "keep more of what you earn"
@@ -6756,10 +6703,6 @@ msgstr "利用可能な流動性は、リザーブとオープンインタレス
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "shift"
 msgstr "シフト"
-
-#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
-#~ msgid "GLP Distribution"
-#~ msgstr "GLP分配"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
@@ -7344,10 +7287,6 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "{0}市場プールに既存のポジションがあります。<0>{1}市場プールに切り替え</0>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-#~ msgid "Stop Loss PnL"
-#~ msgstr "ストップロスPnL"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
 msgstr "市場 - ロング減少"
@@ -7601,10 +7540,6 @@ msgstr ""
 msgid "The maximum allowed percentage difference between the mark price and the execution price for market orders."
 msgstr "成行注文のマーク価格と実行価格間の最大許容パーセント差。"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below lowest limit price"
-#~ msgstr "トリガー価格が最低リミット価格を下回っています"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "GMX V2割引は各取引で自動適用され、このテーブルに表示されません。"
@@ -7680,10 +7615,6 @@ msgstr "過去30日"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "ダッシュボード"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Create TWAP {0} order"
-#~ msgstr "TWAP {0}注文を作成"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied to your clipboard."
@@ -7765,10 +7696,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total Stats"
 msgstr "総統計"
-
-#: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
-#~ msgid "Claimed {0} successfully."
-#~ msgstr "{0} の請求に成功しました。"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
