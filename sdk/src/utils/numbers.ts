@@ -214,7 +214,26 @@ export function formatTokenAmount(
     maxThreshold,
   } = opts;
 
-  const displayDecimals = opts.displayDecimals ?? (opts.isStable ? 2 : 4);
+  let displayDecimals: number;
+  if (opts.displayDecimals !== undefined) {
+    displayDecimals = opts.displayDecimals;
+  } else if (typeof amount === "bigint" && tokenDecimals) {
+    const baseDecimals = opts.isStable ? 2 : 4;
+
+    if (amount === 0n) {
+      displayDecimals = baseDecimals;
+    } else {
+      const absAmountFloat = bigintToNumber(bigMath.abs(amount), tokenDecimals);
+
+      if (absAmountFloat >= 1) displayDecimals = baseDecimals;
+      else if (absAmountFloat >= 0.1) displayDecimals = baseDecimals + 1;
+      else if (absAmountFloat >= 0.01) displayDecimals = baseDecimals + 2;
+      else if (absAmountFloat >= 0.001) displayDecimals = baseDecimals + 3;
+      else displayDecimals = 8;
+    }
+  } else {
+    displayDecimals = opts.isStable ? 2 : 4;
+  }
 
   const symbolStr = symbol ? ` ${symbol}` : "";
 
