@@ -1,7 +1,7 @@
 import chunk from "lodash/chunk";
 import { bytesToHex, hexToBytes, numberToHex, zeroAddress } from "viem";
 
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { CROSS_CHAIN_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   CHAIN_ID_TO_ENDPOINT_ID,
   getLayerZeroEndpointId,
@@ -131,7 +131,8 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       return undefined;
     }
 
-    const minMarketTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
+    const slippage = paySource === "sourceChain" ? CROSS_CHAIN_SLIPPAGE_AMOUNT : DEFAULT_SLIPPAGE_AMOUNT;
+    const minMarketTokens = applySlippageToMinOut(slippage, marketOrGlvTokenAmount);
 
     let dataList: string[] = EMPTY_ARRAY;
 
@@ -191,10 +192,8 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       return undefined;
     }
 
-    let minGlvTokens = 0n;
-    if (paySource !== "sourceChain") {
-      minGlvTokens = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, marketOrGlvTokenAmount);
-    }
+    const slippage = paySource === "sourceChain" ? CROSS_CHAIN_SLIPPAGE_AMOUNT : DEFAULT_SLIPPAGE_AMOUNT;
+    const minGlvTokens = applySlippageToMinOut(slippage, marketOrGlvTokenAmount);
 
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
@@ -263,43 +262,28 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
     let dataList: string[] = EMPTY_ARRAY;
 
+    const slippage = paySource === "sourceChain" ? CROSS_CHAIN_SLIPPAGE_AMOUNT : DEFAULT_SLIPPAGE_AMOUNT;
+
     let minLongTokenOutputAmount = 0n;
     let minShortTokenOutputAmount = 0n;
 
-    if (paySource !== "sourceChain") {
-      if (!withdrawalReceiveTokenAddress) {
-        minLongTokenOutputAmount = applySlippageToMinOut(
-          DEFAULT_SLIPPAGE_AMOUNT,
-          withdrawalAmounts.longTokenBeforeSwapAmount
-        );
+    if (!withdrawalReceiveTokenAddress) {
+      minLongTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.longTokenBeforeSwapAmount);
+      minShortTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.shortTokenBeforeSwapAmount);
+    } else {
+      if (withdrawalAmounts.longTokenSwapPathStats) {
+        minLongTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.longTokenSwapPathStats.amountOut);
+      } else {
+        minLongTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.longTokenBeforeSwapAmount);
+      }
+
+      if (withdrawalAmounts.shortTokenSwapPathStats) {
         minShortTokenOutputAmount = applySlippageToMinOut(
-          DEFAULT_SLIPPAGE_AMOUNT,
-          withdrawalAmounts.shortTokenBeforeSwapAmount
+          slippage,
+          withdrawalAmounts.shortTokenSwapPathStats.amountOut
         );
       } else {
-        if (withdrawalAmounts.longTokenSwapPathStats) {
-          minLongTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.longTokenSwapPathStats.amountOut
-          );
-        } else {
-          minLongTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.longTokenBeforeSwapAmount
-          );
-        }
-
-        if (withdrawalAmounts.shortTokenSwapPathStats) {
-          minShortTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.shortTokenSwapPathStats.amountOut
-          );
-        } else {
-          minShortTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.shortTokenBeforeSwapAmount
-          );
-        }
+        minShortTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.shortTokenBeforeSwapAmount);
       }
     }
 
@@ -383,42 +367,28 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
     const withdrawalAmounts = amounts as WithdrawalAmounts;
 
+    const slippage = paySource === "sourceChain" ? CROSS_CHAIN_SLIPPAGE_AMOUNT : DEFAULT_SLIPPAGE_AMOUNT;
+
     let minLongTokenOutputAmount = 0n;
     let minShortTokenOutputAmount = 0n;
-    if (paySource !== "sourceChain") {
-      if (!withdrawalReceiveTokenAddress) {
-        minLongTokenOutputAmount = applySlippageToMinOut(
-          DEFAULT_SLIPPAGE_AMOUNT,
-          withdrawalAmounts.longTokenBeforeSwapAmount
-        );
+
+    if (!withdrawalReceiveTokenAddress) {
+      minLongTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.longTokenBeforeSwapAmount);
+      minShortTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.shortTokenBeforeSwapAmount);
+    } else {
+      if (withdrawalAmounts.longTokenSwapPathStats) {
+        minLongTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.longTokenSwapPathStats.amountOut);
+      } else {
+        minLongTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.longTokenBeforeSwapAmount);
+      }
+
+      if (withdrawalAmounts.shortTokenSwapPathStats) {
         minShortTokenOutputAmount = applySlippageToMinOut(
-          DEFAULT_SLIPPAGE_AMOUNT,
-          withdrawalAmounts.shortTokenBeforeSwapAmount
+          slippage,
+          withdrawalAmounts.shortTokenSwapPathStats.amountOut
         );
       } else {
-        if (withdrawalAmounts.longTokenSwapPathStats) {
-          minLongTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.longTokenSwapPathStats.amountOut
-          );
-        } else {
-          minLongTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.longTokenBeforeSwapAmount
-          );
-        }
-
-        if (withdrawalAmounts.shortTokenSwapPathStats) {
-          minShortTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.shortTokenSwapPathStats.amountOut
-          );
-        } else {
-          minShortTokenOutputAmount = applySlippageToMinOut(
-            DEFAULT_SLIPPAGE_AMOUNT,
-            withdrawalAmounts.shortTokenBeforeSwapAmount
-          );
-        }
+        minShortTokenOutputAmount = applySlippageToMinOut(slippage, withdrawalAmounts.shortTokenBeforeSwapAmount);
       }
     }
 
