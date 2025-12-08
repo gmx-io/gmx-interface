@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - master
-    types: [opened, edited, synchronized, reopened]
+    types: [opened, edited, synchronize, reopened]
 
 jobs:
   check-naming:
@@ -38,4 +38,3 @@ jobs:
         env:
           branch_name: ${{ github.event.pull_request.head.ref }}
           pr_title: ${{ github.event.pull_request.title }}
-          
