@@ -24,7 +24,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainError } from "domain/multichain/useSourceChainError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
 import type { ExecutionFee } from "domain/synthetics/fees";
-import type { GlvAndGmMarketsInfoData, MarketsInfoData } from "domain/synthetics/markets";
+import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
 import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
@@ -176,6 +176,7 @@ export const useGmSwapSubmitState = ({
     shortTokenAddress,
     longTokenAmount,
     shortTokenAmount,
+    isDeposit,
   });
 
   const sourceChainError = useSourceChainError({
@@ -323,8 +324,9 @@ function useExpressError({
   shortTokenAddress,
   longTokenAmount,
   shortTokenAmount,
+  isDeposit,
 }: {
-  paySource: string | undefined;
+  paySource: GmPaySource | undefined;
   technicalFees: TechnicalFees | undefined;
   gasPaymentToken: TokenData | undefined;
   gasPaymentTokenAddress: string | undefined;
@@ -332,6 +334,7 @@ function useExpressError({
   shortTokenAddress: string | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
+  isDeposit: boolean;
 }): string | undefined {
   return useMemo(() => {
     if (paySource !== "gmxAccount" || !technicalFees || !gasPaymentToken || !gasPaymentTokenAddress) {
@@ -343,13 +346,6 @@ function useExpressError({
     }
 
     const executionFee = technicalFees as ExecutionFee;
-
-    const isLongTokenGasPayment = longTokenAddress === gasPaymentTokenAddress;
-    const isShortTokenGasPayment = shortTokenAddress === gasPaymentTokenAddress;
-
-    if (!isLongTokenGasPayment && !isShortTokenGasPayment) {
-      return undefined;
-    }
 
     if (gasPaymentToken.prices.minPrice === undefined) {
       return undefined;
@@ -366,10 +362,12 @@ function useExpressError({
     }
 
     let collateralAmount = 0n;
-    if (isLongTokenGasPayment) {
-      collateralAmount = longTokenAmount ?? 0n;
-    } else if (isShortTokenGasPayment) {
-      collateralAmount = shortTokenAmount ?? 0n;
+    if (isDeposit) {
+      if (longTokenAddress === gasPaymentTokenAddress) {
+        collateralAmount = longTokenAmount ?? 0n;
+      } else if (shortTokenAddress === gasPaymentTokenAddress) {
+        collateralAmount = shortTokenAmount ?? 0n;
+      }
     }
 
     const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
@@ -391,6 +389,7 @@ function useExpressError({
     gasPaymentTokenAddress,
     longTokenAddress,
     shortTokenAddress,
+    isDeposit,
     longTokenAmount,
     shortTokenAmount,
   ]);
