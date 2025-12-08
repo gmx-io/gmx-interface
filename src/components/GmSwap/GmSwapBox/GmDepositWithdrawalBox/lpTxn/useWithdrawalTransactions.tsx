@@ -300,6 +300,7 @@ export const useWithdrawalTransactions = ({
           setPendingWithdrawal,
           blockTimestampData,
           glvTokenAmount: glvTokenAmount!,
+          skipSimulation: shouldDisableValidation,
         });
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -330,10 +331,11 @@ export const useWithdrawalTransactions = ({
       technicalFees,
       setMultichainTransferProgress,
       multichainWithdrawalExpressTxnParams.data,
-      setPendingTxns,
-      setPendingWithdrawal,
-      blockTimestampData,
       addOptimisticTokensBalancesUpdates,
+      setPendingWithdrawal,
+      setPendingTxns,
+      blockTimestampData,
+      shouldDisableValidation,
     ]
   );
 

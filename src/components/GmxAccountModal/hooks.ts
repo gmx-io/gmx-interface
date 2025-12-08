@@ -169,7 +169,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
 
   let tokenBalances: Record<number, Record<string, bigint>> | undefined;
   let isLoaded = false;
-  const interval = (setInterval as Window["setInterval"])(() => {
+  const interval = window.setInterval(() => {
     fetchMultichainTokenBalances({
       settlementChainId,
       account,

@@ -278,7 +278,10 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         );
       } else {
         if (withdrawalAmounts.longTokenSwapPathStats) {
-          minLongTokenOutputAmount = withdrawalAmounts.longTokenSwapPathStats.amountOut;
+          minLongTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.longTokenSwapPathStats.amountOut
+          );
         } else {
           minLongTokenOutputAmount = applySlippageToMinOut(
             DEFAULT_SLIPPAGE_AMOUNT,
@@ -287,7 +290,10 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         }
 
         if (withdrawalAmounts.shortTokenSwapPathStats) {
-          minShortTokenOutputAmount = withdrawalAmounts.shortTokenSwapPathStats.amountOut;
+          minShortTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.shortTokenSwapPathStats.amountOut
+          );
         } else {
           minShortTokenOutputAmount = applySlippageToMinOut(
             DEFAULT_SLIPPAGE_AMOUNT,
@@ -391,7 +397,10 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         );
       } else {
         if (withdrawalAmounts.longTokenSwapPathStats) {
-          minLongTokenOutputAmount = withdrawalAmounts.longTokenSwapPathStats.amountOut;
+          minLongTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.longTokenSwapPathStats.amountOut
+          );
         } else {
           minLongTokenOutputAmount = applySlippageToMinOut(
             DEFAULT_SLIPPAGE_AMOUNT,
@@ -400,7 +409,10 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         }
 
         if (withdrawalAmounts.shortTokenSwapPathStats) {
-          minShortTokenOutputAmount = withdrawalAmounts.shortTokenSwapPathStats.amountOut;
+          minShortTokenOutputAmount = applySlippageToMinOut(
+            DEFAULT_SLIPPAGE_AMOUNT,
+            withdrawalAmounts.shortTokenSwapPathStats.amountOut
+          );
         } else {
           minShortTokenOutputAmount = applySlippageToMinOut(
             DEFAULT_SLIPPAGE_AMOUNT,
