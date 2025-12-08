@@ -10,10 +10,10 @@ import {
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { TokenData, getGmToken } from "domain/tokens";
+import { ERC20Address, NativeTokenSupportedAddress, TokenData, getGmToken } from "domain/tokens";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getTokenSymbolByMarket } from "sdk/configs/markets";
-import { convertTokenAddress, getNativeToken, getWrappedToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import type { DisplayToken } from "components/TokenSelector/types";
@@ -128,10 +128,20 @@ export const selectPoolsDetailsDepositTokenOptions = createSelector((q): Display
   if (!longTokenAddress || !shortTokenAddress) return EMPTY_ARRAY;
 
   const result: DisplayToken[] = [];
-  const nativeToken = getNativeToken(chainId);
   const wrappedToken = getWrappedToken(chainId);
 
-  const tradeTokenAddresses = uniq([longTokenAddress, shortTokenAddress, nativeToken.address, wrappedToken.address]);
+  const tradeTokenAddresses: (ERC20Address | NativeTokenSupportedAddress)[] = uniq([
+    longTokenAddress,
+    shortTokenAddress,
+  ]);
+
+  if (longTokenAddress === wrappedToken.address || shortTokenAddress === wrappedToken.address) {
+    tradeTokenAddresses.push(zeroAddress as NativeTokenSupportedAddress);
+  }
+
+  const availableSourceChainTokenAddresses = uniq(
+    [longTokenAddress, shortTokenAddress].map((tokenAddress) => convertTokenAddress(chainId, tokenAddress, "native"))
+  );
 
   for (const tokenAddress of tradeTokenAddresses) {
     const token = marketAndTradeTokensData?.[tokenAddress];
@@ -147,9 +157,14 @@ export const selectPoolsDetailsDepositTokenOptions = createSelector((q): Display
 
   if (isMarketTransferrableToSourceChain && multichainTradeTokensArray) {
     for (const multichainToken of multichainTradeTokensArray) {
-      if (multichainToken.sourceChainBalance === undefined || multichainToken.sourceChainPrices === undefined) continue;
-
-      if (multichainToken.sourceChainBalance === 0n) continue;
+      if (
+        multichainToken.sourceChainBalance === undefined ||
+        multichainToken.sourceChainPrices === undefined ||
+        multichainToken.sourceChainBalance === 0n ||
+        !availableSourceChainTokenAddresses.includes(multichainToken.address as NativeTokenSupportedAddress)
+      ) {
+        continue;
+      }
 
       const balanceUsd =
         convertToUsd(
