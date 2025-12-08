@@ -291,7 +291,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                     task.operation === Operation.Deposit ? (
                       <Trans>Funds Bridging to</Trans>
                     ) : (
-                      <Trans>GM Bridging to</Trans>
+                      <Trans>{gmOrGlvLabel} Bridging to</Trans>
                     )
                   }
                   valueClassName="flex items-center gap-4"
