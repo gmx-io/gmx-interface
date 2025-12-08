@@ -13,6 +13,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
 import { isMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
@@ -27,6 +28,7 @@ import {
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/types/orders";
 
+import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 
 import {
@@ -76,6 +78,24 @@ export const selectPoolsDetailsGlvOrMarketInfo = createSelector((q) => {
     const glvAndMarketsInfoData = selectGlvAndMarketsInfoData(state);
     return getByKey(glvAndMarketsInfoData, glvOrMarketAddress);
   });
+});
+
+export const selectPoolsDetailsAreBothCollateralsCrossChain = createSelector((q): boolean => {
+  const chainId = q(selectChainId);
+  const srcChainId = q(selectSrcChainId);
+  const glvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
+
+  return getAreBothCollateralsCrossChain({ chainId, srcChainId, glvOrMarketAddress });
+});
+
+export const selectPoolsDetailsAvailableModes = createSelector((q): Mode[] => {
+  const operation = q(selectPoolsDetailsOperation);
+  const marketInfo = q(selectPoolsDetailsGlvOrMarketInfo);
+  const paySource = q(selectPoolsDetailsPaySource);
+
+  const areBothCollateralsCrossChain = q(selectPoolsDetailsAreBothCollateralsCrossChain);
+
+  return getGmSwapBoxAvailableModes({ operation, market: marketInfo, paySource, areBothCollateralsCrossChain });
 });
 
 export const selectPoolsDetailsSelectedMarketInfoForGlv = createSelector((q) => {

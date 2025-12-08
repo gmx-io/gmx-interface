@@ -2,6 +2,7 @@ import { msg } from "@lingui/macro";
 import { useMemo } from "react";
 
 import {
+  selectPoolsDetailsAvailableModes,
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsMode,
   selectPoolsDetailsOperation,
@@ -10,14 +11,11 @@ import {
   selectPoolsDetailsSetOperation,
   selectPoolsDetailsSetSelectedMarketAddressForGlv,
 } from "context/PoolsDetailsContext/selectors";
-import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLocalizedMap } from "lib/i18n";
-import { getByKey } from "lib/objects";
 
 import Tabs from "components/Tabs/Tabs";
 
-import { getGmSwapBoxAvailableModes } from "./getGmSwapBoxAvailableModes";
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
 import { Mode, Operation } from "./types";
@@ -38,10 +36,7 @@ export function GmSwapBox() {
   const setGlvOrMarketAddress = useSelector(selectPoolsDetailsSetGlvOrMarketAddress);
   const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
 
-  const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
-  const marketInfo = getByKey(marketsInfoData, selectedGlvOrMarketAddress);
-
-  const availableModes = getGmSwapBoxAvailableModes(operation, marketInfo);
+  const availableModes = useSelector(selectPoolsDetailsAvailableModes);
 
   const localizedModeLabels = useLocalizedMap(MODE_LABELS);
 

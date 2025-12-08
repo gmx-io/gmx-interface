@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
+import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
 import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
 import { GmPaySource } from "domain/synthetics/markets/types";
 import { TokensData } from "domain/synthetics/tokens";
@@ -201,37 +202,54 @@ export function usePoolsDetailsState({
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
 
-  useEffect(() => {
-    if (!enabled) {
-      return;
-    }
+  useEffect(
+    function syncOperationAndModeFromQueryParams() {
+      if (!enabled) {
+        return;
+      }
 
-    const operationFromQueryParams = searchParams.get("operation");
-    if (operationFromQueryParams && isOperation(operationFromQueryParams)) {
-      setOperation(operationFromQueryParams);
-    }
+      const operationFromQueryParams = searchParams.get("operation");
+      if (operationFromQueryParams && isOperation(operationFromQueryParams)) {
+        setOperation(operationFromQueryParams);
+      }
 
-    const modeFromQueryParams = searchParams.get("mode");
-    if (modeFromQueryParams && isMode(modeFromQueryParams)) {
-      setMode(modeFromQueryParams);
-    }
-  }, [searchParams, enabled]);
+      const modeFromQueryParams = searchParams.get("mode");
+      if (modeFromQueryParams && isMode(modeFromQueryParams)) {
+        setMode(modeFromQueryParams);
+      }
+    },
+    [searchParams, enabled]
+  );
 
-  useEffect(() => {
-    if (!enabled) {
-      return;
-    }
+  const areBothCollateralsCrossChain = getAreBothCollateralsCrossChain({
+    chainId,
+    srcChainId,
+    glvOrMarketAddress,
+  });
 
-    if (!glvOrMarketAddress) {
-      return;
-    }
+  useEffect(
+    function fallbackMode() {
+      if (!enabled) {
+        return;
+      }
 
-    const newAvailableModes = getGmSwapBoxAvailableModes(operation, getByKey(marketsInfoData, glvOrMarketAddress));
+      if (!glvOrMarketAddress) {
+        return;
+      }
 
-    if (!newAvailableModes.includes(mode)) {
-      setMode(newAvailableModes[0]);
-    }
-  }, [glvOrMarketAddress, marketsInfoData, mode, operation, enabled]);
+      const newAvailableModes = getGmSwapBoxAvailableModes({
+        operation,
+        market: getByKey(marketsInfoData, glvOrMarketAddress),
+        paySource,
+        areBothCollateralsCrossChain,
+      });
+
+      if (!newAvailableModes.includes(mode)) {
+        setMode(newAvailableModes[0]);
+      }
+    },
+    [areBothCollateralsCrossChain, enabled, glvOrMarketAddress, marketsInfoData, mode, operation, paySource]
+  );
 
   const value = useMemo((): PoolsDetailsState | undefined => {
     if (!enabled) {

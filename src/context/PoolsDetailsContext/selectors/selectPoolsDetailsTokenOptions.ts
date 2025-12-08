@@ -47,7 +47,7 @@ function createDisplayToken(
   };
 }
 
-export const selectPoolsDetailsWithdrawalTokenOptions = createSelector((q): DisplayToken[] => {
+const selectPoolsDetailsWithdrawalTokenOptions = createSelector((q): DisplayToken[] => {
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);
   const paySource = q(selectPoolsDetailsPaySource);
@@ -113,7 +113,7 @@ export const selectPoolsDetailsWithdrawalTokenOptions = createSelector((q): Disp
   return EMPTY_ARRAY;
 });
 
-export const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[] => {
+const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[] => {
   const chainId = q(selectChainId);
   const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
