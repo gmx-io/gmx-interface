@@ -18,6 +18,12 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
     vi.clearAllMocks();
 
     observer = new NetworkStatusObserver();
+
+    // Mock document.visibilityState to be visible by default
+    Object.defineProperty(document, "visibilityState", {
+      writable: true,
+      value: "visible",
+    });
   });
 
   afterEach(() => {
@@ -91,6 +97,30 @@ describe("FallbackTracker - NetworkStatusObserver integration", () => {
       tracker.track();
 
       expect(observer.getIsActive(tracker.trackerKey)).toBe(false);
+    });
+
+    it("should set isActive to false when tab is not visible", () => {
+      const config = createMockConfig({
+        networkStatusObserver: observer,
+        checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
+      });
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "hidden",
+      });
+
+      tracker.track();
+
+      expect(observer.getIsActive(tracker.trackerKey)).toBe(false);
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
     });
   });
 

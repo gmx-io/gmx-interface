@@ -22,17 +22,11 @@ export * from "sdk/configs/chains";
 export { getChainName } from "sdk/configs/chains";
 export type { RpcConfig } from "lib/rpc/types";
 
-const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS
-  ? JSON.parse(import.meta.env.VITE_APP_ARBITRUM_RPC_URLS)
-  : undefined;
+const ENV_ARBITRUM_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_ARBITRUM_RPC_URLS);
 
-const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS
-  ? JSON.parse(import.meta.env.VITE_APP_AVALANCHE_RPC_URLS)
-  : undefined;
+const ENV_AVALANCHE_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_AVALANCHE_RPC_URLS);
 
-const ENV_BOTANIX_RPC_URLS = import.meta.env.VITE_APP_BOTANIX_RPC_URLS
-  ? JSON.parse(import.meta.env.VITE_APP_BOTANIX_RPC_URLS)
-  : undefined;
+const ENV_BOTANIX_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_BOTANIX_RPC_URLS);
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io", "gmxalt.io"];
 
@@ -461,4 +455,16 @@ export function getProviderNameFromUrl(rpcUrl: string) {
   }
 
   return "unknown";
+}
+
+function parseRpcUrlsFromEnv(envValue: string | undefined): string[] | undefined {
+  if (!envValue) {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(envValue);
+  } catch (e) {
+    return undefined;
+  }
 }

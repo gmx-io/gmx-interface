@@ -90,6 +90,7 @@ export type FallbackTrackerState<TCheckStats> = {
   setEndpointsThrottleTimeout: number | undefined;
   pendingEndpoints: { primary: string; fallbacks: string[] } | undefined;
   cleanupEvents: () => void;
+  visibilityChangeHandler: (() => void) | undefined;
 };
 
 export type EndpointState = {
@@ -182,6 +183,7 @@ export class FallbackTracker<TCheckStats> {
       setEndpointsThrottleTimeout: undefined,
       pendingEndpoints: undefined,
       cleanupEvents: this.selfSubscribe(),
+      visibilityChangeHandler: undefined,
     };
   }
 
@@ -196,6 +198,35 @@ export class FallbackTracker<TCheckStats> {
   warn(message: string) {
     // eslint-disable-next-line no-console
     console.warn(`[${this.trackerKey}]: ${message}`);
+  }
+
+  isTabVisible(): boolean {
+    if (typeof document === "undefined" || !("visibilityState" in document)) {
+      return true;
+    }
+    return document.visibilityState === "visible";
+  }
+
+  setupVisibilityChangeListener() {
+    if (this.state.visibilityChangeHandler) {
+      return;
+    }
+
+    if (typeof document !== "undefined" && "visibilityState" in document) {
+      this.state.visibilityChangeHandler = () => {
+        if (this.isTabVisible() && !this.state.trackerTimeoutId) {
+          this.track();
+        }
+      };
+      document.addEventListener("visibilitychange", this.state.visibilityChangeHandler);
+    }
+  }
+
+  removeVisibilityChangeListener() {
+    if (this.state.visibilityChangeHandler && typeof document !== "undefined") {
+      document.removeEventListener("visibilitychange", this.state.visibilityChangeHandler);
+      this.state.visibilityChangeHandler = undefined;
+    }
   }
 
   getLastCheckResults(): Record<string, CheckResult<TCheckStats>> | undefined {
@@ -314,6 +345,8 @@ export class FallbackTracker<TCheckStats> {
   };
 
   public startTracking() {
+    this.setupVisibilityChangeListener();
+
     const delay = this.params.delay ?? 0;
 
     if (delay > 0) {
@@ -342,6 +375,8 @@ export class FallbackTracker<TCheckStats> {
       this.state.abortController = undefined;
     }
 
+    this.removeVisibilityChangeListener();
+
     this.networkStatusObserver.setActive(this.trackerKey, false);
   }
 
@@ -351,10 +386,9 @@ export class FallbackTracker<TCheckStats> {
       this.state.trackerTimeoutId = undefined;
     }
 
-    // Schedule next track call if not tracking
     if (!this.shouldTrack({ warmUp })) {
       this.networkStatusObserver.setActive(this.trackerKey, false);
-      this.state.trackerTimeoutId = window.setTimeout(() => this.track(), this.params.trackInterval);
+      this.state.trackerTimeoutId = window.setTimeout(() => this.track({ warmUp }), this.params.trackInterval);
       return;
     }
 
@@ -400,6 +434,8 @@ export class FallbackTracker<TCheckStats> {
       this.state.abortController.abort();
       this.state.abortController = undefined;
     }
+
+    this.removeVisibilityChangeListener();
 
     // Clear failure throttles
     Object.values(this.state.endpointsState).forEach((endpointState) => {
@@ -568,6 +604,10 @@ export class FallbackTracker<TCheckStats> {
   }
 
   shouldTrack({ warmUp = false }: { warmUp?: boolean } = {}) {
+    if (!this.isTabVisible()) {
+      return false;
+    }
+
     const hasMultipleEndpoints = this.params.endpoints.length > 1;
 
     const isUnused =

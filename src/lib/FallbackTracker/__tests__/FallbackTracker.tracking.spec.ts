@@ -13,6 +13,10 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
     vi.useFakeTimers();
     localStorage.clear();
     vi.clearAllMocks();
+    Object.defineProperty(document, "visibilityState", {
+      writable: true,
+      value: "visible",
+    });
   });
 
   afterEach(() => {
@@ -489,6 +493,43 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
 
       expect(tracker.shouldTrack({ warmUp: true })).toBe(true);
     });
+
+    it("should return false when tab is not visible", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "hidden",
+      });
+
+      expect(tracker.shouldTrack()).toBe(false);
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
+    });
+
+    it("should return false when tab is not visible even with warmUp", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "hidden",
+      });
+
+      expect(tracker.shouldTrack({ warmUp: true })).toBe(false);
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
+    });
   });
 
   describe("track", () => {
@@ -553,6 +594,30 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       await vi.advanceTimersByTimeAsync(0);
 
       expect(config.checkEndpoint).toHaveBeenCalled();
+    });
+
+    it("should not start tracking when tab is not visible", async () => {
+      const config = createMockConfig({
+        checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
+      });
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "hidden",
+      });
+
+      tracker.track();
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(config.checkEndpoint).not.toHaveBeenCalled();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
     });
 
     it("should schedule next track call after trackInterval", async () => {
@@ -715,6 +780,166 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       tracker.cleanup();
 
       expect(tracker.state.endpointsState[config.primary].failureThrottleTimeout).toBeUndefined();
+    });
+  });
+
+  describe("visibility change listener", () => {
+    it("should set up visibility change listener on startTracking", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+
+      const addEventListenerSpy = vi.spyOn(document, "addEventListener");
+
+      tracker.startTracking();
+
+      expect(addEventListenerSpy).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
+      expect(tracker.state.visibilityChangeHandler).toBeDefined();
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it("should not add duplicate visibility change listeners", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+
+      const addEventListenerSpy = vi.spyOn(document, "addEventListener");
+
+      tracker.startTracking();
+      const firstHandler = tracker.state.visibilityChangeHandler;
+
+      tracker.startTracking();
+      const secondHandler = tracker.state.visibilityChangeHandler;
+
+      expect(addEventListenerSpy).toHaveBeenCalledTimes(1);
+      expect(firstHandler).toBe(secondHandler);
+
+      addEventListenerSpy.mockRestore();
+    });
+
+    it("should remove visibility change listener on stopTracking", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+
+      const removeEventListenerSpy = vi.spyOn(document, "removeEventListener");
+
+      tracker.startTracking();
+      expect(tracker.state.visibilityChangeHandler).toBeDefined();
+      const handler = tracker.state.visibilityChangeHandler;
+
+      tracker.stopTracking();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith("visibilitychange", handler);
+      expect(tracker.state.visibilityChangeHandler).toBeUndefined();
+
+      removeEventListenerSpy.mockRestore();
+    });
+
+    it("should remove visibility change listener on cleanup", () => {
+      const config = createMockConfig();
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+
+      const removeEventListenerSpy = vi.spyOn(document, "removeEventListener");
+
+      tracker.startTracking();
+      expect(tracker.state.visibilityChangeHandler).toBeDefined();
+
+      tracker.cleanup();
+
+      expect(removeEventListenerSpy).toHaveBeenCalledWith("visibilitychange", expect.any(Function));
+      expect(tracker.state.visibilityChangeHandler).toBeUndefined();
+
+      removeEventListenerSpy.mockRestore();
+    });
+
+    it("should resume tracking when tab becomes visible", async () => {
+      const config = createMockConfig({
+        checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
+        selectNextPrimary: vi.fn().mockReturnValue(testEndpoints.primary),
+        selectNextFallbacks: vi.fn().mockReturnValue([testEndpoints.secondary]),
+      });
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
+
+      // Start tracking
+      tracker.startTracking();
+
+      // Mock tab as hidden
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "hidden",
+      });
+
+      tracker.track();
+      await vi.advanceTimersByTimeAsync(0);
+      expect(config.checkEndpoint).not.toHaveBeenCalled();
+
+      if (tracker.state.trackerTimeoutId) {
+        clearTimeout(tracker.state.trackerTimeoutId);
+        tracker.state.trackerTimeoutId = undefined;
+      }
+
+      (config.checkEndpoint as ReturnType<typeof vi.fn>).mockClear();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
+
+      if (tracker.state.visibilityChangeHandler) {
+        tracker.state.visibilityChangeHandler();
+      }
+
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(config.checkEndpoint).toHaveBeenCalled();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
+    });
+
+    it("should not resume tracking when tab becomes visible if timeout already scheduled", async () => {
+      const config = createMockConfig({
+        checkEndpoint: vi.fn().mockResolvedValue({ responseTime: 100, isValid: true }),
+      });
+      const tracker = new FallbackTracker(config);
+      trackers.push(tracker);
+      tracker.state.lastUsage = Date.now();
+
+      tracker.startTracking();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "hidden",
+      });
+      tracker.track();
+      expect(tracker.state.trackerTimeoutId).toBeDefined();
+
+      (config.checkEndpoint as ReturnType<typeof vi.fn>).mockClear();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
+
+      if (tracker.state.visibilityChangeHandler) {
+        tracker.state.visibilityChangeHandler();
+      }
+
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(config.checkEndpoint).not.toHaveBeenCalled();
+
+      Object.defineProperty(document, "visibilityState", {
+        writable: true,
+        value: "visible",
+      });
     });
   });
 });
