@@ -17,7 +17,9 @@ import {
   OrderErrors,
   PositionOrderInfo,
   isIncreaseOrderType,
+  isLimitDecreaseOrderType,
   isMarketOrderType,
+  isStopLossOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
@@ -48,6 +50,7 @@ import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
+import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
@@ -564,6 +567,15 @@ export function PositionItem(p: Props) {
           {/* liqPrice */}
           {renderLiquidationPrice()}
         </TableTd>
+        <TableTd>
+          <TpSlCell
+            positionKey={p.position.key}
+            markPrice={p.position.markPrice}
+            marketDecimals={marketDecimals}
+            visualMultiplier={p.position.indexToken.visualMultiplier}
+            isLarge={true}
+          />
+        </TableTd>
         {/* Close */}
         {!p.hideActions && (
           <>
@@ -713,6 +725,20 @@ export function PositionItem(p: Props) {
               <Trans>Liq. Price</Trans>
             </div>
             <div>{renderLiquidationPrice()}</div>
+          </div>
+          <div className="App-card-row">
+            <div className="font-medium text-typography-secondary">
+              <Trans>TP/SL</Trans>
+            </div>
+            <div>
+              <TpSlCell
+                positionKey={p.position.key}
+                markPrice={p.position.markPrice}
+                marketDecimals={marketDecimals}
+                visualMultiplier={p.position.indexToken.visualMultiplier}
+                isLarge={false}
+              />
+            </div>
           </div>
         </AppCardSection>
         <AppCardSection>
@@ -941,6 +967,150 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
         {isIncrease ? "+" : "-"}
         {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
       </span>
+    </div>
+  );
+}
+
+function TpSlCell({
+  positionKey,
+  markPrice,
+  marketDecimals,
+  visualMultiplier,
+  isLarge,
+}: {
+  positionKey: string;
+  markPrice: bigint;
+  marketDecimals: number | undefined;
+  visualMultiplier?: number;
+  isLarge: boolean;
+}) {
+  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
+
+  const { closestTp, tpCount, closestSl, slCount } = useMemo(() => {
+    const tpOrders: PositionOrderInfo[] = [];
+    const slOrders: PositionOrderInfo[] = [];
+
+    for (const { order } of ordersWithErrors) {
+      if (isTwapOrder(order)) continue;
+      if (isLimitDecreaseOrderType(order.orderType)) {
+        tpOrders.push(order);
+      } else if (isStopLossOrderType(order.orderType)) {
+        slOrders.push(order);
+      }
+    }
+
+    let closestTp: PositionOrderInfo | undefined;
+    let closestTpDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
+    for (const order of tpOrders) {
+      const distance = order.triggerPrice > markPrice ? order.triggerPrice - markPrice : markPrice - order.triggerPrice;
+      if (distance < closestTpDistance) {
+        closestTpDistance = distance;
+        closestTp = order;
+      }
+    }
+
+    let closestSl: PositionOrderInfo | undefined;
+    let closestSlDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
+    for (const order of slOrders) {
+      const distance = order.triggerPrice > markPrice ? order.triggerPrice - markPrice : markPrice - order.triggerPrice;
+      if (distance < closestSlDistance) {
+        closestSlDistance = distance;
+        closestSl = order;
+      }
+    }
+
+    return {
+      closestTp,
+      tpCount: tpOrders.length,
+      closestSl,
+      slCount: slOrders.length,
+    };
+  }, [ordersWithErrors, markPrice]);
+
+  const hasTpOrSl = tpCount > 0 || slCount > 0;
+
+  const handleClick = useCallback(() => {
+    console.log("TP/SL click", { positionKey, hasTpOrSl });
+  }, [positionKey, hasTpOrSl]);
+
+  if (!isLarge) {
+    return (
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
+          <span className={cx("numbers", "text-green-500")}>
+            {closestTp ? (
+              <>
+                {formatUsd(closestTp.triggerPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier,
+                })}
+                {tpCount > 1 && ` (${tpCount})`}
+              </>
+            ) : (
+              "—"
+            )}
+          </span>
+          <span className="text-typography-inactive">•</span>
+          <span className={cx("numbers", "text-red-500")}>
+            {closestSl ? (
+              <>
+                {formatUsd(closestSl.triggerPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier,
+                })}
+                {slCount > 1 && ` (${slCount})`}
+              </>
+            ) : (
+              "—"
+            )}
+          </span>
+        </div>
+        <button
+          onClick={handleClick}
+          className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
+        >
+          {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-2">
+        <span className={cx("numbers", "text-green-500")}>
+          {closestTp ? (
+            <>
+              {formatUsd(closestTp.triggerPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier,
+              })}
+              {tpCount > 1 && <span className="ml-2">({tpCount})</span>}
+            </>
+          ) : (
+            "—"
+          )}
+        </span>
+        <span className={cx("numbers", "text-red-500")}>
+          {closestSl ? (
+            <>
+              {formatUsd(closestSl.triggerPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier,
+              })}
+              {slCount > 1 && <span className="ml-2">({slCount})</span>}
+            </>
+          ) : (
+            "—"
+          )}
+        </span>
+      </div>
+      <button
+        onClick={handleClick}
+        className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
+      >
+        {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
+      </button>
     </div>
   );
 }

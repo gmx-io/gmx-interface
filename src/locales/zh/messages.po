@@ -4983,6 +4983,8 @@ msgid "Fulfilling shift request."
 msgstr "履行转移请求。"
 
 #: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
