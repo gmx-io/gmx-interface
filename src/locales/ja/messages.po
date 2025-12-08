@@ -2814,10 +2814,6 @@ msgstr "ステーキングは{chainNames}および{lastChainName}でのみ利用
 msgid "Create Take Profit"
 msgstr "テイクプロフィットを作成"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "GM Bridging to"
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "GLVを売却したい場合、売却できますか？どこで？"
@@ -4057,6 +4053,10 @@ msgstr "担保に{0}が必要です。<0/><1/>GMX内で{1}から{2}へのスワ�
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total Fee APY"
 msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} Bridging to"
+msgstr "{gmOrGlvLabel} ブリッジ中"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

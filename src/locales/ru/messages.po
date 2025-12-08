@@ -2814,10 +2814,6 @@ msgstr "Стейкинг доступен только на {chainNames} и {las
 msgid "Create Take Profit"
 msgstr "Создать Take Profit"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "GM Bridging to"
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "Могу ли я продать свой GLV, если захочу, и где?"
@@ -4057,6 +4053,10 @@ msgstr "{0} требуется для залога.<0/><1/>Нет пути об�
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total Fee APY"
 msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} Bridging to"
+msgstr "{gmOrGlvLabel} Бриджинг на"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

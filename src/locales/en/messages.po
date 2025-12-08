@@ -2814,10 +2814,6 @@ msgstr "Staking is only available on {chainNames} and {lastChainName}. Please sw
 msgid "Create Take Profit"
 msgstr "Create Take Profit"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "GM Bridging to"
-msgstr "GM Bridging to"
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "Can I sell my GLV if I want, and where?"
@@ -4057,6 +4053,10 @@ msgstr "{0} is required for collateral.<0/><1/>There is no swap path found for {
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total Fee APY"
 msgstr "Total Fee APY"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} Bridging to"
+msgstr "{gmOrGlvLabel} Bridging to"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

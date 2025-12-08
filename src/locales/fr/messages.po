@@ -2814,10 +2814,6 @@ msgstr "Le staking n'est disponible que sur {chainNames} et {lastChainName}. Veu
 msgid "Create Take Profit"
 msgstr "Créer Take Profit"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "GM Bridging to"
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "Puis-je vendre mon GLV si je le souhaite, et où ?"
@@ -4057,6 +4053,10 @@ msgstr "{0} est requis pour le collatéral.<0/><1/>Aucun chemin d'échange trouv
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total Fee APY"
 msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} Bridging to"
+msgstr "{gmOrGlvLabel} Pont vers"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx

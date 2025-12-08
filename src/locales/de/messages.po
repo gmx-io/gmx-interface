@@ -2814,10 +2814,6 @@ msgstr "Staking ist nur auf {chainNames} und {lastChainName} verfügbar. Bitte w
 msgid "Create Take Profit"
 msgstr "Take-Profit erstellen"
 
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "GM Bridging to"
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Can I sell my GLV if I want, and where?"
 msgstr "Kann ich mein GLV verkaufen, wenn ich möchte, und wo?"
@@ -4057,6 +4053,10 @@ msgstr "{0} wird für Kollateral benötigt.<0/><1/>Es wurde kein Tauschpfad für
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total Fee APY"
 msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} Bridging to"
+msgstr "{gmOrGlvLabel} Bridge zu"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
