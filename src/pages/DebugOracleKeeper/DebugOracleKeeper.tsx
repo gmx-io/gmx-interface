@@ -62,7 +62,17 @@ export default function DebugOracleKeeper() {
     if (!_debugOracleKeeper) return;
 
     const unsubscribe = _debugOracleKeeper.onEvent((event) => {
-      setEvents((prev) => [...prev, event]);
+      setEvents((prev) => {
+        const MAX_EVENTS = 1000;
+        const CLEAR_COUNT = 100;
+        const newEvents = [...prev, event];
+
+        if (newEvents.length > MAX_EVENTS) {
+          return newEvents.slice(CLEAR_COUNT);
+        }
+
+        return newEvents;
+      });
     });
 
     return unsubscribe;

@@ -61,22 +61,32 @@ export default function RpcDebug() {
       setEvents((prev) => {
         const now = Date.now();
         const GROUPING_WINDOW = 100; // Group events within 100ms
+        const MAX_GROUPS = 500;
+        const CLEAR_COUNT = 100;
 
         // Find if there's a recent group
         const lastGroup = prev[prev.length - 1];
+        let newEvents: GroupedEvent[];
+
         if (lastGroup && now - lastGroup.timestamp < GROUPING_WINDOW) {
           // Add to existing group
-          return [
+          newEvents = [
             ...prev.slice(0, -1),
             {
               ...lastGroup,
               events: [...lastGroup.events, event],
             },
           ];
+        } else {
+          // Create new group
+          newEvents = [...prev, { timestamp: now, events: [event] }];
         }
 
-        // Create new group
-        return [...prev, { timestamp: now, events: [event] }];
+        if (newEvents.length > MAX_GROUPS) {
+          return newEvents.slice(CLEAR_COUNT);
+        }
+
+        return newEvents;
       });
     });
 
