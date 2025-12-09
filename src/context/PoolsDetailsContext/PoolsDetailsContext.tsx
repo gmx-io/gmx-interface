@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
 import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
+import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { GmPaySource } from "domain/synthetics/markets/types";
 import { TokensData } from "domain/synthetics/tokens";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
@@ -12,6 +13,7 @@ import { getByKey } from "lib/objects";
 import { useReactRouterSearchParam } from "lib/useReactRouterSearchParam";
 import useRouteQuery from "lib/useRouteQuery";
 import { useSafeState } from "lib/useSafeState";
+import { isMarketTokenAddress } from "sdk/configs/markets";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
@@ -108,7 +110,12 @@ export function usePoolsDetailsState({
   const searchParams = useRouteQuery();
   const { chainId, srcChainId } = useChainId();
 
-  const [glvOrMarketAddress, setGlvOrMarketAddress] = useReactRouterSearchParam("market");
+  const [glvOrMarketAddressString, setGlvOrMarketAddress] = useReactRouterSearchParam("market");
+  const glvOrMarketAddress =
+    glvOrMarketAddressString !== undefined &&
+    (isMarketTokenAddress(chainId, glvOrMarketAddressString) || isGlvAddress(chainId, glvOrMarketAddressString))
+      ? glvOrMarketAddressString
+      : undefined;
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   const [mode, setMode] = useState<Mode>(Mode.Single);
