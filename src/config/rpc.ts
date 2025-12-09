@@ -418,7 +418,9 @@ export function getAlchemyProvider(
     }
   }
 
-  const url = `${type}://${baseUrl}/${alchemyKey}`;
+  const protocol = type === "ws" ? "wss" : "https";
+
+  const url = `${protocol}://${baseUrl}/${alchemyKey}`;
 
   return {
     url,
