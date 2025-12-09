@@ -8,13 +8,11 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { AccountEvents } from "pages/AccountEvents/AccountEvents";
 import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
-import { DecodeError } from "pages/DecodeError/DecodeError";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
 import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
@@ -33,7 +31,6 @@ import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { TestPermits } from "pages/TestPermits/TestPermits";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
@@ -42,6 +39,33 @@ const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyUiPage />
+  </Suspense>
+);
+
+const LazyTestPermits = lazy(() =>
+  import("pages/TestPermits/TestPermits").then((module) => ({ default: module.TestPermits }))
+);
+export const TestPermitsPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyTestPermits />
+  </Suspense>
+);
+
+const LazyAccountEvents = lazy(() =>
+  import("pages/AccountEvents/AccountEvents").then((module) => ({ default: module.AccountEvents }))
+);
+export const AccountEventsPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyAccountEvents />
+  </Suspense>
+);
+
+const LazyDecodeError = lazy(() =>
+  import("pages/DecodeError/DecodeError").then((module) => ({ default: module.DecodeError }))
+);
+export const DecodeErrorPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDecodeError />
   </Suspense>
 );
 
@@ -215,13 +239,13 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <UiPage />
         </Route>,
         <Route exact path="/permits" key="permits">
-          <TestPermits />
+          <TestPermitsPage />
         </Route>,
         <Route exact path="/account-events/:account?" key="account-events">
-          <AccountEvents />
+          <AccountEventsPage />
         </Route>,
         <Route exact path="/decode-error" key="decode-error">
-          <DecodeError />
+          <DecodeErrorPage />
         </Route>,
       ]}
 
