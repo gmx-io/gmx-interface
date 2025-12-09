@@ -14,6 +14,7 @@ import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransf
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import { DecodeError } from "pages/DecodeError/DecodeError";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
 import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
@@ -218,6 +219,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/account-events/:account?" key="account-events">
           <AccountEvents />
+        </Route>,
+        <Route exact path="/decode-error" key="decode-error">
+          <DecodeError />
         </Route>,
       ]}
 
