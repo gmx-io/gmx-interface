@@ -14,7 +14,6 @@ import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransf
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import BuyGMX from "pages/BuyGMX/BuyGMX";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
-import DebugOracleKeeper from "pages/DebugOracleKeeper/DebugOracleKeeper";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
 import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
@@ -30,7 +29,6 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import RpcDebug from "pages/RpcDebug/RpcDebug";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -43,6 +41,20 @@ const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyUiPage />
+  </Suspense>
+);
+
+const LazyRpcDebug = lazy(() => import("pages/RpcDebug/RpcDebug"));
+export const RpcDebugPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyRpcDebug />
+  </Suspense>
+);
+
+const LazyDebugOracleKeeper = lazy(() => import("pages/DebugOracleKeeper/DebugOracleKeeper"));
+export const OracleDebugPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDebugOracleKeeper />
   </Suspense>
 );
 
@@ -199,11 +211,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/rpc-debug" key="rpc-debug">
           <SyntheticsStateContextProvider skipLocalReferralCode pageType="rpcDebug">
-            <RpcDebug />
+            <RpcDebugPage />
           </SyntheticsStateContextProvider>
         </Route>,
         <Route exact path="/oracle-keeper-debug" key="oracle-keeper-debug">
-          <DebugOracleKeeper />
+          <OracleDebugPage />
         </Route>,
       ]}
       <Route path="*">
