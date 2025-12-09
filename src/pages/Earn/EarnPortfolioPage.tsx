@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -57,13 +58,14 @@ export default function EarnPortfolioPage() {
     }
 
     return Object.values(marketsInfoData).filter((info) => {
-      const balance = getByKey(
-        marketTokensData,
-        isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress
-      )?.balance;
-      return balance !== undefined && balance > 0n;
+      const tokenAddress = isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress;
+      const balance = getByKey(multichainMarketTokensBalances, tokenAddress)?.totalBalance;
+      const balanceUsd = getByKey(multichainMarketTokensBalances, tokenAddress)?.totalBalanceUsd;
+
+      const filteredBalanceUsd = getPlatformTokenBalanceAfterThreshold(balanceUsd);
+      return filteredBalanceUsd !== 0n && balance !== undefined && balance > 0n;
     });
-  }, [marketTokensData, marketsInfoData]);
+  }, [marketTokensData, marketsInfoData, multichainMarketTokensBalances]);
 
   const vestingData = useVestingData(account);
 

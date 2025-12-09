@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
+import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { MultichainMarketTokenBalances } from "domain/multichain/types";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
@@ -36,9 +37,10 @@ export const GmTokensBalanceInfo = ({
   singleLine?: boolean;
 }) => {
   const balance = multichainBalances?.totalBalance ?? 0n;
+  const balanceUsd = getPlatformTokenBalanceAfterThreshold(multichainBalances?.totalBalanceUsd);
 
   const content =
-    token && balance !== 0n ? (
+    token && balanceUsd !== 0n && balance !== 0n ? (
       <TokenValuesInfoCell
         value={formatBalanceAmount(balance, token.decimals)}
         usd={
@@ -56,12 +58,15 @@ export const GmTokensBalanceInfo = ({
     );
 
   const symbol = isGlv ? "GLV" : "GM";
-  const multichainBalanceTooltip = useMemo(
-    () => (
+  const multichainBalanceTooltip = useMemo(() => {
+    if (balanceUsd === 0n) {
+      return null;
+    }
+
+    return (
       <MultichainBalanceTooltip multichainBalances={multichainBalances} symbol={symbol} decimals={token?.decimals} />
-    ),
-    [multichainBalances, symbol, token?.decimals]
-  );
+    );
+  }, [balanceUsd, multichainBalances, symbol, token?.decimals]);
 
   const hasChainBalances = multichainBalanceTooltip !== null;
   const hasFees = earnedTotal !== undefined || earnedRecently !== undefined;
