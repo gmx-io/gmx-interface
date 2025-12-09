@@ -218,19 +218,7 @@ export function formatTokenAmount(
   if (opts.displayDecimals !== undefined) {
     displayDecimals = opts.displayDecimals;
   } else if (typeof amount === "bigint" && tokenDecimals) {
-    const baseDecimals = opts.isStable ? 2 : 4;
-
-    if (amount === 0n) {
-      displayDecimals = baseDecimals;
-    } else {
-      const absAmountFloat = bigintToNumber(bigMath.abs(amount), tokenDecimals);
-
-      if (absAmountFloat >= 1) displayDecimals = baseDecimals;
-      else if (absAmountFloat >= 0.1) displayDecimals = baseDecimals + 1;
-      else if (absAmountFloat >= 0.01) displayDecimals = baseDecimals + 2;
-      else if (absAmountFloat >= 0.001) displayDecimals = baseDecimals + 3;
-      else displayDecimals = 8;
-    }
+    displayDecimals = calculateDisplayDecimals(amount, tokenDecimals, 1, opts.isStable);
   } else {
     displayDecimals = opts.isStable ? 2 : 4;
   }
@@ -410,13 +398,10 @@ export function formatBalanceAmount(
 
   let value = "";
 
-  const baseDecimals = isStable ? 2 : 4;
-  if (absAmountFloat >= 1) value = formatAmount(absAmount, tokenDecimals, baseDecimals, true);
-  else if (absAmountFloat >= 0.1) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 1, true);
-  else if (absAmountFloat >= 0.01) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 2, true);
-  else if (absAmountFloat >= 0.001) value = formatAmount(absAmount, tokenDecimals, baseDecimals + 3, true);
-  else if (absAmountFloat >= 1e-8) value = formatAmount(absAmount, tokenDecimals, 8, true);
-  else {
+  if (absAmountFloat >= 1e-8) {
+    const displayDecimals = calculateDisplayDecimals(absAmount, tokenDecimals, 1, isStable);
+    value = formatAmount(absAmount, tokenDecimals, displayDecimals, true);
+  } else {
     if (toExponential) {
       value = bigintToNumber(absAmount, tokenDecimals).toExponential(2);
     } else {
