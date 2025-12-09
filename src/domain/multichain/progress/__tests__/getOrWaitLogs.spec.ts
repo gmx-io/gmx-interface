@@ -21,11 +21,8 @@ describe("getOrWaitLogs", () => {
   });
 
   it("should reject after timeout when logs are not found", async () => {
-    const mockUnsub = vi.fn();
-
     const mockPublicClient = {
       getLogs: vi.fn().mockResolvedValue([]),
-      watchEvent: vi.fn().mockReturnValue(mockUnsub),
     };
 
     vi.mocked(getPublicClientWithRpc).mockReturnValue(mockPublicClient as any);
@@ -45,6 +42,5 @@ describe("getOrWaitLogs", () => {
     vi.advanceTimersByTime(61000);
 
     await expect(promise).rejects.toThrow("Abort signal received");
-    expect(mockUnsub).toHaveBeenCalled();
   });
 });
