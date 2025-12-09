@@ -321,7 +321,7 @@ export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testne
     case "layerzero-testnet":
       return "https://testnet.layerzeroscan.com/";
     default:
-      return ALL_CHAIN_CONFIGS[chainId].explorerUrl;
+      return ALL_CHAIN_CONFIGS[chainId]?.explorerUrl ?? "";
   }
 }
 
