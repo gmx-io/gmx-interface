@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -79,8 +79,13 @@ export function PositionItem(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
+  const [showSizeInTokens, setShowSizeInTokens] = useState(false);
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
+
+  const handleSizeClick = useCallback(() => {
+    setShowSizeInTokens((prev) => !prev);
+  }, []);
 
   function renderNetValue() {
     return (
@@ -510,7 +515,11 @@ export function PositionItem(p: Props) {
         </TableTd>
         <TableTd>
           <div className="flex flex-col gap-2">
-            <span className="numbers">{formatUsd(p.position.sizeInUsd)}</span>
+            <span className="numbers cursor-pointer select-none" onClick={handleSizeClick}>
+              {showSizeInTokens
+                ? formatBalanceAmount(p.position.sizeInTokens, p.position.indexToken.decimals, p.position.indexToken.symbol)
+                : formatUsd(p.position.sizeInUsd)}
+            </span>
             <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
           </div>
         </TableTd>
@@ -669,10 +678,14 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-typography-secondary cursor-pointer select-none" onClick={handleSizeClick}>
               <Trans>Size</Trans>
             </div>
-            <div className="numbers">{formatUsd(p.position.sizeInUsd)}</div>
+            <div className="numbers cursor-pointer select-none" onClick={handleSizeClick}>
+              {showSizeInTokens
+                ? formatBalanceAmount(p.position.sizeInTokens, p.position.indexToken.decimals, p.position.indexToken.symbol)
+                : formatUsd(p.position.sizeInUsd)}
+            </div>
           </div>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
