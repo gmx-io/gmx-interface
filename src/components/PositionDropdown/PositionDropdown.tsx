@@ -7,6 +7,7 @@ import Button from "components/Button/Button";
 import EditIcon from "img/ic_edit.svg?react";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
+import IncreaseStopMarket from "img/tokens/ic_box_chevron_up.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import SelectIcon from "img/ic_select.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
@@ -21,6 +22,7 @@ type Props = {
   handleMarketIncreaseSize?: () => void;
   handleLimitIncreaseSize?: () => void;
   handleStopMarketIncreaseSize?: () => void;
+  handleTwapIncreaseSize?: () => void;
   handleTriggerClose?: () => void;
 };
 
@@ -31,6 +33,7 @@ export default function PositionDropdown({
   handleMarketIncreaseSize,
   handleLimitIncreaseSize,
   handleStopMarketIncreaseSize,
+  handleTwapIncreaseSize,
   handleTriggerClose,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
@@ -100,9 +103,19 @@ export default function PositionDropdown({
           {handleStopMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleStopMarketIncreaseSize}>
-                <IncreaseMarket className="size-16" />
+                <IncreaseStopMarket className="size-16" />
                 <p>
                   <Trans>Increase Size (Stop Market)</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleTwapIncreaseSize && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleTwapIncreaseSize}>
+                <IncreaseMarket className="size-16" />
+                <p>
+                  <Trans>Increase Size (TWAP)</Trans>
                 </p>
               </div>
             </Menu.Item>

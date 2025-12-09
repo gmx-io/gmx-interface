@@ -52,7 +52,11 @@ import {
 } from "domain/synthetics/tokens";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
-import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
+import {
+  OrderOption,
+  PositionSellerState,
+  usePositionSellerState,
+} from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -105,7 +109,8 @@ export type SyntheticsState = {
     botanixStakingAssetsPerShare: bigint | undefined;
 
     closingPositionKey: string | undefined;
-    setClosingPositionKey: (key: string | undefined) => void;
+    setClosingPositionKey: (key: string | undefined, orderOption?: OrderOption) => void;
+    closingPositionOrderOption: OrderOption | undefined;
 
     keepLeverage: boolean | undefined;
     setKeepLeverage: (value: boolean) => void;
@@ -212,7 +217,17 @@ export function SyntheticsStateContextProvider({
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
-  const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [closingPositionKeyRaw, setClosingPositionKeyRaw] = useState<string>();
+  const [closingPositionOrderOption, setClosingPositionOrderOption] = useState<OrderOption>();
+
+  const closingPositionKey = closingPositionKeyRaw;
+  const setClosingPositionKey = useMemo(
+    () => (key: string | undefined, orderOption?: OrderOption) => {
+      setClosingPositionKeyRaw(key);
+      setClosingPositionOrderOption(orderOption);
+    },
+    []
+  );
   const [isCandlesLoaded, setIsCandlesLoaded] = useState(false);
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(chainId, {
     enabled: isTradePage,
@@ -284,8 +299,11 @@ export function SyntheticsStateContextProvider({
 
   const { blockTimestampData } = useBlockTimestampRequest(chainId, { skip: !["trade", "pools"].includes(pageType) });
 
-  // TODO move closingPositionKey to positionSellerState
-  const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
+  const positionSellerState = usePositionSellerState(
+    chainId,
+    positionsInfoData?.[closingPositionKey ?? ""],
+    closingPositionOrderOption
+  );
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
 
@@ -345,6 +363,8 @@ export function SyntheticsStateContextProvider({
         closingPositionKey,
         setClosingPositionKey,
 
+        closingPositionOrderOption,
+
         missedCoinsModalPlace,
         setMissedCoinsModalPlace,
 
@@ -391,6 +411,7 @@ export function SyntheticsStateContextProvider({
     chainId,
     claimablePositionPriceImpactFees,
     closingPositionKey,
+    closingPositionOrderOption,
     confirmationBoxState,
     depositMarketTokensData,
     externalSwapState,
@@ -420,6 +441,7 @@ export function SyntheticsStateContextProvider({
     positionsConstants,
     positionsInfoData,
     progressiveDepositMarketTokensData,
+    setClosingPositionKey,
     setKeepLeverage,
     settings,
     signer,

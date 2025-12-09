@@ -10,6 +10,7 @@ import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -24,7 +25,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
-  onClosePositionClick: (key: string) => void;
+  onClosePositionClick: (key: string, orderOption?: OrderOption) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
@@ -185,7 +186,7 @@ const PositionItemWrapper = memo(
   }: {
     position: PositionInfo;
     onEditCollateralClick: (positionKey: string) => void;
-    onClosePositionClick: (positionKey: string) => void;
+    onClosePositionClick: (positionKey: string, orderOption?: OrderOption) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
@@ -200,7 +201,7 @@ const PositionItemWrapper = memo(
       [onEditCollateralClick, position.key]
     );
     const handleClosePositionClick = useCallback(
-      () => onClosePositionClick(position.key),
+      (orderOption?: OrderOption) => onClosePositionClick(position.key, orderOption),
       [onClosePositionClick, position.key]
     );
 
