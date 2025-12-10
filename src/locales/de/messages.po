@@ -105,6 +105,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Genehmigung unterzeichnet"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave Feedback"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Täglicher Verlust"
