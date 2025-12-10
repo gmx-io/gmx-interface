@@ -5,22 +5,30 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
 import { SourceChainId } from "config/chains";
-import { getMappedTokenId } from "config/multichain";
+import { getContract } from "config/contracts";
+import { getMappedTokenId, getMultichainTokenId } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import {
-  selectPoolsDetailsFirstToken,
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
+  selectPoolsDetailsFlags,
+  selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsGlvOrMarketAddress,
+  selectPoolsDetailsGlvTokenAddress,
+  selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsLongTokenAmount,
+  selectPoolsDetailsMarketOrGlvTokenAmount,
+  selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsSecondTokenAddress,
-  selectPoolsDetailsSecondTokenAmount,
+  selectPoolsDetailsShortTokenAddress,
+  selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvInfo } from "domain/synthetics/markets";
 import { isGlvAddress } from "domain/synthetics/markets/glv";
-import { getNeedTokenApprove, TokenData, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import { adjustForDecimals } from "lib/numbers";
@@ -28,142 +36,52 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { getContract } from "sdk/configs/contracts";
 import { isMarketTokenAddress } from "sdk/configs/markets";
 import { getToken, isValidTokenSafe } from "sdk/configs/tokens";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
-import { Operation } from "../types";
-
-interface Props {
-  routerAddress: string;
-  glvInfo: GlvInfo | undefined;
-  operation: Operation;
-
-  marketToken: TokenData | undefined;
-  longTokenAddress: string | undefined;
-  shortTokenAddress: string | undefined;
-  glvTokenAddress: string | undefined;
-
-  marketTokenAmount: bigint | undefined;
-  longTokenAmount: bigint | undefined;
-  shortTokenAmount: bigint | undefined;
-  glvTokenAmount: bigint | undefined;
-
-  isMarketTokenDeposit?: boolean;
-}
-
-export const useTokensToApprove = ({
-  routerAddress,
-  glvInfo,
-  operation,
-  marketToken,
-  marketTokenAmount,
-  longTokenAddress,
-  longTokenAmount,
-  shortTokenAddress,
-  shortTokenAmount,
-  glvTokenAddress,
-  glvTokenAmount,
-  isMarketTokenDeposit,
-}: Props): {
+type TokensToApproveResult = {
   tokensToApproveSymbols: string[];
   isAllowanceLoading: boolean;
   isAllowanceLoaded: boolean;
   approve: () => void;
   isApproving: boolean;
-} => {
+};
+
+const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
   const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
-  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const paySource = useSelector(selectPoolsDetailsPaySource);
   const signer = useEthersSigner();
+  const { isDeposit, isWithdrawal } = useSelector(selectPoolsDetailsFlags);
+
+  const routerAddress = useMemo(() => getContract(chainId, "SyntheticsRouter"), [chainId]);
 
   const [isApproving, setIsApproving] = useState(false);
 
-  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
-  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
-  const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
-  const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
+  const paySource = useSelector(selectPoolsDetailsPaySource);
+  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+  const glvTokenAddress = useSelector(selectPoolsDetailsGlvTokenAddress);
+  const longTokenAmount = useSelector(selectPoolsDetailsLongTokenAmount);
+  const shortTokenAmount = useSelector(selectPoolsDetailsShortTokenAmount);
+  const isMarketTokenDeposit = useSelector(selectPoolsDetailsIsMarketTokenDeposit);
+  const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
 
-  const firstToken = useSelector(selectPoolsDetailsFirstToken);
-  const firstTokenSourceChainTokenId =
-    firstTokenAddress !== undefined && srcChainId !== undefined
-      ? getMappedTokenId(chainId as SourceChainId, firstTokenAddress, srcChainId)
-      : undefined;
-
-  const multichainSpenderAddress = firstTokenSourceChainTokenId?.stargate;
-
-  useMultichainApprovalsActiveListener(paySource === "sourceChain" ? srcChainId : undefined, "multichain-gm-swap-box");
-
-  const multichainTokensAllowanceResult = useTokensAllowanceData(paySource === "sourceChain" ? srcChainId : undefined, {
-    spenderAddress: multichainSpenderAddress,
-    tokenAddresses: firstTokenSourceChainTokenId ? [firstTokenSourceChainTokenId.address] : [],
-    skip: srcChainId === undefined,
-  });
-  const multichainTokensAllowanceData =
-    srcChainId !== undefined ? multichainTokensAllowanceResult.tokensAllowanceData : undefined;
-
-  const firstTokenAmountLD =
-    firstTokenAmount !== undefined &&
-    firstTokenAddress !== undefined &&
-    firstTokenSourceChainTokenId !== undefined &&
-    firstToken
-      ? adjustForDecimals(firstTokenAmount, firstToken.decimals, firstTokenSourceChainTokenId.decimals)
-      : undefined;
-  const fistToken = useSelector(selectPoolsDetailsFirstToken);
-  const multichainNeedTokenApprove =
-    paySource === "sourceChain"
-      ? getNeedTokenApprove(
-          multichainTokensAllowanceData,
-          firstTokenAddress === zeroAddress ? zeroAddress : firstTokenSourceChainTokenId?.address,
-          firstTokenAmountLD,
-          EMPTY_ARRAY
-        )
-      : false;
-  const multichainTokensToApproveSymbols = useMemo(() => {
-    return fistToken?.symbol && multichainNeedTokenApprove ? [fistToken.symbol] : EMPTY_ARRAY;
-  }, [fistToken, multichainNeedTokenApprove]);
-
-  const handleApproveSourceChain = useCallback(async () => {
-    if (!firstTokenAddress || firstTokenAmountLD === undefined || !multichainSpenderAddress || !srcChainId) {
-      helperToast.error(t`Approval failed`);
-      return;
+  const marketTokenAmount = useMemo(() => {
+    if (isDeposit && isMarketTokenDeposit) {
+      return marketOrGlvTokenAmount;
     }
+    return undefined;
+  }, [isDeposit, isMarketTokenDeposit, marketOrGlvTokenAmount]);
 
-    const isNative = firstTokenAddress === zeroAddress;
-
-    if (isNative) {
-      helperToast.error(t`Native token cannot be approved`);
-      return;
+  const glvTokenAmount = useMemo(() => {
+    if (isWithdrawal && glvInfo) {
+      return marketOrGlvTokenAmount;
     }
-
-    if (!firstTokenSourceChainTokenId) {
-      helperToast.error(t`Approval failed`);
-      return;
-    }
-
-    await wrapChainAction(srcChainId, setSettlementChainId, async (signer) => {
-      await approveTokens({
-        chainId: srcChainId,
-        tokenAddress: firstTokenSourceChainTokenId.address,
-        signer: signer,
-        spender: multichainSpenderAddress,
-        onApproveSubmitted: () => setIsApproving(true),
-        setIsApproving: noop,
-        permitParams: undefined,
-        approveAmount: firstTokenAmountLD,
-      });
-    });
-  }, [
-    firstTokenAddress,
-    firstTokenAmountLD,
-    multichainSpenderAddress,
-    srcChainId,
-    firstTokenSourceChainTokenId,
-    setSettlementChainId,
-  ]);
+    return undefined;
+  }, [isWithdrawal, glvInfo, marketOrGlvTokenAmount]);
 
   const payTokenAddresses = useMemo(
     function getPayTokenAddresses() {
@@ -173,19 +91,19 @@ export const useTokensToApprove = ({
 
       const addresses: string[] = [];
 
-      if (operation === Operation.Deposit) {
-        if (firstTokenAmount !== undefined && firstTokenAmount > 0 && firstTokenAddress) {
-          addresses.push(firstTokenAddress);
+      if (isDeposit) {
+        if (longTokenAmount !== undefined && longTokenAmount > 0 && longTokenAddress) {
+          addresses.push(longTokenAddress);
         }
-        if (secondTokenAmount !== undefined && secondTokenAmount > 0 && secondTokenAddress) {
-          addresses.push(secondTokenAddress);
+        if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortTokenAddress) {
+          addresses.push(shortTokenAddress);
         }
         if (glvInfo && isMarketTokenDeposit) {
           if (marketTokenAmount !== undefined && marketTokenAmount > 0) {
             addresses.push(marketToken.address);
           }
         }
-      } else if (operation === Operation.Withdrawal) {
+      } else if (isWithdrawal) {
         addresses.push(glvTokenAddress ? glvTokenAddress : marketToken.address);
       }
 
@@ -193,11 +111,12 @@ export const useTokensToApprove = ({
     },
     [
       marketToken,
-      operation,
-      firstTokenAmount,
-      firstTokenAddress,
-      secondTokenAmount,
-      secondTokenAddress,
+      isDeposit,
+      isWithdrawal,
+      longTokenAmount,
+      longTokenAddress,
+      shortTokenAmount,
+      shortTokenAddress,
       glvInfo,
       isMarketTokenDeposit,
       marketTokenAmount,
@@ -209,18 +128,14 @@ export const useTokensToApprove = ({
     tokensAllowanceData: settlementChainTokensAllowanceData,
     isLoading: isSettlementChainAllowanceLoading,
     isLoaded: isSettlementChainAllowanceLoaded,
-  } = useTokensAllowanceData(paySource === "settlementChain" ? chainId : undefined, {
+  } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses: payTokenAddresses,
-    skip: paySource === "settlementChain" ? false : true,
+    skip: paySource !== "settlementChain",
   });
 
   const settlementChainTokensToApprove = useMemo(
     function getTokensToApprove() {
-      if (paySource !== "settlementChain") {
-        return EMPTY_ARRAY;
-      }
-
       const addresses: string[] = [];
 
       const shouldApproveMarketToken = getNeedTokenApprove(
@@ -251,7 +166,7 @@ export const useTokensToApprove = ({
         []
       );
 
-      if (operation === Operation.Deposit) {
+      if (isDeposit) {
         if (shouldApproveLongToken && longTokenAddress) {
           addresses.push(longTokenAddress);
         }
@@ -263,7 +178,7 @@ export const useTokensToApprove = ({
         if (glvInfo && isMarketTokenDeposit && shouldApproveMarketToken && marketToken) {
           addresses.push(marketToken.address);
         }
-      } else if (operation === Operation.Withdrawal) {
+      } else if (isWithdrawal) {
         if (glvInfo && shouldApproveGlvToken && glvTokenAddress) {
           addresses.push(glvTokenAddress);
         } else if (!glvInfo && shouldApproveMarketToken && marketToken?.address) {
@@ -282,8 +197,8 @@ export const useTokensToApprove = ({
       longTokenAmount,
       marketToken,
       marketTokenAmount,
-      operation,
-      paySource,
+      isDeposit,
+      isWithdrawal,
       settlementChainTokensAllowanceData,
       shortTokenAddress,
       shortTokenAmount,
@@ -340,38 +255,167 @@ export const useTokensToApprove = ({
   };
 
   useEffect(() => {
-    if (paySource === "settlementChain" && !settlementChainTokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    } else if (paySource === "sourceChain" && !multichainTokensToApproveSymbols.length && isApproving) {
+    if (!settlementChainTokensToApprove.length && isApproving) {
       setIsApproving(false);
     }
-  }, [isApproving, multichainTokensToApproveSymbols.length, paySource, settlementChainTokensToApprove.length]);
+  }, [isApproving, settlementChainTokensToApprove.length]);
 
   return {
     isApproving,
-    approve:
-      paySource === "settlementChain"
-        ? onApproveSettlementChain
-        : paySource === "sourceChain"
-          ? handleApproveSourceChain
-          : noop,
-    isAllowanceLoaded:
-      paySource === "settlementChain"
-        ? isSettlementChainAllowanceLoaded
-        : paySource === "sourceChain"
-          ? multichainTokensAllowanceResult.isLoaded
-          : false,
-    isAllowanceLoading:
-      paySource === "settlementChain"
-        ? isSettlementChainAllowanceLoading
-        : paySource === "sourceChain"
-          ? multichainTokensAllowanceResult.isLoading
-          : false,
-    tokensToApproveSymbols:
-      paySource === "settlementChain"
-        ? settlementChainTokensToApproveSymbols
-        : paySource === "sourceChain"
-          ? multichainTokensToApproveSymbols
-          : EMPTY_ARRAY,
+    approve: onApproveSettlementChain,
+    isAllowanceLoaded: isSettlementChainAllowanceLoaded,
+    isAllowanceLoading: isSettlementChainAllowanceLoading,
+    tokensToApproveSymbols: settlementChainTokensToApproveSymbols,
+  };
+};
+
+const useSourceChainTokensToApprove = (): TokensToApproveResult => {
+  const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
+  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
+  const { isDeposit } = useSelector(selectPoolsDetailsFlags);
+
+  const [isApproving, setIsApproving] = useState(false);
+
+  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
+  const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
+  const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
+  const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
+
+  const settlementChainSpendTokenAddress = isDeposit ? firstTokenAddress : glvOrMarketAddress;
+
+  const settlementChainSpendTokenId =
+    settlementChainSpendTokenAddress !== undefined
+      ? getMultichainTokenId(chainId, settlementChainSpendTokenAddress)
+      : undefined;
+  const settlementChainSpendTokenDecimals = settlementChainSpendTokenId?.decimals;
+  const sourceChainSpendTokenId =
+    settlementChainSpendTokenAddress !== undefined && srcChainId !== undefined
+      ? getMappedTokenId(chainId as SourceChainId, settlementChainSpendTokenAddress, srcChainId)
+      : undefined;
+  const sourceChainSpendTokenDecimals = sourceChainSpendTokenId?.decimals;
+
+  const amount = isDeposit ? firstTokenAmount : marketOrGlvTokenAmount;
+
+  const sourceChainSpendTokenAmountLD =
+    settlementChainSpendTokenDecimals !== undefined && sourceChainSpendTokenDecimals !== undefined
+      ? adjustForDecimals(amount, settlementChainSpendTokenDecimals, sourceChainSpendTokenDecimals)
+      : undefined;
+
+  const multichainSpenderAddress = sourceChainSpendTokenId?.stargate;
+
+  useMultichainApprovalsActiveListener(srcChainId, "multichain-gm-swap-box");
+
+  const multichainTokensAllowanceResult = useTokensAllowanceData(srcChainId, {
+    spenderAddress: multichainSpenderAddress,
+    tokenAddresses: sourceChainSpendTokenId ? [sourceChainSpendTokenId.address] : [],
+    skip: srcChainId === undefined || sourceChainSpendTokenId === undefined,
+  });
+  const multichainTokensAllowanceData =
+    srcChainId !== undefined ? multichainTokensAllowanceResult.tokensAllowanceData : undefined;
+
+  const multichainNeedTokenApprove = getNeedTokenApprove(
+    multichainTokensAllowanceData,
+    sourceChainSpendTokenId?.address,
+    sourceChainSpendTokenAmountLD,
+    EMPTY_ARRAY
+  );
+
+  const multichainTokensToApproveSymbols = useMemo(() => {
+    if (!settlementChainSpendTokenAddress || !settlementChainSpendTokenId || !multichainNeedTokenApprove) {
+      return EMPTY_ARRAY;
+    }
+
+    if (isGlvAddress(chainId, settlementChainSpendTokenAddress)) {
+      return ["GLV"];
+    }
+
+    if (isMarketTokenAddress(chainId, settlementChainSpendTokenAddress)) {
+      return ["GM"];
+    }
+
+    return [settlementChainSpendTokenId.symbol];
+  }, [chainId, multichainNeedTokenApprove, settlementChainSpendTokenAddress, settlementChainSpendTokenId]);
+
+  const handleApproveSourceChain = useCallback(async () => {
+    if (
+      !settlementChainSpendTokenAddress ||
+      sourceChainSpendTokenAmountLD === undefined ||
+      !multichainSpenderAddress ||
+      !srcChainId
+    ) {
+      helperToast.error(t`Approval failed`);
+      return;
+    }
+
+    const isNative = settlementChainSpendTokenAddress === zeroAddress;
+
+    if (isNative) {
+      helperToast.error(t`Native token cannot be approved`);
+      return;
+    }
+
+    if (!sourceChainSpendTokenId) {
+      helperToast.error(t`Approval failed`);
+      return;
+    }
+
+    await wrapChainAction(srcChainId, setSettlementChainId, async (signer) => {
+      await approveTokens({
+        chainId: srcChainId,
+        tokenAddress: sourceChainSpendTokenId.address,
+        signer: signer,
+        spender: multichainSpenderAddress,
+        onApproveSubmitted: () => setIsApproving(true),
+        setIsApproving: noop,
+        permitParams: undefined,
+        approveAmount: sourceChainSpendTokenAmountLD,
+      });
+    });
+  }, [
+    settlementChainSpendTokenAddress,
+    sourceChainSpendTokenAmountLD,
+    multichainSpenderAddress,
+    srcChainId,
+    sourceChainSpendTokenId,
+    setSettlementChainId,
+  ]);
+
+  useEffect(() => {
+    if (!multichainTokensToApproveSymbols.length && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, multichainTokensToApproveSymbols.length]);
+
+  return {
+    isApproving,
+    approve: handleApproveSourceChain,
+    isAllowanceLoaded: multichainTokensAllowanceResult.isLoaded,
+    isAllowanceLoading: multichainTokensAllowanceResult.isLoading,
+    tokensToApproveSymbols: multichainTokensToApproveSymbols,
+  };
+};
+
+export const useTokensToApprove = (): TokensToApproveResult => {
+  const paySource = useSelector(selectPoolsDetailsPaySource);
+
+  const settlementChainResult = useSettlementChainTokensToApprove();
+
+  const sourceChainResult = useSourceChainTokensToApprove();
+
+  if (paySource === "settlementChain") {
+    return settlementChainResult;
+  }
+
+  if (paySource === "sourceChain") {
+    return sourceChainResult;
+  }
+
+  return {
+    tokensToApproveSymbols: EMPTY_ARRAY,
+    isAllowanceLoading: false,
+    isAllowanceLoaded: false,
+    approve: noop,
+    isApproving: false,
   };
 };

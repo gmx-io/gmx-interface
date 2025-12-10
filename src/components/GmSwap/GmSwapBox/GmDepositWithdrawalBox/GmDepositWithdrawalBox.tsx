@@ -3,7 +3,6 @@ import cx from "classnames";
 import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
-import { getContract } from "config/contracts";
 import { isSourceChain } from "config/multichain";
 import {
   usePoolsDetailsFirstTokenAddress,
@@ -153,7 +152,6 @@ export function GmSwapBoxDepositWithdrawal() {
   );
 
   const indexName = useMemo(() => marketInfo && getMarketIndexName(marketInfo), [marketInfo]);
-  const routerAddress = useMemo(() => getContract(chainId, "SyntheticsRouter"), [chainId]);
 
   const tokenOptions = useSelector(selectPoolsDetailsTokenOptions);
 
@@ -204,7 +202,6 @@ export function GmSwapBoxDepositWithdrawal() {
   });
 
   const submitState = useGmSwapSubmitState({
-    routerAddress,
     logicalFees,
     technicalFees,
     shouldDisableValidation: shouldDisableValidationForTesting,

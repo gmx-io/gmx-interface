@@ -44,7 +44,6 @@ import { TechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useTokensToApprove } from "./useTokensToApprove";
 
 interface Props {
-  routerAddress: string;
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
   shouldDisableValidation?: boolean;
@@ -77,7 +76,6 @@ type SubmitButtonState = {
 };
 
 export const useGmSwapSubmitState = ({
-  routerAddress,
   logicalFees,
   technicalFees,
   longTokenLiquidityUsd,
@@ -203,20 +201,7 @@ export const useGmSwapSubmitState = ({
 
   const error = commonError || swapError || expressError || sourceChainError || formattedEstimationError;
 
-  const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove({
-    routerAddress,
-    glvInfo,
-    operation,
-    marketToken,
-    marketTokenAmount,
-    longTokenAddress,
-    longTokenAmount,
-    shortTokenAddress,
-    shortTokenAmount,
-    glvTokenAddress: glvToken?.address,
-    glvTokenAmount,
-    isMarketTokenDeposit,
-  });
+  const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
 
   return useMemo((): SubmitButtonState => {
     if (!account) {
