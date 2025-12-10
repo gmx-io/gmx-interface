@@ -140,6 +140,7 @@ msgstr "손절"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
@@ -245,6 +246,10 @@ msgstr "마켓 스왑 실행"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
+msgstr ""
+
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
+msgid "Full Position Close"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1230,6 +1235,10 @@ msgstr "적게 표시"
 msgid "Vest"
 msgstr "베스트"
 
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Stop Loss price must be below Mark Price for Long positions"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in the GLP pools."
 msgstr "GLP 풀 내 토큰 총 가치."
@@ -1319,6 +1328,10 @@ msgstr "GM은 GMX V2 마켓의 유동성 제공자 토큰입니다. V2 마켓 �
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "현재 가격 영향은 {0}입니다. 주문이 처리될 가능성을 높이기 위해 0.30% 버퍼를 추가하는 것을 고려하세요."
+
+#: src/components/TPSLModal/TPSLModal.tsx
+msgid "TP/SL: {positionTitle}"
+msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
@@ -1425,6 +1438,10 @@ msgstr ""
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
 msgstr "GMX 알림 발견"
+
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Stop Loss price must be above Mark Price for Short positions"
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
@@ -2513,6 +2530,10 @@ msgstr "트랜잭션 전송됨."
 msgid "Exposure to Backing Tokens"
 msgstr "기반 토큰 노출"
 
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Creating..."
+msgstr ""
+
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "and"
 msgstr "그리고"
@@ -2780,6 +2801,11 @@ msgstr "<0>{0}{1} 판매<1>{poolName}</1></0>"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No eligible tokens available on {0} for deposit"
 msgstr "{0}에서 입금 가능한 적격 토큰 없음"
+
+#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
+msgid "Est. PnL"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
@@ -3155,6 +3181,7 @@ msgstr "수령중..."
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 msgid "All"
 msgstr "모두"
 
@@ -3296,6 +3323,10 @@ msgstr "분배는 GLP의 다중 자산 노출을 반영하기 위해 두 GLV 변
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
 
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Add {orderTypeLabel}"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "{0} 시장 풀의 유동성 부족. 이 시장에 대해 다른 풀을 선택하세요.{1}"
@@ -3381,6 +3412,10 @@ msgstr "스왑 제출 완료."
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PnL"
 msgstr "PnL"
+
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
+msgid "No TP/SL orders"
+msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
@@ -3573,6 +3608,10 @@ msgstr "TVL (공급)"
 msgid "Decrease the leverage to match the max. allowed leverage."
 msgstr "최대 허용 레버리지에 맞게 레버리지 감소."
 
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Take Profit price must be below Mark Price for Short positions"
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Shorts"
@@ -3681,6 +3720,10 @@ msgstr "트레이더로서 이 계정이 획득한 소개 보수."
 msgid "Transfer account"
 msgstr ""
 
+#: src/components/TPSLModal/TPSLModal.tsx
+msgid "Cancel all"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your tokens, or borrow against it."
@@ -3786,6 +3829,7 @@ msgstr "주문의 트리거 가격입니다."
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
@@ -4102,6 +4146,10 @@ msgid "Amount of traders you referred."
 msgstr "추천한 거래자 수"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
 msgstr "이익 실현"
@@ -4114,6 +4162,10 @@ msgstr "시간"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "{0} 유동성 부족"
+
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Unable to calculate order"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -4714,6 +4766,10 @@ msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}
 msgid "Cancelling {ordersText}."
 msgstr "{ordersText} 취소 중."
 
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Create {orderTypeLabel}"
+msgstr ""
+
 #: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -4960,6 +5016,10 @@ msgstr "사용 가능 유동성"
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
 msgstr "시작 미실현 PnL"
+
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
+msgid "Size (% of Position)"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
@@ -5264,9 +5324,17 @@ msgstr "90일"
 msgid "Liquidation"
 msgstr "청산"
 
+#: src/components/TPSLModal/TPSLModal.tsx
+msgid "Add TP/SL"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Risk Monitoring"
 msgstr "GMX 위험 모니터링"
+
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Take Profit price must be above Mark Price for Long positions"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -6269,6 +6337,7 @@ msgstr "<0>{0}</0> 수령"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -6313,6 +6382,10 @@ msgid "We Value Your Feedback"
 msgstr "귀하의 피드백을 소중히 여깁니다"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "손절"
@@ -6507,6 +6580,8 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/TPSLOrdersTable.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Trigger Price"
@@ -6775,6 +6850,7 @@ msgstr "시프트 오류."
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
@@ -6832,6 +6908,10 @@ msgstr ""
 msgid "Bonus Rebate"
 msgstr "보너스 리베이트"
 
+#: src/components/TPSLModal/AddTPSLForm.tsx
+msgid "Close Size"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr "{0} 시장 풀에 기존 포지션이 있지만, 이 주문에 대한 유동성이 부족합니다."
@@ -6887,6 +6967,7 @@ msgstr "스냅샷"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Liquidation Price"
 msgstr "청산 가격"
@@ -7211,6 +7292,7 @@ msgstr "지갑"
 msgid "You have a pending transfer from {sender}."
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLForm.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "트리거 가격 입력"
@@ -7225,6 +7307,7 @@ msgstr "<0>매</0> {minutes} 분{0}"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
@@ -7672,6 +7755,7 @@ msgstr "전송 실패."
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Mark Price"

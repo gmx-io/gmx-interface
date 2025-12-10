@@ -92,16 +92,16 @@ export function PositionList(p: Props) {
           <Table className="!w-[max(100%,1000px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>
-                <TableTh className="w-[18%]">
+                <TableTh className="w-[12%]">
                   <Trans>Position</Trans>
                 </TableTh>
-                <TableTh className="w-[13%]">
+                <TableTh className="w-[14%]">
                   <Trans>Size</Trans>
                 </TableTh>
-                <TableTh className="w-[13%]">
+                <TableTh className="w-[12%]">
                   <Trans>Net Value</Trans>
                 </TableTh>
-                <TableTh className="w-[13%]">
+                <TableTh className="w-[12%]">
                   <Trans>Collateral</Trans>
                 </TableTh>
                 <TableTh className="w-[10%]">
@@ -113,12 +113,12 @@ export function PositionList(p: Props) {
                 <TableTh className="w-[10%]">
                   <Trans>Liq. Price</Trans>
                 </TableTh>
-                <TableTh className="w-[13%]">
+                <TableTh className="w-[18%]">
                   <Trans>TP/SL</Trans>
                 </TableTh>
                 {!isLoading && !p.hideActions && (
                   <>
-                    <TableTh className="w-[124px]"></TableTh>
+                    <TableTh className="w-[16%]"></TableTh>
                   </>
                 )}
               </TableTheadTr>

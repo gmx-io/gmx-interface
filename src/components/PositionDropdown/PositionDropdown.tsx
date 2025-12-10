@@ -7,11 +7,11 @@ import Button from "components/Button/Button";
 import EditIcon from "img/ic_edit.svg?react";
 import IncreaseLimit from "img/ic_increaselimit_16.svg?react";
 import IncreaseMarket from "img/ic_increasemarket_16.svg?react";
-import IncreaseStopMarket from "img/tokens/ic_box_chevron_up.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import SelectIcon from "img/ic_select.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 import TriggerClose from "img/ic_triggerclose_16.svg?react";
+import IncreaseStopMarket from "img/tokens/ic_box_chevron_up.svg?react";
 
 import "./PositionDropdown.css";
 

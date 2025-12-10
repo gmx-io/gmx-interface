@@ -55,6 +55,7 @@ import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TwapOrderProgress } from "../OrderItem/OrderItem";
+import { TPSLModal } from "../TPSLModal/TPSLModal";
 
 import "./PositionItem.scss";
 
@@ -80,11 +81,16 @@ export function PositionItem(p: Props) {
   const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
+  const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
 
   const handleSizeClick = useCallback(() => {
     setShowSizeInTokens((prev) => !prev);
+  }, []);
+
+  const handleOpenTPSLModal = useCallback(() => {
+    setIsTPSLModalVisible(true);
   }, []);
 
   function renderNetValue() {
@@ -515,9 +521,13 @@ export function PositionItem(p: Props) {
         </TableTd>
         <TableTd>
           <div className="flex flex-col gap-2">
-            <span className="numbers cursor-pointer select-none" onClick={handleSizeClick}>
+            <span className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
               {showSizeInTokens
-                ? formatBalanceAmount(p.position.sizeInTokens, p.position.indexToken.decimals, p.position.indexToken.symbol)
+                ? formatBalanceAmount(
+                    p.position.sizeInTokens,
+                    p.position.indexToken.decimals,
+                    p.position.indexToken.symbol
+                  )
                 : formatUsd(p.position.sizeInUsd)}
             </span>
             <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
@@ -584,6 +594,7 @@ export function PositionItem(p: Props) {
             marketDecimals={marketDecimals}
             visualMultiplier={p.position.indexToken.visualMultiplier}
             isLarge={true}
+            onOpenTPSLModal={handleOpenTPSLModal}
           />
         </TableTd>
         {!p.hideActions && (
@@ -678,12 +689,16 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary cursor-pointer select-none" onClick={handleSizeClick}>
+            <div className="cursor-pointer select-none font-medium text-typography-secondary" onClick={handleSizeClick}>
               <Trans>Size</Trans>
             </div>
-            <div className="numbers cursor-pointer select-none" onClick={handleSizeClick}>
+            <div className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
               {showSizeInTokens
-                ? formatBalanceAmount(p.position.sizeInTokens, p.position.indexToken.decimals, p.position.indexToken.symbol)
+                ? formatBalanceAmount(
+                    p.position.sizeInTokens,
+                    p.position.indexToken.decimals,
+                    p.position.indexToken.symbol
+                  )
                 : formatUsd(p.position.sizeInUsd)}
             </div>
           </div>
@@ -759,6 +774,7 @@ export function PositionItem(p: Props) {
                 marketDecimals={marketDecimals}
                 visualMultiplier={p.position.indexToken.visualMultiplier}
                 isLarge={false}
+                onOpenTPSLModal={handleOpenTPSLModal}
               />
             </div>
           </div>
@@ -811,7 +827,12 @@ export function PositionItem(p: Props) {
     );
   }
 
-  return p.isLarge ? renderLarge() : renderSmall();
+  return (
+    <>
+      {p.isLarge ? renderLarge() : renderSmall()}
+      <TPSLModal isVisible={isTPSLModalVisible} setIsVisible={setIsTPSLModalVisible} position={p.position} />
+    </>
+  );
 }
 
 function PositionItemOrdersSmall({
@@ -1001,12 +1022,14 @@ function TpSlCell({
   marketDecimals,
   visualMultiplier,
   isLarge,
+  onOpenTPSLModal,
 }: {
   positionKey: string;
   markPrice: bigint;
   marketDecimals: number | undefined;
   visualMultiplier?: number;
   isLarge: boolean;
+  onOpenTPSLModal: () => void;
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
@@ -1053,10 +1076,6 @@ function TpSlCell({
 
   const hasTpOrSl = tpCount > 0 || slCount > 0;
 
-  const handleClick = useCallback(() => {
-    console.log("TP/SL click", { positionKey, hasTpOrSl });
-  }, [positionKey, hasTpOrSl]);
-
   if (!isLarge) {
     return (
       <div className="flex items-center gap-4">
@@ -1090,7 +1109,7 @@ function TpSlCell({
           </span>
         </div>
         <button
-          onClick={handleClick}
+          onClick={onOpenTPSLModal}
           className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
         >
           {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
@@ -1130,7 +1149,7 @@ function TpSlCell({
         </span>
       </div>
       <button
-        onClick={handleClick}
+        onClick={onOpenTPSLModal}
         className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
       >
         {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
