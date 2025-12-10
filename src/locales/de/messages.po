@@ -107,7 +107,7 @@ msgstr "Genehmigung unterzeichnet"
 
 #: src/components/Footer/Footer.tsx
 msgid "Leave Feedback"
-msgstr ""
+msgstr "Feedback hinterlassen"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
