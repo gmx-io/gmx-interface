@@ -154,6 +154,9 @@ export class OracleKeeperFetcher implements OracleFetcher {
     const endpoints = this.oracleTracker.getCurrentEndpoints();
     return fetch(buildUrl(endpoints.primary, path), {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(body),
     });
   };
@@ -189,10 +192,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
   }
 
   fetchPostBatchReport(body: BatchReportBody): Promise<Response> {
-    if (isLocal()) {
-      return Promise.resolve(new Response());
-    }
-
     return this.post("/report/ui/batch_report", body);
   }
 

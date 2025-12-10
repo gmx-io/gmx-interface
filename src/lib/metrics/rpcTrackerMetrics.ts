@@ -76,7 +76,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
         }
 
         if (typeof blockGap === "number") {
-          metrics.pushTiming<RpcTrackerEndpointBlockGapTiming>("rpcTracker.endpoint.blockGap", blockGap, {
+          metrics.pushTiming<RpcTrackerEndpointBlockGapTiming>("rpcTracker.endpoint.blockGap", blockGap + 1, {
             endpoint: getProviderNameFromUrl(endpointStats.endpoint),
             chainId: tracker.params.chainId,
           });
