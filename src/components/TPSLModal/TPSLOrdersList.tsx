@@ -20,13 +20,24 @@ type Props = {
   orders: PositionOrderInfo[];
   position: PositionInfo;
   marketDecimals: number | undefined;
+  isMobile: boolean;
 };
 
-export function TPSLOrdersTable({ orders, position, marketDecimals }: Props) {
+export function TPSLOrdersList({ orders, position, marketDecimals, isMobile }: Props) {
   if (orders.length === 0) {
     return (
       <div className="flex items-center justify-center py-32 text-typography-secondary">
         <Trans>No TP/SL orders</Trans>
+      </div>
+    );
+  }
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col gap-12 pb-80 pt-8">
+        {orders.map((order) => (
+          <TPSLOrderCard key={order.key} order={order} position={position} marketDecimals={marketDecimals} />
+        ))}
       </div>
     );
   }
@@ -59,6 +70,141 @@ export function TPSLOrdersTable({ orders, position, marketDecimals }: Props) {
         ))}
       </tbody>
     </Table>
+  );
+}
+
+function TPSLOrderCard({
+  order,
+  position,
+  marketDecimals,
+}: {
+  order: PositionOrderInfo;
+  position: PositionInfo;
+  marketDecimals: number | undefined;
+}) {
+  const [isCancelling, cancelOrder] = useCancelOrder(order);
+
+  const isTakeProfit = isLimitDecreaseOrderType(order.orderType);
+  const orderType = isTakeProfit ? t`Take Profit` : t`Stop Loss`;
+
+  const isFullClose = order.sizeDeltaUsd === position.sizeInUsd;
+
+  const sizePercentage = useMemo(() => {
+    if (position.sizeInUsd === 0n) return 0n;
+    return bigMath.mulDiv(order.sizeDeltaUsd, 10000n, position.sizeInUsd);
+  }, [order.sizeDeltaUsd, position.sizeInUsd]);
+
+  const sizeDisplay = useMemo(() => {
+    if (isFullClose) {
+      return <Trans>Full Position Close</Trans>;
+    }
+    const percentage = Number(sizePercentage) / 100;
+    return (
+      <span>
+        <span>-{formatUsd(order.sizeDeltaUsd)}</span>
+        <span className="ml-4 text-typography-secondary">(-{percentage.toFixed(2)}%)</span>
+      </span>
+    );
+  }, [isFullClose, order.sizeDeltaUsd, sizePercentage]);
+
+  const triggerPriceDisplay = useMemo(() => {
+    const thresholdType = order.triggerThresholdType;
+    const price = formatUsd(order.triggerPrice, {
+      displayDecimals: marketDecimals,
+      visualMultiplier: order.indexToken?.visualMultiplier,
+    });
+    return `${thresholdType} ${price}`;
+  }, [order.triggerPrice, order.triggerThresholdType, order.indexToken?.visualMultiplier, marketDecimals]);
+
+  const estimatedPnl = useMemo(() => {
+    const entryPrice = position.entryPrice ?? 0n;
+    const priceDiff = order.isLong ? order.triggerPrice - entryPrice : entryPrice - order.triggerPrice;
+
+    const pnlUsd = bigMath.mulDiv(priceDiff, order.sizeDeltaUsd, entryPrice);
+    const pnlPercentage = position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : 0n;
+
+    return { pnlUsd, pnlPercentage };
+  }, [order, position]);
+
+  const receiveDisplay = useMemo(() => {
+    const receiveUsd = order.sizeDeltaUsd > 0n ? order.sizeDeltaUsd : 0n;
+    const receiveToken = order.targetCollateralToken;
+
+    if (!receiveToken) return "—";
+
+    const receiveAmount =
+      receiveToken.prices?.minPrice && receiveToken.prices.minPrice > 0n
+        ? bigMath.mulDiv(receiveUsd, 10n ** BigInt(receiveToken.decimals), receiveToken.prices.minPrice)
+        : 0n;
+
+    return (
+      <span>
+        {formatBalanceAmount(receiveAmount, receiveToken.decimals, receiveToken.symbol, {
+          isStable: receiveToken.isStable,
+        })}
+        <span className="ml-4 text-typography-secondary">({formatUsd(receiveUsd)})</span>
+      </span>
+    );
+  }, [order]);
+
+  const handleCancel = useCallback(() => {
+    cancelOrder();
+  }, [cancelOrder]);
+
+  return (
+    <div className="flex flex-col gap-10 p-16 border-b-1/2 border-slate-600">
+      <div className="flex items-center justify-between">
+        <span className="text-14 font-medium text-typography-secondary">
+          <Trans>Type</Trans>
+        </span>
+        <span className="text-body-medium">{orderType}</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="text-14 font-medium text-typography-secondary">
+          <Trans>Size (% of position)</Trans>
+        </span>
+        <span className="text-body-medium numbers">{sizeDisplay}</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="text-14 font-medium text-typography-secondary">
+          <Trans>Trigger Price</Trans>
+        </span>
+        <span className="text-body-medium numbers">{triggerPriceDisplay}</span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="text-14 font-medium text-typography-secondary">
+          <Trans>Est. PNL</Trans>
+        </span>
+        <span className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
+          {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
+        </span>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <span className="text-14 font-medium text-typography-secondary">
+          <Trans>Receive</Trans>
+        </span>
+        <span className="text-body-medium numbers">{receiveDisplay}</span>
+      </div>
+
+      <div className="mt-4 flex gap-8">
+        <Button variant="secondary" className="flex-1" onClick={() => {}}>
+          <Trans>Edit</Trans>
+        </Button>
+        <Button
+          variant="secondary"
+          className="flex-1 !text-red-400 hover:!text-red-300 !bg-red-900 hover:!bg-red-700/25"
+          onClick={handleCancel}
+          disabled={isCancelling}
+        >
+          <Trans>Cancel</Trans>
+          <CloseIcon className="ml-4 size-14" />
+        </Button>
+      </div>
+    </div>
   );
 }
 

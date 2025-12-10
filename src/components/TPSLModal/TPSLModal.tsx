@@ -1,5 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
+import { useMedia } from "react-use";
 
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -35,7 +36,7 @@ import Tabs from "components/Tabs/Tabs";
 import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 
 import { AddTPSLForm } from "./AddTPSLForm";
-import { TPSLOrdersTable } from "./TPSLOrdersTable";
+import { TPSLOrdersList } from "./TPSLOrdersList";
 
 type TabType = "all" | "takeProfit" | "stopLoss";
 
@@ -49,6 +50,8 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
+
+  const isMobile = useMedia("(max-width: 1024px)");
 
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -187,7 +190,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
       contentPadding={false}
       withMobileBottomPosition={true}
     >
-      <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12">
+      <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12 max-md:gap-16 max-md:px-16">
         <div className="flex flex-col">
           <span className="text-body-small text-typography-secondary">
             <Trans>Entry Price</Trans>
@@ -223,22 +226,45 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
         </div>
       </div>
 
-      <div className="flex items-center justify-between border-b-1/2 border-t-1/2 border-slate-600 bg-slate-800/50 pr-20">
-        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="block" className="-mb-1" />
-        <div className="flex items-center gap-8">
-          {allOrders.length > 0 && (
-            <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
-              <Trans>Cancel all</Trans>
-            </Button>
-          )}
-          <Button variant="ghost" onClick={handleAddTPSL}>
-            <Trans>Add TP/SL</Trans>
-            <PlusCircleIcon className="ml-4 size-16" />
-          </Button>
-        </div>
+      <div className="flex items-center justify-between border-b-1/2 border-t-1/2 border-slate-600 bg-slate-800/50">
+        <Tabs
+          options={tabOptions}
+          selectedValue={activeTab}
+          onChange={setActiveTab}
+          type="block"
+          className="-mb-1 w-full pr-20 max-md:pr-16"
+          rightContent={
+            <div className="flex items-center shrink-0 gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
+              {allOrders.length > 0 && (
+                <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
+                  <Trans>Cancel all</Trans>
+                </Button>
+              )}
+              {!isMobile && (
+                <Button variant="ghost" onClick={handleAddTPSL}>
+                  <Trans>Add TP/SL</Trans>
+                  <PlusCircleIcon className="size-16" />
+                </Button>
+              )}
+            </div>
+          }
+        />
       </div>
 
-      <TPSLOrdersTable orders={displayedOrders} position={position} marketDecimals={marketDecimals} />
+      <TPSLOrdersList
+        orders={displayedOrders}
+        position={position}
+        marketDecimals={marketDecimals}
+        isMobile={isMobile}
+      />
+
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 bg-slate-900 px-16 py-12">
+          <Button variant="primary-action" className="w-full" onClick={handleAddTPSL}>
+            <Trans>Add TP/SL</Trans>
+          </Button>
+        </div>
+      )}
 
       <AddTPSLForm isVisible={isAddFormVisible} setIsVisible={setIsAddFormVisible} position={position} />
     </Modal>
