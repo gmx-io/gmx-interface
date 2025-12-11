@@ -140,7 +140,8 @@ msgstr ""
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
@@ -248,7 +249,8 @@ msgstr ""
 msgid "Discover"
 msgstr ""
 
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Full Position Close"
 msgstr ""
 
@@ -634,6 +636,10 @@ msgstr ""
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "Edit TP/SL Size"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "About GLP Incident"
 msgstr ""
@@ -675,7 +681,7 @@ msgstr ""
 msgid "{typeString} Long Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
 
-#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "SL Price"
 msgstr ""
 
@@ -865,6 +871,10 @@ msgstr ""
 
 #: src/components/InputSection/InputSection.jsx
 msgid "MAX"
+msgstr ""
+
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "Stop Loss Price"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -1235,10 +1245,6 @@ msgstr ""
 msgid "Vest"
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
-msgid "Stop Loss price must be below Mark Price for Long positions"
-msgstr ""
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in the GLP pools."
 msgstr ""
@@ -1315,6 +1321,10 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
+msgstr ""
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Size (% of position)"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -1431,16 +1441,12 @@ msgstr ""
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr ""
 
-#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
-msgstr ""
-
-#: src/components/TPSLModal/AddTPSLForm.tsx
-msgid "Stop Loss price must be above Mark Price for Short positions"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
@@ -1984,6 +1990,7 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -2126,6 +2133,7 @@ msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
 msgstr ""
 
@@ -2530,7 +2538,7 @@ msgstr ""
 msgid "Exposure to Backing Tokens"
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Creating..."
 msgstr ""
 
@@ -2802,8 +2810,9 @@ msgstr ""
 msgid "No eligible tokens available on {0} for deposit"
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Est. PnL"
 msgstr ""
 
@@ -2879,6 +2888,7 @@ msgstr ""
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -3061,6 +3071,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted."
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "TP price must be above Mark Price"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -3323,15 +3337,11 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
-msgid "Add {orderTypeLabel}"
-msgstr ""
-
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr ""
 
-#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "Loss"
 msgstr ""
 
@@ -3373,6 +3383,10 @@ msgstr ""
 msgid "<0>every</0> {hours} hours{0}"
 msgstr ""
 
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "{secondLabel}"
+msgstr ""
+
 #: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
@@ -3407,13 +3421,14 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PnL"
 msgstr ""
 
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "No TP/SL orders"
 msgstr ""
 
@@ -3498,6 +3513,10 @@ msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "SL price must be above Mark Price"
 msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
@@ -3608,10 +3627,6 @@ msgstr ""
 msgid "Decrease the leverage to match the max. allowed leverage."
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
-msgid "Take Profit price must be below Mark Price for Short positions"
-msgstr ""
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Shorts"
@@ -3679,6 +3694,10 @@ msgstr ""
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "Create TP/SL"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3803,6 +3822,7 @@ msgstr ""
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3829,6 +3849,7 @@ msgstr ""
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4146,10 +4167,9 @@ msgid "Amount of traders you referred."
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TPSLModal/AddTPSLForm.tsx
-#: src/components/TPSLModal/AddTPSLForm.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
 msgstr ""
@@ -4163,8 +4183,12 @@ msgstr ""
 msgid "Insufficient {0} liquidity"
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "TP/SL: {positionTitle} Decrease"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -4655,6 +4679,7 @@ msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Collateral ({0})"
 msgstr ""
@@ -4764,10 +4789,6 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}."
-msgstr ""
-
-#: src/components/TPSLModal/AddTPSLForm.tsx
-msgid "Create {orderTypeLabel}"
 msgstr ""
 
 #: src/App/MainRoutes.tsx
@@ -5017,7 +5038,7 @@ msgstr ""
 msgid "Start unrealized pnl"
 msgstr ""
 
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Size (% of Position)"
 msgstr ""
 
@@ -5258,6 +5279,7 @@ msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr ""
@@ -5325,15 +5347,12 @@ msgid "Liquidation"
 msgstr ""
 
 #: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 msgid "Add TP/SL"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Risk Monitoring"
-msgstr ""
-
-#: src/components/TPSLModal/AddTPSLForm.tsx
-msgid "Take Profit price must be above Mark Price for Long positions"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5380,6 +5399,7 @@ msgid "Longs Net Rate / 1h"
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Edit"
 msgstr ""
 
@@ -5410,6 +5430,10 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "Keep leverage at {currentLeverage}"
 msgstr ""
 
 #: src/lib/dates.ts
@@ -5944,6 +5968,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6050,6 +6075,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Execution Details"
 msgstr ""
@@ -6118,6 +6144,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "More active management required compared to GLV"
+msgstr ""
+
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "Take Profit Price"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6337,7 +6367,9 @@ msgstr ""
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -6382,10 +6414,9 @@ msgid "We Value Your Feedback"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TPSLModal/AddTPSLForm.tsx
-#: src/components/TPSLModal/AddTPSLForm.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr ""
@@ -6424,7 +6455,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "TP Price"
 msgstr ""
 
@@ -6580,8 +6611,8 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TPSLModal/AddTPSLForm.tsx
-#: src/components/TPSLModal/TPSLOrdersTable.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Trigger Price"
@@ -6656,6 +6687,10 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "SL price must be below Mark Price"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6787,6 +6822,10 @@ msgstr ""
 msgid "Why is the claim in GLV tokens?"
 msgstr ""
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Est. PNL"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr ""
@@ -6850,6 +6889,7 @@ msgstr ""
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6908,10 +6948,6 @@ msgstr ""
 msgid "Bonus Rebate"
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
-msgid "Close Size"
-msgstr ""
-
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
 msgstr ""
@@ -6967,6 +7003,7 @@ msgstr ""
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Liquidation Price"
@@ -7292,7 +7329,6 @@ msgstr ""
 msgid "You have a pending transfer from {sender}."
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLForm.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr ""
@@ -7484,6 +7520,10 @@ msgstr ""
 msgid "You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "TP price must be below Mark Price"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Tier {0}: {currentTierDiscount}% discount"
 msgstr ""
@@ -7513,6 +7553,7 @@ msgstr ""
 msgid "30d Fee APY"
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
 msgstr ""
@@ -8035,6 +8076,7 @@ msgstr ""
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Close"

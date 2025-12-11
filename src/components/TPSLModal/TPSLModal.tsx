@@ -35,7 +35,7 @@ import Tabs from "components/Tabs/Tabs";
 
 import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 
-import { AddTPSLForm } from "./AddTPSLForm";
+import { AddTPSLModal } from "./AddTPSLModal";
 import { TPSLOrdersList } from "./TPSLOrdersList";
 
 type TabType = "all" | "takeProfit" | "stopLoss";
@@ -234,7 +234,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
           type="block"
           className="-mb-1 w-full pr-20 max-md:pr-16"
           rightContent={
-            <div className="flex items-center shrink-0 gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
+            <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
               {allOrders.length > 0 && (
                 <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
                   <Trans>Cancel all</Trans>
@@ -259,14 +259,14 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
       />
 
       {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 bg-slate-900 px-16 py-12">
-          <Button variant="primary-action" className="w-full" onClick={handleAddTPSL}>
+        <div className="fixed bottom-0 left-0 right-0 border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
+          <Button variant="primary" className="w-full" onClick={handleAddTPSL}>
             <Trans>Add TP/SL</Trans>
           </Button>
         </div>
       )}
 
-      <AddTPSLForm isVisible={isAddFormVisible} setIsVisible={setIsAddFormVisible} position={position} />
+      <AddTPSLModal isVisible={isAddFormVisible} setIsVisible={setIsAddFormVisible} position={position} />
     </Modal>
   );
 }

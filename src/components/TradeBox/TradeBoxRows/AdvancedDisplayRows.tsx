@@ -197,7 +197,7 @@ export function TradeBoxAdvancedGroups({
       hasError={hasError}
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
-      wrappedHandle
+      wrapped
     >
       {isTrigger ? (
         <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />

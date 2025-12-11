@@ -66,7 +66,7 @@ interface Props {
   withToggleSwitch?: boolean;
   handleClassName?: string;
   chevronClassName?: string;
-  wrappedHandle?: boolean;
+  wrapped?: boolean;
 }
 
 export function ExpandableRow({
@@ -84,7 +84,7 @@ export function ExpandableRow({
   withToggleSwitch = false,
   handleClassName,
   chevronClassName,
-  wrappedHandle = false,
+  wrapped = false,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -137,13 +137,16 @@ export function ExpandableRow({
   );
 
   return (
-    <div className={cx("min-h-16", className)}>
+    <div
+      className={cx("min-h-16", className, {
+        "rounded-8 border-1/2 border-slate-600 bg-slate-950/50 px-12 py-10": wrapped,
+      })}
+    >
       <AnimatePresence initial={false}>
         <div
           key="handle"
           className={cx({
             "mb-14": open,
-            "rounded-8 border-1/2 border-slate-600 bg-slate-950/50 px-12 py-10": wrappedHandle,
           })}
         >
           <SyntheticsInfoRow

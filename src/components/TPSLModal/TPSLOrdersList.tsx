@@ -34,7 +34,7 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile }: P
 
   if (isMobile) {
     return (
-      <div className="flex flex-col gap-12 pb-80 pt-8">
+      <div className="flex max-h-[70vh] flex-col gap-12 overflow-y-auto pb-60 pt-8">
         {orders.map((order) => (
           <TPSLOrderCard key={order.key} order={order} position={position} marketDecimals={marketDecimals} />
         ))}
@@ -147,12 +147,16 @@ function TPSLOrderCard({
     );
   }, [order]);
 
+  const handleEdit = useCallback(() => {
+    // TODO: Implement edit
+  }, []);
+
   const handleCancel = useCallback(() => {
     cancelOrder();
   }, [cancelOrder]);
 
   return (
-    <div className="flex flex-col gap-10 p-16 border-b-1/2 border-slate-600">
+    <div className="flex flex-col gap-10 border-b-1/2 border-slate-600 p-16 last:border-b-0">
       <div className="flex items-center justify-between">
         <span className="text-14 font-medium text-typography-secondary">
           <Trans>Type</Trans>
@@ -191,12 +195,12 @@ function TPSLOrderCard({
       </div>
 
       <div className="mt-4 flex gap-8">
-        <Button variant="secondary" className="flex-1" onClick={() => {}}>
+        <Button variant="secondary" className="flex-1" onClick={handleEdit}>
           <Trans>Edit</Trans>
         </Button>
         <Button
           variant="secondary"
-          className="flex-1 !text-red-400 hover:!text-red-300 !bg-red-900 hover:!bg-red-700/25"
+          className="hover:!text-red-300 flex-1 !bg-red-900 !text-red-400 hover:!bg-red-700/25"
           onClick={handleCancel}
           disabled={isCancelling}
         >
