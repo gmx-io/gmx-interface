@@ -58,10 +58,6 @@ export const getRainbowKitConfig = once(() => {
     (acc, chain) => {
       const rpcProviders = getRpcProviders(chain.id, "default");
 
-      if (rpcProviders.length === 0) {
-        throw new Error(`No RPC providers found for chain ${chain.id}`);
-      }
-
       acc[chain.id] = fallback([...rpcProviders.map((provider) => http(provider.url))]);
       return acc;
     },
