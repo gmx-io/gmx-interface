@@ -6,7 +6,7 @@ import { GMX_STATS_API_URL } from "config/backend";
 import { USD_DECIMALS } from "config/factors";
 import { chainlinkClient } from "lib/indexers/clients";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatAmount } from "lib/numbers";
+import { formatAmount, MaxInt256 } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { getNativeToken, getNormalizedTokenSymbol, isChartAvailableForToken } from "sdk/configs/tokens";
 
@@ -323,4 +323,8 @@ export function getStablePriceData(period, countBack = 100) {
     });
   }
   return priceData;
+}
+
+export function isBoundaryAcceptablePrice(acceptablePrice: bigint): boolean {
+  return acceptablePrice === 0n || acceptablePrice >= MaxInt256;
 }

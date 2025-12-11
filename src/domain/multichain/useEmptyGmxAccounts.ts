@@ -50,13 +50,19 @@ const subscribeEmptyGmxAccounts: SWRSubscription<
     });
   }
 
-  fetchEmptyGmxAccounts();
-  const interval = window.setInterval(() => {
+  let timeoutId: number | undefined;
+
+  const fetchAndScheduleNext = () => {
     fetchEmptyGmxAccounts();
-  }, CONFIG_UPDATE_INTERVAL);
+    timeoutId = window.setTimeout(fetchAndScheduleNext, CONFIG_UPDATE_INTERVAL);
+  };
+
+  fetchAndScheduleNext();
 
   return () => {
-    window.clearInterval(interval);
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+    }
   };
 };
 

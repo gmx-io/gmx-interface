@@ -129,6 +129,7 @@ export function ParseTransactionPage() {
     tokensData,
     chainId,
     account: undefined,
+    srcChainId: undefined,
   });
   const { marketTokensData } = useMarketTokensDataRequest(chainId, undefined, {
     isDeposit,

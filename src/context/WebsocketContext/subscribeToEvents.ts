@@ -48,7 +48,10 @@ const MULTICHAIN_TRANSFER_IN_HASH = ethers.id("MultichainTransferIn");
 
 const OFT_SENT_HASH = ethers.id("OFTSent(bytes32,uint32,address,uint256,uint256)");
 const OFT_RECEIVED_HASH = ethers.id("OFTReceived(bytes32,uint32,address,uint256)");
-const COMPOSE_DELIVERED_HASH = ethers.id("ComposeDelivered(address,address,bytes32,uint16)");
+export const COMPOSE_DELIVERED_HASH = ethers.id("ComposeDelivered(address,address,bytes32,uint16)");
+export const LZ_COMPOSE_ALERT_HASH = ethers.id(
+  "LzComposeAlert(address,address,address,bytes32,uint16,uint256,uint256,bytes,bytes,bytes)"
+);
 
 export const OFT_SENT_ABI = [
   {
@@ -87,6 +90,25 @@ export const COMPOSE_DELIVERED_ABI = [
     ],
     name: "ComposeDelivered",
     type: "event",
+  },
+] as const satisfies Abi;
+
+export const LZ_COMPOSE_ALERT_ABI = [
+  {
+    inputs: [
+      { indexed: true, internalType: "address", name: "from", type: "address" },
+      { indexed: true, internalType: "address", name: "to", type: "address" },
+      { indexed: true, internalType: "address", name: "executor", type: "address" },
+      { indexed: false, internalType: "bytes32", name: "guid", type: "bytes32" },
+      { indexed: false, internalType: "uint16", name: "index", type: "uint16" },
+      { indexed: false, internalType: "uint256", name: "gas", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "value", type: "uint256" },
+      { indexed: false, internalType: "bytes", name: "message", type: "bytes" },
+      { indexed: false, internalType: "bytes", name: "extraData", type: "bytes" },
+      { indexed: false, internalType: "bytes", name: "reason", type: "bytes" },
+    ],
+    type: "event",
+    name: "LzComposeAlert",
   },
 ] as const satisfies Abi;
 
@@ -423,7 +445,7 @@ export function subscribeToMultichainApprovalEvents(
   };
 }
 
-function parseEventLogData(eventData): EventLogData {
+export function parseEventLogData(eventData): EventLogData {
   const ret: any = {};
   for (const typeKey of [
     "addressItems",

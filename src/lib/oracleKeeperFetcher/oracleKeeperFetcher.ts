@@ -1,5 +1,4 @@
 import { ContractsChainId } from "config/chains";
-import { isLocal } from "config/env";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { withFallback } from "lib/FallbackTracker/withFallback";

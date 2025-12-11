@@ -237,15 +237,12 @@ export function estimateExecuteSwapOrderGasLimit(
 export function estimateExecuteDepositGasLimit(
   gasLimits: GasLimitsConfig,
   deposit: {
-    // We do not use this yet
-    longTokenSwapsCount?: number;
-    // We do not use this yet
-    shortTokenSwapsCount?: number;
+    swapsCount?: number | bigint;
     callbackGasLimit?: bigint;
   }
 ) {
   const gasPerSwap = gasLimits.singleSwap;
-  const swapsCount = BigInt((deposit.longTokenSwapsCount ?? 0) + (deposit.shortTokenSwapsCount ?? 0));
+  const swapsCount = BigInt(deposit.swapsCount ?? 0);
   const gasForSwaps = swapsCount * gasPerSwap;
 
   return gasLimits.depositToken + (deposit.callbackGasLimit ?? 0n) + gasForSwaps;
@@ -256,11 +253,11 @@ export function estimateExecuteGlvDepositGasLimit(
   {
     marketsCount,
     isMarketTokenDeposit,
+    swapsCount,
   }: {
     isMarketTokenDeposit: boolean;
     marketsCount: bigint;
-    initialLongTokenAmount: bigint;
-    initialShortTokenAmount: bigint;
+    swapsCount: bigint;
   }
 ) {
   const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
@@ -272,15 +269,20 @@ export function estimateExecuteGlvDepositGasLimit(
     return gasLimit;
   }
 
-  return gasLimit + gasLimits.depositToken;
+  const gasPerSwap = gasLimits.singleSwap;
+  const gasForSwaps = swapsCount * gasPerSwap;
+
+  return gasLimit + gasLimits.depositToken + gasForSwaps;
 }
 
 export function estimateExecuteGlvWithdrawalGasLimit(
   gasLimits: GasLimitsConfig,
   {
     marketsCount,
+    swapsCount,
   }: {
     marketsCount: bigint;
+    swapsCount: bigint;
   }
 ) {
   const gasPerGlvPerMarket = gasLimits.glvPerMarketGasLimit;
@@ -288,7 +290,10 @@ export function estimateExecuteGlvWithdrawalGasLimit(
   const glvWithdrawalGasLimit = gasLimits.glvWithdrawalGasLimit;
   const gasLimit = glvWithdrawalGasLimit + gasForGlvMarkets;
 
-  return gasLimit + gasLimits.withdrawalMultiToken;
+  const gasPerSwap = gasLimits.singleSwap;
+  const gasForSwaps = swapsCount * gasPerSwap;
+
+  return gasLimit + gasLimits.withdrawalMultiToken + gasForSwaps;
 }
 
 /**
@@ -298,14 +303,13 @@ export function estimateExecuteGlvWithdrawalGasLimit(
  */
 export function estimateExecuteWithdrawalGasLimit(
   gasLimits: GasLimitsConfig,
-  withdrawal: { callbackGasLimit?: bigint }
+  withdrawal: { callbackGasLimit?: bigint; swapsCount?: bigint }
 ) {
-  // Swap is not used but supported in the contract.
-  // const gasPerSwap = gasLimits.singleSwap;
-  // const swapsCount = 0n;
-  // const gasForSwaps = swapsCount * gasPerSwap;
+  const gasPerSwap = gasLimits.singleSwap;
+  const swapsCount = withdrawal.swapsCount ?? 0n;
+  const gasForSwaps = swapsCount * gasPerSwap;
 
-  return gasLimits.withdrawalMultiToken + (withdrawal.callbackGasLimit ?? 0n);
+  return gasLimits.withdrawalMultiToken + (withdrawal.callbackGasLimit ?? 0n) + gasForSwaps;
 }
 
 /**

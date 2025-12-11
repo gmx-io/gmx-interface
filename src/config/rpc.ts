@@ -319,7 +319,7 @@ export const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
   ],
 };
 
-export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
+export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [] {
   const config = RPC_CONFIGS[chainId];
 
   if (!config) {

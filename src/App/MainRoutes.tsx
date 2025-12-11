@@ -4,7 +4,6 @@ import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
 import { isDevelopment } from "config/env";
-import { PoolsDetailsContextProvider } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
@@ -32,7 +31,6 @@ import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
-import { TestPermits } from "pages/TestPermits/TestPermits";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
@@ -55,6 +53,33 @@ const LazyDebugOracleKeeper = lazy(() => import("pages/DebugOracleKeeper/DebugOr
 export const OracleDebugPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyDebugOracleKeeper />
+  </Suspense>
+);
+
+const LazyTestPermits = lazy(() =>
+  import("pages/TestPermits/TestPermits").then((module) => ({ default: module.TestPermits }))
+);
+export const TestPermitsPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyTestPermits />
+  </Suspense>
+);
+
+const LazyAccountEvents = lazy(() =>
+  import("pages/AccountEvents/AccountEvents").then((module) => ({ default: module.AccountEvents }))
+);
+export const AccountEventsPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyAccountEvents />
+  </Suspense>
+);
+
+const LazyDecodeError = lazy(() =>
+  import("pages/DecodeError/DecodeError").then((module) => ({ default: module.DecodeError }))
+);
+export const DecodeErrorPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDecodeError />
   </Suspense>
 );
 
@@ -131,9 +156,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-          <PoolsDetailsContextProvider>
-            <PoolsDetails />
-          </PoolsDetailsContextProvider>
+          <PoolsDetails />
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/trade/:tradeType?">
@@ -207,7 +230,13 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <UiPage />
         </Route>,
         <Route exact path="/permits" key="permits">
-          <TestPermits />
+          <TestPermitsPage />
+        </Route>,
+        <Route exact path="/account-events/:account?" key="account-events">
+          <AccountEventsPage />
+        </Route>,
+        <Route exact path="/decode-error" key="decode-error">
+          <DecodeErrorPage />
         </Route>,
         <Route exact path="/rpc-debug" key="rpc-debug">
           <SyntheticsStateContextProvider skipLocalReferralCode pageType="rpcDebug">

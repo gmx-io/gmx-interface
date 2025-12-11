@@ -54,6 +54,8 @@ export type ContractsChainId = (typeof CONTRACTS_CHAIN_IDS_DEV)[number];
 export type ContractsChainIdProduction = (typeof CONTRACTS_CHAIN_IDS)[number];
 export type SettlementChainId = (typeof SETTLEMENT_CHAIN_IDS_DEV)[number];
 export type SourceChainId = (typeof SOURCE_CHAIN_IDS)[number];
+export const GMX_ACCOUNT_PSEUDO_CHAIN_ID = 0;
+export type GmxAccountPseudoChainId = typeof GMX_ACCOUNT_PSEUDO_CHAIN_ID;
 
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
 
@@ -232,7 +234,7 @@ export const botanix: Chain = defineChain({
   },
 });
 
-const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
+export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
@@ -275,7 +277,7 @@ export function isContractsChain(chainId: number, dev = false): chainId is Contr
 }
 
 export function isTestnetChain(chainId: number): boolean {
-  return [AVALANCHE_FUJI, ARBITRUM_SEPOLIA].includes(chainId);
+  return [AVALANCHE_FUJI, ARBITRUM_SEPOLIA, SOURCE_SEPOLIA, SOURCE_OPTIMISM_SEPOLIA].includes(chainId);
 }
 
 export function getMaxFeePerGas(chainId: ContractsChainId): bigint | undefined {

@@ -1,4 +1,5 @@
 import { TokenData } from "domain/synthetics/tokens";
+import type { ERC20Address } from "domain/tokens";
 import { Market, MarketInfo, MarketPoolTokens } from "sdk/types/markets";
 
 export * from "sdk/types/markets";
@@ -46,6 +47,7 @@ export type GlvInfo = {
   poolValueMax: bigint;
   poolValueMin: bigint;
   data: string;
+  isGlv: true;
 };
 
 export interface GlvMarket {
@@ -64,3 +66,98 @@ export type ClaimableFunding = {
 export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
 };
+
+export type CreateDepositParamsAddresses = {
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  market: string;
+  initialLongToken: ERC20Address;
+  initialShortToken: ERC20Address;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateDepositParams = {
+  addresses: CreateDepositParamsAddresses;
+  minMarketTokens: bigint;
+  shouldUnwrapNativeToken: boolean;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  dataList: string[];
+};
+
+export type RawCreateDepositParams = Omit<CreateDepositParams, "executionFee">;
+
+export type CreateGlvDepositAddresses = {
+  glv: string;
+  market: string;
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  initialLongToken: string;
+  initialShortToken: string;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateGlvDepositParams = {
+  addresses: CreateGlvDepositAddresses;
+  minGlvTokens: bigint;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  shouldUnwrapNativeToken: boolean;
+  isMarketTokenDeposit: boolean;
+  dataList: string[];
+};
+
+export type RawCreateGlvDepositParams = Omit<CreateGlvDepositParams, "executionFee">;
+
+export type CreateWithdrawalAddresses = {
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  market: string;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateWithdrawalParams = {
+  addresses: CreateWithdrawalAddresses;
+  minLongTokenAmount: bigint;
+  minShortTokenAmount: bigint;
+  shouldUnwrapNativeToken: boolean;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  dataList: string[];
+};
+
+export type RawCreateWithdrawalParams = Omit<CreateWithdrawalParams, "executionFee">;
+
+export type CreateGlvWithdrawalAddresses = {
+  receiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  market: string;
+  glv: string;
+  longTokenSwapPath: string[];
+  shortTokenSwapPath: string[];
+};
+
+export type CreateGlvWithdrawalParams = {
+  addresses: CreateGlvWithdrawalAddresses;
+  minLongTokenAmount: bigint;
+  minShortTokenAmount: bigint;
+  shouldUnwrapNativeToken: boolean;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  dataList: string[];
+};
+
+export type RawCreateGlvWithdrawalParams = Omit<CreateGlvWithdrawalParams, "executionFee">;
+
+/**
+ * GM or GLV pay source
+ */
+
+export type GmPaySource = "settlementChain" | "gmxAccount" | "sourceChain";

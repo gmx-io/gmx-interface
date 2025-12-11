@@ -1,6 +1,7 @@
 import values from "lodash/values";
 
 import type { SortDirection } from "context/SorterContext/types";
+import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -18,6 +19,7 @@ export function sortGmTokensByField({
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
   performance,
+  multichainMarketTokensBalances,
 }: {
   marketsInfo: MarketsInfoData;
   marketTokensData: ProgressiveTokensData;
@@ -27,6 +29,7 @@ export function sortGmTokensByField({
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
   performance: PerformanceData | undefined;
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
   const gmTokens = values(marketTokensData);
 
@@ -54,14 +57,14 @@ export function sortGmTokensByField({
     });
   }
 
-  if (orderBy === "wallet") {
+  if (orderBy === "balance") {
     return gmTokens.sort((a, b) => {
       if (!a.prices || !b.prices) {
         return 0;
       }
 
-      const aUsd = convertToUsd(a.balance, a.decimals, a.prices.minPrice) ?? 0n;
-      const bUsd = convertToUsd(b.balance, b.decimals, b.prices.minPrice) ?? 0n;
+      const aUsd = multichainMarketTokensBalances?.[a.address]?.totalBalanceUsd ?? 0n;
+      const bUsd = multichainMarketTokensBalances?.[b.address]?.totalBalanceUsd ?? 0n;
 
       return aUsd > bUsd ? directionMultiplier : -directionMultiplier;
     });
@@ -94,5 +97,5 @@ export function sortGmTokensByField({
     });
   }
 
-  return sortGmTokensDefault(marketsInfo, marketTokensData);
+  return sortGmTokensDefault({ marketsInfoData: marketsInfo, marketTokensData, multichainMarketTokensBalances });
 }
