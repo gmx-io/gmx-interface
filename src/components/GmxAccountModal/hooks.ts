@@ -169,7 +169,9 @@ const subscribeMultichainTokenBalances: SWRSubscription<
 
   let tokenBalances: Record<number, Record<string, bigint>> | undefined;
   let isLoaded = false;
-  const interval = window.setInterval(() => {
+  let timeoutId: number | undefined;
+
+  const fetchAndScheduleNext = () => {
     fetchMultichainTokenBalances({
       settlementChainId,
       account,
@@ -179,16 +181,24 @@ const subscribeMultichainTokenBalances: SWRSubscription<
       },
       tokens,
       specificChainId,
-    }).then((finalTokenBalances) => {
-      if (!isLoaded) {
-        isLoaded = true;
-        options.next(null, { tokenBalances: finalTokenBalances, isLoading: false });
-      }
-    });
-  }, FREQUENT_UPDATE_INTERVAL);
+    })
+      .then((finalTokenBalances) => {
+        if (!isLoaded) {
+          isLoaded = true;
+          options.next(null, { tokenBalances: finalTokenBalances, isLoading: false });
+        }
+      })
+      .finally(() => {
+        timeoutId = window.setTimeout(fetchAndScheduleNext, FREQUENT_UPDATE_INTERVAL);
+      });
+  };
+
+  fetchAndScheduleNext();
 
   return () => {
-    window.clearInterval(interval);
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+    }
   };
 };
 
