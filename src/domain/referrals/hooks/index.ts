@@ -132,7 +132,8 @@ export function useTiers(signer: Signer | undefined, chainId: ContractsChainId, 
 
 export async function setAffiliateTier(chainId: ContractsChainId, affiliate: string, tierId: number, signer, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const timelockAddress = getContract(chainId, "Timelock");
+  const referralStorageContract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, signer);
+  const timelockAddress = await referralStorageContract.gov();
   const contract = new ethers.Contract(timelockAddress, abis.Timelock, signer);
   return callContract(chainId, contract, "setReferrerTier", [referralStorageAddress, affiliate, tierId], opts);
 }
