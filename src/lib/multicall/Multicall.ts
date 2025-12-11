@@ -22,7 +22,7 @@ import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
 
-export const MAX_PRIMARY_TIMEOUT = 10_000;
+export const MAX_PRIMARY_TIMEOUT = 20_000;
 export const MAX_FALLBACK_TIMEOUT = 10_000;
 
 export type MulticallProviderUrls = {
