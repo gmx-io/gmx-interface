@@ -20,7 +20,7 @@ import type { GmPaySource } from "domain/synthetics/markets/types";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
-import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd } from "lib/numbers";
+import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS, getToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
@@ -329,15 +329,21 @@ export function getIncreaseError(p: {
     return [t`Min size per part: ${formatUsd(minTwapPartSize)}`];
   }
 
-  if (!existingPosition && (collateralUsd === undefined ? undefined : collateralUsd < _minCollateralUsd)) {
+  if (
+    !existingPosition &&
+    (initialCollateralUsd === undefined
+      ? undefined
+      : roundWithDecimals(initialCollateralUsd, { displayDecimals: 2, decimals: USD_DECIMALS }) < _minCollateralUsd)
+  ) {
     return [t`Min order: ${formatUsd(_minCollateralUsd)}`];
   }
 
-  if (
-    nextPositionValues?.nextCollateralUsd === undefined
-      ? undefined
-      : nextPositionValues.nextCollateralUsd < _minCollateralUsd
-  ) {
+  const roundedNextCollateralUsd =
+    nextPositionValues?.nextCollateralUsd === collateralUsd
+      ? roundWithDecimals(initialCollateralUsd, { displayDecimals: 2, decimals: USD_DECIMALS })
+      : nextPositionValues?.nextCollateralUsd;
+
+  if (roundedNextCollateralUsd === undefined ? undefined : roundedNextCollateralUsd < _minCollateralUsd) {
     return [t`Min collateral: ${formatUsd(_minCollateralUsd)}`];
   }
 

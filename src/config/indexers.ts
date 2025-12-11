@@ -28,15 +28,15 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-fuji-referrals/synts-stats-230726124533-065cd0d/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-fuji-stats/master-250708141244-939c871/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji@7e33a2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji:prod/api/graphql",
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@7e33a2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql",
   },
 
   [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@7e33a2/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql",
     stats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
     syntheticsStats:
