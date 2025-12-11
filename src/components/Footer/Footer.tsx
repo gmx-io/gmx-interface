@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getAppBaseUrl, isHomeSite, shouldShowRedirectModal } from "lib/legacy";
+import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
@@ -21,7 +21,6 @@ type Props = {
 };
 
 export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
-  const isHome = isHomeSite();
   const { feedbackModalVisible, setFeedbackModalVisible } = useSettings();
 
   return (
@@ -58,12 +57,10 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
               </Button>
             );
           })}
-          {!isHome && (
-            <Button variant="ghost" onClick={() => setFeedbackModalVisible(true)}>
-              {isMobileSideNav ? null : <FeedbackIcon />}
-              <Trans>Leave Feedback</Trans>
-            </Button>
-          )}
+          <Button variant="ghost" onClick={() => setFeedbackModalVisible(true)}>
+            {isMobileSideNav ? null : <FeedbackIcon />}
+            <Trans>Leave Feedback</Trans>
+          </Button>
         </div>
         <div
           className={cx("flex", {
