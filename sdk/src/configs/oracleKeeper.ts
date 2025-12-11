@@ -31,7 +31,7 @@ const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
 
   [AVALANCHE]: ["https://avalanche-api-fallback.gmxinfra.io", "https://avalanche-api-fallback.gmxinfra2.io"],
 
-  [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji-upovm.ondigitalocean.app"],
+  [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji.gmxinfra.io"],
 
   [BOTANIX]: ["https://botanix-api-fallback.gmxinfra.io", "https://botanix-api-fallback.gmxinfra2.io"],
 
