@@ -80,6 +80,11 @@ export function getRpcTrackerByChainId(chainId: number): RpcTracker | undefined 
 }
 
 function _getCurrentRpcUrls(chainId: number) {
+  // Would never happen in normal flow, but added for multichain localStorage safety
+  if (chainId === undefined) {
+    return { primary: undefined, fallbacks: [], trackerKey: "unknown", endpointsStats: [] };
+  }
+
   const tracker = getRpcTrackerByChainId(chainId);
   if (tracker) {
     return tracker.pickCurrentRpcUrls();
@@ -96,6 +101,7 @@ function _getCurrentRpcUrls(chainId: number) {
   if (!primary) {
     throw new Error(`No RPC providers found for chainId: ${chainId}`);
   }
+
   const fallbacks = [...defaultRpcProviders, ...(privateRpcProviders ?? [])].filter(
     (url) => url !== primary && url !== undefined
   );
