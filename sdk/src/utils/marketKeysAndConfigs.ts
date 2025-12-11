@@ -42,6 +42,7 @@ import {
   THRESHOLD_FOR_STABLE_FUNDING,
   VIRTUAL_MARKET_ID_KEY,
   VIRTUAL_TOKEN_ID_KEY,
+  WITHDRAWAL_FEE_FACTOR_KEY,
 } from "configs/dataStore";
 import { MarketConfig } from "configs/markets";
 import { hashDataMap } from "utils/hash";
@@ -248,6 +249,14 @@ export function hashMarketConfigKeys(market: MarketConfig) {
     swapImpactExponentFactor: [
       ["bytes32", "address"],
       [SWAP_IMPACT_EXPONENT_FACTOR_KEY, marketAddress],
+    ],
+    withdrawalFeeFactorBalanceWasImproved: [
+      ["bytes32", "address", "bool"],
+      [WITHDRAWAL_FEE_FACTOR_KEY, marketAddress, true],
+    ],
+    withdrawalFeeFactorBalanceWasNotImproved: [
+      ["bytes32", "address", "bool"],
+      [WITHDRAWAL_FEE_FACTOR_KEY, marketAddress, false],
     ],
     virtualMarketId: [
       ["bytes32", "address"],

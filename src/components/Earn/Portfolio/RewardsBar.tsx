@@ -2,6 +2,8 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 
 import { BOTANIX, ContractsChainId, getConstant } from "config/chains";
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { UserEarningsData } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -28,11 +30,18 @@ export function RewardsBar({
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const userEarnings = useUserEarnings(chainId, srcChainId);
 
-  const totalGmInfo = useMemo(() => getTotalGmInfo(marketTokensData), [marketTokensData]);
-  const totalGlvInfo = useMemo(() => getTotalGlvInfo(marketTokensData), [marketTokensData]);
+  const totalGmInfo = useMemo(
+    () => getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances }),
+    [marketTokensData, multichainMarketTokensBalances]
+  );
+  const totalGlvInfo = useMemo(
+    () => getTotalGlvInfo({ tokensData: marketTokensData, multichainMarketTokensBalances }),
+    [marketTokensData, multichainMarketTokensBalances]
+  );
 
   const stakedGmxUsd = (processedData?.gmxInStakedGmxUsd ?? 0n) + (processedData?.esGmxInStakedGmxUsd ?? 0n);
   const totalInvestmentUsd = stakedGmxUsd + totalGmInfo.balanceUsd + totalGlvInfo.balanceUsd;

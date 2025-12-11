@@ -4,7 +4,7 @@ import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
-import { Address, encodeAbiParameters, zeroAddress } from "viem";
+import { Address, encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -24,9 +24,9 @@ import {
   getMultichainTokenId,
   getStargatePoolAddress,
   isSettlementChain,
+  MULTI_CHAIN_TOKEN_MAPPING,
+  MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
-  MULTICHAIN_TOKEN_MAPPING,
-  MULTICHAIN_TRANSFER_SUPPORTED_TOKENS,
 } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -47,12 +47,13 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { BridgeOutParams } from "domain/multichain/types";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
+import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
-import { useQuoteSend } from "domain/multichain/useQuoteSend";
+import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express/types";
@@ -73,15 +74,16 @@ import {
 import { bigintToNumber, expandDecimals, formatAmountFree, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { sendWalletTransaction } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
+import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
-import type { SendParamStruct } from "typechain-types-stargate/IStargate";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -97,7 +99,6 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { InsufficientWntBanner } from "./InsufficientWntBanner";
-import { toastCustomOrStargateError } from "./toastCustomOrStargateError";
 import { wrapChainAction } from "./wrapChainAction";
 
 const USD_GAS_TOKEN_BUFFER_MAINNET = expandDecimals(4, USD_DECIMALS);
@@ -218,7 +219,7 @@ export const WithdrawalView = () => {
     }
 
     return (
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId]
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]
         ?.map((tokenAddress) => tokensData[tokenAddress] as TokenData | undefined)
         .filter((token): token is TokenData => {
           return token !== undefined && token.address !== zeroAddress;
@@ -244,7 +245,7 @@ export const WithdrawalView = () => {
     return { nextGmxAccountBalanceUsd };
   }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
 
-  const sendParamsWithoutSlippage: SendParamStruct | undefined = useMemo(() => {
+  const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
     if (!account || inputAmount === undefined || inputAmount <= 0n || withdrawalViewChain === undefined) {
       return;
     }
@@ -253,7 +254,7 @@ export const WithdrawalView = () => {
       dstChainId: withdrawalViewChain,
       account,
       amountLD: inputAmount,
-      isDeposit: false,
+      isToGmx: false,
     });
   }, [account, inputAmount, withdrawalViewChain]);
 
@@ -272,7 +273,7 @@ export const WithdrawalView = () => {
     decimals: selectedTokenSettlementChainTokenId?.decimals,
   });
 
-  const sendParamsWithSlippage: SendParamStruct | undefined = useMemo(() => {
+  const sendParamsWithSlippage: SendParam | undefined = useMemo(() => {
     if (!quoteOft || !sendParamsWithoutSlippage) {
       return undefined;
     }
@@ -281,7 +282,7 @@ export const WithdrawalView = () => {
 
     const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
 
-    const newSendParams: SendParamStruct = {
+    const newSendParams: SendParam = {
       ...sendParamsWithoutSlippage,
       minAmountLD,
     };
@@ -289,7 +290,7 @@ export const WithdrawalView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const quoteSend = useQuoteSend({
+  const nativeFee = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainProvider: provider,
@@ -312,10 +313,11 @@ export const WithdrawalView = () => {
       dstChainId: withdrawalViewChain,
       account,
       amountLD: fakeInputAmount,
-      isDeposit: false,
+      isToGmx: false,
       srcChainId: chainId,
     });
   }, [account, chainId, unwrappedSelectedTokenSymbol, withdrawalViewChain]);
+
   const isMaxButtonDisabled = useMemo(() => {
     if (!baseSendParams) {
       return true;
@@ -324,7 +326,7 @@ export const WithdrawalView = () => {
     return false;
   }, [baseSendParams]);
 
-  const baseQuoteSend = useQuoteSend({
+  const baseNativeFee = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainProvider: provider,
@@ -338,7 +340,7 @@ export const WithdrawalView = () => {
     protocolFeeAmount,
     networkFee: bridgeNetworkFee,
   } = useMultichainQuoteFeeUsd({
-    quoteSend,
+    quoteSendNativeFee: nativeFee,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
     sourceChainId: chainId,
@@ -381,12 +383,7 @@ export const WithdrawalView = () => {
   }, [withdrawalViewChain, selectedTokenAddress, unwrappedSelectedTokenAddress, inputAmount, chainId]);
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
-    if (
-      account === undefined ||
-      bridgeOutParams === undefined ||
-      provider === undefined ||
-      withdrawalViewChain === undefined
-    ) {
+    if (account === undefined || bridgeOutParams === undefined || withdrawalViewChain === undefined) {
       return;
     }
 
@@ -395,7 +392,7 @@ export const WithdrawalView = () => {
         chainId: chainId as SettlementChainId,
         signer: undefined,
         account,
-        relayParamsPayload: relayParams as RawRelayParamsPayload,
+        relayParamsPayload: relayParams,
         params: bridgeOutParams,
         emptySignature: true,
         relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -405,7 +402,7 @@ export const WithdrawalView = () => {
     });
 
     return expressTransactionBuilder;
-  }, [account, bridgeOutParams, chainId, provider, withdrawalViewChain]);
+  }, [account, bridgeOutParams, chainId, withdrawalViewChain]);
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
@@ -447,6 +444,7 @@ export const WithdrawalView = () => {
     networkFee: networkFee,
     networkFeeUsd: networkFeeUsd,
   });
+
   useEffect(() => {
     if (networkFee !== undefined && networkFeeUsd !== undefined) {
       setLastValidNetworkFees({
@@ -455,6 +453,7 @@ export const WithdrawalView = () => {
       });
     }
   }, [networkFee, networkFeeUsd]);
+
   useEffect(() => {
     if (wrappedNativeTokenAddress === zeroAddress) {
       setShowWntWarning(false);
@@ -495,9 +494,8 @@ export const WithdrawalView = () => {
         const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenId = getMappedTokenId(chainId as SettlementChainId, unwrappedTokenAddress, withdrawalViewChain);
         if (tokenId === undefined) {
-          for (const someSourceChainId of Object.keys(MULTICHAIN_TOKEN_MAPPING[chainId]).map(
-            Number
-          ) as SourceChainId[]) {
+          const sourceChainIds = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId]).map(Number) as SourceChainId[];
+          for (const someSourceChainId of sourceChainIds) {
             if (someSourceChainId === withdrawalViewChain) {
               continue;
             }
@@ -525,6 +523,37 @@ export const WithdrawalView = () => {
       return;
     }
 
+    if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) === chainId) {
+      if (!bridgeOutParams) {
+        helperToast.error(t`Missing required parameters`);
+
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      await wrapChainAction(chainId, setSettlementChainId, async (signer) => {
+        try {
+          await sendWalletTransaction({
+            chainId,
+            to: getContract(chainId, "MultichainTransferRouter"),
+            signer,
+            callData: encodeFunctionData({
+              abi: abis.MultichainTransferRouter,
+              functionName: "transferOut",
+              args: [bridgeOutParams],
+            }),
+          });
+        } catch (error) {
+          alert("Failed to send withdrawal. Retry");
+        } finally {
+          setIsSubmitting(false);
+        }
+      });
+
+      return;
+    }
+
     const metricData = initMultichainWithdrawalMetricData({
       settlementChain: chainId,
       sourceChain: withdrawalViewChain,
@@ -541,7 +570,7 @@ export const WithdrawalView = () => {
       expressTxnParamsAsyncResult.promise === undefined ||
       provider === undefined
     ) {
-      helperToast.error("Missing required parameters");
+      helperToast.error(t`Missing required parameters`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -549,7 +578,7 @@ export const WithdrawalView = () => {
     const expressTxnParams = await expressTxnParamsAsyncResult.promise;
 
     if (expressTxnParams === undefined) {
-      helperToast.error("Missing required parameters");
+      helperToast.error(t`Missing required parameters`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -563,7 +592,7 @@ export const WithdrawalView = () => {
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-          relayParamsPayload: relayParamsPayload as RawRelayParamsPayload,
+          relayParamsPayload: relayParamsPayload,
           params: bridgeOutParams,
           signer,
           provider,
@@ -650,7 +679,7 @@ export const WithdrawalView = () => {
       }
     }
 
-    const nativeFee = bridgeNetworkFee ?? baseQuoteSend?.nativeFee;
+    const nativeFee = bridgeNetworkFee ?? baseNativeFee;
 
     if (unwrappedSelectedTokenAddress === zeroAddress && nativeFee !== undefined) {
       amount = amount - (nativeFee * 11n) / 10n;
@@ -661,7 +690,7 @@ export const WithdrawalView = () => {
     setInputValue(formatAmountFree(amount, selectedToken.decimals));
   }, [
     account,
-    baseQuoteSend?.nativeFee,
+    baseNativeFee,
     bridgeNetworkFee,
     chainId,
     gasPaymentToken?.address,
@@ -753,40 +782,42 @@ export const WithdrawalView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
-  } else if (
-    (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
-      errors?.isOutOfTokenError?.isGasPaymentToken) &&
-    !expressTxnParamsAsyncResult.isLoading
-  ) {
-    buttonState = {
-      text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
-      disabled: true,
-    };
-  } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
-    buttonState = {
-      text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
-      disabled: true,
-    };
-  } else if (showWntWarning) {
-    buttonState = {
-      text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
-      disabled: true,
-    };
-  } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
-    buttonState = {
-      text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
-      disabled: true,
-    };
-  } else if (!expressTxnParamsAsyncResult.data) {
-    buttonState = {
-      text: (
-        <>
-          <Trans>Loading</Trans>
-          <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
-      disabled: true,
-    };
+  } else if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) !== chainId) {
+    if (
+      (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
+        errors?.isOutOfTokenError?.isGasPaymentToken) &&
+      !expressTxnParamsAsyncResult.isLoading
+    ) {
+      buttonState = {
+        text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
+        disabled: true,
+      };
+    } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
+      buttonState = {
+        text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
+        disabled: true,
+      };
+    } else if (showWntWarning) {
+      buttonState = {
+        text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
+        disabled: true,
+      };
+    } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
+      buttonState = {
+        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
+        disabled: true,
+      };
+    } else if (!expressTxnParamsAsyncResult.data) {
+      buttonState = {
+        text: (
+          <>
+            <Trans>Loading</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
   }
 
   const hasSelectedToken = selectedTokenAddress !== undefined;
@@ -796,7 +827,7 @@ export const WithdrawalView = () => {
         return;
       }
 
-      const settlementChainWrappedTokenAddresses = MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId];
+      const settlementChainWrappedTokenAddresses = MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId];
       if (!settlementChainWrappedTokenAddresses) {
         return;
       }

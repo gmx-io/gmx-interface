@@ -15,6 +15,8 @@ import {
   subscribeToV2Events,
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
+import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
+import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
@@ -29,6 +31,7 @@ import {
 import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
 import { getIsInsufficientExecutionFeeError, getIsInvalidSignatureError } from "lib/errors/customErrors";
@@ -116,6 +119,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     marketsInfoData,
     tokensData,
     chainId,
+    srcChainId,
     account: currentAccount,
   });
 
@@ -178,7 +182,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     provider.getBalance(currentAccount, "pending").then((balance) => {
       setWebsocketTokenBalancesUpdates((old) =>
         setByKey(old, NATIVE_TOKEN_ADDRESS, {
-          balanceType: "wallet",
+          balanceType: TokenBalanceType.Wallet,
           balance,
         })
       );
@@ -876,14 +880,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setWebsocketTokenBalancesUpdates((old) => {
         const oldDiff = old[token]?.diff || 0n;
         return setByKey(old, token, {
-          balanceType: "gmxAccount",
+          balanceType: TokenBalanceType.GmxAccount,
           diff: oldDiff - amount,
         });
       });
 
       setOptimisticTokensBalancesUpdates((old) => {
         return updateByKey(old, token, {
-          balanceType: "gmxAccount",
+          balanceType: TokenBalanceType.GmxAccount,
           isPending: false,
         });
       });
@@ -896,14 +900,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         const oldDiff = old[token]?.diff || 0n;
 
         return setByKey(old, token, {
-          balanceType: "gmxAccount",
+          balanceType: TokenBalanceType.GmxAccount,
           diff: oldDiff + amount,
         });
       });
 
       setOptimisticTokensBalancesUpdates((old) => {
         return updateByKey(old, token, {
-          balanceType: "gmxAccount",
+          balanceType: TokenBalanceType.GmxAccount,
           isPending: false,
         });
       });
@@ -941,7 +945,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             const oldDiff = old[tokenAddress]?.diff || 0n;
 
             return setByKey(old, tokenAddress, {
-              balanceType: "wallet",
+              balanceType: TokenBalanceType.Wallet,
               diff: oldDiff + amount,
             });
           });
@@ -1136,6 +1140,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     hasPageLostFocus,
   });
 
+  const [multichainTransferProgress, setMultichainTransferProgress] = useState<MultichainTransferProgress | undefined>(
+    undefined
+  );
+
+  useMultichainTransferProgressView(multichainTransferProgress);
+
   const contextState: SyntheticsEventsContextType = useMemo(() => {
     return {
       orderStatuses,
@@ -1152,6 +1162,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setPendingExpressTxn: (params: PendingExpressTxnParams) => {
         setPendingExpressTxnParams((old) => setByKey(old, params.key, params));
       },
+      setMultichainTransferProgress,
       updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => {
         setPendingExpressTxnParams((old) => {
           if (!params.key) {

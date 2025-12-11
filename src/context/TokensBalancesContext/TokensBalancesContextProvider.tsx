@@ -13,10 +13,11 @@ import {
 
 import type { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 export type TokenBalanceUpdate = {
   isPending?: boolean;
-  balanceType: "wallet" | "gmxAccount";
+  balanceType: TokenBalanceType;
   /**
    * Used only for native token
    */
@@ -35,7 +36,7 @@ type TokensBalancesContextType = {
   setWebsocketTokenBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
   setOptimisticTokensBalancesUpdates: Dispatch<SetStateAction<TokensBalancesUpdates>>;
   addOptimisticTokensBalancesUpdates: (tokenBalanceUpdates: TokensBalancesUpdates) => void;
-  resetTokensBalancesUpdates: (tokenAddresses: string[], balanceType: "wallet" | "gmxAccount") => void;
+  resetTokensBalancesUpdates: (tokenAddresses: string[], balanceType: TokenBalanceType) => void;
 };
 
 const MAX_PENDING_TIME_MS = 5_000;
@@ -56,7 +57,7 @@ export function TokensBalancesContextProvider({ children }: PropsWithChildren) {
   const [optimisticTokensBalancesUpdates, setOptimisticTokensBalancesUpdates] = useState<TokensBalancesUpdates>({});
   const [websocketTokenBalancesUpdates, setWebsocketTokenBalancesUpdates] = useState<TokensBalancesUpdates>({});
 
-  const resetTokensBalancesUpdates = useCallback((tokenAddresses: string[], balanceType: "wallet" | "gmxAccount") => {
+  const resetTokensBalancesUpdates = useCallback((tokenAddresses: string[], balanceType: TokenBalanceType) => {
     setWebsocketTokenBalancesUpdates((old) => {
       const newState = { ...old };
 
@@ -187,11 +188,11 @@ export function useUpdatedTokensBalances(
 ): TokensData | undefined;
 export function useUpdatedTokensBalances(
   balancesData: TokenBalancesData | undefined,
-  balanceType: "wallet" | "gmxAccount"
+  balanceType: TokenBalanceType
 ): TokenBalancesData | undefined;
 export function useUpdatedTokensBalances<T extends TokenBalancesData | TokensData>(
   balancesData: T | undefined,
-  balanceType: T extends TokensData ? undefined : "wallet" | "gmxAccount"
+  balanceType: T extends TokensData ? undefined : TokenBalanceType
 ): T | undefined {
   const { websocketTokenBalancesUpdates, optimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
 
@@ -227,7 +228,7 @@ const applyBalanceUpdate = <T extends TokenBalancesData | TokensData>(
   currentUpdates: T,
   tokenAddress: string,
   balanceUpdate: TokenBalanceUpdate,
-  balanceType: T extends TokensData ? undefined : "wallet" | "gmxAccount"
+  balanceType: T extends TokensData ? undefined : TokenBalanceType
 ): T => {
   const nextBalancesData = { ...currentUpdates };
 
@@ -243,24 +244,44 @@ const applyBalanceUpdate = <T extends TokenBalancesData | TokensData>(
     );
   } else if (typeof (nextBalancesData[tokenAddress] as TokenData).balance === "bigint") {
     const tokenData = { ...(nextBalancesData[tokenAddress] as TokenData) };
+
     if (tokenData.walletBalance !== undefined) {
-      tokenData.walletBalance = updateTokenBalance(balanceUpdate, tokenData.walletBalance, "wallet");
+      tokenData.walletBalance = updateTokenBalance(balanceUpdate, tokenData.walletBalance, TokenBalanceType.Wallet);
     }
     if (tokenData.gmxAccountBalance !== undefined) {
-      tokenData.gmxAccountBalance = updateTokenBalance(balanceUpdate, tokenData.gmxAccountBalance, "gmxAccount");
+      tokenData.gmxAccountBalance = updateTokenBalance(
+        balanceUpdate,
+        tokenData.gmxAccountBalance,
+        TokenBalanceType.GmxAccount
+      );
     }
-    tokenData.balance = tokenData.isGmxAccount ? tokenData.gmxAccountBalance! : tokenData.walletBalance!;
+    if (tokenData.sourceChainBalance !== undefined) {
+      tokenData.sourceChainBalance = updateTokenBalance(
+        balanceUpdate,
+        tokenData.sourceChainBalance,
+        TokenBalanceType.SourceChain
+      );
+    }
+
+    switch (tokenData.balanceType) {
+      case TokenBalanceType.GmxAccount:
+        tokenData.balance = tokenData.gmxAccountBalance!;
+        break;
+      case TokenBalanceType.Wallet:
+        tokenData.balance = tokenData.walletBalance!;
+        break;
+      case TokenBalanceType.SourceChain:
+        tokenData.balance = tokenData.sourceChainBalance!;
+        break;
+    }
+
     nextBalancesData[tokenAddress] = tokenData;
   }
 
   return nextBalancesData;
 };
 
-export function updateTokenBalance(
-  balanceUpdate: TokenBalanceUpdate,
-  balance: bigint,
-  balanceType: "wallet" | "gmxAccount"
-) {
+export function updateTokenBalance(balanceUpdate: TokenBalanceUpdate, balance: bigint, balanceType: TokenBalanceType) {
   if (balanceType !== balanceUpdate.balanceType) {
     return balance;
   }

@@ -1,6 +1,7 @@
 import type { TaskState } from "@gelatonetwork/relay-sdk";
 import type { ReactNode } from "react";
 
+import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubacсountApproval } from "domain/synthetics/subaccount";
@@ -190,6 +191,7 @@ export type SyntheticsEventsContextType = MultichainEventsState & {
   setDepositStatusViewed: (key: string) => void;
   setWithdrawalStatusViewed: (key: string) => void;
   setShiftStatusViewed: (key: string) => void;
+  setMultichainTransferProgress: (progress: MultichainTransferProgress) => void;
 };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;

@@ -1,3 +1,4 @@
+import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -8,7 +9,15 @@ import { ProgressiveTokenData, ProgressiveTokensData } from "sdk/types/tokens";
  * 1. User owned wallet balance descending
  * 2. Simply descending on TVL in dollars for the pool
  */
-export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, marketTokensData: ProgressiveTokensData) {
+export function sortGmTokensDefault({
+  marketsInfoData,
+  marketTokensData,
+  multichainMarketTokensBalances,
+}: {
+  marketsInfoData: GlvAndGmMarketsInfoData;
+  marketTokensData: ProgressiveTokensData;
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+}) {
   if (marketsInfoData === undefined || marketTokensData === undefined) {
     return [];
   }
@@ -26,22 +35,15 @@ export function sortGmTokensDefault(marketsInfoData: GlvAndGmMarketsInfoData, ma
       continue;
     }
 
-    const totalSupplyUsd = convertToUsd(
-      marketTokenData.totalSupply,
-      marketTokenData.decimals,
-      marketTokenData.prices?.minPrice
-    );
+    const totalSupplyUsd =
+      convertToUsd(marketTokenData.totalSupply, marketTokenData.decimals, marketTokenData.prices?.minPrice) ?? 0n;
 
-    const balanceUsd = convertToUsd(
-      marketTokenData.balance,
-      marketTokenData.decimals,
-      marketTokenData.prices?.minPrice
-    );
+    const balanceUsd = multichainMarketTokensBalances?.[marketTokenData.address]?.totalBalanceUsd ?? 0n;
 
     tokens.push({
       tokenData: marketTokenData,
-      totalSupplyUsd: totalSupplyUsd ?? 0n,
-      balanceUsd: balanceUsd ?? 0n,
+      totalSupplyUsd: totalSupplyUsd,
+      balanceUsd: balanceUsd,
     });
   }
 

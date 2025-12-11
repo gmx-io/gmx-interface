@@ -14,6 +14,7 @@ import GlvReader from "./GlvReader";
 import GlvRouter from "./GlvRouter";
 import GmxMigrator from "./GmxMigrator";
 import GovToken from "./GovToken";
+import IStargate from "./IStargate";
 import LayerZeroProvider from "./LayerZeroProvider";
 import MintableBaseToken from "./MintableBaseToken";
 import Multicall from "./Multicall";
@@ -23,7 +24,6 @@ import MultichainGmRouter from "./MultichainGmRouter";
 import MultichainOrderRouter from "./MultichainOrderRouter";
 import MultichainSubaccountRouter from "./MultichainSubaccountRouter";
 import MultichainTransferRouter from "./MultichainTransferRouter";
-import MultichainUtils from "./MultichainUtils";
 import MultichainVault from "./MultichainVault";
 import Reader from "./Reader";
 import ReaderV2 from "./ReaderV2";
@@ -102,7 +102,6 @@ export const abis = {
   MultichainOrderRouter,
   MultichainSubaccountRouter,
   MultichainTransferRouter,
-  MultichainUtils,
   MultichainVault,
   ReferralStorage,
   RelayParams,
@@ -132,6 +131,7 @@ export const abis = {
   VenusVToken,
   Vester,
   WETH,
+  IStargate,
 } satisfies Record<string, any>;
 
 export type AbiId = keyof typeof abis;

@@ -1,6 +1,6 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { MarketInfo } from "types/markets";
-import { DecreasePositionSwapType, OrderType } from "types/orders";
+import { DecreasePositionSwapType, OrderType, SwapPricingType } from "types/orders";
 import { PositionInfo, PositionInfoLoaded } from "types/positions";
 import { UserReferralInfo } from "types/referrals";
 import { TokenData } from "types/tokens";
@@ -293,7 +293,7 @@ export function getDecreasePositionAmounts(p: {
       tokenOutAddress: collateralToken.address,
       usdIn: profitUsd,
       shouldApplyPriceImpact: true,
-      isAtomicSwap: false,
+      swapPricingType: SwapPricingType.Swap,
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;

@@ -51,6 +51,8 @@
       "swapImpactFactorPositive": "0xa3eb1cf6b16b64b67753729439ad7f9a154facab21aaa09cadea6e51ed69fe47",
       "swapImpactFactorNegative": "0x96fdadeb1e61115c586f2886fa40f103f462d1a508917578820872f807d214bf",
       "swapImpactExponentFactor": "0xb4bf08b3260bb5825adc61b0687ebe04c39f9e2991a2019fac11bdd22a3a6de9",
+      "withdrawalFeeFactorBalanceWasImproved": "0xf44cd7aeca62ba5c5e0eb5cad31de4df043489d5347326ef88cea4f35de06a30",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xe51bf9539399e04111d0af3cd87a7b716dcbf83c81710239107a4a3d54386a91",
       "virtualMarketId": "0x35d3376aa74136175cfddaef4f2f591d8e9f39213a61994f9a00549c6bc04520",
       "virtualLongTokenId": "0xe47cf033d5b118f5fcbd7eac09913b24cfc4b2782f90e71a8dd0fe7aa4f92e7d",
       "virtualShortTokenId": "0xe47cf033d5b118f5fcbd7eac09913b24cfc4b2782f90e71a8dd0fe7aa4f92e7d"
@@ -106,6 +108,8 @@
       "swapImpactFactorPositive": "0x849e771df499463b3a5aa83b5bc195e882c5a28bf0ec0d3f060d82ddb3fc2024",
       "swapImpactFactorNegative": "0xaca989b67d45cf4d4a0e9d12ad35b0e21a61196eff7882388a0d164c646c9499",
       "swapImpactExponentFactor": "0x20c976853f23f3c0844cbee8733addcad9a4e2d8a57dc7729ef21eee841a1266",
+      "withdrawalFeeFactorBalanceWasImproved": "0xbf84843f5de3f7d4c336c9a99ea4c36f85b66aa06aafbca0656fbee4fcac5446",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x94684af3204fbbd9267468c472a833b6f335d1cc86304657c7685465826d7b27",
       "virtualMarketId": "0x3a05f8c8f61bf8c5c62929f1d68a9975fdaf88e589d39e6c70bdba44933c7ca5",
       "virtualLongTokenId": "0xe47cf033d5b118f5fcbd7eac09913b24cfc4b2782f90e71a8dd0fe7aa4f92e7d",
       "virtualShortTokenId": "0x7bb231dec6009cf7c97d392e1a14075f34e82077fd9c20cab34ffae7bd46e869"
@@ -161,6 +165,8 @@
       "swapImpactFactorPositive": "0x257d59b0ff05ca7063136a8bab2b182646d022866c6bb60bf5e1a951f56a4f33",
       "swapImpactFactorNegative": "0x225da45bd850b96bbe246e4f7f53ed51dccb165b1d1a16d2c4495d2bf1c01cbc",
       "swapImpactExponentFactor": "0xeb7228e9a1df1390c683ceb4a31577ee3381b679d41d04220e18364c641c24f2",
+      "withdrawalFeeFactorBalanceWasImproved": "0xf39c2291fa32f325b1fcde7978ef133a538837afb04493c4b8febf2a55a856d8",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x676152e8535fb3660b9bc2555f8ce2dcdbaddb889b3ea7ace141121d4502ef90",
       "virtualMarketId": "0xb2c10f2870b97107ac5c5ab983e9238eb8cd9447c1aee87550b62df0406414ce",
       "virtualLongTokenId": "0xad11454a7b68db8683667df39c97a96eeae88909e5fb849428193697b0dc2492",
       "virtualShortTokenId": "0xad11454a7b68db8683667df39c97a96eeae88909e5fb849428193697b0dc2492"
@@ -218,6 +224,8 @@
       "swapImpactFactorPositive": "0x79d8fe854154b43d003a20314c803b78ec01391248008659c0c8e998e866d7d7",
       "swapImpactFactorNegative": "0xe8438cfb97aef79fdebd4e948dd086e7c042ae7b47a2414454f6b691ebcc2419",
       "swapImpactExponentFactor": "0xf64c72f0c430da1f9096daec486ac3ba00752a0b600ce602ae5bd0a62c004145",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe7b3c39631a34b207a11df587e34cdfe1e7009e1f2f1a44d175360c65e693140",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x906d52a6d9454f838cfc0b0d32c8814c6a8ca236926df6a6b56c68b97445ca02",
       "virtualMarketId": "0x30728fe6602aed966d65c62d392bcc1a4f02e155ce82cbdcae778669fc35a83d",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -273,6 +281,8 @@
       "swapImpactFactorPositive": "0x801066104b68a8504d32a319a865f5010a763e0b3f4372e0b03f3fe87ab77eb7",
       "swapImpactFactorNegative": "0x1a282191426197cc0dacd8fdca48acc252d354470638b44ca410893f9bc8d576",
       "swapImpactExponentFactor": "0x62f7b6ed5b17f35d4d42eb6abcaa00b07af41f4694af6f491f9bb5b31911af3e",
+      "withdrawalFeeFactorBalanceWasImproved": "0xf662bbcdd5b161ba582cadeea8ffaba96f43a389da72b518b0ebbc6bbf36db4b",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x2ec6c311e0e3f832911555a62d009b2b5d5324b1a3b4de01b63dcda7c8aeac16",
       "virtualMarketId": "0xa8cd287a5068df6cf03223613f14a133ec7b31a50b305ee6091c89c1dcff904f",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -328,6 +338,8 @@
       "swapImpactFactorPositive": "0x0538cdd47f4c430b1fcb396d2d4b81d55cc0fb604620d2cc1d1092d9a3d13b4a",
       "swapImpactFactorNegative": "0x7eb5c1dc27cc686df401fe1cc4a36537b363bfaa4d94f77d6fe72fd5ede61d08",
       "swapImpactExponentFactor": "0x7e561221c0f8fa07e9ca813aca94becde6d2fc0feacd84f50cadde2b177a4310",
+      "withdrawalFeeFactorBalanceWasImproved": "0x070c87d45cd90f5cdfdf0dbfbc747d6d423e3a69f7f5fd15c092e8ab44d4d4a0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x32f7aaaebe1beb2e506fb20efab8ea883fb54dd0c977be1118936e24f794982e",
       "virtualMarketId": "0x6fb554632adada3dfa9cce73bc454e855fb9969ebce7a35ba3f266de425e731e",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -383,6 +395,8 @@
       "swapImpactFactorPositive": "0x5d50cff84fe2d5abc20ecbe3156a438d1b3479175f4748dae1d121887ed30eec",
       "swapImpactFactorNegative": "0xb9cc0f62898c08c383e014640b673a6cecc479fa1080544ea3250f029f3c304c",
       "swapImpactExponentFactor": "0xc7bcb77b7806e06a50ec6ba4bf17541c63b0577ef3d18018f96e5e74d2bd7619",
+      "withdrawalFeeFactorBalanceWasImproved": "0x69247f45d35118d0e5ed2cd787953ebd618992d982890e13a8911183015b59a7",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xdd952615e71995d81a871e915b4b6376f89ba14e7bf5a2f6179f3403d99432ff",
       "virtualMarketId": "0x5eadb7b43a05016c33bc1d1a89e4938b37406a70977a8fd7bea66d62ba4df824",
       "virtualLongTokenId": "0x8f92ebbddf51de9f1607c3d6748a858fab29822d139ddcd3b8f877241ce75e70",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -438,6 +452,8 @@
       "swapImpactFactorPositive": "0xa24690e158bd6148dd1ee7619d26d4db4c22e063bf7fbc4849b248713ecc4be6",
       "swapImpactFactorNegative": "0xea3e78f194aabd8ee877feb4dd76f0f10e28e5375fe88a39575480d27d265afd",
       "swapImpactExponentFactor": "0x708c76a038fd213a993b7643df04ab046fa1987cbe5d0d428475cffb4c1147dd",
+      "withdrawalFeeFactorBalanceWasImproved": "0x99fba34ae4a02d2f98af1dfe426a87351d124c90068c35290ae701dcfc0a1825",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf81f9ab4d389e068787b961663df365fcc34110aac60cceaed5d1cb31acd13f2",
       "virtualMarketId": "0x67e3328811cfb35653f2f4c14979f600f39845fc18fc343c14304f0734072a9b",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -493,6 +509,8 @@
       "swapImpactFactorPositive": "0xdd0713bd8c7d7d813cf41f2134c5c4171d1dd731b92f992bca75cee16f113bbf",
       "swapImpactFactorNegative": "0x2c1ef24611bfb6198a766b0251729bb7dac63eadd6743ed5585dcfba706d2b58",
       "swapImpactExponentFactor": "0x83731a2fa9b0d93a6a58adff585bfc0f336a70bb3a85535745a1d35ca14c41f4",
+      "withdrawalFeeFactorBalanceWasImproved": "0xac06408030fe9171d917b40f2914cccde68605f7e1d68fe48d5443afdcdcd369",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x2370e223071c35939ce94d3750d3e3403605f535ce38f66f25555012a1ee15b9",
       "virtualMarketId": "0x5d43ce08a24729807f7c46d7cbde59be236c1d3101b2aaa22e3d56b31bbd1602",
       "virtualLongTokenId": "0x6547e1b09306192c47b377a6974e71c596aefec1820265db5088bac5550038af",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -548,6 +566,8 @@
       "swapImpactFactorPositive": "0x8879db97a79f1b27c0eaf1b7e8326ca6b02dde9dab4a136bf6de2ae5bc87eb43",
       "swapImpactFactorNegative": "0x267ab1bdc0e337337fb57913abbc1774c61393c941ec14405210702c243dd087",
       "swapImpactExponentFactor": "0x42417562a37eef95c1e2ebc561a16eb5d2719490bbc0c214707c278411bdee69",
+      "withdrawalFeeFactorBalanceWasImproved": "0xf2484af6eaf492109d781ba61b78273e636861e1868a1e717fa2933a91f0088c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x10879fae518df75d11665a5bea356135d3e6a03ea56c94b47d9ea796a8cb3382",
       "virtualMarketId": "0xbd5d0629f6fa7cfbbc696188d6e70260c1965336daa35470f96c58867af8ee36",
       "virtualLongTokenId": "0xf1560d4507be69cfa4a1caaeb724e1a2e5a3f483f931332ea5ae9d057224f287",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -603,6 +623,8 @@
       "swapImpactFactorPositive": "0xb63747d677b3f4894bf83370aa290ba493a3279ab6c71e8f627d6a19200fd0c1",
       "swapImpactFactorNegative": "0x6db11718caa3c178b5c71b0ebb38438e678887ee9808ee5fff12f45dff61f523",
       "swapImpactExponentFactor": "0xecb5d9ab804ddb4babf57af0763d13484ab59dc753b190aed034545d261dad6b",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0fb5b96bca76cfb303ce0e955d1045fa1670a8277585dc06bf50a9be6cbdd248",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xb29495f08237d108260e161ab2f665aa0d99df14e22b35aa8c44dc92cd56dee4",
       "virtualMarketId": "0x403b84c44a43de012d5af0d352ddee18816098b6dc9ab85d18725c6c80ee34ad",
       "virtualLongTokenId": "0xd75a55ed2ecea1a03f2ca36bf769ceee55b3fcaa9c02f4cf863518485ed4918c",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -658,6 +680,8 @@
       "swapImpactFactorPositive": "0x322d07f82afd4f2749d56278757d206f52add338aa5bc9359b259a5ddef4e514",
       "swapImpactFactorNegative": "0xe765a130a8cb9790e3c622efbb5422a8fd76ba0ed4a41840a89b667104954b19",
       "swapImpactExponentFactor": "0x4f3835c05f851e1cdbc009ca97f15327ab116a04ddef47c133d035ef3f3fc8fd",
+      "withdrawalFeeFactorBalanceWasImproved": "0x6482919517cbefc354730f235ac3fb3c9e604810ff185b3145b597f5208ef624",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xe4f9703e28c90a7e55c15558151452c6165ea2b30a43c4564ef5849f888a0478",
       "virtualMarketId": "0xa0146dca4369d92ee7d0993f033b43f1e64a08340ed10878c24f2be4dab96b54",
       "virtualLongTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960",
       "virtualShortTokenId": "0x982754fe7fcef5cc4e54f2c0fa354975d1fac185e1b78a6ce1b38c9b7c9d8cbb"
@@ -713,6 +737,8 @@
       "swapImpactFactorPositive": "0x40780b4dfe67cb9032a30a9ae910a8e63c568c0bfcfbac6962149a0480760e02",
       "swapImpactFactorNegative": "0x981313e20ad119ffd4e7297d65ac074bda816af74f76dc5ebef3a288ea0420c6",
       "swapImpactExponentFactor": "0x3a49bd6e93391cdc99dfea5cfd912c9e3cb54ae1dcd9c56801924b4db11e9b9e",
+      "withdrawalFeeFactorBalanceWasImproved": "0x29bc514fec6d9e2cadc0e8a8d2ed5b33f63194faa89c6dde14cb202591d4a8c1",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xaacc8d0f72484363e6c0a9440bb44d6b40880e67ed14c9c570b412d0ba224fa4",
       "virtualMarketId": "0x15704d8d313a8a9b84f0554bc4b8b032736212ce269bc3222f3a50ef32a72ab4",
       "virtualLongTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960",
       "virtualShortTokenId": "0x1ce9cae7dec48a356431d92c03845f8929446aee01fbea8eb35c1407e345a5f2"
@@ -768,6 +794,8 @@
       "swapImpactFactorPositive": "0x6e872e48337e83b9b0974c98123f42c6c42133a809dda28947e45044fef0d763",
       "swapImpactFactorNegative": "0x7f74925d83c9749b52d3c463b52f75f56d3df222aa8091d320be024fcc136ab5",
       "swapImpactExponentFactor": "0x93ac087aef99ee1d1d4337027e16e9f34e2b3e95b449f6e1afd4969af2b95d99",
+      "withdrawalFeeFactorBalanceWasImproved": "0xfe7c8fd2b8bcd6c14d0d670892d73d07a41d7fc1819630eb6551c312f836fa00",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd6bd23e9bb76fbb983534f115d3ddf9b3962098be4f03f6ec3c12dee44b90de8",
       "virtualMarketId": "0x20bf0a582d4508bc430f8d7e00de90061aeb901a0c0e11076d70511678cac8ce",
       "virtualLongTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960",
       "virtualShortTokenId": "0x31d656b47c3d16978767c8760419f35660ce6b3f01fa1add1aef6fd361fda2b0"
@@ -823,6 +851,8 @@
       "swapImpactFactorPositive": "0x6d7c56088daa2bea15028f86d6f54e24a63768356083dce669015965c9f5b873",
       "swapImpactFactorNegative": "0x3b2c183b4353852490404ae6be59826b51e24517576e18db1483a6c593a1a99a",
       "swapImpactExponentFactor": "0xde8e209ca4616ee04606284a891e35dc078488672e5a98b257aaef147e46b5cd",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe7fa933e782c58112eaf5652ac761d7f97d07de2d1fb6568fddb8ff4b9b557ee",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xcf0c9e5132f29d02f67f3b300cfd2056b35a6ec62aef67fd72378db20c07823b",
       "virtualMarketId": "0x33ce55e7dda117ba6480d3120f3d7403d8db763bd7606ca8695846851288c789",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -878,6 +908,8 @@
       "swapImpactFactorPositive": "0x737c7f824ed4b98d1e563da86dd27bc6555ef0c5e3a7735a9d2efad4b87dddc1",
       "swapImpactFactorNegative": "0x71533255ae7a74548b062c095bfbf28d36199e44d3481ed295bc9075f5137ef7",
       "swapImpactExponentFactor": "0x1a4ce691b5691f71e7bee1bc45b36e300e1549a3ee40a24945c65d0146428e30",
+      "withdrawalFeeFactorBalanceWasImproved": "0x8c668cbc4cb618e79cb8f4b58382e4cc1cd044d430fc12be544975e5890cbbe7",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x08aa1667748458cc1c70180e0b757640c7259dc707684575847e0e97724b8d17",
       "virtualMarketId": "0x3eb5746eac364208e2f9195e45b599e3646c837956a8a41ffbaa1c75bb8ecdfc",
       "virtualLongTokenId": "0xd923fa1e30d3730f7ae064ccdc6dfa814534f0e8a5cbe1eb5f035a80ddaa2843",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -933,6 +965,8 @@
       "swapImpactFactorPositive": "0x027553df27e8e9b5a65bebc5f963f76e85ff58fb8d9c1ae933ca099379ca4b60",
       "swapImpactFactorNegative": "0xb75f6793ffd5ebc77458bcfe941d32c2939bfde678876cb5795ef174242a34fd",
       "swapImpactExponentFactor": "0x3db9029b93780175fc0b831246129f3a2dd55c2f32d7f03ec0802bcd1e83a748",
+      "withdrawalFeeFactorBalanceWasImproved": "0x353d661a20fb7ed1ebd88ec325c0ea9cc591b2f9cb19fb989dbdf475a4e2e425",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xde7630b118b42fb72d9f5976e550848d14002f0917e30327b5e2b146dc9f1cc3",
       "virtualMarketId": "0x682b13e4eb57bc482b33cd2f48a9c3fb262fb4e645cab8fc718a866f7ca7b83b",
       "virtualLongTokenId": "0xe72465f260a5f100354daa20326f641873d2ee6b58b8697cc900105b58981005",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -988,6 +1022,8 @@
       "swapImpactFactorPositive": "0x51f43de19f522a77191e09d4d845cabc4a6b411ed843bd7333c97c0dd2a1e99d",
       "swapImpactFactorNegative": "0xdb943b0a66e6c7d34998c8e3ff6ce90d1f79df2b550aac083000d80ca80b1277",
       "swapImpactExponentFactor": "0xb4650d732840a970384403281dae1ab9569caa614bb95e82e845e5dbdec3f3ae",
+      "withdrawalFeeFactorBalanceWasImproved": "0x5f24a5ca2c66ceb9a02fd188af35712bd76620b5a0cc2f40555437fd5dd70b26",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xe7e2003da6e587c83414bd1f7de1890a2fd7d37b1f71c8d2f7c15f5008040552",
       "virtualMarketId": "0x682be80fbd5b14f1b05cbea1a5e3eef02bf3a52c7e8f908903d6eecf1e1fb093",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1043,6 +1079,8 @@
       "swapImpactFactorPositive": "0x6ca9dab5d892a8a0c799579aad85021f29ddde1c808da563752093e0ddf2d4c7",
       "swapImpactFactorNegative": "0x0a2d863399db84d689cfdc9148b1a486ad96583764fdf636a66862500cc51b96",
       "swapImpactExponentFactor": "0x081a97750956cc6250ce06858d4427b11c1f050d0dacb64792d92f18f66a8da9",
+      "withdrawalFeeFactorBalanceWasImproved": "0xa62337a6ed10e68f272b3731cfcd930971e1d2ce0cbefe071d0cb1df7a7af926",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x54ae298deef1d6f79d233062afc19661cd78a5da437116f6b6225d051a28dd7b",
       "virtualMarketId": "0x1b85db12d28f55ab49eac5c82867a61b99fbd1658d56cba37cc8538120c18520",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1098,6 +1136,8 @@
       "swapImpactFactorPositive": "0x004df3c0dc3d5b0aef8045ddf6c7170646212a2708d9c8efd90d42aa68887f7c",
       "swapImpactFactorNegative": "0xddc46fbfef1ad897fbe83b4250c0e21dc33408f6035ed37f98b4349cac818569",
       "swapImpactExponentFactor": "0x923471186f28cf538007fd535bdbd75f7378d1331f6d07cd2a40276153e34550",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd07341375bb8af16176ce9c5e7310790c9c01029b13edd0a9edb539d83f01436",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x702b93be52d36b39dcc8e27fc0a7b3dec7340240378034c7edf2010167f5bc88",
       "virtualMarketId": "0x4e2463fdc8eb0e623472d4e6fb67440aaf8b50db715ff81c918dcf0a9b4f6e02",
       "virtualLongTokenId": "0xda567314a5104c9d1832b3d80c0f411685db2478bc7f0a7d8c607bc4aff2bebd",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1153,6 +1193,8 @@
       "swapImpactFactorPositive": "0x9afe4fd264c1db9a7311ade7ccd92b9901cda321ff91dc4a544e60e9aefdd403",
       "swapImpactFactorNegative": "0x24b8ea4213ef6ea1381eef1d22c8be6e6a2776542043f94cd0b75451e722acc3",
       "swapImpactExponentFactor": "0x4436d7db87e33e8caf71800781dfda7be283203615038a5bc6bad07cdfa8ddeb",
+      "withdrawalFeeFactorBalanceWasImproved": "0x18dfef67f3106a2cfec3f9954416052069469a836bc3f23babe3494d1e3e116a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf952b60f38497c80452924b5c6e28f86c59cfe3803462aa96df2b9e0be703ac8",
       "virtualMarketId": "0xdcb08bed475a372d58c8d4a4106e2d728aba9f394a7edbbfc9af501300fa7578",
       "virtualLongTokenId": "0xa7a9f75b7dbea0c14f881634e911f467cea6ed6b8b309892a16f6bb88196f4ac",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1208,6 +1250,8 @@
       "swapImpactFactorPositive": "0xcc58aaa5866cf4113e41fc4df9e5ee80b1d697ae5449bb1aada134f5eb228cbf",
       "swapImpactFactorNegative": "0x02fcf4c3f06217571778935d3f7e97c3e8d72c50baa6e937265d4b9d3cb65b37",
       "swapImpactExponentFactor": "0x68b31e362df2067ef9092172713fce629e43c8fb3ae7c604fda0e6ba18967a4f",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd1bac7b2b7d3362d261881e7f1e0c9c853f73edceaedb6579662db8a257e350a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x1280ba84bf0f688f6157d2e3b535f163e54bbfd87522bc7741125cd08fb89fb3",
       "virtualMarketId": "0xd8d68dd67fd4509abfc2afe7261228687df5a857867ce0a35bf860e27184d77a",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f"
@@ -1263,6 +1307,8 @@
       "swapImpactFactorPositive": "0x9fd271446b4cb4dabfda536750bd6f93b58bfb591131e601bae3c640d9609b2a",
       "swapImpactFactorNegative": "0x4a7f2a5421a3eb1067a7e45de84e107fc455e79cfbf6236aa396f99272cfe4b0",
       "swapImpactExponentFactor": "0x4ddfcb88742329060e7fae862f0bd237355ac1d858fc4be4928caa94ceef9abd",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe1ed463ff9479bf2480d30ae0557dcacf7dde80bcb7c5c4b5042ffc8c08f3a96",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xee887a52dd5fcbecdd243f640ad761807d0583904db9d999d017a15bba81d404",
       "virtualMarketId": "0x418e7c8fefa6d403a9778e123defd25ede196ce24b2de6d119798652b05a2d0c",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5"
@@ -1318,6 +1364,8 @@
       "swapImpactFactorPositive": "0xb5f17a97f65ee498fdac7f1788550bbd6a729107081de95c3890c697fe931481",
       "swapImpactFactorNegative": "0xddcb4f9e4b88feb61b957dbc5dc0bd03435c471d8ab9c3c985699b0cad17ffc2",
       "swapImpactExponentFactor": "0x83899b2c9cd5391747c3988b8797dda3e5f3189c446c3f43746edd33e6e4bd1c",
+      "withdrawalFeeFactorBalanceWasImproved": "0xff25b89c3e7f3707c1aa5891453a8252ef8c002b2e8df584e1243dbe0ed73db0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xb8d705498f3c744e0dbee5078400faec2c32a8f0570eb70f1b6efbbd240ea7cb",
       "virtualMarketId": "0x0f02984b3dea380f61ec0a6c8d7c60fb497a489eb055b2d95d8ef2826282fb45",
       "virtualLongTokenId": "0x383a0fdd5ebac620fe9349688ff6922600f2d5659c01c204e11f3181114b8700",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1373,6 +1421,8 @@
       "swapImpactFactorPositive": "0xa6399402207293d84fc48222f3238feae062d86e26e725edaca06fab54bf2e4b",
       "swapImpactFactorNegative": "0x8c3bbbb69bd132cae186a17c0f17fec773e3b7d2ef52c639a31ce3ecc4bba196",
       "swapImpactExponentFactor": "0x9a72811ae0698e31c2231403ff4e3263f7a83255c3ebd61ff1a9e6c90a5014fc",
+      "withdrawalFeeFactorBalanceWasImproved": "0xa5db5743922daf9145931ceda81b02a9bb341ba6aaeea162c64f16951092336e",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xa2dd806859f68fbf6780897da66590ff02a574db63af43c8de0b51642add1ec7",
       "virtualMarketId": "0xc0d8524413137e633578123c56536277851f30fa476e320824d3841d54e8331f",
       "virtualLongTokenId": "0x94039423f90376014849cce954f0d034b4adc74ce9d0f4142524fd668580cdd3",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1428,6 +1478,8 @@
       "swapImpactFactorPositive": "0x9f5c1ba768149251f1ac9bbe83db59ca66c5bc1dac404af7fe71e644dfe9cbb7",
       "swapImpactFactorNegative": "0xded0c3d499ee81a6f139dbbbafd11a57b4b0d741c4deed0eb81b462952739816",
       "swapImpactExponentFactor": "0xcb33824480bc1af4edb3a02742e93fc84d154d007addbabbf9515e6b900085c3",
+      "withdrawalFeeFactorBalanceWasImproved": "0x3f4e0f7751af29236a9afb45c2d7dff1b2c13dffc3f001a70fd16dd16aa16a15",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x5a281bcff7a6bb22c450a3b68a074eaf2f59d0441e60788aea8e8b221f4228e5",
       "virtualMarketId": "0xa1f23522ffd6ecb1fbfee47dc3174341b74a30afb70d283e382b19fe9da9e5eb",
       "virtualLongTokenId": "0xddc8f44ea682520585381041be40a0e629e6ad51d6ed26e690d316dc2c55e957",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1483,6 +1535,8 @@
       "swapImpactFactorPositive": "0x5a6f6f80c4a3e8d65986a384398e538c8faf9088f78210ea7b4f0f390633a51d",
       "swapImpactFactorNegative": "0x8f02874c8602664244cb90ca2139b5ba51aa0d59bd1479b6b94603a7cce88086",
       "swapImpactExponentFactor": "0x8ed2859874287cb901256ffbfb84ae0f23e82f31893202aa1d67db64e2b63a63",
+      "withdrawalFeeFactorBalanceWasImproved": "0x13eebd764abe6c5b8d7c3d745914fea3891b4b913d4157d65b37e4be37d97ca3",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf59ee975613ca4518e5d2db40d7a851702fd43d113b05095206930a80cdf310b",
       "virtualMarketId": "0x1d28b1001e8de41d554667802ab510f6b1b76aa6dffd943ed06a17c9bc0a9c97",
       "virtualLongTokenId": "0xd6866dd6a33ff4abb4d6c4e944499daacd97b3fe0599c1e0d9988a698a0acc8c",
       "virtualShortTokenId": "0xf131c85158814e22bf5ac40e4556e1134eda0141cfdf3a0d22cd0b81ea84107f"
@@ -1538,6 +1592,8 @@
       "swapImpactFactorPositive": "0x461e2c7445b7c5765c40de6c216908f8dae1dd7515416d2b39d09c59c9410f9c",
       "swapImpactFactorNegative": "0x844b935996c3559c7315004f459033cb6b4daba806b740a81bd8e9bee4d5f47a",
       "swapImpactExponentFactor": "0x1cef00edb03ed714041d7451cc3bd97b04dc3b8f965505a3e78e9f1a5dea6179",
+      "withdrawalFeeFactorBalanceWasImproved": "0xa775a05fa2ac9bc4dca76a4345f4ff0ff6ddf9a4aafa573022ed5b56ff0a11f6",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd4341a3d3f4b16d022836614b9fdd36a730e1aa42b0417a031da5a38679761e2",
       "virtualMarketId": "0x7de0ff9083c9fc4846e6cf984949de1b3d7986f334a415d69b151b365010bd14",
       "virtualLongTokenId": "0xd6866dd6a33ff4abb4d6c4e944499daacd97b3fe0599c1e0d9988a698a0acc8c",
       "virtualShortTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5"
@@ -1593,6 +1649,8 @@
       "swapImpactFactorPositive": "0x3ce367a95fad78d15965cfa917ca6137f707a3d77022ba1f643a316323402f4b",
       "swapImpactFactorNegative": "0x4cbf632cb133bbcc438fd421654e7dae88fa165ba171fd6e6044c505eb728017",
       "swapImpactExponentFactor": "0xe7d7639aef796eab87ec1ac108ef4ae5de1a5f867b9624bde199f46297b78a32",
+      "withdrawalFeeFactorBalanceWasImproved": "0xb8edae91057d261feff236403cf096e54d46a0a96c24d88f4f56315547303222",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x6b974dea02f400ce26f7b05147ba3dd294b2ceb042735c187de33f2029a2b356",
       "virtualMarketId": "0xdf0a8d5e921c33cd5da9de36cd122eba3630c34ba710c1e9c17365d57b985988",
       "virtualLongTokenId": "0xf131c85158814e22bf5ac40e4556e1134eda0141cfdf3a0d22cd0b81ea84107f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1648,6 +1706,8 @@
       "swapImpactFactorPositive": "0x16e0ad50beb175b5eb950fb44fac610b3289a7a74fe8a788d974cf667cb024a9",
       "swapImpactFactorNegative": "0xf4d68d4587e30f6e4d7a9ee6eb78d8d4c1c05ace6f9bafd291483c9ce9eb1bb7",
       "swapImpactExponentFactor": "0x97d1c1c0f5ad236f5f1edac5fdf95bce3537739693abc65a09ed0a3dcf34498d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x81887e98d2281fa06842b927b25ee3f771167a3dd6a4d83db0e6fa04e65c2176",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x993ef60725ee787c1395a01afacdc46d0d6b523b2709f667c7b352edf886abbf",
       "virtualMarketId": "0x03f15dfbb59683ff19459d28557cd3323f0872a7f560af3b99a3d3f9653d01bd",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1703,6 +1763,8 @@
       "swapImpactFactorPositive": "0x43815a7794b4f7f293baf4954ce22899083f202f8bacb7c6318febdd200c8647",
       "swapImpactFactorNegative": "0x1b4e062640c62d2ea26baac2c515da1c438db5cdde51ce3b7e87c389c4588648",
       "swapImpactExponentFactor": "0xec66bc2197cd85704c758f3f88d82b4e96952086421a0744e4e4bee8043d6b17",
+      "withdrawalFeeFactorBalanceWasImproved": "0xce78c97db859044e861e5c997b5b19883f1e0fe476b939e64be1e4a8e438a40d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x8308d3331e301904ab9656672fdcd590dd5a48950846c2d160380db8d73a130f",
       "virtualMarketId": "0x8e4b9ce4d107fbfa15745d1d17325cc3bf6d44d3ae1a092cb5d22ad813aba8ba",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1758,6 +1820,8 @@
       "swapImpactFactorPositive": "0x554aa25ead86224ab91bef3c3666a62e090f2ff373660d1ad93b5bce40d86280",
       "swapImpactFactorNegative": "0xa635d2782a0a1a49d0f0109507ad9f758eb8d886465a59b2a6aa4a0d4402b411",
       "swapImpactExponentFactor": "0x99ae407ca0909a5ede62cf8e5e0cd01c88b10c8bcc977c6be4c60124609ec505",
+      "withdrawalFeeFactorBalanceWasImproved": "0x24fbc8dde4b6e65b4d9e0f3d0f7b7c2e01a1078d78980a78b92564f8a736c327",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x16f836d653ef045404172c8de4841a702f354143d6b013b25d63a6384e646e20",
       "virtualMarketId": "0xee0116ab2f3ff5a9baf77133e43fe02da8321a8490c5ac205369bace02758d51",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1813,6 +1877,8 @@
       "swapImpactFactorPositive": "0x7c0dcaa54ea81581befa553bf6ad5d1ed18aa7ad80bd7b80fcd6ef9b1615bd43",
       "swapImpactFactorNegative": "0xd9536a29966ec9255729ded57ca8f7dddb0c0b9af89354db014171689595efc0",
       "swapImpactExponentFactor": "0xc0af564625767bd4c8d5c3450753dfc573b1e93682d4989afd2f90ef459922e1",
+      "withdrawalFeeFactorBalanceWasImproved": "0x2bd1c9cf0922ba1e0b2bd7ca9e2ce1b2e33509db48f7a7b0383ad554a78a169c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xdd5b6694b4a87ba1ea992bd7306880def03617f1edc8989c24c48143054a3d92",
       "virtualMarketId": "0x679bde52b07e75dc728418cd095c199a7defdfe74368c391b3ea89e729e49b63",
       "virtualLongTokenId": "0x4586a40f82486304a403813a3e4506085f44f379287675806f0d785961e1f46c",
       "virtualShortTokenId": "0x4586a40f82486304a403813a3e4506085f44f379287675806f0d785961e1f46c"
@@ -1868,6 +1934,8 @@
       "swapImpactFactorPositive": "0x609b62f795290278ccdd73a7134158fd53801275c79a62f4741c967904d3bbd6",
       "swapImpactFactorNegative": "0xd1aa256ef61e9f42f8c1ea56925edaaab20bf4c9c894a1769748459cdc9f1a13",
       "swapImpactExponentFactor": "0x4b108c71c95fe54771a329eb035d3e8270d64ea5b79e3ddeb1bdf9d208a39ad6",
+      "withdrawalFeeFactorBalanceWasImproved": "0xab9fd6f2c573e3cb70f55e6bab5f81a1e8d5c14b86da499050c459283b8897d2",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x4a38112d8c08753109c5f0d13f616ec915dc416663edc1db1d230835bfcdddc3",
       "virtualMarketId": "0xb50280db73b9cb00f37072e37efb197cfdce41d687b639e2dbe8f905083cb6ac",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1923,6 +1991,8 @@
       "swapImpactFactorPositive": "0xf173e2084eda5671a0f4ea671bd7f0837776cdeda6178d17d5926537f468c7c3",
       "swapImpactFactorNegative": "0xb792682cfb2272eee71294b3bed2d420d96f3b838650917f08eeaf20c6861eb6",
       "swapImpactExponentFactor": "0x79ed42232c53bf8b095cbc2384a5205b686c5a13b1b9c7ae12b224621296f95f",
+      "withdrawalFeeFactorBalanceWasImproved": "0x2f74242fe77a22b68b038280bab8be3335507519dcb3bd304326f9f5672369b2",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x71ac7b00e3ae9b76ab1c7c406d1a05143d509d528c7ab202bb0753a208b464ed",
       "virtualMarketId": "0xffbd86a67d642bcd2868d7a851df40c2fdb83ff61c2b1d66ad63ced8b6051792",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -1978,6 +2048,8 @@
       "swapImpactFactorPositive": "0x995b47106472df08b1d99bfcdf5a5c58a22fd505cb0454ba3c65d25836e5e383",
       "swapImpactFactorNegative": "0x6fde49ded6431284fad0ab80a5d2bb9e23bc71bdb6768018feb1d0d92cea86f9",
       "swapImpactExponentFactor": "0xe7230f74591696274ab9b6e56d5f6a7da17e29e6a1e6df2ade2e8e6837d6cb0f",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0a2213af446705414cfeef644e30fa905608b01eea2fd5f7fb9a6be1016cc2c3",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x35fa5d926da8bac45eac6a6244842b2fe1c899001032fe7f5792c26c9884f7c9",
       "virtualMarketId": "0x867f8307648d7c8c0fcfa9ce7bd2e268ae4b215c281fdb565dc0dd2a0fbb02e5",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2033,6 +2105,8 @@
       "swapImpactFactorPositive": "0x19e448c0928954fcb9a9cabbcf59f3132cc20f890325d3b12a4c7e8cda0fc283",
       "swapImpactFactorNegative": "0x6a0d172623fbdc523516101821ee8863144416e7dd357b967bc205842b287bcf",
       "swapImpactExponentFactor": "0xfeccfd7ff923ae1f8ec494e1b6701a513a7d9c47b645572d323b17a79e0f4bc5",
+      "withdrawalFeeFactorBalanceWasImproved": "0xb384246dd2e34131072c5f26e11d28102d5aa49e19360e80070edb490f02d219",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xca8174f117fe0d2decaef56cc2cf5cd4bf7d436836c04330ffb054c78194fdc0",
       "virtualMarketId": "0xa4a5ca1f8a367c4926788fc57c91dbc9e5b2142056b0c9b6806c597606437b2e",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2088,6 +2162,8 @@
       "swapImpactFactorPositive": "0xff7b5bd53c1fed235757a116187bd94c2bfcc5dccf9c79d3afb485782a5a86e8",
       "swapImpactFactorNegative": "0x2349db6b6cb6bc3749db19a55dfa7795476c7bfbb8ee0474769e5537adc48653",
       "swapImpactExponentFactor": "0x88a425e4fb5c7e4b0d858949061fe36dc6212bdee8d5e60a704ff90577560e5e",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd2a1dcdb19bf34086c26450b12befb7edae1fcf970d0ced9fdfd9351c1bec029",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x411cc321a498710e7ecf914665127a38a6516603b60426122664d31f58fb4fd2",
       "virtualMarketId": "0x352d11c1d47015bbb2f18d6dd602155a9def60d9b7e2b8c501adea36dc0126ce",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2143,6 +2219,8 @@
       "swapImpactFactorPositive": "0x7459c01ebffc50f3aea8bf2ef8ab6cf36d2b2e7398811e79ae65b427c7a4cc45",
       "swapImpactFactorNegative": "0x42f1b2dcd3ff9e25ca0ea9e9ae7ce948a668d2ac2ab3d078020a55ef96400ce5",
       "swapImpactExponentFactor": "0x0836eed83cef2717c66ecd1b31f6d02efa3ddb2278915485d1c5f71f220a1928",
+      "withdrawalFeeFactorBalanceWasImproved": "0x22d401645648b5a12218fd5793766498aad1ff283065a6efe3000de4205294ee",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x61b4ed7a667b9296fc380d3576067fa42ab9c833fff6dd2fef566333e13d57ec",
       "virtualMarketId": "0xbcf8771e6647348c49962927093ad7bb98b885b43bc7955aea88ecbc01e86b5f",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2198,6 +2276,8 @@
       "swapImpactFactorPositive": "0x461a95b066cf6086852497f137b3ea75bd3ffec0796c7d9400c8e5a92037d7cc",
       "swapImpactFactorNegative": "0x499433d197d5305ea41dc1d247e491dd6975ce88fab6979e485537a86d043d6d",
       "swapImpactExponentFactor": "0xe10b5f823fb387f827b6a600f049a9804073a2b410ad2d1789dee8f418388267",
+      "withdrawalFeeFactorBalanceWasImproved": "0x8ba097e85349516443f8af3f1e7adce2daf124a713f76db0db69c81e8def84b3",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x28e31f77029d3369e5088ecafe413c3060a60c54c8b6491ca9e5eb34d56b11cd",
       "virtualMarketId": "0x51d0a8b4aced607bde6034b727d384d3b742d8bd6da553a2f63802ff762209c0",
       "virtualLongTokenId": "0x4d68d2798555d20bf717b1375b599dc49e3af2789d5a47388d3d34b97b7d9f67",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2253,6 +2333,8 @@
       "swapImpactFactorPositive": "0xa71869892b9b6533e98daebca840e5d5536dc60b02f242dd2aa099f47e3a36bb",
       "swapImpactFactorNegative": "0x4179e67be0eb7afc3c56a4d16854b7b691f85c5592c3c13c743bbfe2e519a76c",
       "swapImpactExponentFactor": "0x399b4895a6bb319b3a1df26d56ff6b188547f4da5697c2a2d3109186c8d50962",
+      "withdrawalFeeFactorBalanceWasImproved": "0x71d8556968dc379e1c2cd03dbd67bd6dccd314c4f23729139a72742cb826b68a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xbb3312c61a9791abcff24900f3ed12734dbd30bc56d7ab1d71652f545197afab",
       "virtualMarketId": "0xd3a3de86c5e60d99f6739730b9d43e55d55d3759cad41b823bf67cd07aec447e",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2308,6 +2390,8 @@
       "swapImpactFactorPositive": "0x13eda227af6bd9bd0817e3771f202173a24574f81d1ae84a0b394fcf675dfa8e",
       "swapImpactFactorNegative": "0xd5d924bf90f87618ba23759e1df30db025573ec12a4af3940533c4f03cad76ad",
       "swapImpactExponentFactor": "0x8b1b0e78966a367740b4f1d102a9188442fa9a450eb815d28cd384b8e0616ae2",
+      "withdrawalFeeFactorBalanceWasImproved": "0x27d7a39815a3146bfe2ac59255cc1f0178ff67440a5c35228b6a24fd2b7ad197",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xa1e959a045af0aebba29e01808300f1f3a7748717815844ad779ffc1e20be82f",
       "virtualMarketId": "0xcb51081d96fa96ccb10c6d6ab05ec9199cfd76d538d6dd2adfe42a09b7480261",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2363,6 +2447,8 @@
       "swapImpactFactorPositive": "0x2c164a61e689a8a81aeda0f29bff44d8a7f2d8895878c64b4e41c5aab8c4389d",
       "swapImpactFactorNegative": "0xb88ad88aaa77586d993ed016bbee3584738069ab1f80fc3f7d9a8544cd6b6916",
       "swapImpactExponentFactor": "0x6f7ac0f128733366619afcddeca36ec6a2da3b379f9938024da379e0be8c1fbb",
+      "withdrawalFeeFactorBalanceWasImproved": "0xdd08bcb96aee6a22f6132eb72cd9db5c6fc70f7db4f079e70d86eb6079b05a53",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd290ac8378ddaa1f7a48dc76989e168ce65ba731baa94210aa9da754859dc890",
       "virtualMarketId": "0x49e3aee310864cac3bf7766b04a8a0f4a0dabb5803f5113c583862fea4f74ac0",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2418,6 +2504,8 @@
       "swapImpactFactorPositive": "0x43fd312437e0556e2d89f99e604d50d1ed9c4b02d4e9804bf69d8c71c1ff2928",
       "swapImpactFactorNegative": "0xe5ea472c4d680fd020ee7c372c33683a5739fb3822fe39d969f07cbe4167bd0d",
       "swapImpactExponentFactor": "0xdde80356bdb18a6e5cf7fe6659145d4e2236f7615e6934e10bca1ea8e618158e",
+      "withdrawalFeeFactorBalanceWasImproved": "0xf851e8da7a895cd9d28274cdd983c1f65c08490ac06b5e723041f4ae2cc840f0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x73cd1ed8c749aed6e2dac9f45e9b0d91001b3c291dce63593731b4930ce34259",
       "virtualMarketId": "0xf72c205a8c133f81158f89a7e84d278fa326b2b0cc4ad79f0be5a53e25b7d22d",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2473,6 +2561,8 @@
       "swapImpactFactorPositive": "0x36e871427ac1ce490403c9351e871024aaee072fa90fafeea3a09ee1296c5100",
       "swapImpactFactorNegative": "0x6a34903a427c705b14eebd04e3d807ce9465c22b28c84ae75b83b142bc0e34ab",
       "swapImpactExponentFactor": "0xe04a2a7a7efdaea4326561690e5a525f60dff65d3aadb010dd528ccb6a083752",
+      "withdrawalFeeFactorBalanceWasImproved": "0x3fa3c2b387d2f9ddd460a1571458b8d6e7e0e8b189f0c661f1a65b9c3bef075b",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x6696211cc27d2ad460769df7d85d438d4d170ce0cd50f3a97dfe0a0d694c2ab5",
       "virtualMarketId": "0x1748a903ec4a04ecc4e805b5916ae06350e4dac5585e31be9fd0184f1dd5d9dc",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2528,6 +2618,8 @@
       "swapImpactFactorPositive": "0x208c6acc0507566d2cb55884616eee785678beeba5542607b18d32de7007639e",
       "swapImpactFactorNegative": "0xbc075ce4fb66dc695cd10edf51e201ae23591004d823be69ee8ad5ab0ccf87f5",
       "swapImpactExponentFactor": "0x446d2f81a872accc792188ba237193feef42d1f282e2b7ac0ea9660566f370f8",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe66e986c6bf07ac37b009ebcc1674062fd30a607f0ea78321cd9954f89078d3c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x2d4241f29430bdfcef95ef324d1d7ee63bf5358d42b837a2f7d1c690d9c1659f",
       "virtualMarketId": "0x7bdb363de42627474f6a80a35d34a43a708bb74f5687e255fdcee6e4738431ca",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2583,6 +2675,8 @@
       "swapImpactFactorPositive": "0xf36010feb1e7e5bf88eba48c62b7cdc9a00bbd23007f4afb33cc373619624b2c",
       "swapImpactFactorNegative": "0xfb915dffefd667c9f6211dad9e8b7236026971701504f4c5b591c964d750c9aa",
       "swapImpactExponentFactor": "0x368c32963de4e32ea01c9f7356e2a1ad5fe2fc223d6a5d0ae3e497e8928dc90b",
+      "withdrawalFeeFactorBalanceWasImproved": "0xb7be1aea155e8e3219c6e10c865dd11594d9fa53cda9a638803a30c76f5a694a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x5e28d667a51f362190d1de0dcde200ac84e12b3c7a8168282cfbd2938455a985",
       "virtualMarketId": "0x239e7661fb9112893ea39f1024aadb5768d31f7d444409e21dd781b95db99d9a",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2638,6 +2732,8 @@
       "swapImpactFactorPositive": "0x79e2b21fccda79427457db054b84bc2dd39d6e71e802603330463debd9e2cf2e",
       "swapImpactFactorNegative": "0x3fb93539d5a21b0bfb035b684c90c976559174c5b3cb61a31eda7052cd0a8df8",
       "swapImpactExponentFactor": "0x9545c1fa52965fed0922740abce09210eaf7584507acee7bb1360a4d9e1f2ed0",
+      "withdrawalFeeFactorBalanceWasImproved": "0xae3b8d3d8bbd8712762fe3088f560407ec91c847466a302644e1652dcc64e14a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x098842bff4c0e478e5ec54a944ca6c5d14de034decb2b967b15e8560a26b0c09",
       "virtualMarketId": "0xf06bc1c76184711dce12891c4c427594295b8acb4611ed63f67f959841339acc",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2693,6 +2789,8 @@
       "swapImpactFactorPositive": "0x88f491f2b910faaca2409fa56898c9873596d94f61459a799f22aed18c3f0024",
       "swapImpactFactorNegative": "0x063d716f2663e42baa3255283db6cadd96bc6e066eea5397683e050758613f72",
       "swapImpactExponentFactor": "0xe15802d95e8f9fcde01134de2f73e873fd63c2038546f54c4734358dbf9d24df",
+      "withdrawalFeeFactorBalanceWasImproved": "0x6c3f79e0e57c292ed6a43b3a9c06560a543450835962fff94d78c035cf43e01c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x0cb5ee053e68a9c5b8e088a3089d3e6036a1f5ba8253d4f13e987464b6c3bc91",
       "virtualMarketId": "0x2a1907659d4afc6a54a0a01deef0c35b880da7344edcb626745819dd50792b64",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2748,6 +2846,8 @@
       "swapImpactFactorPositive": "0x914773be0246bae3852f2415f162581641c3fcbff05d9f9968dc8831bf8182c0",
       "swapImpactFactorNegative": "0x736841319b2b2e9d22670e879ec64651e9e2ffd751de069908bc1edbedd8d0d7",
       "swapImpactExponentFactor": "0x0ce9dd673cc4800b8a6664251479bcb647068469074cbb7839160b995624bab2",
+      "withdrawalFeeFactorBalanceWasImproved": "0x6ca77e5a74f8a0f9bf75f1631634ca427abb91b4b4e68e09cd5387bab688e04a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x2fe5e98ab32c9cbb92b7c40b6cf66504c05fcf0fcb3aac52fefa9b250a5b7932",
       "virtualMarketId": "0xdb239419e310d0cf2769e39b9ec4c5a5dea293bfb4f494dc31a7f041337c228a",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2803,6 +2903,8 @@
       "swapImpactFactorPositive": "0xa3b7813df6db3b7ed3edef24c4e1955bd5e9062c80ff1abdb528cd2c550e8abd",
       "swapImpactFactorNegative": "0xa77511e977f042648b2b03ea93d721a59db658e5437b141a25987849ea22dea2",
       "swapImpactExponentFactor": "0x348400b3425cec4370585aa38a068c75cbe896bc7a7865020fdacf3cc64bff80",
+      "withdrawalFeeFactorBalanceWasImproved": "0x1964279ebba52fdb2e14b6a07be070dd8d1334fbd3e89dfedc6d34e86aabd211",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x5b74b231b722eaf53e772f8dfa51f8e0c6fed8323669d2763ad39d7915b82d53",
       "virtualMarketId": "0x3f997e86143f313e40fddeadb0f61dafbcd44f8a2d2b0dc121d733eeefce9368",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2858,6 +2960,8 @@
       "swapImpactFactorPositive": "0x45a4bf705485557d4d27f88259722f6f264abf19c6067e7e7c80cdc45091f812",
       "swapImpactFactorNegative": "0x102f11c727669364e295911cf2eeec0f717be0aa5c2954b9271ab9f497dd878a",
       "swapImpactExponentFactor": "0x56ad8a94a99b9fb545af26dc677d20f81628bfe1973d7899ac0b1a7838db010a",
+      "withdrawalFeeFactorBalanceWasImproved": "0x726e889f3c935467ad400816f5c35c7dd4bfa539673d79da67afe38849cdbab0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x96ba15e31e498ddb3eeb3ead183ae0ec046fe1dd3fc39493517c6e0364f669d8",
       "virtualMarketId": "0x23bea52933bae5e3f00fd2df309b665c3cc4c09c4097d0b33c44990b28ef2037",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2913,6 +3017,8 @@
       "swapImpactFactorPositive": "0xd4a5ae415f77d62783af1a2f28e78949cc864fd201805dbe149f5ba71a7bb5f0",
       "swapImpactFactorNegative": "0xfca9588687c74abf7fbde4beebb4a829136a5a82f3f370b2de4e0c73e1579aac",
       "swapImpactExponentFactor": "0xcc0d3d97121bf02f0c85acadcb5e1374d48fc36af6657caa2fc4147b1cc61ff5",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe035e18f924a62080c92f7d10521bb5c27620ef5ce838629bb5884cafdbd3f5f",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x4e7d280794cff36380365402eb8e0bdad7d373a7d4ac19bab7b537b2e7e5f223",
       "virtualMarketId": "0xbbfeb7b134fb97b884e7c7e17388257b479d9a8f088e8fe3f7017b811c5d89a6",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -2968,6 +3074,8 @@
       "swapImpactFactorPositive": "0x04d496484fc2cfc2e5031d2700045b81467c218ed0e70e99c4c5964389cd3fe2",
       "swapImpactFactorNegative": "0xc7bdfaea94692f0b55dbdaafc9983db489cbc376bf88b3776f57f175713b2ed7",
       "swapImpactExponentFactor": "0x18b3c48e49fb23c5a671425c0b1af3954268b0036dc606c5226b29e608b09f8d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x9cae4752af5b32dd0d3a230a29e8a7c1f69324b1176c369dc55efe3afc16a137",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x8bbc75354bec0f62083528832fba5da3de19791785a24cd4cdccb620620ea58a",
       "virtualMarketId": "0x8d9d74b6296b77082205d718116175b560354c67b525e2c42bb79265f422c586",
       "virtualLongTokenId": "0x383a0fdd5ebac620fe9349688ff6922600f2d5659c01c204e11f3181114b8700",
       "virtualShortTokenId": "0x383a0fdd5ebac620fe9349688ff6922600f2d5659c01c204e11f3181114b8700"
@@ -3023,6 +3131,8 @@
       "swapImpactFactorPositive": "0x2a5710804a712f5b0eb07536474d337dc633791ed8ab8adf49ade86114305f9d",
       "swapImpactFactorNegative": "0xbc15a6da3861fdc596e77225e3d77376b10df0f3f60809dee735fa659a3a094f",
       "swapImpactExponentFactor": "0xe14778e61202b7041ed3f62be736053b6b0bb768dbe225f6b6593f8d04c89c97",
+      "withdrawalFeeFactorBalanceWasImproved": "0x6f0fda26740be537c451e1b31e8e149f7907bbd30aae6f542807d3f235e3028c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x7f162dee920c9accc527747375d1acb7e5e471327e496e7428fb32f76c719329",
       "virtualMarketId": "0x3868a2839dc7caede5f8b49e95791d78be3f9a9a1f8511d56f6a8ad687706f34",
       "virtualLongTokenId": "0xa4c6349b14de45f6b5d19ee99a08ce0f2d4d4862edc6c04a7d302e941045bf8a",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3078,6 +3188,8 @@
       "swapImpactFactorPositive": "0x4dfff87fbccb5b88103d2c18923fe113cabf5ea0683519bdf5aaa014901e5485",
       "swapImpactFactorNegative": "0x948eb486fa79aecc31b6f33201e895a7a280dd196b0d44d58826f51052959432",
       "swapImpactExponentFactor": "0x473b14d18453e5f6b724e70e5f3d9a89099d805d920a15c6bc678e9d4432d1f0",
+      "withdrawalFeeFactorBalanceWasImproved": "0x5c2b58aebd0ea2388bafd61af4cb377d6bf594170f0bd105640d5168323c37d0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xb796223f9adc6f2043e03da48c2a716d232438ffd526f86844979da8e4fffc04",
       "virtualMarketId": "0xab7e118a2f48a981792d85e873cd9c26d455365e8cb4c53f91bd97c59aa5052c",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3133,6 +3245,8 @@
       "swapImpactFactorPositive": "0x5c8a37f30c9ecc13ee46d77b70d4331b6132fc1d387d3d6c8b4874daa9e45ee3",
       "swapImpactFactorNegative": "0x728f7a1b5e5c7393136e513b4f434934682e69750993b9eda930b21a7aced4f7",
       "swapImpactExponentFactor": "0x03c6473283fff9db0ddb65c7c99aef8132d1fb0ec5ec7bc0b2438ccf1f74345d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x64122b188b4cf0879d5c5db89d3d44bbe0f01a6cea87fef3ec73cf4eef4f24ec",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x163dd3eebc8c58445e853c51118bbd159fe6035cf95afa36fc38059478ce6057",
       "virtualMarketId": "0xca19aebefd1d090826ff846903d82e84d0c00f38deadc5b98f70d701742a4a98",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3188,6 +3302,8 @@
       "swapImpactFactorPositive": "0x1ca2c01d2280bd5ce2953044135a4ac1612cbc1e51eb4789094d5277695ea547",
       "swapImpactFactorNegative": "0x12d72f558e812074fe92ca12d0b09ec2fce12f75ad277ade95bb96d90d0d5feb",
       "swapImpactExponentFactor": "0xffff85ac1f617e96d26113e10310a0d3c45e80b4eddf6522fe7c3ffaa18483a5",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe80dd4c23fecdfcb41b2b6da87ccafcb3d78d3fc87b9860a845e54af6856e9a8",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x9d63f29e8d0907f06903aff1cece18204746f914fe57ae1c9730a025efbfe06b",
       "virtualMarketId": "0x4e45586413090d60ceb0231799707630a0f3475e3b42847f054746ccbffaa8b8",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3243,6 +3359,8 @@
       "swapImpactFactorPositive": "0x21b32f554b31bdc78df56611840c5b22c3f83e6cf98ccfa40a961b576bb8f27a",
       "swapImpactFactorNegative": "0xc2d2bcf31bf9a8344f5325216298aad7e5db29a9da562598e268aa22650ac8ae",
       "swapImpactExponentFactor": "0xf370325fe03991f22b1bde52e04e37ce1e1f4889f89a8f7de3bc014392280388",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd1890aa52085897ec3192a15f052f9bcb41c7eccf5477058e0b82e0abb20e3da",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x0b6abdd177639877978945a32c241dc1eaca1af3a15b078a55b0bb1c8f6aaafc",
       "virtualMarketId": "0x3bab1d667724c9754773158ac51a2b99d91543631412280d57981d4a3b100922",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3298,6 +3416,8 @@
       "swapImpactFactorPositive": "0x8678662699138feac68d6aaeb7318df4d064532ecb21d27591c5329cd16e1df5",
       "swapImpactFactorNegative": "0x37fb6cda1dbc827e2bed64832211f7e3b22fd76d68eafc898864d33e3d28f7d7",
       "swapImpactExponentFactor": "0x3407b3ef7c9e1614bff78ffb8563587f128252bad9a1e0549e50a5f85963b51a",
+      "withdrawalFeeFactorBalanceWasImproved": "0x7b03424631f9395d68b24da8e63ff1fc0161d4e291231acd5e3f88572cb87f4d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x9d599c8e5ea71d483c5d636d83c7a13233b2e29e4d32b9ff0492c33dcce49fdd",
       "virtualMarketId": "0xd62d50909f2b9f6559f1e5b6cf9001c973e894952e5e0196ef6922443225eb17",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3353,6 +3473,8 @@
       "swapImpactFactorPositive": "0xe3b67132e0f4393269e4b1a857cf64173c3f439061273ecf56a280f4c93de89a",
       "swapImpactFactorNegative": "0xbb17be4a833e071fcd118fd099e5441fa4853dd41297654cc57483bad2c4ad04",
       "swapImpactExponentFactor": "0x4583b3c42805ca8a4569db7f9c7e4f9c2afc4a1029672b2c9f1947794f2ea2b5",
+      "withdrawalFeeFactorBalanceWasImproved": "0x84210c545418bacbabc889d74385784d28591ca57d4fdab51fb02da887135e85",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf7f8df595db8a2c6496070b3795afa5d968eb73045e52779fea8c32e722a2a34",
       "virtualMarketId": "0x0e4b2db9c58348cb77edaaf87970fadbdaf3c78fd3e14bae1302a30741c7a84e",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3408,6 +3530,8 @@
       "swapImpactFactorPositive": "0xd8dccee431a28e96dad6b7fe8268ab59607042762992a7833e78b16764e5239b",
       "swapImpactFactorNegative": "0xbeadf9c02cf8cffd063af197414f3af86d3691554a06b63f4130db8e86501697",
       "swapImpactExponentFactor": "0x0d4f19104c2224d407664311bd165f0ca2089868a3cb81583973aba03af74014",
+      "withdrawalFeeFactorBalanceWasImproved": "0x39fae0441729d6a031da221fc6f7818dedd4a2c48d5e360734df8b2a8fb581c0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x77a670dcfcc7c6e609447abb8fb536f62b218b32c53c1723d23ba43e2414954b",
       "virtualMarketId": "0x1ee40b7537bdf0fd26a566e83faaa901756983d19f549a403a4deb29725a3a96",
       "virtualLongTokenId": "0x8f92ebbddf51de9f1607c3d6748a858fab29822d139ddcd3b8f877241ce75e70",
       "virtualShortTokenId": "0x8f92ebbddf51de9f1607c3d6748a858fab29822d139ddcd3b8f877241ce75e70"
@@ -3463,6 +3587,8 @@
       "swapImpactFactorPositive": "0x9978b4eb0dfa425718a72f52aee70a622401b0ea0398043e50e286fade3369df",
       "swapImpactFactorNegative": "0xe602c87380a47190b95ca4de2c92202818d7e26fa1ca73c8e1005fe7f1d2ce7c",
       "swapImpactExponentFactor": "0x481f384180edf110580d4f79f24c4799599a39b2213198381bbe972e1d64d8a8",
+      "withdrawalFeeFactorBalanceWasImproved": "0x9b2489c9eae9743ea4992fa76ddfbbf55bc0acbca570595249c88ce2b5d8ae0c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x645c81b6c71763796dbb2f9c1844836befa081f17ac86715cff00d554d77565f",
       "virtualMarketId": "0x056468869fcbcf8bbcf7b726adf30aea71c65d61a2dde85829d025ebd638b67f",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3518,6 +3644,8 @@
       "swapImpactFactorPositive": "0x2f10e629b89a4e353d8d563afb62870a006f03e0cbd77759101e3e646d7f9631",
       "swapImpactFactorNegative": "0xe6988279f833b1014b0483425d0eb061c1b244073b18b54d1eebf3a9de1f75cb",
       "swapImpactExponentFactor": "0xd4eea362f0a2ac992a6ede6c2defb41e3416cef42c033d97ff2ac8b70db7e3b5",
+      "withdrawalFeeFactorBalanceWasImproved": "0x089524aefa7495f4dfaf2e6682614fdb7e230c0284bf05425a5ea5f5042dab13",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xa924397c3d355a44d1aff00ff0108724ffd8cdbb3f0c06880cb4f5a6d4d72c46",
       "virtualMarketId": "0x773ccb8ee7deeaf0b761a6290f2317392066dc69ccf0e6b019722007598c5a9a",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3573,6 +3701,8 @@
       "swapImpactFactorPositive": "0x40d4a5c09e6e2f7d78e3dccf44cdd2813b205c5f57942264bda60aee2add42db",
       "swapImpactFactorNegative": "0x60918f5a146bcc03569cbf6e35e786a85e270d98a4db0043a431be58ecb5a3fc",
       "swapImpactExponentFactor": "0x5c57dc3f5ad0d71a0263608d9d0eb53f3b54328e7d41e272393409353c21bc90",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe66ed02588c01e3098c19c371b72a18fad295f177c097c0b1beccdc14d1103eb",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xa2129d5277fa85ea40059048b855e387dd068d9e89e12b2abbb566e91c17c100",
       "virtualMarketId": "0x2e1b50cd933617e9a08cda4f3cbe390c1f17523a16453e477dd04fb28c7eb61b",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3628,6 +3758,8 @@
       "swapImpactFactorPositive": "0xe7ce551847a9a3c438d4b9e7a4099b50291bf4ab3242383a4b621ac959238f8d",
       "swapImpactFactorNegative": "0x599c414476937eeb2a4b91d90d9ca824d874a17112d7a5b7a7a7a6f6aad5628a",
       "swapImpactExponentFactor": "0x83b84faad6af2797827d5c92195c971fd812696ebd930863f80db617fab45f4f",
+      "withdrawalFeeFactorBalanceWasImproved": "0x22d9abf4deea5a1fb61394eee37b293b1986905dd3b4cf62432e2bf7fbdf0dbe",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x38930bc050ce0ce565e085097c0392c2f624f520aba42e9d543638e233f9777e",
       "virtualMarketId": "0xd54671270c840ff5ed17ab95ed334f51e9ee4ffaef0500a61bc52a9e35e363f7",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3683,6 +3815,8 @@
       "swapImpactFactorPositive": "0xc99541a0a2b9d346b58261c0f9438a8b0406a64d5bcd334a1b4671a81191c4a0",
       "swapImpactFactorNegative": "0x6d6b01ffa99d507be49eb5b27911ed5c7682570a8105329a96ac502a102003e1",
       "swapImpactExponentFactor": "0x9bd8fd6fdc873ebcce7344f40df1fe423538ecf2de56154af9d701051d301c29",
+      "withdrawalFeeFactorBalanceWasImproved": "0xb22227fc5a72865065cdf9948fc7dc0e5e08ccd788b1b564ac6f0feb78bfd539",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x8d8a07783a6a88035bb0d77ef57f0602e61ff2127e9aa80b266de72f44279d06",
       "virtualMarketId": "0x9544673f4807a26db2dfb80dd6845aefcabe4bb94e1ab66f453ea515a8f00cc9",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3738,6 +3872,8 @@
       "swapImpactFactorPositive": "0xb87eba0a263b57b8d2a7dff56d73ab92c164811cd1e56f479690b134e73821ce",
       "swapImpactFactorNegative": "0x21eb71230a7c89a8134055d6cd127bc1cbd69041800989e1a5ee25ee1186e241",
       "swapImpactExponentFactor": "0xbd575e96df4fd1e6eab867ee69312ea37c3b7ee3685992ad7b8c05035c439459",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0ea054fd05e98e1de0f20db239f1b56bc5676cea14c929d991ac44254a346ee5",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf7d15468d5cb4b5405fc07e6f6fbed83bf14fb7db1c1536ccc5d959007b28914",
       "virtualMarketId": "0xbeec1284ffea7738c9ba03703c385748b5107e01a45de9ab112945f3cb5276be",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3793,6 +3929,8 @@
       "swapImpactFactorPositive": "0x697ece2ce23e93349986cb04edc1fd3fb4307a573d679f243701ae39bb87132a",
       "swapImpactFactorNegative": "0x19c2660bf05157a6c1248cb90af79be47b7804b52b52bf200a7732aa186c43e0",
       "swapImpactExponentFactor": "0xea094e8717554b6c479bc2c54a4737c25970e30aec419bfc4eb801ad7ee57268",
+      "withdrawalFeeFactorBalanceWasImproved": "0x773b7c07c636c4e04abd485f1bcd0eec5c6941232dd62354c866b4ef364ac6f8",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xcab66b629b2f8f8b2aed9cd99882045e7b947cdecb8d6efb966e2470c22da666",
       "virtualMarketId": "0xc5e035ea1642e8e8bb5c391b503ade9bab3fd8596fff695f0a2b81c646dc6f48",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3848,6 +3986,8 @@
       "swapImpactFactorPositive": "0x42aaaeae3f86b5e671a389d5b004816565f03a19ee4da5165ac22336d040cad2",
       "swapImpactFactorNegative": "0x33b9b4cb5a208b266e11de020970e508843c67544b51565d15e87b65c6aab0c1",
       "swapImpactExponentFactor": "0x06a8eebde08a6c76b4923730c450d72f3f7ee3bf564be64d693a846e46d222b7",
+      "withdrawalFeeFactorBalanceWasImproved": "0x4828c5a686af9107b3d6749fb080b425f11b92e3d9c8fb2ba23b759d18413068",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x50ccb6764a1b6f6f3279f299a6c03054072695c54ab775412656d13c26db5ac3",
       "virtualMarketId": "0x89441a9b576778a926aef80b72afaa689c63a0202d5934c75c4ea696083f09ef",
       "virtualLongTokenId": "0x6b7da6036245b3feede9511d4da4d25d9e6cbaa9041162aafc3d471509efca83",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3903,6 +4043,8 @@
       "swapImpactFactorPositive": "0xbe6bf34b093a711520a573026f4af33708c3df6b22ab11fcb08a211a8f3651e8",
       "swapImpactFactorNegative": "0xa04e19482a64c2873c80eee75fd5e05a21ea68458c3c31ba6514ceb2e6683954",
       "swapImpactExponentFactor": "0x4d2d86e81fee52bbcadc9b241d3f95a44696c92d2c6d839ced2571b341ecf432",
+      "withdrawalFeeFactorBalanceWasImproved": "0x07900d53ffecf3fcac44fb9fb08a6300de4d53d29eb9bde8c5646b11ed2e2c1d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x4995fe26bac9b4cfc39d18f7c35a2f159e1d5f62e634a0a96398ba4c1e3d146a",
       "virtualMarketId": "0x7244e412b28a762651a838cdc1faf93f6c8b43dbb4a2b2574a0fb29f60c4ea59",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -3958,6 +4100,8 @@
       "swapImpactFactorPositive": "0x6e393cae4a648e5c019243aba3839b664048e7fe1cde4d352859420fd07959b4",
       "swapImpactFactorNegative": "0xc80a493f181476d72d586be4a7737108ccc7e4814d2219f4eff178a556f26fde",
       "swapImpactExponentFactor": "0xf6ae011706747949bc1e24692131acc79ed1463181bfde4014a52621ff41d7b7",
+      "withdrawalFeeFactorBalanceWasImproved": "0x1b5969948686f2e3fc32e8fa991c3239ca97db0848cb70658de4eab2783a20d2",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xe5533e2993cc206bda4a10051d2a035249102bab0e39e73f0381e1cf39b67952",
       "virtualMarketId": "0x339bfb15a41f866de28c4889a9d44418a6d8805a1510cda7247c81429938f692",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4013,6 +4157,8 @@
       "swapImpactFactorPositive": "0x3d6d4c367caf6195e2e17ccc844e61bfa11362e807edb31ed40c950aa0778457",
       "swapImpactFactorNegative": "0x630de465fa6597dfddf3012c25720bad36ddc1f3887a52037a864fb66dc66366",
       "swapImpactExponentFactor": "0x00622b30979575d1f66479e09f2f571d422345b18b2408762ad6506cf007dc77",
+      "withdrawalFeeFactorBalanceWasImproved": "0x4ccc2ccc9601f061a30fd29af1d9086221566d7fec84bd06e6bf1525918d605d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x2eaacdcfda4b3e1038e775abb8143235c45c113594e59ca2ccdd20a040c8747c",
       "virtualMarketId": "0x63bc24412daebd15cd8f7892a4b8759778fcd669c83c2d1ccf5c2f70b87bbe77",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4068,6 +4214,8 @@
       "swapImpactFactorPositive": "0x64e9abf3ebedf7ff2796a8a5fa366a70364fcd4f119fb9d15666e657f73eb729",
       "swapImpactFactorNegative": "0x2e08c5b1453619c4951c31850c9f89a154d538c544a90b73e73ba2ef063c9f17",
       "swapImpactExponentFactor": "0x3e9cda3aa0b96b0b39289b63ac5d0926a101a403958094fd676b4716658b7a77",
+      "withdrawalFeeFactorBalanceWasImproved": "0xc40b22b4cc59ee816f793af1e47bf32046d1f261e75c3ec8d6c34b0e2a196746",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x1f13e0ba0a18d7b7297cc2ca35485b0c85d321f14beca563faa0d34e3ee41f39",
       "virtualMarketId": "0x5682928750f0e11d168db1a63e768c09aac514d4f41b13e933e0054b65df218b",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4123,6 +4271,8 @@
       "swapImpactFactorPositive": "0x380f0aa935578c5e2efc586f4286a0954ecb8de9f0841a9369d5577638949f0b",
       "swapImpactFactorNegative": "0x24a92c575b4320d859d42a38cd8c94af9b78339d66e79ecb7423c253d8bc732e",
       "swapImpactExponentFactor": "0x16e0ff5fd356504437065f1903596bcc576bf46181ec5763a9f90411eec60b28",
+      "withdrawalFeeFactorBalanceWasImproved": "0x1777f662afc016a8541ba34fc58d627c63cd6470bde087060017e7214cd00a95",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x26ad757ffea5ef42952586c5574ae6343d44d46155bcc83bc67471f51dcc13bd",
       "virtualMarketId": "0xa4f6bfa2fc8974342c9acf364a7787fc9b5fb8904c3e545e9f70d97564846b38",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4178,6 +4328,8 @@
       "swapImpactFactorPositive": "0xde03a55a07d901e98210970ac22f0cdf4cb6bfa89ac97a87aeb924e7382d4d8c",
       "swapImpactFactorNegative": "0x295a64c0d9cccfd469c2db10ea4fa9661c3c1630db9f753eb6d33eb59a7c34d4",
       "swapImpactExponentFactor": "0x27f090637cc766665ce9a0290f9ab38703f834afcee2cb6ff944556b43b9c60c",
+      "withdrawalFeeFactorBalanceWasImproved": "0xb709518876232ce178fb9ac3c6b365185900c350f80fd114075e8ca21bffcd0a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x81a15b284baa0dd77fa0dd7aa05c70bcf2bca7209d9a64f4be9e275e9a79b556",
       "virtualMarketId": "0xedf48a26848c0291644a13152b4543d18967392cc784b3a61e6c2e99a7594133",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4233,6 +4385,8 @@
       "swapImpactFactorPositive": "0x77668158274b0da81643c91786fdaa3d98c20ae3ed3bef765d11798b06b5f5d8",
       "swapImpactFactorNegative": "0xb4e19689f59f1f7a32a01249c2fce76b3af38202f0259d90af683019f13690a3",
       "swapImpactExponentFactor": "0x0a8ea7ff9e9e32e140583e2600c881c51c70a415f40a8d918b040cfe77219fb2",
+      "withdrawalFeeFactorBalanceWasImproved": "0xcac357345c8f4be052f5732a74678cc915ea76758702900ebce54be1e5ae0b94",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xc805c144a5eb0df924c8d186cabbeba405c3f1e35a030301efbd9a3431297e4c",
       "virtualMarketId": "0xdd2ee378705b487a897a21ed7ec30f62e045230a427ef6ef9b7d0fa31aba68ff",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4288,6 +4442,8 @@
       "swapImpactFactorPositive": "0xe317742a7019bf37820ea41ad199bdf4a6252562c7fe43a71abfce8e85ab80da",
       "swapImpactFactorNegative": "0xa8e910e7748bd5c02441c6d1c9a77e48c61af20a8e089b02a61a90f7b6678acc",
       "swapImpactExponentFactor": "0xb6ef980b459b0fe90605c30cdb2084285dd6c2b7ef578e2d4bbdfe1ca5cf4fdb",
+      "withdrawalFeeFactorBalanceWasImproved": "0x1fc26dac9a716761df22e8dc96680111162630cfdcda54212a40582c173e9f56",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xffc1ec60d0798a420f7a26dc0348c499e823773bf55ebd6f57f718eb2863621d",
       "virtualMarketId": "0xc67db77cf7a84bb62e7714b446b692f84e692abcedecac64f168f18ee95ba178",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4343,6 +4499,8 @@
       "swapImpactFactorPositive": "0x1404bcb3b37fd6c73c429f0b67f0326ab072e3ed1c832a41cb8b3ed7eaf9047d",
       "swapImpactFactorNegative": "0x5b5cb62ae90c344158744facbd2041a7a9fe2104d068c90945d76de7c5d7fc7b",
       "swapImpactExponentFactor": "0x6cad51d8abbdc78def03b61c8b995d2f4f8ffbfbdd71285b0bd2218f4fd2a036",
+      "withdrawalFeeFactorBalanceWasImproved": "0x24f008e1740a62d4f9819366659c260b7fe094b07f7ed6624000bf62439b4919",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf4f336c5654531249a75d6244efee35b3c0c68fc238778296376a8f93aa49597",
       "virtualMarketId": "0xd31374b133f13e3512248d1d43dbbd7c418cdfca1de9cef16428625e0a1aa2c6",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4398,6 +4556,8 @@
       "swapImpactFactorPositive": "0x107517ca8068a2882de0bab37ab86b35e91cfd63473089cacda01bc81f1c7daa",
       "swapImpactFactorNegative": "0x1e7d0f85278824210a3ce74721f888e34dee24c518278d80952dc9f1024b7f65",
       "swapImpactExponentFactor": "0x5c85d1cc64d3b9efcfab44480ef94a71a4456764663fdea9d64b006f2c0d809b",
+      "withdrawalFeeFactorBalanceWasImproved": "0x08313756f19e4ae86bc6b7825bb2f81011e46d42b2f15d3147e8496ff12462c8",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd087f40f0354ea46c88eb6003b72bea45443a9546a06988accb60ed95693cc49",
       "virtualMarketId": "0x0655fedc3f9cdc09685dc2e0128e0d9d4b005fac6bdf26b24115db2a3c3b12c3",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4453,6 +4613,8 @@
       "swapImpactFactorPositive": "0xa49e8eda8b34c14886ad044ddd88d3fa227afc72878a3c40e5d79a9528d0828a",
       "swapImpactFactorNegative": "0x5faab11fcfbefb319520e36256399baa608cde5c8dd19f2ca05aedf022d92b60",
       "swapImpactExponentFactor": "0xa6d25fa3b92b5de1e23bb759c281b102c8128053e311848ea83974e5c99e5567",
+      "withdrawalFeeFactorBalanceWasImproved": "0x979a77b625c29ec9457a43f370fc303f4b7980399db0c4a1d3854dc6b2e57da7",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xc5137c963c2e2c7cd853cd651b0ec45239b2bf757e9a9751c6c1c042891d8a9b",
       "virtualMarketId": "0x0a8df72f4de9281998f57d90942851f4a2600c041c072d7b058d217325b3d610",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4508,6 +4670,8 @@
       "swapImpactFactorPositive": "0xc131b1e245ee5a6f5be3d03064d8b0b6510fe566b50f6c0c7e65a42270eb68d0",
       "swapImpactFactorNegative": "0x20f8d97e59061e27885e0d392886682d392172249b499132c6b686874c2353ed",
       "swapImpactExponentFactor": "0xa8ce35d21abd4702c2a6e0dc32684d552eab6ec32667e545a36a4da5b5c3643a",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd93b8e45c0ce708b2469f6230d4962ae45baef9bdc32a488934d089a0c27bbf2",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd8e28ef987417fad51cefda70827b77c28e45d7f3c170c4b4b35132bb72e8df5",
       "virtualMarketId": "0x12d94e68f87fe646b48f6039c97a5869a30a9b85e2999f20b92a2d143cbeaa3b",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4563,6 +4727,8 @@
       "swapImpactFactorPositive": "0xa8ef70684dcb1134f6786ae9427f62a50b92c4aef310158cd0f006bd34075508",
       "swapImpactFactorNegative": "0xbf74a7204ca3863044e31f33237488f15c51f51ce170161904e97f6076dc6f6c",
       "swapImpactExponentFactor": "0x56e72f39cd45b35e0f8ccbe4c6b62a5952afde048a9fa2656d1e9ca3a67da094",
+      "withdrawalFeeFactorBalanceWasImproved": "0x6c6768f1b5b027969b61ff26432607f75d31c7b8d4f2d476f2f00aa4bbaf1d37",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x99f15d6d570e5a86975c561add2f920da384dc7e66ecc01b20269a5574cd0e41",
       "virtualMarketId": "0xd28c03f1a6932a52a0bf127b7dbcf62a023ff7dca52d44151f419f6657a4bf07",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4618,6 +4784,8 @@
       "swapImpactFactorPositive": "0x0466561a2291ccd4142344bd5609995bd96af67dda47cc7c6477b160d5fa60a4",
       "swapImpactFactorNegative": "0x463b2d08a99a0fbee14d053a2dbb048bf69fea6fa054f72852401d083cff1e33",
       "swapImpactExponentFactor": "0xca5db13289c957c3b79f07e49d87b20546ef63217ec61a192141de7e9e0663f5",
+      "withdrawalFeeFactorBalanceWasImproved": "0x4b2948ecdbca358521359634267d410d38fadf54b7c25c39e0ffba212f27260d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x9632c29fffa5c05787a827711a35c18d1d23f0c598d0bed2af376d25af7c87aa",
       "virtualMarketId": "0x9bfab2b19467f690a2c7d7a2ff79f023153dbf5544a93501c14c5936fcd75632",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4673,6 +4841,8 @@
       "swapImpactFactorPositive": "0xd6c74362814ea6fd65d9379cfd8fe06f850ac287b75940fd77e0bdc45264edcf",
       "swapImpactFactorNegative": "0x1db488bdc1bc0726b938a5242b366c388f4ee2152ebfa088e8e35bec3646688d",
       "swapImpactExponentFactor": "0xcc4807baa2417c31f1cb6b99b84cfa7be11077af4704aa12415f80c2ee7c50b8",
+      "withdrawalFeeFactorBalanceWasImproved": "0x946d867ee0f48f9de758af51cdc5f3e8dcb8633dcedc731a071ba8d927454197",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x58c40adc4bc951a2634ad3f35485825457c5ad865d0fe5d49635c2d51922d720",
       "virtualMarketId": "0x646b9cbcf92ff6e208db3b2e7267e1a70f08248b5233dca10c246d857ca6be9f",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4728,6 +4898,8 @@
       "swapImpactFactorPositive": "0xb0b789da107bc523fb4849e8957a7d3df09235a6b2850f32e32fa6c800fd2d13",
       "swapImpactFactorNegative": "0x3bdfc565c4eef3a98276ee71419fdc582ba1352266adce60e15cae7b1ab6a3a0",
       "swapImpactExponentFactor": "0x2150168ec28af7f2a71556e78768f46722025ad4af9a7ea8963b9476a4057d90",
+      "withdrawalFeeFactorBalanceWasImproved": "0x9d63a648fc4fed805a0de516d3c0315e8d24e51580dfd088a35d064aa652044d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x473700e0d73edc7f0609f1e115faba713f71e447e3e4d5f13b0bb3f8bd986b07",
       "virtualMarketId": "0xc3cb64939a0fe2585e655310db6325240adf5db6d3f8a1e14e40ea4d8c97b680",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4783,6 +4955,8 @@
       "swapImpactFactorPositive": "0x4bba0afab3bdd086e0cd858248bfc9a06b6a3b70331b7d26f8a7bfa935a4359f",
       "swapImpactFactorNegative": "0xb354aac74baaf2cae90e78e7317392d514e57f555419d292ed80602fc3024b5b",
       "swapImpactExponentFactor": "0x3b626f7eeb3d00ff95435218d2281154df74f515871c5010bb41b615d661ead6",
+      "withdrawalFeeFactorBalanceWasImproved": "0x31efb36e1ccabf836d4c05b259ab03ecb3f8ba0e43a2dad5fd500d5a8133e9af",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd23bff588701095504b664589b3fc92221c12a7a1ad3a4111e22c1c28b4eae79",
       "virtualMarketId": "0xe490a941923b41502cc755ca86b51323d6f8d70df4cb7fde8dd2fd414120c7b4",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4838,6 +5012,8 @@
       "swapImpactFactorPositive": "0x05b1fb95bc342c7618a883a763fbbd253740020c12568b3c5841032ee9a91fb8",
       "swapImpactFactorNegative": "0x282f8a9226a14b7842f6da9a0232abcd867444a585257987dd9f5335a699b1be",
       "swapImpactExponentFactor": "0xf12e162b0a4966f0b9769f68c3f3ed70f23caa0dcac8179962db95bccbbf1d09",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd5d06ff85490800efe6add493c903b7ad1e9d4e8ea40b8e9cd264f7d711f53dc",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x02804ca893df035921ca5285c8f6900702382002c23397fd14d17116147e73eb",
       "virtualMarketId": "0x6cc33f61b23e39024011f4ef3b29a1ac5040cc0b0b1e7e879f90f5a536142ad3",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4893,6 +5069,8 @@
       "swapImpactFactorPositive": "0xb410710dbae13f219397473794d9620624cfe337962ea6caa4a702e0ee64f15c",
       "swapImpactFactorNegative": "0x789b271f70ed1b702855f3068f9d21c8443b15374529527d1a2c45c1cb7664fa",
       "swapImpactExponentFactor": "0xfaa7cc800a5f080908196db817b1c00d6453eecca60a3854e890979ba0ccc5a7",
+      "withdrawalFeeFactorBalanceWasImproved": "0x4f80766c38057e4337471c816d37970ef03031e9db8b204d9951a7bc70931c35",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x402c327516598b79b8c15235099661a8607b6604d63152d7ce611fc1a0d15f8d",
       "virtualMarketId": "0x19b776cf74673f319867c1568f4c4ebc7e1281d5d2ed2086ae981688eb1d2a54",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -4948,6 +5126,8 @@
       "swapImpactFactorPositive": "0xb1a8a4e762d68aa90bc460f82724feadceb7c265b17e612e1c139b531db2d0e2",
       "swapImpactFactorNegative": "0x281cb6561593d80eabe053a76d638d6ef11760761af38ca3b1157d4549682d91",
       "swapImpactExponentFactor": "0x12ee03428639bfe3a2ee1e5e61f67385f449a679b84b4e70c550b81852611a4d",
+      "withdrawalFeeFactorBalanceWasImproved": "0xa329a69f1e038dc61f4f362bc64828c436e3b9726401865d61f1f21f8a9a4d96",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x8d5f1c17d35db5a24a140824af722fc17eb27d1b8d7eb9269a722aea29d5ac1e",
       "virtualMarketId": "0x4d20cfc9516de2a8e7c84f7eda56eda0c266f196478fb425a0bef534bc05a279",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5003,6 +5183,8 @@
       "swapImpactFactorPositive": "0x783b2e4266df71eb217aae14be4eb9048958ede5620cb605a584fe56ffd31d5f",
       "swapImpactFactorNegative": "0x90d6976cdb86e2983cf7c8bef8d922c7484275d6a7ad3511a5c6083dd00363b2",
       "swapImpactExponentFactor": "0x017ceefc4d7ac3c3767827541c967ca7649960bdca7b3fd74d66398a585d3140",
+      "withdrawalFeeFactorBalanceWasImproved": "0xc3c53d60dd70f93ec84f9c35751ae5e3f94f95d9a7978ad075bcf136b4d79ae4",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xb841824c663eac4a3d860eea36d7e5b18ae58a0bc590c8e7535a641f638b5afd",
       "virtualMarketId": "0xfb87b127d4425b91d7ce98276f4f83c0fbc729931ac9970b70bcfdf75e9c92b0",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5058,6 +5240,8 @@
       "swapImpactFactorPositive": "0x82d479352029c855a3a6f904eff05a6539b3e0551b966ecc6e94ca3961b93df6",
       "swapImpactFactorNegative": "0xfba5946dca51e3c75530429ce15e40f13589f63992913fdcc7398620eb0ac04f",
       "swapImpactExponentFactor": "0x4dad2505786bab6abb6c04b01c892dde2bd8ec44ddc7fab696e67c3a02f63f99",
+      "withdrawalFeeFactorBalanceWasImproved": "0xcf0518f9591aa58732c63dfab460fa46f8f8614017ab92083d9a6c6cfdbcfcce",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x9c781f9c0b6846d85e33c3997ed75dbee2fa604ab2db8a42f5d53c82a56d3f05",
       "virtualMarketId": "0xbbbd270dd91a5b63926aec58111ae86f2d81bd9f6904f6be6fd081c667536fb2",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5113,6 +5297,8 @@
       "swapImpactFactorPositive": "0xb39cb4a6fec85abc09554145dddca153c0bdb62ea84c78a101cf865bb41600af",
       "swapImpactFactorNegative": "0x4f54d9254ed13421d3335dff4dc71be5e038becb36096c26cbe5ed106ddd29a1",
       "swapImpactExponentFactor": "0x8afe4a6b3d24928755222879f5c9617155461607fc17eb8151e97c77e68543db",
+      "withdrawalFeeFactorBalanceWasImproved": "0x6abc4900f3b23ea026940ccb456239d2639854642dd74af336a4d1dd17277d1d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x6133736aefc0dcd7252b6e618c3e2efeb3a3963ed7a3deae763bc9f44e618c1d",
       "virtualMarketId": "0x841d6a5e65217b9f4c5d5930926b8c7799181bb476c2262cc74e391cfc3dc0da",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5168,6 +5354,8 @@
       "swapImpactFactorPositive": "0x92c1d29cd0ab89f325ad3b7e195fe5eaaa8f81e3f77e4e828a740710755ed9b4",
       "swapImpactFactorNegative": "0xda142786efd0995a5c792b7ab292fbe984014b7ff1b0c01b57c8702fbf092c70",
       "swapImpactExponentFactor": "0x609a7ba5e4455d511a629ef21e614f2ce5d45e87a21d2b58dc542ca9acf25dd5",
+      "withdrawalFeeFactorBalanceWasImproved": "0xcc8250b8a24b83611c46d9618f50f1b9c117b39774cc8b76e24f4caa5bc28a45",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xb585d5b9c9f99ce4132c604248466589b5e5c3c9fe94c21f5f50bb50fc234888",
       "virtualMarketId": "0xcc54dd35697602e276f35d33885783e1b5046e3a2a18cfaac0859856e3f93098",
       "virtualLongTokenId": "0xd75a55ed2ecea1a03f2ca36bf769ceee55b3fcaa9c02f4cf863518485ed4918c",
       "virtualShortTokenId": "0xd75a55ed2ecea1a03f2ca36bf769ceee55b3fcaa9c02f4cf863518485ed4918c"
@@ -5223,6 +5411,8 @@
       "swapImpactFactorPositive": "0x4e1859b022ac41a8c0bb4876ac60e5667736a43a39775b67e8c5899e394f23a1",
       "swapImpactFactorNegative": "0x5446dbb4b522361bc79d2469cfa8f1a99d2491ef4398814a4226a28f9d006d5a",
       "swapImpactExponentFactor": "0x6830c79dd3c864da62a7266a17c9832c28b1c38252c1be73a0855c961c1a0fa6",
+      "withdrawalFeeFactorBalanceWasImproved": "0xda431f036fd6f3bfd801560ed8baea6d2755e0d6d218bc143a3d9b1f672022a0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x8e314759eb2e3f38e41a6d796905c89911a1a7854fcf367c71d36e63cdb13c8e",
       "virtualMarketId": "0x05801b4b27d6ea25eb7dd9c7fd912969e42f12067f6e018dad07d0ba0656e85c",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5278,6 +5468,8 @@
       "swapImpactFactorPositive": "0x6524171a312035ff45f09f5ce5e8e72b493a0151fab50a7e3f7952fe870f855a",
       "swapImpactFactorNegative": "0xe35e936f9c891f0d8a39f444f436acd668d642d2fe6649bd198fa3152d081f59",
       "swapImpactExponentFactor": "0x8b0cd58c026f5262d60d2f2eeaced4d3d8b030080d868b89b0ea66c953ef77da",
+      "withdrawalFeeFactorBalanceWasImproved": "0x04d3a880260aceb2e5b8b68f993334c3b89f6b2b0ed32b6da550d423009f6423",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xe199e5092016ed767a519ca5122cbaa74e0eb238f619cec850151eb68fdb91b3",
       "virtualMarketId": "0x44fd5d876bc0cfe385cc4c305802dea4650a721d786255315a061e2e0ceea484",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5333,6 +5525,8 @@
       "swapImpactFactorPositive": "0x04c5699d604ec5a80450d9d5d087144970d05fcead05c845b2d6559c131306fe",
       "swapImpactFactorNegative": "0x53260868c297fecd4de6a79d9bb2f0b4963724d73a2575a30a915b8e3de06aaf",
       "swapImpactExponentFactor": "0x1989cc7ae40577256f526573d129a999f1473ca248e65136dd848170078ce4c8",
+      "withdrawalFeeFactorBalanceWasImproved": "0x24111b1554385d44d0fa5bdc6bb014c3d4be4d784bea8b1575b074029ee68167",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xed5e5a24415e5f036dedc18da5d48905086f1055c223a709855b645146ce01ec",
       "virtualMarketId": "0xa19df05e222c2dc267a2a76aa9025cb90fcfe1f3ecc7125e9870f90653676486",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5388,6 +5582,8 @@
       "swapImpactFactorPositive": "0x856ad0ae542957677f61ef46a1f09c648c517e14d5aac391401a6fd84d512de1",
       "swapImpactFactorNegative": "0x958ab36c0743cc8b24487034dd1b67aeaf095178896263abdeb003ded0edebaa",
       "swapImpactExponentFactor": "0xe1366fd641d735cca1151ff2f0405fbe2e6a0da4435393e8e00d16f41fb43417",
+      "withdrawalFeeFactorBalanceWasImproved": "0x5d034beb116f431e22337b4eb48510f579ed33cc3a891fd7fbd3aa901393f249",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x9f6afb41ba46c1cb44bf4782a015167fc43775dfaf3bd857333d8d85c6fafb6a",
       "virtualMarketId": "0x9f9e2235905456d5bcb30fa7629322ddc71f65c078ae9a8e908c9ce2b1c8a53f",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5443,6 +5639,8 @@
       "swapImpactFactorPositive": "0xf539169edc1b866f4a532d157e90d5c31ddc3671eb3bb994ab4d7df62cf8cecb",
       "swapImpactFactorNegative": "0xc67c8191ecee9d9ab2d8eed8f244939cef958b6a8429ca9924390e951785a5ac",
       "swapImpactExponentFactor": "0x8b8d5ea5eefc0a4b3af099277ff396f1ce6552062f92e9ec4dd424e88ea4427d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x170858c9354a4b209154eac598ad22e90e82aadc05f75b6a7df8d423344f67e2",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x47b34f2d278845bbccf8aab3b5bdd83cf84ad05ae0cdfad7cc037324dc89199d",
       "virtualMarketId": "0xf4c691455c153cf85af9843f77b4d810ec347424e34a0dd4f0571a6e458b9192",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5498,6 +5696,8 @@
       "swapImpactFactorPositive": "0xf50e95ce46085e5f5abc37698e61eb49a9cebdda3a633e376c7b3668c71f5066",
       "swapImpactFactorNegative": "0x75e480a70248780f710fbd00017aa698ae7ca38f06b5d16f213df891c2becd68",
       "swapImpactExponentFactor": "0x68f979c59d1a3c5bb3bc555f3d3e222c39329a0d249993f146e1017ecbeab2ee",
+      "withdrawalFeeFactorBalanceWasImproved": "0x57e3e19a8b9c58044c21c1c97defad56b8bad443b02751e4820c46781e0d0081",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x87654e8c9617b05f2f4e5c7482083b4c92931b65f2309e34f37d375cfc3aa6a8",
       "virtualMarketId": "0x79757c66756773ac1fb65c3ca12d0142f2155e78b8f1afad4bc9f89172adfc5e",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5553,6 +5753,8 @@
       "swapImpactFactorPositive": "0x989a958fe693c45261754194c1c09e37a7d131e3caa329427de1e0635aa6ae06",
       "swapImpactFactorNegative": "0x729ebfba77820dc9ec925f21523d7ba5c66a36b235d071d93e2ff61f815e79b6",
       "swapImpactExponentFactor": "0x6baf070ae5a6f5402ff0c66767b10fe7995876536f6f6a7483216922b99ae65d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x74aadf2a2f6b0ca6335a45770bdeb43fc966b5c3521443d893df307ce780f2d4",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x131419b17ef0866912c2dddff033744e3a0548cf057c348419fb881142be0cf3",
       "virtualMarketId": "0x52aed1451e9996f5863bc4425bbdc6a2f17f242f93a995c0721073e7f435149d",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5608,6 +5810,8 @@
       "swapImpactFactorPositive": "0x1ea2bab7e1f81014c954b3dce99e3748c6871441b6af46ec3b1b6c53f372360f",
       "swapImpactFactorNegative": "0x845e8b715731e873f696c86e30d4d66195e14cba387d692b8789e1ff74ca9ee8",
       "swapImpactExponentFactor": "0x98189c02bace01b82785c38cb52ed6eccff9e007b48f8d8f57d7fb9c94723f2f",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0c22e0c6f77e9176f33321b8e831cd92cf4daeb1450b738b80eb6c888f4dcb79",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x2785df71e4d1c70e18ed5b9b583ee652aaa46bf7b75dfe6cc3e6cfbe3d1c3ad3",
       "virtualMarketId": "0x58681037ae37cd322ef8d34c5a12042f757e15f14b187dd728e8917d5738b6d8",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5663,6 +5867,8 @@
       "swapImpactFactorPositive": "0xe21a52a0e2c6facc1b425c0f0a85e8054edc5c5555cc1d4ff25ca1bd6c6d4a84",
       "swapImpactFactorNegative": "0x773df7e7484d0513f3cbe4e22752c34474e5f9af372329af481ed87527c0a2be",
       "swapImpactExponentFactor": "0x7cecb982a58f90bd054d18b102bdeaf59098603166898c149be3ee5c58b06ef6",
+      "withdrawalFeeFactorBalanceWasImproved": "0x37e9f9b7be7bdfe511b62201628d95c7578a81a5c1cc0ac22b5aa6fd588d6973",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x87a1ee15bac91f3bcee86847bc4d41846b98a6166d32dc651b5c7adcf4c86d7a",
       "virtualMarketId": "0xc32b6a02bc74d9775fa58d5515cdf69bf46b3b603e7ec5a0857da2eaf0cdcc42",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5718,6 +5924,8 @@
       "swapImpactFactorPositive": "0xe729062ec881d996d457de015f30cd07d967548eb7b8cb74770f8a252d17682c",
       "swapImpactFactorNegative": "0x1f1c511295fdf3c8d8e60f068aeb25a1d1b6910358dfeeacb5b9f592492f507c",
       "swapImpactExponentFactor": "0x28853728bd8217673a1158098306e6b709acec86515f8d793e55be9687101df7",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0d41949a5c1e51a5543deab167d060c9ce7290a66599edf6baf9b03e797569dc",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x827db2f3b67692230b3163a4aabc31d7bf8c19ca2df0f6db0b8c5af0c14ff9ac",
       "virtualMarketId": "0x332ad90837b091df9f9dc2461a62ef5b30c67bde2df9d1e20d96df6a1f1201a4",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5773,6 +5981,8 @@
       "swapImpactFactorPositive": "0x653cf34669836ec174cd5b8043f2e218f07dfabb4edc99b4a2c31ebfeccb198b",
       "swapImpactFactorNegative": "0x8eb1e5c63ccbb972b196f0789a1b3792f81f1a2c2f8bc58cb0d0c1dbaf9023bf",
       "swapImpactExponentFactor": "0x15c1a9cc873d265a983d5ab766fa16286756c665459e214901597bec6eb279c8",
+      "withdrawalFeeFactorBalanceWasImproved": "0x5df5c0aeef54c2847e328361168ac179e59c09cabfba4c9200abe66c595d600f",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x412cb443b69aef73ef491ed0d860601971e4509511759d14ca40ebd3241e3656",
       "virtualMarketId": "0x456d5c46fbf05d61813bd78ea3326a97ba417a7305e7bf6f94d9afc4e50aaede",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5828,6 +6038,8 @@
       "swapImpactFactorPositive": "0x733308f470dddafb1e071f00410ee631d739ff8ebf477329984ff3f876aac9a6",
       "swapImpactFactorNegative": "0x944600f556adeb6eace463d9a38c8951dd8a43222219c3d03d74f16dc0b376e4",
       "swapImpactExponentFactor": "0x5302f3771f5d65408e3ba3d4b13100485b8b6e113cc89c979e961fb8ba25c0c6",
+      "withdrawalFeeFactorBalanceWasImproved": "0xb0e175ae48f6644f38c21f0be7430583dd4a7b6f0c212b1a487a93043f2bd705",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xe509a8f9dc2852c56f07410a45895c9d07b95a1c4072e435dd4b6b579ac4a04b",
       "virtualMarketId": "0xdd0293f26f6cb56777b6b1960ff5a2252741a2a28999f22f283e176189fec3e1",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5883,6 +6095,8 @@
       "swapImpactFactorPositive": "0xfd600d715e5d2039bf5109147188931b05a2456cffe359b1a16c6adac07f380a",
       "swapImpactFactorNegative": "0xf8a517e7cde0dcc764d8ccab0f00be54d170d6b3b4c77842e0de29ea9606262e",
       "swapImpactExponentFactor": "0x7a7392ce55574d97eeb9c161fc00357c52b7f718f943065109bc542d8f518319",
+      "withdrawalFeeFactorBalanceWasImproved": "0x98b8c5236da562d6633aeace91a57b575b26d3197d47662807bb1f9365a60aad",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x37a2cfa0b38f189da94db58c926b4d2acbd99afa8eefb1b5e6c9df2cd893e891",
       "virtualMarketId": "0xdfc85149750ae318b04c1535e4375433c2d4a57562bd6eed5f71811f3ad8be96",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5938,6 +6152,8 @@
       "swapImpactFactorPositive": "0x7975df19a8b17790ed01606614f98f56f39ca6f9f6829b8da95810d661554640",
       "swapImpactFactorNegative": "0xd89e695ff64a92e7a0d74651df1a623b880ab1006f4cf6f78d111f54b32baae2",
       "swapImpactExponentFactor": "0xcfe098aa5b07e41390a50bfc18156f58d374efa92124e5a38242695bb7f8ca33",
+      "withdrawalFeeFactorBalanceWasImproved": "0x84371f21a9fb2791b2f79640a5cee92d68b293fc9fdd2a987ac467e26d5d4ed5",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xefbd73969a8be8e3840083d4d78099b7993941cfe37ac2388e031fbc4594ecfc",
       "virtualMarketId": "0x9da5cfec805186e676d65a6042bfce7d05b7a19416289e075f8a6b683242e22d",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -5993,6 +6209,8 @@
       "swapImpactFactorPositive": "0x51b1f4733396d60385c23f5afc960a52938ad44f88e559c6acfd1a5403a46a00",
       "swapImpactFactorNegative": "0x84b26c75494f43f94f23375783de0b2bc4870a15b6591c83575cce5c97eb6cda",
       "swapImpactExponentFactor": "0xdde1d8557acd68570fcf5c97474ac7809c50d5644a26c87ec1083a53d2396cd0",
+      "withdrawalFeeFactorBalanceWasImproved": "0x80b6c9d94ac0a99f26960a1037f6946a3df063c670af4abe912a914d8bc31300",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf6d9bcbd1ab4cbc2b0e3056155ae480b9f8838b6672c19155c38451f73615af5",
       "virtualMarketId": "0xe9a64e575fb29970589f251a8ac9e316b61bb69bf7165e057804d2c8f09a794a",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6048,6 +6266,8 @@
       "swapImpactFactorPositive": "0x709027473b9d2e03dc12864f440a265466a72876e7b283a9a814f99c9dbb0223",
       "swapImpactFactorNegative": "0x68e29374ede02e02223701cb585ff3c8435307ff4be46e66888adb845379c490",
       "swapImpactExponentFactor": "0x88e9eb75cccea5b27891ea0ef2f0e543e96d100537e398f5512b8505ef07c4f7",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0c13122e1a861069f83f58105b3e83c000bb88e094743958b8fde057ac544821",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xae2a7587a95345a0d9a30d481bee13373eecf671206665b4c071dba3b96ded6c",
       "virtualMarketId": "0x84a75d28c1231e18a53e73821e3958045899c85de805f86c7252d0709b1f6c36",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6103,6 +6323,8 @@
       "swapImpactFactorPositive": "0xadd51b62f37698a6452b09ffcab654750e65f4d5dcd2f9daaa667ff9102aba25",
       "swapImpactFactorNegative": "0x49ccffa002007375ea108f339f5b860821e5d7ac701ed3a988a08a7f384a3b87",
       "swapImpactExponentFactor": "0x8359de4c926f758c2f38b9df355f0fde7473bd480799d8171eb83fc5a7569ae1",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd49f2ec9552b165a2aff1f4a087e099ec3045eee92705ecedd2c7bde9c121d81",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x290c8e61b3f20211c19f616faaafbb0ded26c1274de4c1f367f78a2514db8e30",
       "virtualMarketId": "0x6d3a32d540d5188b0b2aa7adfde91cc2ef8befd2f70d36f6d3c7023ff87c3b69",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6158,6 +6380,8 @@
       "swapImpactFactorPositive": "0x2f72ebdb5dc847d698eda9c5db343576cee29dbf8061f7a4715742da36b25097",
       "swapImpactFactorNegative": "0xaaf8186f2f0a59d375efe89c4a50f83e477588f3abe97740f093b67db365798f",
       "swapImpactExponentFactor": "0x24c20731e40c1c1ae59eaf19f7e2d3b63fd1cd62d5ce928e9a483ba0a8558b29",
+      "withdrawalFeeFactorBalanceWasImproved": "0x173af18c98014b52ce91cdce35f6dbc3561cbfca23da320cfbcba2c286ebc3be",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x4782f9ffcde5c5ae1d01f56bd7fce655fc0058fe2f8e5e499c1c07d894b59704",
       "virtualMarketId": "0xc02d51cc51da7c0b548e632643797f8bf76ee8bd8f12d18f57225e520f98daa3",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6213,6 +6437,8 @@
       "swapImpactFactorPositive": "0xe66bcf8ce85cf04687fde329431e9ef2d4344fe1f2332289ec5eebb7bdff17a6",
       "swapImpactFactorNegative": "0xd04414e841e609602388edd23f99c8abdad0b083798ca34342489a8e351a135f",
       "swapImpactExponentFactor": "0x04f3f38a2e3a47e603755ecb377b52d7338ab4f35f58267811ef07dcb670df0e",
+      "withdrawalFeeFactorBalanceWasImproved": "0x88e3a63380b7a858ed59ce22df7e766852019f9883bbf7f6d9b90f954237f41a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xb640d10193c0a313af7c9c344619388e5d1ecde9dd866c770b1ef3a6b8923a8b",
       "virtualMarketId": "0x3d8524bf146baf615be4250ecfe3d1ce935826c0e168f7999b83479f6d655d3d",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6268,6 +6494,8 @@
       "swapImpactFactorPositive": "0xdc2e0abed167739f74d3ff43064d8a35e7911175da14a4c7a774d5d90e38259b",
       "swapImpactFactorNegative": "0x63080e73f908991c1124ae36c754865c4c223468b693f3e08b7493c797c6620f",
       "swapImpactExponentFactor": "0x76d039c0c8a8e9fa62f72b0fa8c706a13bdd6d039a84f7ff851a64dbf73914ad",
+      "withdrawalFeeFactorBalanceWasImproved": "0x342e11b1d4dfd1903d6607f8ac087aebeb6f5f8fe7535467302047d014557514",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd10837802f28f4a688d89f8e5d53406671daef3dcdac03b9b5bf67ce6cdff512",
       "virtualMarketId": "0x467dc057355fa4341193e8ff36fee538e45e34e08e411af944a2768be9ec791e",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6323,6 +6551,8 @@
       "swapImpactFactorPositive": "0x3183d789cf2518d3f54880f90ffef296a6a75fd1a0db33cc24c83a3c441a3e54",
       "swapImpactFactorNegative": "0x5866fd8f18f2cd65344dfc21952250c35e719716d0366f96ec172b1becacfbd2",
       "swapImpactExponentFactor": "0x79de5430be95c21bd65c9e785d81c98ac127d94412190b874486556ed4f7f40d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x40089898962c3e2d10bb32001b4e34f42518d34fa716749ebc85dc115c52a65d",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x7f4ab3b64713dd5ebaaf8661bc32076010b39ac374fb184497244b78095cbd7f",
       "virtualMarketId": "0x892b08caa7ea49ba00313837431ec83748bab544152f3462cb499acf7c020860",
       "virtualLongTokenId": "0xaab37f889b9680dda34f58a689de3023cb22f7ae14d32a3c1d45798a973db1f5",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6378,6 +6608,8 @@
       "swapImpactFactorPositive": "0x1db46c5d86e9606472be2fc94456437907012a141f8b9cab54768b949e3be673",
       "swapImpactFactorNegative": "0xa61a701a2ef299cd623394ab44241e30415341876ee5e650812e5a0423a30571",
       "swapImpactExponentFactor": "0x46fed69dfaae605ba976128e642fa0f31a67947b66daa3b9cc53000837cfae71",
+      "withdrawalFeeFactorBalanceWasImproved": "0xcb58bb6b9d7b3bfa4bc4937a288b41274be9bda0f1c131c3642d5b574f285e2c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xc0cac67838054ab0e7f3b822a66acd7eaa43a6e1c9fecdf27567ee6930fac019",
       "virtualMarketId": "0x19ff9cd7cb8dc5632a40e2c95fa342b671fc1a7d1142df79421abc53b697a26f",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6433,6 +6665,8 @@
       "swapImpactFactorPositive": "0x6c63877b2caf2aa8be69bc9623fda94e55ed29b3cb5da2fa01e7c8865369a427",
       "swapImpactFactorNegative": "0x32c553625befcd1e42b1b994054cf4bbdca5d60c04ae8fdf2668c2851d6b6506",
       "swapImpactExponentFactor": "0xedaed034cddab5a36a836c10dfcbb46c1a1fc45a4d88821a500eb59d5a80f79a",
+      "withdrawalFeeFactorBalanceWasImproved": "0xfa43f83c0ef8caf42863b5d83d82417e1b38a2cc44eb209ab555437228c4d9ea",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x6214d80ddccd7c47e77a39b7807b10464bcb4a743ba79cd27f2b74eff5a6f2f6",
       "virtualMarketId": "0x9be83a3cc8b7b688e5bb766202dc49ec976a3d5ee259e5386afb64e5ce4554c8",
       "virtualLongTokenId": "0xa59040b7efb6b7122a74cb318a192ebc6732849dff5332ee3ba40b90dfa0a04f",
       "virtualShortTokenId": "0xd5258cb84f0039be58306488e8df941c05f3cf4f219e92aacb6561c736bbb960"
@@ -6490,6 +6724,8 @@
       "swapImpactFactorPositive": "0x915a610544b2e035a83207d2f281b51c24cd0d652142267d6d4eb3690a449afe",
       "swapImpactFactorNegative": "0xf38fd5205d6308e37a289083eb9bf290becf831331de85ae14d6b8e2c0d9c839",
       "swapImpactExponentFactor": "0x9762e6daac9702ee4052c875bf12c8c18afc24669a6373f713b6d5f3b2988a4e",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0ea2382367a11c74b5ac8e18351fdb6eacc049df459102c2c1076308f4b3e6f0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xc4135f8540eeed09558684a98db908e8067987bf50e2e006212502848d21c5ac",
       "virtualMarketId": "0xa40b31b9a01422e45d08c3d561f062dbfb67d96188136b0ee46c5337855ac5cb",
       "virtualLongTokenId": "0x9ed6fdb2c97b9163ca317ca8473fb94090ec4a9ffe05873e5f5c7c1a9635a4a2",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -6545,6 +6781,8 @@
       "swapImpactFactorPositive": "0xa6ac9172d7f7529d6a77a02977721eee7008f596226749c98b3cd137f49b0309",
       "swapImpactFactorNegative": "0xcbd4c14cf1648fdf9f19d309a2d11d4ac497544d25f3a913d864cb326abcf08b",
       "swapImpactExponentFactor": "0x4f79dda5d67fa79de75a32bbb31b26de722b1282d3e32860aaf16aebf440459d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x5bfa42bc377730f0717267b6a59c2555f62e0abd3a55f6952e33d3f9f5e60422",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x431f777236e19bb4bc774e398ce121d83b458261728c63d1581351a1d5a189a1",
       "virtualMarketId": "0xadd9722dd1c6cea4b2cc277e2966f1b2d03b3e4d50cc598ca78869fe75ddd533",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -6600,6 +6838,8 @@
       "swapImpactFactorPositive": "0x4b1439a3ac79073d516183f0266a7545a2d55413d776d8837dbba0d3238f3744",
       "swapImpactFactorNegative": "0x15e3223c9f47dc35339b9fcc3a24b9984db33d7a74d7e949f62e3f082f005e20",
       "swapImpactExponentFactor": "0xe8bfbaf25ed510be1d648f3cfc47f80928dcce48b8e3de792bcce21079984ee6",
+      "withdrawalFeeFactorBalanceWasImproved": "0x585ab20cbdbf2841986d07118fc749c284207748a0138cb1357d4a3e1ef324fa",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xecb4d1b4e5de12a6a46df453883493738513b01dc93d0ca90d262712814435eb",
       "virtualMarketId": "0xda53e89b74c9a98f95f79f47378029e3e834e1f8ec6f9802f85e7355e2de0d95",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -6655,6 +6895,8 @@
       "swapImpactFactorPositive": "0x0b7287e535216c5171cff8248a990ebfd8cff085af5f7b8d599679ad5642795f",
       "swapImpactFactorNegative": "0x2a313049a3fcf67138a26bc513f4c9fdd1b9585276633b01dd5de9092ab96423",
       "swapImpactExponentFactor": "0x3f4613e8874352a37ea67ac77a3d73f85f46d1096e67f9ab6e6003f28bff3ca3",
+      "withdrawalFeeFactorBalanceWasImproved": "0x5bc2c6b475e61274cc9a4c21f2c87d4fe33e4d5cb7fd5a5d0cdc2748705e24dc",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd13d878801e521edd5167b09444f5effe9c976779247dfc64c2847ae651ec6c8",
       "virtualMarketId": "0x74ad5c27fb248f871bb15fd43edde411d458427fe8910c5e072faeb19dc946dd",
       "virtualLongTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -6710,6 +6952,8 @@
       "swapImpactFactorPositive": "0x1feef3112a12fa7240eea516d9c5fc70ea06e89d908422e4232c8bbf77d9bf65",
       "swapImpactFactorNegative": "0x5159d374359947b125e79c43605b0fc3a99c2ce395723b046cea6101d0c2cc6b",
       "swapImpactExponentFactor": "0xf8a49893dd52d401bc8615640b9a0b489fc7d0b89dff990a52d2b2d4d718670f",
+      "withdrawalFeeFactorBalanceWasImproved": "0x352d2358d1e7236cd02a535fd987c299cf3c1c1dd1550d2d0f5ad12b935ccbdf",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x087899b9ece626b37a312a16956f989541cef25be8d3efd82f6ec78b03bb2707",
       "virtualMarketId": "0x3ec099aa949140537caa26666a53dd7eb5d2d5e9e54bdc1c905347ec27c80e9e",
       "virtualLongTokenId": "0x8ddf9d8fb09ce58ba879fb48de730c9c3cb0ccbf0475f4e71be16ed6c1d3e22f",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -6765,6 +7009,8 @@
       "swapImpactFactorPositive": "0x5ba4c56931ed525a5b04e368b7c85d09ef955a121f1a28906a13a6724b5d8cdc",
       "swapImpactFactorNegative": "0x45e04b88cc7e70f0735c51990a40628b581844ad76c1158d93ce57505753ce24",
       "swapImpactExponentFactor": "0x49a3c45cc6fb8b327035f5165a13336c0a22c057e7ac09b9eafe737518c1a180",
+      "withdrawalFeeFactorBalanceWasImproved": "0x863511bde30e9e3bcad54dcd36f27fea20c92bf6cb6fb9c9e46ff98526575949",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x97eef1c343e75f86fd44456ce775134ade3510a5c821549605743a32e0f0735e",
       "virtualMarketId": "0x6a961914d499474e2ad7339a6791d059d32e6c939315f0d2384d66d76d917406",
       "virtualLongTokenId": "0x8ddf9d8fb09ce58ba879fb48de730c9c3cb0ccbf0475f4e71be16ed6c1d3e22f",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -6820,6 +7066,8 @@
       "swapImpactFactorPositive": "0x4c21de75900510998632752943bdaae846fb3cd120da605ec2704287c27dae45",
       "swapImpactFactorNegative": "0x97a9546d0e8771e3f65b56eb7a6faf815f6d257777ae8d7b03473eb0e1246ab2",
       "swapImpactExponentFactor": "0x50eb756d6759ffca7723754dcf3ff56c2525bb49868fc2d0e52c4f642d0da36a",
+      "withdrawalFeeFactorBalanceWasImproved": "0x14c30b4bc6be408915781f147367b99203f079c1f559abddd83b5c6a6ec4d621",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x23527b8c31c15fc3c141b734e6ba0300105d66b0e3409e00bf87155b97203ec8",
       "virtualMarketId": "0x8e967bc39a00855c88ce6825d1b4657ed1c37630220751b3fa598b8ce6401ed4",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -6875,6 +7123,8 @@
       "swapImpactFactorPositive": "0xd4a7c4f352139efdc20b2198b165d123a241d6de0e2dd735b8acb612c061d0e2",
       "swapImpactFactorNegative": "0x7f18362928b7b6e3cfe488252656020e312b67e2ce13853c49295f2c527cb640",
       "swapImpactExponentFactor": "0x545b4c56631b0395a4578efc12493a09fa5d60f69389a8fe615faffa96085a57",
+      "withdrawalFeeFactorBalanceWasImproved": "0x18b2dd3ee7e7e11736483f666820022b6054b705529082452c152d83ba82b880",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xf41ae81f3c4ec0006e4b3f0a0c81fe93b0bf274d022911b1814298a37317a32d",
       "virtualMarketId": "0xa41d65a1f8e794f8ae9417c17bce2598bb897a44316cd2925773de41b086edbe",
       "virtualLongTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180",
       "virtualShortTokenId": "0x93fe7d6e41dc283f2425ead19918d1c540da5f63bdd93a62c6f33303373edb1d"
@@ -6930,6 +7180,8 @@
       "swapImpactFactorPositive": "0x2564b478c28569a694e8e1fb47b526f33680c4f7655cc4899f1db2f21620bf68",
       "swapImpactFactorNegative": "0xa57b6e86d1bd0290122b20c59ffec9cccc1f57d12b491a54bb852dcdaecc99ed",
       "swapImpactExponentFactor": "0xf0bc83626090efa1a26c684a05571eeb18eedd79b19922960cd956cb993c328c",
+      "withdrawalFeeFactorBalanceWasImproved": "0x36153dbbd2220b9c6de6c3780bf6e984c74827d5a13b5b49ecd7f4b5940d4422",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x49dbc987b20aa09962d2b3b2823fb06b42e99cffe55d51397aed8afc7863a27c",
       "virtualMarketId": "0x1da4c07527f36916f2710c73802f51fafc0d34b2651756bced81c09ea030ddd0",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -6985,6 +7237,8 @@
       "swapImpactFactorPositive": "0x7ff382731e8dfa0db35f01ee8463833b919a2b6b67c270a7a120b70271e46f39",
       "swapImpactFactorNegative": "0x32a66fa15048d75d0970f64a82100bf289c0de735a0e68eb6d26d2f4732a4013",
       "swapImpactExponentFactor": "0x9baffdf906867bf9114fac9e614d47056e935ef5cbe673eded7571c8b58825bd",
+      "withdrawalFeeFactorBalanceWasImproved": "0x76abcee2527831451b75ee7b0f45e9104587008d41f80674ac6243bf2aee3ffd",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x4c65ae734c8bfb14af941e948ba79b8db8e2f2b57b0d475bc8104ba15790f652",
       "virtualMarketId": "0xbd203f66daaa9e3125798fe87e5a9858227d509113852a73dee7b9f454857145",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -7040,6 +7294,8 @@
       "swapImpactFactorPositive": "0xc0cb03d2db382d5e9290eece3432fd194293e21ef1f83ad1a08567da811114cf",
       "swapImpactFactorNegative": "0xd04dc2dc10cd11ac26ed96f19c2994147a753b9dd0645404de4d4f3ec46342fc",
       "swapImpactExponentFactor": "0x0bb5e3bd16263d02f75dff55677c009d9b8aa9a24a1912ab72536173b2930658",
+      "withdrawalFeeFactorBalanceWasImproved": "0x40c4826f583e382fc09a64ed6df43be5c0972c6b416ee7db0924b02cce2a31d7",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xa43f47065622ed24edd3e5d1abdee445e4b15be940faf47770250f1e40b90190",
       "virtualMarketId": "0x1ac08cdda4a98254b0e23742e93fc289434ce535fd22d719ce6f5ca332ad0106",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -7095,6 +7351,8 @@
       "swapImpactFactorPositive": "0x46909c5fad97c43653f9d5f3368abd6fbebc393ed3e03cac4b1e929beca08746",
       "swapImpactFactorNegative": "0x09a07f2403de8c394c33d6b5a4546bd1c717e0b5b73b7a4093e0d8de38068017",
       "swapImpactExponentFactor": "0x3523cf94456f655920bded4f975e92a883868ac996de759eadc368f6c7e65cd4",
+      "withdrawalFeeFactorBalanceWasImproved": "0x640527f8f3c90af367f3100fe9eabcb81ecd45d15bd005c58ecfe21cd308c5f0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xed5f9955f8aa021ccb4f35a441ae7356149dd08b36b9527c26067b989b3bfdd3",
       "virtualMarketId": "0x8b4b2ecbbd9ae1092fb18829261d6d140c468c8eb5950328743b19623f24c71d",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -7150,6 +7408,8 @@
       "swapImpactFactorPositive": "0xc37e7182e1a56e126c4733aecc60d53d29e2b3f102dcfca70d3a86ca928e8814",
       "swapImpactFactorNegative": "0xc26f85c9450226223a1d4af07280496abe35a15674106503cf26c2c1b7757ff7",
       "swapImpactExponentFactor": "0xeab458e24e12f3d09444cdcdea113b9f7374871735d166318fc9323552ab2bfc",
+      "withdrawalFeeFactorBalanceWasImproved": "0x1dece3afa1aa131d88e7919b264fa7f241cc33a585e519d3daec6f30180c05a2",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x1870007b13e3c4d362f949e7a481ddc6bb533e372eb4c0c688129d15125f71a2",
       "virtualMarketId": "0x3fed63ebd03d185b3e77f4f11e900eae2d324aecd2f96cfc894cb21c5f685fb4",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -7205,6 +7465,8 @@
       "swapImpactFactorPositive": "0x84849cdedb39593852cf43252cd82e46a876f305e4ce1d974ee08fc8ec59d9f7",
       "swapImpactFactorNegative": "0x09ecd5127f93d7213f6c1fcaf8804ee66808221cf2bf57983e1953fc99bcf9f3",
       "swapImpactExponentFactor": "0x2d0e9c34fb6aba09c0d97799dcb19419b140516c7a10e3c58b4049a74c67e293",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0daf56de4173267f9a7ccdb9c149408783e15ce7950ff5a17617c18f270407a2",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x3d12d1eb78b397b245bd6128925ef06b6ad33b019077d07b6ec551d7ec87dff6",
       "virtualMarketId": "0x7b563213b397f929ffcb55fa1a92b0fddd7690a85100059a4e4b74b994bc1b9e",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -7260,6 +7522,8 @@
       "swapImpactFactorPositive": "0xd1e65efb757541f80edfff9551b4826043c8e145abe10ae3ef3541fb538f07d1",
       "swapImpactFactorNegative": "0x7cf01dde2b8fa10b9187d30fd71c411dcdeec784c219d8650622215ee0595300",
       "swapImpactExponentFactor": "0xd44bd1c8059198d34bfc8874c1651224c654429e4ca93c43743a04c165dec81c",
+      "withdrawalFeeFactorBalanceWasImproved": "0xd4fc3107ba45af3220b9b32dbab9e10e8a5c090d62a2c659fca6d08cb3f0d4a8",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x44ddea819df2a61d5bc55e57d3a566b98ee218f8fe68ead7efae892ea30a2596",
       "virtualMarketId": "0x424e90987ea6ffacf6e97d87dd8356ab9fba46851591551846abfa0dc2f91c38",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -7315,6 +7579,8 @@
       "swapImpactFactorPositive": "0xccdda93d693c2b04ac36cdd1fcb740da6b9a9b761375c4315e1ce1b8474ce507",
       "swapImpactFactorNegative": "0xa2277bc26726f7bfa667b90d37019e338cd90877358ef57a93296d388daf3b67",
       "swapImpactExponentFactor": "0x97522d4a4b0412dd7c94149fd9517707b9a13df61108a0fec3f05f9b7c31e9b7",
+      "withdrawalFeeFactorBalanceWasImproved": "0x4d0ee6e6f9ba519940390eff8e6e700e549d3bec4ff34ffed1222e5e5682ec02",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x28c8979e311ab1d1bc8f049f1786c646829b81f32945c5b6f7004ccc271990d7",
       "virtualMarketId": "0xa4fa7171d12d0955f6b4bca5eb0c384db243a4cc34969aacdf2fae64921d3000",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -7370,6 +7636,8 @@
       "swapImpactFactorPositive": "0x901b3d05b703f3c40f99b34c4ff2cba75269582be15a402353f187ed49ff5165",
       "swapImpactFactorNegative": "0xa0e259f65f79fca5bec4d5341eaf9470dba0fc4d48ba1defd29a7572fd125ebc",
       "swapImpactExponentFactor": "0xd14dd7875505bc9756a4e613d29ed6582f111ab4bcdfff9cf4753558a94802c1",
+      "withdrawalFeeFactorBalanceWasImproved": "0x517c7516be5a0c7a0cb7df772c546154b6670c253f75d0295555b210815a2909",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x40893a50bd95756ce1da7d7d67bb2d101f852dc58496a1f7a761e0bb4eebc955",
       "virtualMarketId": "0x4bd15e6a0fd03dbc2bea39c43fc79d398aef82c002d008feb4d1c89fedc29eb9",
       "virtualLongTokenId": "0x1197dc1f26a5d09df65747e701aa5c198f33661b36a49a71e27bb33cbbdd6794",
       "virtualShortTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180"
@@ -7425,6 +7693,8 @@
       "swapImpactFactorPositive": "0x1e345ec4f6a863e7ebe4e075da4fcf31672a9182dcb21cd591068f690f2262fc",
       "swapImpactFactorNegative": "0x4a493f0dc59ec102f37040fb63e5125680bdd15a0fcb2ff76badbcdf3db3fa86",
       "swapImpactExponentFactor": "0x9e82099a8967147ca78b2ea77f8668503b02fd34e8d52886e684f211da201bba",
+      "withdrawalFeeFactorBalanceWasImproved": "0x74bab322a243c9aeffc1b079ffda6337aa3b86e0bc839a3b88153f854c51647a",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x6024c34d81eb0e8ecb303c29d1a614ea97e8183558afcc6da49a4d30ca9e9129",
       "virtualMarketId": "0xb1d9439ffc87273c4ea830bb2ffadcda183a37ef662c4099c8dd96ba2bfecd3c",
       "virtualLongTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180",
       "virtualShortTokenId": "0x93fe7d6e41dc283f2425ead19918d1c540da5f63bdd93a62c6f33303373edb1d"
@@ -7480,6 +7750,8 @@
       "swapImpactFactorPositive": "0x2cab7d169dfb0076ae18bbbcc61065aee049442b6a4625d90829f74f1d431f17",
       "swapImpactFactorNegative": "0xf62851c1a6f64e7d365044132259a31dd64a680ebb18db650df5aafbff986aa3",
       "swapImpactExponentFactor": "0x386e3e54e4848c60015711213f37290b3dcc77280b39dfb0a922b780b1126763",
+      "withdrawalFeeFactorBalanceWasImproved": "0x06b46cc169d6f25528a897c01c4e4f78a9e4714407b83c44c0fde91316cf54da",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x4dacab10129ba523982599a20b3d57b9e9432c5708e967334380bc0bbab77eaf",
       "virtualMarketId": "0xd444324b90fc43f702cd262062a0d5db4984473eebfec16830c3c6f480a0f10b",
       "virtualLongTokenId": "0xe725e5be11641c39c76c9c4632887409d48033b482cc32020bca3dd6a846b180",
       "virtualShortTokenId": "0xfcc3d486e44df648e291c838d8a9375bf61b0dd765ecb45bc541a6d6797caf0b"
@@ -7535,6 +7807,8 @@
       "swapImpactFactorPositive": "0xab8e032738aa576a838476c84eb601e7e2f2a8b34e5dc5c536aa6f1b9264bb00",
       "swapImpactFactorNegative": "0x89dd570058416dd9eabb37b9b0572fe09e54d9096bd0805a622035cd5858e426",
       "swapImpactExponentFactor": "0xacbb4a823d8b7377146f586552852bef3ceca091776f5b319e655537bcc21ceb",
+      "withdrawalFeeFactorBalanceWasImproved": "0x821a6f77d8673c1709b0ac250e37b5bd2bd8c2a3dcd20f1a29329120c40fb908",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x2fc804fcf1981f37a9c57e3c3ffe55e3449653162ee5655cca93854da6d8edc4",
       "virtualMarketId": "0x5d464316e1950bfd9d813c2ee8d225be592408ce5a65c0eb039fec20c0718644",
       "virtualLongTokenId": "0x8ddf9d8fb09ce58ba879fb48de730c9c3cb0ccbf0475f4e71be16ed6c1d3e22f",
       "virtualShortTokenId": "0x8ddf9d8fb09ce58ba879fb48de730c9c3cb0ccbf0475f4e71be16ed6c1d3e22f"
@@ -7592,6 +7866,8 @@
       "swapImpactFactorPositive": "0x76e9a37967d0130ab2ef994e9eb21736904cb97869b42ea63c2ecfb00b01f743",
       "swapImpactFactorNegative": "0x782fdd24d86e31774c77cbb4cb2ccb0841cb0ccc392d2863a9ee28a52fa8dac8",
       "swapImpactExponentFactor": "0x7f06ebca597ee9e3171b8bce637b368ae38f9832a9b69b7b9182ad85232d5dd2",
+      "withdrawalFeeFactorBalanceWasImproved": "0xdb3609696df8c76dee43bbbc30b7397e50d15c1641f7d540f79968efe32a835f",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x55c36f47baa007d66c754eeb327f78e55ec789996496942593a266c8bcc1e22d",
       "virtualMarketId": "0x70772da3d66c09f0258ec93567467284138ce0c476bd39c033323a63c13e9843",
       "virtualLongTokenId": "0x024e60601109020acd88458d1d543f3e2345a3f7cd30aede0d5ffd5ef9f84cf4",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -7647,6 +7923,8 @@
       "swapImpactFactorPositive": "0xc0cfe1a7954d25ec07bce3d66dab98e0e6f267790c569760cebf1bbab2261402",
       "swapImpactFactorNegative": "0xfaeadc81caa528d9ef2ad32fae0acfde6fcd2b7caecb02a1636dd457cfbf8a6e",
       "swapImpactExponentFactor": "0xee2501baa786d9721010c6fa98e1110d7eee82eb1f0e9445b705fd718bc9ebc1",
+      "withdrawalFeeFactorBalanceWasImproved": "0x39b9f1d4544c37dc43e60005c89a11b630635f85a1eac15268007fb47804b293",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x911a65ecbb17239ec121ec4911414c674c12d21c88020f89532830f46dea2ee4",
       "virtualMarketId": "0x2d80a21b29895e87fde496f92f11c00e257ce81598b6fc6b10a23dae34451031",
       "virtualLongTokenId": "0xa232c25fc2702b7379fa2865649cdb29aaf502ce1d0bdc6ce0a5bfb86d89f3aa",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -7702,6 +7980,8 @@
       "swapImpactFactorPositive": "0x419f18d9a5b531da198a09ba7ef2476b5eeae9c3a16e5c3d739aeac467d6a30f",
       "swapImpactFactorNegative": "0x0959316b70af2ad02e67588267776e3771423d4755a6eec179108a4455b6703d",
       "swapImpactExponentFactor": "0xbaa3866145a17207d0e14128c5635d797994884691d43aab2b26b0d235af844d",
+      "withdrawalFeeFactorBalanceWasImproved": "0x96a31e7e1ac95158480a6a2ec7721ff7faaafd885a6a6de4c09293c03f56352c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x8a2d97828d2ee0fcd6f7ae53eb8b871ea3a498e48df7d6ad01723012721ad615",
       "virtualMarketId": "0xc0e2e4d56b51293503332020d7b6d52bed703017fb82c7b29a5d05ce29f3ecff",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -7757,6 +8037,8 @@
       "swapImpactFactorPositive": "0xf5aaedb45293401a80c2272b02d76b9e9aaa280cd4b02ea183b8e8e8dd1ecdc1",
       "swapImpactFactorNegative": "0xcac9b44754232c7262bb194373f9b73d63a1d935f0fbb466fac538af440f8ac2",
       "swapImpactExponentFactor": "0xf51d1fed9f0cc109d834f2868958a9c12cef620aa1a089a6878be5cd5b0416a8",
+      "withdrawalFeeFactorBalanceWasImproved": "0xf97c2718d0787281293b20c8148e8bc6a4a81a54e0424ef33df1ea1468e1acad",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x3ac870ec217e455d968138f77718283267dbb959e68462653c36f37e598dbd56",
       "virtualMarketId": "0x1cfc55f83c330e611551f5021ea4dd39c813ba02a7e0f70a8a55a6329fefede1",
       "virtualLongTokenId": "0xda49ccfa12cf1ea3524e26695e8fbdb9fb312bbdcab838a1c14770e241241eaa",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -7812,6 +8094,8 @@
       "swapImpactFactorPositive": "0xccc77f870ba42d778057d944e6c80fb332320084fea7acffec3838cc2c4b84e6",
       "swapImpactFactorNegative": "0x581d1441b56c1e2c8de4ef60d65ab0f3ee119350688aa8214bc1f3f19f629eea",
       "swapImpactExponentFactor": "0xc6d4eda05e33dec48a6acd523dbd21543dfdae520576087b2de5a6b6aaeb56ad",
+      "withdrawalFeeFactorBalanceWasImproved": "0x2182916f14424461d96d16b16e75b5daf3a039f173f3932d0f6ceaa19db04f4c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x75e511d7f51ebf2f93d00aeb6ca63107df8995b292e41e20ea73b0f387d1eb86",
       "virtualMarketId": "0xca20066cdfe614d4256ea21d1c4be2e921d928fe96589d6ef330c2da92edef1d",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -7867,6 +8151,8 @@
       "swapImpactFactorPositive": "0xfb399f4414b807428dd2340b923793f8e3e223c3758d217c66c320265786db6c",
       "swapImpactFactorNegative": "0xa7583e74286befd226ba820f162caca16ce41291b51dcf4210b99a53bf8d713a",
       "swapImpactExponentFactor": "0x943c4ce8ee656546292d9a194c061eea37683b344e34d71495cd4555edee883c",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe7acb203b39dd082288b904c774794acd5d16f802b925491d3dff4afa176a998",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xd4cfeb7c03740dbdd32ccbe84d303cce6acaf04a9bcef293914dac57eaa73b84",
       "virtualMarketId": "0x0e3547b9cf7cb8a1f155129657846708bfcb1d81d78835b7a4bd56ea3a22e29d",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -7922,6 +8208,8 @@
       "swapImpactFactorPositive": "0xdb794233f573199e11b2568c3c92f38a3744dece73525f013a685e528bdc6e00",
       "swapImpactFactorNegative": "0xd579ac5d1571cd61c69c378ebd76a71638e7312306b99fbdfeece3fa47ada36d",
       "swapImpactExponentFactor": "0x29711b33c281e649cfa71890aa153b28782df34f91a2097dd43f8e75fc408262",
+      "withdrawalFeeFactorBalanceWasImproved": "0x95c019587ba56a4f7b28934da5177483097045869218a2a625a3ecca5f6ba706",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x72acffddfe32e683d70c58cf390df8a88e144b6c595ce8e33ebd7b9446c2ca9f",
       "virtualMarketId": "0xc8dd68fc490d88c3c3f4216f19696bb65ea304ce12cc32244656eabf754ee4d0",
       "virtualLongTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6",
       "virtualShortTokenId": "0xd76fd75c4452939b009a75d63649d6832a008e70cc237b16267c9be01be30308"
@@ -7977,6 +8265,8 @@
       "swapImpactFactorPositive": "0x5ac0772f7d1d01adeca5890fd7a12efb194b042a949ff9676956a1b18a6684d8",
       "swapImpactFactorNegative": "0x1fda8752104b3cec09d2f3deae9a845297c27bf555787375a5095da13b00a0a0",
       "swapImpactExponentFactor": "0x67ffca46672ad8e81a5ccd1f83a1b5ecb12177ef0235a68e15c3aba5f7e6d588",
+      "withdrawalFeeFactorBalanceWasImproved": "0x8150576e8ae300110056a34e7bd1d323ecf4be5653d359ea13a2c5811fbe8459",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x5eb95558b05bdaf1ba3e305179a6e731d93338ab401a37555ff3560ae2f9d858",
       "virtualMarketId": "0x6549f7db555b5b5ef63dbee7e89c8bc50bce7a187771064df386943c5c068520",
       "virtualLongTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6",
       "virtualShortTokenId": "0x3586bee7d2afaf337c8c1f94d514ab219b0472a7999137d2cb4c956a5e191ee5"
@@ -8032,6 +8322,8 @@
       "swapImpactFactorPositive": "0x4d2ba8b5784292dddf36d28528876fe8c70b2c1a23eba9b543e83fe6ce4fde58",
       "swapImpactFactorNegative": "0x98753b02e57caff21ef4bdd4d67181248ece31553487ccb8d253684f83680156",
       "swapImpactExponentFactor": "0x89f9737019e4ed3d7fefca8064ca1c1f1c2eac686143ba606cf7bebc80a84660",
+      "withdrawalFeeFactorBalanceWasImproved": "0x367650f9957f7236c3fd6882273b3bbcb146d0d3ab6cd79a7d36355b82af2d6f",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xfe643c0820b22d20d229f38fba0219e647ed0a6f1120f984c356f4bccd43d373",
       "virtualMarketId": "0xee55fcd3a9c8f4786238e3def3fadc7f3ed6ed40c71c8fa94c27d23e9ab19f87",
       "virtualLongTokenId": "0xec72fbd52db927c6d1c8a079da3496965cd1f007a9cb861600facc7dea1a2f02",
       "virtualShortTokenId": "0xd76fd75c4452939b009a75d63649d6832a008e70cc237b16267c9be01be30308"
@@ -8087,6 +8379,8 @@
       "swapImpactFactorPositive": "0xd4d4fec3dac5d648af883c5241e322bb47dcd508044fcdd52b3676e7a8609cba",
       "swapImpactFactorNegative": "0xf7d514343cd53634029821b1b23419bffd04823ee244f6403632a85290c4fc68",
       "swapImpactExponentFactor": "0x6598158e286f5d7fb1e33ce7d4d6d6cdc134811b72f3166399ca5f0683005f9c",
+      "withdrawalFeeFactorBalanceWasImproved": "0x3c7d599a6ccc808e1b7c50b39166a5b3df9fe1b58e8a70f68dfafd93f4dfbeb4",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x258fca99b7e1c3466ea9c1790001b08c933c9188bf6d83fb86fe74864caac870",
       "virtualMarketId": "0x3a64ee272a461e24d42d7ec7a3457b2a6c46bf8f114b1dd0e9c80543ff93950e",
       "virtualLongTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6",
       "virtualShortTokenId": "0xd21809bbbaeafb84cde5c437ba0897bda019a417fac4e29387ef19cce3d07cd2"
@@ -8142,6 +8436,8 @@
       "swapImpactFactorPositive": "0x9b3474784c1a93dc2d0f8f721f7efefb15a584887583dfa3e303ce08249ae5bb",
       "swapImpactFactorNegative": "0x8fd022a687a7b4da97ceb03d51c39824c1f0669ab078f69b9e27d1f044192986",
       "swapImpactExponentFactor": "0xe32d18703e43af3e655c210a037d7e7e68a985884947ccaac21eaaf0f08d89b0",
+      "withdrawalFeeFactorBalanceWasImproved": "0x0d7f5e89a289691127eea6b1e9dba4e9419cfe478f28dc67ed7775c5dfa23ed0",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x16e5be45a139c0327ab525b365d354c6db4ca45ed4996e16e9deb36c2f639dab",
       "virtualMarketId": "0x967b7941411562788a55b8fbdf395c2c3a8be7b6296e0e170ea2f9d4d6c70f54",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -8197,6 +8493,8 @@
       "swapImpactFactorPositive": "0x22637b36db12b76a57e8d2282175608a9516baec885472a076edde09e43cc8c4",
       "swapImpactFactorNegative": "0x61bc53940189842d15da4f36e1a347872fbeeaf835344cfcdd930d6a2a9f7d69",
       "swapImpactExponentFactor": "0x89d217876518450d1fd8f2c44713331334b39b926d37e7afe8889a1bbdda8164",
+      "withdrawalFeeFactorBalanceWasImproved": "0xaad25cdbe2db0becde852057fe9b9a6d498ca5f92f02704af23fbf3e308a6a7c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x49fc99eaf7daa0267e7cea0f6d1c357a08def53d4939abb3724c7ed4e069438f",
       "virtualMarketId": "0x77f19898cd1a7cd3a2373f07ce7adf59726704da9419de76c0b1a965a6ef2c19",
       "virtualLongTokenId": "0x024e60601109020acd88458d1d543f3e2345a3f7cd30aede0d5ffd5ef9f84cf4",
       "virtualShortTokenId": "0x024e60601109020acd88458d1d543f3e2345a3f7cd30aede0d5ffd5ef9f84cf4"
@@ -8252,6 +8550,8 @@
       "swapImpactFactorPositive": "0xbcf53b75dc064d05b8bbae7a8a9024400149ad81b3ccfb631fdcda0458c165f4",
       "swapImpactFactorNegative": "0x3dcb45d69a8bf6040e48ce2cbb0331be6eee579fa2332e638f0399c4b36e059b",
       "swapImpactExponentFactor": "0x9e8158dfdc3ab305b80ec742213b82433923bedad9de6c23ef432f9e4dd99126",
+      "withdrawalFeeFactorBalanceWasImproved": "0xee936c6dd4d737361b886510e542bc61db738becde073857e5cfcc4e3148980b",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x131146a389e95efd364d04deba3051a8e33537c9bdcd51163684ebf61755d614",
       "virtualMarketId": "0xf72da44ec773ac1dc4cacc096bd5da89a67f7b684430092e1c2360069d5318c2",
       "virtualLongTokenId": "0xa232c25fc2702b7379fa2865649cdb29aaf502ce1d0bdc6ce0a5bfb86d89f3aa",
       "virtualShortTokenId": "0xa232c25fc2702b7379fa2865649cdb29aaf502ce1d0bdc6ce0a5bfb86d89f3aa"
@@ -8307,6 +8607,8 @@
       "swapImpactFactorPositive": "0x780903830a9905f560d95f984e56ca7a535833e0bc89c7c2de42ffcbb432b0c2",
       "swapImpactFactorNegative": "0xdbe58f613a7e4a83dd8f4f2ba745c6bc2a0c8f5d5558b611dbc0d06a12f8d934",
       "swapImpactExponentFactor": "0x6056e3873031dae6bf9c4ca9cc825412671792c122c3ea69a648c5cf3ed93be0",
+      "withdrawalFeeFactorBalanceWasImproved": "0x2228954c9091ebb79b450b9cdabb61e4994abc9962fed8ff65b8e8a4a8cf046b",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x72245c60699ebba3ccfebefa7c04c83f3ab3b808357af0a5d0203470aba3db84",
       "virtualMarketId": "0x86aa973b70629617ddd3d6184ccf9da90412d10b17c1ab38ec6fceea9a7b93e6",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520"
@@ -8362,6 +8664,8 @@
       "swapImpactFactorPositive": "0x59346f9a4a1b766c626faf5a262d7c4682290eafde924edaccf4793b5aaf9ff8",
       "swapImpactFactorNegative": "0x7abecb50f1f40514c8910dfdbe2c77053ce52f786284e6cfbb103935052858bc",
       "swapImpactExponentFactor": "0x67a8eef04a49c1b96d230f1b3113bb32a730fa1868ae6e307b8fe2f8ff5615bf",
+      "withdrawalFeeFactorBalanceWasImproved": "0x745dcfc316f5cf9d06534a8f300538a2c575d133bebca1e2387fbae92c355364",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x8e6c65a97cb920f6325ad81a3e085bb14aa0891ac9b1e3c7b0e945204c089340",
       "virtualMarketId": "0x5569764266bbc663a0ac2f620efec79cf39e019cc8081b9313d215717bc06870",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -8417,6 +8721,8 @@
       "swapImpactFactorPositive": "0x7994d0769514a0f8458062cc3ec7ac46e35e61a41837ef95de31499b096f6afa",
       "swapImpactFactorNegative": "0x51498d6010ec706431bb43497559c424d46d5a4732ae654c0f8010ada52e32a6",
       "swapImpactExponentFactor": "0xd0855b4e2c4b463a9d8ef095e149f5f4160bbcf019518d19088398b85d20b0bb",
+      "withdrawalFeeFactorBalanceWasImproved": "0x87500c557bf9e21bffb6116ac8c0c8058dba921293a5013ab4ccd39f7c38abb4",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xb1b41c59c257301f86cd53f672c74d0b33e22b2f8cd9949a16b9e5e844ad1acd",
       "virtualMarketId": "0xba31ac4f17f85fe1d4f13f98606a4d6795476499126baf4091154165b41ba171",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -8472,6 +8778,8 @@
       "swapImpactFactorPositive": "0xa9bdf476dc12be080747e58c4aa34606357476853c4dc0e1d805569a12fb9bc0",
       "swapImpactFactorNegative": "0xe62da899f3cd8b0bb237665e81fa32f29cf80a4952c3756a33a3b8fe15c27023",
       "swapImpactExponentFactor": "0x049d9cff2da901aca1737a4881a54b31c685dc4235e9967f04a5dc4e7864a27f",
+      "withdrawalFeeFactorBalanceWasImproved": "0x4b86165d2634aa830be08d0d7166a645c0cfd5d8b71c8d75d902b5f844813f35",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x6bc4abf5477f14cad2bf073ae76971e0dda40412df297a7a3470f34799e62046",
       "virtualMarketId": "0x01ac8acc7ef4e6616b090638328c05814c2ce047f4f286659cca62cef1b6ea7d",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -8527,6 +8835,8 @@
       "swapImpactFactorPositive": "0x9dcf486ab9270640d6a7f168059824daa74d09bb72a40b7c0edab9d7fe20b5ca",
       "swapImpactFactorNegative": "0xe678e975c804127c9fa120ea3f8b70364d73a50e51e0cacfa25c99986c15c3cd",
       "swapImpactExponentFactor": "0xba375b0cf4c9ea71ac0d50044be9059bdb533ca6211951fb1aa89cb114acdf8b",
+      "withdrawalFeeFactorBalanceWasImproved": "0x9d19ef9aa8f90b4f9afab836c4e8177afa9e8e54d771065cd16e4769d1e4d6f1",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x9a15b9aeca375b34541e8f473238adad08363483645e3a1d0098a386f2d77d90",
       "virtualMarketId": "0x362fa87fde70f1c219b43817f05453f32571be142fa68e587a14975907a9690e",
       "virtualLongTokenId": "0xe7ad78f733831866f62141bd25f6d75da98498ad5783721686716dce5043e520",
       "virtualShortTokenId": "0xb315f0a55a09b93c77ef9d370a2278b19027c88ccc7afd8b899b98bb033ffed6"
@@ -8582,6 +8892,8 @@
       "swapImpactFactorPositive": "0x9c1b020ce78e93a9b0c595667027b453a8de69fa311ffc7a4e42f75caf55c8ea",
       "swapImpactFactorNegative": "0xd30f51b7f0c0ef6464530e5d16b24fec4dcf0645e1bd6de8b50c92bf02307a7d",
       "swapImpactExponentFactor": "0xbc5d99a0a177ad95b369117aa9efb6c02210c721e9c48cf11ecedf8904b3355a",
+      "withdrawalFeeFactorBalanceWasImproved": "0x1652a6cde96a8a0296316ecf1a5669394654b9072430a81f6014717e21c0f6c8",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x23963fcd178299ec27ccd979bf3d6a31165bc8b5786faf51f36ac4eded973a49",
       "virtualMarketId": "0xa5ff318ac7d7916a8cef24b9182937156f5ef2956a416645bc2c5b8c593423f2",
       "virtualLongTokenId": "0xeb2bce5d76ecf25989519aa4e56b1ccdddb8a464d4bd7d5437c94b899724feaa",
       "virtualShortTokenId": "0xeb2bce5d76ecf25989519aa4e56b1ccdddb8a464d4bd7d5437c94b899724feaa"
@@ -8637,6 +8949,8 @@
       "swapImpactFactorPositive": "0x4820b6f7e4b57a6064a7cfe52570a8ecf46f7575ba0d8129cdf5cbd423de6437",
       "swapImpactFactorNegative": "0xd5b56ebc36158018e669139a1213667597a90130a54c68a49f2b662078d6406d",
       "swapImpactExponentFactor": "0xc4a5f14f9c5e5beb3f0dbb61fa2ddac7b02f4b0a295234869a4182d404a78589",
+      "withdrawalFeeFactorBalanceWasImproved": "0xe8d313ed626ac939461583b81c89703e10efbf3d9d2d80410942c8a4570c70fb",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0xba8875dbcaea595acfcc43c0531ec55730a81fd4799efd255f8ba5a45e781dbd",
       "virtualMarketId": "0xbc056bd3d40a98dbf246214234a4ec8d9b82dc7247c7b0095b29264205eb2c17",
       "virtualLongTokenId": "0xeb2bce5d76ecf25989519aa4e56b1ccdddb8a464d4bd7d5437c94b899724feaa",
       "virtualShortTokenId": "0xec72fbd52db927c6d1c8a079da3496965cd1f007a9cb861600facc7dea1a2f02"
@@ -8694,6 +9008,8 @@
       "swapImpactFactorPositive": "0x4ba7599baa40e9165e69982d1a27dcce324f52f09654b8e59a50aad15bff499d",
       "swapImpactFactorNegative": "0x7f4945cb90820690df92a26203f54d6dec3444276801e77b49ad6ebcd60792ed",
       "swapImpactExponentFactor": "0x2cf00a0393c53a8d1adf7cb3a553d29a0d8e951cdb793e24e891264f37a252da",
+      "withdrawalFeeFactorBalanceWasImproved": "0xb511353042361a017b76258c22c4c81bc75d99b0a43c9701f570e7806b7bdee1",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x0ef6a62b4596499fe14ede8394108fd60101e63ebd6c85a5270739a4b060529f",
       "virtualMarketId": "0x1c5f558f016365f8662333fd181132c33c50ee0bf4947fa83fa9e776133da025",
       "virtualLongTokenId": "0xbeb8096910fd4d4b3ade12aad31c27a0e5f047fce87d1279b0c71579a8c4ef5b",
       "virtualShortTokenId": "0x14f396b003aeaa96ad78845dcb7d6d9789c777a23d4ea1e14a7dc58704a595b3"
@@ -8749,6 +9065,8 @@
       "swapImpactFactorPositive": "0x8c6991810b91663028e92da492838890535b045f4f6315753142a6587d3ea2aa",
       "swapImpactFactorNegative": "0xd61daf7708276f38ea49e14d3a708747b70aae2748be4082f230782a1bc144cb",
       "swapImpactExponentFactor": "0x73e3ff3cce5475da6d435335f98d7ebe12eb4516f82fd00d562baadf4ebda69c",
+      "withdrawalFeeFactorBalanceWasImproved": "0x2e01614b297e7cfdc65f8c0ab2a43144e38f7e81b619a84fe84966dc65ee2b72",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x37419bba44c691ccc2421e81b2b31b4301871d045e963851d796557c788f255c",
       "virtualMarketId": "0xff3e25d5b26afce16c7292fd6816d955cd0a6a9742ad9ebbf9ead33b13cba441",
       "virtualLongTokenId": "0xa05108a58d25332e075fca49149dbb671f4b30a226a3325bb46f83000c50ff11",
       "virtualShortTokenId": "0x14f396b003aeaa96ad78845dcb7d6d9789c777a23d4ea1e14a7dc58704a595b3"
@@ -8804,6 +9122,8 @@
       "swapImpactFactorPositive": "0xc837e4fd08a4075186e2247915ec7e2af6fcbe68d971d312379a2ede79efc8bb",
       "swapImpactFactorNegative": "0x5784a907a885c68e0ded4e2c68ae06e3ab0072a0718afcaf89a77d08b1a4bf80",
       "swapImpactExponentFactor": "0xaa5fed51d9e41d58b45b18df3f2d05b427613e1b04f4875164ae6612d4dedd71",
+      "withdrawalFeeFactorBalanceWasImproved": "0xc401f1f234f8055e06b83ef65fcddeae316d006a077709de3bb7c7b4c6a96d9c",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x22222b01f8c8c7b8c4adcd1e2070bafa5c6f0d605cb9b9ecad65c212d22d74b6",
       "virtualMarketId": "0xa3ef6bfad330ae40521f70558f2fcadca93725b8acccd3105366e422b829692a",
       "virtualLongTokenId": "0xbeb8096910fd4d4b3ade12aad31c27a0e5f047fce87d1279b0c71579a8c4ef5b",
       "virtualShortTokenId": "0xc4ab6a4bf31c6daf14b4280e1dca54edfcb90a85aff3598cfb550dbec25f7786"
@@ -8859,6 +9179,8 @@
       "swapImpactFactorPositive": "0x074a3442b4dae7be586549047b6a5a6a20ca259ca5a3d41ec54a5a8863efd116",
       "swapImpactFactorNegative": "0xbf15c04624ef8978f119e3622f8ecee78ac7dda7045062f7e52fe444da1b70f2",
       "swapImpactExponentFactor": "0x4cafea763650e7b8f0c8520a3bb775cf805cc589bf41624dfa2832d90f9941e1",
+      "withdrawalFeeFactorBalanceWasImproved": "0x8b770609c48e993f62b7e1fec9672d5db3f5fbd22ea39e6b61bea1ab1a413cab",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x0dd0124e91a8d46d0217218f789bbd0fc76fcd8f2da15d886ec692e6d68705ac",
       "virtualMarketId": "0xcffa9b917dfc97b3f9003d4b7b97c67f28bf90b1ede4e09739a87cb2a196f95a",
       "virtualLongTokenId": "0xa05108a58d25332e075fca49149dbb671f4b30a226a3325bb46f83000c50ff11",
       "virtualShortTokenId": "0xc4ab6a4bf31c6daf14b4280e1dca54edfcb90a85aff3598cfb550dbec25f7786"
@@ -8914,6 +9236,8 @@
       "swapImpactFactorPositive": "0xf8e3ab382a889a5076ee8a8fdad1001719fadd0a46cc58a5dbf1acdb2015cdb4",
       "swapImpactFactorNegative": "0x3926196acc50053643fa4c3c067d2927c88d7baeeb09455c2398c1d3f51cb680",
       "swapImpactExponentFactor": "0xf3207408fe2e68e65822649ad5a0519eea88f25d7536f2bf260bbe23833764b3",
+      "withdrawalFeeFactorBalanceWasImproved": "0xa760b134bfd8d8bac1af77aa36d40988990505d95400f1c23bfd5b6805bffa0f",
+      "withdrawalFeeFactorBalanceWasNotImproved": "0x3f3254c4dd6fa4d114daf3bd1ead1e40d5eb431030b8607e17fc5a0ad87cb689",
       "virtualMarketId": "0x1508cc8b108cc92247ff1a8f212cdac883536956cf50ab8b3eaf42ae5d37b7ec",
       "virtualLongTokenId": "0xbeb8096910fd4d4b3ade12aad31c27a0e5f047fce87d1279b0c71579a8c4ef5b",
       "virtualShortTokenId": "0xc4ab6a4bf31c6daf14b4280e1dca54edfcb90a85aff3598cfb550dbec25f7786"

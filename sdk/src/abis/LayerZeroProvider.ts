@@ -1,52 +1,158 @@
 export default [
   {
     inputs: [
-      { internalType: "contract DataStore", name: "_dataStore", type: "address" },
-      { internalType: "contract RoleStore", name: "_roleStore", type: "address" },
-      { internalType: "contract EventEmitter", name: "_eventEmitter", type: "address" },
-      { internalType: "contract MultichainVault", name: "_multichainVault", type: "address" },
-      { internalType: "contract IMultichainGmRouter", name: "_multichainGmRouter", type: "address" },
-      { internalType: "contract IMultichainGlvRouter", name: "_multichainGlvRouter", type: "address" },
-      { internalType: "contract IMultichainOrderRouter", name: "_multichainOrderRouter", type: "address" },
+      {
+        internalType: "contract DataStore",
+        name: "_dataStore",
+        type: "address",
+      },
+      {
+        internalType: "contract RoleStore",
+        name: "_roleStore",
+        type: "address",
+      },
+      {
+        internalType: "contract EventEmitter",
+        name: "_eventEmitter",
+        type: "address",
+      },
+      {
+        internalType: "contract MultichainVault",
+        name: "_multichainVault",
+        type: "address",
+      },
+      {
+        internalType: "contract IMultichainGmRouter",
+        name: "_multichainGmRouter",
+        type: "address",
+      },
+      {
+        internalType: "contract IMultichainGlvRouter",
+        name: "_multichainGlvRouter",
+        type: "address",
+      },
+      {
+        internalType: "contract IMultichainOrderRouter",
+        name: "_multichainOrderRouter",
+        type: "address",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
-  { inputs: [], name: "EmptyHoldingAddress", type: "error" },
-  { inputs: [], name: "EmptyReceiver", type: "error" },
   {
-    inputs: [{ internalType: "address", name: "token", type: "address" }],
+    inputs: [],
+    name: "EmptyHoldingAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "EmptyReceiver",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
     name: "EmptyTokenTranferGasLimit",
     type: "error",
   },
-  { inputs: [], name: "EmptyWithdrawalAmount", type: "error" },
+  {
+    inputs: [],
+    name: "EmptyWithdrawalAmount",
+    type: "error",
+  },
   {
     inputs: [
-      { internalType: "uint256", name: "gas", type: "uint256" },
-      { internalType: "uint256", name: "estimatedGasLimit", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "gas",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "estimatedGasLimit",
+        type: "uint256",
+      },
     ],
     name: "InsufficientGasLeft",
     type: "error",
   },
   {
-    inputs: [{ internalType: "address", name: "token", type: "address" }],
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "msgValue",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "expectedNativeValue",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientNativeTokenAmount",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
     name: "InvalidBridgeOutToken",
     type: "error",
   },
-  { inputs: [{ internalType: "uint256", name: "eid", type: "uint256" }], name: "InvalidEid", type: "error" },
   {
     inputs: [
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "address", name: "receiver", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "eid",
+        type: "uint256",
+      },
+    ],
+    name: "InvalidEid",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
     name: "TokenTransferError",
     type: "error",
   },
   {
     inputs: [
-      { internalType: "address", name: "msgSender", type: "address" },
-      { internalType: "string", name: "role", type: "string" },
+      {
+        internalType: "address",
+        name: "msgSender",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "role",
+        type: "string",
+      },
     ],
     name: "Unauthorized",
     type: "error",
@@ -54,23 +160,61 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "string", name: "reason", type: "string" },
-      { indexed: false, internalType: "bytes", name: "returndata", type: "bytes" },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "bytes",
+        name: "returndata",
+        type: "bytes",
+      },
     ],
     name: "TokenTransferReverted",
     type: "event",
   },
   {
     inputs: [
-      { internalType: "address", name: "account", type: "address" },
-      { internalType: "uint256", name: "srcChainId", type: "uint256" },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "srcChainId",
+        type: "uint256",
+      },
       {
         components: [
-          { internalType: "address", name: "token", type: "address" },
-          { internalType: "uint256", name: "amount", type: "uint256" },
-          { internalType: "uint256", name: "minAmountOut", type: "uint256" },
-          { internalType: "address", name: "provider", type: "address" },
-          { internalType: "bytes", name: "data", type: "bytes" },
+          {
+            internalType: "address",
+            name: "token",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "minAmountOut",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "provider",
+            type: "address",
+          },
+          {
+            internalType: "bytes",
+            name: "data",
+            type: "bytes",
+          },
         ],
         internalType: "struct IRelayUtils.BridgeOutParams",
         name: "params",
@@ -78,31 +222,69 @@ export default [
       },
     ],
     name: "bridgeOut",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
     name: "dataStore",
-    outputs: [{ internalType: "contract DataStore", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract DataStore",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "eventEmitter",
-    outputs: [{ internalType: "contract EventEmitter", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract EventEmitter",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "from", type: "address" },
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "bytes", name: "message", type: "bytes" },
-      { internalType: "address", name: "", type: "address" },
-      { internalType: "bytes", name: "", type: "bytes" },
+      {
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes",
+        name: "message",
+        type: "bytes",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "",
+        type: "bytes",
+      },
     ],
     name: "lzCompose",
     outputs: [],
@@ -112,48 +294,93 @@ export default [
   {
     inputs: [],
     name: "multichainGlvRouter",
-    outputs: [{ internalType: "contract IMultichainGlvRouter", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract IMultichainGlvRouter",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "multichainGmRouter",
-    outputs: [{ internalType: "contract IMultichainGmRouter", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract IMultichainGmRouter",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "multichainOrderRouter",
-    outputs: [{ internalType: "contract IMultichainOrderRouter", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract IMultichainOrderRouter",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "multichainVault",
-    outputs: [{ internalType: "contract MultichainVault", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract MultichainVault",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "roleStore",
-    outputs: [{ internalType: "contract RoleStore", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract RoleStore",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "address", name: "receiver", type: "address" },
-      { internalType: "uint256", name: "amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
     name: "withdrawTokens",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
-  { stateMutability: "payable", type: "receive" },
+  {
+    stateMutability: "payable",
+    type: "receive",
+  },
 ] as const;
