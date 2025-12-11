@@ -21,14 +21,10 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { TechnicalGmFees } from "domain/multichain/technical-fees-types";
 import { useSourceChainError } from "domain/multichain/useSourceChainError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
-import type { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
-import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
-import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
-import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
-import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -40,20 +36,13 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { Operation } from "../types";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
-import { TechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useTokensToApprove } from "./useTokensToApprove";
 
 interface Props {
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
   shouldDisableValidation?: boolean;
-  technicalFees:
-    | ExecutionFee
-    | SourceChainGlvDepositFees
-    | SourceChainDepositFees
-    | SourceChainWithdrawalFees
-    | SourceChainGlvWithdrawalFees
-    | undefined;
+  technicalFees: TechnicalGmFees | undefined;
   logicalFees: GmSwapFees | undefined;
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
@@ -312,7 +301,7 @@ function useExpressError({
   isDeposit,
 }: {
   paySource: GmPaySource | undefined;
-  technicalFees: TechnicalFees | undefined;
+  technicalFees: TechnicalGmFees | undefined;
   gasPaymentToken: TokenData | undefined;
   gasPaymentTokenAddress: string | undefined;
   longTokenAddress: string | undefined;
@@ -330,14 +319,17 @@ function useExpressError({
       return undefined;
     }
 
-    const executionFee = technicalFees as ExecutionFee;
+    const fees = technicalFees.kind === "gmxAccount" ? technicalFees.fees : undefined;
+    if (!fees) {
+      return undefined;
+    }
 
     if (gasPaymentToken.prices.minPrice === undefined) {
       return undefined;
     }
 
     const gasPaymentTokenAmount = convertToTokenAmount(
-      executionFee.feeUsd,
+      fees.executionFee.feeUsd + fees.relayFeeUsd,
       gasPaymentToken.decimals,
       gasPaymentToken.prices.minPrice
     );

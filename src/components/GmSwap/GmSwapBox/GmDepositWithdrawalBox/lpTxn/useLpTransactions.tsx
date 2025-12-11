@@ -2,11 +2,7 @@ import { useCallback, useState } from "react";
 
 import { selectPoolsDetailsOperation } from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import type { ExecutionFee } from "domain/synthetics/fees";
-import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
-import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
-import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
-import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
+import { TechnicalGmFees } from "domain/multichain/technical-fees-types";
 
 import { useDepositTransactions } from "./useDepositTransactions";
 import { useWithdrawalTransactions } from "./useWithdrawalTransactions";
@@ -14,13 +10,7 @@ import { Operation } from "../../types";
 
 export interface UseLpTransactionProps {
   shouldDisableValidation?: boolean;
-  technicalFees:
-    | ExecutionFee
-    | SourceChainGlvDepositFees
-    | SourceChainDepositFees
-    | SourceChainWithdrawalFees
-    | SourceChainGlvWithdrawalFees
-    | undefined;
+  technicalFees: TechnicalGmFees | undefined;
 }
 
 export const useLpTransactions = (

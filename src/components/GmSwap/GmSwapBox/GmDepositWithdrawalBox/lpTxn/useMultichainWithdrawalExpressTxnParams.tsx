@@ -23,14 +23,8 @@ export function useMultichainWithdrawalExpressTxnParams({
   isWithdrawal: boolean;
 }) {
   const { chainId, srcChainId } = useChainId();
-  const { signer } = useWallet();
 
-  const enabled =
-    paySource === "gmxAccount" &&
-    isWithdrawal &&
-    Boolean(params) &&
-    transferRequests !== undefined &&
-    signer !== undefined;
+  const enabled = paySource === "gmxAccount" && isWithdrawal && Boolean(params) && transferRequests !== undefined;
 
   const multichainWithdrawalExpressTxnParams = useArbitraryRelayParamsAndPayload({
     isGmxAccount: paySource === "gmxAccount",
@@ -56,7 +50,6 @@ export function useMultichainWithdrawalExpressTxnParams({
             ...relayParams,
             deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           },
-          signer,
           transferRequests,
         });
 
@@ -78,7 +71,6 @@ export function useMultichainWithdrawalExpressTxnParams({
           ...relayParams,
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
         },
-        signer,
         transferRequests,
       });
 

@@ -3,7 +3,6 @@ import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
-import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import {
   selectPoolsDetailsFirstTokenAddress,
@@ -36,8 +35,9 @@ import {
   TokensBalancesUpdates,
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { buildDepositTransferRequests } from "domain/multichain/buildDepositTransferRequests";
 import { GlvBuyTask, GmBuyTask } from "domain/multichain/progress/GmOrGlvBuyProgress";
+import type { TechnicalGmFees } from "domain/multichain/technical-fees-types";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { TransferRequests } from "domain/multichain/types";
 import {
@@ -52,8 +52,6 @@ import { createMultichainDepositTxn } from "domain/synthetics/markets/createMult
 import { createMultichainGlvDepositTxn } from "domain/synthetics/markets/createMultichainGlvDepositTxn";
 import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSourceChainDepositTxn";
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
-import { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
-import { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import { ERC20Address, NativeTokenSupportedAddress, TokenBalanceType } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {
@@ -66,13 +64,9 @@ import {
 } from "lib/metrics";
 import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
-import { applySlippageToMinOut } from "sdk/utils/trade";
 
-import type { TechnicalFees } from "../useTechnicalFeesAsyncResult";
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpressTxnParams";
 
@@ -130,16 +124,24 @@ export const useDepositTransactions = ({
       return undefined;
     }
 
-    const executionFee =
-      paySource === "sourceChain"
-        ? (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees).executionFee
-        : (technicalFees as ExecutionFee).feeTokenAmount;
+    let executionFee: bigint | undefined;
+    if (technicalFees.kind === "sourceChain" && technicalFees.isDeposit) {
+      executionFee = technicalFees.fees.executionFee;
+    } else if (technicalFees.kind === "gmxAccount") {
+      executionFee = technicalFees.fees.executionFee.feeTokenAmount;
+    } else if (technicalFees.kind === "settlementChain") {
+      executionFee = technicalFees.fees.feeTokenAmount;
+    }
+
+    if (executionFee === undefined) {
+      return undefined;
+    }
 
     return {
       ...(rawParams as RawCreateDepositParams),
       executionFee,
     };
-  }, [rawParams, technicalFees, isDeposit, paySource]);
+  }, [rawParams, technicalFees, isDeposit]);
 
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const gasPaymentTokenAsCollateralAmount = useMemo((): bigint | undefined => {
@@ -254,6 +256,11 @@ export const useDepositTransactions = ({
         tokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
+        const fees = technicalFees.kind === "sourceChain" && technicalFees.isDeposit ? technicalFees.fees : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
+
         promise = createSourceChainDepositTxn({
           chainId: chainId as SettlementChainId,
           srcChainId: srcChainId!,
@@ -262,7 +269,7 @@ export const useDepositTransactions = ({
           params: rawParams as RawCreateDepositParams,
           tokenAddress,
           tokenAmount,
-          fees: technicalFees as SourceChainDepositFees,
+          fees,
         })
           .then((res) => {
             if (res.transactionHash) {
@@ -273,7 +280,7 @@ export const useDepositTransactions = ({
                   token: getGmToken(chainId, (rawParams as RawCreateDepositParams).addresses.market),
                   amount: marketTokenAmount!,
                   settlementChainId: chainId,
-                  estimatedFeeUsd: (technicalFees as SourceChainDepositFees).relayFeeUsd,
+                  estimatedFeeUsd: fees.relayFeeUsd,
                 })
               );
             }
@@ -283,6 +290,7 @@ export const useDepositTransactions = ({
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainDepositExpressTxnParams.data;
+
         if (!expressTxnParams) {
           throw new Error("Express txn params are not set");
         }
@@ -325,14 +333,19 @@ export const useDepositTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
+        const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
+
         promise = createDepositTxn({
           chainId,
           signer,
           blockTimestampData,
           longTokenAmount: longTokenAmount ?? 0n,
           shortTokenAmount: shortTokenAmount ?? 0n,
-          executionFee: (technicalFees as ExecutionFee).feeTokenAmount,
-          executionGasLimit: (technicalFees as ExecutionFee).gasLimit,
+          executionFee: fees.feeTokenAmount,
+          executionGasLimit: fees.gasLimit,
           skipSimulation: shouldDisableValidation,
           tokensData,
           metricId: metricData.metricId,
@@ -405,6 +418,11 @@ export const useDepositTransactions = ({
           throw new Error("Technical fees are not set");
         }
 
+        const fees = technicalFees.kind === "sourceChain" && technicalFees.isDeposit ? technicalFees.fees : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
+
         if (!longTokenAddress || !shortTokenAddress) {
           throw new Error("Long or short token address is not set");
         }
@@ -432,7 +450,7 @@ export const useDepositTransactions = ({
           params: rawParams as RawCreateGlvDepositParams,
           tokenAddress,
           tokenAmount,
-          fees: technicalFees as SourceChainGlvDepositFees,
+          fees,
         })
           .then((res) => {
             if (res.transactionHash) {
@@ -443,7 +461,7 @@ export const useDepositTransactions = ({
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvDepositParams).addresses.glv),
                   amount: glvTokenAmount!,
                   settlementChainId: chainId,
-                  estimatedFeeUsd: (technicalFees as SourceChainGlvDepositFees).relayFeeUsd,
+                  estimatedFeeUsd: fees.relayFeeUsd,
                 })
               );
             }
@@ -511,6 +529,11 @@ export const useDepositTransactions = ({
             ? zeroAddress
             : shortTokenAddress;
 
+        const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
+
         promise = createGlvDepositTxn({
           chainId,
           signer,
@@ -520,8 +543,8 @@ export const useDepositTransactions = ({
           longTokenAmount: longTokenAmount ?? 0n,
           shortTokenAmount: shortTokenAmount ?? 0n,
           marketTokenAmount: marketTokenAmount ?? 0n,
-          executionFee: (technicalFees as ExecutionFee).feeTokenAmount,
-          executionGasLimit: (technicalFees as ExecutionFee).gasLimit,
+          executionFee: fees.feeTokenAmount,
+          executionGasLimit: fees.gasLimit,
           skipSimulation: shouldDisableValidation,
           tokensData,
           blockTimestampData,
@@ -584,7 +607,7 @@ export const useDepositTransactions = ({
 function useDepositTransferRequests({
   technicalFees,
 }: {
-  technicalFees: TechnicalFees | undefined;
+  technicalFees: TechnicalGmFees | undefined;
 }): TransferRequests | undefined {
   const chainId = useSelector(selectChainId);
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
@@ -615,52 +638,20 @@ function useDepositTransferRequests({
       : undefined;
 
   return useMemo((): TransferRequests | undefined => {
-    if (!isDeposit) {
-      return undefined;
-    }
-
-    const vaultAddress = isGlv ? getContract(chainId, "GlvVault") : getContract(chainId, "DepositVault");
-
-    if (isMarketTokenDeposit) {
-      return getTransferRequests([
-        {
-          to: vaultAddress,
-          token: marketTokenAddress,
-          amount: marketTokenAmount,
-        },
-      ]);
-    }
-
-    if (paySource === "sourceChain") {
-      let tokenAddress =
-        longTokenAmount !== undefined && longTokenAmount > 0n ? initialLongTokenAddress : initialShortTokenAddress;
-
-      let amount = longTokenAmount !== undefined && longTokenAmount > 0n ? longTokenAmount : shortTokenAmount!;
-
-      const estimatedReceivedAmount = (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees | undefined)
-        ?.txnEstimatedReceivedAmount;
-
-      if (estimatedReceivedAmount !== undefined && estimatedReceivedAmount > amount) {
-        return undefined;
-      }
-
-      amount = applySlippageToMinOut(DEFAULT_SLIPPAGE_AMOUNT, estimatedReceivedAmount ?? amount);
-
-      return getTransferRequests([{ to: vaultAddress, token: tokenAddress, amount }]);
-    }
-
-    return getTransferRequests([
-      {
-        to: vaultAddress,
-        token: initialLongTokenAddress,
-        amount: longTokenAmount,
-      },
-      {
-        to: vaultAddress,
-        token: initialShortTokenAddress,
-        amount: shortTokenAmount,
-      },
-    ]);
+    return buildDepositTransferRequests({
+      isDeposit,
+      isGlv,
+      chainId,
+      paySource,
+      isMarketTokenDeposit,
+      marketTokenAddress,
+      marketTokenAmount,
+      longTokenAmount,
+      shortTokenAmount,
+      initialLongTokenAddress,
+      initialShortTokenAddress,
+      technicalFees,
+    });
   }, [
     isDeposit,
     isGlv,
