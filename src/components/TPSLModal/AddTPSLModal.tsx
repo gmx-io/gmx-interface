@@ -628,8 +628,6 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess }: P
     }
   }, [isVisible]);
 
-  const showMaxButton = closeSizeInput !== formattedMaxCloseSize;
-
   const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${indexToken.symbol}`;
 
   const currentLeverage = formatLeverage(position.leverage);
@@ -734,22 +732,12 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess }: P
           <div className="flex flex-col gap-12">
             <BuyInputSection
               topLeftLabel={t`Close`}
-              bottomRightValue={formatUsd(position.sizeInUsd)}
-              bottomLeftValue={formatUsd(closeSizeUsd)}
               inputValue={closeSizeInput}
               onInputValueChange={handleCloseSizeChange}
               onClickBottomRightLabel={() => {
                 setCloseSizeInput(formattedMaxCloseSize);
                 setClosePercentage(100);
               }}
-              onClickMax={
-                showMaxButton
-                  ? () => {
-                      setCloseSizeInput(formattedMaxCloseSize);
-                      setClosePercentage(100);
-                    }
-                  : undefined
-              }
               showPercentSelector={position.sizeInUsd > 0n}
               onPercentChange={handleClosePercentageChange}
               qa="close-size"
