@@ -426,13 +426,14 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess }: P
     setCloseSizeInput(formattedMaxCloseSize);
   }, [formattedMaxCloseSize]);
 
-  const handleEditTPSLSizeToggle = useCallback((value: boolean) => {
-    setEditTPSLSize(value);
-    if (!value) {
+  const handleEditTPSLSizeToggle = useCallback(
+    (value: boolean) => {
+      setEditTPSLSize(value);
       setClosePercentage(100);
-      setCloseSizeInput("");
-    }
-  }, []);
+      setCloseSizeInput(formattedMaxCloseSize);
+    },
+    [formattedMaxCloseSize]
+  );
 
   const tpPriceError = useMemo(() => {
     if (tpTriggerPrice === undefined || tpTriggerPrice === 0n || markPrice === undefined) return undefined;
