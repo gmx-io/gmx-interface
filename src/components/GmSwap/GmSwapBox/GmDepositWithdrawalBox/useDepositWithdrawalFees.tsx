@@ -1,11 +1,9 @@
 import { useMemo } from "react";
 
+import { TechnicalGmFees } from "domain/multichain/technical-fees-types";
 import { useGasMultichainUsd, useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
-import { ExecutionFee, getFeeItem, getTotalFeeItem, type FeeItem, type GasLimitsConfig } from "domain/synthetics/fees";
+import { getFeeItem, getTotalFeeItem, type FeeItem, type GasLimitsConfig } from "domain/synthetics/fees";
 import { GlvInfo } from "domain/synthetics/markets";
-import { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
-import { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
-import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { convertToUsd, getMidPrice, TokensData } from "domain/synthetics/tokens";
 import { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "domain/synthetics/trade";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -29,24 +27,18 @@ export const useDepositWithdrawalFees = ({
   tokensData: TokensData | undefined;
   glvInfo: GlvInfo | undefined;
   isMarketTokenDeposit: boolean;
-  technicalFees:
-    | ExecutionFee
-    | SourceChainGlvDepositFees
-    | SourceChainDepositFees
-    | SourceChainWithdrawalFees
-    | undefined;
+  technicalFees: TechnicalGmFees | undefined;
   srcChainId: SourceChainId | undefined;
 }): { logicalFees?: GmSwapFees } => {
   const sourceChainEstimatedNativeFeeUsd = useNativeTokenMultichainUsd({
     sourceChainTokenAmount:
-      technicalFees && "txnEstimatedNativeFee" in technicalFees ? technicalFees.txnEstimatedNativeFee : undefined,
+      technicalFees?.kind === "sourceChain" ? technicalFees.fees.txnEstimatedNativeFee : undefined,
     sourceChainId: srcChainId,
     targetChainId: chainId,
   });
 
   const sourceChainTxnEstimatedGasUsd = useGasMultichainUsd({
-    sourceChainGas:
-      technicalFees && "txnEstimatedGasLimit" in technicalFees ? technicalFees.txnEstimatedGasLimit : undefined,
+    sourceChainGas: technicalFees?.kind === "sourceChain" ? technicalFees.fees.txnEstimatedGasLimit : undefined,
     sourceChainId: srcChainId,
     targetChainId: chainId,
   });
@@ -66,14 +58,18 @@ export const useDepositWithdrawalFees = ({
       shouldRoundUp: true,
     });
 
+    const wrappedToken = getWrappedToken(chainId);
+    const wrappedTokenData = tokensData[wrappedToken.address];
+    const wrappedTokenPrice = getMidPrice(wrappedTokenData.prices);
+
     let logicalNetworkFeeUsd = 0n;
-    if ("feeTokenAmount" in technicalFees) {
-      logicalNetworkFeeUsd = convertToUsd(
-        technicalFees.feeTokenAmount * -1n,
-        getWrappedToken(chainId).decimals,
-        getMidPrice(tokensData[getWrappedToken(chainId).address].prices)
-      )!;
-    } else {
+
+    if (technicalFees.kind === "settlementChain") {
+      const keeperUsd = convertToUsd(technicalFees.fees.feeTokenAmount, wrappedToken.decimals, wrappedTokenPrice)!;
+      logicalNetworkFeeUsd = keeperUsd * -1n;
+    } else if (technicalFees.kind === "gmxAccount") {
+      logicalNetworkFeeUsd = (technicalFees.fees.executionFee.feeUsd + technicalFees.fees.relayFeeUsd) * -1n;
+    } else if (technicalFees.kind === "sourceChain") {
       logicalNetworkFeeUsd = ((sourceChainEstimatedNativeFeeUsd ?? 0n) + (sourceChainTxnEstimatedGasUsd ?? 0n)) * -1n;
     }
 

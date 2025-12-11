@@ -26,7 +26,7 @@ import {
   TokensBalancesUpdates,
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { getTransferRequests } from "domain/multichain/getTransferRequests";
+import { buildWithdrawalTransferRequests } from "domain/multichain/buildWithdrawalTransferRequests";
 import { GlvSellTask, GmSellTask } from "domain/multichain/progress/GmOrGlvSellProgress";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { TransferRequests } from "domain/multichain/types";
@@ -42,8 +42,6 @@ import { createMultichainGlvWithdrawalTxn } from "domain/synthetics/markets/crea
 import { createMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
 import { createSourceChainGlvWithdrawalTxn } from "domain/synthetics/markets/createSourceChainGlvWithdrawalTxn";
 import { createSourceChainWithdrawalTxn } from "domain/synthetics/markets/createSourceChainWithdrawalTxn";
-import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
-import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import {
@@ -54,9 +52,7 @@ import {
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
-import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
 import { TokenBalanceType } from "sdk/types/tokens";
 import { WithdrawalAmounts } from "sdk/types/trade";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
@@ -115,16 +111,23 @@ export const useWithdrawalTransactions = ({
       return undefined;
     }
 
-    const executionFee =
-      paySource === "sourceChain"
-        ? (technicalFees as SourceChainWithdrawalFees | SourceChainGlvWithdrawalFees).executionFee
-        : (technicalFees as ExecutionFee).feeTokenAmount;
+    let executionFee: bigint | undefined;
+    if (technicalFees.kind === "sourceChain" && technicalFees.isDeposit) {
+      executionFee = technicalFees.fees.executionFee;
+    } else if (technicalFees.kind === "gmxAccount") {
+      executionFee = technicalFees.fees.executionFee.feeTokenAmount;
+    } else if (technicalFees.kind === "settlementChain") {
+      executionFee = technicalFees.fees.feeTokenAmount;
+    }
 
+    if (executionFee === undefined) {
+      return undefined;
+    }
     return {
       ...(rawParams as RawCreateWithdrawalParams),
       executionFee,
     };
-  }, [rawParams, technicalFees, isWithdrawal, paySource]);
+  }, [rawParams, technicalFees, isWithdrawal]);
 
   const multichainWithdrawalExpressTxnParams = useMultichainWithdrawalExpressTxnParams({
     transferRequests,
@@ -226,6 +229,14 @@ export const useWithdrawalTransactions = ({
           throw new Error("An error occurred");
         }
 
+        const fees =
+          technicalFees?.kind === "sourceChain" && !technicalFees.isDeposit && technicalFees.isGlv
+            ? technicalFees.fees
+            : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
+
         promise = createSourceChainGlvWithdrawalTxn({
           chainId,
           srcChainId,
@@ -233,7 +244,7 @@ export const useWithdrawalTransactions = ({
           transferRequests,
           params: rawParams as CreateGlvWithdrawalParams,
           tokenAmount: glvTokenAmount!,
-          fees: technicalFees as SourceChainGlvWithdrawalFees,
+          fees,
         })
           .then((res) => {
             if (res.transactionHash) {
@@ -244,7 +255,7 @@ export const useWithdrawalTransactions = ({
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvWithdrawalParams).addresses.glv),
                   amount: (amounts as WithdrawalAmounts).glvTokenAmount,
                   settlementChainId: chainId,
-                  estimatedFeeUsd: (technicalFees as SourceChainGlvWithdrawalFees).relayFeeUsd,
+                  estimatedFeeUsd: fees.relayFeeUsd,
                 })
               );
             }
@@ -290,11 +301,15 @@ export const useWithdrawalTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
+        const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
         promise = createGlvWithdrawalTxn({
           chainId,
           signer,
           params: params as CreateGlvWithdrawalParams,
-          executionGasLimit: (technicalFees as ExecutionFee).gasLimit,
+          executionGasLimit: fees.gasLimit,
           tokensData,
           setPendingTxns,
           setPendingWithdrawal,
@@ -370,11 +385,19 @@ export const useWithdrawalTransactions = ({
           throw new Error("An error occurred");
         }
 
+        const fees =
+          technicalFees.kind === "sourceChain" && !technicalFees.isDeposit && !technicalFees.isGlv
+            ? technicalFees.fees
+            : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
+
         promise = createSourceChainWithdrawalTxn({
           chainId,
           srcChainId,
           signer,
-          fees: technicalFees as SourceChainWithdrawalFees,
+          fees,
           transferRequests,
           params: rawParams as RawCreateWithdrawalParams,
           tokenAmount: marketTokenAmount!,
@@ -387,7 +410,7 @@ export const useWithdrawalTransactions = ({
                 token: getGmToken(chainId, (rawParams as RawCreateWithdrawalParams).addresses.market),
                 amount: (amounts as WithdrawalAmounts).marketTokenAmount,
                 settlementChainId: chainId,
-                estimatedFeeUsd: (technicalFees as SourceChainWithdrawalFees).relayFeeUsd,
+                estimatedFeeUsd: fees.relayFeeUsd,
               })
             );
           }
@@ -430,11 +453,15 @@ export const useWithdrawalTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
+        const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
+        if (!fees) {
+          throw new Error("Technical fees are not set");
+        }
         promise = createWithdrawalTxn({
           chainId,
           signer,
           marketTokenAmount: marketTokenAmount!,
-          executionGasLimit: (technicalFees as ExecutionFee).gasLimit,
+          executionGasLimit: fees.gasLimit,
           params: params as CreateWithdrawalParams,
           tokensData,
           skipSimulation: shouldDisableValidation,
@@ -509,33 +536,14 @@ function useWithdrawalTransferRequests(): TransferRequests | undefined {
   const glvTokenAddress = glvInfo?.glvTokenAddress;
 
   return useMemo((): TransferRequests | undefined => {
-    if (!isWithdrawal) {
-      return undefined;
-    }
-
-    if (isGlv) {
-      if (!glvTokenAddress) {
-        return undefined;
-      }
-      return getTransferRequests([
-        {
-          to: getContract(chainId, "GlvVault"),
-          token: glvTokenAddress,
-          amount: glvTokenAmount,
-        },
-      ]);
-    }
-
-    if (!marketTokenAddress) {
-      return undefined;
-    }
-
-    return getTransferRequests([
-      {
-        to: getContract(chainId, "WithdrawalVault"),
-        token: marketTokenAddress,
-        amount: marketTokenAmount,
-      },
-    ]);
+    return buildWithdrawalTransferRequests({
+      isWithdrawal,
+      isGlv,
+      chainId: chainId,
+      glvTokenAddress,
+      glvTokenAmount,
+      marketTokenAddress,
+      marketTokenAmount,
+    });
   }, [chainId, glvTokenAddress, glvTokenAmount, isGlv, isWithdrawal, marketTokenAddress, marketTokenAmount]);
 }
