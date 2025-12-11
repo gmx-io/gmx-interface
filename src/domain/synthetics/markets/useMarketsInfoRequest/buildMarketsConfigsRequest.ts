@@ -225,6 +225,14 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.swapImpactExponentFactor],
         },
+        withdrawalFeeFactorBalanceWasImproved: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.withdrawalFeeFactorBalanceWasImproved],
+        },
+        withdrawalFeeFactorBalanceWasNotImproved: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.withdrawalFeeFactorBalanceWasNotImproved],
+        },
         virtualMarketId: {
           methodName: "getBytes32",
           params: [prebuiltHashedKeys.virtualMarketId],

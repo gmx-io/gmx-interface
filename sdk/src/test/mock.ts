@@ -240,6 +240,9 @@ export function mockMarketsInfoData(
       swapImpactFactorNegative: expandDecimals(1, 23),
       swapImpactExponentFactor: expandDecimals(2, 30),
 
+      withdrawalFeeFactorBalanceWasImproved: expandDecimals(2, 27),
+      withdrawalFeeFactorBalanceWasNotImproved: expandDecimals(2, 27),
+
       // MarketInfo
       borrowingFactorPerSecondForLongs: 0n,
       borrowingFactorPerSecondForShorts: 0n,

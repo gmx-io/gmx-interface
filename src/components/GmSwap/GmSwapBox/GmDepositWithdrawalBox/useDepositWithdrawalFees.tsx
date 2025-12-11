@@ -1,25 +1,15 @@
 import { useMemo } from "react";
 
-import {
-  estimateExecuteDepositGasLimit,
-  estimateExecuteGlvDepositGasLimit,
-  estimateExecuteGlvWithdrawalGasLimit,
-  estimateExecuteWithdrawalGasLimit,
-  estimateDepositOraclePriceCount,
-  estimateGlvDepositOraclePriceCount,
-  estimateGlvWithdrawalOraclePriceCount,
-  estimateWithdrawalOraclePriceCount,
-  getFeeItem,
-  getTotalFeeItem,
-  type FeeItem,
-  type GasLimitsConfig,
-} from "domain/synthetics/fees";
+import { useGasMultichainUsd, useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
+import { ExecutionFee, getFeeItem, getTotalFeeItem, type FeeItem, type GasLimitsConfig } from "domain/synthetics/fees";
 import { GlvInfo } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
-import { GmSwapFees } from "domain/synthetics/trade";
-import { getExecutionFee } from "sdk/utils/fees/executionFee";
-
-import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
+import { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
+import { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
+import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
+import { convertToUsd, getMidPrice, TokensData } from "domain/synthetics/tokens";
+import { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "domain/synthetics/trade";
+import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 export const useDepositWithdrawalFees = ({
   amounts,
@@ -28,21 +18,42 @@ export const useDepositWithdrawalFees = ({
   gasPrice,
   isDeposit,
   tokensData,
-  glvInfo,
-  isMarketTokenDeposit,
+  technicalFees,
+  srcChainId,
 }: {
-  amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
-  chainId: number;
+  amounts: DepositAmounts | WithdrawalAmounts | undefined;
+  chainId: ContractsChainId;
   gasLimits: GasLimitsConfig | undefined;
   gasPrice: bigint | undefined;
   isDeposit: boolean;
   tokensData: TokensData | undefined;
   glvInfo: GlvInfo | undefined;
   isMarketTokenDeposit: boolean;
-}) => {
+  technicalFees:
+    | ExecutionFee
+    | SourceChainGlvDepositFees
+    | SourceChainDepositFees
+    | SourceChainWithdrawalFees
+    | undefined;
+  srcChainId: SourceChainId | undefined;
+}): { logicalFees?: GmSwapFees } => {
+  const sourceChainEstimatedNativeFeeUsd = useNativeTokenMultichainUsd({
+    sourceChainTokenAmount:
+      technicalFees && "txnEstimatedNativeFee" in technicalFees ? technicalFees.txnEstimatedNativeFee : undefined,
+    sourceChainId: srcChainId,
+    targetChainId: chainId,
+  });
+
+  const sourceChainTxnEstimatedGasUsd = useGasMultichainUsd({
+    sourceChainGas:
+      technicalFees && "txnEstimatedGasLimit" in technicalFees ? technicalFees.txnEstimatedGasLimit : undefined,
+    sourceChainId: srcChainId,
+    targetChainId: chainId,
+  });
+
   return useMemo(() => {
-    if (!gasLimits || gasPrice === undefined || !tokensData || !amounts) {
-      return {};
+    if (!gasLimits || gasPrice === undefined || !tokensData || !amounts || !technicalFees) {
+      return { logicalFees: undefined };
     }
 
     const basisUsd = isDeposit
@@ -55,46 +66,40 @@ export const useDepositWithdrawalFees = ({
       shouldRoundUp: true,
     });
 
-    const totalFees = getTotalFeeItem([swapFee, uiFee].filter(Boolean) as FeeItem[]);
-    const fees: GmSwapFees = {
-      swapFee,
-      swapPriceImpact,
-      totalFees,
-      uiFee,
-    };
-
-    let gasLimit;
-    let oraclePriceCount;
-
-    const glvMarketsCount = BigInt(glvInfo?.markets?.length ?? 0);
-
-    if (glvInfo) {
-      gasLimit = isDeposit
-        ? estimateExecuteGlvDepositGasLimit(gasLimits, {
-            marketsCount: glvMarketsCount,
-            initialLongTokenAmount: amounts.longTokenAmount,
-            initialShortTokenAmount: amounts.shortTokenAmount,
-            isMarketTokenDeposit,
-          })
-        : estimateExecuteGlvWithdrawalGasLimit(gasLimits, {
-            marketsCount: glvMarketsCount,
-          });
-
-      oraclePriceCount = isDeposit
-        ? estimateGlvDepositOraclePriceCount(glvMarketsCount)
-        : estimateGlvWithdrawalOraclePriceCount(glvMarketsCount);
+    let logicalNetworkFeeUsd = 0n;
+    if ("feeTokenAmount" in technicalFees) {
+      logicalNetworkFeeUsd = convertToUsd(
+        technicalFees.feeTokenAmount * -1n,
+        getWrappedToken(chainId).decimals,
+        getMidPrice(tokensData[getWrappedToken(chainId).address].prices)
+      )!;
     } else {
-      gasLimit = isDeposit
-        ? estimateExecuteDepositGasLimit(gasLimits, {})
-        : estimateExecuteWithdrawalGasLimit(gasLimits, {});
-      oraclePriceCount = isDeposit ? estimateDepositOraclePriceCount(0) : estimateWithdrawalOraclePriceCount(0);
+      logicalNetworkFeeUsd = ((sourceChainEstimatedNativeFeeUsd ?? 0n) + (sourceChainTxnEstimatedGasUsd ?? 0n)) * -1n;
     }
 
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, gasLimit, gasPrice, oraclePriceCount);
+    const logicalNetworkFee = getFeeItem(logicalNetworkFeeUsd, basisUsd)!;
+    // TODO ADD stargate protocol fees
+    const logicalProtocolFee = getTotalFeeItem([swapFee, uiFee, swapPriceImpact].filter(Boolean) as FeeItem[]);
+
+    const logicalFees: GmSwapFees = {
+      totalFees: logicalProtocolFee,
+      swapPriceImpact,
+      logicalNetworkFee,
+      swapFee,
+    };
 
     return {
-      fees,
-      executionFee,
+      logicalFees,
     };
-  }, [amounts, chainId, gasLimits, gasPrice, isDeposit, tokensData, glvInfo, isMarketTokenDeposit]);
+  }, [
+    amounts,
+    chainId,
+    gasLimits,
+    gasPrice,
+    isDeposit,
+    sourceChainEstimatedNativeFeeUsd,
+    sourceChainTxnEstimatedGasUsd,
+    technicalFees,
+    tokensData,
+  ]);
 };

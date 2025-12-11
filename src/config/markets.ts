@@ -36,24 +36,27 @@ export const GLV_MARKETS: {
   >;
 } = {
   [ARBITRUM]: {
+    // GLV [WETH-USDC]
     "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9": {
       name: undefined,
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
       glvTokenAddress: "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
-      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // GLV [WBTC-USDC]
     "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96": {
       name: undefined,
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
       glvTokenAddress: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
-      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
   },
   [AVALANCHE]: {
+    // GLV [WAVAX-USDC]
     "0x901eE57f7118A7be56ac079cbCDa7F22663A3874": {
       name: undefined,
       subtitle: "GMX Liquidity Vault",
@@ -64,6 +67,7 @@ export const GLV_MARKETS: {
     },
   },
   [AVALANCHE_FUJI]: {
+    // GLV [WETH-USDC]
     "0xc519a5b8e5e93D3ec85D62231C1681c44952689d": {
       name: "High Caps",
       subtitle: "Core ETH Markets Vault",
@@ -74,6 +78,7 @@ export const GLV_MARKETS: {
     },
   },
   [ARBITRUM_SEPOLIA]: {
+    // GLV [WETH-USDC.SG]
     "0xAb3567e55c205c62B141967145F37b7695a9F854": {
       name: "High Caps",
       subtitle: "Core ETH Markets Vault",

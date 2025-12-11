@@ -3,7 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import partition from "lodash/partition";
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
@@ -15,13 +15,14 @@ import { getChainName } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import type { ModalProps } from "components/Modal/Modal";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 
 import SolanaNetworkItem from "./SolanaNetworkItem";
-import ModalWithPortal from "../Modal/ModalWithPortal";
 
 import "./NetworkDropdown.scss";
 
@@ -178,42 +179,45 @@ function NetworkMenuItem({
   disabled?: boolean;
 }) {
   const { isConnected } = useAccount();
-  const Wrapper = disabled ? TooltipWithPortal : Fragment;
+  const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
-      <Wrapper variant="none" as="div" content={<Trans>Smart wallets are not supported on this network.</Trans>}>
-        <div
-          className={cx("network-dropdown-menu-item menu-item", {
-            "disabled !cursor-not-allowed opacity-50": disabled,
-          })}
-          data-qa={`networks-dropdown-${network.label}`}
-          onClick={() => {
-            if (disabled) {
-              return;
-            }
-            switchNetwork(network.value, isConnected);
-          }}
-        >
-          <div className="menu-item-group">
-            <div className="menu-item-icon">
-              <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+      {({ close }) => (
+        <Wrapper variant="none" as="div" content={<Trans>Smart wallets are not supported on this network.</Trans>}>
+          <div
+            className={cx("network-dropdown-menu-item menu-item", {
+              "disabled !cursor-not-allowed opacity-50": disabled,
+            })}
+            data-qa={`networks-dropdown-${network.label}`}
+            onClick={() => {
+              if (disabled) {
+                return;
+              }
+              close();
+              switchNetwork(network.value, isConnected);
+            }}
+          >
+            <div className="menu-item-group">
+              <div className="menu-item-icon">
+                <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
+              </div>
+              <span
+                className={cx("network-dropdown-item-label", {
+                  "text-typography-primary": chainId === network.value,
+                })}
+              >
+                {network.label}
+              </span>
             </div>
-            <span
-              className={cx("network-dropdown-item-label", {
-                "text-typography-primary": chainId === network.value,
-              })}
-            >
-              {network.label}
-            </span>
+            <div className="network-dropdown-menu-item-img">
+              {chainId === network.value && (
+                <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
+              )}
+            </div>
           </div>
-          <div className="network-dropdown-menu-item-img">
-            {chainId === network.value && (
-              <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
-            )}
-          </div>
-        </div>
-      </Wrapper>
+        </Wrapper>
+      )}
     </Menu.Item>
   );
 }

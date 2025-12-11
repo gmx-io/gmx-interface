@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -25,6 +27,7 @@ export default function EarnPortfolioPage() {
   const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { marketsTokensApyData: marketsTotalApyData, glvApyInfoData: glvTotalApyData } = useGmMarketsApy(
     chainId,
@@ -55,13 +58,14 @@ export default function EarnPortfolioPage() {
     }
 
     return Object.values(marketsInfoData).filter((info) => {
-      const balance = getByKey(
-        marketTokensData,
-        isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress
-      )?.balance;
-      return balance !== undefined && balance > 0n;
+      const tokenAddress = isGlvInfo(info) ? info.glvTokenAddress : info.marketTokenAddress;
+      const balance = getByKey(multichainMarketTokensBalances, tokenAddress)?.totalBalance;
+      const balanceUsd = getByKey(multichainMarketTokensBalances, tokenAddress)?.totalBalanceUsd;
+
+      const filteredBalanceUsd = getPlatformTokenBalanceAfterThreshold(balanceUsd);
+      return filteredBalanceUsd !== 0n && balance !== undefined && balance > 0n;
     });
-  }, [marketTokensData, marketsInfoData]);
+  }, [marketTokensData, marketsInfoData, multichainMarketTokensBalances]);
 
   const vestingData = useVestingData(account);
 
@@ -82,7 +86,7 @@ export default function EarnPortfolioPage() {
   return (
     <EarnPageLayout>
       {processedData && <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />}
-      {marketsInfoData && marketTokensData && processedData ? (
+      {processedData ? (
         <>
           {hasAnyAssets && (
             <AssetsList
@@ -92,14 +96,14 @@ export default function EarnPortfolioPage() {
               hasGmx={hasGmxAssets}
               hasEsGmx={hasEsGmxAssets}
               gmGlvAssets={gmGlvAssets}
-              marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
               glv30dApyData={glv30dApyData}
               markets30dApyData={markets30dApyData}
+              multichainMarketTokensBalances={multichainMarketTokensBalances}
             />
           )}
-          {glv90dApyData && markets90dApyData && performance90d && (
+          {glv90dApyData && markets90dApyData && performance90d && marketTokensData && (
             <RecommendedAssets
               hasGmxAssets={hasGmxAssets}
               marketsInfoData={marketsInfoData}
@@ -117,11 +121,11 @@ export default function EarnPortfolioPage() {
               hasGmx={hasGmxAssets}
               hasEsGmx={hasEsGmxAssets}
               gmGlvAssets={gmGlvAssets}
-              marketTokensData={marketTokensData}
               glvTotalApyData={glvTotalApyData}
               marketsTotalApyData={marketsTotalApyData}
               glv30dApyData={glv30dApyData}
               markets30dApyData={markets30dApyData}
+              multichainMarketTokensBalances={multichainMarketTokensBalances}
             />
           )}
         </>

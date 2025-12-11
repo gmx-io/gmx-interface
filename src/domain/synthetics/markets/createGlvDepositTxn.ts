@@ -1,99 +1,104 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import { numberToHex } from "viem";
 
 import { getContract } from "config/contracts";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import type { SetPendingDeposit } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
+import type { OrderMetricId } from "lib/metrics";
+import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { IGlvDepositUtils } from "typechain-types/GlvRouter";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import { applySlippageToMinOut } from "../trade";
-import { CreateDepositParams } from "./createDepositTxn";
+import type { TokensData } from "../tokens";
+import type { CreateGlvDepositParams } from "./types";
 
-interface CreateGlvDepositParams extends CreateDepositParams {
-  glvAddress: string;
+export async function createGlvDepositTxn({
+  chainId,
+  signer,
+  params,
+  longTokenAddress,
+  shortTokenAddress,
+  longTokenAmount,
+  shortTokenAmount,
+  marketTokenAmount,
+  executionFee,
+  executionGasLimit,
+  tokensData,
+  skipSimulation,
+  metricId,
+  blockTimestampData,
+  setPendingTxns,
+  setPendingDeposit,
+}: {
+  chainId: ContractsChainId;
+  signer: Signer;
+  longTokenAddress: string;
+  shortTokenAddress: string;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  executionFee: bigint;
+  executionGasLimit: bigint;
+  tokensData: TokensData;
+  skipSimulation?: boolean;
+  metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
+  setPendingTxns: (txns: any) => void;
+  setPendingDeposit: SetPendingDeposit;
+  params: CreateGlvDepositParams;
   marketTokenAmount: bigint;
-  isMarketTokenDeposit: boolean;
-  isFirstDeposit: boolean;
-}
-
-export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Signer, p: CreateGlvDepositParams) {
+}) {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const depositVaultAddress = getContract(chainId, "GlvVault");
 
   const isNativeLongDeposit = Boolean(
-    p.initialLongTokenAddress === NATIVE_TOKEN_ADDRESS && p.longTokenAmount != undefined && p.longTokenAmount > 0
+    longTokenAddress === NATIVE_TOKEN_ADDRESS && longTokenAmount != undefined && longTokenAmount > 0
   );
   const isNativeShortDeposit = Boolean(
-    p.initialShortTokenAddress === NATIVE_TOKEN_ADDRESS && p.shortTokenAmount != undefined && p.shortTokenAmount > 0
+    shortTokenAddress === NATIVE_TOKEN_ADDRESS && shortTokenAmount != undefined && shortTokenAmount > 0
   );
 
-  await validateSignerAddress(signer, p.account);
+  await validateSignerAddress(signer, params.addresses.receiver);
 
   let wntDeposit = 0n;
 
   if (isNativeLongDeposit) {
-    wntDeposit = wntDeposit + p.longTokenAmount!;
+    wntDeposit = wntDeposit + longTokenAmount!;
   }
 
   if (isNativeShortDeposit) {
-    wntDeposit = wntDeposit + p.shortTokenAmount!;
+    wntDeposit = wntDeposit + shortTokenAmount!;
   }
 
-  const shouldUnwrapNativeToken = isNativeLongDeposit || isNativeShortDeposit;
+  const shouldUnwrapNativeToken = params.shouldUnwrapNativeToken;
 
-  const wntAmount = p.executionFee + wntDeposit;
-
-  const initialLongTokenAddress = convertTokenAddress(chainId, p.initialLongTokenAddress, "wrapped");
-  const initialShortTokenAddress = convertTokenAddress(chainId, p.initialShortTokenAddress, "wrapped");
-
-  const minGlvTokens = applySlippageToMinOut(p.allowedSlippage, p.minMarketTokens);
+  const wntAmount = executionFee + wntDeposit;
 
   const multicall = [
     { method: "sendWnt", params: [depositVaultAddress, wntAmount] },
-    !isNativeLongDeposit && p.longTokenAmount > 0 && !p.isMarketTokenDeposit
-      ? { method: "sendTokens", params: [p.initialLongTokenAddress, depositVaultAddress, p.longTokenAmount] }
+    !isNativeLongDeposit && longTokenAmount > 0 && !params.isMarketTokenDeposit
+      ? { method: "sendTokens", params: [params.addresses.initialLongToken, depositVaultAddress, longTokenAmount] }
       : undefined,
 
-    !isNativeShortDeposit && p.shortTokenAmount > 0 && !p.isMarketTokenDeposit
-      ? { method: "sendTokens", params: [p.initialShortTokenAddress, depositVaultAddress, p.shortTokenAmount] }
-      : undefined,
-    p.isMarketTokenDeposit
+    !isNativeShortDeposit && shortTokenAmount > 0 && !params.isMarketTokenDeposit
       ? {
           method: "sendTokens",
-          params: [p.marketTokenAddress, depositVaultAddress, p.marketTokenAmount],
+          params: [params.addresses.initialShortToken, depositVaultAddress, shortTokenAmount],
+        }
+      : undefined,
+    params.isMarketTokenDeposit
+      ? {
+          method: "sendTokens",
+          params: [params.addresses.market, depositVaultAddress, marketTokenAmount],
         }
       : undefined,
     {
       method: "createGlvDeposit",
-      params: [
-        {
-          addresses: {
-            glv: p.glvAddress,
-            market: p.marketTokenAddress,
-            receiver: p.isFirstDeposit ? numberToHex(1, { size: 20 }) : p.account,
-            callbackContract: ethers.ZeroAddress,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
-            initialLongToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
-            initialShortToken: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
-            longTokenSwapPath: [],
-            shortTokenSwapPath: [],
-          },
-          minGlvTokens: minGlvTokens,
-          executionFee: p.executionFee,
-          callbackGasLimit: 0n,
-          shouldUnwrapNativeToken,
-          isMarketTokenDeposit: p.isMarketTokenDeposit,
-          dataList: [],
-        } satisfies IGlvDepositUtils.CreateGlvDepositParamsStruct,
-      ],
+      params: [params],
     },
   ];
 
@@ -101,17 +106,17 @@ export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Sig
     .filter(Boolean)
     .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
 
-  const simulationPromise = !p.skipSimulation
+  const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {
-        account: p.account,
+        account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData: p.tokensData,
+        tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvDeposit",
         errorTitle: t`Deposit error.`,
         value: wntAmount,
-        metricId: p.metricId,
-        blockTimestampData: p.blockTimestampData,
+        metricId,
+        blockTimestampData,
       })
     : undefined;
 
@@ -122,37 +127,37 @@ export async function createGlvDepositTxn(chainId: ContractsChainId, signer: Sig
     [encodedPayload],
     wntAmount,
     simulationPromise,
-    p.metricId
+    metricId
   );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
     value: wntAmount,
     hideSentMsg: true,
     hideSuccessMsg: true,
-    metricId: p.metricId,
+    metricId,
     gasLimit,
     gasPriceData,
-    setPendingTxns: p.setPendingTxns,
+    setPendingTxns,
     pendingTransactionData: {
-      estimatedExecutionFee: p.executionFee,
-      estimatedExecutionGasLimit: p.executionGasLimit,
+      estimatedExecutionFee: executionFee,
+      estimatedExecutionGasLimit: executionGasLimit,
     },
   }).then(() => {
-    p.setPendingDeposit({
-      account: p.account,
-      marketAddress: p.marketTokenAddress,
-      glvAddress: p.glvAddress,
-      initialLongTokenAddress: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialLongTokenAddress,
-      initialShortTokenAddress: p.isMarketTokenDeposit ? ethers.ZeroAddress : initialShortTokenAddress,
-      longTokenSwapPath: p.longTokenSwapPath,
-      shortTokenSwapPath: p.shortTokenSwapPath,
-      minMarketTokens: p.minMarketTokens,
+    setPendingDeposit({
+      account: params.addresses.receiver,
+      marketAddress: params.addresses.market,
+      glvAddress: params.addresses.glv,
+      initialLongTokenAddress: params.addresses.initialLongToken,
+      initialShortTokenAddress: params.addresses.initialShortToken,
+      longTokenSwapPath: params.addresses.longTokenSwapPath,
+      shortTokenSwapPath: params.addresses.shortTokenSwapPath,
+      minMarketTokens: params.minGlvTokens,
       shouldUnwrapNativeToken,
-      initialLongTokenAmount: p.longTokenAmount,
-      initialShortTokenAmount: p.shortTokenAmount,
-      initialMarketTokenAmount: p.isMarketTokenDeposit ? p.marketTokenAmount : 0n,
+      initialLongTokenAmount: longTokenAmount,
+      initialShortTokenAmount: shortTokenAmount,
+      initialMarketTokenAmount: params.isMarketTokenDeposit ? marketTokenAmount : 0n,
       isGlvDeposit: true,
-      isMarketDeposit: p.isMarketTokenDeposit,
+      isMarketDeposit: params.isMarketTokenDeposit,
     });
   });
 }
