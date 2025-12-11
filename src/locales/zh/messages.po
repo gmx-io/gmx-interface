@@ -3647,7 +3647,7 @@ msgstr "转移订单已执行。"
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "您尚未达到排名所需的最低“资本使用” {0}。"
 
-#: src/domain/multichain/useSourceChainError.ts
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
