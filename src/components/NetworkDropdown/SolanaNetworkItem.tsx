@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -7,7 +7,7 @@ import Modal from "components/Modal/Modal";
 
 import solanaIcon from "img/tokens/ic_sol.svg";
 
-export default function SolanaNetworkItem() {
+const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(_props, ref) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -18,7 +18,12 @@ export default function SolanaNetworkItem() {
 
   return (
     <>
-      <div className="network-dropdown-menu-item menu-item" data-qa="networks-dropdown-solana" onClick={handleClick}>
+      <div
+        ref={ref}
+        className="network-dropdown-menu-item menu-item"
+        data-qa="networks-dropdown-solana"
+        onClick={handleClick}
+      >
         <div className="menu-item-group cursor-pointer">
           <div className="menu-item-icon">
             <img className="network-dropdown-icon" src={solanaIcon} alt={t`Solana`} />
@@ -54,4 +59,6 @@ export default function SolanaNetworkItem() {
       </Modal>
     </>
   );
-}
+});
+
+export default SolanaNetworkItem;

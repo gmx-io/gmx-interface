@@ -1,6 +1,5 @@
-import random from "lodash/random";
-
 import { isLocal } from "config/env";
+import { getOracleKeeperFallbackStateKey } from "config/localStorage";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import {
   metrics,
@@ -38,7 +37,12 @@ function parseOracleCandle(rawCandle: number[]): Bar {
   };
 }
 
-const failsPerMinuteToFallback = 5;
+type FallbackState = {
+  fallbackEndpoint: string;
+  timestamp: number;
+};
+
+export const failsPerMinuteToFallback = 3;
 
 export class OracleKeeperFetcher implements OracleFetcher {
   private readonly chainId: number;
@@ -56,10 +60,58 @@ export class OracleKeeperFetcher implements OracleFetcher {
     this.mainUrl = getOracleKeeperUrl(this.chainId);
     this.isFallback = false;
     this.failTimes = [];
+
+    const storedState = this.loadStoredFallbackState();
+
+    if (storedState) {
+      this.isFallback = true;
+      this.fallbackIndex = this.fallbackUrls.indexOf(storedState.fallbackEndpoint);
+    }
+
+    const mainUrlIndex = this.fallbackUrls.indexOf(this.mainUrl);
+
+    if (this.fallbackIndex === -1 || this.fallbackIndex === mainUrlIndex) {
+      this.isFallback = false;
+      this.fallbackIndex = 0;
+    }
   }
 
   get url() {
     return this.isFallback ? this.fallbackUrls[this.fallbackIndex] : this.mainUrl;
+  }
+
+  get storageKey() {
+    return JSON.stringify(getOracleKeeperFallbackStateKey(this.chainId));
+  }
+
+  loadStoredFallbackState() {
+    const stored = localStorage.getItem(this.storageKey);
+    if (!stored) return null;
+
+    try {
+      const parsed = JSON.parse(stored) as FallbackState;
+
+      const isValidFallback = parsed.fallbackEndpoint && this.fallbackUrls.includes(parsed.fallbackEndpoint);
+
+      return isValidFallback ? parsed : null;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to load fallback state from localStorage", error);
+      return null;
+    }
+  }
+
+  saveStoredFallbackState(fallbackEndpoint: string) {
+    try {
+      const state: FallbackState = {
+        fallbackEndpoint,
+        timestamp: Date.now(),
+      };
+      localStorage.setItem(this.storageKey, JSON.stringify(state));
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("Failed to save fallback state to localStorage", error);
+    }
   }
 
   handleFailure(method: OracleKeeperMetricMethodId) {
@@ -80,7 +132,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
       if (this.isFallback) {
         this.fallbackIndex = (this.fallbackIndex + 1) % this.fallbackUrls.length;
       } else {
-        this.fallbackIndex = random(0, this.fallbackUrls.length - 1);
+        // First fallback url should be different from the main url
+        this.fallbackIndex = this.fallbackUrls.findIndex((url) => url !== this.mainUrl);
       }
 
       // eslint-disable-next-line no-console
@@ -91,11 +144,13 @@ export class OracleKeeperFetcher implements OracleFetcher {
       metrics.pushCounter<OracleKeeperFallbackCounter>("oracleKeeper.fallback", {
         chainId: this.chainId,
       });
+
+      this.saveStoredFallbackState(this.fallbackUrls[this.fallbackIndex]);
     }
 
     this.fallbackThrottleTimerId = window.setTimeout(() => {
       this.fallbackThrottleTimerId = undefined;
-    }, 5000);
+    }, 2000);
   }
 
   fetchTickers(): Promise<TickersResponse> {
@@ -135,12 +190,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
       });
   }
 
-  fetchPostBatchReport(body: BatchReportBody, debug?: boolean): Promise<Response> {
-    if (debug) {
-      // eslint-disable-next-line no-console
-      console.log("sendBatchMetrics", body);
-    }
-
+  fetchPostBatchReport(body: BatchReportBody): Promise<Response> {
     if (isLocal()) {
       return Promise.resolve(new Response());
     }

@@ -60,6 +60,7 @@ type Props = {
   onDoNotShowAgainChange?: (value: boolean) => void;
   onShareAction?: () => void;
   shareSource: SharePositionActionSource;
+  isRpnl?: boolean;
 };
 
 function PositionShare({
@@ -79,6 +80,7 @@ function PositionShare({
   onDoNotShowAgainChange,
   onShareAction,
   shareSource,
+  isRpnl = false,
 }: Props) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
@@ -325,13 +327,13 @@ function PositionShare({
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
           <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Show PnL Amounts</Trans>
+            {isRpnl ? <Trans>Show rPnL Amounts</Trans> : <Trans>Show PnL Amounts</Trans>}
           </span>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
           <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Include PnL in Leverage Display</Trans>
+            {isRpnl ? <Trans>Include rPnL in Leverage Display</Trans> : <Trans>Include PnL in Leverage Display</Trans>}
           </span>
         </ToggleSwitch>
 

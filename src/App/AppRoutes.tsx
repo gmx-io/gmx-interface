@@ -12,9 +12,11 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
+import { dynamicActivate, locales } from "lib/i18n";
 import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
+import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
 import { useHashQueryParams } from "lib/useHashQueryParams";
 import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
@@ -55,6 +57,7 @@ export function AppRoutes() {
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
   useHashQueryParams();
+  useFreshnessMetricsControl();
 
   const query = useRouteQuery();
 
@@ -99,21 +102,35 @@ export function AppRoutes() {
     }
   }
 
-  const urlParams = useSearchParams<{ chainId: string }>();
+  const { chainId, lang } = useSearchParams<{ chainId?: string; lang?: string }>();
+
+  const deleteSearchParam = useCallback(
+    (param: string) => {
+      const searchParams = new URLSearchParams(history.location.search);
+      searchParams.delete(param);
+      history.replace({
+        pathname: history.location.pathname,
+        search: searchParams.toString(),
+      });
+    },
+    [history]
+  );
 
   useEffect(() => {
-    const chainId = urlParams.chainId;
     if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
       switchNetwork(Number(chainId), true).then(() => {
-        const searchParams = new URLSearchParams(history.location.search);
-        searchParams.delete("chainId");
-        history.replace({
-          pathname: history.location.pathname,
-          search: searchParams.toString(),
-        });
+        deleteSearchParam("chainId");
       });
     }
-  }, [urlParams, history]);
+  }, [chainId, deleteSearchParam]);
+
+  useEffect(() => {
+    if (lang && Object.keys(locales).includes(lang)) {
+      dynamicActivate(lang).then(() => {
+        deleteSearchParam("lang");
+      });
+    }
+  }, [lang, deleteSearchParam]);
 
   const isEarnPage = history.location.pathname.startsWith("/earn");
   useEffect(() => {

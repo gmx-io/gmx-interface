@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -12,6 +13,7 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import { Operation } from "../GmSwapBox/types";
+
 import "./GmFees.scss";
 
 type Props = {
@@ -21,6 +23,7 @@ type Props = {
   uiFee?: FeeItem;
   shiftFee?: FeeItem;
   operation: Operation;
+  isLoading?: boolean;
 };
 
 export function GmFees(p: Props) {
@@ -35,8 +38,14 @@ export function GmFees(p: Props) {
 
     const operationText = operationTexts[p.operation];
 
+    if (p.isLoading) {
+      return (
+        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={120} className="leading-base" inline={true} />
+      );
+    }
+
     if (p.totalFees?.deltaUsd === undefined) {
-      return "-";
+      return "0.000% / 0.000%";
     } else if (
       bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||
       p.swapFee ||
@@ -193,6 +202,7 @@ export function GmFees(p: Props) {
     );
   }, [
     p.operation,
+    p.isLoading,
     p.shiftFee,
     p.swapFee,
     p.swapPriceImpact,

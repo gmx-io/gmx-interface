@@ -2530,7 +2530,8 @@ export interface MarketInfo {
   poolValueMin: Scalars["BigInt"]["output"];
   positionFeeFactorForNegativeImpact: Scalars["BigInt"]["output"];
   positionFeeFactorForPositiveImpact: Scalars["BigInt"]["output"];
-  positionImpactExponentFactor: Scalars["BigInt"]["output"];
+  positionImpactExponentFactorNegative: Scalars["BigInt"]["output"];
+  positionImpactExponentFactorPositive: Scalars["BigInt"]["output"];
   positionImpactFactorNegative: Scalars["BigInt"]["output"];
   positionImpactFactorPositive: Scalars["BigInt"]["output"];
   positionImpactPoolAmount: Scalars["BigInt"]["output"];
@@ -2931,12 +2932,18 @@ export enum MarketInfoOrderByInput {
   positionFeeFactorForPositiveImpact_DESC = "positionFeeFactorForPositiveImpact_DESC",
   positionFeeFactorForPositiveImpact_DESC_NULLS_FIRST = "positionFeeFactorForPositiveImpact_DESC_NULLS_FIRST",
   positionFeeFactorForPositiveImpact_DESC_NULLS_LAST = "positionFeeFactorForPositiveImpact_DESC_NULLS_LAST",
-  positionImpactExponentFactor_ASC = "positionImpactExponentFactor_ASC",
-  positionImpactExponentFactor_ASC_NULLS_FIRST = "positionImpactExponentFactor_ASC_NULLS_FIRST",
-  positionImpactExponentFactor_ASC_NULLS_LAST = "positionImpactExponentFactor_ASC_NULLS_LAST",
-  positionImpactExponentFactor_DESC = "positionImpactExponentFactor_DESC",
-  positionImpactExponentFactor_DESC_NULLS_FIRST = "positionImpactExponentFactor_DESC_NULLS_FIRST",
-  positionImpactExponentFactor_DESC_NULLS_LAST = "positionImpactExponentFactor_DESC_NULLS_LAST",
+  positionImpactExponentFactorNegative_ASC = "positionImpactExponentFactorNegative_ASC",
+  positionImpactExponentFactorNegative_ASC_NULLS_FIRST = "positionImpactExponentFactorNegative_ASC_NULLS_FIRST",
+  positionImpactExponentFactorNegative_ASC_NULLS_LAST = "positionImpactExponentFactorNegative_ASC_NULLS_LAST",
+  positionImpactExponentFactorNegative_DESC = "positionImpactExponentFactorNegative_DESC",
+  positionImpactExponentFactorNegative_DESC_NULLS_FIRST = "positionImpactExponentFactorNegative_DESC_NULLS_FIRST",
+  positionImpactExponentFactorNegative_DESC_NULLS_LAST = "positionImpactExponentFactorNegative_DESC_NULLS_LAST",
+  positionImpactExponentFactorPositive_ASC = "positionImpactExponentFactorPositive_ASC",
+  positionImpactExponentFactorPositive_ASC_NULLS_FIRST = "positionImpactExponentFactorPositive_ASC_NULLS_FIRST",
+  positionImpactExponentFactorPositive_ASC_NULLS_LAST = "positionImpactExponentFactorPositive_ASC_NULLS_LAST",
+  positionImpactExponentFactorPositive_DESC = "positionImpactExponentFactorPositive_DESC",
+  positionImpactExponentFactorPositive_DESC_NULLS_FIRST = "positionImpactExponentFactorPositive_DESC_NULLS_FIRST",
+  positionImpactExponentFactorPositive_DESC_NULLS_LAST = "positionImpactExponentFactorPositive_DESC_NULLS_LAST",
   positionImpactFactorNegative_ASC = "positionImpactFactorNegative_ASC",
   positionImpactFactorNegative_ASC_NULLS_FIRST = "positionImpactFactorNegative_ASC_NULLS_FIRST",
   positionImpactFactorNegative_ASC_NULLS_LAST = "positionImpactFactorNegative_ASC_NULLS_LAST",
@@ -3688,15 +3695,24 @@ export interface MarketInfoWhereInput {
   positionFeeFactorForPositiveImpact_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   positionFeeFactorForPositiveImpact_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   positionFeeFactorForPositiveImpact_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  positionImpactExponentFactor_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  positionImpactExponentFactor_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  positionImpactExponentFactor_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  positionImpactExponentFactor_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  positionImpactExponentFactor_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  positionImpactExponentFactor_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  positionImpactExponentFactor_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  positionImpactExponentFactor_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  positionImpactExponentFactor_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  positionImpactExponentFactorNegative_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorNegative_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorNegative_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorNegative_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  positionImpactExponentFactorNegative_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  positionImpactExponentFactorNegative_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorNegative_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorNegative_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorNegative_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  positionImpactExponentFactorPositive_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorPositive_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorPositive_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorPositive_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  positionImpactExponentFactorPositive_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  positionImpactExponentFactorPositive_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorPositive_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorPositive_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  positionImpactExponentFactorPositive_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   positionImpactFactorNegative_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   positionImpactFactorNegative_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   positionImpactFactorNegative_gte?: InputMaybe<Scalars["BigInt"]["input"]>;

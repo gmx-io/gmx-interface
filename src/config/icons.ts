@@ -5,9 +5,11 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
-  SOURCE_ETHEREUM_MAINNET,
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  GmxAccountPseudoChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "config/chains";
@@ -92,10 +94,10 @@ const ICONS: Record<number | "common", ChainIcons> = {
   },
 };
 
-export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | 0, string> = {
+export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChainId, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
-  0: gmxIcon,
+  [GMX_ACCOUNT_PSEUDO_CHAIN_ID]: gmxIcon,
   [SOURCE_ETHEREUM_MAINNET]: eth,
   [SOURCE_BASE_MAINNET]: base,
   [AVALANCHE_FUJI]: avalancheTestnet,

@@ -4,18 +4,18 @@ import { BOTANIX, ContractsChainId, getExplorerUrl } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 import {
+  adjustForDecimals,
   DUST_BNB,
+  getFeeBasisPoints,
   MARKET,
   MINT_BURN_FEE_BASIS_POINTS,
   TAX_BASIS_POINTS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  adjustForDecimals,
-  getFeeBasisPoints,
 } from "lib/legacy";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import { InfoTokens, Token, TokenInfo, TokenPrices } from "sdk/types/tokens";
+import { InfoTokens, Token, TokenInfo } from "sdk/types/tokens";
 
 export * from "sdk/utils/tokens";
 
@@ -252,10 +252,6 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 export function getSpread(p: { minPrice: bigint; maxPrice: bigint }): bigint {
   const diff = p.maxPrice - p.minPrice;
   return (diff * PRECISION) / ((p.maxPrice + p.minPrice) / 2n);
-}
-
-export function getMidPrice(prices: TokenPrices) {
-  return (prices.minPrice + prices.maxPrice) / 2n;
 }
 
 const MIN_NATIVE_CURRENCY_FOR_GAS = expandDecimals(10, USD_DECIMALS);

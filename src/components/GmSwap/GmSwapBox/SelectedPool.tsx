@@ -36,7 +36,7 @@ export function SelectedPool({
   );
 }
 
-function SelectedPoolLabel({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarketInfo | undefined }) {
+export function SelectedPoolLabel({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarketInfo | undefined }) {
   if (!glvOrMarketInfo) return "...";
   let name: string;
 

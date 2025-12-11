@@ -6,7 +6,6 @@ import type { SignedTokenPermit, TokenData } from "domain/tokens";
 import type { SignatureDomain } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { ContractName, getContract } from "sdk/configs/contracts";
-import { MarketsInfoData } from "sdk/types/markets";
 import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/types/trade";
 import {
   combineExternalCalls,
@@ -107,7 +106,14 @@ export function getRelayerFeeParams({
    * it should also be included in relayParams
    */
   transactionExternalCalls: ExternalCallsPayload | undefined;
-}) {
+}):
+  | {
+      feeParams: RelayFeePayload;
+      externalCalls: ExternalCallsPayload;
+      feeExternalSwapGasLimit: bigint;
+      gasPaymentParams: GasPaymentParams;
+    }
+  | undefined {
   const gasPaymentParams: GasPaymentParams = {
     gasPaymentToken: gasPaymentToken,
     relayFeeToken: relayerFeeToken,
@@ -198,7 +204,7 @@ export function getRawRelayerParams({
   feeParams,
   externalCalls,
   tokenPermits,
-  marketsInfoData,
+  // marketsInfoData,
 }: {
   chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
@@ -206,7 +212,7 @@ export function getRawRelayerParams({
   feeParams: RelayFeePayload;
   externalCalls: ExternalCallsPayload;
   tokenPermits: SignedTokenPermit[];
-  marketsInfoData: MarketsInfoData;
+  // marketsInfoData: MarketsInfoData;
 }): RawRelayParamsPayload {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
@@ -214,7 +220,7 @@ export function getRawRelayerParams({
     feeSwapPath: feeParams.feeSwapPath,
     gasPaymentTokenAddress,
     relayerFeeTokenAddress,
-    marketsInfoData,
+    // marketsInfoData,
   });
 
   const relayParamsPayload: RawRelayParamsPayload = {

@@ -27,6 +27,7 @@ export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const TRADE_LINK_KEY = "trade-link";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
+export const DEBUG_METRICS_KEY = "debug-metrics";
 export const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
@@ -77,6 +78,8 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const RPC_PROVIDER_KEY = "rpc-provider";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
+
+export const ORACLE_KEEPER_FALLBACK_STATE_KEY = "oracle-keeper-fallback-state";
 
 /**
  * @deprecated
@@ -162,6 +165,10 @@ export function getRpcProviderKey(chainId: number | string) {
   return [chainId, RPC_PROVIDER_KEY];
 }
 
+export function getOracleKeeperFallbackStateKey(chainId: number) {
+  return [chainId, ORACLE_KEEPER_FALLBACK_STATE_KEY];
+}
+
 // TODO: this was made on 07.06.2024, remove this in 6 months, because everyone would be migrated to new defaults by then
 export function getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId: number) {
   return [chainId, HAS_OVERRIDDEN_DEFAULT_ARB_30_EXECUTION_FEE_BUFFER_BPS_KEY];
@@ -220,7 +227,7 @@ export function getFromTokenIsGmxAccountKey(chainId: number) {
 export function getClaimTermsAcceptedKey(
   chainId: number,
   account: string | undefined,
-  distributionId: bigint,
+  distributionId: string,
   claimTerms: string
 ) {
   return `${chainId}:${account}:${distributionId}:${claimTerms}-${CLAIM_TERMS_ACCEPTED_KEY}`;

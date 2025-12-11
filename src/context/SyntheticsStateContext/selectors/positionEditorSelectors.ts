@@ -7,6 +7,7 @@ import {
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { parseValue } from "lib/numbers";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
@@ -76,8 +77,8 @@ export const selectPositionEditorSelectedCollateralToken = createSelector((q) =>
     return;
   }
 
-  if (isCollateralTokenFromGmxAccount && !token.isGmxAccount) {
-    return { ...token, isGmxAccount: true, balance: token.gmxAccountBalance };
+  if (isCollateralTokenFromGmxAccount && token.balanceType !== TokenBalanceType.GmxAccount) {
+    return { ...token, balanceType: TokenBalanceType.GmxAccount, balance: token.gmxAccountBalance };
   }
 
   return token;

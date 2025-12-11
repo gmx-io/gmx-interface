@@ -4,6 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
+import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -83,6 +84,8 @@ export function GmListItem({
   const userEarnings = useUserEarnings(chainId, srcChainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
+  const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const multichainMarketTokenBalances = multichainMarketTokensBalances[token.address];
 
   const marketOrGlv = getByKey(marketsInfoData, token?.address);
 
@@ -197,7 +200,7 @@ export function GmListItem({
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Wallet</Trans>}
+            label={<Trans>Balance</Trans>}
             value={
               <GmTokensBalanceInfo
                 token={token}
@@ -206,6 +209,7 @@ export function GmListItem({
                 earnedTotal={marketEarnings?.total}
                 isGlv={isGlv}
                 singleLine={true}
+                multichainBalances={multichainMarketTokenBalances}
               />
             }
           />
@@ -299,6 +303,7 @@ export function GmListItem({
           daysConsidered={daysConsidered}
           earnedRecently={marketEarnings?.recent}
           earnedTotal={marketEarnings?.total}
+          multichainBalances={multichainMarketTokenBalances}
           isGlv={isGlv}
         />
       </TableTdActionable>

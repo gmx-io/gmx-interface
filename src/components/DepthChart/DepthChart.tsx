@@ -27,7 +27,7 @@ import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import type { MarketInfo } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
+import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
 import {
@@ -1145,11 +1145,14 @@ function useEdgePoints(
   const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
   const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
 
-  const realLeftMax = bigMath.max(marketInfo.longInterestUsd, shortLiquidity);
+  const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
+  const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
+
+  const realLeftMax = bigMath.max(longInterestUsd, shortLiquidity);
   const isLeftEmpty = realLeftMax === 0n;
   const leftMin = shortLiquidity;
   const rightMin = longLiquidity;
-  const realRightMax = bigMath.max(marketInfo.shortInterestUsd, longLiquidity);
+  const realRightMax = bigMath.max(shortInterestUsd, longLiquidity);
   const isRightEmpty = realRightMax === 0n;
 
   const zoomBigInt = numberToBigint(zoom, FLOAT_DECIMALS);

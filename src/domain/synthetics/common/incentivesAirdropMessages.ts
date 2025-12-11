@@ -1,5 +1,14 @@
 import { t } from "@lingui/macro";
 
+import { getDistributionTitle } from "components/UserIncentiveDistribution/utils";
+
+import {
+  GLP_DISTRIBUTION_ID,
+  GLP_DISTRIBUTION_TEST_ID,
+  GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID,
+  GLV_BONUS_INCENTIVE_DISTRIBUTION_ID,
+} from "../claims/constants";
+
 export const INCENTIVE_TYPE_MAP = {
   1001: t`GM Airdrop`,
   1002: t`GLP to GM Airdrop`,
@@ -10,6 +19,14 @@ export const INCENTIVE_TYPE_MAP = {
   1100: t`Avalanche LP Incentives`,
   1101: t`Avalanche Trading Incentives`,
   1200: t`tBTC LP Incentives`,
+  [GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString()]: getDistributionTitle(
+    GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString()
+  ),
+  [GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID.toString()]: getDistributionTitle(
+    GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID.toString()
+  ),
+  [GLP_DISTRIBUTION_ID.toString()]: getDistributionTitle(GLP_DISTRIBUTION_ID.toString()),
+  [GLP_DISTRIBUTION_TEST_ID.toString()]: getDistributionTitle(GLP_DISTRIBUTION_TEST_ID.toString()),
 };
 
 export const INCENTIVE_TOOLTIP_MAP = {

@@ -2,6 +2,7 @@ import { Chain, getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
   coinbaseWallet,
   coreWallet,
+  geminiWallet,
   injectedWallet,
   metaMaskWallet,
   okxWallet,
@@ -9,24 +10,14 @@ import {
   safeWallet,
   trustWallet,
   walletConnectWallet,
-  geminiWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
-import { http } from "viem";
-import {
-  arbitrum,
-  arbitrumSepolia,
-  avalanche,
-  avalancheFuji,
-  base,
-  bsc,
-  mainnet,
-  optimismSepolia,
-  sepolia,
-} from "viem/chains";
+import { createPublicClient, fallback, http, PublicClient, Transport } from "viem";
 
-import { botanix } from "config/chains";
+import { getViemChain, isTestnetChain, RPC_PROVIDERS } from "config/chains";
 import { isDevelopment } from "config/env";
+import { VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
+import { LRUCache } from "sdk/utils/LruCache";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 
@@ -57,31 +48,54 @@ const othersWalletList: WalletList = [
   },
 ];
 
-export const getRainbowKitConfig = once(() =>
-  getDefaultConfig({
+export const getRainbowKitConfig = once(() => {
+  const chains = Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter(
+    (chain) => isDevelopment() || !isTestnetChain(chain.id)
+  ) as [Chain, ...Chain[]];
+
+  const transports = chains.reduce(
+    (acc, chain) => {
+      acc[chain.id] = fallback([...RPC_PROVIDERS[chain.id].map((url: string) => http(url))]);
+      return acc;
+    },
+    {} as Record<number, Transport>
+  );
+
+  return getDefaultConfig({
     appName: APP_NAME,
     projectId: WALLET_CONNECT_PROJECT_ID,
-    chains: [
-      arbitrum,
-      avalanche,
-      botanix as Chain,
-      base,
-      bsc,
-      mainnet,
-      ...(isDevelopment() ? [avalancheFuji, arbitrumSepolia, optimismSepolia, sepolia] : []),
-    ],
-    transports: {
-      [arbitrum.id]: http(),
-      [avalanche.id]: http(),
-      [avalancheFuji.id]: http(),
-      [arbitrumSepolia.id]: http(),
-      [base.id]: http(),
-      [optimismSepolia.id]: http(),
-      [sepolia.id]: http(),
-      [botanix.id]: http(),
-      [bsc.id]: http(),
-      [mainnet.id]: http(),
-    },
+    chains: chains,
+    transports: transports,
     wallets: [...popularWalletList, ...othersWalletList],
-  })
-);
+  });
+});
+
+const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
+
+export function getPublicClientWithRpc(chainId: number): PublicClient {
+  const key = `chainId:${chainId}`;
+  if (PUBLIC_CLIENTS_CACHE.has(key)) {
+    return PUBLIC_CLIENTS_CACHE.get(key)!;
+  }
+  const publicClient = createPublicClient({
+    transport: fallback([
+      ...RPC_PROVIDERS[chainId].map((url: string) =>
+        http(
+          url,
+          import.meta.env.MODE === "test"
+            ? {
+                fetchOptions: {
+                  headers: {
+                    Origin: "http://localhost:3010",
+                  },
+                },
+              }
+            : undefined
+        )
+      ),
+    ]),
+    chain: getViemChain(chainId),
+  });
+  PUBLIC_CLIENTS_CACHE.set(key, publicClient);
+  return publicClient;
+}

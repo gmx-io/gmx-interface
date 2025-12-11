@@ -6,6 +6,7 @@ import {
   MarketInfo,
   MarketsInfoData,
   getMaxLeverageByMinCollateralFactor,
+  getOpenInterestForBalance,
   getUsedLiquidity,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
@@ -118,8 +119,8 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     indexTokenStats.totalPoolValue += poolValueUsd;
     indexTokenStats.totalUsedLiquidity += usedLiquidity;
     indexTokenStats.totalMaxLiquidity += maxLiquidity;
-    indexTokenStats.totalOpenInterestLong += marketInfo.longInterestUsd;
-    indexTokenStats.totalOpenInterestShort += marketInfo.shortInterestUsd;
+    indexTokenStats.totalOpenInterestLong += getOpenInterestForBalance(marketInfo, true);
+    indexTokenStats.totalOpenInterestShort += getOpenInterestForBalance(marketInfo, false);
     indexTokenStats.maxUiAllowedLeverage = Math.max(
       indexTokenStats.maxUiAllowedLeverage,
       getMaxLeverageByMinCollateralFactor(marketInfo.minCollateralFactor) / 2 / BASIS_POINTS_DIVISOR

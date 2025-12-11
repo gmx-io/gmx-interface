@@ -6,6 +6,7 @@ import {
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import type { BalancesDataResult } from "domain/synthetics/tokens";
+import { TokenBalanceType } from "domain/tokens";
 import { useMulticall } from "lib/multicall";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
 
@@ -33,12 +34,12 @@ export function useGmxAccountTokenBalances(
     request: (chainId, key) => buildGmxAccountTokenBalancesRequest(chainId, key?.[0] as string),
     parseResponse: (result) => {
       const parsedResult = parseGmxAccountTokenBalancesData(result);
-      resetTokensBalancesUpdates(Object.keys(parsedResult), "gmxAccount");
+      resetTokensBalancesUpdates(Object.keys(parsedResult), TokenBalanceType.GmxAccount);
       return parsedResult;
     },
   });
 
-  const balancesData = useUpdatedTokensBalances(data, "gmxAccount");
+  const balancesData = useUpdatedTokensBalances(data, TokenBalanceType.GmxAccount);
 
   return {
     balancesData,
