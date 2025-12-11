@@ -16,7 +16,7 @@ import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext
 import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
-import { useSourceChainError } from "domain/multichain/useSourceChainError";
+import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn, getBridgeInTxnParams } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -168,7 +168,7 @@ export function BridgeInModal({
     targetChainId: chainId,
   });
 
-  const nativeBalanceError = useSourceChainError({
+  const sourceChainNativeFeeError = useSourceChainNativeFeeError({
     networkFeeUsd: nativeFeeUsd,
     paySource: "sourceChain",
     chainId,
@@ -264,9 +264,9 @@ export function BridgeInModal({
       };
     }
 
-    if (nativeBalanceError) {
+    if (sourceChainNativeFeeError) {
       return {
-        text: nativeBalanceError,
+        text: sourceChainNativeFeeError,
         disabled: true,
       };
     }
@@ -282,7 +282,7 @@ export function BridgeInModal({
     bridgeInChainMarketTokenBalance,
     bridgeInAmount,
     sourceChainDecimals,
-    nativeBalanceError,
+    sourceChainNativeFeeError,
   ]);
 
   if (!glvOrMarketInfo) {

@@ -21,7 +21,7 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useSourceChainError } from "domain/multichain/useSourceChainError";
+import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
 import type { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
@@ -177,7 +177,7 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   });
 
-  const sourceChainError = useSourceChainError({
+  const sourceChainNativeFeeError = useSourceChainNativeFeeError({
     networkFeeUsd:
       logicalFees?.logicalNetworkFee?.deltaUsd !== undefined
         ? bigMath.abs(logicalFees.logicalNetworkFee.deltaUsd)
@@ -199,7 +199,7 @@ export const useGmSwapSubmitState = ({
     return undefined;
   }, [estimationError, gasPaymentToken]);
 
-  const error = commonError || swapError || expressError || sourceChainError || formattedEstimationError;
+  const error = commonError || swapError || expressError || sourceChainNativeFeeError || formattedEstimationError;
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
 
