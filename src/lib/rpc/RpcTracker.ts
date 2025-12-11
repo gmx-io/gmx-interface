@@ -1,4 +1,5 @@
 import orderBy from "lodash/orderBy";
+import uniq from "lodash/uniq";
 import { decodeFunctionResult, encodeFunctionData } from "viem";
 
 import { ContractsChainId, isContractsChain } from "config/chains";
@@ -262,7 +263,13 @@ export class RpcTracker {
     return ranked[0]?.endpoint;
   };
 
-  selectNextFallbacks = ({ endpointsStats, primary }): string[] | undefined => {
+  selectNextFallbacks = ({
+    endpointsStats,
+    primary,
+  }: {
+    endpointsStats: RpcStats[];
+    primary: string;
+  }): string[] | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
     const filtered = validStats.filter((result) => {
@@ -273,6 +280,7 @@ export class RpcTracker {
         ?.blockNumber;
       const currentBlockNumber = result.checkResults?.[0]?.stats?.blockNumber;
       const byBlockNumber = !primaryBlockNumber || (currentBlockNumber && primaryBlockNumber === currentBlockNumber);
+
       return byPorpose && byBlockNumber;
     });
 
@@ -284,7 +292,18 @@ export class RpcTracker {
       ["desc", "desc", "desc"]
     );
 
-    return ranked.map((result) => result.endpoint);
+    if (!getIsLargeAccount()) {
+      // for default accounts set alhcemy as a first fallback manually
+      const firstFallbackStats = endpointsStats.find(
+        (result) => result.endpoint !== primary && this.getRpcConfig(result.endpoint)?.purpose === "fallback"
+      );
+
+      if (firstFallbackStats && !firstFallbackStats.banned?.timestamp) {
+        ranked.unshift(firstFallbackStats);
+      }
+    }
+
+    return uniq(ranked.map((result) => result.endpoint));
   };
 
   getValidStats = (endpointsStats: RpcStats[]): RpcStats[] => {
