@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
+import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { isLimitDecreaseOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { PositionInfo } from "domain/synthetics/positions";
@@ -24,6 +25,15 @@ type Props = {
 };
 
 export function TPSLOrdersList({ orders, position, marketDecimals, isMobile }: Props) {
+  const [, setEditingOrderState] = useEditingOrderState();
+
+  const handleEditOrder = useCallback(
+    (orderKey: string) => {
+      setEditingOrderState({ orderKey, source: "PositionsList" });
+    },
+    [setEditingOrderState]
+  );
+
   if (orders.length === 0) {
     return (
       <div className="flex items-center justify-center py-32 text-typography-secondary">
@@ -36,7 +46,13 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile }: P
     return (
       <div className="flex max-h-[70vh] flex-col gap-12 overflow-y-auto pb-60 pt-8">
         {orders.map((order) => (
-          <TPSLOrderCard key={order.key} order={order} position={position} marketDecimals={marketDecimals} />
+          <TPSLOrderCard
+            key={order.key}
+            order={order}
+            position={position}
+            marketDecimals={marketDecimals}
+            onEdit={handleEditOrder}
+          />
         ))}
       </div>
     );
@@ -66,7 +82,13 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile }: P
       </thead>
       <tbody>
         {orders.map((order) => (
-          <TPSLOrderRow key={order.key} order={order} position={position} marketDecimals={marketDecimals} />
+          <TPSLOrderRow
+            key={order.key}
+            order={order}
+            position={position}
+            marketDecimals={marketDecimals}
+            onEdit={handleEditOrder}
+          />
         ))}
       </tbody>
     </Table>
@@ -77,10 +99,12 @@ function TPSLOrderCard({
   order,
   position,
   marketDecimals,
+  onEdit,
 }: {
   order: PositionOrderInfo;
   position: PositionInfo;
   marketDecimals: number | undefined;
+  onEdit?: (orderKey: string) => void;
 }) {
   const [isCancelling, cancelOrder] = useCancelOrder(order);
 
@@ -148,8 +172,8 @@ function TPSLOrderCard({
   }, [order]);
 
   const handleEdit = useCallback(() => {
-    // TODO: Implement edit
-  }, []);
+    onEdit?.(order.key);
+  }, [onEdit, order.key]);
 
   const handleCancel = useCallback(() => {
     cancelOrder();
