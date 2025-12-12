@@ -4,8 +4,8 @@ import {
   parseEventLogs,
   withRetry,
   type Abi,
-  type Log,
   type ContractEventName,
+  type Log,
 } from "viem";
 
 import { tryGetContract } from "config/contracts";
@@ -21,11 +21,11 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 
-import { getLzBaseUrl, layerZeroApi } from ".";
-import { paths } from "./gen";
 import { getBlockNumberBeforeTimestamp } from "./getBlockNumberByTimestamp";
+import { getLzBaseUrl } from "./getLzBaseUrl";
 import { getOrWaitLogs } from "./getOrWaitLogs";
-import { debugLog, matchLogRequest, testFetch } from "./LongCrossChainTask";
+import { debugLog, matchLogRequest } from "./LongCrossChainTask";
+import type { LzApiOperation } from "./lz-types";
 
 export type LzStatus = {
   guid: string | undefined;
@@ -378,12 +378,26 @@ export async function watchLzTxApi(
   abortSignal?: AbortSignal
 ): Promise<void> {
   const fetchTx = () =>
-    layerZeroApi.GET("/messages/tx/{tx}", {
-      params: { path: { tx: txHash } },
-      fetch: testFetch,
+    fetch(`${getLzBaseUrl(chainId)}/messages/tx/${txHash}`, {
       signal: abortSignal,
-      baseUrl: getLzBaseUrl(chainId),
-    });
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const errorText = await res.text().catch(() => res.statusText);
+          return {
+            data: undefined,
+            error: new Error(`HTTP ${res.status}: ${errorText}`),
+          };
+        }
+        return {
+          data: (await res.json()) as { data: LzApiOperation[] },
+          error: undefined,
+        };
+      })
+      .catch((error) => ({
+        data: undefined,
+        error: error,
+      }));
 
   debugLog("[watchLzTxApi] fetching tx", chainId, txHash);
 
@@ -586,9 +600,7 @@ function compareLzStatus(a: LzStatus, b: LzStatus): number {
   return 0;
 }
 
-function getLzStatusFromApiResponse(
-  operation: paths["/messages/tx/{tx}"]["get"]["responses"]["200"]["content"]["application/json"]["data"][number]
-): LzStatus {
+function getLzStatusFromApiResponse(operation: LzApiOperation): LzStatus {
   let sourceStatus: "pending" | "confirmed" | "failed";
   if (operation.source?.status === "SUCCEEDED") {
     sourceStatus = "confirmed";
