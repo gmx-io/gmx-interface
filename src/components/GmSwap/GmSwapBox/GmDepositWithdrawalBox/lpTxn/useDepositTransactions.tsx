@@ -19,7 +19,6 @@ import {
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsSelectedMarketInfoForGlv,
   selectPoolsDetailsShortTokenAddress,
-  selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
@@ -28,6 +27,7 @@ import {
   selectBlockTimestampData,
   selectChainId,
   selectSrcChainId,
+  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -80,7 +80,7 @@ export const useDepositTransactions = ({
 } => {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
-  const { signer, account } = useWallet();
+  const { signer } = useWallet();
   const { setPendingDeposit } = useSyntheticsEvents();
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setPendingTxns } = usePendingTxns();
@@ -97,7 +97,7 @@ export const useDepositTransactions = ({
   const paySource = useSelector(selectPoolsDetailsPaySource);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
 
-  const tokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const tokensData = useSelector(selectTokensData);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
 
   const {
@@ -224,7 +224,7 @@ export const useDepositTransactions = ({
 
   const onCreateGmDeposit = useCallback(
     async function onCreateGmDeposit(): Promise<void> {
-      if (!isDeposit) {
+      if (!isDeposit || isGlv) {
         return Promise.reject();
       }
 
@@ -232,7 +232,7 @@ export const useDepositTransactions = ({
 
       sendOrderSubmittedMetric(metricData.metricId);
 
-      if (!tokensData || !account || !signer || !rawParams || !transferRequests) {
+      if (!signer || !rawParams) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -243,12 +243,14 @@ export const useDepositTransactions = ({
       let promise: Promise<void>;
 
       if (paySource === "sourceChain") {
-        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
-          throw new Error("Pay source sourceChain does not support both long and short token deposits");
+        if (!transferRequests) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
-        if (!technicalFees) {
-          throw new Error("Technical fees are not set");
+        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
+          throw new Error("Pay source sourceChain does not support both long and short token deposits");
         }
 
         let tokenAddress: ERC20Address | NativeTokenSupportedAddress =
@@ -256,7 +258,7 @@ export const useDepositTransactions = ({
         tokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
 
-        const fees = technicalFees.kind === "sourceChain" && technicalFees.isDeposit ? technicalFees.fees : undefined;
+        const fees = technicalFees?.kind === "sourceChain" && technicalFees.isDeposit ? technicalFees.fees : undefined;
         if (!fees) {
           throw new Error("Technical fees are not set");
         }
@@ -290,9 +292,10 @@ export const useDepositTransactions = ({
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainDepositExpressTxnParams.data;
-
-        if (!expressTxnParams) {
-          throw new Error("Express txn params are not set");
+        if (!transferRequests || !expressTxnParams) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
         promise = createMultichainDepositTxn({
@@ -334,8 +337,10 @@ export const useDepositTransactions = ({
         });
       } else if (paySource === "settlementChain") {
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
-        if (!fees) {
-          throw new Error("Technical fees are not set");
+        if (!fees || !tokensData) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
         promise = createDepositTxn({
@@ -364,9 +369,9 @@ export const useDepositTransactions = ({
     },
     [
       isDeposit,
+      isGlv,
       getDepositMetricData,
       tokensData,
-      account,
       signer,
       rawParams,
       transferRequests,
@@ -380,19 +385,19 @@ export const useDepositTransactions = ({
       srcChainId,
       setMultichainTransferProgress,
       marketTokenAmount,
-      multichainDepositExpressTxnParams,
+      multichainDepositExpressTxnParams.data,
       params,
+      addOptimisticTokensBalancesUpdates,
+      setPendingDeposit,
       blockTimestampData,
       shouldDisableValidation,
       setPendingTxns,
-      setPendingDeposit,
-      addOptimisticTokensBalancesUpdates,
     ]
   );
 
   const onCreateGlvDeposit = useCallback(
     async function onCreateGlvDeposit(): Promise<void> {
-      if (!isDeposit) {
+      if (!isDeposit || !isGlv) {
         return Promise.reject();
       }
 
@@ -400,7 +405,7 @@ export const useDepositTransactions = ({
 
       sendOrderSubmittedMetric(metricData.metricId);
 
-      if (!account || !marketInfo || !amounts || !tokensData || !signer || (isGlv && !rawParams) || !transferRequests) {
+      if (!signer || !rawParams) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -410,12 +415,14 @@ export const useDepositTransactions = ({
 
       let promise: Promise<void>;
       if (paySource === "sourceChain") {
-        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
-          throw new Error("Pay source sourceChain does not support both long and short token deposits");
+        if (!transferRequests || !technicalFees) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
-        if (!technicalFees) {
-          throw new Error("Technical fees are not set");
+        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
+          throw new Error("Pay source sourceChain does not support both long and short token deposits");
         }
 
         const fees = technicalFees.kind === "sourceChain" && technicalFees.isDeposit ? technicalFees.fees : undefined;
@@ -471,8 +478,11 @@ export const useDepositTransactions = ({
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainDepositExpressTxnParams.data;
-        if (!expressTxnParams) {
-          throw new Error("Express txn params are not set");
+
+        if (!transferRequests || !expressTxnParams) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
         promise = createMultichainGlvDepositTxn({
@@ -517,6 +527,12 @@ export const useDepositTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
+        if (!tokensData) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
+        }
+
         const someInputTokenIsNative = firstTokenAddress === zeroAddress || secondTokenAddress === zeroAddress;
 
         const maybeNativeLongTokenAddress =
@@ -563,9 +579,6 @@ export const useDepositTransactions = ({
     [
       isDeposit,
       getDepositMetricData,
-      account,
-      marketInfo,
-      amounts,
       tokensData,
       signer,
       isGlv,

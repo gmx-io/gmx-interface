@@ -14,13 +14,16 @@ import {
   selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsSelectedMarketInfoForGlv,
   selectPoolsDetailsShortTokenAddress,
-  selectPoolsDetailsTradeTokensDataWithSourceChainBalances,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectBlockTimestampData,
+  selectChainId,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   TokensBalancesUpdates,
@@ -69,7 +72,7 @@ export const useWithdrawalTransactions = ({
   error: Error | undefined;
 } => {
   const { chainId, srcChainId } = useChainId();
-  const { signer, account } = useWallet();
+  const { signer } = useWallet();
   const { setPendingWithdrawal } = useSyntheticsEvents();
   const { setPendingTxns } = usePendingTxns();
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
@@ -81,7 +84,7 @@ export const useWithdrawalTransactions = ({
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const paySource = useSelector(selectPoolsDetailsPaySource);
   const selectedMarketForGlv = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
-  const tokensData = useSelector(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);
+  const tokensData = useSelector(selectTokensData);
 
   const {
     longTokenAmount = 0n,
@@ -206,17 +209,7 @@ export const useWithdrawalTransactions = ({
 
       const metricData = getWithdrawalMetricData();
 
-      if (
-        !account ||
-        !marketInfo ||
-        !marketToken ||
-        !amounts ||
-        !transferRequests ||
-        !tokensData ||
-        !signer ||
-        !params ||
-        !isGlv
-      ) {
+      if (!amounts || !signer || !params) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -233,8 +226,11 @@ export const useWithdrawalTransactions = ({
           technicalFees?.kind === "sourceChain" && !technicalFees.isDeposit && technicalFees.isGlv
             ? technicalFees.fees
             : undefined;
-        if (!fees) {
-          throw new Error("Technical fees are not set");
+
+        if (!fees || !transferRequests) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
         promise = createSourceChainGlvWithdrawalTxn({
@@ -265,8 +261,10 @@ export const useWithdrawalTransactions = ({
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
-        if (!expressTxnParams) {
-          throw new Error("Express txn params are not set");
+        if (!transferRequests || !expressTxnParams) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
         promise = createMultichainGlvWithdrawalTxn({
@@ -302,9 +300,13 @@ export const useWithdrawalTransactions = ({
         });
       } else if (paySource === "settlementChain") {
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
-        if (!fees) {
-          throw new Error("Technical fees are not set");
+
+        if (!fees || !tokensData) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
+
         promise = createGlvWithdrawalTxn({
           chainId,
           signer,
@@ -328,15 +330,11 @@ export const useWithdrawalTransactions = ({
     [
       isWithdrawal,
       getWithdrawalMetricData,
-      account,
-      marketInfo,
-      marketToken,
       amounts,
       transferRequests,
       tokensData,
       signer,
       params,
-      isGlv,
       paySource,
       chainId,
       srcChainId,
@@ -362,17 +360,7 @@ export const useWithdrawalTransactions = ({
 
       const metricData = getWithdrawalMetricData();
 
-      if (
-        !account ||
-        !marketInfo ||
-        !marketToken ||
-        !amounts ||
-        !transferRequests ||
-        !tokensData ||
-        !signer ||
-        !params ||
-        isGlv
-      ) {
+      if (!amounts || !signer || !params) {
         helperToast.error(t`Error submitting order`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -389,8 +377,11 @@ export const useWithdrawalTransactions = ({
           technicalFees.kind === "sourceChain" && !technicalFees.isDeposit && !technicalFees.isGlv
             ? technicalFees.fees
             : undefined;
-        if (!fees) {
-          throw new Error("Technical fees are not set");
+
+        if (!fees || !transferRequests) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
 
         promise = createSourceChainWithdrawalTxn({
@@ -417,14 +408,18 @@ export const useWithdrawalTransactions = ({
         });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
-        if (!expressTxnParams) {
-          throw new Error("Express txn params are not set");
+        if (!transferRequests || !expressTxnParams) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
+
+        const withdrawalParams = params as CreateWithdrawalParams;
 
         promise = createMultichainWithdrawalTxn({
           chainId,
           signer,
-          params: params as CreateWithdrawalParams,
+          params: withdrawalParams,
           expressTxnParams,
           transferRequests,
           srcChainId,
@@ -441,7 +436,6 @@ export const useWithdrawalTransactions = ({
             });
             addOptimisticTokensBalancesUpdates(balanceUpdates);
 
-            const withdrawalParams = params as CreateWithdrawalParams;
             setPendingWithdrawal({
               account: withdrawalParams.addresses.receiver,
               marketAddress: withdrawalParams.addresses.market,
@@ -454,15 +448,21 @@ export const useWithdrawalTransactions = ({
         });
       } else if (paySource === "settlementChain") {
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
-        if (!fees) {
-          throw new Error("Technical fees are not set");
+
+        if (!fees || !tokensData) {
+          helperToast.error(t`Error submitting order`);
+          sendTxnValidationErrorMetric(metricData.metricId);
+          return;
         }
+
+        const withdrawalParams = params as CreateWithdrawalParams;
+
         promise = createWithdrawalTxn({
           chainId,
           signer,
           marketTokenAmount: marketTokenAmount!,
+          params: withdrawalParams,
           executionGasLimit: fees.gasLimit,
-          params: params as CreateWithdrawalParams,
           tokensData,
           skipSimulation: shouldDisableValidation,
           setPendingTxns,
@@ -483,15 +483,11 @@ export const useWithdrawalTransactions = ({
     [
       isWithdrawal,
       getWithdrawalMetricData,
-      account,
-      marketInfo,
-      marketToken,
       amounts,
       transferRequests,
       tokensData,
       signer,
       params,
-      isGlv,
       paySource,
       chainId,
       srcChainId,

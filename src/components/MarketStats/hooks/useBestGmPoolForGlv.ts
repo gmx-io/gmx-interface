@@ -21,11 +21,14 @@ import { TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
+import { absDiffBps } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 
 import type { useDepositWithdrawalFees } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalFees";
 
 import { useGlvGmMarketsWithComposition } from "./useMarketGlvGmMarketsCompositions";
+
+const AMOUNT_CHANGE_THRESHOLD_BPS = 50n; // 0.5%
 
 export const useBestGmPoolAddressForGlv = ({
   fees,
@@ -230,18 +233,29 @@ export const useBestGmPoolAddressForGlv = ({
       return;
     }
 
-    const shouldSetBestGmMarket =
-      !isMarketForGlvSelectedManually &&
-      (previousLongAmount !== longTokenAmount ||
-        previousShortAmount !== shortTokenAmount ||
-        previousMarketTokenAmount !== marketTokenAmount ||
-        previousLongTokenAddress !== longTokenAddress ||
-        previousShortTokenAddress !== shortTokenAddress);
+    if (!selectedMarketForGlv && bestGmMarketAddress) {
+      setSelectedMarketAddressForGlv(bestGmMarketAddress);
+      return;
+    }
 
-    if (
-      ((!selectedMarketForGlv && bestGmMarketAddress) || shouldSetBestGmMarket) &&
-      bestGmMarketAddress !== selectedMarketForGlv
-    ) {
+    if (isMarketForGlvSelectedManually || bestGmMarketAddress === selectedMarketForGlv) {
+      return;
+    }
+
+    const longAmountChanged = absDiffBps(longTokenAmount ?? 0n, previousLongAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
+    const shortAmountChanged =
+      absDiffBps(shortTokenAmount ?? 0n, previousShortAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
+    const marketTokenAmountChanged =
+      absDiffBps(marketTokenAmount ?? 0n, previousMarketTokenAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
+
+    const shouldSetBestGmMarket =
+      longAmountChanged ||
+      shortAmountChanged ||
+      marketTokenAmountChanged ||
+      previousLongTokenAddress !== longTokenAddress ||
+      previousShortTokenAddress !== shortTokenAddress;
+
+    if (shouldSetBestGmMarket && bestGmMarketAddress !== selectedMarketForGlv) {
       setSelectedMarketAddressForGlv(bestGmMarketAddress);
     }
   }, [
