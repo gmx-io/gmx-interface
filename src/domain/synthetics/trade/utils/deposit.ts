@@ -2,6 +2,7 @@ import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domai
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
+import { SwapPricingType } from "sdk/types/orders";
 import { DepositAmounts } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -101,7 +102,7 @@ export function getDepositAmounts(p: {
     if (values.longTokenUsd > 0) {
       const swapFeeUsd = p.forShift
         ? 0n
-        : getSwapFee(marketInfo, values.longTokenUsd, priceImpactValues.balanceWasImproved, false);
+        : getSwapFee(marketInfo, values.longTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Swap);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
@@ -122,7 +123,7 @@ export function getDepositAmounts(p: {
     if (values.shortTokenUsd > 0) {
       const swapFeeUsd = p.forShift
         ? 0n
-        : getSwapFee(marketInfo, values.shortTokenUsd, priceImpactValues.balanceWasImproved, false);
+        : getSwapFee(marketInfo, values.shortTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Swap);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
@@ -207,7 +208,12 @@ export function getDepositAmounts(p: {
     );
 
     if (!p.forShift) {
-      const swapFeeUsd = getSwapFee(marketInfo, values.marketTokenUsd, priceImpactValues.balanceWasImproved, false);
+      const swapFeeUsd = getSwapFee(
+        marketInfo,
+        values.marketTokenUsd,
+        priceImpactValues.balanceWasImproved,
+        SwapPricingType.Swap
+      );
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
     }
 

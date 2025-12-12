@@ -17,6 +17,7 @@ import {
   formatBalanceAmount,
   formatFactor,
   formatPercentage,
+  formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
   numberToBigint,
@@ -319,30 +320,32 @@ describe("formatAmountHuman", () => {
 });
 
 describe("formatBalanceAmount", () => {
+  const NBSP = "\u00a0";
+
   it("should display balance amount", () =>
     // prettier-ignore
     {
-    expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe(                "1,000.0000");
+    expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe(                "1,000.00");
     expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe(                             "-");
     expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, {showZero: true})).toBe("0.0000");
     expect(formatBalanceAmount(ONE_USD * 1n, USD_DECIMALS)).toBe(                   "1.0000");
     expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS)).toBe(                  "0.10000");
     expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS)).toBe(                 "0.010000");
     expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS)).toBe(               "0.0010000");
-    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS)).toBe(              "0.00010000");
+    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS)).toBe(              "0.0001000");
     expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS)).toBe(             "0.00001000");
-    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS)).toBe(           "0.00000100");
-    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS)).toBe(          "0.00000010");
-    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe(         "0.00000001");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS)).toBe(           "0.000001000");
+    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS)).toBe(          "0.000000100");
+    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe(         "0.000000010");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS)).toBe(       "1.00e-9");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000_000n, USD_DECIMALS)).toBe(   "1.00e-12");
     expect(formatBalanceAmount(ONE_USD * -1n, USD_DECIMALS)).toBe(                 "-1.0000");
   });
 
   it("should display balance amount with symbol", () => {
-    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, "USDC")).toBe("1.0000 USDC");
+    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, "USDC")).toBe(`1.0000${NBSP}USDC`);
 
-    expect(formatBalanceAmount(0n, USD_DECIMALS, "USDC", { showZero: true })).toBe("0.0000 USDC");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, "USDC", { showZero: true })).toBe(`0.0000${NBSP}USDC`);
     expect(formatBalanceAmount(0n, USD_DECIMALS, "USDC", { showZero: false })).toBe("-");
   });
 
@@ -350,14 +353,14 @@ describe("formatBalanceAmount", () => {
     // prettier-ignore
     {
     expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, undefined, { isStable: true })).toBe(                 "1.00");
-    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS, undefined, { isStable: true })).toBe(           "0.100");
-    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS, undefined, { isStable: true })).toBe(          "0.0100");
-    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(        "0.00100");
-    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(       "0.00010000");
-    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(      "0.00001000");
-    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(    "0.00000100");
+    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS, undefined, { isStable: true })).toBe(           "0.10");
+    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS, undefined, { isStable: true })).toBe(          "0.010");
+    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(        "0.0010");
+    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(       "0.00010");
+    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(      "0.000010");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(    "0.0000010");
     expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(   "0.00000010");
-    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(  "0.00000001");
+    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(  "0.000000010");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("1.00e-9");
     expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { isStable: true, showZero: true })).toBe(      "0.00");
     expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, undefined, { isStable: true, signed: true })).toBe(  "+1.00");
@@ -411,5 +414,109 @@ describe("formatPercentage", () => {
     expect(
       formatPercentage(toBigNumberWithDecimals("0.999", PERCENT_PRECISION_DECIMALS), { bps: false, displayDecimals: 5 })
     ).toBe("0.99900%");
+  });
+});
+
+describe("formatTokenAmount", () => {
+  const TOKEN_DECIMALS = 18;
+  const ONE_TOKEN = expandDecimals(1, TOKEN_DECIMALS);
+  const NBSP = "\u00a0";
+
+  it("should return undefined for undefined amount without fallbackToZero", () => {
+    expect(formatTokenAmount(undefined, TOKEN_DECIMALS)).toBeUndefined();
+    expect(formatTokenAmount(undefined, TOKEN_DECIMALS, "ETH")).toBeUndefined();
+  });
+
+  it("should return zero with fallbackToZero", () => {
+    expect(formatTokenAmount(undefined, TOKEN_DECIMALS, undefined, { fallbackToZero: true })).toBe("0.0000");
+    expect(formatTokenAmount(undefined, TOKEN_DECIMALS, "ETH", { fallbackToZero: true })).toBe(`0.0000${NBSP}ETH`);
+  });
+
+  it("should format token amount with symbol", () => {
+    expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, "ETH")).toBe(`1.0000${NBSP}ETH`);
+    expect(formatTokenAmount(ONE_TOKEN * 100n, TOKEN_DECIMALS, "ETH")).toBe(`100.000${NBSP}ETH`);
+  });
+
+  it("should format token amount without symbol", () => {
+    expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS)).toBe("1.0000");
+    expect(formatTokenAmount(ONE_TOKEN * 1000n, TOKEN_DECIMALS)).toBe("1000.00");
+  });
+
+  it("should adjust decimals based on amount magnitude (non-stable)", () =>
+    // prettier-ignore
+    {
+      expect(formatTokenAmount(ONE_TOKEN * 1000n, TOKEN_DECIMALS)).toBe(    "1000.00");
+      expect(formatTokenAmount(ONE_TOKEN * 100n, TOKEN_DECIMALS)).toBe(     "100.000");
+      expect(formatTokenAmount(ONE_TOKEN * 10n, TOKEN_DECIMALS)).toBe(      "10.0000");
+      expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS)).toBe(            "1.0000");
+      expect(formatTokenAmount(ONE_TOKEN / 10n, TOKEN_DECIMALS)).toBe(      "0.10000");
+      expect(formatTokenAmount(ONE_TOKEN / 100n, TOKEN_DECIMALS)).toBe(     "0.010000");
+      expect(formatTokenAmount(ONE_TOKEN / 1000n, TOKEN_DECIMALS)).toBe(    "0.0010000");
+      expect(formatTokenAmount(ONE_TOKEN / 10000n, TOKEN_DECIMALS)).toBe(   "0.0001000");
+    });
+
+  it("should adjust decimals based on amount magnitude (stable)", () =>
+    // prettier-ignore
+    {
+      expect(formatTokenAmount(ONE_TOKEN * 1000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(  "1000.00");
+      expect(formatTokenAmount(ONE_TOKEN * 100n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(   "100.00");
+      expect(formatTokenAmount(ONE_TOKEN * 10n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(    "10.00");
+      expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(          "1.00");
+      expect(formatTokenAmount(ONE_TOKEN / 10n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(    "0.10");
+      expect(formatTokenAmount(ONE_TOKEN / 100n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(   "0.010");
+      expect(formatTokenAmount(ONE_TOKEN / 1000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(  "0.0010");
+      expect(formatTokenAmount(ONE_TOKEN / 10000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe( "0.00010");
+    });
+
+  it("should respect explicit displayDecimals override", () => {
+    expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, undefined, { displayDecimals: 2 })).toBe("1.00");
+    expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, undefined, { displayDecimals: 6 })).toBe("1.000000");
+    expect(formatTokenAmount(ONE_TOKEN / 10n, TOKEN_DECIMALS, undefined, { displayDecimals: 2 })).toBe("0.10");
+  });
+
+  it("should format with commas when useCommas is true", () => {
+    expect(formatTokenAmount(ONE_TOKEN * 1000000n, TOKEN_DECIMALS, undefined, { useCommas: true })).toBe(
+      "1,000,000.00"
+    );
+    expect(formatTokenAmount(ONE_TOKEN * 123456n, TOKEN_DECIMALS, "ETH", { useCommas: true })).toBe(
+      `123,456.00${NBSP}ETH`
+    );
+  });
+
+  it("should show all significant digits with showAllSignificant", () => {
+    const preciseAmount = ONE_TOKEN + ONE_TOKEN / 123456789n;
+    expect(formatTokenAmount(preciseAmount, TOKEN_DECIMALS, undefined, { showAllSignificant: true })).not.toContain(
+      "..."
+    );
+  });
+
+  it("should display plus sign for positive values with displayPlus", () => {
+    expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, undefined, { displayPlus: true })).toBe("+1.0000");
+    expect(formatTokenAmount(-ONE_TOKEN, TOKEN_DECIMALS, undefined, { displayPlus: true })).toBe("-1.0000");
+  });
+
+  it("should handle negative amounts", () => {
+    expect(formatTokenAmount(-ONE_TOKEN, TOKEN_DECIMALS)).toBe("-1.0000");
+    expect(formatTokenAmount(-ONE_TOKEN * 100n, TOKEN_DECIMALS, "ETH")).toBe(`-100.000${NBSP}ETH`);
+  });
+
+  it("should handle zero amount", () => {
+    expect(formatTokenAmount(0n, TOKEN_DECIMALS)).toBe("0.00");
+    expect(formatTokenAmount(0n, TOKEN_DECIMALS, "ETH")).toBe(`0.00${NBSP}ETH`);
+    expect(formatTokenAmount(0n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("0.00");
+  });
+
+  it("should handle maxThreshold", () => {
+    const result = formatTokenAmount(ONE_TOKEN * 10000000000n, TOKEN_DECIMALS, undefined, {
+      maxThreshold: "1000000000",
+    });
+    expect(result).toContain(">");
+  });
+
+  it("should handle minThreshold", () => {
+    const result = formatTokenAmount(ONE_TOKEN / 1000000000n, TOKEN_DECIMALS, undefined, {
+      minThreshold: "0.00000001",
+    });
+    expect(result).toContain("<");
   });
 });

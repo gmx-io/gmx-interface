@@ -2,6 +2,7 @@ import { maxUint256 } from "viem";
 
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { MarketInfo, MarketsInfoData } from "types/markets";
+import { SwapPricingType } from "types/orders";
 import { SwapPathStats, SwapStats } from "types/trade";
 
 import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "../fees";
@@ -120,7 +121,7 @@ export function getSwapPathStats(p: {
   usdIn: bigint;
   shouldUnwrapNativeToken: boolean;
   shouldApplyPriceImpact: boolean;
-  isAtomicSwap: boolean;
+  swapPricingType: SwapPricingType;
 }): SwapPathStats | undefined {
   const {
     marketsInfoData,
@@ -130,7 +131,7 @@ export function getSwapPathStats(p: {
     shouldUnwrapNativeToken,
     shouldApplyPriceImpact,
     wrappedNativeTokenAddress,
-    isAtomicSwap,
+    swapPricingType,
   } = p;
 
   if (swapPath.length === 0) {
@@ -173,7 +174,7 @@ export function getSwapPathStats(p: {
       tokenOutAddress,
       usdIn: usdOut,
       shouldApplyPriceImpact,
-      isAtomicSwap,
+      swapPricingType,
     });
 
     tokenInAddress = swapStep.tokenOutAddress;
@@ -211,9 +212,9 @@ export function getSwapStats(p: {
   tokenOutAddress: string;
   usdIn: bigint;
   shouldApplyPriceImpact: boolean;
-  isAtomicSwap: boolean;
+  swapPricingType: SwapPricingType;
 }): SwapStats {
-  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact, isAtomicSwap } = p;
+  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact, swapPricingType } = p;
 
   const isWrap = tokenInAddress === NATIVE_TOKEN_ADDRESS;
   const isUnwrap = tokenOutAddress === NATIVE_TOKEN_ADDRESS;
@@ -239,7 +240,7 @@ export function getSwapStats(p: {
   } catch (e) {
     // Approximate if the market would be out of capacity
     const capacityUsd = getSwapCapacityUsd(marketInfo, getTokenPoolType(marketInfo, tokenInAddress) === "long");
-    const swapFeeUsd = getSwapFee(marketInfo, usdIn, false, isAtomicSwap);
+    const swapFeeUsd = getSwapFee(marketInfo, usdIn, false, swapPricingType);
     const usdInAfterFees = usdIn - swapFeeUsd;
     const isOutCapacity = capacityUsd < usdInAfterFees;
 
@@ -262,8 +263,8 @@ export function getSwapStats(p: {
     };
   }
 
-  const swapFeeAmount = getSwapFee(marketInfo, amountIn, balanceWasImproved, isAtomicSwap);
-  const swapFeeUsd = getSwapFee(marketInfo, usdIn, balanceWasImproved, isAtomicSwap);
+  const swapFeeAmount = getSwapFee(marketInfo, amountIn, balanceWasImproved, swapPricingType);
+  const swapFeeUsd = getSwapFee(marketInfo, usdIn, balanceWasImproved, swapPricingType);
 
   const amountInAfterFees = amountIn - swapFeeAmount;
   const usdInAfterFees = usdIn - swapFeeUsd;

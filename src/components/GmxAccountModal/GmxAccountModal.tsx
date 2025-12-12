@@ -138,6 +138,8 @@ export const GmxAccountModal = memo(() => {
     }
   }, [account, isVisibleOrView, setIsVisibleOrView]);
 
+  // TODO move this out of the abstract gmx account modal in container
+  // Why is this in ModalWithPortal and not in SlideModal?
   if (view === "depositStatus") {
     const handleDepositStatusModalVisibility = (nextVisible: boolean) => {
       if (!nextVisible) {

@@ -1,6 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
+import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
+import { MultichainMarketTokenBalances } from "domain/multichain/types";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
@@ -10,6 +12,7 @@ import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -21,41 +24,61 @@ export const GmTokensBalanceInfo = ({
   earnedTotal,
   earnedRecently,
   daysConsidered,
+  multichainBalances,
   isGlv = false,
   singleLine = false,
-  className,
 }: {
   token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
   earnedRecently?: bigint;
   daysConsidered: number;
+  multichainBalances: MultichainMarketTokenBalances | undefined;
   isGlv?: boolean;
   singleLine?: boolean;
-  className?: string;
 }) => {
+  const balance = multichainBalances?.totalBalance ?? 0n;
+  const balanceUsd = getPlatformTokenBalanceAfterThreshold(multichainBalances?.totalBalanceUsd);
+
   const content =
-    token && token.balance !== undefined && token.balance !== 0n ? (
+    token && balanceUsd !== 0n && balance !== 0n ? (
       <TokenValuesInfoCell
-        value={formatBalanceAmount(token.balance, token.decimals)}
+        value={formatBalanceAmount(balance, token.decimals)}
         usd={
-          token.balance !== undefined && token.balance !== 0n
-            ? formatUsd(convertToUsd(token.balance, token.decimals, token.prices?.minPrice), {
+          balance !== 0n
+            ? formatUsd(convertToUsd(balance, token.decimals, token.prices?.minPrice), {
                 fallbackToZero: true,
               })
             : undefined
         }
         symbol={token.symbol}
         singleLine={singleLine}
-        className={className}
       />
     ) : (
       <span>-</span>
     );
 
+  const symbol = isGlv ? "GLV" : "GM";
+  const multichainBalanceTooltip = useMemo(() => {
+    if (balanceUsd === 0n) {
+      return null;
+    }
+
+    return (
+      <MultichainBalanceTooltip multichainBalances={multichainBalances} symbol={symbol} decimals={token?.decimals} />
+    );
+  }, [balanceUsd, multichainBalances, symbol, token?.decimals]);
+
+  const hasChainBalances = multichainBalanceTooltip !== null;
+  const hasFees = earnedTotal !== undefined || earnedRecently !== undefined;
+
   const tooltipContent = useMemo(() => {
-    if (earnedTotal === undefined && earnedRecently === undefined) return null;
+    if (!hasFees && !hasChainBalances) {
+      return null;
+    }
+
     return (
       <>
+        {multichainBalanceTooltip}
         {earnedTotal !== undefined && (
           <StatsTooltipRow
             showDollar={false}
@@ -74,15 +97,21 @@ export const GmTokensBalanceInfo = ({
             valueClassName="numbers"
           />
         )}
-        <br />
-        <div className="text-typography-primary">
-          <Trans>The fees' USD value is calculated at the time they are earned and does not include incentives.</Trans>
-        </div>
+        {hasFees && (
+          <>
+            <br />
+            <div className="text-typography-primary">
+              <Trans>
+                The fees' USD value is calculated at the time they are earned and does not include incentives.
+              </Trans>
+            </div>
+          </>
+        )}
       </>
     );
-  }, [daysConsidered, earnedRecently, earnedTotal]);
+  }, [daysConsidered, earnedRecently, earnedTotal, hasChainBalances, hasFees, multichainBalanceTooltip]);
 
-  if ((earnedTotal === undefined && earnedRecently === undefined) || isGlv) {
+  if (!hasFees && !hasChainBalances) {
     return content;
   }
 

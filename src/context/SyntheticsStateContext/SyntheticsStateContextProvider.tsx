@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
+import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { SubaccountState, useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { TokenPermitsState, useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -70,6 +71,8 @@ import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
+import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
+
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
 import { latestStateRef, StateCtx } from "./utils";
@@ -104,6 +107,7 @@ export type SyntheticsState = {
     userReferralInfo: UserReferralInfo | undefined;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
+    multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
 
     glvInfo: ReturnType<typeof useGlvMarketsInfo>;
     botanixStakingAssetsPerShare: bigint | undefined;
@@ -146,6 +150,7 @@ export type SyntheticsState = {
   positionSeller: PositionSellerState;
   positionEditor: PositionEditorState;
   confirmationBox: ConfirmationBoxState;
+  poolsDetails: PoolsDetailsState | undefined;
   features: FeaturesSettings | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
   sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
@@ -198,12 +203,23 @@ export function SyntheticsStateContextProvider({
 
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");
+  const shouldFetchMultichainMarketTokensBalances = pageType === "pools" || pageType === "earn";
+
+  const multichainMarketTokensBalancesResult = useMultichainMarketTokensBalancesRequest({
+    chainId,
+    account,
+    enabled: shouldFetchMultichainMarketTokensBalances,
+  });
 
   const glvInfo = useGlvMarketsInfo(shouldFetchGlvMarkets, {
     marketsInfoData: marketsInfo.marketsInfoData,
     tokensData: tokensDataResult.tokensData,
-    chainId: chainId,
-    account: account,
+    chainId,
+    account,
+    srcChainId,
+    multichainMarketTokensBalances: shouldFetchMultichainMarketTokensBalances
+      ? multichainMarketTokensBalancesResult.tokenBalances
+      : undefined,
   });
 
   const { marketTokensData: depositMarketTokensData, progressiveMarketTokensData: progressiveDepositMarketTokensData } =
@@ -212,6 +228,9 @@ export function SyntheticsStateContextProvider({
       account,
       glvData: glvInfo.glvData,
       withGlv: shouldFetchGlvMarkets,
+      multichainMarketTokensBalances: shouldFetchMultichainMarketTokensBalances
+        ? multichainMarketTokensBalancesResult.tokenBalances
+        : undefined,
     });
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
@@ -307,6 +326,15 @@ export function SyntheticsStateContextProvider({
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
 
+  const poolsDetailsState = usePoolsDetailsState({
+    enabled: pageType === "pools",
+    glvData: glvInfo.glvData,
+    withGlv: shouldFetchGlvMarkets,
+    marketsInfoData: marketsInfo.marketsInfoData,
+    account,
+    multichainMarketTokensBalancesResult,
+  });
+
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const l1ExpressOrderGasReference = useL1ExpressOrderGasReference();
@@ -359,6 +387,7 @@ export function SyntheticsStateContextProvider({
         userReferralInfo,
         depositMarketTokensData,
         progressiveDepositMarketTokensData,
+        multichainMarketTokensBalancesResult,
 
         closingPositionKey,
         setClosingPositionKey,
@@ -395,6 +424,7 @@ export function SyntheticsStateContextProvider({
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
+      poolsDetails: poolsDetailsState,
       features,
       sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
@@ -403,11 +433,7 @@ export function SyntheticsStateContextProvider({
 
     return s;
   }, [
-    account,
-    accountStats,
-    accruedPositionPriceImpactFees,
-    blockTimestampData,
-    botanixStakingAssetsPerShare,
+    pageType,
     chainId,
     claimablePositionPriceImpactFees,
     closingPositionKey,
@@ -429,30 +455,36 @@ export function SyntheticsStateContextProvider({
     lastMonthAccountStats,
     lastWeekAccountStats,
     leaderboard,
+    srcChainId,
+    account,
+    signer,
     markets,
     marketsInfo,
-    missedCoinsModalPlace,
-    oracleSettings,
-    orderEditor,
     ordersInfo,
-    pageType,
-    positionEditorState,
-    positionSellerState,
     positionsConstants,
+    botanixStakingAssetsPerShare,
     positionsInfoData,
     progressiveDepositMarketTokensData,
     setClosingPositionKey,
     setKeepLeverage,
     settings,
-    signer,
     sponsoredCallBalanceData,
-    srcChainId,
     subaccountState,
     tokenPermitsState,
     tokensDataResult,
-    tradeboxState,
     uiFeeFactor,
     userReferralInfo,
+    multichainMarketTokensBalancesResult,
+    missedCoinsModalPlace,
+    accountStats,
+    blockTimestampData,
+    oracleSettings,
+    accruedPositionPriceImpactFees,
+    tradeboxState,
+    orderEditor,
+    positionSellerState,
+    positionEditorState,
+    poolsDetailsState,
   ]);
 
   latestStateRef.current = state;

@@ -3,7 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, useCallback, useRef } from "react";
 
-import { SourceChainId } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, SourceChainId } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -20,7 +20,7 @@ import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 
-import { useMultichainTokensRequest } from "components/GmxAccountModal/hooks";
+import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
 import NumberInput from "components/NumberInput/NumberInput";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -48,12 +48,12 @@ export function MarginToPayField({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const tokensData = useTokensData();
-  const { active } = useWallet();
+  const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const walletIconUrls = useWalletIconUrls();
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
 
-  const { tokenChainDataArray: multichainTokens } = useMultichainTokensRequest();
+  const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
   const availableTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const { swapTokens, infoTokens, sortedLongAndShortTokens } = availableTokenOptions;
@@ -129,13 +129,13 @@ export function MarginToPayField({
                   srcChainId={srcChainId}
                   label={t`Pay`}
                   tokenAddress={fromTokenAddress}
-                  isGmxAccount={isFromTokenGmxAccount}
                   onSelectTokenAddress={onSelectFromTokenAddress}
                   extendedSortSequence={sortedLongAndShortTokens}
                   qa="margin-collateral-selector"
                   tokensData={tokensData}
                   multichainTokens={multichainTokens}
                   onDepositTokenAddress={onDepositTokenAddress}
+                  payChainId={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : undefined}
                 />
               ))}
           </div>
