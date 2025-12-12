@@ -1,5 +1,4 @@
 import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
-import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
 import { address as ethPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolNative.json";
 import { address as usdcPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
 import { address as usdtPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDT.json";
@@ -51,7 +50,6 @@ export {
   ethPoolArbitrumSepolia,
   ethPoolOptimismSepolia,
   ethPoolSepolia,
-  IStargateAbi,
   usdcSgPoolArbitrumSepolia,
   usdcSgPoolOptimismSepolia,
   usdcSgPoolSepolia,
