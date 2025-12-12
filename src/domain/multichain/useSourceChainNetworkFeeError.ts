@@ -7,7 +7,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 
-export function useSourceChainError({
+export function useSourceChainNativeFeeError({
   networkFeeUsd,
   paySource,
   chainId,

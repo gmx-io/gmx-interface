@@ -101,6 +101,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Aprobación firmada"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave Feedback"
+msgstr "Dejar Comentarios"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "Pérdida Diaria"
@@ -3643,7 +3647,7 @@ msgstr "Orden de shift ejecutada."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "Aún no has alcanzado el mínimo \"Capital Usado\" de {0} para calificar en las clasificaciones."
 
-#: src/domain/multichain/useSourceChainError.ts
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 

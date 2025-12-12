@@ -101,6 +101,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "승인 서명 완료"
 
+#: src/components/Footer/Footer.tsx
+msgid "Leave Feedback"
+msgstr "피드백 남기기"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily Loss"
 msgstr "일일 손실"
@@ -3643,7 +3647,7 @@ msgstr "시프트 주문 실행됨."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "랭킹 자격을 위한 최소 \"자본 사용\" {0}에 도달하지 않았습니다."
 
-#: src/domain/multichain/useSourceChainError.ts
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 

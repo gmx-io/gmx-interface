@@ -54,7 +54,7 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
   const signer = useEthersSigner();
   const { isDeposit, isWithdrawal } = useSelector(selectPoolsDetailsFlags);
 
-  const routerAddress = useMemo(() => getContract(chainId, "SyntheticsRouter"), [chainId]);
+  const routerAddress = getContract(chainId, "SyntheticsRouter");
 
   const [isApproving, setIsApproving] = useState(false);
 
