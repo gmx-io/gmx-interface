@@ -224,7 +224,7 @@ export const useDepositTransactions = ({
 
   const onCreateGmDeposit = useCallback(
     async function onCreateGmDeposit(): Promise<void> {
-      if (!isDeposit || isGlv) {
+      if (!isDeposit) {
         return Promise.reject();
       }
 
@@ -369,7 +369,6 @@ export const useDepositTransactions = ({
     },
     [
       isDeposit,
-      isGlv,
       getDepositMetricData,
       tokensData,
       signer,
@@ -397,7 +396,7 @@ export const useDepositTransactions = ({
 
   const onCreateGlvDeposit = useCallback(
     async function onCreateGlvDeposit(): Promise<void> {
-      if (!isDeposit || !isGlv) {
+      if (!isDeposit) {
         return Promise.reject();
       }
 
@@ -581,7 +580,6 @@ export const useDepositTransactions = ({
       getDepositMetricData,
       tokensData,
       signer,
-      isGlv,
       rawParams,
       transferRequests,
       chainId,
