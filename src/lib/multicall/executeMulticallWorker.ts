@@ -14,7 +14,6 @@ import { sleep } from "lib/sleep";
 
 import { _debugMulticall, MULTICALL_DEBUG_EVENT_NAME, type MulticallDebugEvent } from "./_debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
-import { MAX_FALLBACK_TIMEOUT } from "./Multicall";
 import { MAX_PRIMARY_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";
 
@@ -130,7 +129,9 @@ export async function executeMulticallWorker(
   const { promise, resolve, reject } = Promise.withResolvers<MulticallResult<any> | undefined>();
   promises[id] = { resolve, reject };
 
-  const escapePromise = sleep(MAX_PRIMARY_TIMEOUT + MAX_FALLBACK_TIMEOUT).then(() => {
+  const timeoutBuffer = 500;
+
+  const escapePromise = sleep(MAX_PRIMARY_TIMEOUT + timeoutBuffer).then(() => {
     throw new Error("timeout");
   });
   const race = Promise.race([promise, escapePromise]);

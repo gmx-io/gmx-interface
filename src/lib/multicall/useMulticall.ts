@@ -16,7 +16,7 @@ import { serializeMulticallErrors } from "./utils";
 
 const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
 
-const EXECUTE_MULTICALL_TIMEOUT = 20_000;
+const EXECUTE_MULTICALL_TIMEOUT = 40_000;
 
 /**
  * A hook to fetch data from contracts via multicall.
