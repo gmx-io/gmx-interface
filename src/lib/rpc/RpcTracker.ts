@@ -1,5 +1,5 @@
 import orderBy from "lodash/orderBy";
-import uniq from "lodash/uniq";
+import uniqBy from "lodash/uniqBy";
 import { decodeFunctionResult, encodeFunctionData } from "viem";
 
 import { ContractsChainId, isContractsChain } from "config/chains";
@@ -272,10 +272,11 @@ export class RpcTracker {
   }): string[] | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
-    const filtered = validStats.filter((result) => {
+    let filtered = validStats.filter((result) => {
       const allowedPurposes = this.getIsLargeAccount() ? ["default", "largeAccount"] : ["default", "fallback"];
       const purpose = this.getRpcConfig(result.endpoint)?.purpose;
       const byPorpose = purpose && allowedPurposes.includes(purpose as RpcPurpose);
+
       const primaryBlockNumber = endpointsStats.find((result) => result.endpoint === primary)?.checkResults?.[0]?.stats
         ?.blockNumber;
       const currentBlockNumber = result.checkResults?.[0]?.stats?.blockNumber;
@@ -283,6 +284,17 @@ export class RpcTracker {
 
       return byPorpose && byBlockNumber;
     });
+
+    if (!getIsLargeAccount()) {
+      // for default accounts set alhcemy as afallback manually because we don't test it in tracking
+      const firstFallbackStats = endpointsStats.find(
+        (result) => result.endpoint !== primary && this.getRpcConfig(result.endpoint)?.purpose === "fallback"
+      );
+
+      if (firstFallbackStats) {
+        filtered = uniqBy(filtered.concat([firstFallbackStats]), "endpoint");
+      }
+    }
 
     const avgResponseTime = getAvgResponseTime(filtered);
     const purposeOrder: RpcPurpose[] = this.getIsLargeAccount() ? ["largeAccount", "default"] : ["default", "fallback"];
@@ -292,18 +304,7 @@ export class RpcTracker {
       ["desc", "desc", "desc"]
     );
 
-    if (!getIsLargeAccount()) {
-      // for default accounts set alhcemy as a first fallback manually
-      const firstFallbackStats = endpointsStats.find(
-        (result) => result.endpoint !== primary && this.getRpcConfig(result.endpoint)?.purpose === "fallback"
-      );
-
-      if (firstFallbackStats && !firstFallbackStats.banned?.timestamp) {
-        ranked.unshift(firstFallbackStats);
-      }
-    }
-
-    return uniq(ranked.map((result) => result.endpoint));
+    return ranked.map((result) => result.endpoint);
   };
 
   getValidStats = (endpointsStats: RpcStats[]): RpcStats[] => {
