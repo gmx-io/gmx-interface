@@ -93,7 +93,7 @@ export function useMulticall<
           throw new Error(`Multicall request is empty`);
         }
 
-        let responseOrFailure: any;
+        let responseOrFailure: MulticallResult<TConfig>;
 
         let priority: "urgent" | "background" = "urgent";
 

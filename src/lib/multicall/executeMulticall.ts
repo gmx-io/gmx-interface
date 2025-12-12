@@ -100,7 +100,6 @@ async function executeChainMulticall(
   });
 
   const batchPromises = batchedRequests.map(async ({ requestConfig, callCount }) => {
-    let responseOrFailure: MulticallResult<any> | undefined;
     let startTime: number | undefined;
 
     debugLog(() => {
@@ -112,11 +111,7 @@ async function executeChainMulticall(
 
     const batchStartTime = performance.now();
 
-    if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isOldIOS()) {
-      responseOrFailure = await executeMulticallWorker(chainId, requestConfig);
-    } else {
-      responseOrFailure = await executeMulticallMainThread(chainId, requestConfig);
-    }
+    const responseOrFailure = await executeWorkerOrMainThread(chainId, requestConfig, callCount);
 
     const batchDuration = performance.now() - batchStartTime;
 
@@ -183,7 +178,7 @@ const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMultica
   trailing: true,
 });
 
-export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
+export async function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   chainId: number,
   request: TConfig,
   priority: "urgent" | "background" = "urgent",
@@ -193,6 +188,21 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   name?: string,
   disableBatching?: boolean
 ): Promise<MulticallResult<TConfig>> {
+  if (disableBatching) {
+    const callsCount = Object.keys(request).reduce(
+      (sum, contractAbiKey) => sum + Object.keys(request[contractAbiKey].calls).length,
+      0
+    );
+
+    const responseOrFailure = await executeWorkerOrMainThread(chainId, request, callsCount);
+
+    if (responseOrFailure?.success) {
+      return responseOrFailure;
+    } else {
+      throw new Error(`executeMulticall disableBatching request failed: ${name ?? "unknown"}`);
+    }
+  }
+
   const requestResult: MulticallResult<any> = {
     success: true,
     errors: {},
@@ -288,6 +298,14 @@ export function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
   }
 
   return promise as any;
+}
+
+function executeWorkerOrMainThread(chainId: number, requestConfig: MulticallRequestConfig<any>, callCount: number) {
+  if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isOldIOS()) {
+    return executeMulticallWorker(chainId, requestConfig);
+  } else {
+    return executeMulticallMainThread(chainId, requestConfig);
+  }
 }
 
 function combineCallResults(batchedResponsesOrFailures: (MulticallResult<any> | undefined)[]) {
