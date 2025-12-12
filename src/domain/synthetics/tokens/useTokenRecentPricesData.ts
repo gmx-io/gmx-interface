@@ -22,7 +22,8 @@ export type TokenPricesDataResult = {
 const PRICES_CACHE: { [chainId: number]: TokenPricesData } = {};
 const PRICES_CACHE_UPDATED: { [chainId: number]: { [address: string]: number } } = {};
 
-export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
+export function useTokenRecentPricesRequest(chainId: number, params?: { enabled?: boolean }): TokenPricesDataResult {
+  const { enabled = true } = params ?? {};
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 
@@ -36,7 +37,9 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
   PRICES_CACHE[chainId] = PRICES_CACHE[chainId] || {};
   PRICES_CACHE_UPDATED[chainId] = PRICES_CACHE_UPDATED[chainId] || {};
 
-  const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
+  const key = enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
+
+  const { data, error, isLoading } = useSequentialTimedSWR(key, {
     refreshInterval: refreshPricesInterval,
 
     fetcher: async ([chainId]) => {

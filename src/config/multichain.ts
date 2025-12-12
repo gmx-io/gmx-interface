@@ -31,6 +31,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  ContractsChainId,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -56,7 +57,7 @@ export {
   usdcSgPoolSepolia,
 };
 
-type MultichainTokenMapping = Record<
+export type MultichainTokenMapping = Record<
   // settlement chain id
   SettlementChainId,
   Record<
@@ -75,15 +76,6 @@ type MultichainTokenMapping = Record<
   >
 >;
 
-type MultichainWithdrawSupportedTokens = Partial<
-  Record<
-    // settlement chain id
-    SettlementChainId,
-    // settlement chain wrapped token address
-    string[]
-  >
->;
-
 type MultichainSourceToSettlementsMap = Record<SourceChainId, SettlementChainId[]>;
 
 export type MultichainTokenId = {
@@ -93,6 +85,7 @@ export type MultichainTokenId = {
   stargate: string;
   symbol: string;
   isTestnet?: boolean;
+  isPlatformToken?: boolean;
 };
 
 const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>> = {
@@ -166,6 +159,78 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
     },
   },
 };
+
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GLV-GLV-WBTC-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
+      stargate: "0x27Ef981E6fcB274a6C5C75983725d265Fd3dCdac",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0xbCB170fEDDa90cd7593f016DFdabA032Ca1F222b",
+      stargate: "0xbCB170fEDDa90cd7593f016DFdabA032Ca1F222b",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x3c21894169D669C5f0767c1289E71Ec8d6132C0F",
+      stargate: "0x3c21894169D669C5f0767c1289E71Ec8d6132C0F",
+    },
+  },
+});
+
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GLV-GLV-WETH-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
+      stargate: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
+      stargate: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x0BC5aB50Fd581b34681A9be180179b1Ef0b238c7",
+      stargate: "0x0BC5aB50Fd581b34681A9be180179b1Ef0b238c7",
+    },
+  },
+});
+
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GM-BTC-WBTC-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0x47c031236e19d024b42f8AE6780E44A573170703",
+      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
+    },
+  },
+});
+
+addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+  symbol: "<GM-ETH-WETH-USDC>",
+  chainAddresses: {
+    [ARBITRUM]: {
+      address: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
+      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+    },
+    [SOURCE_BASE_MAINNET]: {
+      address: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+    },
+    [SOURCE_BSC_MAINNET]: {
+      address: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
+    },
+  },
+});
 
 if (isDevelopment()) {
   TOKEN_GROUPS["USDC.SG"] = {
@@ -243,6 +308,66 @@ if (isDevelopment()) {
       isTestnet: true,
     },
   };
+
+  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+    symbol: "<GM-ETH-WETH-USDC.SG>",
+    chainAddresses: {
+      [ARBITRUM_SEPOLIA]: {
+        address: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
+        stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      },
+      [SOURCE_SEPOLIA]: {
+        address: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+        stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
+      },
+    },
+  });
+
+  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+    symbol: "<GLV-HIGH_CAPS-WETH-USDC.SG>",
+    chainAddresses: {
+      [ARBITRUM_SEPOLIA]: {
+        address: "0xAb3567e55c205c62B141967145F37b7695a9F854",
+        stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      },
+      [SOURCE_SEPOLIA]: {
+        address: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+        stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
+      },
+    },
+  });
+}
+
+function addMultichainPlatformTokenConfig(
+  tokenGroups: typeof TOKEN_GROUPS,
+  {
+    symbol,
+    chainAddresses,
+  }: {
+    symbol: string;
+    chainAddresses: Partial<
+      Record<
+        AnyChainId,
+        {
+          address: string;
+          stargate: string;
+        }
+      >
+    >;
+  }
+) {
+  tokenGroups[symbol] = {};
+
+  for (const chainIdString in chainAddresses) {
+    tokenGroups[symbol]![chainIdString] = {
+      address: chainAddresses[chainIdString].address,
+      decimals: 18,
+      chainId: parseInt(chainIdString) as SettlementChainId | SourceChainId,
+      stargate: chainAddresses[chainIdString].stargate,
+      symbol: symbol,
+      isPlatformToken: true,
+    } satisfies MultichainTokenId;
+  }
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
@@ -251,9 +376,10 @@ if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
 }
 
-export const MULTICHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
-
-export const MULTICHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
+export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
+export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_PLATFORM_TOKENS_MAP = {} as Record<SettlementChainId, string[]>;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   SettlementChainId | SourceChainId,
@@ -267,10 +393,13 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     const firstChainId = parseInt(chainIdString) as SettlementChainId | SourceChainId;
 
     const tokenId = TOKEN_GROUPS[tokenSymbol]![firstChainId]!;
-    if (tokenId) {
-      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
-      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
+
+    if (!tokenId) {
+      continue;
     }
+
+    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
+    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
 
     if (!isSettlementChain(firstChainId)) {
       continue;
@@ -278,7 +407,16 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
     const settlementChainId = firstChainId;
 
-    let empty = true;
+    if (!tokenId?.isPlatformToken) {
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] || [];
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId].push(tokenId.address);
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId] =
+        MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId] || [];
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId].push(
+        convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
+      );
+    }
+
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
       const sourceChainId = parseInt(sourceChainIdString) as SettlementChainId | SourceChainId;
       if (!isSourceChain(sourceChainId)) {
@@ -295,31 +433,26 @@ for (const tokenSymbol in TOKEN_GROUPS) {
         continue;
       }
 
-      empty = false;
-
       MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] =
         MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] || [];
       MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] = uniq(
         MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId].concat(settlementChainId)
       );
 
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId] = MULTICHAIN_TOKEN_MAPPING[settlementChainId] || {};
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
-        MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
+        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
 
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
         settlementChainTokenAddress: tokenId.address,
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
       };
     }
 
-    if (!empty) {
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
-        MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId]!.push(
-        convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
-      );
+    if (tokenId?.isPlatformToken) {
+      MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId] = MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId] || [];
+      MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId].push(tokenId.address);
     }
   }
 }
@@ -421,3 +554,12 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
 export const RANDOM_WALLET = Wallet.createRandom();
+
+export function getSourceChainDecimalsMapped(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId,
+  tokenAddress: string
+): number | undefined {
+  const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId as SourceChainId);
+  return tokenId?.decimals;
+}

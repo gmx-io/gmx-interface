@@ -147,17 +147,23 @@ export const RPC_PROVIDERS: Record<AnyChainId | typeof ETH_MAINNET, string[]> = 
     "https://arbitrum-sepolia-rpc.publicnode.com",
   ],
   [SOURCE_BASE_MAINNET]: [
-    "https://mainnet.base.org",
-    "https://base.llamarpc.com",
+    // "https://base.llamarpc.com",
     "https://base-rpc.publicnode.com",
     "https://base.drpc.org",
+    "https://mainnet.base.org",
   ],
   [SOURCE_OPTIMISM_SEPOLIA]: [
     "https://sepolia.optimism.io",
     "https://optimism-sepolia.drpc.org",
     "https://optimism-sepolia.therpc.io",
   ],
-  [SOURCE_SEPOLIA]: ["https://sepolia.drpc.org"],
+  [SOURCE_SEPOLIA]: [
+    "https://sepolia.drpc.org",
+    "https://ethereum-sepolia-rpc.publicnode.com",
+    "https://ethereum-sepolia.gateway.tatum.io",
+    "https://gateway.tenderly.co/public/sepolia",
+    "https://eth-sepolia-testnet.api.pocket.network",
+  ],
   [BOTANIX]: [
     // returns incorrect gas price
     // "https://rpc.botanixlabs.com",
@@ -229,7 +235,7 @@ export function getExpressRpcUrl(chainId: number): string {
 
 type AlchemyKeyPurpose = "fallback" | "largeAccount" | "express";
 
-function getAlchemyKey(purpose: AlchemyKeyPurpose) {
+function getAlchemyKey(purpose: AlchemyKeyPurpose): string {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
     if (purpose === "fallback") {
       return "NnWkTZJp8dNKXlCIfJwej";

@@ -2,6 +2,7 @@ import { MarketConfig, MARKETS } from "configs/markets";
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { GasLimitsConfig } from "types/fees";
 import { MarketsInfoData } from "types/markets";
+import { SwapPricingType } from "types/orders";
 import { TokensData } from "types/tokens";
 import { FindSwapPath, SwapPathStats } from "types/trade";
 import { LRUCache } from "utils/LruCache";
@@ -71,7 +72,7 @@ export const createFindSwapPath = (params: {
         tokensData: TokensData;
       }
     | undefined;
-  isExpressFeeSwap: boolean | undefined;
+  swapPricingType: SwapPricingType | undefined;
   disabledMarkets?: string[] | undefined;
   manualPath?: string[] | undefined;
 }): FindSwapPath => {
@@ -83,7 +84,7 @@ export const createFindSwapPath = (params: {
     disabledMarkets,
     manualPath,
     gasEstimationParams,
-    isExpressFeeSwap,
+    swapPricingType = SwapPricingType.Swap,
   } = params;
   const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
   const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
@@ -96,15 +97,13 @@ export const createFindSwapPath = (params: {
 
   const finalDisabledMarkets = [...(disabledMarkets ?? [])];
 
-  if (isExpressFeeSwap) {
+  if (swapPricingType === SwapPricingType.AtomicSwap) {
     const expressSwapUnavailableMarkets = Object.values(marketsInfoData ?? {})
       .filter((market) => !getIsMarketAvailableForExpressSwaps(market))
       .map((market) => market.marketTokenAddress);
 
     finalDisabledMarkets.push(...expressSwapUnavailableMarkets);
   }
-
-  const isAtomicSwap = Boolean(isExpressFeeSwap);
 
   const marketAdjacencyGraph = buildMarketAdjacencyGraph(chainId, finalDisabledMarkets);
 
@@ -115,7 +114,7 @@ export const createFindSwapPath = (params: {
   }
 
   const marketEdgeLiquidityGetter = createMarketEdgeLiquidityGetter(marketsInfoData);
-  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData, isAtomicSwap);
+  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData, swapPricingType);
   const naiveNetworkEstimator = gasEstimationParams
     ? createNaiveNetworkEstimator({
         gasLimits: gasEstimationParams.gasLimits,
@@ -124,7 +123,7 @@ export const createFindSwapPath = (params: {
         chainId,
       })
     : undefined;
-  const estimator = createSwapEstimator(marketsInfoData, isAtomicSwap);
+  const estimator = createSwapEstimator(marketsInfoData, swapPricingType);
 
   const findSwapPath: FindSwapPath = (usdIn: bigint, opts?: { order?: ("liquidity" | "length")[] }) => {
     if (tokenSwapPaths.length === 0 || !fromTokenAddress || !wrappedFromAddress || !wrappedToAddress) {
@@ -205,7 +204,7 @@ export const createFindSwapPath = (params: {
       shouldUnwrapNativeToken: toTokenAddress === NATIVE_TOKEN_ADDRESS,
       shouldApplyPriceImpact: true,
       usdIn,
-      isAtomicSwap,
+      swapPricingType,
     });
 
     cache[cacheKey] = result;

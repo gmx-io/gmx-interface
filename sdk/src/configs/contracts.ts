@@ -38,7 +38,6 @@ export const CONTRACTS = {
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
-    Timelock: "0xaa50bD556CE0Fe61D4A57718BA43177a3aB6A597",
 
     // Synthetics
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
@@ -66,7 +65,7 @@ export const CONTRACTS = {
     MultichainSubaccountRouter: "0x70AaAd50d53732b2D5534bb57332D00aE20cAd36",
     MultichainTransferRouter: "0xfaBEb65bB877600be3A2C2a03aA56a95F9f845B9",
     MultichainVault: "0xCeaadFAf6A8C489B250e407987877c5fDfcDBE6E",
-    LayerZeroProvider: "0x7129Ea01F0826c705d6F7ab01Cf3C06bb83E9397",
+    LayerZeroProvider: "0xB6DE222dAef5029f31b8fABE498D34f3c491Ef85",
 
     ChainlinkPriceFeedProvider: "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B",
     ClaimHandler: "0x8a83F2a71A53d3860a60C9F2E68AB2C46Ff9624e",
@@ -115,7 +114,6 @@ export const CONTRACTS = {
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
-    Timelock: "0x8A68a039D555599Fd745f9343e8dE20C9eaFca75",
 
     // Synthetics
     DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
@@ -283,7 +281,6 @@ export const CONTRACTS = {
     ShiftVault: "0x257D0EA0B040E2Cd1D456fB4C66d7814102aD346",
     SyntheticsReader: "0xf82Cc6EB57F8FF86bc5c5e90B8BA83DbBFB517eE",
     SyntheticsRouter: "0x5e7d61e4C52123ADF651961e4833aCc349b61491",
-    Timelock: zeroAddress,
 
     GlvReader: "0xdeaC9ea3c72C102f2a9654b8E1A14Ef86Cdd3146",
     GlvRouter: "0x6B6595389A0196F882C0f66CB1F401f1D24afEdC",
@@ -380,7 +377,6 @@ export const CONTRACTS = {
     GlpManager: zeroAddress,
     RewardReader: zeroAddress,
     GlpRewardRouter: zeroAddress,
-    Timelock: zeroAddress,
   },
 };
 

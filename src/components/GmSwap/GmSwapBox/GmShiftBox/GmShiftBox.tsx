@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
+import { usePoolsDetailsFirstTokenAddress } from "context/PoolsDetailsContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -17,6 +18,7 @@ import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "doma
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
+import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -33,7 +35,6 @@ import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPool } from "../SelectedPool";
 import { Operation } from "../types";
-import { useDepositWithdrawalSetFirstTokenAddress } from "../useDepositWithdrawalSetFirstTokenAddress";
 import { useGmWarningState } from "../useGmWarningState";
 import { useShiftAmounts } from "./useShiftAmounts";
 import { useShiftAvailableRelatedMarkets } from "./useShiftAvailableRelatedMarkets";
@@ -114,8 +115,7 @@ export function GmShiftBox({
   const { fees, executionFee } = useShiftFees({ gasLimits, gasPrice, tokensData, amounts, chainId });
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
-    executionFee,
-    fees,
+    logicalFees: fees,
   });
 
   const noAmountSet = amounts?.fromTokenAmount === undefined;
@@ -162,7 +162,7 @@ export function GmShiftBox({
   useUpdateTokens({ amounts, selectedToken, toToken, focusedInput, setToMarketText, setSelectedMarketText });
 
   const [glvForShiftAddress, setGlvForShiftAddress] = useState<string | undefined>(undefined);
-  const [, setFirstTokenAddressForDeposit] = useDepositWithdrawalSetFirstTokenAddress(true, glvForShiftAddress);
+  const [, setFirstTokenAddress] = usePoolsDetailsFirstTokenAddress();
 
   const handleFormSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -208,7 +208,7 @@ export function GmShiftBox({
   useEffect(() => {
     if (glvForShiftAddress && selectedMarketInfo) {
       onSelectGlvOrMarket(glvForShiftAddress);
-      setFirstTokenAddressForDeposit(selectedMarketInfo.marketTokenAddress);
+      setFirstTokenAddress(selectedMarketInfo.marketTokenAddress as ERC20Address | NativeTokenSupportedAddress);
       onSetOperation(Operation.Deposit);
       onSelectedMarketForGlv?.(selectedMarketInfo.marketTokenAddress);
     }
@@ -224,7 +224,7 @@ export function GmShiftBox({
     onSelectGlvOrMarket,
     onSetOperation,
     selectedMarketInfo,
-    setFirstTokenAddressForDeposit,
+    setFirstTokenAddress,
   ]);
 
   const getShiftReceiveMarketState = useCallback((glvOrMarketInfo: GlvOrMarketInfo): MarketState => {
@@ -308,11 +308,10 @@ export function GmShiftBox({
               shouldShowWarningForPosition={shouldShowWarningForPosition}
               shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
             />
-
-            <SwitchToSettlementChainWarning topic="liquidity" />
           </div>
 
           <div className="rounded-b-8 border-t border-slate-600 bg-slate-900 p-12">
+            <SwitchToSettlementChainWarning topic="shift" />
             <SwitchToSettlementChainButtons>
               <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
                 {submitState.text}

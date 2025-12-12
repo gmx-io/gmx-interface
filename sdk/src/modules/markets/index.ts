@@ -272,6 +272,10 @@ export class Markets extends Module {
             atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
             swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
             swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
+            withdrawalFeeFactorBalanceWasImproved:
+              dataStoreValues.withdrawalFeeFactorBalanceWasImproved.returnValues[0],
+            withdrawalFeeFactorBalanceWasNotImproved:
+              dataStoreValues.withdrawalFeeFactorBalanceWasNotImproved.returnValues[0],
 
             virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
             virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],

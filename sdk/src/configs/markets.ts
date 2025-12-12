@@ -2,8 +2,12 @@
   This files is used to pre-build data during the build process.
   Avoid adding client-side code here, as it can break the build process.
 */
+import { zeroAddress } from "viem";
+
+import type { ERC20Address, NativeTokenSupportedAddress, Token } from "types/tokens";
+
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
-import { getTokenBySymbol } from "./tokens";
+import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
@@ -14,11 +18,13 @@ export type MarketConfig = {
   shortTokenAddress: string;
 };
 
+export type MarketsConfigMap = Record<string, MarketConfig>;
+
 /*
   ATTENTION
   When adding new markets, please add them also to the end of the list in ./src/configs/static/sortedMarkets.ts
 */
-export const MARKETS: Record<ContractsChainId, Record<string, MarketConfig>> = {
+export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
   [ARBITRUM]: {
     // BTC/USD [WBTC.e-USDC]
     "0x47c031236e19d024b42f8AE6780E44A573170703": {
@@ -1230,3 +1236,55 @@ export const fixTokenSymbolFromMarketLabel = (chainId: ContractsChainId, symbol:
   }
   return symbol;
 };
+
+export function isMarketTokenAddress(chainId: number, marketTokenAddress: string): boolean {
+  return Boolean(MARKETS[chainId]?.[marketTokenAddress]);
+}
+
+export function getTokenAddressByMarket<T extends "long" | "short" | "index">(
+  chainId: number,
+  marketTokenAddress: string,
+  tokenType: T
+): T extends "index" ? NativeTokenSupportedAddress | ERC20Address : ERC20Address {
+  const market = MARKETS[chainId as ContractsChainId][marketTokenAddress];
+
+  if (tokenType === "index") {
+    return convertTokenAddress(chainId, market.indexTokenAddress, "native")! as T extends "index"
+      ? NativeTokenSupportedAddress | ERC20Address
+      : ERC20Address;
+  }
+
+  if (tokenType === "long") {
+    return market.longTokenAddress as ERC20Address;
+  }
+
+  return market.shortTokenAddress as ERC20Address;
+}
+
+export function getMarketIndexToken(chainId: number, marketTokenAddress: string): Token {
+  const indexTokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, "index");
+
+  return getToken(chainId, indexTokenAddress);
+}
+
+export function getTokenSymbolByMarket(
+  chainId: number,
+  marketTokenAddress: string,
+  tokenType: "long" | "short" | "index"
+): string {
+  const tokenAddress = getTokenAddressByMarket(chainId, marketTokenAddress, tokenType);
+  return getToken(chainId, tokenAddress).symbol;
+}
+
+export function getIsSpotOnlyMarket(chainId: number, marketTokenAddress: string): boolean {
+  return MARKETS[chainId as ContractsChainId][marketTokenAddress].indexTokenAddress === zeroAddress;
+}
+
+export function getMarketIsSameCollaterals(chainId: number, marketTokenAddress: string): boolean {
+  const market = MARKETS[chainId][marketTokenAddress];
+  if (!market) {
+    return false;
+  }
+
+  return market.longTokenAddress === market.shortTokenAddress;
+}
