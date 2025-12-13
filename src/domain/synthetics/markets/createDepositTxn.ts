@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { Contract, Signer } from "ethers";
+import { Abi, encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import type { SetPendingDeposit } from "context/SyntheticsEvents";
@@ -96,9 +97,13 @@ export async function createDepositTxn({
     },
   ];
 
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.filter(Boolean).map((call) =>
+    encodeFunctionData({
+      abi: abis.ExchangeRouter as Abi,
+      functionName: call!.method,
+      args: call!.params,
+    })
+  );
 
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {

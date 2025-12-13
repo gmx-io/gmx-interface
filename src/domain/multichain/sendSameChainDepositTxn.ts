@@ -1,5 +1,4 @@
-import { Contract } from "ethers";
-import { Address, encodeFunctionData, zeroAddress } from "viem";
+import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -24,12 +23,7 @@ export async function sendSameChainDepositTxn({
   callback?: TxnCallback<WalletTxnCtx>;
 }) {
   const multichainVaultAddress = getContract(chainId, "MultichainVault");
-
-  const contract = new Contract(
-    getContract(chainId, "MultichainTransferRouter")!,
-    abis.MultichainTransferRouter,
-    signer
-  );
+  const multichainTransferRouterAddress = getContract(chainId, "MultichainTransferRouter");
 
   if (tokenAddress === zeroAddress) {
     const token = getToken(chainId, tokenAddress);
@@ -39,47 +33,54 @@ export async function sendSameChainDepositTxn({
       throw new Error("Wrapped address is not set");
     }
 
+    const encodedCalls = [
+      encodeFunctionData({
+        abi: abis.MultichainTransferRouter,
+        functionName: "sendWnt",
+        args: [multichainVaultAddress, amount],
+      }),
+      encodeFunctionData({
+        abi: abis.MultichainTransferRouter,
+        functionName: "bridgeIn",
+        args: [account, wrappedAddress],
+      }),
+    ];
+
     await sendWalletTransaction({
       chainId: chainId,
       signer: signer,
-      to: await contract.getAddress(),
-      callData: contract.interface.encodeFunctionData("multicall", [
-        [
-          encodeFunctionData({
-            abi: abis.MultichainTransferRouter,
-            functionName: "sendWnt",
-            args: [multichainVaultAddress, amount],
-          }),
-          encodeFunctionData({
-            abi: abis.MultichainTransferRouter,
-            functionName: "bridgeIn",
-            args: [account, wrappedAddress as Address],
-          }),
-        ],
-      ]),
+      to: multichainTransferRouterAddress,
+      callData: encodeFunctionData({
+        abi: abis.MultichainTransferRouter,
+        functionName: "multicall",
+        args: [encodedCalls],
+      }),
       value: amount,
       callback,
     });
   } else {
+    const encodedCalls = [
+      encodeFunctionData({
+        abi: abis.MultichainTransferRouter,
+        functionName: "sendTokens",
+        args: [tokenAddress, multichainVaultAddress, amount],
+      }),
+      encodeFunctionData({
+        abi: abis.MultichainTransferRouter,
+        functionName: "bridgeIn",
+        args: [account, tokenAddress],
+      }),
+    ];
+
     await sendWalletTransaction({
       chainId: chainId,
       signer: signer,
-      to: await contract.getAddress(),
-      callData: contract.interface.encodeFunctionData("multicall", [
-        [
-          encodeFunctionData({
-            abi: abis.MultichainTransferRouter,
-            functionName: "sendTokens",
-            args: [tokenAddress as Address, multichainVaultAddress, amount],
-          }),
-
-          encodeFunctionData({
-            abi: abis.MultichainTransferRouter,
-            functionName: "bridgeIn",
-            args: [account, tokenAddress as Address],
-          }),
-        ],
-      ]),
+      to: multichainTransferRouterAddress,
+      callData: encodeFunctionData({
+        abi: abis.MultichainTransferRouter,
+        functionName: "multicall",
+        args: [encodedCalls],
+      }),
       callback,
     });
   }

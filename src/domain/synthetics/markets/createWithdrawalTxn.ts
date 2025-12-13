@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
+import { Abi, encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -74,9 +75,13 @@ export async function createWithdrawalTxn({
     },
   ];
 
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.filter(Boolean).map((call) =>
+    encodeFunctionData({
+      abi: abis.ExchangeRouter as Abi,
+      functionName: call!.method,
+      args: call!.params,
+    })
+  );
 
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {

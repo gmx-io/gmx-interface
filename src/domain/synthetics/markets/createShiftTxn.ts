@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import { ContractFunctionParameters } from "viem";
+import { Abi, ContractFunctionParameters, encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -66,7 +66,13 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
     },
   ];
 
-  const encodedPayload = multicall.map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.map((call) =>
+    encodeFunctionData({
+      abi: abis.ExchangeRouter as Abi,
+      functionName: call!.method,
+      args: call!.params,
+    })
+  );
 
   const simulationPromise = !p.skipSimulation
     ? simulateExecuteTxn(chainId, {

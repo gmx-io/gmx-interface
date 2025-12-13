@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
-import { ContractFunctionParameters } from "viem";
+import { Abi, ContractFunctionParameters, encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -79,9 +79,13 @@ export async function createGlvWithdrawalTxn({
     },
   ];
 
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.filter(Boolean).map((call) =>
+    encodeFunctionData({
+      abi: abis.GlvRouter as Abi,
+      functionName: call!.method,
+      args: call!.params,
+    })
+  );
 
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {
