@@ -920,7 +920,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const unsubscribe = subscribeToV2Events(chainId, wsProvider, currentAccount, eventLogHandlers);
+      const unsubscribe = subscribeToV2Events({
+        chainId,
+        account: currentAccount,
+        eventLogHandlers,
+      });
 
       return function cleanup() {
         unsubscribe();
@@ -935,12 +939,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const unsubscribeFromTokenEvents = subscribeToTransferEvents(
+      const unsubscribeFromTokenEvents = subscribeToTransferEvents({
         chainId,
-        wsProvider,
-        currentAccount,
-        marketTokensAddressesString.split("-"),
-        (tokenAddress, amount) => {
+        account: currentAccount,
+        marketTokensAddresses: marketTokensAddressesString.split("-"),
+        onTransfer: (tokenAddress, amount) => {
           setWebsocketTokenBalancesUpdates((old) => {
             const oldDiff = old[tokenAddress]?.diff || 0n;
 
@@ -953,8 +956,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           setOptimisticTokensBalancesUpdates((old) => {
             return updateByKey(old, tokenAddress, { isPending: false });
           });
-        }
-      );
+        },
+      });
 
       return function cleanup() {
         unsubscribeFromTokenEvents();
@@ -978,11 +981,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return;
       }
 
-      const unsubscribeApproval = subscribeToApprovalEvents(
+      const unsubscribeApproval = subscribeToApprovalEvents({
         chainId,
-        wsProvider,
-        currentAccount,
-        (tokenAddress, spender, value) => {
+        account: currentAccount,
+        onApprove: (tokenAddress, spender, value) => {
           setApprovalStatuses((old) => ({
             ...old,
             [tokenAddress]: {
@@ -996,8 +998,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               action: "ApproveSuccess",
             },
           });
-        }
-      );
+        },
+      });
 
       return function cleanup() {
         unsubscribeApproval();

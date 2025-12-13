@@ -44,23 +44,50 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
   return new ethers.JsonRpcProvider(url, chainId, { staticNetwork: network });
 }
 
-export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
-  const network = Network.from(chainId);
+export function getWsUrl(chainId: AnyChainId): string | undefined {
+  if (chainId === AVALANCHE_FUJI) {
+    return undefined;
+  }
 
   if (chainId === ARBITRUM) {
-    return new ethers.WebSocketProvider(
-      getAlchemyArbitrumWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
-      network,
-      { staticNetwork: network }
-    );
+    return getAlchemyArbitrumWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
   }
 
   if (chainId === AVALANCHE) {
-    const provider = new ethers.WebSocketProvider("wss://api.avax.network/ext/bc/C/ws", network, {
-      staticNetwork: network,
-    });
-    return provider;
+    return "wss://api.avax.network/ext/bc/C/ws";
   }
+
+  if (chainId === ARBITRUM_SEPOLIA) {
+    return getAlchemyArbitrumSepoliaWsUrl("fallback");
+  }
+
+  if (chainId === SOURCE_SEPOLIA) {
+    return getAlchemySepoliaWsUrl("fallback");
+  }
+
+  if (chainId === SOURCE_OPTIMISM_SEPOLIA) {
+    return getAlchemyOptimismSepoliaWsUrl("fallback");
+  }
+
+  if (chainId === BOTANIX) {
+    return getAlchemyBotanixWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
+  }
+
+  if (chainId === SOURCE_BASE_MAINNET) {
+    return getAlchemyBaseMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
+  }
+
+  if (chainId === SOURCE_BSC_MAINNET) {
+    return getAlchemyBscMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
+  }
+
+  const castedChainId: never = chainId;
+
+  throw new Error(`Unsupported websocket URL for chain id: ${castedChainId}`);
+}
+
+export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
+  const network = Network.from(chainId);
 
   if (chainId === AVALANCHE_FUJI) {
     const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(AVALANCHE_FUJI).primary, network, {
@@ -70,56 +97,7 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
     return provider;
   }
 
-  if (chainId === ARBITRUM_SEPOLIA) {
-    const provider = new ethers.WebSocketProvider(getAlchemyArbitrumSepoliaWsUrl("fallback"), network, {
-      staticNetwork: network,
-    });
-    return provider;
-  }
-
-  if (chainId === SOURCE_SEPOLIA) {
-    const provider = new ethers.WebSocketProvider(getAlchemySepoliaWsUrl("fallback"), network, {
-      staticNetwork: network,
-    });
-    return provider;
-  }
-
-  if (chainId === SOURCE_OPTIMISM_SEPOLIA) {
-    const provider = new ethers.WebSocketProvider(getAlchemyOptimismSepoliaWsUrl("fallback"), network, {
-      staticNetwork: network,
-    });
-    return provider;
-  }
-
-  if (chainId === BOTANIX) {
-    return new ethers.WebSocketProvider(
-      getAlchemyBotanixWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
-      network,
-      { staticNetwork: network }
-    );
-  }
-
-  if (chainId === SOURCE_BASE_MAINNET) {
-    return new ethers.WebSocketProvider(
-      getAlchemyBaseMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
-      network,
-      {
-        staticNetwork: network,
-      }
-    );
-  }
-
-  if (chainId === SOURCE_BSC_MAINNET) {
-    return new ethers.WebSocketProvider(
-      getAlchemyBscMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback"),
-      network,
-      { staticNetwork: network }
-    );
-  }
-
-  const castedChainId: never = chainId;
-
-  throw new Error(`Unsupported websocket provider for chain id: ${castedChainId}`);
+  return new ethers.WebSocketProvider(getWsUrl(chainId)!, network, { staticNetwork: network });
 }
 
 export function getFallbackProvider(chainId: number) {

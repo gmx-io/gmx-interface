@@ -12,11 +12,12 @@ import {
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
-import { createPublicClient, fallback, http, PublicClient, Transport } from "viem";
+import { createPublicClient, fallback, http, PublicClient, Transport, webSocket } from "viem";
 
-import { getViemChain, isTestnetChain, RPC_PROVIDERS } from "config/chains";
+import { getExpressRpcUrl, getViemChain, isTestnetChain, RPC_PROVIDERS } from "config/chains";
 import { isDevelopment } from "config/env";
-import { VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
+import { getWsUrl } from "lib/rpc";
+import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
 import binanceWallet from "./connecters/binanceW3W/binanceWallet";
@@ -72,28 +73,48 @@ export const getRainbowKitConfig = once(() => {
 
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
-export function getPublicClientWithRpc(chainId: number): PublicClient {
-  const key = `chainId:${chainId}`;
+const HTTP_TRANSPORT_OPTIONS =
+  import.meta.env.MODE === "test"
+    ? {
+        fetchOptions: {
+          headers: {
+            Origin: "http://localhost:3010",
+          },
+        },
+      }
+    : undefined;
+
+function getFallbackTransport(chainId: AnyChainId): Transport {
+  return fallback([...RPC_PROVIDERS[chainId].map((url: string) => http(url, HTTP_TRANSPORT_OPTIONS))]);
+}
+
+export function getPublicClientWithRpc(
+  chainId: number,
+  options: { withWs?: boolean; withExpress?: boolean } = { withWs: false, withExpress: false }
+): PublicClient {
+  const key = `chainId:${chainId}:ws:${options.withWs ? 1 : 0}:express:${options.withExpress ? 1 : 0}`;
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
   }
+
+  let transport: Transport;
+  if (options.withWs) {
+    const wsUrl = getWsUrl(chainId as AnyChainId);
+    if (!wsUrl) {
+      // eslint-disable-next-line no-console
+      console.warn(`No WebSocket URL found for chain id: ${chainId}. Using HTTP instead.`);
+      transport = getFallbackTransport(chainId as AnyChainId);
+    } else {
+      transport = webSocket(wsUrl);
+    }
+  } else if (options.withExpress) {
+    transport = http(getExpressRpcUrl(chainId), HTTP_TRANSPORT_OPTIONS);
+  } else {
+    transport = getFallbackTransport(chainId as AnyChainId);
+  }
+
   const publicClient = createPublicClient({
-    transport: fallback([
-      ...RPC_PROVIDERS[chainId].map((url: string) =>
-        http(
-          url,
-          import.meta.env.MODE === "test"
-            ? {
-                fetchOptions: {
-                  headers: {
-                    Origin: "http://localhost:3010",
-                  },
-                },
-              }
-            : undefined
-        )
-      ),
-    ]),
+    transport,
     chain: getViemChain(chainId),
   });
   PUBLIC_CLIENTS_CACHE.set(key, publicClient);

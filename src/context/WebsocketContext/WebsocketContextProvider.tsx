@@ -235,9 +235,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         const isReconnectingIntervalPassed =
           initializedTime.current && Date.now() - initializedTime.current > WS_RECONNECT_INTERVAL;
         const listenerCount = await wsProvider.listenerCount();
-        const requiredListenerCount = getTotalSubscribersEventsCount(chainId, wsProvider, {
-          v2: !lostFocusRef.current.hasV2LostFocus,
-        });
+        const requiredListenerCount = getTotalSubscribersEventsCount();
 
         if (isDevelopment() && isReconnectingIntervalPassed) {
           // eslint-disable-next-line no-console

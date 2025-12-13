@@ -1,55 +1,31 @@
-import { AbiCoder, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
 import { MutableRefObject } from "react";
-import { Abi, decodeEventLog, Hex } from "viem";
-import type { ContractEventArgsFromTopics } from "viem/_types/types/contract";
+import {
+  Abi,
+  ContractEventArgs,
+  DecodeEventLogReturnType,
+  encodeAbiParameters,
+  isAddress,
+  keccak256,
+  stringToBytes,
+  zeroAddress,
+} from "viem";
+import type { ContractEventArgsFromTopics, ContractEventName } from "viem/_types/types/contract";
 
 import { getContract, tryGetContract } from "config/contracts";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
-import type { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-const coder = AbiCoder.defaultAbiCoder();
+type RawEventLogData = DecodeEventLogReturnType<typeof abis.EventEmitter, "EventLog2">["args"]["eventData"];
 
-const DEPOSIT_CREATED_HASH = ethers.id("DepositCreated");
-const DEPOSIT_EXECUTED_HASH = ethers.id("DepositExecuted");
-const DEPOSIT_CANCELLED_HASH = ethers.id("DepositCancelled");
+const hashId = (str: string) => keccak256(stringToBytes(str));
 
-const WITHDRAWAL_CREATED_HASH = ethers.id("WithdrawalCreated");
-const WITHDRAWAL_EXECUTED_HASH = ethers.id("WithdrawalExecuted");
-const WITHDRAWAL_CANCELLED_HASH = ethers.id("WithdrawalCancelled");
+const encodeAddress = (address: string) => encodeAbiParameters([{ type: "address" }], [address]);
 
-const SHIFT_CREATED_HASH = ethers.id("ShiftCreated");
-const SHIFT_EXECUTED_HASH = ethers.id("ShiftExecuted");
-const SHIFT_CANCELLED_HASH = ethers.id("ShiftCancelled");
-
-const ORDER_CREATED_HASH = ethers.id("OrderCreated");
-const ORDER_EXECUTED_HASH = ethers.id("OrderExecuted");
-const ORDER_CANCELLED_HASH = ethers.id("OrderCancelled");
-const ORDER_UPDATED_HASH = ethers.id("OrderUpdated");
-
-const POSITION_INCREASE_HASH = ethers.id("PositionIncrease");
-const POSITION_DECREASE_HASH = ethers.id("PositionDecrease");
-
-const GLV_DEPOSIT_CREATED_HASH = ethers.id("GlvDepositCreated");
-const GLV_DEPOSIT_EXECUTED_HASH = ethers.id("GlvDepositExecuted");
-const GLV_DEPOSIT_CANCELLED_HASH = ethers.id("GlvDepositCancelled");
-
-const GLV_WITHDRAWAL_CREATED_HASH = ethers.id("GlvWithdrawalCreated");
-const GLV_WITHDRAWAL_EXECUTED_HASH = ethers.id("GlvWithdrawalExecuted");
-const GLV_WITHDRAWAL_CANCELLED_HASH = ethers.id("GlvWithdrawalCancelled");
-
-const APPROVED_HASH = ethers.id("Approval(address,address,uint256)");
-const TRANSFER_HASH = ethers.id("Transfer(address,address,uint256)");
-
-const MULTICHAIN_BRIDGE_IN_HASH = ethers.id("MultichainBridgeIn");
-const MULTICHAIN_TRANSFER_OUT_HASH = ethers.id("MultichainTransferOut");
-const MULTICHAIN_TRANSFER_IN_HASH = ethers.id("MultichainTransferIn");
-
-const OFT_SENT_HASH = ethers.id("OFTSent(bytes32,uint32,address,uint256,uint256)");
-const OFT_RECEIVED_HASH = ethers.id("OFTReceived(bytes32,uint32,address,uint256)");
-export const COMPOSE_DELIVERED_HASH = ethers.id("ComposeDelivered(address,address,bytes32,uint16)");
-export const LZ_COMPOSE_ALERT_HASH = ethers.id(
+export const COMPOSE_DELIVERED_HASH = hashId("ComposeDelivered(address,address,bytes32,uint16)");
+export const LZ_COMPOSE_ALERT_HASH = hashId(
   "LzComposeAlert(address,address,address,bytes32,uint16,uint256,uint256,bytes,bytes,bytes)"
 );
 
@@ -112,181 +88,188 @@ export const LZ_COMPOSE_ALERT_ABI = [
   },
 ] as const satisfies Abi;
 
-export function subscribeToV2Events(
-  chainId: ContractsChainId,
-  provider: Provider,
-  account: string,
+export function subscribeToV2Events({
+  chainId,
+  account,
+  eventLogHandlers,
+}: {
+  chainId: ContractsChainId;
+  account: string;
   eventLogHandlers: MutableRefObject<
     Record<string, undefined | ((data: EventLogData, txnOpts: EventTxnParams) => void)>
-  >
-) {
-  const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), abis.EventEmitter, provider);
+  >;
+}) {
+  const client = getPublicClientWithRpc(chainId, { withWs: true });
 
-  function handleEventLog(sender, eventName, eventNameHash, eventData, txnOpts) {
-    eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-  }
+  const filters = createV2EventFilters(account);
+  const eventEmitterAddress = getContract(chainId, "EventEmitter");
 
-  function handleEventLog1(sender, eventName, eventNameHash, topic1, eventData, txnOpts) {
-    eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-  }
+  const unsubscribeEventLog1 = client.watchContractEvent({
+    abi: abis.EventEmitter,
+    address: eventEmitterAddress,
+    eventName: filters.EventLog1.eventName,
+    args: filters.EventLog1.args,
+    onLogs: (logs) => {
+      for (const log of logs) {
+        const txnOpts: EventTxnParams = {
+          transactionHash: log.transactionHash,
+          blockNumber: Number(log.blockNumber),
+        };
 
-  function handleEventLog2(msgSender, eventName, eventNameHash, topic1, topic2, eventData, txnOpts) {
-    eventLogHandlers.current[eventName]?.(parseEventLogData(eventData), txnOpts);
-  }
-
-  function handleCommonLog(e) {
-    const txnOpts: EventTxnParams = {
-      transactionHash: e.transactionHash,
-      blockNumber: e.blockNumber,
-    };
-
-    try {
-      const parsed = eventEmitter.interface.parseLog(e);
-
-      if (!parsed) throw new Error("Could not parse event");
-      if (parsed.name === "EventLog") {
-        handleEventLog(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], txnOpts);
-      } else if (parsed.name === "EventLog1") {
-        handleEventLog1(parsed.args[0], parsed.args[1], parsed.args[2], parsed.args[3], parsed.args[4], txnOpts);
-      } else if (parsed.name === "EventLog2") {
-        handleEventLog2(
-          parsed.args[0],
-          parsed.args[1],
-          parsed.args[2],
-          parsed.args[3],
-          parsed.args[4],
-          parsed.args[5],
-          txnOpts
-        );
+        try {
+          eventLogHandlers.current[log.args.eventName]?.(parseEventLogData(log.args.eventData), txnOpts);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error("error parsing event", e);
+        }
       }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error("error parsing event", e);
-    }
-  }
+    },
+    strict: true,
+  });
 
-  const filters: ProviderEvent[] = createV2EventFilters(chainId, account, provider);
+  const unsubscribeEventLog2 = client.watchContractEvent({
+    abi: abis.EventEmitter,
+    address: eventEmitterAddress,
+    eventName: filters.EventLog2.eventName,
+    args: filters.EventLog2.args,
+    onLogs: (logs) => {
+      for (const log of logs) {
+        const txnOpts: EventTxnParams = {
+          transactionHash: log.transactionHash,
+          blockNumber: Number(log.blockNumber),
+        };
 
-  filters.forEach((filter) => {
-    provider.on(filter, handleCommonLog);
+        try {
+          eventLogHandlers.current[log.args.eventName]?.(parseEventLogData(log.args.eventData), txnOpts);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error("error parsing event", e);
+        }
+      }
+    },
+    strict: true,
   });
 
   return () => {
-    filters.forEach((filter) => {
-      provider.off(filter, handleCommonLog);
-    });
+    unsubscribeEventLog1();
+    unsubscribeEventLog2();
   };
 }
 
-export function subscribeToTransferEvents(
-  chainId: ContractsChainId,
-  provider: Provider,
-  account: string,
-  marketTokensAddresses: string[],
-  onTransfer: (tokenAddress: string, amount: bigint) => void
-) {
+export function subscribeToTransferEvents({
+  chainId,
+  account,
+  marketTokensAddresses,
+  onTransfer,
+}: {
+  chainId: ContractsChainId;
+  account: string;
+  marketTokensAddresses: string[];
+  onTransfer: (tokenAddress: string, amount: bigint) => void;
+}) {
+  const client = getPublicClientWithRpc(chainId, { withWs: true });
+
   const vaults = [
     tryGetContract(chainId, "OrderVault"),
     tryGetContract(chainId, "ShiftVault"),
     tryGetContract(chainId, "DepositVault"),
     tryGetContract(chainId, "WithdrawalVault"),
     tryGetContract(chainId, "GlvVault"),
-  ].filter(Boolean);
-  const vaultHashes = vaults.map((vault) => coder.encode(["address"], [vault]));
+  ].filter((v): v is string => Boolean(v));
 
-  const senderHashes = [ZeroAddress, ...marketTokensAddresses].map((address) => coder.encode(["address"], [address]));
-
-  const accountHash = coder.encode(["address"], [account]);
+  const senders = [zeroAddress, ...marketTokensAddresses];
 
   const tokenAddresses = getTokens(chainId)
     .filter((token) => !token.isSynthetic && isAddress(token.address) && token.address !== NATIVE_TOKEN_ADDRESS)
     .map((token) => token.address);
   const allTokenAddresses = [...marketTokensAddresses, ...tokenAddresses];
 
-  const tokenContract = new ethers.Contract(ZeroAddress, abis.Token, provider);
-
-  const sendFilters: ProviderEvent = {
+  const unsubscribeSend = client.watchContractEvent({
+    abi: abis.Token,
+    eventName: "Transfer",
     address: allTokenAddresses,
-    topics: [TRANSFER_HASH, accountHash, vaultHashes],
-  };
+    args: {
+      from: account,
+      to: vaults,
+    },
+    onLogs: (logs) => {
+      for (const log of logs) {
+        const tokenAddress = log.address;
+        const amount = log.args.value;
+        onTransfer(tokenAddress, -amount);
+      }
+    },
+    strict: true,
+  });
 
-  const receiveFilters: ProviderEvent = {
+  const unsubscribeReceive = client.watchContractEvent({
+    abi: abis.Token,
+    eventName: "Transfer",
     address: allTokenAddresses,
-    topics: [TRANSFER_HASH, senderHashes, accountHash],
-  };
-
-  const handleSend = (log: LogParams) => {
-    const tokenAddress = log.address;
-    const data = tokenContract.interface.parseLog(log);
-
-    if (!data) {
-      return;
-    }
-
-    const amount = BigInt(data.args[2]);
-
-    onTransfer(tokenAddress, -amount);
-  };
-
-  const handleReceive = (log: LogParams) => {
-    const tokenAddress = log.address;
-    const data = tokenContract.interface.parseLog(log);
-
-    if (!data) {
-      return;
-    }
-
-    const amount = BigInt(data.args[2]);
-
-    onTransfer(tokenAddress, amount);
-  };
-
-  provider.on(sendFilters, handleSend);
-  provider.on(receiveFilters, handleReceive);
+    args: {
+      from: senders,
+      to: account,
+    },
+    onLogs: (logs) => {
+      for (const log of logs) {
+        const tokenAddress = log.address;
+        const amount = log.args.value;
+        onTransfer(tokenAddress, amount);
+      }
+    },
+    strict: true,
+  });
 
   return () => {
-    provider.off(sendFilters, handleSend);
-    provider.off(receiveFilters, handleReceive);
+    unsubscribeSend();
+    unsubscribeReceive();
   };
 }
 
-export function subscribeToApprovalEvents(
-  chainId: ContractsChainId,
-  provider: Provider,
-  account: string,
-  onApprove: (tokenAddress: string, spender: string, value: bigint) => void
-) {
+export function subscribeToApprovalEvents({
+  chainId,
+  account,
+  onApprove,
+}: {
+  chainId: ContractsChainId;
+  account: string;
+  onApprove: (tokenAddress: string, spender: string, value: bigint) => void;
+}) {
+  const client = getPublicClientWithRpc(chainId, { withWs: true });
+
   const spenders = [
-    ZeroAddress,
+    zeroAddress,
     tryGetContract(chainId, "StakedGmxTracker"),
     tryGetContract(chainId, "GlpManager"),
     tryGetContract(chainId, "SyntheticsRouter"),
     tryGetContract(chainId, "Router"),
-  ].filter(Boolean);
+  ].filter((s): s is string => Boolean(s));
 
-  const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
-  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
   const tokenAddresses = getTokens(chainId)
     .filter((token) => isAddress(token.address) && token.address !== NATIVE_TOKEN_ADDRESS)
     .map((token) => token.address);
 
-  const approvalsFilter: ProviderEvent = {
+  const unsubscribe = client.watchContractEvent({
+    abi: abis.Token,
+    eventName: "Approval",
     address: tokenAddresses,
-    topics: [APPROVED_HASH, addressHash, spenderTopics],
-  };
-
-  const handleApprovalsLog = (log: LogParams) => {
-    const tokenAddress = log.address;
-    const spender = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[2])[0];
-    const value = ethers.AbiCoder.defaultAbiCoder().decode(["uint256"], log.data)[0];
-
-    onApprove(tokenAddress, spender, value);
-  };
-
-  provider.on(approvalsFilter, handleApprovalsLog);
+    args: {
+      owner: account,
+      spender: spenders,
+    },
+    onLogs: (logs) => {
+      for (const log of logs) {
+        const tokenAddress = log.address;
+        const spender = log.args.spender;
+        const value = log.args.value;
+        onApprove(tokenAddress, spender, value);
+      }
+    },
+    strict: true,
+  });
 
   return () => {
-    provider.off(approvalsFilter, handleApprovalsLog);
+    unsubscribe();
   };
 }
 
@@ -295,157 +278,174 @@ export type OftSentInfo = {
   txnHash: string;
 } & ContractEventArgsFromTopics<typeof OFT_SENT_ABI, "OFTSent">;
 
-export function subscribeToOftSentEvents(
-  provider: Provider,
-  account: string,
-  stargates: string[],
-  onOftSent: (info: OftSentInfo) => void
-): () => void {
-  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+export function subscribeToOftSentEvents({
+  chainId,
+  account,
+  stargates,
+  onOftSent,
+}: {
+  chainId: ContractsChainId | SourceChainId;
+  account: string;
+  stargates: string[];
+  onOftSent: (info: OftSentInfo) => void;
+}): () => void {
+  const client = getPublicClientWithRpc(chainId, { withWs: true });
 
-  const providerFilter: ProviderEvent = {
+  const unsubscribe = client.watchContractEvent({
+    abi: OFT_SENT_ABI,
+    eventName: "OFTSent",
     address: stargates,
-    topics: [OFT_SENT_HASH, null, addressHash],
-  };
-
-  const handleOftSentLog = (log: LogParams) => {
-    const args = decodeEventLog({
-      abi: OFT_SENT_ABI,
-      eventName: "OFTSent",
-      topics: log.topics as any,
-      data: log.data as Hex,
-    }).args;
-
-    onOftSent({
-      sender: log.address,
-      txnHash: log.transactionHash,
-      ...args,
-    });
-  };
-
-  provider.on(providerFilter, handleOftSentLog);
+    args: {
+      fromAddress: account,
+    },
+    onLogs: (logs) => {
+      for (const log of logs) {
+        onOftSent({
+          sender: log.address,
+          txnHash: log.transactionHash,
+          ...log.args,
+        });
+      }
+    },
+    strict: true,
+  });
 
   return () => {
-    provider.off(providerFilter, handleOftSentLog);
+    unsubscribe();
   };
 }
 
-export function subscribeToOftReceivedEvents(
-  provider: Provider,
-  stargates: string[],
-  guids: string[],
+export function subscribeToOftReceivedEvents({
+  chainId,
+  stargates,
+  guids,
+  onOftReceive,
+}: {
+  chainId: ContractsChainId | SourceChainId;
+  stargates: string[];
+  guids: string[];
   onOftReceive: (
     info: { sender: string; txnHash: string } & ContractEventArgsFromTopics<typeof OFT_RECEIVED_ABI, "OFTReceived">
-  ) => void
-) {
+  ) => void;
+}) {
   if (guids.length === 0) {
     return undefined;
   }
 
-  const providerFilter: ProviderEvent = {
+  const client = getPublicClientWithRpc(chainId, { withWs: true });
+
+  const unsubscribe = client.watchContractEvent({
+    abi: OFT_RECEIVED_ABI,
+    eventName: "OFTReceived",
     address: stargates,
-    topics: [OFT_RECEIVED_HASH, guids, null],
-  };
-
-  const handleOftReceivedLog = (log: LogParams) => {
-    const args = decodeEventLog({
-      abi: OFT_RECEIVED_ABI,
-      eventName: "OFTReceived",
-      topics: log.topics as any,
-      data: log.data as Hex,
-    }).args;
-
-    onOftReceive({
-      sender: log.address,
-      txnHash: log.transactionHash,
-      ...args,
-    });
-  };
-
-  provider.on(providerFilter, handleOftReceivedLog);
+    args: {
+      guid: guids,
+    },
+    onLogs: (logs) => {
+      for (const log of logs) {
+        onOftReceive({
+          sender: log.address,
+          txnHash: log.transactionHash,
+          ...log.args,
+        });
+      }
+    },
+    strict: true,
+  });
 
   return () => {
-    provider.off(providerFilter, handleOftReceivedLog);
+    unsubscribe();
   };
 }
 
-export function subscribeToComposeDeliveredEvents(
-  provider: Provider,
-  layerZeroEndpoint: string,
-  guids: string[],
+export function subscribeToComposeDeliveredEvents({
+  chainId,
+  layerZeroEndpoint,
+  guids,
+  onComposeDelivered,
+}: {
+  chainId: ContractsChainId;
+  layerZeroEndpoint: string;
+  guids: string[];
   onComposeDelivered: (
     info: { sender: string; txnHash: string } & ContractEventArgsFromTopics<
       typeof COMPOSE_DELIVERED_ABI,
       "ComposeDelivered"
     >
-  ) => void
-) {
+  ) => void;
+}) {
   if (guids.length === 0) {
     return undefined;
   }
 
-  const providerFilter: ProviderEvent = {
+  const client = getPublicClientWithRpc(chainId, { withWs: true });
+
+  const unsubscribe = client.watchContractEvent({
+    abi: COMPOSE_DELIVERED_ABI,
+    eventName: "ComposeDelivered",
     address: layerZeroEndpoint,
-    topics: [COMPOSE_DELIVERED_HASH],
-  };
+    onLogs: (logs) => {
+      for (const log of logs) {
+        // Manual filtering because event params are not indexed
+        if (!guids.includes(log.args.guid)) {
+          continue;
+        }
 
-  const handleComposeDeliveredLog = (log: LogParams) => {
-    const args = decodeEventLog({
-      abi: COMPOSE_DELIVERED_ABI,
-      eventName: "ComposeDelivered",
-      topics: log.topics as any,
-      data: log.data as Hex,
-    }).args;
-
-    // Manual filtering because event params are not indexed
-    if (!guids.includes(args.guid)) {
-      return;
-    }
-
-    onComposeDelivered({
-      sender: log.address,
-      txnHash: log.transactionHash,
-      ...args,
-    });
-  };
-
-  provider.on(providerFilter, handleComposeDeliveredLog);
+        onComposeDelivered({
+          sender: log.address,
+          txnHash: log.transactionHash,
+          ...log.args,
+        });
+      }
+    },
+    strict: true,
+  });
 
   return () => {
-    provider.off(providerFilter, handleComposeDeliveredLog);
+    unsubscribe();
   };
 }
 
-export function subscribeToMultichainApprovalEvents(
-  provider: Provider,
-  account: string,
-  tokenAddresses: string[],
-  spenders: string[],
-  onApprove: (tokenAddress: string, spender: string, value: bigint) => void
-) {
-  const spenderTopics = spenders.map((spender) => AbiCoder.defaultAbiCoder().encode(["address"], [spender]));
-  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
+export function subscribeToMultichainApprovalEvents({
+  srcChainId,
+  account,
+  tokenAddresses,
+  spenders,
+  onApprove,
+}: {
+  srcChainId: SourceChainId;
+  account: string;
+  tokenAddresses: string[];
+  spenders: string[];
+  onApprove: (tokenAddress: string, spender: string, value: bigint) => void;
+}) {
+  const client = getPublicClientWithRpc(srcChainId, { withWs: true });
 
-  const approvalsFilter: ProviderEvent = {
+  const unsubscribe = client.watchContractEvent({
+    abi: abis.ERC20,
+    eventName: "Approval",
     address: tokenAddresses,
-    topics: [APPROVED_HASH, addressHash, spenderTopics],
-  };
-
-  const handleApprovalsLog = (log: LogParams) => {
-    const tokenAddress = log.address;
-    const spender = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[2])[0];
-    const value = ethers.AbiCoder.defaultAbiCoder().decode(["uint256"], log.data)[0];
-    onApprove(tokenAddress, spender, value);
-  };
-
-  provider.on(approvalsFilter, handleApprovalsLog);
+    args: {
+      owner: account,
+      spender: spenders,
+    },
+    onLogs: (logs) => {
+      for (const log of logs) {
+        const tokenAddress = log.address;
+        const spender = log.args.spender;
+        const value = log.args.value;
+        onApprove(tokenAddress, spender, value);
+      }
+    },
+    strict: true,
+  });
 
   return () => {
-    provider.off(approvalsFilter, handleApprovalsLog);
+    unsubscribe();
   };
 }
 
-export function parseEventLogData(eventData): EventLogData {
+export function parseEventLogData(eventData: RawEventLogData): EventLogData {
   const ret: any = {};
   for (const typeKey of [
     "addressItems",
@@ -470,105 +470,72 @@ export function parseEventLogData(eventData): EventLogData {
   return ret as EventLogData;
 }
 
-function createV2EventFilters(chainId: ContractsChainId, account: string, wsProvider: Provider): ProviderEvent[] {
-  const addressHash = AbiCoder.defaultAbiCoder().encode(["address"], [account]);
-  const eventEmitter = new ethers.Contract(getContract(chainId, "EventEmitter"), abis.EventEmitter, wsProvider);
-  const EVENT_LOG_TOPIC = eventEmitter.interface.getEvent("EventLog")?.topicHash ?? null;
-  const EVENT_LOG1_TOPIC = eventEmitter.interface.getEvent("EventLog1")?.topicHash ?? null;
-  const EVENT_LOG2_TOPIC = eventEmitter.interface.getEvent("EventLog2")?.topicHash ?? null;
+type ViemEventFilter<abi extends Abi, eventName extends ContractEventName<abi> = ContractEventName<abi>> = {
+  [key in eventName]: {
+    eventName: key;
+    args: ContractEventArgs<abi, key>;
+  };
+}[eventName];
 
-  const GLV_TOPICS_FILTER = [
-    GLV_DEPOSIT_CREATED_HASH,
-    GLV_DEPOSIT_CANCELLED_HASH,
-    GLV_DEPOSIT_EXECUTED_HASH,
-    GLV_WITHDRAWAL_CREATED_HASH,
-    GLV_WITHDRAWAL_EXECUTED_HASH,
-    GLV_WITHDRAWAL_CANCELLED_HASH,
-  ];
+function createV2EventFilters(account: string): {
+  EventLog1: ViemEventFilter<typeof abis.EventEmitter, "EventLog1">;
+  EventLog2: ViemEventFilter<typeof abis.EventEmitter, "EventLog2">;
+} {
+  const addressHash = encodeAddress(account);
 
-  return [
-    // DEPOSITS AND WITHDRAWALS AND SHIFTS
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [
-        EVENT_LOG2_TOPIC,
-        [DEPOSIT_CREATED_HASH, WITHDRAWAL_CREATED_HASH, SHIFT_CREATED_HASH],
-        null,
-        addressHash,
-      ],
-    },
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [
-        EVENT_LOG_TOPIC,
-        [DEPOSIT_CANCELLED_HASH, DEPOSIT_EXECUTED_HASH, WITHDRAWAL_CANCELLED_HASH, WITHDRAWAL_EXECUTED_HASH],
-      ],
-    },
-    // NEW CONTRACTS
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [
-        EVENT_LOG2_TOPIC,
-        [
-          DEPOSIT_CANCELLED_HASH,
-          DEPOSIT_EXECUTED_HASH,
+  return {
+    // POSITIONS AND MULTICHAIN - All EventLog1 with same topic1
+    EventLog1: {
+      eventName: "EventLog1",
+      args: {
+        eventNameHash: [
+          "PositionIncrease",
+          "PositionDecrease",
 
-          WITHDRAWAL_CANCELLED_HASH,
-          WITHDRAWAL_EXECUTED_HASH,
-
-          SHIFT_CANCELLED_HASH,
-          SHIFT_EXECUTED_HASH,
+          "MultichainBridgeIn",
+          "MultichainTransferOut",
+          "MultichainTransferIn",
         ],
-        null,
-        addressHash,
-      ],
+        topic1: addressHash,
+      },
     },
-    // ORDERS
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG2_TOPIC, ORDER_CREATED_HASH, null, addressHash],
+    // DEPOSITS, WITHDRAWALS, SHIFTS, ORDERS, AND GLV - All EventLog2 with same topic1/topic2
+    EventLog2: {
+      eventName: "EventLog2",
+      args: {
+        eventNameHash: [
+          "DepositCreated",
+          "DepositCancelled",
+          "DepositExecuted",
+
+          "WithdrawalCreated",
+          "WithdrawalCancelled",
+          "WithdrawalExecuted",
+
+          "ShiftCreated",
+          "ShiftCancelled",
+          "ShiftExecuted",
+
+          "OrderCreated",
+          "OrderCancelled",
+          "OrderUpdated",
+          "OrderExecuted",
+
+          "GlvDepositCreated",
+          "GlvDepositCancelled",
+          "GlvDepositExecuted",
+
+          "GlvWithdrawalCreated",
+          "GlvWithdrawalExecuted",
+          "GlvWithdrawalCancelled",
+        ],
+        topic1: null,
+        topic2: addressHash,
+      },
     },
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG1_TOPIC, [ORDER_CANCELLED_HASH, ORDER_UPDATED_HASH, ORDER_EXECUTED_HASH]],
-    },
-    // NEW CONTRACTS
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG2_TOPIC, [ORDER_CANCELLED_HASH, ORDER_UPDATED_HASH, ORDER_EXECUTED_HASH], null, addressHash],
-    },
-    // POSITIONS
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG1_TOPIC, [POSITION_INCREASE_HASH, POSITION_DECREASE_HASH], addressHash],
-    },
-    // GLV DEPOSITS
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
-    },
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG1_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
-    },
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [EVENT_LOG2_TOPIC, GLV_TOPICS_FILTER, null, addressHash],
-    },
-    // Multichain
-    {
-      address: getContract(chainId, "EventEmitter"),
-      topics: [
-        EVENT_LOG1_TOPIC,
-        [MULTICHAIN_BRIDGE_IN_HASH, MULTICHAIN_TRANSFER_OUT_HASH, MULTICHAIN_TRANSFER_IN_HASH],
-        addressHash,
-      ],
-    },
-  ];
+  };
 }
 
-export function getTotalSubscribersEventsCount(chainId: ContractsChainId, provider: Provider, { v2 }: { v2: boolean }) {
-  const v1Count = 0;
-  const v2Count = v2 ? createV2EventFilters(chainId, ZeroAddress, provider).length : 0;
-  return v1Count + v2Count;
+export function getTotalSubscribersEventsCount() {
+  return 2;
 }

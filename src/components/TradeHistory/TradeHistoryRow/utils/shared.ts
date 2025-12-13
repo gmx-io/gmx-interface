@@ -5,8 +5,8 @@ import format from "date-fns/format";
 import formatISO from "date-fns/formatISO";
 import formatRelative from "date-fns/formatRelative";
 import dateEn from "date-fns/locale/en-US";
-import { BytesLike, ethers } from "ethers";
 import words from "lodash/words";
+import { AbiParameterToPrimitiveType, ContractErrorName, decodeErrorResult, ExtractAbiItem } from "viem";
 
 import { abis } from "sdk/abis";
 import { TradeActionType } from "sdk/types/tradeHistory";
@@ -166,18 +166,48 @@ export function formatTradeActionTimestampISO(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
-
-export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErrors.interface.parseError> | undefined {
-  let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
-
+export function tryGetError(reasonBytes: string):
+  | {
+      name: string;
+      args?: {
+        [key in ExtractAbiItem<
+          typeof abis.CustomErrors,
+          ContractErrorName<typeof abis.CustomErrors>
+        >["inputs"][number]["name"]]: AbiParameterToPrimitiveType<
+          Extract<
+            ExtractAbiItem<typeof abis.CustomErrors, ContractErrorName<typeof abis.CustomErrors>>["inputs"][number],
+            { name: key }
+          >,
+          "inputs"
+        >;
+      };
+    }
+  | undefined {
   try {
-    error = customErrors.interface.parseError(reasonBytes);
-  } catch (error) {
+    const decoded = decodeErrorResult({
+      abi: abis.CustomErrors,
+      data: reasonBytes,
+    });
+
+    // Convert args array to key-value dictionary for backward compatibility
+    if (
+      decoded.args &&
+      Array.isArray(decoded.args) &&
+      decoded.abiItem &&
+      "inputs" in decoded.abiItem &&
+      decoded.abiItem.inputs
+    ) {
+      const argsDict: Record<string, any> = {};
+      for (const [index, input] of decoded.abiItem.inputs.entries()) {
+        argsDict[input.name] = decoded.args[index];
+      }
+      return { name: decoded.errorName, args: argsDict as any };
+    }
+
+    return { name: decoded.errorName, args: undefined };
+  } catch {
     return undefined;
   }
-
-  return error;
 }
 
 export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {

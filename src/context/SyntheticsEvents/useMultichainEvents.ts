@@ -23,7 +23,6 @@ import {
   subscribeToOftSentEvents,
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider, useWsAdditionalSourceChains } from "context/WebsocketContext/WebsocketContextProvider";
-import { CodecUiHelper } from "domain/multichain/codecs/CodecUiHelper";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
@@ -269,11 +268,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
       debugLog("subscribing to OFTSent events for", srcChainId);
 
-      const unsubscribeFromOftSentEvents = subscribeToOftSentEvents(
-        wsSourceChainProvider,
-        currentAccount,
-        sourceChainStargates,
-        (info) => {
+      const unsubscribeFromOftSentEvents = subscribeToOftSentEvents({
+        chainId: srcChainId,
+        account: currentAccount,
+        stargates: sourceChainStargates,
+        onOftSent: (info) => {
           setTimeout(function clear() {
             debugLog("clearing OFTSent event for", srcChainId, info.txnHash);
             setSourceChainOftSentQueue((prev) => {
@@ -284,8 +283,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           setSourceChainOftSentQueue((prev) => {
             return uniqBy(prev.concat(info), (item) => item.txnHash);
           });
-        }
-      );
+        },
+      });
 
       return function cleanup() {
         debugLog("unsubscribing from OFTSent events for", srcChainId);
@@ -309,11 +308,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const tokenIdMap = CHAIN_ID_TO_TOKEN_ID_MAP[chainId];
       const settlementChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
 
-      const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents(
-        wsProvider,
-        settlementChainStargates,
-        pendingReceiveDepositGuidsRef.current,
-        (info) => {
+      const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents({
+        chainId,
+        stargates: settlementChainStargates,
+        guids: pendingReceiveDepositGuidsRef.current,
+        onOftReceive: (info) => {
           setPendingMultichainFunding((prev) => {
             const newPendingMultichainFunding = structuredClone(prev);
 
@@ -338,8 +337,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
             return newPendingMultichainFunding;
           });
-        }
-      );
+        },
+      });
 
       const timeoutId = setTimeout(() => {
         setPendingMultichainFunding((prev) => {
@@ -373,13 +372,13 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         return;
       }
 
-      const lzEndpoint = CodecUiHelper.getLzEndpoint(chainId);
+      const lzEndpoint = getContract(chainId, "LayerZeroEndpoint");
 
-      const unsubscribeFromComposeDeliveredEvents = subscribeToComposeDeliveredEvents(
-        wsProvider,
-        lzEndpoint,
-        pendingExecuteDepositGuidsRef.current,
-        (info) => {
+      const unsubscribeFromComposeDeliveredEvents = subscribeToComposeDeliveredEvents({
+        chainId,
+        layerZeroEndpoint: lzEndpoint,
+        guids: pendingExecuteDepositGuidsRef.current,
+        onComposeDelivered: (info) => {
           scheduleMultichainFundingItemClearing([info.guid]);
 
           setPendingMultichainFunding((prev) => {
@@ -404,8 +403,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
             return newPendingMultichainFunding;
           });
-        }
-      );
+        },
+      });
 
       const timeoutId = setTimeout(() => {
         setPendingMultichainFunding((prev) => {
@@ -564,11 +563,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
       const settlementChainStargates = Object.values(tokenIdMap).map((tokenId) => tokenId.stargate);
 
-      const unsubscribeFromOftSentEvents = subscribeToOftSentEvents(
-        wsProvider,
-        getContract(chainId, "LayerZeroProvider"),
-        settlementChainStargates,
-        (info) => {
+      const unsubscribeFromOftSentEvents = subscribeToOftSentEvents({
+        chainId,
+        account: getContract(chainId, "LayerZeroProvider"),
+        stargates: settlementChainStargates,
+        onOftSent: (info) => {
           setTimeout(function clear() {
             debugLog("clearing OFTSent event for", chainId, info.txnHash);
             setSettlementChainOftSentQueue((prev) => {
@@ -580,8 +579,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           setSettlementChainOftSentQueue((prev) => {
             return uniqBy(prev.concat(info), (item) => item.txnHash);
           });
-        }
-      );
+        },
+      });
 
       return function cleanup() {
         unsubscribeFromOftSentEvents();
@@ -615,11 +614,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
       debugLog("subscribing to source chain OFTReceive events for", srcChainId, guids);
 
-      const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents(
-        wsSourceChainProvider,
-        sourceChainStargates,
+      const unsubscribeFromOftReceivedEvents = subscribeToOftReceivedEvents({
+        chainId: srcChainId,
+        stargates: sourceChainStargates,
         guids,
-        (info) => {
+        onOftReceive: (info) => {
           debugLog("withdrawal on source chain got OFTReceive event for", srcChainId, info.txnHash);
 
           scheduleMultichainFundingItemClearing([info.guid]);
@@ -665,8 +664,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
             return newPendingMultichainFunding;
           });
-        }
-      );
+        },
+      });
 
       // in 5 minutes clean up pending withdrawals that are not received
       const timeoutId = setTimeout(() => {
@@ -753,12 +752,12 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           .map((tokenId) => tokenId.stargate);
 
         debugLog("subscribing to source chain approval events for", someSourceChainId);
-        const unsubscribeApproval = subscribeToMultichainApprovalEvents(
-          wsSomeSourceChainProvider,
-          currentAccount,
+        const unsubscribeApproval = subscribeToMultichainApprovalEvents({
+          srcChainId: someSourceChainId,
+          account: currentAccount,
           tokenAddresses,
-          stargates,
-          (tokenAddress, spender, value) => {
+          spenders: stargates,
+          onApprove: (tokenAddress, spender, value) => {
             debugLog("got approval event for", someSourceChainId, tokenAddress, spender, value);
 
             setSourceChainApprovalStatuses((old) => ({
@@ -768,8 +767,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
                 [spender]: { value, createdAt: Date.now() },
               },
             }));
-          }
-        );
+          },
+        });
 
         newUnsubscribers[someSourceChainId] = unsubscribeApproval;
       }

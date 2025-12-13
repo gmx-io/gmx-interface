@@ -12,8 +12,8 @@ import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { basisPointsToFloat } from "lib/numbers";
-import { getProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
@@ -164,9 +164,13 @@ export async function getReferralCodeOwner(chainId: ContractsChainId, referralCo
   if (referralStorageAddress === zeroAddress) {
     return zeroAddress;
   }
-  const provider = getProvider(undefined, chainId);
-  const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);
-  const codeOwner = await contract.codeOwners(referralCode);
+  const publicClient = getPublicClientWithRpc(chainId);
+  const codeOwner = await publicClient.readContract({
+    address: referralStorageAddress,
+    abi: abis.ReferralStorage,
+    functionName: "codeOwners",
+    args: [referralCode],
+  });
   return codeOwner;
 }
 

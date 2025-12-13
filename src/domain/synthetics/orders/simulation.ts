@@ -1,26 +1,20 @@
-import { BaseContract, JsonRpcProvider } from "ethers";
-import { encodeFunctionData, withRetry } from "viem";
+import { PublicClient, encodeFunctionData, withRetry } from "viem";
 
-import {
-  getContract,
-  getExchangeRouterContract,
-  getGlvRouterContract,
-  getMulticallContract,
-  getZeroAddressContract,
-} from "config/contracts";
+import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
-import { getExpressProvider, getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+
+import { isGlvEnabled } from "../markets/glv";
 
 export type SimulateExecuteParams = {
   account: string;
@@ -45,48 +39,56 @@ export function isSimulationPassed(errorData: ErrorData) {
 }
 
 export async function simulateExecution(chainId: ContractsChainId, p: SimulateExecuteParams) {
-  let provider: JsonRpcProvider;
-
+  let client: PublicClient;
   if (p.isExpress) {
     // Use alchemy rpc for express transactions simulation to increase reliability
-    provider = getExpressProvider(chainId) ?? getProvider(undefined, chainId);
+    client = getPublicClientWithRpc(chainId, { withExpress: true });
   } else {
-    provider = getProvider(undefined, chainId);
+    client = getPublicClientWithRpc(chainId);
   }
 
   if (isDevelopment()) {
     // eslint-disable-next-line no-console
-    console.log("simulation rpc", provider._getConnection().url);
+    console.log("simulation rpc", client.transport);
   }
 
   const multicallAddress = getContract(chainId, "Multicall");
 
-  const multicall = getMulticallContract(chainId, provider);
-  const exchangeRouter = getExchangeRouterContract(chainId, provider);
-  const glvRouter = isGlvEnabled(chainId) ? getGlvRouterContract(chainId, provider) : getZeroAddressContract(provider);
+  const useGlvRouter = isGlvEnabled(chainId);
 
   let blockTimestamp: bigint;
-  let blockTag: string | number;
+  let blockNumber: bigint | undefined;
 
   if (p.blockTimestampData) {
     blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
-    blockTag = "latest";
   } else {
-    const result = await multicall.blockAndAggregate.staticCall([
-      { target: multicallAddress, callData: multicall.interface.encodeFunctionData("getCurrentBlockTimestamp") },
-    ]);
-    const returnValues = multicall.interface.decodeFunctionResult(
-      "getCurrentBlockTimestamp",
-      result.returnData[0].returnData
-    );
-    blockTimestamp = returnValues[0];
-    blockTag = Number(result.blockNumber);
+    const [blockTimestampResult, currentBlockNumberResult] = await client.multicall({
+      multicallAddress,
+      contracts: [
+        {
+          address: multicallAddress,
+          abi: abis.Multicall,
+          functionName: "getCurrentBlockTimestamp",
+        },
+        {
+          address: multicallAddress,
+          abi: abis.Multicall,
+          functionName: "getBlockNumber",
+        },
+      ],
+    });
+
+    blockTimestamp = blockTimestampResult.result!;
+    blockNumber = currentBlockNumberResult.result!;
   }
 
   const priceTimestamp = blockTimestamp + 120n;
   const method = p.method || "simulateExecuteLatestOrder";
 
   const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";
+  if (isGlv && !useGlvRouter) {
+    throw new Error("GlvRouter is not enabled for this chain");
+  }
 
   const simulationPriceParams = {
     primaryTokens: p.prices.primaryTokens,
@@ -119,12 +121,16 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     }
 
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("makeExternalCalls", [
-        externalCalls.externalCallTargets,
-        externalCalls.externalCallDataList,
-        externalCalls.refundTokens,
-        externalCalls.refundReceivers,
-      ])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "makeExternalCalls",
+        args: [
+          externalCalls.externalCallTargets,
+          externalCalls.externalCallDataList,
+          externalCalls.refundTokens,
+          externalCalls.refundReceivers,
+        ],
+      })
     );
   }
 
@@ -136,40 +142,68 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     }
 
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestWithdrawal", [
-        simulationPriceParams,
-        p.swapPricingType,
-      ])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestWithdrawal",
+        args: [simulationPriceParams, p.swapPricingType],
+      })
     );
   } else if (method === "simulateExecuteLatestDeposit") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestDeposit", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestDeposit",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestOrder") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestOrder", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestOrder",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestShift") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestShift", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestShift",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestGlvDeposit") {
     simulationPayloadData.push(
-      glvRouter.interface.encodeFunctionData("simulateExecuteLatestGlvDeposit", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.GlvRouter,
+        functionName: "simulateExecuteLatestGlvDeposit",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestGlvWithdrawal") {
     simulationPayloadData.push(
-      glvRouter.interface.encodeFunctionData("simulateExecuteLatestGlvWithdrawal", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.GlvRouter,
+        functionName: "simulateExecuteLatestGlvWithdrawal",
+        args: [simulationPriceParams],
+      })
     );
   } else {
     throw new Error(`Unknown method: ${method}`);
   }
 
   const tenderlyConfig = getTenderlyConfig();
-  const router = isGlv ? glvRouter : exchangeRouter;
+  const routerAddress = isGlv ? getContract(chainId, "GlvRouter") : getContract(chainId, "ExchangeRouter");
+  const routerAbi = isGlv ? abis.GlvRouter : abis.ExchangeRouter;
 
   if (tenderlyConfig) {
-    await simulateTxWithTenderly(chainId, router as BaseContract, p.account, "multicall", [simulationPayloadData], {
+    await simulateTxWithTenderly({
+      chainId,
+      address: routerAddress,
+      abi: routerAbi,
+      account: p.account,
+      method: "multicall",
+      params: [simulationPayloadData],
       value: p.value,
       comment: `calling ${method}`,
     });
@@ -178,10 +212,14 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
   try {
     await withRetry(
       () => {
-        return router.multicall.staticCall(simulationPayloadData, {
+        return client.simulateContract({
+          address: routerAddress,
+          abi: routerAbi,
+          functionName: "multicall",
+          args: [simulationPayloadData],
           value: p.value,
-          blockTag,
-          from: p.account,
+          account: p.account,
+          blockNumber: blockNumber,
         });
       },
       {

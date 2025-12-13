@@ -14,6 +14,7 @@ import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import { toAddress } from "lib/transactions/iSigner";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -66,7 +67,24 @@ export async function callContract(
     const tenderlyConfig = getTenderlyConfig();
 
     if (tenderlyConfig) {
-      await simulateTxWithTenderly(chainId, contract, wallet.address, method, params, {
+      const functionFragment = contract.interface.getFunction(method)!;
+      await simulateTxWithTenderly({
+        chainId,
+        address: (await toAddress(contract.target))!,
+        abi: [
+          {
+            name: functionFragment.name,
+            type: "function",
+            inputs: functionFragment.inputs,
+            outputs: functionFragment.outputs,
+            stateMutability: functionFragment.stateMutability,
+            constant: functionFragment.constant,
+            payable: functionFragment.payable,
+          },
+        ],
+        account: wallet.address,
+        method,
+        params,
         gasLimit: opts.gasLimit !== undefined ? BigInt(opts.gasLimit) : undefined,
         value: opts.value !== undefined ? BigInt(opts.value) : undefined,
         comment: `calling ${method}`,

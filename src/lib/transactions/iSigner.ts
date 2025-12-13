@@ -314,7 +314,7 @@ export class ISigner implements ISignerInterface {
   }
 }
 
-async function toAddress(address: AddressLike | undefined | null): Promise<string | undefined> {
+export async function toAddress(address: AddressLike | undefined | null): Promise<string | undefined> {
   if (address === undefined) {
     return undefined;
   }

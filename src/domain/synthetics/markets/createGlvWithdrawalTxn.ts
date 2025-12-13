@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
+import { ContractFunctionParameters } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -10,7 +11,6 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { IGlvWithdrawalUtils } from "typechain-types/GlvRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -74,8 +74,8 @@ export async function createGlvWithdrawalTxn({
           executionFee: params.executionFee,
           callbackGasLimit: 0n,
           dataList: [],
-        } satisfies IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct,
-      ],
+        },
+      ] satisfies ContractFunctionParameters<typeof abis.GlvRouter, "payable", "createGlvWithdrawal">["args"],
     },
   ];
 
