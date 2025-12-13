@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
-import { ethers } from "ethers";
 import mapKeys from "lodash/mapKeys";
 import { zeroAddress, zeroHash } from "viem";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
@@ -26,7 +26,7 @@ import {
 export { adjustForDecimals } from "./numbers";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
-export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
+export const PLACEHOLDER_ACCOUNT = privateKeyToAccount(generatePrivateKey()).address;
 
 export const MIN_PROFIT_TIME = 0;
 

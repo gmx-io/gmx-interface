@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { encodeFunctionData, zeroAddress } from "viem";
+import { createWalletClient, encodeFunctionData, publicActions, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
 import {
@@ -9,7 +9,7 @@ import {
   FAKE_INPUT_AMOUNT_MAP,
   getMappedTokenId,
   isSettlementChain,
-  RANDOM_WALLET,
+  RANDOM_ACCOUNT,
 } from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -30,10 +30,12 @@ import { helperToast } from "lib/helperToast";
 import { formatUsd, numberToBigint } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
+import { ISigner } from "lib/transactions/iSigner";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getFallbackTransport, getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
+import { getViemChain } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -250,12 +252,18 @@ function ReferralCodeFormMultichain({
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
   const simulationSigner = useMemo(() => {
-    if (!signer?.provider) {
+    if (srcChainId === undefined) {
       return;
     }
 
-    return RANDOM_WALLET.connect(signer?.provider);
-  }, [signer?.provider]);
+    return ISigner.fromViemSigner(
+      createWalletClient({
+        chain: getViemChain(srcChainId),
+        account: RANDOM_ACCOUNT,
+        transport: getFallbackTransport(srcChainId),
+      }).extend(publicActions)
+    );
+  }, [srcChainId]);
 
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 

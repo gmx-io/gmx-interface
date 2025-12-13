@@ -10,6 +10,7 @@ import {
   Account,
   Chain,
   Client,
+  PrivateKeyAccount,
   PublicActions,
   StateOverride,
   Transport,
@@ -62,8 +63,8 @@ export interface ISignerInterface {
 }
 
 export class ISigner implements ISignerInterface {
-  private readonly type: "ethers" | "viem" | "viemPublicClient";
-  private readonly signer: EthersSigner | ViemSigner | ViemPublicClient;
+  private readonly type: "ethers" | "viem" | "viemPublicClient" | "privateKeyAccount";
+  private readonly signer: EthersSigner | ViemSigner | ViemPublicClient | PrivateKeyAccount;
 
   private _address: string;
 
@@ -79,10 +80,12 @@ export class ISigner implements ISignerInterface {
     ethersSigner,
     viemSigner,
     viemPublicClient,
+    privateKeyAccount,
   }: {
     ethersSigner?: EthersSigner;
     viemSigner?: ViemSigner;
     viemPublicClient?: ViemPublicClient;
+    privateKeyAccount?: PrivateKeyAccount;
   }) {
     if (ethersSigner) {
       this.type = "ethers";
@@ -93,6 +96,9 @@ export class ISigner implements ISignerInterface {
     } else if (viemPublicClient) {
       this.type = "viemPublicClient";
       this.signer = viemPublicClient;
+    } else if (privateKeyAccount) {
+      this.type = "privateKeyAccount";
+      this.signer = privateKeyAccount;
     }
   }
 
@@ -111,8 +117,21 @@ export class ISigner implements ISignerInterface {
         viem: (signer: ViemSigner) => signer.account.address,
         ethers: (signer: EthersSigner) => signer.getAddress(),
         viemPublicClient: () => zeroAddress,
+        privateKeyAccount: (signer: PrivateKeyAccount) => signer.address,
       })
       .then((address) => (gmxSigner._address = address));
+    return gmxSigner;
+  }
+
+  static fromPrivateKeyAccount(privateKeyAccount: PrivateKeyAccount): ISigner {
+    const gmxSigner = new ISigner({ privateKeyAccount });
+    gmxSigner._address = privateKeyAccount.address;
+    return gmxSigner;
+  }
+
+  static fromViemSigner(viemSigner: ViemSigner): ISigner {
+    const gmxSigner = new ISigner({ viemSigner });
+    gmxSigner._address = viemSigner.account.address;
     return gmxSigner;
   }
 
@@ -235,6 +254,8 @@ export class ISigner implements ISignerInterface {
         // TODO: check if primaryType is correct
         signer.signTypedData({ domain, types, message: value, primaryType: Object.keys(types)[0] }),
       ethers: (signer: EthersSigner) => signer.signTypedData(domain, types, value),
+      privateKeyAccount: (signer: PrivateKeyAccount) =>
+        signer.signTypedData({ domain, types, message: value, primaryType: Object.keys(types)[0] }),
     });
   }
 
@@ -297,6 +318,7 @@ export class ISigner implements ISignerInterface {
     viem: (signer: ViemSigner) => T | Promise<T>;
     ethers: (signer: EthersSigner) => T | Promise<T>;
     viemPublicClient?: (signer: ViemPublicClient) => T | Promise<T>;
+    privateKeyAccount?: (signer: PrivateKeyAccount) => T | Promise<T>;
   }): Promise<T> {
     switch (this.type) {
       case "ethers":
@@ -307,6 +329,12 @@ export class ISigner implements ISignerInterface {
         return branches.viemPublicClient
           ? await branches.viemPublicClient(this.signer as ViemPublicClient)
           : await branches.viem(this.signer as ViemSigner);
+      case "privateKeyAccount": {
+        if (!branches.privateKeyAccount) {
+          throw new Error("Private key account branch is not defined");
+        }
+        return await branches.privateKeyAccount(this.signer as PrivateKeyAccount);
+      }
       default: {
         return mustNeverExist(this.type);
       }

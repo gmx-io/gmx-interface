@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
 import sample from "lodash/sample";
+import { parseEther } from "viem";
 
 import {
   AnyChainId,
@@ -21,8 +21,6 @@ export { CHAIN_NAMES_MAP, getChainName } from "sdk/configs/chains";
 export * from "./static/chains";
 
 export const CONTRACTS_CHAIN_IDS = isDevelopment() ? SDK_CONTRACTS_CHAIN_IDS_DEV : SDK_CONTRACTS_CHAIN_IDS;
-
-const { parseEther } = ethers;
 
 export const ENV_ARBITRUM_RPC_URLS = import.meta.env.VITE_APP_ARBITRUM_RPC_URLS;
 export const ENV_AVALANCHE_RPC_URLS = import.meta.env.VITE_APP_AVALANCHE_RPC_URLS;

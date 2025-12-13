@@ -71,6 +71,7 @@ export const getRainbowKitConfig = once(() => {
   });
 });
 
+const FALLBACK_TRANSPORTS_CACHE = new LRUCache<Transport>(100);
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
 const HTTP_TRANSPORT_OPTIONS =
@@ -84,8 +85,14 @@ const HTTP_TRANSPORT_OPTIONS =
       }
     : undefined;
 
-function getFallbackTransport(chainId: AnyChainId): Transport {
-  return fallback([...RPC_PROVIDERS[chainId].map((url: string) => http(url, HTTP_TRANSPORT_OPTIONS))]);
+export function getFallbackTransport(chainId: AnyChainId): Transport {
+  const key = `chainId:${chainId}`;
+  if (FALLBACK_TRANSPORTS_CACHE.has(key)) {
+    return FALLBACK_TRANSPORTS_CACHE.get(key)!;
+  }
+  const transport = fallback([...RPC_PROVIDERS[chainId].map((url: string) => http(url, HTTP_TRANSPORT_OPTIONS))]);
+  FALLBACK_TRANSPORTS_CACHE.set(key, transport);
+  return transport;
 }
 
 export function getPublicClientWithRpc(
