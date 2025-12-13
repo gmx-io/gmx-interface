@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
-import { BigNumberish, ethers, isAddress, Signer } from "ethers";
+import { BigNumberish, ethers, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { Hash, zeroAddress } from "viem";
+import { Hash, isAddress, zeroAddress, zeroHash } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
@@ -199,7 +199,7 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
     let attachedOnChain = false;
     let userReferralCode: string | undefined = undefined;
     let userReferralCodeString: string | undefined = undefined;
-    let referralCodeForTxn = ethers.ZeroHash;
+    let referralCodeForTxn: string = zeroHash;
 
     if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;

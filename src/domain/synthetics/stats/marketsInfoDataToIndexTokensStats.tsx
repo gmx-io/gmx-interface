@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { minInt256 } from "viem";
 
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
@@ -9,9 +9,11 @@ import {
   getOpenInterestForBalance,
   getUsedLiquidity,
 } from "domain/synthetics/markets";
-import { TokenData, getMidPrice } from "domain/synthetics/tokens";
+import { TokenData } from "domain/synthetics/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
+import { getMidPrice } from "sdk/utils/tokens";
+
 export type MarketStat = {
   marketInfo: MarketInfo;
   poolValueUsd: bigint;
@@ -84,8 +86,8 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
         totalUsedLiquidity: 0n,
         totalMaxLiquidity: 0n,
         marketsStats: [],
-        bestNetFeeLong: ethers.MinInt256,
-        bestNetFeeShort: ethers.MinInt256,
+        bestNetFeeLong: minInt256,
+        bestNetFeeShort: minInt256,
         bestNetFeeLongMarketAddress: marketInfo.marketTokenAddress,
         bestNetFeeShortMarketAddress: marketInfo.marketTokenAddress,
         totalOpenInterestLong: 0n,

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import { Abi, ContractFunctionParameters, encodeFunctionData } from "viem";
+import { Abi, ContractFunctionParameters, encodeFunctionData, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -52,8 +52,8 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
         {
           addresses: {
             receiver: p.account,
-            callbackContract: ethers.ZeroAddress,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            callbackContract: zeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
             fromMarket: p.fromMarketTokenAddress,
             toMarket: p.toMarketTokenAddress,
           },

@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { parseError } from "lib/errors";
@@ -25,7 +26,7 @@ describe("ethers errors", () => {
   it("should handle insufficient funds", () => {
     const error = ethers.makeError("insufficient funds for gas", "INSUFFICIENT_FUNDS", {
       transaction: {
-        to: ethers.ZeroAddress,
+        to: zeroAddress,
         data: "0x",
         value: 100n,
       },
@@ -47,7 +48,7 @@ describe("ethers errors", () => {
   it("should handle contract execution errors", () => {
     const error = ethers.makeError("execution reverted (unknown custom error)", "CALL_EXCEPTION", {
       transaction: {
-        to: ethers.ZeroAddress,
+        to: zeroAddress,
         data: "0x",
       },
       data: "0x5dac504d0000000000000000000000000000000000000000000000000096d37eb9edae200000000000000000000000000000000000000000000000000096c6d0c2c84380",

@@ -1,6 +1,6 @@
-import { ethers } from "ethers";
 import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import { getAddress, isAddress } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
@@ -171,8 +171,8 @@ export function SyntheticsStateContextProvider({
 
   let checkSummedAccount: string | undefined;
 
-  if (paramsAccount && ethers.isAddress(paramsAccount)) {
-    checkSummedAccount = ethers.getAddress(paramsAccount);
+  if (paramsAccount && isAddress(paramsAccount)) {
+    checkSummedAccount = getAddress(paramsAccount);
   }
 
   const isLeaderboardPage = pageType === "competitions" || pageType === "leaderboard";

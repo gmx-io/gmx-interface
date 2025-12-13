@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 import mapKeys from "lodash/mapKeys";
+import { zeroAddress, zeroHash } from "viem";
 import { useEnsName } from "wagmi";
 
 import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
@@ -14,17 +15,15 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { isValidTimestamp } from "./dates";
 import {
   PRECISION,
+  adjustForDecimals,
   bigNumberify,
   calculateDisplayDecimals,
   deserializeBigIntsInObject,
   expandDecimals,
   formatAmount,
-  adjustForDecimals,
 } from "./numbers";
 
 export { adjustForDecimals } from "./numbers";
-
-const { ZeroAddress } = ethers;
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
@@ -729,16 +728,9 @@ export function getPositionKey(
   isLong: boolean,
   nativeTokenAddress?: string
 ) {
-  const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
-  const tokenAddress1 = indexTokenAddress === ZeroAddress ? nativeTokenAddress : indexTokenAddress;
+  const tokenAddress0 = collateralTokenAddress === zeroAddress ? nativeTokenAddress : collateralTokenAddress;
+  const tokenAddress1 = indexTokenAddress === zeroAddress ? nativeTokenAddress : indexTokenAddress;
   return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
-}
-
-export function getPositionContractKey(account, collateralToken, indexToken, isLong) {
-  return ethers.solidityPackedKeccak256(
-    ["address", "address", "address", "bool"],
-    [account, collateralToken, indexToken, isLong]
-  );
 }
 
 export function getSwapFeeBasisPoints(isStable) {
@@ -1273,10 +1265,10 @@ export function getPageTitle(data) {
 }
 
 export function isHashZero(value) {
-  return value === ethers.ZeroHash;
+  return value === zeroHash;
 }
 export function isAddressZero(value) {
-  return value === ethers.ZeroAddress;
+  return value === zeroAddress;
 }
 
 export function getHomeUrl() {

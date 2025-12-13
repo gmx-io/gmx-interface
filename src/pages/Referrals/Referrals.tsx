@@ -1,8 +1,8 @@
 import { Trans, msg, t } from "@lingui/macro";
-import { ethers } from "ethers";
 import { useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useLocalStorage } from "react-use";
+import { getAddress, isAddress } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
@@ -53,8 +53,8 @@ function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
   let account;
-  if (queryAccount && ethers.isAddress(queryAccount)) {
-    account = ethers.getAddress(queryAccount);
+  if (queryAccount && isAddress(queryAccount)) {
+    account = getAddress(queryAccount);
   } else {
     account = walletAccount;
   }

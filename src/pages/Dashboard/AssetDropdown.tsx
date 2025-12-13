@@ -1,9 +1,9 @@
 import { autoUpdate, flip, FloatingPortal, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
-import { ethers, isAddress } from "ethers";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { isAddress } from "viem";
 
 import { getTokenExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
@@ -144,7 +144,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
                   )}
                 </Menu.Item>
                 <Menu.Item as="div">
-                  {active && !token.isNative && !token.isSynthetic && ethers.isAddress(token.address) && (
+                  {active && !token.isNative && !token.isSynthetic && isAddress(token.address) && (
                     <div
                       onClick={() => {
                         if (walletClient?.watchAsset && token) {

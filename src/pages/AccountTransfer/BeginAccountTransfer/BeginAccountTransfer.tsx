@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import { zeroAddress } from "viem";
+import { isAddress, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -43,8 +43,8 @@ export default function BeginAccountTransfer() {
   const [isApproving, setIsApproving] = useState(false);
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
-  let parsedReceiver = ethers.ZeroAddress;
-  if (ethers.isAddress(receiver)) {
+  let parsedReceiver: string = zeroAddress;
+  if (isAddress(receiver)) {
     parsedReceiver = receiver;
   }
 
@@ -149,7 +149,7 @@ export default function BeginAccountTransfer() {
     (cumulativeGlpRewards && cumulativeGlpRewards > 0) ||
     (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards > 0) ||
     (cumulativeFeeGlpTrackerRewards && cumulativeFeeGlpTrackerRewards > 0);
-  const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.ZeroAddress;
+  const hasPendingReceiver = pendingReceiver && pendingReceiver !== zeroAddress;
 
   const getError = () => {
     if (!account) {
@@ -164,7 +164,7 @@ export default function BeginAccountTransfer() {
     if (!receiver || receiver.length === 0) {
       return t`Enter Receiver Address`;
     }
-    if (!ethers.isAddress(receiver)) {
+    if (!isAddress(receiver)) {
       return t`Invalid Receiver Address`;
     }
 

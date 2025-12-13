@@ -1,6 +1,5 @@
-import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import { ContractFunctionParameters } from "viem";
+import { ContractFunctionParameters, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
@@ -81,7 +80,7 @@ export function usePositions(
                 keysAndPrices.marketsKeys,
                 keysAndPrices.marketsPrices,
                 // uiFeeReceiver
-                ethers.ZeroAddress,
+                zeroAddress,
                 0n,
                 1000n,
               ] satisfies ContractFunctionParameters<

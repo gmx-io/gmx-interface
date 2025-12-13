@@ -1,8 +1,7 @@
-import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
-import { Hash } from "viem";
+import { Hash, zeroHash } from "viem";
 
 import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
@@ -70,7 +69,7 @@ export function AppRoutes() {
 
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
-      if (encodedReferralCode !== ethers.ZeroHash) {
+      if (encodedReferralCode !== zeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
@@ -95,7 +94,7 @@ export function AppRoutes() {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
   let appRedirectUrl = baseUrl;
-  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.ZeroHash) {
+  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== zeroHash) {
     const decodedRefCode = decodeReferralCode(localStorageCode as Hash);
     if (decodedRefCode) {
       appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;

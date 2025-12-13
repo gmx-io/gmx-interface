@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import { Abi, encodeFunctionData } from "viem";
+import { Abi, encodeFunctionData, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -58,11 +58,11 @@ export async function createWithdrawalTxn({
         {
           addresses: {
             receiver: params.addresses.receiver,
-            callbackContract: ethers.ZeroAddress,
+            callbackContract: zeroAddress,
             market: params.addresses.market,
             longTokenSwapPath: params.addresses.longTokenSwapPath,
             shortTokenSwapPath: params.addresses.shortTokenSwapPath,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
           },
           minLongTokenAmount: params.minLongTokenAmount,
           minShortTokenAmount: params.minShortTokenAmount,

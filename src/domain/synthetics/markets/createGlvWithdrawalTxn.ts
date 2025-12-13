@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
-import { Abi, ContractFunctionParameters, encodeFunctionData } from "viem";
+import { Abi, ContractFunctionParameters, encodeFunctionData, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -61,8 +61,8 @@ export async function createGlvWithdrawalTxn({
         {
           addresses: {
             receiver: params.addresses.receiver,
-            callbackContract: ethers.ZeroAddress,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            callbackContract: zeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
             market: params.addresses.market,
             glv: params.addresses.glv,
             longTokenSwapPath: params.addresses.longTokenSwapPath,
