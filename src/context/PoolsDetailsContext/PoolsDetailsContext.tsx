@@ -51,7 +51,7 @@ function fallbackPaySource({
     return "gmxAccount";
   } else if (paySource === "sourceChain" && srcChainId === undefined) {
     return "settlementChain";
-  } else if (paySource === "settlementChain" && srcChainId !== undefined) {
+  } else if (paySource === "settlementChain" && srcChainId !== undefined && operation === Operation.Deposit) {
     return "sourceChain";
   } else if (operation === Operation.Deposit && paySource === "sourceChain" && mode === Mode.Pair) {
     return "gmxAccount";
