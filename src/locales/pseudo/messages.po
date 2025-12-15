@@ -73,6 +73,7 @@ msgstr ""
 msgid "receive"
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
@@ -2518,6 +2519,10 @@ msgstr ""
 msgid "Fees (Incl. Swap)"
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order update fee"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2647,6 +2652,8 @@ msgstr ""
 msgid "Returned Collateral"
 msgstr ""
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr ""
@@ -4413,6 +4420,7 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr ""
@@ -6442,6 +6450,10 @@ msgstr ""
 msgid "Current Price"
 msgstr ""
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+msgid "Enter TP/SL price"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr ""
@@ -8010,6 +8022,10 @@ msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
+msgstr ""
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "TP/SL fees"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

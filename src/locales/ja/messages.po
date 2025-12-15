@@ -73,6 +73,7 @@ msgstr "価格"
 msgid "receive"
 msgstr "受け取り"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
@@ -2518,6 +2519,10 @@ msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間�
 msgid "Fees (Incl. Swap)"
 msgstr "手数料 (スワップを含む)"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order update fee"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2647,6 +2652,8 @@ msgstr "他のトークンで："
 msgid "Returned Collateral"
 msgstr "返却された担保"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "TP/SL注文に問題があります。"
@@ -4413,6 +4420,7 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "蓄積された価格影響リベート。5日後に請求可能になります。<0/><1/><2>詳細を読む</2>。"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "テイクプロフィット / ストップロス"
@@ -6442,6 +6450,10 @@ msgstr "Kudai AI Agent"
 msgid "Current Price"
 msgstr "現在価格"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+msgid "Enter TP/SL price"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr "NFT IDを入力"
@@ -8011,6 +8023,10 @@ msgstr "アプリを開く"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr "7日"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "TP/SL fees"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

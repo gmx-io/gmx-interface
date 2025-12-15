@@ -73,6 +73,7 @@ msgstr "PRIX"
 msgid "receive"
 msgstr "recevoir"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
@@ -2518,6 +2519,10 @@ msgstr "Les taux de rendement annualisés sont mis à jour chaque semaine le mer
 msgid "Fees (Incl. Swap)"
 msgstr "Frais (incl. échange)"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order update fee"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2647,6 +2652,8 @@ msgstr "En d'autres jetons :"
 msgid "Returned Collateral"
 msgstr "Collatéral retourné"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "Il y a des problèmes dans les ordres TP/SL."
@@ -4413,6 +4420,7 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "Remises d'impact de prix accumulées. Elles deviendront réclamables après 5 jours.<0/><1/><2>Lire plus</2>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
@@ -6442,6 +6450,10 @@ msgstr "Agent AI Kudai"
 msgid "Current Price"
 msgstr "Prix actuel"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+msgid "Enter TP/SL price"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr "Entrez l'ID NFT"
@@ -8011,6 +8023,10 @@ msgstr "Ouvrir l'App"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr "7j"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "TP/SL fees"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

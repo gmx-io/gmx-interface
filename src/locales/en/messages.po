@@ -73,6 +73,7 @@ msgstr "PRICE"
 msgid "receive"
 msgstr "receive"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
@@ -2518,6 +2519,10 @@ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collect
 msgid "Fees (Incl. Swap)"
 msgstr "Fees (Incl. Swap)"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order update fee"
+msgstr "Order update fee"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2647,6 +2652,8 @@ msgstr "In other tokens:"
 msgid "Returned Collateral"
 msgstr "Returned Collateral"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "There are issues in the TP/SL orders."
@@ -4413,6 +4420,7 @@ msgstr "Botanix"
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
@@ -6442,6 +6450,10 @@ msgstr "Kudai AI Agent"
 msgid "Current Price"
 msgstr "Current Price"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+msgid "Enter TP/SL price"
+msgstr "Enter TP/SL price"
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr "Enter NFT ID"
@@ -8011,6 +8023,10 @@ msgstr "Open App"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr "7d"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "TP/SL fees"
+msgstr "TP/SL fees"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

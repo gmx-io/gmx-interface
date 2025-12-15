@@ -73,6 +73,7 @@ msgstr "ЦЕНА"
 msgid "receive"
 msgstr "получить"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
@@ -2518,6 +2519,10 @@ msgstr "Годовая Процентная Ставка обновляется 
 msgid "Fees (Incl. Swap)"
 msgstr "Комиссии (Вкл. Обмен)"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Order update fee"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2647,6 +2652,8 @@ msgstr "В других токенах:"
 msgid "Returned Collateral"
 msgstr "Возвращённый Залог"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "Есть проблемы в ордерах TP/SL."
@@ -4413,6 +4420,7 @@ msgstr ""
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "Накопленные возмещения влияния цены. Они станут клеймабельными через 5 дней.<0/><1/><2>Подробнее</2>."
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
@@ -6442,6 +6450,10 @@ msgstr "Kudai AI агент"
 msgid "Current Price"
 msgstr "Текущая цена"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+msgid "Enter TP/SL price"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.jsx
 msgid "Enter NFT ID"
 msgstr "Введите ID NFT"
@@ -8011,6 +8023,10 @@ msgstr "Открыть приложение"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr "7д"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "TP/SL fees"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
