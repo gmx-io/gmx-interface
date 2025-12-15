@@ -48,7 +48,7 @@ import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeH
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { getApprovalRequirements } from "domain/synthetics/tokens";
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
@@ -107,6 +107,7 @@ import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows"
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
+import { tradeModeLabels, tradeTypeLabels } from "../TradeBox/tradeboxConstants";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
@@ -145,6 +146,8 @@ export function PositionSeller() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
+  const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
+  const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
@@ -182,6 +185,8 @@ export function PositionSeller() {
     setDuration,
     setNumberOfParts,
   } = usePositionSeller();
+  const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
+  const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
     closeUsdInputValueRaw,
@@ -865,21 +870,22 @@ export function PositionSeller() {
     return {
       text:
         error ||
-        (isTrigger || isTwap
-          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
+        (tradeType !== undefined
+          ? `${localizedTradeModeLabels[tradeMode]}: ${localizedTradeTypeLabels[tradeType]} ${t`Decrease`}`
           : t`Close`),
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
   }, [
     chainId,
-    decreaseAmounts?.triggerOrderType,
     error,
     isAllowanceLoaded,
     isApproving,
     isExpressLoading,
-    isTrigger,
-    isTwap,
+    localizedTradeModeLabels,
+    localizedTradeTypeLabels,
     shouldDisableValidationForTesting,
+    tradeMode,
+    tradeType,
     tokensToApprove,
   ]);
 
