@@ -1037,7 +1037,7 @@ export const WithdrawalView = () => {
           {errors?.isOutOfTokenError &&
             !errors.isOutOfTokenError.isGasPaymentToken &&
             isOutOfTokenErrorToken !== undefined && (
-              <AlertInfoCard type="error" className="my-4">
+              <AlertInfoCard type="info" className="my-4">
                 <div>
                   <Trans>
                     Withdrawing requires{" "}
