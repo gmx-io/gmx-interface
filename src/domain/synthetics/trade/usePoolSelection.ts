@@ -1,12 +1,14 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { TradeType } from "sdk/types/trade";
 
 export const BEST_POOL_MARKER = "BEST_POOL";
+const TRADEBOX_SELECTED_POOLS_KEY = "tradebox-selected-pools";
 
 export type PoolSelectionResult = {
   optionsWithBestPool: MarketStat[];
@@ -74,16 +76,66 @@ export function usePoolSelection({
   currentPoolName,
   setMarketAddress,
 }: UsePoolSelectionParams): PoolSelectionResult {
-  const [isBestPoolMode, setIsBestPoolMode] = useLocalStorageSerializeKey("is-best-pool-mode", true);
+  const { chainId } = useChainId();
+  const [storedPoolsMap = {}, setStoredPoolsMap] = useLocalStorageSerializeKey<Record<string, string>>(
+    [TRADEBOX_SELECTED_POOLS_KEY, chainId],
+    {}
+  );
 
   const isLong = tradeType === TradeType.Long;
-  const prevBestPoolAddressRef = useRef<string | undefined>(undefined);
 
   const bestPoolStat = useMemo(() => {
     return findBestPool(relatedMarketStats, relatedMarketsPositionStats, isLong);
   }, [relatedMarketStats, relatedMarketsPositionStats, isLong]);
 
   const bestPoolAddress = bestPoolStat?.marketInfo.marketTokenAddress;
+
+  const availableMarketAddresses = useMemo(
+    () => new Set((relatedMarketStats || []).map((market) => market.marketInfo.marketTokenAddress)),
+    [relatedMarketStats]
+  );
+
+  const pairKey = useMemo(() => {
+    const currentMarketStat =
+      relatedMarketStats?.find((stat) => stat.marketInfo.marketTokenAddress === currentMarketAddress) ||
+      relatedMarketStats?.[0];
+
+    const indexTokenAddress = currentMarketStat?.marketInfo.indexTokenAddress;
+
+    if (!indexTokenAddress) {
+      return undefined;
+    }
+
+    return [tradeType, indexTokenAddress].join(":");
+  }, [currentMarketAddress, relatedMarketStats, tradeType]);
+
+  const removeStoredSelection = useCallback(
+    (key: string) => {
+      setStoredPoolsMap((prev = {}) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    },
+    [setStoredPoolsMap]
+  );
+
+  const savedPoolAddress = pairKey ? storedPoolsMap?.[pairKey] : undefined;
+
+  useEffect(() => {
+    if (!pairKey || !savedPoolAddress) {
+      return;
+    }
+
+    const shouldRemove = !availableMarketAddresses.has(savedPoolAddress);
+
+    if (shouldRemove) {
+      removeStoredSelection(pairKey);
+    }
+  }, [availableMarketAddresses, pairKey, removeStoredSelection, savedPoolAddress]);
+
+  const preferredPoolAddress =
+    savedPoolAddress && availableMarketAddresses.has(savedPoolAddress) ? savedPoolAddress : undefined;
 
   const optionsWithBestPool = useMemo(() => {
     if (!relatedMarketStats || relatedMarketStats.length <= 1) {
@@ -110,48 +162,56 @@ export function usePoolSelection({
   }, [relatedMarketsPositionStats, bestPoolAddress]);
 
   useEffect(() => {
-    if (!isBestPoolMode || !bestPoolAddress) {
+    if (!pairKey) {
       return;
     }
 
-    if (prevBestPoolAddressRef.current !== bestPoolAddress) {
-      prevBestPoolAddressRef.current = bestPoolAddress;
+    const targetPoolAddress = preferredPoolAddress ?? bestPoolAddress;
 
-      if (currentMarketAddress !== bestPoolAddress) {
-        setMarketAddress(bestPoolAddress);
-      }
+    if (!targetPoolAddress) {
+      return;
     }
 
-    if (currentMarketAddress !== bestPoolAddress) {
-      setIsBestPoolMode(false);
+    if (currentMarketAddress !== targetPoolAddress) {
+      setMarketAddress(targetPoolAddress);
     }
-  }, [isBestPoolMode, bestPoolAddress, currentMarketAddress, setMarketAddress, setIsBestPoolMode]);
+  }, [bestPoolAddress, currentMarketAddress, pairKey, preferredPoolAddress, setMarketAddress]);
 
   const handlePoolSelect = useCallback(
     (marketAddress: string) => {
-      if (marketAddress === BEST_POOL_MARKER) {
-        setIsBestPoolMode(true);
-        if (bestPoolAddress) {
-          setMarketAddress(bestPoolAddress);
+      if (marketAddress === BEST_POOL_MARKER && bestPoolAddress) {
+        if (pairKey) {
+          removeStoredSelection(pairKey);
         }
-      } else {
-        setIsBestPoolMode(false);
-        setMarketAddress(marketAddress);
+
+        setMarketAddress(bestPoolAddress);
+        return;
       }
+
+      if (pairKey) {
+        setStoredPoolsMap((prev = {}) => ({
+          ...prev,
+          [pairKey]: marketAddress,
+        }));
+      }
+
+      setMarketAddress(marketAddress);
     },
-    [bestPoolAddress, setIsBestPoolMode, setMarketAddress]
+    [bestPoolAddress, pairKey, removeStoredSelection, setMarketAddress, setStoredPoolsMap]
   );
 
   const selectedPoolName =
-    isBestPoolMode && optionsWithBestPool.length > 1 && bestPoolAddress === currentMarketAddress
+    !preferredPoolAddress && optionsWithBestPool.length > 1 && bestPoolAddress === currentMarketAddress
       ? t`Best pool`
       : currentPoolName;
+
+  const isBestPoolSelected = !preferredPoolAddress;
 
   return {
     optionsWithBestPool,
     positionStatsWithBestPool,
     bestPoolAddress,
-    isBestPoolSelected: isBestPoolMode ?? true,
+    isBestPoolSelected,
     handlePoolSelect,
     selectedPoolName,
   };
