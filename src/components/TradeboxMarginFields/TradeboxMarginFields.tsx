@@ -16,6 +16,7 @@ import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { MarginToPayField } from "./MarginToPayField";
@@ -88,7 +89,7 @@ export function TradeboxMarginFields({
       return;
     }
 
-    const percentage = Number((inputAmount * 100n) / fromToken.balance);
+    const percentage = Number(bigMath.divRound(inputAmount * 100n, fromToken.balance));
     setMarginPercentage(Math.min(100, Math.max(0, percentage)));
   }, [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]);
 
