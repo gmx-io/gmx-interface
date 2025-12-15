@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import { SourceChainId } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -13,7 +13,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
-import { formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -71,10 +71,63 @@ export function TradeboxMarginFields({
 
   const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("token");
   const [priceDisplayMode, setPriceDisplayMode] = useState<PriceDisplayMode>("usd");
+  const [sizeInputValue, setSizeInputValue] = useState<string>(toTokenInputValue);
   const [marginPercentage, setMarginPercentage] = useState<number>(0);
 
   const { isLimit } = tradeFlags;
   const showPriceField = isLimit && triggerPriceInputValue !== undefined;
+
+  const sizeUsdDisplayDecimals = useMemo(
+    () => calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
+    [markPrice, toToken?.visualMultiplier]
+  );
+
+  useEffect(() => {
+    if (!toToken) {
+      setSizeInputValue(toTokenInputValue);
+      return;
+    }
+
+    if (sizeDisplayMode !== "token") {
+      return;
+    }
+
+    if (sizeInputValue !== toTokenInputValue) {
+      setSizeInputValue(toTokenInputValue);
+    }
+  }, [sizeDisplayMode, sizeInputValue, toToken, toTokenInputValue]);
+
+  useEffect(() => {
+    if (sizeDisplayMode !== "usd" || !toToken || markPrice === undefined || markPrice === 0n) {
+      return;
+    }
+
+    const parsedUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
+
+    if (parsedUsd === undefined) {
+      if (toTokenInputValue !== "") {
+        setToTokenInputValue("", false);
+      }
+      return;
+    }
+
+    const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+    const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
+    const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
+
+    if (tokensValue !== toTokenInputValue) {
+      setToTokenInputValue(tokensValue, false);
+    }
+  }, [
+    markPrice,
+    sizeDisplayMode,
+    sizeInputValue,
+    toToken,
+    toToken?.decimals,
+    toToken?.visualMultiplier,
+    toTokenInputValue,
+    setToTokenInputValue,
+  ]);
 
   // Calculate margin percentage from input value
   useEffect(() => {
@@ -139,39 +192,89 @@ export function TradeboxMarginFields({
   const handleSizeInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setFocusedInput("to");
-      setToTokenInputValue(e.target.value, true);
+      const nextValue = e.target.value;
+      setSizeInputValue(nextValue);
+
+      if (!toToken) {
+        setToTokenInputValue(nextValue, true);
+        return;
+      }
+
+      if (sizeDisplayMode === "usd") {
+        if (markPrice === undefined || markPrice === 0n) {
+          setToTokenInputValue("", true);
+          return;
+        }
+
+        const parsedUsd = parseValue(nextValue || "0", USD_DECIMALS);
+
+        if (parsedUsd === undefined) {
+          setToTokenInputValue("", true);
+          return;
+        }
+
+        const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+        const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
+        const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
+
+        setToTokenInputValue(tokensValue, true);
+      } else {
+        setToTokenInputValue(nextValue, true);
+      }
     },
-    [setFocusedInput, setToTokenInputValue]
+    [markPrice, setFocusedInput, setToTokenInputValue, sizeDisplayMode, toToken]
   );
 
   const handleSizeDisplayModeChange = useCallback(
     (newMode: SizeDisplayMode) => {
-      if (newMode === sizeDisplayMode || !toToken || markPrice === undefined || markPrice === 0n) {
+      if (newMode === sizeDisplayMode) {
+        return;
+      }
+
+      if (!toToken || markPrice === undefined || markPrice === 0n) {
         setSizeDisplayMode(newMode);
+        if (newMode === "token") {
+          setSizeInputValue(toTokenInputValue);
+        }
         return;
       }
 
       const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
 
       if (newMode === "token") {
-        const parsedUsd = parseValue(toTokenInputValue || "0", USD_DECIMALS);
-        if (parsedUsd !== undefined && parsedUsd > 0n) {
+        const parsedUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
+        if (parsedUsd !== undefined) {
           const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
+          const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
           setFocusedInput("to");
-          setToTokenInputValue(formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals), false);
+          setToTokenInputValue(tokensValue, false);
+          setSizeInputValue(tokensValue);
+        } else {
+          setSizeInputValue(toTokenInputValue);
         }
       } else {
         const parsedTokens = parseValue(toTokenInputValue || "0", toToken.decimals);
-        if (parsedTokens !== undefined && parsedTokens > 0n) {
+        if (parsedTokens !== undefined) {
           const sizeInUsd = (parsedTokens * visualMultiplier * markPrice) / 10n ** BigInt(toToken.decimals);
           setFocusedInput("to");
-          setToTokenInputValue(formatAmountFree(sizeInUsd, USD_DECIMALS), false);
+          setSizeInputValue(formatAmount(sizeInUsd, USD_DECIMALS, sizeUsdDisplayDecimals));
+        } else {
+          setSizeInputValue("");
         }
       }
 
       setSizeDisplayMode(newMode);
     },
-    [sizeDisplayMode, toToken, markPrice, toTokenInputValue, setFocusedInput, setToTokenInputValue]
+    [
+      sizeDisplayMode,
+      toToken,
+      markPrice,
+      sizeInputValue,
+      toTokenInputValue,
+      sizeUsdDisplayDecimals,
+      setFocusedInput,
+      setToTokenInputValue,
+    ]
   );
 
   const handlePriceDisplayModeChange = useCallback(
@@ -224,7 +327,7 @@ export function TradeboxMarginFields({
         indexToken={toToken}
         displayMode={sizeDisplayMode}
         onDisplayModeChange={handleSizeDisplayModeChange}
-        inputValue={toTokenInputValue}
+        inputValue={sizeInputValue}
         onInputValueChange={handleSizeInputChange}
         onFocus={() => setFocusedInput("to")}
         qa="position-size"
