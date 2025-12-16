@@ -266,9 +266,11 @@ export class RpcTracker {
   selectNextFallbacks = ({
     endpointsStats,
     primary,
+    primaryStats,
   }: {
     endpointsStats: RpcStats[];
     primary: string;
+    primaryStats?: RpcStats;
   }): string[] | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
@@ -277,8 +279,7 @@ export class RpcTracker {
       const purpose = this.getRpcConfig(result.endpoint)?.purpose;
       const byPorpose = purpose && allowedPurposes.includes(purpose as RpcPurpose);
 
-      const primaryBlockNumber = endpointsStats.find((result) => result.endpoint === primary)?.checkResults?.[0]?.stats
-        ?.blockNumber;
+      const primaryBlockNumber = primaryStats?.checkResults?.[0]?.stats?.blockNumber;
       const currentBlockNumber = result.checkResults?.[0]?.stats?.blockNumber;
       const byBlockNumber = !primaryBlockNumber || (currentBlockNumber && primaryBlockNumber === currentBlockNumber);
 

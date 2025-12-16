@@ -64,6 +64,7 @@ export type FallbackTrackerParams<TCheckResult> = FallbackTrackerConfig & {
   selectNextFallbacks: (params: {
     endpointsStats: EndpointStats<TCheckResult>[];
     primary: string;
+    primaryStats?: EndpointStats<TCheckResult>;
   }) => string[] | undefined;
 
   getEndpointName?: (endpoint: string) => string | undefined;
@@ -477,6 +478,7 @@ export class FallbackTracker<TCheckStats> {
     }
 
     const statsForFallbacks = endpointsStats.filter((s) => s.endpoint !== nextPrimary);
+    const primaryStats = endpointsStats.find((s) => s.endpoint === nextPrimary);
 
     let nextFallbacks: string[] = this.state.fallbacks;
     try {
@@ -484,6 +486,7 @@ export class FallbackTracker<TCheckStats> {
         this.params.selectNextFallbacks({
           endpointsStats: statsForFallbacks,
           primary: nextPrimary,
+          primaryStats,
         }) ?? nextFallbacks;
     } catch (error) {
       this.warn(`Error in selectNextFallbacks: ${error instanceof Error ? error.message : String(error)}`);
