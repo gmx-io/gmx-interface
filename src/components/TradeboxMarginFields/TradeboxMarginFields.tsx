@@ -312,7 +312,7 @@ export function TradeboxMarginFields({
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8">
       <MarginToPayField
         inputValue={fromTokenInputValue}
         onInputValueChange={handleFromInputChange}

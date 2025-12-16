@@ -4610,6 +4610,7 @@ msgstr ""
 msgid "Updating {orderText}."
 msgstr "Aktualisiere {orderText}."
 
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -6000,8 +6001,8 @@ msgid "Click on the position to select it, then use the trade box to increase it
 msgstr "Klicken Sie auf die Position, um sie auszuwählen, dann verwenden Sie das Trade-Feld, um sie zu erhöhen oder TP/SL-Orders zu setzen."
 
 #: src/components/PositionSeller/PositionSeller.tsx
-msgid "Create {0} Order"
-msgstr "{0}-Order erstellen"
+#~ msgid "Create {0} Order"
+#~ msgstr "{0}-Order erstellen"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."

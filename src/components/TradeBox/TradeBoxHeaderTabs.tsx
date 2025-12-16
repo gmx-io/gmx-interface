@@ -13,7 +13,6 @@ import { TradeType } from "domain/synthetics/trade";
 import { useLocalizedMap } from "lib/i18n";
 
 import { LeverageField } from "components/LeverageField/LeverageField";
-import { SwipeTabs } from "components/SwipeTabs/SwipeTabs";
 import Tabs from "components/Tabs/Tabs";
 import { useIsCurtainOpen } from "components/TradeBox/Curtain";
 import { MarketPoolSelectorField } from "components/TradeBox/MarketPoolSelectorField";
@@ -21,14 +20,7 @@ import { CollateralSelectorField } from "components/TradeBox/TradeBoxRows/Collat
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import {
-  mobileTradeTypeClassNames,
-  mobileTradeTypeContentClassNames,
-  tradeTypeClassNames,
-  tradeTypeLabels,
-} from "./tradeboxConstants";
-
-const OPTIONS = Object.values(TradeType);
+import { tradeTypeClassNames, tradeTypeLabels } from "./tradeboxConstants";
 
 export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
@@ -118,61 +110,45 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     setIsCurtainOpen(!isCurtainOpen);
   };
 
-  if (!isInCurtain) {
-    return (
-      <>
-        {fieldsRow}
-        <div className="flex flex-col gap-8 bg-slate-900 p-12 pb-0">
-          <div className="flex items-stretch gap-12">
-            <Tabs
-              options={longShortTabsOptions}
-              selectedValue={tradeType === TradeType.Swap ? undefined : tradeType}
-              onChange={onTradeTypeChange}
-              size="l"
-              qa="trade-direction"
-              className="grow overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
-              regularOptionClassname="grow mb-0"
-            />
-            <Tabs
-              options={swapTabOptions}
-              selectedValue={tradeType === TradeType.Swap ? TradeType.Swap : undefined}
-              onChange={onTradeTypeChange}
-              size="l"
-              qa="trade-direction-swap"
-              className="flex-none overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
-              regularOptionClassname="mb-0"
-            />
-          </div>
-        </div>
-      </>
-    );
-  }
+  const handleTabsClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   return (
-    <div className="flex flex-col bg-slate-900">
-      {isCurtainOpen ? <div className="p-12">{fields}</div> : null}
-      <div className="flex border-b-1/2 border-t-1/2 border-slate-600 pr-8">
-        <div className="grow">
-          <SwipeTabs
-            options={OPTIONS}
-            optionLabels={localizedTradeTypeLabels}
-            option={tradeType}
+    <>
+      {isInCurtain && !isCurtainOpen ? null : fieldsRow}
+      <div className="flex gap-8 bg-slate-900 p-8">
+        <div className="flex grow items-stretch gap-12" onClick={handleTabsClick}>
+          <Tabs
+            options={longShortTabsOptions}
+            selectedValue={tradeType === TradeType.Swap ? undefined : tradeType}
             onChange={onTradeTypeChange}
-            optionClassnames={mobileTradeTypeClassNames}
-            optionContentClassnames={mobileTradeTypeContentClassNames}
+            size="l"
             qa="trade-direction"
+            className="grow overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
+            regularOptionClassname={cx("mb-0 grow", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}
+          />
+          <Tabs
+            options={swapTabOptions}
+            selectedValue={tradeType === TradeType.Swap ? TradeType.Swap : undefined}
+            onChange={onTradeTypeChange}
+            size="l"
+            qa="trade-direction-swap"
+            className="flex-none overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
+            regularOptionClassname={cx("mb-0", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}
           />
         </div>
-
-        <button onClick={handleToggleCurtain} className="group shrink-0 px-10">
-          <ChevronDownIcon
-            className={cx(
-              "size-18 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
-              isCurtainOpen ? undefined : "rotate-180"
-            )}
-          />
-        </button>
+        {isInCurtain && (
+          <button onClick={handleToggleCurtain} className="group shrink-0 px-10">
+            <ChevronDownIcon
+              className={cx(
+                "size-18 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
+                isCurtainOpen ? undefined : "rotate-180"
+              )}
+            />
+          </button>
+        )}
       </div>
-    </div>
+    </>
   );
 }

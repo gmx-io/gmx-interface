@@ -52,7 +52,7 @@ export function TradeInputField({
       >
         <div className="flex justify-between">
           <div className="text-typography-secondary">{label}</div>
-          <div className="text-12 text-typography-secondary">{alternateValue}</div>
+          <div className="text-12 text-typography-secondary numbers">{alternateValue}</div>
         </div>
 
         <div className="flex items-center justify-between">

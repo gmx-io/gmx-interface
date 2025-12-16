@@ -24,7 +24,17 @@ function getTransformTemplate({ x }: Parameters<Exclude<MotionProps["transformTe
   return `translateX(${x})`;
 }
 
-export function SwipeTabs({ options, option, onChange, optionLabels, icons, qa, optionClassnames, optionContentClassnames }: Props) {
+// TODO: unused component, should it be removed?
+export function SwipeTabs({
+  options,
+  option,
+  onChange,
+  optionLabels,
+  icons,
+  qa,
+  optionClassnames,
+  optionContentClassnames,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const optionsRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const bgRef = useRef<HTMLDivElement>(null);
