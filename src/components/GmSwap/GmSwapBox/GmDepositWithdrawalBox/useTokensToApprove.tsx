@@ -54,12 +54,12 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
   const signer = useEthersSigner();
   const { isDeposit, isWithdrawal } = useSelector(selectPoolsDetailsFlags);
 
-  const routerAddress = getContract(chainId, "SyntheticsRouter");
-
   const [isApproving, setIsApproving] = useState(false);
 
   const paySource = useSelector(selectPoolsDetailsPaySource);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+
+  const routerAddress = getContract(chainId, "SyntheticsRouter");
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
@@ -138,10 +138,12 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
     function getTokensToApprove() {
       const addresses: string[] = [];
 
+      const marketTokenAmountForApproval = isWithdrawal ? marketOrGlvTokenAmount : marketTokenAmount;
+
       const shouldApproveMarketToken = getNeedTokenApprove(
         settlementChainTokensAllowanceData,
         marketToken?.address,
-        marketTokenAmount,
+        marketTokenAmountForApproval,
         []
       );
 
@@ -202,6 +204,7 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
       settlementChainTokensAllowanceData,
       shortTokenAddress,
       shortTokenAmount,
+      marketOrGlvTokenAmount,
     ]
   );
 
@@ -236,7 +239,7 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
       setIsApproving,
       signer,
       tokenAddress,
-      spender: getContract(chainId, "SyntheticsRouter"),
+      spender: routerAddress,
       pendingTxns: [],
       setPendingTxns: () => null,
       infoTokens: {},
