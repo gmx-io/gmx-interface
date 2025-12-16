@@ -1,3 +1,5 @@
+import noop from "lodash/noop";
+
 import { safeAddGlobalListenner } from "lib/safeListenner/safeAddListenner";
 
 import { EndpointStats } from "./FallbackTracker";
@@ -69,5 +71,5 @@ export function addFallbackTrackerListenner<TEvent extends FallbackTrackerEventN
 
   const cleanup = safeAddGlobalListenner(fallbackTrackerEventKeys[eventName], handler);
 
-  return cleanup || (() => void 0);
+  return cleanup || noop;
 }
