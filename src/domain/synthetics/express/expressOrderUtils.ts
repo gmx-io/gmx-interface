@@ -42,7 +42,7 @@ import {
 } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -362,7 +362,7 @@ export async function estimateExpressParams({
           return undefined;
         }
 
-        gasLimit = await provider.estimateGas({
+        gasLimit = await estimateGasLimit(provider, {
           from: GMX_SIMULATION_ORIGIN,
           to: baseTxn.txnData.to,
           data: baseTxn.txnData.callData,

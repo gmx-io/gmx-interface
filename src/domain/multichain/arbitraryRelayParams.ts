@@ -38,7 +38,6 @@ import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
-import { useJsonRpcProvider } from "lib/rpc";
 import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
@@ -444,8 +443,8 @@ export function useArbitraryError(
         isOutOfTokenError: {
           tokenAddress: gasPaymentTokenAddress,
           isGasPaymentToken: true,
-          balance: error.params.balance,
-          requiredAmount: error.params.requiredAmount,
+          balance: error.params?.balance,
+          requiredAmount: error.params?.requiredAmount,
         },
       };
     }
