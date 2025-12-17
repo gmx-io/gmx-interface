@@ -72,6 +72,11 @@ describe("FallbackTracker", () => {
         expect(config.selectNextFallbacks).toHaveBeenCalledWith({
           endpointsStats: expect.any(Array),
           primary: testEndpoints.fallback, // selectNextFallbacks is called after selectNextPrimary
+          primaryStats: expect.objectContaining({
+            endpoint: testEndpoints.fallback,
+            checkResults: expect.any(Array),
+            failureTimestamps: expect.any(Array),
+          }),
         });
         expect(setCurrentEndpointsSpy).toHaveBeenCalledWith(testEndpoints.fallback, [testEndpoints.primary]);
       });
