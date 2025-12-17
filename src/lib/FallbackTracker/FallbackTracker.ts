@@ -8,7 +8,7 @@ import { combineAbortSignals } from "sdk/utils/abort";
 
 import { STORED_CHECK_STATS_MAX_COUNT } from "./const";
 import {
-  addFallbackTrackerListenner,
+  addFallbackTrackerListener,
   emitEndpointBanned,
   emitEndpointsUpdated,
   emitReportEndpointFailure,
@@ -621,7 +621,7 @@ export class FallbackTracker<TCheckStats> {
   }
 
   selfSubscribe() {
-    return addFallbackTrackerListenner("reportEndpointFailure", this.trackerKey, ({ endpoint }) => {
+    return addFallbackTrackerListener("reportEndpointFailure", this.trackerKey, ({ endpoint }) => {
       this.handleFailure(endpoint);
     });
   }

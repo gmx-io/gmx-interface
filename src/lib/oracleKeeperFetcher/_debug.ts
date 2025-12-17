@@ -1,6 +1,6 @@
 import { isDevelopment } from "config/env";
 import { ORACLE_KEEPER_DEBUG_STATE_KEY } from "config/localStorage";
-import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
 
 import { OracleKeeperFetcher } from "./oracleKeeperFetcher";
@@ -85,21 +85,21 @@ class OracleKeeperDebug {
   subscribeForOracleKeeperDebugging(fetcher: OracleKeeperFetcher) {
     const trackerKey = fetcher.oracleTracker.fallbackTracker.trackerKey;
 
-    addFallbackTrackerListenner("endpointsUpdated", trackerKey, () => {
+    addFallbackTrackerListener("endpointsUpdated", trackerKey, () => {
       this.dispatchEvent({
         type: "endpoint-updated",
         chainId: fetcher.chainId,
       });
     });
 
-    addFallbackTrackerListenner("trackingFinished", trackerKey, () => {
+    addFallbackTrackerListener("trackingFinished", trackerKey, () => {
       this.dispatchEvent({
         type: "tracking-finished",
         chainId: fetcher.chainId,
       });
     });
 
-    addFallbackTrackerListenner("endpointBanned", trackerKey, ({ endpoint, reason }) => {
+    addFallbackTrackerListener("endpointBanned", trackerKey, ({ endpoint, reason }) => {
       this.dispatchEvent({
         type: "endpoint-banned",
         chainId: fetcher.chainId,

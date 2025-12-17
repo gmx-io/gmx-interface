@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import * as rpcConfigModule from "config/rpc";
 import { suppressConsole } from "lib/__testUtils__/_utils";
-import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 
 import { RpcTracker } from "../RpcTracker";
 import { createMockRpcTrackerParams, createMockEndpointStats, testRpcConfigs, testRpcConfigsArray } from "./_utils";
@@ -17,7 +17,7 @@ function mockGetRpcProvidersWithTestConfigs(configsToReturn: typeof testRpcConfi
 // Helper function to capture updateEndpoints events for a specific tracker
 function captureUpdateEndpointsEvent(tracker: RpcTracker) {
   let capturedEvent: any = null;
-  const unsubscribe = addFallbackTrackerListenner("endpointsUpdated", tracker.trackerKey, (event) => {
+  const unsubscribe = addFallbackTrackerListener("endpointsUpdated", tracker.trackerKey, (event) => {
     if (event.trackerKey === tracker.trackerKey) {
       capturedEvent = event;
     }

@@ -1,7 +1,7 @@
 import orderBy from "lodash/orderBy";
 
 import { getChainName, getProviderNameFromUrl } from "config/rpc";
-import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { RpcStats, RpcTracker } from "lib/rpc/RpcTracker";
 
 import {
@@ -13,7 +13,7 @@ import {
 } from ".";
 
 export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
-  const cleanupBannedSubscription = addFallbackTrackerListenner(
+  const cleanupBannedSubscription = addFallbackTrackerListener(
     "endpointBanned",
     tracker.trackerKey,
     ({ endpoint, reason }) => {
@@ -30,7 +30,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
     }
   );
 
-  const cleanupEndpointsUpdatedSubscription = addFallbackTrackerListenner(
+  const cleanupEndpointsUpdatedSubscription = addFallbackTrackerListener(
     "endpointsUpdated",
     tracker.trackerKey,
     (p) => {
@@ -58,7 +58,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
     }
   );
 
-  const cleanupTrackingFinishedSubscription = addFallbackTrackerListenner(
+  const cleanupTrackingFinishedSubscription = addFallbackTrackerListener(
     "trackingFinished",
     tracker.trackerKey,
     ({ endpointsStats }) => {

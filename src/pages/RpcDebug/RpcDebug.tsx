@@ -5,7 +5,7 @@ import { getProviderNameFromUrl } from "config/rpc";
 import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
-import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
@@ -278,7 +278,7 @@ export default function RpcDebug() {
     const unsubscribes: (() => void)[] = [];
 
     allTrackerKeys.forEach((trackerKey) => {
-      const unsubscribe = addFallbackTrackerListenner("trackingFinished", trackerKey, () => {
+      const unsubscribe = addFallbackTrackerListener("trackingFinished", trackerKey, () => {
         updateNetworkObserverState();
       });
       unsubscribes.push(unsubscribe);
@@ -291,7 +291,7 @@ export default function RpcDebug() {
 
       // Subscribe to new trackers
       newTrackerKeys.forEach((trackerKey) => {
-        const unsubscribe = addFallbackTrackerListenner("trackingFinished", trackerKey, () => {
+        const unsubscribe = addFallbackTrackerListener("trackingFinished", trackerKey, () => {
           updateNetworkObserverState();
         });
         unsubscribes.push(unsubscribe);

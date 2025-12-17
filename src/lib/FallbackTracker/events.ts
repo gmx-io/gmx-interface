@@ -1,6 +1,6 @@
 import noop from "lodash/noop";
 
-import { safeAddGlobalListenner } from "lib/safeListenner/safeAddListenner";
+import { safeAddGlobalListener } from "lib/safeListenner/safeAddListener";
 
 import { EndpointStats } from "./FallbackTracker";
 
@@ -54,7 +54,7 @@ export function emitTrackingFinished(detail: FallbackTrackerEventDetail<"trackin
   globalThis.dispatchEvent(new CustomEvent(fallbackTrackerEventKeys.trackingFinished, { detail }));
 }
 
-export function addFallbackTrackerListenner<TEvent extends FallbackTrackerEventName>(
+export function addFallbackTrackerListener<TEvent extends FallbackTrackerEventName>(
   eventName: TEvent,
   trackerKey: string,
   listener: (data: FallbackTrackerEventDetail<TEvent>) => void
@@ -69,7 +69,7 @@ export function addFallbackTrackerListenner<TEvent extends FallbackTrackerEventN
     listener(detail);
   };
 
-  const cleanup = safeAddGlobalListenner(fallbackTrackerEventKeys[eventName], handler);
+  const cleanup = safeAddGlobalListener(fallbackTrackerEventKeys[eventName], handler);
 
   return cleanup || noop;
 }

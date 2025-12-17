@@ -1,11 +1,11 @@
 import { getChainName, getProviderNameFromUrl } from "config/rpc";
-import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { OracleKeeperFallbackTracker } from "lib/oracleKeeperFetcher/OracleFallbackTracker";
 
 import { metrics, OracleKeeperEndpointBannedEvent, OracleKeeperUpdateEndpointsEvent } from ".";
 
 export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTracker) {
-  const cleanupBannedSubscription = addFallbackTrackerListenner(
+  const cleanupBannedSubscription = addFallbackTrackerListener(
     "endpointBanned",
     tracker.trackerKey,
     ({ endpoint, reason }) => {
@@ -22,7 +22,7 @@ export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTr
     }
   );
 
-  const cleanupEndpointsUpdatedSubscription = addFallbackTrackerListenner(
+  const cleanupEndpointsUpdatedSubscription = addFallbackTrackerListener(
     "endpointsUpdated",
     tracker.trackerKey,
     (p) => {

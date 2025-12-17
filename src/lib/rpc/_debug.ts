@@ -4,7 +4,7 @@ import { ContractsChainId, getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEBUG_RPC_ENDPOINTS_KEY, RPC_DEBUG_STATE_KEY } from "config/localStorage";
 import { getProviderNameFromUrl } from "config/rpc";
-import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
 
 import { RpcTracker } from "./RpcTracker";
@@ -166,11 +166,11 @@ class RpcTrackerDebug {
   }
 
   subscribeForRpcTrackerDebugging(tracker: RpcTracker) {
-    addFallbackTrackerListenner("endpointsUpdated", tracker.trackerKey, () => {
+    addFallbackTrackerListener("endpointsUpdated", tracker.trackerKey, () => {
       this.debugRpcTrackerState(tracker);
     });
 
-    addFallbackTrackerListenner("trackingFinished", tracker.trackerKey, () => {
+    addFallbackTrackerListener("trackingFinished", tracker.trackerKey, () => {
       this.debugRpcTrackerState(tracker);
     });
   }

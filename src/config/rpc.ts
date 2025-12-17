@@ -1,6 +1,6 @@
 import sample from "lodash/sample";
 
-import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
+import { _debugRpcTracker } from "lib/rpc/_debug";
 import { RpcTrackerConfig } from "lib/rpc/RpcTracker";
 import { RpcConfig } from "lib/rpc/types";
 import { mustNeverExist } from "lib/types";
@@ -18,21 +18,15 @@ import {
   SOURCE_SEPOLIA,
 } from "sdk/configs/chains";
 
+export type { RpcConfig } from "lib/rpc/types";
 export * from "sdk/configs/chains";
 export { getChainName } from "sdk/configs/chains";
-export type { RpcConfig } from "lib/rpc/types";
 
 const ENV_ARBITRUM_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_ARBITRUM_RPC_URLS);
 
 const ENV_AVALANCHE_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_AVALANCHE_RPC_URLS);
 
 const ENV_BOTANIX_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_BOTANIX_RPC_URLS);
-
-const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io", "gmxapp.io", "gmxalt.io"];
-
-if (_debugRpcTracker?.getFlag(RpcDebugFlags.DebugAlchemy)) {
-  ALCHEMY_WHITELISTED_DOMAINS.push(self.location.host);
-}
 
 // Chains that support Alchemy WebSocket endpoints
 export const ALCHEMY_WS_SUPPORT_CHAINS = [
@@ -365,25 +359,21 @@ export function getAlchemyProvider(
 
   let alchemyKey: string;
 
-  if (ALCHEMY_WHITELISTED_DOMAINS.includes(self.location.host)) {
-    switch (purpose) {
-      case "fallback":
-        alchemyKey = "NnWkTZJp8dNKXlCIfJwej";
-        break;
-      case "largeAccount":
-        alchemyKey = "UnfP5Io4K9X8UZnUnFy2a";
-        break;
-      case "express":
-        alchemyKey = "vZoYuLP1GVpvE0wpgPKwC";
-        break;
-      case "default":
-        throw new Error(`Unsupported purpose: ${purpose}`);
-      default:
-        mustNeverExist(purpose);
-        throw new Error(`Unsupported purpose: ${purpose}`);
-    }
-  } else {
-    alchemyKey = "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+  switch (purpose) {
+    case "fallback":
+      alchemyKey = "NnWkTZJp8dNKXlCIfJwej";
+      break;
+    case "largeAccount":
+      alchemyKey = "UnfP5Io4K9X8UZnUnFy2a";
+      break;
+    case "express":
+      alchemyKey = "vZoYuLP1GVpvE0wpgPKwC";
+      break;
+    case "default":
+      throw new Error(`Unsupported purpose: ${purpose}`);
+    default:
+      mustNeverExist(purpose);
+      throw new Error(`Unsupported purpose: ${purpose}`);
   }
 
   let baseUrl: string;

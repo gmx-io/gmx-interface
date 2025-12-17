@@ -14,15 +14,15 @@ import {
   RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS,
 } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { addFallbackTrackerListenner } from "lib/FallbackTracker/events";
+import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
 import { RpcTracker } from "lib/rpc/RpcTracker";
 
 import { _debugRpcTracker } from "./_debug";
 
-const RPC_TRACKERS_BY_KEY = {};
-const RPC_TRACKER_KEYS_BY_CHAIN_ID = {};
+const RPC_TRACKERS_BY_KEY: Record<string, RpcTracker> = {};
+const RPC_TRACKER_KEYS_BY_CHAIN_ID: Record<number, string> = {};
 let isInitialized = false;
 
 function initRpcTrackers() {
@@ -143,7 +143,7 @@ function _useCurrentRpcUrls(chainId: number): { primary: string; fallbacks: stri
       return;
     }
 
-    const unsubscribe: () => void = addFallbackTrackerListenner(
+    const unsubscribe: () => void = addFallbackTrackerListener(
       "endpointsUpdated",
       tracker.trackerKey,
       ({ primary, fallbacks }) => {

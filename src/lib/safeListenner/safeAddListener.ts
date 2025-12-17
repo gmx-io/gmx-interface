@@ -1,40 +1,40 @@
-const DEFAULT_MAX_LISTENNERS = 1000;
+const DEFAULT_MAX_LISTENERS = 1000;
 
-export class SafeListennersCache {
+export class SafeListenersCache {
   cache: ((event: Event) => void)[] = [];
   wrappedListeners: Map<(event: Event) => void, (event: Event) => void> = new Map();
-  static instances: Record<string, SafeListennersCache> = {};
+  static instances: Record<string, SafeListenersCache> = {};
 
   constructor(
     public event: string,
-    public maxListenners: number = DEFAULT_MAX_LISTENNERS
+    public maxListeners: number = DEFAULT_MAX_LISTENERS
   ) {}
 
-  static getInstance(event: string, maxListenners: number = DEFAULT_MAX_LISTENNERS) {
+  static getInstance(event: string, maxListeners: number = DEFAULT_MAX_LISTENERS) {
     if (!this.instances[event]) {
-      this.instances[event] = new SafeListennersCache(event, maxListenners);
+      this.instances[event] = new SafeListenersCache(event, maxListeners);
     }
     return this.instances[event];
   }
 
-  addListenner(listenner: (event: Event) => void): (() => void) | undefined {
-    if (this.maxListenners === 0) {
+  addListener(listener: (event: Event) => void): (() => void) | undefined {
+    if (this.maxListeners === 0) {
       return undefined;
     }
 
     // Wrap listener to catch errors
     const wrappedListener = (event: Event) => {
       try {
-        listenner(event);
+        listener(event);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(`Error in listener for event ${this.event}:`, error);
       }
     };
 
-    this.wrappedListeners.set(listenner, wrappedListener);
+    this.wrappedListeners.set(listener, wrappedListener);
 
-    if (this.cache.length >= this.maxListenners) {
+    if (this.cache.length >= this.maxListeners) {
       // eslint-disable-next-line no-console
       console.error(`Max listeners reached for event ${this.event}`);
       const oldestListener = this.cache.shift();
@@ -50,19 +50,19 @@ export class SafeListennersCache {
 
     globalThis.addEventListener(this.event, wrappedListener);
 
-    this.cache.push(listenner);
+    this.cache.push(listener);
 
     return () => {
-      this.removeListenner(listenner);
+      this.removeListener(listener);
     };
   }
 
-  removeListenner(listenner: (event: Event) => void) {
-    const wrappedListener = this.wrappedListeners.get(listenner);
+  removeListener(listener: (event: Event) => void) {
+    const wrappedListener = this.wrappedListeners.get(listener);
     if (wrappedListener) {
       globalThis.removeEventListener(this.event, wrappedListener);
-      this.wrappedListeners.delete(listenner);
-      const index = this.cache.indexOf(listenner);
+      this.wrappedListeners.delete(listener);
+      const index = this.cache.indexOf(listener);
       if (index > -1) {
         this.cache.splice(index, 1);
       }
@@ -74,19 +74,19 @@ export class SafeListennersCache {
  * Prevents memory leaks by limiting the number of listeners for a given event.
  * Returns a cleanup function that removes the listener.
  */
-export function safeAddGlobalListenner(
+export function safeAddGlobalListener(
   event: string,
-  listenner: (event: Event) => void,
-  maxListenners?: number
+  listener: (event: Event) => void,
+  maxListeners?: number
 ): (() => void) | undefined {
-  const cache = SafeListennersCache.getInstance(event, maxListenners);
-  return cache.addListenner(listenner);
+  const cache = SafeListenersCache.getInstance(event, maxListeners);
+  return cache.addListener(listener);
 }
 
 /**
- * Removes a listener that was added via safeAddGlobalListenner
+ * Removes a listener that was added via safeAddGlobalListener
  */
-export function safeRemoveGlobalListenner(event: string, listenner: (event: Event) => void) {
-  const cache = SafeListennersCache.getInstance(event);
-  cache.removeListenner(listenner);
+export function safeRemoveGlobalListener(event: string, listener: (event: Event) => void) {
+  const cache = SafeListenersCache.getInstance(event);
+  cache.removeListener(listener);
 }
