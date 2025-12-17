@@ -6,7 +6,7 @@ import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/order
 import { useCancelOrder } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { isLimitDecreaseOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { PositionInfo } from "domain/synthetics/positions";
-import { formatDeltaUsd, formatUsd, formatBalanceAmount } from "lib/numbers";
+import { formatDeltaUsd, formatUsd, formatBalanceAmount, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -95,7 +95,7 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile }: P
   );
 }
 
-function TPSLOrderCard({
+function useTPSLOrderViewModel({
   order,
   position,
   marketDecimals,
@@ -108,37 +108,37 @@ function TPSLOrderCard({
 }) {
   const [isCancelling, cancelOrder] = useCancelOrder(order);
 
-  const isTakeProfit = isLimitDecreaseOrderType(order.orderType);
-  const orderType = isTakeProfit ? t`Take Profit` : t`Stop Loss`;
+  const orderType = useMemo(
+    () => (isLimitDecreaseOrderType(order.orderType) ? t`Take Profit` : t`Stop Loss`),
+    [order.orderType]
+  );
 
-  const isFullClose = order.sizeDeltaUsd === position.sizeInUsd;
-
-  const sizePercentage = useMemo(() => {
-    if (position.sizeInUsd === 0n) return 0n;
-    return bigMath.mulDiv(order.sizeDeltaUsd, 10000n, position.sizeInUsd);
-  }, [order.sizeDeltaUsd, position.sizeInUsd]);
+  const triggerPriceDisplay = useMemo(
+    () =>
+      `${order.triggerThresholdType} ${formatUsd(order.triggerPrice, {
+        displayDecimals: marketDecimals,
+        visualMultiplier: order.indexToken?.visualMultiplier,
+      })}`,
+    [marketDecimals, order.indexToken?.visualMultiplier, order.triggerPrice, order.triggerThresholdType]
+  );
 
   const sizeDisplay = useMemo(() => {
+    const isFullClose = order.sizeDeltaUsd === position.sizeInUsd;
+
     if (isFullClose) {
       return <Trans>Full Position Close</Trans>;
     }
-    const percentage = Number(sizePercentage) / 100;
+
+    const sizePercentage =
+      position.sizeInUsd === 0n ? 0n : bigMath.mulDiv(order.sizeDeltaUsd, 10000n, position.sizeInUsd);
+
     return (
       <span>
         <span>-{formatUsd(order.sizeDeltaUsd)}</span>
-        <span className="ml-4 text-typography-secondary">(-{percentage.toFixed(2)}%)</span>
+        <span className="ml-4 text-typography-secondary">(-{formatPercentage(sizePercentage)})</span>
       </span>
     );
-  }, [isFullClose, order.sizeDeltaUsd, sizePercentage]);
-
-  const triggerPriceDisplay = useMemo(() => {
-    const thresholdType = order.triggerThresholdType;
-    const price = formatUsd(order.triggerPrice, {
-      displayDecimals: marketDecimals,
-      visualMultiplier: order.indexToken?.visualMultiplier,
-    });
-    return `${thresholdType} ${price}`;
-  }, [order.triggerPrice, order.triggerThresholdType, order.indexToken?.visualMultiplier, marketDecimals]);
+  }, [order.sizeDeltaUsd, position.sizeInUsd]);
 
   const estimatedPnl = useMemo(() => {
     const entryPrice = position.entryPrice ?? 0n;
@@ -148,7 +148,7 @@ function TPSLOrderCard({
     const pnlPercentage = position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : 0n;
 
     return { pnlUsd, pnlPercentage };
-  }, [order, position]);
+  }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position.collateralUsd, position.entryPrice]);
 
   const receiveDisplay = useMemo(() => {
     const receiveUsd = order.sizeDeltaUsd > 0n ? order.sizeDeltaUsd : 0n;
@@ -169,7 +169,7 @@ function TPSLOrderCard({
         <span className="ml-4 text-typography-secondary">({formatUsd(receiveUsd)})</span>
       </span>
     );
-  }, [order]);
+  }, [order.sizeDeltaUsd, order.targetCollateralToken]);
 
   const handleEdit = useCallback(() => {
     onEdit?.(order.key);
@@ -178,6 +178,40 @@ function TPSLOrderCard({
   const handleCancel = useCallback(() => {
     cancelOrder();
   }, [cancelOrder]);
+
+  return {
+    orderType,
+    triggerPriceDisplay,
+    sizeDisplay,
+    estimatedPnl,
+    receiveDisplay,
+    handleEdit,
+    handleCancel,
+    isCancelling,
+  };
+}
+
+function TPSLOrderCard({
+  order,
+  position,
+  marketDecimals,
+  onEdit,
+}: {
+  order: PositionOrderInfo;
+  position: PositionInfo;
+  marketDecimals: number | undefined;
+  onEdit?: (orderKey: string) => void;
+}) {
+  const {
+    orderType,
+    triggerPriceDisplay,
+    sizeDisplay,
+    estimatedPnl,
+    receiveDisplay,
+    handleEdit,
+    handleCancel,
+    isCancelling,
+  } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
     <div className="flex flex-col gap-10 border-b-1/2 border-slate-600 p-16 last:border-b-0">
@@ -247,78 +281,16 @@ export function TPSLOrderRow({
   marketDecimals: number | undefined;
   onEdit?: (orderKey: string) => void;
 }) {
-  const [isCancelling, cancelOrder] = useCancelOrder(order);
-
-  const isTakeProfit = isLimitDecreaseOrderType(order.orderType);
-  const orderType = isTakeProfit ? t`Take Profit` : t`Stop Loss`;
-
-  const isFullClose = order.sizeDeltaUsd === position.sizeInUsd;
-
-  const sizePercentage = useMemo(() => {
-    if (position.sizeInUsd === 0n) return 0n;
-    return bigMath.mulDiv(order.sizeDeltaUsd, 10000n, position.sizeInUsd);
-  }, [order.sizeDeltaUsd, position.sizeInUsd]);
-
-  const sizeDisplay = useMemo(() => {
-    if (isFullClose) {
-      return <Trans>Full Position Close</Trans>;
-    }
-    const percentage = Number(sizePercentage) / 100;
-    return (
-      <span>
-        <span>-{formatUsd(order.sizeDeltaUsd)}</span>
-        <span className="ml-4 text-typography-secondary">(-{percentage.toFixed(2)}%)</span>
-      </span>
-    );
-  }, [isFullClose, order.sizeDeltaUsd, sizePercentage]);
-
-  const triggerPriceDisplay = useMemo(() => {
-    const thresholdType = order.triggerThresholdType;
-    const price = formatUsd(order.triggerPrice, {
-      displayDecimals: marketDecimals,
-      visualMultiplier: order.indexToken?.visualMultiplier,
-    });
-    return `${thresholdType} ${price}`;
-  }, [order.triggerPrice, order.triggerThresholdType, order.indexToken?.visualMultiplier, marketDecimals]);
-
-  const estimatedPnl = useMemo(() => {
-    const entryPrice = position.entryPrice ?? 0n;
-    const priceDiff = order.isLong ? order.triggerPrice - entryPrice : entryPrice - order.triggerPrice;
-
-    const pnlUsd = bigMath.mulDiv(priceDiff, order.sizeDeltaUsd, entryPrice);
-    const pnlPercentage = position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : 0n;
-
-    return { pnlUsd, pnlPercentage };
-  }, [order, position]);
-
-  const receiveDisplay = useMemo(() => {
-    const receiveUsd = order.sizeDeltaUsd > 0n ? order.sizeDeltaUsd : 0n;
-    const receiveToken = order.targetCollateralToken;
-
-    if (!receiveToken) return "—";
-
-    const receiveAmount =
-      receiveToken.prices?.minPrice && receiveToken.prices.minPrice > 0n
-        ? bigMath.mulDiv(receiveUsd, 10n ** BigInt(receiveToken.decimals), receiveToken.prices.minPrice)
-        : 0n;
-
-    return (
-      <span>
-        {formatBalanceAmount(receiveAmount, receiveToken.decimals, receiveToken.symbol, {
-          isStable: receiveToken.isStable,
-        })}
-        <span className="ml-4 text-typography-secondary">({formatUsd(receiveUsd)})</span>
-      </span>
-    );
-  }, [order]);
-
-  const handleEdit = useCallback(() => {
-    onEdit?.(order.key);
-  }, [onEdit, order.key]);
-
-  const handleCancel = useCallback(() => {
-    cancelOrder();
-  }, [cancelOrder]);
+  const {
+    orderType,
+    triggerPriceDisplay,
+    sizeDisplay,
+    estimatedPnl,
+    receiveDisplay,
+    handleEdit,
+    handleCancel,
+    isCancelling,
+  } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
     <TableTr>

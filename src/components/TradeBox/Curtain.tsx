@@ -6,7 +6,7 @@ import { createGlobalState } from "react-use";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-const HEADER_HEIGHT = 48;
+const HEADER_HEIGHT = 39;
 const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
