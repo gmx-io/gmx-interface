@@ -1,4 +1,8 @@
-import { EXECUTION_FEE_CONFIG_V2, GAS_PRICE_PREMIUM_MAP, MAX_PRIORITY_FEE_PER_GAS_MAP } from "config/chains";
+import {
+  ContractsChainId,
+  getExecutionFeeConfig,
+  getMaxPriorityFeePerGas as getMaxPriorityFeePerGasConfig,
+} from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -18,21 +22,20 @@ export function estimateExecutionGasPrice(p: {
 }
 
 export function getExecutionFeeBufferBps(chainId: number, settledBufferBps: number | undefined) {
-  return BigInt(settledBufferBps ?? EXECUTION_FEE_CONFIG_V2[chainId]?.defaultBufferBps ?? 0);
-}
-
-export function getGasPremium(chainId: number) {
-  return GAS_PRICE_PREMIUM_MAP[chainId] ?? 0n;
+  return BigInt(settledBufferBps ?? getExecutionFeeConfig(chainId as ContractsChainId)?.defaultBufferBps ?? 0);
 }
 
 export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePerGas: bigint | undefined | null) {
-  const executionFeeConfig = EXECUTION_FEE_CONFIG_V2[chainId];
+  const executionFeeConfig = getExecutionFeeConfig(chainId as ContractsChainId);
 
-  if (!executionFeeConfig.shouldUseMaxPriorityFeePerGas) {
+  if (!executionFeeConfig?.shouldUseMaxPriorityFeePerGas) {
     return undefined;
   }
 
-  return bigMath.max(onChainMaxPriorityFeePerGas ?? 0n, MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n);
+  return bigMath.max(
+    onChainMaxPriorityFeePerGas ?? 0n,
+    getMaxPriorityFeePerGasConfig(chainId as ContractsChainId) || 0n
+  );
 }
 
 export function getMinimumExecutionFeeBufferBps(p: {

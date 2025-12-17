@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getProviderNameFromUrl } from "./getProviderNameFromUrl";
+import { getProviderNameFromUrl } from "../rpc";
 
 describe("getProviderNameFromUrl", () => {
   it("should return the provider name from the URL", () => {

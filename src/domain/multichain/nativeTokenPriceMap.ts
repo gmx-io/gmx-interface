@@ -8,7 +8,7 @@ import {
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
-} from "config/static/chains";
+} from "config/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 export const NATIVE_TOKEN_PRICE_MAP: Partial<

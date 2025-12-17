@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import noop from "lodash/noop";
-import uniq from "lodash/uniq";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
@@ -12,17 +11,12 @@ import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
-  selectPoolsDetailsGlvInfo,
   selectPoolsDetailsGlvOrMarketAddress,
-  selectPoolsDetailsGlvTokenAddress,
   selectPoolsDetailsIsMarketTokenDeposit,
-  selectPoolsDetailsLongTokenAddress,
-  selectPoolsDetailsLongTokenAmount,
   selectPoolsDetailsMarketOrGlvTokenAmount,
-  selectPoolsDetailsMarketTokenData,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsShortTokenAddress,
-  selectPoolsDetailsShortTokenAmount,
+  selectPoolsDetailsSecondTokenAddress,
+  selectPoolsDetailsSecondTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -57,70 +51,47 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
   const [isApproving, setIsApproving] = useState(false);
 
   const paySource = useSelector(selectPoolsDetailsPaySource);
-  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
-  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
-  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
-  const glvTokenAddress = useSelector(selectPoolsDetailsGlvTokenAddress);
-  const longTokenAmount = useSelector(selectPoolsDetailsLongTokenAmount);
-  const shortTokenAmount = useSelector(selectPoolsDetailsShortTokenAmount);
+  const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
+  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
+  const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
+  const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
   const isMarketTokenDeposit = useSelector(selectPoolsDetailsIsMarketTokenDeposit);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
+  const marketOrGlvTokenAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
 
-  const marketTokenAmount = useMemo(() => {
-    if (isDeposit && isMarketTokenDeposit) {
-      return marketOrGlvTokenAmount;
-    }
-    return undefined;
-  }, [isDeposit, isMarketTokenDeposit, marketOrGlvTokenAmount]);
-
-  const glvTokenAmount = useMemo(() => {
-    if (isWithdrawal && glvInfo) {
-      return marketOrGlvTokenAmount;
-    }
-    return undefined;
-  }, [isWithdrawal, glvInfo, marketOrGlvTokenAmount]);
-
-  const payTokenAddresses = useMemo(
+  const payTokenAddresses: { address: string; amount: bigint }[] = useMemo(
     function getPayTokenAddresses() {
-      if (!marketToken) {
-        return [];
-      }
-
-      const addresses: string[] = [];
+      const addresses: { address: string; amount: bigint }[] = [];
 
       if (isDeposit) {
-        if (longTokenAmount !== undefined && longTokenAmount > 0 && longTokenAddress) {
-          addresses.push(longTokenAddress);
-        }
-        if (shortTokenAmount !== undefined && shortTokenAmount > 0 && shortTokenAddress) {
-          addresses.push(shortTokenAddress);
-        }
-        if (glvInfo && isMarketTokenDeposit) {
-          if (marketTokenAmount !== undefined && marketTokenAmount > 0) {
-            addresses.push(marketToken.address);
+        if (firstTokenAddress !== undefined && isMarketTokenDeposit) {
+          addresses.push({ address: firstTokenAddress, amount: firstTokenAmount });
+        } else {
+          if (firstTokenAddress !== undefined) {
+            addresses.push({ address: firstTokenAddress, amount: firstTokenAmount });
+          }
+          if (secondTokenAddress !== undefined) {
+            addresses.push({ address: secondTokenAddress, amount: secondTokenAmount });
           }
         }
-      } else if (isWithdrawal) {
-        addresses.push(glvTokenAddress ? glvTokenAddress : marketToken.address);
+      } else if (isWithdrawal && marketOrGlvTokenAddress !== undefined) {
+        addresses.push({ address: marketOrGlvTokenAddress, amount: marketOrGlvTokenAmount });
       }
 
-      return uniq(addresses);
+      return addresses;
     },
     [
-      marketToken,
       isDeposit,
       isWithdrawal,
-      longTokenAmount,
-      longTokenAddress,
-      shortTokenAmount,
-      shortTokenAddress,
-      glvInfo,
+      marketOrGlvTokenAddress,
+      firstTokenAddress,
       isMarketTokenDeposit,
-      marketTokenAmount,
-      glvTokenAddress,
+      firstTokenAmount,
+      secondTokenAddress,
+      secondTokenAmount,
+      marketOrGlvTokenAmount,
     ]
   );
 
@@ -130,82 +101,25 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
     isLoaded: isSettlementChainAllowanceLoaded,
   } = useTokensAllowanceData(chainId, {
     spenderAddress: routerAddress,
-    tokenAddresses: payTokenAddresses,
+    tokenAddresses: payTokenAddresses.map((token) => token.address),
     skip: paySource !== "settlementChain",
   });
 
   const settlementChainTokensToApprove = useMemo(
     function getTokensToApprove() {
-      const addresses: string[] = [];
-
-      const marketTokenAmountForApproval = isWithdrawal ? marketOrGlvTokenAmount : marketTokenAmount;
-
-      const shouldApproveMarketToken = getNeedTokenApprove(
-        settlementChainTokensAllowanceData,
-        marketToken?.address,
-        marketTokenAmountForApproval,
-        []
-      );
-
-      const shouldApproveGlvToken = getNeedTokenApprove(
-        settlementChainTokensAllowanceData,
-        glvTokenAddress,
-        glvTokenAmount,
-        []
-      );
-
-      const shouldApproveLongToken = getNeedTokenApprove(
-        settlementChainTokensAllowanceData,
-        longTokenAddress,
-        longTokenAmount,
-        []
-      );
-
-      const shouldApproveShortToken = getNeedTokenApprove(
-        settlementChainTokensAllowanceData,
-        shortTokenAddress,
-        shortTokenAmount,
-        []
-      );
-
-      if (isDeposit) {
-        if (shouldApproveLongToken && longTokenAddress) {
-          addresses.push(longTokenAddress);
-        }
-
-        if (shouldApproveShortToken && shortTokenAddress) {
-          addresses.push(shortTokenAddress);
-        }
-
-        if (glvInfo && isMarketTokenDeposit && shouldApproveMarketToken && marketToken) {
-          addresses.push(marketToken.address);
-        }
-      } else if (isWithdrawal) {
-        if (glvInfo && shouldApproveGlvToken && glvTokenAddress) {
-          addresses.push(glvTokenAddress);
-        } else if (!glvInfo && shouldApproveMarketToken && marketToken?.address) {
-          addresses.push(marketToken.address);
-        }
-      }
-
-      return uniq(addresses);
+      return payTokenAddresses
+        .filter((token) => {
+          const shouldApprove = getNeedTokenApprove(
+            settlementChainTokensAllowanceData,
+            token.address,
+            token.amount,
+            []
+          );
+          return shouldApprove;
+        })
+        .map((token) => token.address);
     },
-    [
-      glvInfo,
-      glvTokenAddress,
-      glvTokenAmount,
-      isMarketTokenDeposit,
-      longTokenAddress,
-      longTokenAmount,
-      marketToken,
-      marketTokenAmount,
-      isDeposit,
-      isWithdrawal,
-      settlementChainTokensAllowanceData,
-      shortTokenAddress,
-      shortTokenAmount,
-      marketOrGlvTokenAmount,
-    ]
+    [payTokenAddresses, settlementChainTokensAllowanceData]
   );
 
   const settlementChainTokensToApproveSymbols = settlementChainTokensToApprove.map((tokenAddress) => {
