@@ -110,10 +110,6 @@
     "web-vitals": "1.1.2",
     "worker-loader": "3.0.8"
   },
-  "optionalDependencies": {
-    "bufferutil": "4.0.9",
-    "utf-8-validate": "5.0.10"
-  },
   "resolutions": {
     "react-error-overlay": "6.0.9",
     "@coinbase/wallet-sdk": "4.3.0",
