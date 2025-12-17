@@ -496,6 +496,10 @@ msgstr "Clásico"
 msgid "Unstaking"
 msgstr "Desestacando"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Monitoring"
+#~ msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -773,6 +777,10 @@ msgstr "Tamaño promedio de posición."
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> a </1>{1} <2/>"
+
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "See <0>Tenderly Docs</0>."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
@@ -1064,6 +1072,10 @@ msgstr "Reclamando tarifas de funding"
 msgid "All Time"
 msgstr "Todo el Tiempo"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "RPC Debug"
+msgstr ""
+
 #: src/components/Referrals/referralsHelper.ts
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "El código de referido no puede tener más de {MAX_REFERRAL_CODE_LENGTH} caracteres."
@@ -1341,6 +1353,10 @@ msgstr "GM es el token de proveedor de liquidez para mercados GMX V2. Acumula 63
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "El impacto de precio actual es {0}. Considera agregar un buffer de 0.30% para que la orden sea más probable que se procese."
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Public"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "Ocultar error"
@@ -1481,6 +1497,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "Liquidez de token de recepción insuficiente"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Permits Testing"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -2053,6 +2073,10 @@ msgstr "Ocurrió un error. Por favor, intenta de nuevo."
 msgid "Dune Analytics"
 msgstr "Dune Analytics"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Debug Swaps"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "No hay suficiente liquidez GM: {0} [{1}] en GLV para cumplir con tu solicitud de venta. Por favor, elige una reserva diferente, reduce el tamaño de venta o divide tu retiro en múltiples reservas."
@@ -2143,6 +2167,10 @@ msgstr "Panel de Finanzas Descentralizadas"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "More Details"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Current Endpoints ({0})"
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -2409,6 +2437,10 @@ msgstr "Número máximo de partes: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "Abrir App"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Large Account RPC"
+#~ msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Disponible para Pagar"
@@ -2574,6 +2606,10 @@ msgstr "y"
 msgid "Insufficient GLV liquidity"
 msgstr "Liquidez de GLV insuficiente"
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Tenderly Settings"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "Estarás corto en {indexSymbol} solo desde tu posición corta."
@@ -2654,6 +2690,14 @@ msgstr "<0>Sí, te animamos a construir sobre GMX o integrarlo en tu app DeFi. G
 msgid "Liquidation Fee"
 msgstr "Comisión de Liquidación"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "URL"
+msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Permits"
+#~ msgstr ""
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
 msgstr ""
@@ -2730,6 +2774,7 @@ msgstr "Este intercambio se enruta a través de varias reservas GM para las comi
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3647,7 +3692,7 @@ msgstr "Orden de shift ejecutada."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "Aún no has alcanzado el mínimo \"Capital Usado\" de {0} para calificar en las clasificaciones."
 
-#: src/domain/multichain/useSourceChainError.ts
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
@@ -3947,6 +3992,10 @@ msgstr "Precio de Liq."
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trading Pair Price Alerts"
 msgstr "Alertas de Precio de Par de Trading"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Links"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
@@ -4420,6 +4469,10 @@ msgstr "Aprobación GMX pendiente"
 msgid "No markets found."
 msgstr "No se encontraron mercados."
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Monitoring"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
 msgstr "ODOS"
@@ -4850,6 +4903,8 @@ msgstr "Cancelando {ordersText}."
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -5050,6 +5105,14 @@ msgstr "PnL Máximo (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "Es posible que no haya suficiente liquidez para ejecutar tu orden cuando se cumplan las condiciones de precio."
 
+#: src/components/AbFlagsSettings/AbFlagsSettings.tsx
+msgid "AB Flags"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr ""
@@ -5061,6 +5124,10 @@ msgstr "Las reclamaciones no están disponibles en Avalanche Fuji"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "Cancelar Intercambio TWAP"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add Endpoint"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5342,6 +5409,10 @@ msgstr "Retiro de Cuenta GMX"
 msgid "Governance Alerts"
 msgstr "Alertas de Gobernanza"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Purpose"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr ""
@@ -5405,6 +5476,10 @@ msgstr "El PnL total realizado y no realizado para el período, incluyendo comis
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Ann. Performance"
 msgstr "Rendimiento Anualizado"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Fallback RPC"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5658,6 +5733,10 @@ msgstr "No se pudo encontrar una ruta de intercambio con suficiente liquidez"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time Limit"
 msgstr "Límite de Tiempo"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Oracle Keeper Monitoring"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -6451,6 +6530,10 @@ msgstr "El límite de compra para la reserva GM: {0} usando el token de pago sel
 msgid "Active Management"
 msgstr ""
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Simulate TXs"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr "mercados líquidos profundos"
@@ -6580,9 +6663,17 @@ msgstr "Comprar GMX"
 msgid "Copy error"
 msgstr "Error de copia"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "RPC Tracker Logging"
+#~ msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Proyectos desarrollados por la comunidad GMX. <0/>Por favor, ejerce precaución al interactuar con cualquier app, las apps son mantenidas completamente por desarrolladores de la comunidad."
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add RPC"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
@@ -6828,6 +6919,10 @@ msgstr "Cuenta de Telegram"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Vender {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Links"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -8269,6 +8364,10 @@ msgstr "Protocolo de Opciones Descentralizado"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
 msgstr "Actualizar Parte de Intercambio TWAP"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Markets Monitoring"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Part"

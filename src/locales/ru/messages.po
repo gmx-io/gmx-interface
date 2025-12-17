@@ -496,6 +496,10 @@ msgstr "Классический"
 msgid "Unstaking"
 msgstr "Анстейкинг"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Monitoring"
+#~ msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -773,6 +777,10 @@ msgstr "Средний размер позиции."
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> до </1>{1} <2/>"
+
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "See <0>Tenderly Docs</0>."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
@@ -1064,6 +1072,10 @@ msgstr "Клейм комиссий финансирования"
 msgid "All Time"
 msgstr "Все время"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "RPC Debug"
+msgstr ""
+
 #: src/components/Referrals/referralsHelper.ts
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "Реферальный код не может быть больше {MAX_REFERRAL_CODE_LENGTH} символов."
@@ -1341,6 +1353,10 @@ msgstr "GM - токен провайдера ликвидности для ры�
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "Текущее влияние на цену {0}. Рассмотрите добавление буфера 0.30%, чтобы ордер был более вероятно обработан."
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Public"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "Скрыть ошибку"
@@ -1481,6 +1497,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "Недостаточная ликвидность токена получения"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Permits Testing"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -2053,6 +2073,10 @@ msgstr "Произошла ошибка. Пожалуйста, попробуй�
 msgid "Dune Analytics"
 msgstr "Dune Analytics"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Debug Swaps"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "Недостаточно ликвидности GM: {0} [{1}] в GLV для выполнения вашего запроса на продажу. Пожалуйста, выберите другой пул, уменьшите размер продажи или разделите вывод из нескольких пулов."
@@ -2143,6 +2167,10 @@ msgstr "Децентрализованная Финансовая Панель"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "More Details"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Current Endpoints ({0})"
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -2409,6 +2437,10 @@ msgstr "Максимальное количество частей: {MAX_TWAP_NU
 msgid "Launch App"
 msgstr "Запустить Приложение"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Large Account RPC"
+#~ msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Доступно для оплаты"
@@ -2574,6 +2606,10 @@ msgstr "и"
 msgid "Insufficient GLV liquidity"
 msgstr "Недостаточно ликвидности GLV"
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Tenderly Settings"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "Вы будете в шорте {indexSymbol} только от вашей шорт позиции."
@@ -2654,6 +2690,14 @@ msgstr "<0>Да, мы поощряем строить на базе GMX или �
 msgid "Liquidation Fee"
 msgstr "Комиссия за Ликвидацию"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "URL"
+msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Permits"
+#~ msgstr ""
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
 msgstr ""
@@ -2730,6 +2774,7 @@ msgstr "Этот обмен маршрутизируется через неск
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3647,7 +3692,7 @@ msgstr "Ордер сдвига исполнен."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "Вы ещё не достигли минимума \"Использованного Капитала\" {0} для квалификации в рейтинге."
 
-#: src/domain/multichain/useSourceChainError.ts
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
@@ -3947,6 +3992,10 @@ msgstr "Ликв. Цена"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trading Pair Price Alerts"
 msgstr "Оповещения о Ценах Торговых Пар"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Links"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
@@ -4420,6 +4469,10 @@ msgstr "Ожидание одобрения GMX"
 msgid "No markets found."
 msgstr "Рынки не найдены."
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Monitoring"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
 msgstr "ODOS"
@@ -4850,6 +4903,8 @@ msgstr "Отмена {ordersText}."
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -5050,6 +5105,14 @@ msgstr "Топ PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "Может не хватить ликвидности для выполнения вашего ордера, когда условия цены будут выполнены."
 
+#: src/components/AbFlagsSettings/AbFlagsSettings.tsx
+msgid "AB Flags"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr ""
@@ -5061,6 +5124,10 @@ msgstr "Клеймы недоступны на Avalanche Fuji"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "Отменить TWAP обмен"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add Endpoint"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5342,6 +5409,10 @@ msgstr "Вывод со счета GMX"
 msgid "Governance Alerts"
 msgstr "Оповещения управления"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Purpose"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr ""
@@ -5405,6 +5476,10 @@ msgstr "Общий реализованный и нереализованный 
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Ann. Performance"
 msgstr "Годовая производительность"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Fallback RPC"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5658,6 +5733,10 @@ msgstr "Не удалось найти путь обмена с достаточ
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time Limit"
 msgstr "Лимит времени"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Oracle Keeper Monitoring"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -6451,6 +6530,10 @@ msgstr "Достигнут лимит покупки для пула GM: {0} с 
 msgid "Active Management"
 msgstr ""
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Simulate TXs"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr ""
@@ -6580,9 +6663,17 @@ msgstr "Купить GMX"
 msgid "Copy error"
 msgstr "Ошибка копирования"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "RPC Tracker Logging"
+#~ msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Проекты, разработанные сообществом GMX. <0/>Пожалуйста, будьте осторожны при взаимодействии с любым приложением, приложения полностью поддерживаются разработчиками сообщества."
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add RPC"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
@@ -6828,6 +6919,10 @@ msgstr "Аккаунт в Telegram"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Продать {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Links"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -8269,6 +8364,10 @@ msgstr "Децентрализованный протокол опционов"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
 msgstr "Обновить часть TWAP свопа"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Markets Monitoring"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Part"
