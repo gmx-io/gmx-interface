@@ -138,7 +138,7 @@ msgstr "Оптимизатор доходности на Avalanche"
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Ордера ({0})"
 
@@ -6286,7 +6286,7 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr "Обновить тейк-профит"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active Orders"
 msgstr "Активные ордера"
 

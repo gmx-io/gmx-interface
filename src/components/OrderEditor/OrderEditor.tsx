@@ -13,13 +13,7 @@ import {
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  selectGasLimits,
-  selectGasPrice,
-  selectMarketsInfoData,
-  selectMaxAutoCancelOrders,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -37,7 +31,6 @@ import {
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
-  selectOrderEditorPositionKey,
   selectOrderEditorPositionOrderError,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
@@ -49,7 +42,6 @@ import {
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
@@ -97,6 +89,7 @@ import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
+import { ExecutionFee } from "sdk/types/fees";
 import { bigMath } from "sdk/utils/bigmath";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
@@ -164,7 +157,7 @@ export function OrderEditor(p: Props) {
     const additionalTokenAmount = executionFee.feeTokenAmount - p.order.executionFee;
 
     return {
-      feeUsd: convertToUsd(additionalTokenAmount, executionFee.feeToken.decimals, feeTokenData?.prices.minPrice),
+      feeUsd: convertToUsd(additionalTokenAmount, executionFee.feeToken.decimals, feeTokenData?.prices.minPrice) ?? 0n,
       feeTokenAmount: additionalTokenAmount,
       feeToken: executionFee.feeToken,
     };
@@ -184,7 +177,7 @@ export function OrderEditor(p: Props) {
 
   const userReferralInfo = useUserReferralInfo();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
-  const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled, isAutoCancelTPSL } = useSettings();
+  const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
   const acceptablePriceImpactBps = useSelector(selectOrderEditorAcceptablePriceImpactBps);
@@ -192,12 +185,6 @@ export function OrderEditor(p: Props) {
   const setAcceptablePriceImpactBps = useSelector(selectOrderEditorSetAcceptablePriceImpactBps);
   const increaseAmounts = useSelector(selectOrderEditorIncreaseAmounts);
   const maxAllowedLeverage = useSelector(selectOrderEditorMaxAllowedLeverage);
-  const gasLimits = useSelector(selectGasLimits);
-  const gasPrice = useSelector(selectGasPrice);
-  const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
-  const positionKey = useSelector(selectOrderEditorPositionKey);
-  const selectOrdersByPositionKey = useMemo(() => makeSelectOrdersByPositionKey(positionKey), [positionKey]);
-  const positionOrders = useSelector(selectOrdersByPositionKey);
 
   const defaultAllowedSwapSlippageBps = useSelector(selectOrderEditorDefaultAllowedSwapSlippageBps);
   const setDefaultAllowedSwapSlippageBps = useSelector(selectOrderEditorSetDefaultAllowedSwapSlippageBps);
@@ -206,7 +193,7 @@ export function OrderEditor(p: Props) {
   const swapImpactBps = useSelector(selectOrderEditorTotalSwapImpactBps);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
@@ -228,31 +215,7 @@ export function OrderEditor(p: Props) {
     tpSlHasError,
     setTpPriceInputValue,
     setSlPriceInputValue,
-  } = useOrderEditorTPSL({
-    order: positionOrder,
-    existingPosition,
-    sizeDeltaUsd,
-    triggerPrice,
-    markPrice,
-    indexToken,
-    increaseAmounts,
-    positionIndexToken,
-    nextPositionValuesForIncrease,
-    positionKey,
-    market,
-    userReferralInfo,
-    uiFeeFactor,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    gasLimits,
-    gasPrice,
-    tokensData,
-    chainId,
-    isAutoCancelTPSL,
-    maxAutoCancelOrders,
-    positionOrders,
-    isSetAcceptablePriceImpactEnabled,
-  });
+  } = useOrderEditorTPSL();
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
@@ -441,7 +404,7 @@ export function OrderEditor(p: Props) {
     isGmxAccount: srcChainId !== undefined,
   });
 
-  const networkFee = useMemo(() => {
+  const networkFee = useMemo((): Pick<ExecutionFee, "feeToken" | "feeTokenAmount" | "feeUsd"> | undefined => {
     let baseFee = additionalExecutionFee;
 
     const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
@@ -449,16 +412,17 @@ export function OrderEditor(p: Props) {
     if (baseFee && gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
       baseFee = {
         feeToken: gasPaymentToken,
-        feeTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-        feeUsd: convertToUsd(
-          expressParams.gasPaymentParams.gasPaymentTokenAmount,
-          gasPaymentToken.decimals,
-          gasPaymentToken.prices.minPrice
-        ),
+        feeTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount ?? 0n,
+        feeUsd:
+          convertToUsd(
+            expressParams.gasPaymentParams.gasPaymentTokenAmount,
+            gasPaymentToken.decimals,
+            gasPaymentToken.prices.minPrice
+          ) ?? 0n,
       };
     }
 
-    const fees = [] as { feeToken: any; feeTokenAmount?: bigint; feeUsd?: bigint }[];
+    const fees: Array<Pick<ExecutionFee, "feeToken" | "feeTokenAmount" | "feeUsd">> = [];
 
     if (baseFee) {
       fees.push(baseFee);
@@ -473,14 +437,12 @@ export function OrderEditor(p: Props) {
     }
 
     let feeToken = fees[0]!.feeToken;
-    let feeTokenAmount = fees[0]!.feeTokenAmount ?? 0n;
-    let feeUsd = fees[0]!.feeUsd ?? 0n;
+    let feeTokenAmount = 0n;
+    let feeUsd = 0n;
 
-    fees.slice(1).forEach((fee) => {
+    fees.forEach((fee) => {
       feeUsd = feeUsd + (fee.feeUsd ?? 0n);
-      if (fee.feeToken.address === feeToken.address) {
-        feeTokenAmount = feeTokenAmount + (fee.feeTokenAmount ?? 0n);
-      }
+      feeTokenAmount = feeTokenAmount + (fee.feeTokenAmount ?? 0n);
     });
 
     return {
@@ -936,7 +898,7 @@ export function OrderEditor(p: Props) {
                   position="top-end"
                   tooltipClassName="PositionEditor-fees-tooltip"
                   handle={formatDeltaUsd(networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n)}
-                  renderContent={() => (
+                  content={
                     <>
                       <StatsTooltipRow
                         label={<div className="text-typography-primary">{t`Network Fee`}:</div>}
@@ -946,7 +908,7 @@ export function OrderEditor(p: Props) {
                           networkFee.feeToken.symbol,
                           networkFee.feeToken.decimals,
                           {
-                            displayDecimals: 5,
+                            displayDecimals: networkFee.feeToken.priceDecimals,
                             isStable: networkFee.feeToken.isStable,
                           }
                         )}
@@ -963,7 +925,7 @@ export function OrderEditor(p: Props) {
                             additionalExecutionFee.feeToken.symbol,
                             additionalExecutionFee.feeToken.decimals,
                             {
-                              displayDecimals: 5,
+                              displayDecimals: additionalExecutionFee.feeToken.priceDecimals,
                               isStable: additionalExecutionFee.feeToken.isStable,
                             }
                           )}
@@ -979,7 +941,7 @@ export function OrderEditor(p: Props) {
                             sidecarExecutionFee.feeToken.symbol,
                             sidecarExecutionFee.feeToken.decimals,
                             {
-                              displayDecimals: 5,
+                              displayDecimals: sidecarExecutionFee.feeToken.priceDecimals,
                               isStable: sidecarExecutionFee.feeToken.isStable,
                             }
                           )}
@@ -991,7 +953,7 @@ export function OrderEditor(p: Props) {
                         <Trans>As network fees have increased, an additional network fee is needed.</Trans>
                       </div>
                     </>
-                  )}
+                  }
                 />
               }
             />

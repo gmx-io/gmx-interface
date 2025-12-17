@@ -138,7 +138,7 @@ msgstr "Optimiseur de rendement sur Avalanche"
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Ordres ({0})"
 
@@ -6286,7 +6286,7 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr "Mettre à jour le Take Profit"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active Orders"
 msgstr "Ordres actifs"
 

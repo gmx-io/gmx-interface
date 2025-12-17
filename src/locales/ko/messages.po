@@ -138,7 +138,7 @@ msgstr "Avalanche 일드 옵티마이저"
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "주문 ({0})"
 
@@ -6286,7 +6286,7 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr "이익 실현 업데이트"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active Orders"
 msgstr "활성 주문"
 

@@ -78,17 +78,13 @@ export function LeverageField({ value, onChange, marks }: Props) {
     [parseAndClampValue, onChange]
   );
 
-  const handleBlur = useCallback(() => {
-    commitValue();
-  }, [commitValue]);
-
   return (
     <div data-qa="leverage-slider">
       <SuggestionInput
         suggestionsPlacement="bottom-start"
         value={inputValue ?? "N/A"}
         setValue={handleInputChange}
-        onBlur={handleBlur}
+        onBlur={commitValue}
         suggestionList={finalMarks}
         suggestionWithSuffix
         suffix="x"

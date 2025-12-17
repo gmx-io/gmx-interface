@@ -138,7 +138,7 @@ msgstr "Yield Optimizer on Avalanche"
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
 
@@ -6286,7 +6286,7 @@ msgstr "Smart wallets are not supported on this network."
 msgid "Update Take Profit"
 msgstr "Update Take Profit"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active Orders"
 msgstr "Active Orders"
 

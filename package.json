@@ -11,7 +11,7 @@
     "build:analyze": "VITE_APP_VERSION=$(git rev-parse HEAD) vite build --mode analyze",
     "build-home": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts",
     "build-home:analyze": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts --mode analyze",
-    "build-app": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
+    "build-app": "NODE_OPTIONS=\"--max-old-space-size=8192\" VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
     "test": "vitest",
     "test:ci": "vitest run",
     "lint": "node node_modules/.bin/eslint src",

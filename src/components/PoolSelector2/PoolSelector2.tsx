@@ -92,8 +92,8 @@ function PoolSelector2Desktop(props: Props) {
             key={option.marketInfo.marketTokenAddress}
             marketStat={option}
             tradeType={props.tradeType}
-            isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.isEnoughLiquidity ?? true}
-            liquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.liquidity ?? 0n}
+            isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
+            liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
             data-qa="pool-selector-row"
             onSelect={() => {
               props.onSelect(option.marketInfo.marketTokenAddress);
@@ -168,8 +168,8 @@ function PoolSelector2Mobile(props: Props) {
           key={option.marketInfo.marketTokenAddress}
           marketStat={option}
           tradeType={props.tradeType}
-          isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.isEnoughLiquidity ?? true}
-          liquidity={props.positionStats[option.marketInfo.marketTokenAddress]?.liquidity ?? 0n}
+          isEnoughLiquidity={props.positionStats[option.marketInfo.marketTokenAddress].isEnoughLiquidity}
+          liquidity={props.positionStats[option.marketInfo.marketTokenAddress].liquidity}
           onSelect={() => {
             props.onSelect(option.marketInfo.marketTokenAddress);
             close();
@@ -192,7 +192,6 @@ function PoolListItemMobile({
   onSelect: () => void;
 } & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
-  const isBestPool = marketStat.marketInfo.marketTokenAddress === BEST_POOL_MARKER;
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
   const poolName = getPoolDisplayName(marketStat);
@@ -218,7 +217,7 @@ function PoolListItemMobile({
             />
           )}
         </div>
-        <div className={cx("PoolSelector2-mobile-pool-name", { "text-blue-300": isBestPool })}>{poolName}</div>
+        <div className="PoolSelector2-mobile-pool-name">{poolName}</div>
       </div>
       <dl className="PoolSelector2-mobile-info">
         <dt>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</dt>

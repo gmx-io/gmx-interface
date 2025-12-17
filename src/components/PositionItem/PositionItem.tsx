@@ -5,36 +5,22 @@ import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { selectOracleSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import {
-  OrderErrors,
-  PositionOrderInfo,
-  isIncreaseOrderType,
-  isLimitDecreaseOrderType,
-  isMarketOrderType,
-  isStopLossOrderType,
-  isTwapOrder,
-} from "domain/synthetics/orders";
-import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
-import {
   PositionInfo,
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
-  getNameByOrderType,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { CHART_PERIODS } from "lib/legacy";
-import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getMarketIndexName } from "sdk/utils/markets";
 
@@ -47,14 +33,12 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ChevronRightIcon from "img/ic_chevron_right.svg?react";
-import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
-import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { TwapOrderProgress } from "../OrderItem/OrderItem";
+import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
+import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
 import { TPSLModal } from "../TPSLModal/TPSLModal";
 
 import "./PositionItem.scss";
@@ -588,7 +572,7 @@ export function PositionItem(p: Props) {
           {renderLiquidationPrice()}
         </TableTd>
         <TableTd>
-          <TpSlCell
+          <PositionItemTPSLCell
             positionKey={p.position.key}
             markPrice={p.position.markPrice}
             marketDecimals={marketDecimals}
@@ -768,7 +752,7 @@ export function PositionItem(p: Props) {
               <Trans>TP/SL</Trans>
             </div>
             <div>
-              <TpSlCell
+              <PositionItemTPSLCell
                 positionKey={p.position.key}
                 markPrice={p.position.markPrice}
                 marketDecimals={marketDecimals}
@@ -832,328 +816,5 @@ export function PositionItem(p: Props) {
       {p.isLarge ? renderLarge() : renderSmall()}
       <TPSLModal isVisible={isTPSLModalVisible} setIsVisible={setIsTPSLModalVisible} position={p.position} />
     </>
-  );
-}
-
-function PositionItemOrdersSmall({
-  positionKey,
-  onOrdersClick,
-}: {
-  positionKey: string;
-  onOrdersClick?: (key?: string) => void;
-}) {
-  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
-
-  if (ordersWithErrors.length === 0) return null;
-
-  return (
-    <div className="flex flex-col gap-8">
-      {ordersWithErrors.map((params) => (
-        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
-      ))}
-    </div>
-  );
-}
-
-function PositionItemOrdersLarge({
-  positionKey,
-  onOrdersClick,
-}: {
-  isSmall?: boolean;
-  positionKey: string;
-  onOrdersClick?: (key?: string) => void;
-}) {
-  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
-
-  const [ordersErrorList, ordersWarningsList] = useMemo(() => {
-    const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
-    const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
-    return [ordersErrorList, ordersWarningsList];
-  }, [ordersWithErrors]);
-
-  if (ordersWithErrors.length === 0) return null;
-
-  return (
-    <div>
-      <TooltipWithPortal
-        className="Position-list-active-orders"
-        handle={
-          <>
-            <Trans>Orders ({ordersWithErrors.length})</Trans>
-            {ordersWarningsList.length > 0 || ordersErrorList.length > 0 ? (
-              <div
-                className={cx("relative top-3 size-6 rounded-full", {
-                  "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
-                  "bg-red-500": ordersErrorList.length > 0,
-                })}
-              />
-            ) : null}
-          </>
-        }
-        position="bottom"
-        handleClassName={cx([
-          "Exchange-list-info-label",
-          "Exchange-position-list-orders",
-          "clickable",
-          "text-typography-secondary",
-        ])}
-        maxAllowedWidth={370}
-        tooltipClassName="!z-10 w-[370px]"
-        content={
-          <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
-            <div className="font-medium">
-              <Trans>Active Orders</Trans>
-            </div>
-            {ordersWithErrors.map((params) => (
-              <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
-            ))}
-          </div>
-        }
-      />
-    </div>
-  );
-}
-
-function PositionItemOrder({
-  order,
-  orderErrors,
-  onOrdersClick,
-}: {
-  order: PositionOrderInfo;
-  orderErrors: OrderErrors;
-  onOrdersClick?: (key?: string) => void;
-}) {
-  const [, setEditingOrderState] = useEditingOrderState();
-  const [isCancelling, cancel] = useCancelOrder(order);
-  const handleOrdersClick = useCallback(() => {
-    onOrdersClick?.(order.key);
-  }, [onOrdersClick, order.key]);
-
-  const errors = orderErrors.errors;
-
-  const handleEditClick = useCallback(() => {
-    setEditingOrderState({ orderKey: order.key, source: "PositionsList" });
-  }, [order.key, setEditingOrderState]);
-
-  const oracleSettings = useSelector(selectOracleSettings);
-  const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
-
-  const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
-
-  const cancelButton = (
-    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
-      <CloseIcon className="size-16" />
-    </Button>
-  );
-
-  return (
-    <div key={order.key}>
-      <div className="flex items-start justify-between gap-6">
-        <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
-          <div className="flex items-center justify-between">
-            <PositionItemOrderText order={order} />
-            <ChevronRightIcon className="ml-4 size-14" />
-          </div>
-        </Button>
-        {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-          <Button variant="secondary" onClick={handleEditClick} className="px-8">
-            <EditIcon className="size-16" />
-          </Button>
-        )}
-        {disabledCancelMarketOrderMessage ? (
-          <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
-        ) : (
-          cancelButton
-        )}
-      </div>
-
-      {errors.length !== 0 && (
-        <div className="mt-8 flex flex-col gap-8 text-start">
-          {errors.map((err) => (
-            <div
-              key={err.key}
-              className={cx("hyphens-auto [overflow-wrap:anywhere]", {
-                "text-red-500": err.level === "error",
-                "text-yellow-300": err.level === "warning",
-              })}
-            >
-              {err.msg}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
-  const triggerThresholdType = order.triggerThresholdType;
-  const isIncrease = isIncreaseOrderType(order.orderType);
-  const isTwap = isTwapOrder(order);
-
-  return (
-    <div key={order.key} className="text-start">
-      {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
-      {!isTwap && !isMarketOrderType(order.orderType) ? `: ${triggerThresholdType} ` : null}
-      {!isTwap && !isMarketOrderType(order.orderType) && (
-        <span className="numbers">
-          {formatUsd(order.triggerPrice, {
-            displayDecimals: calculateDisplayDecimals(
-              order.triggerPrice,
-              undefined,
-              order.indexToken?.visualMultiplier
-            ),
-            visualMultiplier: order.indexToken?.visualMultiplier,
-          })}
-        </span>
-      )}
-      :{" "}
-      <span className="numbers">
-        {isIncrease ? "+" : "-"}
-        {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
-      </span>
-    </div>
-  );
-}
-
-function TpSlCell({
-  positionKey,
-  markPrice,
-  marketDecimals,
-  visualMultiplier,
-  isLarge,
-  onOpenTPSLModal,
-}: {
-  positionKey: string;
-  markPrice: bigint;
-  marketDecimals: number | undefined;
-  visualMultiplier?: number;
-  isLarge: boolean;
-  onOpenTPSLModal: () => void;
-}) {
-  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
-
-  const { closestTp, tpCount, closestSl, slCount } = useMemo(() => {
-    const tpOrders: PositionOrderInfo[] = [];
-    const slOrders: PositionOrderInfo[] = [];
-
-    for (const { order } of ordersWithErrors) {
-      if (isTwapOrder(order)) continue;
-      if (isLimitDecreaseOrderType(order.orderType)) {
-        tpOrders.push(order);
-      } else if (isStopLossOrderType(order.orderType)) {
-        slOrders.push(order);
-      }
-    }
-
-    let closestTp: PositionOrderInfo | undefined;
-    let closestTpDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
-    for (const order of tpOrders) {
-      const distance = order.triggerPrice > markPrice ? order.triggerPrice - markPrice : markPrice - order.triggerPrice;
-      if (distance < closestTpDistance) {
-        closestTpDistance = distance;
-        closestTp = order;
-      }
-    }
-
-    let closestSl: PositionOrderInfo | undefined;
-    let closestSlDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
-    for (const order of slOrders) {
-      const distance = order.triggerPrice > markPrice ? order.triggerPrice - markPrice : markPrice - order.triggerPrice;
-      if (distance < closestSlDistance) {
-        closestSlDistance = distance;
-        closestSl = order;
-      }
-    }
-
-    return {
-      closestTp,
-      tpCount: tpOrders.length,
-      closestSl,
-      slCount: slOrders.length,
-    };
-  }, [ordersWithErrors, markPrice]);
-
-  const hasTpOrSl = tpCount > 0 || slCount > 0;
-
-  if (!isLarge) {
-    return (
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-4">
-          <span className={cx("numbers", "text-green-500")}>
-            {closestTp ? (
-              <>
-                {formatUsd(closestTp.triggerPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier,
-                })}
-                {tpCount > 1 && ` (${tpCount})`}
-              </>
-            ) : (
-              "—"
-            )}
-          </span>
-          <span className="text-typography-inactive">•</span>
-          <span className={cx("numbers", "text-red-500")}>
-            {closestSl ? (
-              <>
-                {formatUsd(closestSl.triggerPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier,
-                })}
-                {slCount > 1 && ` (${slCount})`}
-              </>
-            ) : (
-              "—"
-            )}
-          </span>
-        </div>
-        <button
-          onClick={onOpenTPSLModal}
-          className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
-        >
-          {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex items-center gap-4">
-      <div className="flex flex-col gap-2">
-        <span className={cx("numbers", "text-green-500")}>
-          {closestTp ? (
-            <>
-              {formatUsd(closestTp.triggerPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier,
-              })}
-              {tpCount > 1 && <span className="ml-2">({tpCount})</span>}
-            </>
-          ) : (
-            "—"
-          )}
-        </span>
-        <span className={cx("numbers", "text-red-500")}>
-          {closestSl ? (
-            <>
-              {formatUsd(closestSl.triggerPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier,
-              })}
-              {slCount > 1 && <span className="ml-2">({slCount})</span>}
-            </>
-          ) : (
-            "—"
-          )}
-        </span>
-      </div>
-      <button
-        onClick={onOpenTPSLModal}
-        className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
-      >
-        {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
-      </button>
-    </div>
   );
 }

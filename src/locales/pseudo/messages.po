@@ -138,7 +138,7 @@ msgstr ""
 msgid "Arbitrum"
 msgstr ""
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr ""
 
@@ -6286,7 +6286,7 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr ""
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active Orders"
 msgstr ""
 

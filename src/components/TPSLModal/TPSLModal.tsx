@@ -1,6 +1,5 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
-import { useMedia } from "react-use";
 
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
@@ -24,6 +23,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { PositionInfo, formatLiquidationPrice } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useBreakpoints } from "lib/useBreakpoints";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { getOrderKeys } from "sdk/utils/orders";
@@ -51,7 +51,8 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 
-  const isMobile = useMedia("(max-width: 1024px)");
+  const { isTablet } = useBreakpoints();
+  const isMobile = isTablet;
 
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);

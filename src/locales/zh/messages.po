@@ -138,7 +138,7 @@ msgstr "Avalanche 上的产量优化器"
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "订单 ({0})"
 
@@ -6286,7 +6286,7 @@ msgstr ""
 msgid "Update Take Profit"
 msgstr "更新止盈"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active Orders"
 msgstr "活跃订单"
 

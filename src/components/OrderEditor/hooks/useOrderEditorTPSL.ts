@@ -3,15 +3,42 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { UserReferralInfo } from "domain/referrals";
-import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
+import {
+  selectChainId,
+  selectGasLimits,
+  selectGasPrice,
+  selectIsAutoCancelTPSLEnabled,
+  selectMaxAutoCancelOrders,
+  selectPositionConstants,
+  selectTokensData,
+  selectUiFeeFactor,
+  selectUserReferralInfo,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectOrderEditorExistingPosition,
+  selectOrderEditorIncreaseAmounts,
+  selectOrderEditorIndexToken,
+  selectOrderEditorNextPositionValuesForIncrease,
+  selectOrderEditorOrder,
+  selectOrderEditorPositionKey,
+  selectOrderEditorSizeDeltaUsd,
+  selectOrderEditorTriggerPrice,
+} from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
+import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  estimateExecuteDecreaseOrderGasLimit,
+  estimateOrderOraclePriceCount,
+  ExecutionFee,
+} from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { MarketInfo } from "domain/synthetics/markets/types";
 import {
   DecreasePositionSwapType,
   OrderType,
-  PositionOrderInfo,
   isLimitIncreaseOrderType,
+  isPositionOrder,
   isStopIncreaseOrderType,
 } from "domain/synthetics/orders";
 import { getPendingMockPosition } from "domain/synthetics/positions/usePositions";
@@ -24,72 +51,35 @@ import {
 } from "domain/synthetics/sidecarOrders/utils";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getDecreasePositionAmounts } from "domain/synthetics/trade";
-import type { getIncreasePositionAmounts } from "domain/synthetics/trade";
-import { NextPositionValues } from "domain/synthetics/trade/types";
-import { TokensData, TokenData } from "domain/tokens";
-import { GasLimitsConfig } from "sdk/types/fees";
-import { PositionInfo } from "sdk/types/positions";
-import { Token } from "sdk/types/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 
-type Params = {
-  order?: PositionOrderInfo;
-  existingPosition?: PositionInfo;
-  sizeDeltaUsd?: bigint;
-  triggerPrice?: bigint;
-  markPrice?: bigint;
-  indexToken?: TokenData;
-  increaseAmounts?: ReturnType<typeof getIncreasePositionAmounts>;
-  positionIndexToken?: TokenData;
-  nextPositionValuesForIncrease?: NextPositionValues;
-  positionKey?: string;
-  market?: MarketInfo;
-  userReferralInfo?: UserReferralInfo;
-  uiFeeFactor: bigint;
-  minCollateralUsd?: bigint;
-  minPositionSizeUsd?: bigint;
-  gasLimits?: GasLimitsConfig;
-  gasPrice?: bigint;
-  tokensData?: TokensData;
-  chainId: number;
-  isAutoCancelTPSL: boolean;
-  maxAutoCancelOrders?: bigint;
-  positionOrders?: PositionOrderInfo[];
-  isSetAcceptablePriceImpactEnabled: boolean;
-};
+export function useOrderEditorTPSL() {
+  const orderInfo = useSelector(selectOrderEditorOrder);
+  const order = orderInfo && isPositionOrder(orderInfo) ? orderInfo : undefined;
+  const existingPosition = useSelector(selectOrderEditorExistingPosition);
+  const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
+  const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
+  const indexToken = useSelector(selectOrderEditorIndexToken);
+  const increaseAmounts = useSelector(selectOrderEditorIncreaseAmounts);
+  const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
+  const positionKey = useSelector(selectOrderEditorPositionKey);
+  const { minCollateralUsd, minPositionSizeUsd } = useSelector(selectPositionConstants);
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
+  const tokensData = useSelector(selectTokensData);
+  const chainId = useSelector(selectChainId)!;
+  const isAutoCancelTPSL = useSelector(selectIsAutoCancelTPSLEnabled);
+  const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
+  const userReferralInfo = useSelector(selectUserReferralInfo);
+  const uiFeeFactor = useSelector(selectUiFeeFactor)!;
+  const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
+  const selectOrdersByPositionKey = useMemo(() => makeSelectOrdersByPositionKey(positionKey), [positionKey]);
+  const positionOrders = useSelector(selectOrdersByPositionKey);
+  const market = useMarketInfo(order?.marketAddress ?? "");
+  const markPrice = order ? (order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice) : undefined;
+  const positionIndexToken = order?.indexToken;
 
-type SidecarExecutionFee = {
-  feeToken: Token;
-  feeTokenAmount: bigint;
-  feeUsd?: bigint;
-};
-
-export function useOrderEditorTPSL({
-  order,
-  existingPosition,
-  sizeDeltaUsd,
-  triggerPrice,
-  markPrice,
-  indexToken,
-  increaseAmounts,
-  positionIndexToken,
-  nextPositionValuesForIncrease,
-  positionKey,
-  market,
-  userReferralInfo,
-  uiFeeFactor,
-  minCollateralUsd,
-  minPositionSizeUsd,
-  gasLimits,
-  gasPrice,
-  tokensData,
-  chainId,
-  isAutoCancelTPSL,
-  maxAutoCancelOrders,
-  positionOrders,
-  isSetAcceptablePriceImpactEnabled,
-}: Params) {
   const [isTpSlEnabled, setIsTpSlEnabled] = useState(false);
   const [tpPriceInputValue, setTpPriceInputValue] = useState("");
   const [slPriceInputValue, setSlPriceInputValue] = useState("");
@@ -464,7 +454,7 @@ export function useOrderEditorTPSL({
     return getSidecarExecutionFee(slDecreaseAmounts.decreaseSwapType);
   }, [getSidecarExecutionFee, isTpSlEnabled, slDecreaseAmounts]);
 
-  const sidecarExecutionFee: SidecarExecutionFee | undefined = useMemo(() => {
+  const sidecarExecutionFee: Pick<ExecutionFee, "feeToken" | "feeTokenAmount" | "feeUsd"> | undefined = useMemo(() => {
     const fees = [tpExecutionFee, slExecutionFee].filter(Boolean);
     if (!fees.length) return undefined;
 
