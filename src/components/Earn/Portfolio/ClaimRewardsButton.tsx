@@ -5,7 +5,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { getConstant } from "config/chains";
+import { getChainNativeTokenSymbol, getChainWrappedTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
@@ -54,8 +54,8 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
     }
   );
 
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
-  const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol");
+  const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
+  const wrappedTokenSymbol = getChainWrappedTokenSymbol(chainId);
 
   const hasGmxRewards = (processedData?.totalGmxRewards ?? 0n) > 0n;
   const hasEsGmxRewards = (processedData?.totalEsGmxRewards ?? 0n) > 0n;

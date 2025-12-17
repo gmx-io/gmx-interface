@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { defined } from "lib/guards";
 import { parseValue, PRECISION_DECIMALS } from "lib/numbers";
 import { PerformancePeriod, PerformanceSnapshotsResponse, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { ContractsChainId } from "sdk/configs/chains";
 
 export type PerformanceSnapshot = {
   performance: bigint;
@@ -23,7 +24,7 @@ export function usePerformanceSnapshots({
   period: PerformancePeriod;
   address?: string;
 }) {
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
   const { data, error, isLoading } = useSWR<PerformanceSnapshotsResponse>(
     ["usePerformanceSnapshots", chainId, period, address],
