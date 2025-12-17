@@ -4,7 +4,8 @@ on:
   pull_request:
     branches:
       - master
-      - release-*
+      - release
+      - "release-*"
     types: [opened, edited, synchronize, reopened]
   workflow_dispatch:
 
