@@ -2,5 +2,6 @@
 . "$(dirname "$0")/_/husky.sh"
 
 yarn lingui:generate
+git add src/locales/
 yarn lint-staged
 yarn tscheck
