@@ -31,13 +31,10 @@ export function SizeField({
   onFocus,
   qa,
 }: Props) {
-  // Value shown above the toggle (opposite of current display mode)
   const alternateValue = useMemo(() => {
     if (displayMode === "token") {
-      // Currently showing tokens, so show USD equivalent above
       return formatUsd(sizeInUsd ?? 0n, { fallbackToZero: true });
     } else {
-      // Currently showing USD, so show token equivalent above
       if (sizeInTokens === undefined || !indexToken) return "0";
       const visualMultiplier = BigInt(indexToken.visualMultiplier ?? 1);
       return `${formatAmount(sizeInTokens / visualMultiplier, indexToken.decimals)} ${indexToken.symbol}`;

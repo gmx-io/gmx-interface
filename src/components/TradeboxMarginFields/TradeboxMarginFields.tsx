@@ -129,7 +129,6 @@ export function TradeboxMarginFields({
     setToTokenInputValue,
   ]);
 
-  // Calculate margin percentage from input value
   useEffect(() => {
     if (fromToken?.balance === undefined || fromToken.balance === 0n) {
       setMarginPercentage(0);

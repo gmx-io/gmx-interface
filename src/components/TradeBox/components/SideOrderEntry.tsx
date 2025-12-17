@@ -30,8 +30,8 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
   const collateralUsd = useMemo(() => {
     const collateralAmount = mockPosition?.collateralAmount;
     const collateralToken = mockPosition?.collateralToken;
-    if (collateralAmount == null) return 0n;
-    if (collateralToken?.decimals == null || collateralToken?.prices?.minPrice == null) return 0n;
+    if (collateralAmount === undefined) return 0n;
+    if (collateralToken?.decimals === undefined || collateralToken?.prices?.minPrice === undefined) return 0n;
 
     return bigMath.mulDiv(
       collateralAmount,

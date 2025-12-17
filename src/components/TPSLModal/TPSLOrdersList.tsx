@@ -2,10 +2,18 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
+import {
+  usePositionsConstants,
+  useUiFeeFactor,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { isLimitDecreaseOrderType, PositionOrderInfo } from "domain/synthetics/orders";
-import { PositionInfo } from "domain/synthetics/positions";
+import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isLimitDecreaseOrderType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
+import { PositionInfo, getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import { getDecreasePositionAmounts } from "domain/synthetics/trade";
 import { formatDeltaUsd, formatUsd, formatBalanceAmount, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
@@ -106,6 +114,10 @@ function useTPSLOrderViewModel({
   marketDecimals: number | undefined;
   onEdit?: (orderKey: string) => void;
 }) {
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const uiFeeFactor = useUiFeeFactor();
+  const userReferralInfo = useUserReferralInfo();
+  const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const [isCancelling, cancelOrder] = useCancelOrder(order);
 
   const orderType = useMemo(
@@ -144,22 +156,66 @@ function useTPSLOrderViewModel({
     const entryPrice = position.entryPrice ?? 0n;
     const priceDiff = order.isLong ? order.triggerPrice - entryPrice : entryPrice - order.triggerPrice;
 
-    const pnlUsd = bigMath.mulDiv(priceDiff, order.sizeDeltaUsd, entryPrice);
+    const pnlUsd = entryPrice > 0n ? bigMath.mulDiv(priceDiff, order.sizeDeltaUsd, entryPrice) : 0n;
     const pnlPercentage = position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : 0n;
 
     return { pnlUsd, pnlPercentage };
   }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position.collateralUsd, position.entryPrice]);
 
+  const shouldKeepLeverage = useMemo(() => {
+    if (order.sizeDeltaUsd >= position.sizeInUsd) {
+      return true;
+    }
+
+    return order.initialCollateralDeltaAmount > 0n;
+  }, [order.initialCollateralDeltaAmount, order.sizeDeltaUsd, position.sizeInUsd]);
+
+  const decreaseAmounts = useMemo(() => {
+    if (minCollateralUsd === undefined || minPositionSizeUsd === undefined || !getIsPositionInfoLoaded(position)) {
+      return undefined;
+    }
+
+    return getDecreasePositionAmounts({
+      marketInfo: order.marketInfo,
+      collateralToken: position.collateralToken,
+      receiveToken: order.targetCollateralToken,
+      isLong: order.isLong,
+      position,
+      closeSizeUsd: order.sizeDeltaUsd,
+      keepLeverage: shouldKeepLeverage,
+      triggerPrice: order.triggerPrice,
+      userReferralInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease,
+      isSetAcceptablePriceImpactEnabled,
+    });
+  }, [
+    minCollateralUsd,
+    minPositionSizeUsd,
+    order.marketInfo,
+    order.targetCollateralToken,
+    order.isLong,
+    order.orderType,
+    order.sizeDeltaUsd,
+    order.triggerPrice,
+    position,
+    shouldKeepLeverage,
+    userReferralInfo,
+    uiFeeFactor,
+    isSetAcceptablePriceImpactEnabled,
+  ]);
+
   const receiveDisplay = useMemo(() => {
-    const receiveUsd = order.sizeDeltaUsd > 0n ? order.sizeDeltaUsd : 0n;
+    if (!decreaseAmounts) return "—";
+
+    const receiveUsd = decreaseAmounts.receiveUsd;
     const receiveToken = order.targetCollateralToken;
 
     if (!receiveToken) return "—";
 
-    const receiveAmount =
-      receiveToken.prices?.minPrice && receiveToken.prices.minPrice > 0n
-        ? bigMath.mulDiv(receiveUsd, 10n ** BigInt(receiveToken.decimals), receiveToken.prices.minPrice)
-        : 0n;
+    const receiveAmount = decreaseAmounts.receiveTokenAmount ?? 0n;
 
     return (
       <span>
@@ -169,7 +225,7 @@ function useTPSLOrderViewModel({
         <span className="ml-4 text-typography-secondary">({formatUsd(receiveUsd)})</span>
       </span>
     );
-  }, [order.sizeDeltaUsd, order.targetCollateralToken]);
+  }, [decreaseAmounts, order.targetCollateralToken]);
 
   const handleEdit = useCallback(() => {
     onEdit?.(order.key);

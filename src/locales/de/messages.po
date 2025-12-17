@@ -272,7 +272,6 @@ msgid "Discover"
 msgstr ""
 
 #: src/components/TPSLModal/TPSLOrdersList.tsx
-#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Full Position Close"
 msgstr ""
 
@@ -4300,7 +4299,6 @@ msgstr "Anzahl der von dir geworbenen Trader."
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
-#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
 msgstr "Take-Profit"
@@ -6617,7 +6615,6 @@ msgstr "Wir schätzen dein Feedback"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
-#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"

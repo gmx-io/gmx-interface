@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import Slider, { Handle, SliderTooltip } from "rc-slider";
-import { ChangeEvent, forwardRef, useCallback, useEffect, useMemo, useState } from "react";
+import Slider from "rc-slider";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import "rc-slider/assets/index.css";
 import "./MarginPercentageSlider.scss";
@@ -20,13 +20,6 @@ type Props = {
   onChange: (value: number) => void;
   onMaxClick?: () => void;
   className?: string;
-};
-
-type HandleProps = {
-  value: number;
-  dragging: boolean;
-  index: number;
-  displayValue: number;
 };
 
 export function MarginPercentageSlider({ value, onChange, onMaxClick, className }: Props) {
@@ -79,10 +72,6 @@ export function MarginPercentageSlider({ value, onChange, onMaxClick, className 
     }
   }, [inputValue, onChange, roundedSliderValue]);
 
-  const customHandle = useMemo(() => {
-    return (props: any) => <PercentageSliderHandle {...props} displayValue={roundedSliderValue} />;
-  }, [roundedSliderValue]);
-
   const marks = useMemo(() => {
     return PERCENTAGE_MARKS.reduce(
       (acc, mark) => {
@@ -102,15 +91,7 @@ export function MarginPercentageSlider({ value, onChange, onMaxClick, className 
   return (
     <div className={cx("MarginPercentageSlider flex items-center gap-16", className)}>
       <div className="h-28 flex-1 px-4">
-        <Slider
-          min={0}
-          max={100}
-          step={1}
-          handle={customHandle}
-          onChange={handleChange}
-          value={sliderValue}
-          marks={marks}
-        />
+        <Slider min={0} max={100} step={1} onChange={handleChange} value={sliderValue} marks={marks} />
       </div>
       <div className="flex shrink-0 items-center gap-8 rounded-8 bg-slate-800 px-8 py-6">
         <div className="flex items-center">
@@ -146,28 +127,3 @@ export function MarginPercentageSlider({ value, onChange, onMaxClick, className 
     </div>
   );
 }
-
-const PercentageSliderHandle = forwardRef<Handle, HandleProps>(function PercentageSliderHandle(
-  { value, dragging, index, displayValue, ...restProps },
-  ref
-) {
-  useEffect(() => {
-    if (dragging) {
-      document.body.classList.add("dragging");
-    } else {
-      document.body.classList.remove("dragging");
-    }
-  }, [dragging]);
-
-  return (
-    <SliderTooltip
-      prefixCls="rc-slider-tooltip"
-      overlay={`${Math.round(displayValue)}%`}
-      visible={dragging}
-      placement="top"
-      key={index}
-    >
-      <Handle value={value} {...restProps} ref={ref} />
-    </SliderTooltip>
-  );
-});
