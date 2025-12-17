@@ -46,7 +46,7 @@ export function TPSLInputRow({
   const priceInputRef = useRef<HTMLInputElement>(null);
   const secondInputRef = useRef<HTMLInputElement>(null);
   const [displayMode, setDisplayMode] = useState<TPSLDisplayMode>(defaultDisplayMode);
-  const [lastEditedField, setLastEditedField] = useState<"price" | "gainLoss" | null>(null);
+  const [lastEditedField, setLastEditedField] = useState<"price" | "gainLoss" | undefined>(undefined);
   const [gainLossInputValue, setGainLossInputValue] = useState<string>("");
 
   const {
@@ -66,8 +66,8 @@ export function TPSLInputRow({
   const secondLabel = isStopLoss ? t`Loss` : t`Gain`;
 
   const effectiveLiquidationPrice = useMemo(() => {
-    if (liquidationPrice == null || liquidationPrice === 0n) return undefined;
-    if (entryPrice == null || entryPrice === 0n) return undefined;
+    if (liquidationPrice === undefined || liquidationPrice === 0n) return undefined;
+    if (entryPrice === 0n) return undefined;
     const priceRange = isLong ? entryPrice - liquidationPrice : liquidationPrice - entryPrice;
     if (priceRange <= 0n) return undefined;
     const buffer = bigMath.mulDiv(priceRange, 100n, 10000n);
@@ -84,10 +84,9 @@ export function TPSLInputRow({
   }, [priceValue]);
 
   const calculatePriceFromPnlUsd = useCallback(
-    (targetPnlUsd: bigint): bigint | null => {
-      if (sizeInTokens == null || sizeInTokens === 0n) return null;
-      if (sizeInUsd == null || sizeInUsd === 0n) return null;
-      if (indexTokenDecimals == null) return null;
+    (targetPnlUsd: bigint): bigint | undefined => {
+      if (sizeInTokens === 0n) return undefined;
+      if (sizeInUsd === 0n) return undefined;
 
       const absPnl = bigMath.abs(targetPnlUsd);
       const targetPositionValueUsd = isLong
@@ -98,7 +97,7 @@ export function TPSLInputRow({
           ? sizeInUsd + absPnl
           : sizeInUsd - absPnl;
 
-      if (targetPositionValueUsd <= 0n) return null;
+      if (targetPositionValueUsd <= 0n) return undefined;
 
       return bigMath.mulDiv(targetPositionValueUsd, expandDecimals(1, indexTokenDecimals), sizeInTokens);
     },
@@ -106,19 +105,19 @@ export function TPSLInputRow({
   );
 
   const calculatePriceFromPnlPercentage = useCallback(
-    (targetPnlPercentage: bigint): bigint | null => {
-      if (isStopLoss && entryPrice != null && effectiveLiquidationPrice != null) {
+    (targetPnlPercentage: bigint): bigint | undefined => {
+      if (isStopLoss && effectiveLiquidationPrice !== undefined) {
         const priceRange = isLong ? entryPrice - effectiveLiquidationPrice : effectiveLiquidationPrice - entryPrice;
-        if (priceRange <= 0n) return null;
+        if (priceRange <= 0n) return undefined;
 
         const priceDelta = bigMath.mulDiv(priceRange, targetPnlPercentage, 10000n);
         const price = isLong ? entryPrice - priceDelta : entryPrice + priceDelta;
 
-        if (price <= 0n) return null;
+        if (price <= 0n) return undefined;
         return price;
       }
 
-      if (collateralUsd == null || collateralUsd === 0n) return null;
+      if (collateralUsd === 0n) return undefined;
       const targetPnlUsd = bigMath.mulDiv(collateralUsd, targetPnlPercentage, 10000n);
       return calculatePriceFromPnlUsd(targetPnlUsd);
     },
@@ -137,10 +136,10 @@ export function TPSLInputRow({
 
   const formatGainLossValue = useCallback(
     (mode: TPSLDisplayMode): string => {
-      if (currentPriceValue == null || currentPriceValue === 0n) return "";
+      if (currentPriceValue === undefined || currentPriceValue === 0n) return "";
 
       if (mode === "percentage") {
-        if (isStopLoss && entryPrice != null && effectiveLiquidationPrice != null) {
+        if (isStopLoss && effectiveLiquidationPrice !== undefined) {
           const priceRange = isLong ? entryPrice - effectiveLiquidationPrice : effectiveLiquidationPrice - entryPrice;
           if (priceRange <= 0n) return "";
 
@@ -151,14 +150,14 @@ export function TPSLInputRow({
           return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
         }
 
-        if (collateralUsd != null && collateralUsd > 0n && entryPrice != null && entryPrice > 0n) {
+        if (collateralUsd > 0n && entryPrice > 0n) {
           const priceDiff = isLong ? currentPriceValue - entryPrice : entryPrice - currentPriceValue;
           const pnlUsd = bigMath.mulDiv(priceDiff, sizeInUsd, entryPrice);
           const percentage = bigMath.mulDiv(bigMath.abs(pnlUsd), 10000n, collateralUsd);
           return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
         }
       } else {
-        if (entryPrice != null && entryPrice > 0n) {
+        if (entryPrice > 0n) {
           const priceDiff = isLong ? currentPriceValue - entryPrice : entryPrice - currentPriceValue;
           const pnlUsd = bigMath.mulDiv(priceDiff, sizeInUsd, entryPrice);
           return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
@@ -173,11 +172,11 @@ export function TPSLInputRow({
     (value: string, mode: TPSLDisplayMode) => {
       const decimals = mode === "percentage" ? 2 : USD_DECIMALS;
       const parsed = parseValue(value, decimals);
-      if (parsed == null || parsed <= 0n) return;
+      if (parsed === undefined || parsed <= 0n) return;
 
       const calculateFn = mode === "percentage" ? calculatePriceFromPnlPercentage : calculatePriceFromPnlUsd;
       const price = calculateFn(parsed);
-      if (price != null && price > 0n) {
+      if (price !== undefined && price > 0n) {
         onPriceChange(formatPrice(price));
       }
     },
@@ -217,20 +216,13 @@ export function TPSLInputRow({
 
   const convertGainLossValue = useCallback(
     (value: string, fromMode: TPSLDisplayMode, toMode: TPSLDisplayMode): string => {
-      if (
-        isStopLoss &&
-        entryPrice != null &&
-        effectiveLiquidationPrice != null &&
-        sizeInUsd != null &&
-        sizeInTokens != null &&
-        indexTokenDecimals != null
-      ) {
+      if (isStopLoss && effectiveLiquidationPrice !== undefined) {
         const priceRange = isLong ? entryPrice - effectiveLiquidationPrice : effectiveLiquidationPrice - entryPrice;
         if (priceRange <= 0n) return "";
 
         if (fromMode === "percentage" && toMode === "usd") {
           const parsed = parseValue(value, 2);
-          if (parsed == null || parsed <= 0n) return "";
+          if (parsed === undefined || parsed <= 0n) return "";
           const priceDelta = bigMath.mulDiv(priceRange, parsed, 10000n);
           const price = isLong ? entryPrice - priceDelta : entryPrice + priceDelta;
           const positionValueAtPrice = bigMath.mulDiv(sizeInTokens, price, expandDecimals(1, indexTokenDecimals));
@@ -240,9 +232,9 @@ export function TPSLInputRow({
 
         if (fromMode === "usd" && toMode === "percentage") {
           const parsed = parseValue(value, USD_DECIMALS);
-          if (parsed == null || parsed <= 0n) return "";
+          if (parsed === undefined || parsed <= 0n) return "";
           const price = calculatePriceFromPnlUsd(parsed);
-          if (price == null) return "";
+          if (price === undefined) return "";
           const priceDiff = isLong ? entryPrice - price : price - entryPrice;
           if (priceDiff <= 0n) return "";
           const percentage = bigMath.mulDiv(priceDiff, 10000n, priceRange);
@@ -252,18 +244,18 @@ export function TPSLInputRow({
         return value;
       }
 
-      if (collateralUsd == null || collateralUsd === 0n) return "";
+      if (collateralUsd === 0n) return "";
 
       if (fromMode === "percentage" && toMode === "usd") {
         const parsed = parseValue(value, 2);
-        if (parsed == null || parsed <= 0n) return "";
+        if (parsed === undefined || parsed <= 0n) return "";
         const targetPnlUsd = bigMath.mulDiv(collateralUsd, parsed, 10000n);
         return String(removeTrailingZeros(formatAmount(bigMath.abs(targetPnlUsd), USD_DECIMALS, 2)));
       }
 
       if (fromMode === "usd" && toMode === "percentage") {
         const parsed = parseValue(value, USD_DECIMALS);
-        if (parsed == null || parsed <= 0n) return "";
+        if (parsed === undefined || parsed <= 0n) return "";
         const percentage = bigMath.mulDiv(parsed, 10000n, collateralUsd);
         return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
       }
@@ -297,7 +289,7 @@ export function TPSLInputRow({
     [displayMode, lastEditedField, gainLossInputValue, convertGainLossValue]
   );
 
-  const handleBoxClick = (ref: React.RefObject<HTMLInputElement | null>) => (e: React.MouseEvent) => {
+  const handleBoxClick = (ref: React.RefObject<HTMLInputElement>) => (e: React.MouseEvent) => {
     if (!(e.target as HTMLElement).closest("[data-dropdown]")) {
       ref.current?.focus();
     }
