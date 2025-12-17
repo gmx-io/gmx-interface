@@ -5,7 +5,7 @@ import { arbitrumSdk, arbitrumSdkConfig } from "utils/testUtil";
 import { GmxSdk } from "../..";
 
 describe("Tokens", () => {
-  it("should be able to fetch tokens", async () => {
+  it("should be able to fetch tokens", { timeout: 30_000 }, async () => {
     const response = await arbitrumSdk.oracle.getTokens();
     expect(response).toBeDefined();
   });
@@ -27,7 +27,7 @@ describe("Tokens", () => {
     expect(data.tokensData?.[ARB].symbol).toBe("testARB");
   });
 
-  it("should be able to get tokens data", async () => {
+  it("should be able to get tokens data", { timeout: 30_000 }, async () => {
     const response = await arbitrumSdk.tokens.getTokensData();
     expect(response).toBeDefined();
   });

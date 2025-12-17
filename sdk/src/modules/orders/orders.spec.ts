@@ -4,7 +4,7 @@ import { arbitrumSdk } from "utils/testUtil";
 
 describe("Positions", () => {
   describe("read", () => {
-    it("should be able to get orders", async () => {
+    it("should be able to get orders", { timeout: 30_000 }, async () => {
       const { marketsInfoData, tokensData } = (await arbitrumSdk.markets.getMarketsInfo()) ?? {};
 
       if (!tokensData || !marketsInfoData) {
