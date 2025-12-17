@@ -65,6 +65,7 @@
     "@wagmi/core": "2.22.1",
     "bigdecimal": "0.6.1",
     "bowser": "2.11.0",
+    "bufferutil": "4.0.9",
     "classnames": "2.3.1",
     "core-js": "3.39.0",
     "crypto-js": "4.2.0",
@@ -104,12 +105,11 @@
     "swr": "2.3.3",
     "typescript": "5.4.2",
     "use-context-selector": "1.4.1",
+    "utf-8-validate": "5.0.10",
     "viem": "2.39.0",
     "wagmi": "2.19.3",
     "web-vitals": "1.1.2",
-    "worker-loader": "3.0.8",
-    "bufferutil": "4.0.9",
-    "utf-8-validate": "^5.0.10"
+    "worker-loader": "3.0.8"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9",
