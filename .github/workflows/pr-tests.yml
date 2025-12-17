@@ -36,6 +36,11 @@ jobs:
           cd sdk
           yarn install --frozen-lockfile
 
+      - name: Build SDK
+        run: |
+          cd sdk
+          yarn build
+
       - name: Run linting
         run: yarn lint:ci
 
@@ -59,8 +64,3 @@ jobs:
         run: |
           cd sdk
           yarn test:ci
-
-      - name: Build SDK
-        run: |
-          cd sdk
-          yarn build
