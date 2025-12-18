@@ -52,7 +52,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Long Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a long position when the price
               is below the trigger price.
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
             .
@@ -63,7 +63,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             {typeString} Long TP/SL: {getTradeTypeLabel(TradeMode.Trigger, tradePlace)} a long position when the trigger
             price is reached.
           </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders">
+          <ExternalLink href="https://docs.gmx.io/docs/trading/#take-profit-and-stop-loss-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
           .
@@ -74,7 +74,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Long Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a short position when
               the price is below the trigger price.
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
             .
@@ -85,7 +85,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             {typeString} Long TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a long position in evenly
             distributed parts over a specified time.
           </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#twap-orders">
+          <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
           .
@@ -106,7 +106,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Short Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a short position when the price
               is above the trigger price.
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
             .
@@ -117,7 +117,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             {typeString} Short TP/SL: {getTradeTypeLabel(TradeMode.Trigger, tradePlace)} a short position when the
             trigger price is reached.
           </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#take-profit-and-stop-loss-orders">
+          <ExternalLink href="https://docs.gmx.io/docs/trading/#take-profit-and-stop-loss-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
           .
@@ -128,7 +128,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Short Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a short position
               when the price is below the trigger price.
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#stop-market-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
             .
@@ -139,7 +139,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             {typeString} Short TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a short position in evenly
             distributed parts over a specified time.
           </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#twap-orders">
+          <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
           .

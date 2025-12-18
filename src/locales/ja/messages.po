@@ -179,8 +179,8 @@ msgid "RabbitHole"
 msgstr "RabbitHole"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
+#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
+#~ msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -3846,7 +3846,6 @@ msgstr "<0>GMXは伝統的な注文ブックとは異なり、動的にバラン
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "詳細について読む"
 
@@ -5085,8 +5084,8 @@ msgid "Total circulating supply of GMX tokens."
 msgstr "GMXトークンの総循環供給量。"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "Target Weight"
-msgstr "ターゲットウェイト"
+#~ msgid "Target Weight"
+#~ msgstr "ターゲットウェイト"
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
@@ -6327,8 +6326,8 @@ msgid "Search Type"
 msgstr "検索タイプ"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>してください。"
+#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+#~ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>してください。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -6981,8 +6980,8 @@ msgid "Request Settlement of Funding Fees"
 msgstr "ファンディング手数料の決済リクエスト"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "Current Weight"
-msgstr "現在のウェイト"
+#~ msgid "Current Weight"
+#~ msgstr "現在のウェイト"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"

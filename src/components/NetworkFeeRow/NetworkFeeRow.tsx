@@ -47,7 +47,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         <Trans>
           Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they
           don't trigger and are cancelled.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/v2#execution-fee">Read more</ExternalLink>.
+          <ExternalLink href="https://docs.gmx.io/docs/trading#execution-fee">Read more</ExternalLink>.
         </Trans>
       ),
     [isAdditionOrdersMsg]
@@ -191,7 +191,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
                 The max network fee is overestimated, including by the buffer set under settings. Upon execution, any
                 excess network fee is sent back to your account.
               </Trans>{" "}
-              <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading/v2#execution-fee">
+              <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading#execution-fee">
                 <Trans>Read more</Trans>
               </ExternalLink>
               .
