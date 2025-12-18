@@ -5998,10 +5998,6 @@ msgstr "{fromText} a {toExecutionText}"
 msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
 msgstr "Haz clic en la posición para seleccionarla, luego usa el cuadro de operación para aumentarla o establecer órdenes TP/SL."
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Create {0} Order"
-#~ msgstr "Crear Orden {0}"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
 msgstr ""

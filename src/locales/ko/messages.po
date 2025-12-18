@@ -5998,10 +5998,6 @@ msgstr "{fromText}에서 {toExecutionText}로"
 msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
 msgstr "포지션을 클릭하여 선택한 후 거래 박스를 사용하여 증가시키거나 TP/SL 주문을 설정하세요."
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Create {0} Order"
-#~ msgstr "{0} 주문 생성"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
 msgstr ""
