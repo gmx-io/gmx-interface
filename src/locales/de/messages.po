@@ -496,10 +496,6 @@ msgstr "Klassisch"
 msgid "Unstaking"
 msgstr "Unstaking"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Monitoring"
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -645,10 +641,6 @@ msgstr "Rabatte auf V2"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr "Akzeptabler Preisimpakt"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "Zu Metamask hinzufügen"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
@@ -1021,10 +1013,6 @@ msgstr "GMX verwendet TradingView, um Echtzeit-Kryptowährungscharts bereitzuste
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "GMX V2-Rabatte werden automatisch als Gebührensenkungen auf jeden Handel angewendet und nicht in dieser Tabelle angezeigt."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "Öffne {0} in Coingecko"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -2437,10 +2425,6 @@ msgstr "Maximale Anzahl von Teilen: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "App starten"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Large Account RPC"
-#~ msgstr ""
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Verfügbar zum Zahlen"
@@ -2693,10 +2677,6 @@ msgstr "Liquidationsgebühr"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr ""
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Permits"
-#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -5476,10 +5456,6 @@ msgstr "Der gesamte realisierte und unrealisierte Gewinn und Verlust für den Ze
 msgid "Ann. Performance"
 msgstr "Ann. Performance"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Fallback RPC"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} Orders wurden nicht aktualisiert, da das maximale Order-Limit erreicht wurde"
@@ -6338,10 +6314,6 @@ msgstr "Gewinnrate"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "{0} in Explorer öffnen"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
 msgstr ""
@@ -6662,10 +6634,6 @@ msgstr "GMX kaufen"
 msgid "Copy error"
 msgstr "Kopierfehler"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "RPC Tracker Logging"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Projekte, die von der GMX-Community entwickelt wurden. <0/>Bitte sei vorsichtig bei der Interaktion mit Apps, Apps werden vollständig von Community-Entwicklern gepflegt."
@@ -6918,10 +6886,6 @@ msgstr "Telegram-Account"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Verkaufe {operationTokenSymbol}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Links"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -7673,10 +7637,6 @@ msgstr "Funding eingelöst."
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Hebel halten ist nicht verfügbar, da Position max. erlaubten Hebel überschreitet. <0>Mehr lesen</0>."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "{0} zu Metamask hinzufügen"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"

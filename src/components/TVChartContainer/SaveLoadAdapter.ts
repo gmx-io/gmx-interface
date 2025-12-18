@@ -21,27 +21,17 @@ function isValidChartId(id: string | number | undefined) {
 export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
   private charts: ChartDataInfo[] | undefined;
   private setTvCharts: (a: ChartDataInfo[]) => void;
-  private currentAppVersion: number;
 
-  constructor(
-    charts: ChartDataInfo[] | undefined,
-    setTvCharts: (a: ChartDataInfo[]) => void,
-    currentAppVersion: number
-  ) {
+  constructor(charts: ChartDataInfo[] | undefined, setTvCharts: (a: ChartDataInfo[]) => void) {
     this.charts = charts;
     this.setTvCharts = setTvCharts;
-    this.currentAppVersion = currentAppVersion;
 
-    const validV2Chart = this.charts
+    const validCharts = this.charts
       ?.filter((chart) => chart.id === V2_CHART_ID)
       .sort((a, b) => b.timestamp - a.timestamp)
       .at(0);
-    const validV1Chart = this.charts
-      ?.filter((chart) => chart.id === V1_CHART_ID)
-      .sort((a, b) => b.timestamp - a.timestamp)
-      .at(0);
 
-    this.charts = [validV2Chart, validV1Chart].filter(Boolean) as ChartDataInfo[];
+    this.charts = [validCharts].filter(Boolean) as ChartDataInfo[];
     this.setTvCharts(this.charts);
   }
 
@@ -51,12 +41,6 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
       if (!chart.id) {
         return false;
       }
-
-      if (!chart.appVersion) {
-        chart.appVersion = 1;
-      }
-
-      return chart.appVersion === this.currentAppVersion;
     }) as ChartMetaInfo[];
 
     return Promise.resolve(filteredCharts);
@@ -73,11 +57,11 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
 
   saveChart(chartData) {
     if (!chartData.id) {
-      chartData.id = this.currentAppVersion === 1 ? V1_CHART_ID : V2_CHART_ID;
+      chartData.id = V2_CHART_ID;
     }
 
     if (!chartData.appVersion) {
-      chartData.appVersion = this.currentAppVersion;
+      chartData.appVersion = 2;
     }
 
     if (this.charts) {

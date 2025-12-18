@@ -496,10 +496,6 @@ msgstr "클래식"
 msgid "Unstaking"
 msgstr "언스테이킹 중"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Monitoring"
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -645,10 +641,6 @@ msgstr "V2 리베이트"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr "허용 가능한 가격 영향"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "메타마스크에 추가해주세요"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
@@ -1021,10 +1013,6 @@ msgstr "GMX는 TradingView를 사용해 실시간 암호화폐 차트를 제공�
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "GMX V2 리베이트는 각 거래에서 수수료 할인으로 자동 적용되며 이 테이블에 표시되지 않습니다."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "Coingecko에서 {0} 열기"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -2437,10 +2425,6 @@ msgstr "최대 부분 수: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "앱 실행하기"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Large Account RPC"
-#~ msgstr ""
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "결제 가능"
@@ -2693,10 +2677,6 @@ msgstr "청산 수수료"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr ""
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Permits"
-#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -5476,10 +5456,6 @@ msgstr "기간 동안의 총 실현 및 미실현 손익, 수수료 및 가격 �
 msgid "Ann. Performance"
 msgstr "연간 성과"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Fallback RPC"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "최대 주문 한도에 도달하여 {0} 주문이 업데이트되지 않았습니다"
@@ -6338,10 +6314,6 @@ msgstr "승률"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "탐색기에서 {0} 열기"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
 msgstr ""
@@ -6662,10 +6634,6 @@ msgstr "GMX 구매"
 msgid "Copy error"
 msgstr "복사 오류"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "RPC Tracker Logging"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "GMX 커뮤니티에서 개발된 프로젝트. <0/>앱과 상호작용할 때 주의해주세요. 앱은 커뮤니티 개발자가 완전히 유지합니다."
@@ -6918,10 +6886,6 @@ msgstr "텔레그램 계정"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol} 판매"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Links"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -7673,10 +7637,6 @@ msgstr "펀딩 청구됨."
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "포지션이 최대 허용 레버리지 초과로 레버리지 유지 불가. <0>더 읽기</0>."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "Metamask에 {0} 추가"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"
