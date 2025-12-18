@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { Hex, PublicClient } from "viem";
 import { useAccount, useChainId, usePublicClient } from "wagmi";
 
-import { AnyChainId, CHAIN_SLUGS_MAP, CONTRACTS_CHAIN_IDS } from "config/chains";
+import { AnyChainId, CONTRACTS_CHAIN_IDS, ContractsChainId, getChainSlug } from "config/chains";
 import { SOURCE_CHAINS } from "config/multichain";
 import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
 
@@ -83,7 +83,7 @@ export function useAccountType() {
   const { data: safeSingletonAddresses = new Set<Hex>() } = useSWR<Set<string>>([chainId, "safeSingletons"], {
     fetcher: async () => {
       try {
-        const chain = CHAIN_SLUGS_MAP[chainId];
+        const chain = getChainSlug(chainId as ContractsChainId);
         const response = await fetch(`https://safe-transaction-${chain}.safe.global/api/v1/about/singletons/`);
         const data: { address: string }[] = await response.json();
         return new Set(data.map((item) => item.address.toLowerCase() as Hex));
@@ -129,7 +129,7 @@ export function useIsNonEoaAccountOnAnyChain(): boolean {
         }
 
         return Promise.all(
-          (CONTRACTS_CHAIN_IDS as AnyChainId[]).concat(SOURCE_CHAINS).map(async (chainId) => {
+          (CONTRACTS_CHAIN_IDS as unknown as AnyChainId[]).concat(SOURCE_CHAINS).map(async (chainId) => {
             const publicClient = getPublicClient(getRainbowKitConfig(), { chainId });
 
             if (!publicClient) {

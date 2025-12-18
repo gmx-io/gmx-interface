@@ -496,6 +496,10 @@ msgstr "经典"
 msgid "Unstaking"
 msgstr "取消质押"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Monitoring"
+#~ msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -773,6 +777,10 @@ msgstr "平均仓位规模。"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> 到 </1>{1} <2/>"
+
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "See <0>Tenderly Docs</0>."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
@@ -1064,6 +1072,10 @@ msgstr "申领资金费用"
 msgid "All Time"
 msgstr "所有时间"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "RPC Debug"
+msgstr ""
+
 #: src/components/Referrals/referralsHelper.ts
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
 msgstr "推荐代码不能超过 {MAX_REFERRAL_CODE_LENGTH} 个字符。"
@@ -1341,6 +1353,10 @@ msgstr "GM 是 GMX V2 市场的流动性提供者代币。累积 V2 市场生成
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "当前价格影响为 {0}。考虑添加 0.30% 的缓冲，使订单更可能被处理。"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Public"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "隐藏错误"
@@ -1481,6 +1497,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "接收代币流动性不足"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Permits Testing"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -2053,6 +2073,10 @@ msgstr "发生错误。请重试。"
 msgid "Dune Analytics"
 msgstr "Dune Analytics"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Debug Swaps"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "GLV 中没有足够的 GM: {0} [{1}] 流动性来满足您的售卖请求。请选择不同的池、减少售卖规模，或从多个池拆分提款。"
@@ -2143,6 +2167,10 @@ msgstr "去中心化金融仪表板"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "More Details"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Current Endpoints ({0})"
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -2409,6 +2437,10 @@ msgstr "最大部分数量：{MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "启动应用程序"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Large Account RPC"
+#~ msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "可用支付"
@@ -2574,6 +2606,10 @@ msgstr "和"
 msgid "Insufficient GLV liquidity"
 msgstr "GLV 流动性不足"
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Tenderly Settings"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "您将仅从您的做空仓位做空 {indexSymbol}。"
@@ -2654,6 +2690,14 @@ msgstr "<0>是的，我们鼓励您在 GMX 上构建或将其集成到您的 DeF
 msgid "Liquidation Fee"
 msgstr "清算费用"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "URL"
+msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Permits"
+#~ msgstr ""
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
 msgstr ""
@@ -2730,6 +2774,7 @@ msgstr "此交换通过多个 GM 池路由，以实现最低费用和价格影�
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3948,6 +3993,10 @@ msgstr "清算价格"
 msgid "Trading Pair Price Alerts"
 msgstr "交易对价格警报"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Links"
+msgstr ""
+
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "GMX | 去中心化永续交易所"
@@ -4420,6 +4469,10 @@ msgstr "待 GMX 批准"
 msgid "No markets found."
 msgstr "未找到市场。"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Monitoring"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
 msgstr "ODOS"
@@ -4850,6 +4903,8 @@ msgstr "取消 {ordersText}。"
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -5050,6 +5105,14 @@ msgstr "最高 PnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "当满足价格条件时，可能没有足够的流动性来执行您的订单。"
 
+#: src/components/AbFlagsSettings/AbFlagsSettings.tsx
+msgid "AB Flags"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr ""
@@ -5061,6 +5124,10 @@ msgstr "Avalanche Fuji 上不可申领"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "取消 TWAP 交换"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add Endpoint"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5342,6 +5409,10 @@ msgstr "从 GMX 账户提取"
 msgid "Governance Alerts"
 msgstr "治理警报"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Purpose"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr ""
@@ -5405,6 +5476,10 @@ msgstr "期间的总已实现和未实现损益，包括费用和价格影响。
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Ann. Performance"
 msgstr "年化表现"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Fallback RPC"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
@@ -5658,6 +5733,10 @@ msgstr "找不到具有足够流动性的交换路径"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time Limit"
 msgstr "时间限制"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Oracle Keeper Monitoring"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -6451,6 +6530,10 @@ msgstr "使用所选支付代币的池 GM: {0} 的可买入上限已达到。请
 msgid "Active Management"
 msgstr ""
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Simulate TXs"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr ""
@@ -6580,9 +6663,17 @@ msgstr "购买 GMX"
 msgid "Copy error"
 msgstr "复制错误"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "RPC Tracker Logging"
+#~ msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "由 GMX 社区开发的项目。<0/>与任何应用互动时请谨慎，应用完全由社区开发者维护。"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add RPC"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
@@ -6828,6 +6919,10 @@ msgstr "Telegram 账户"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "出售 {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+#~ msgid "Debug Links"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -8269,6 +8364,10 @@ msgstr "去中心化期权协议"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
 msgstr "更新 TWAP 交换部分"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Markets Monitoring"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Part"

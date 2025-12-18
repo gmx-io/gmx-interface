@@ -1,7 +1,14 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
 
-import { ContractsChainId, IS_NETWORK_DISABLED, SettlementChainId, SourceChainId, getChainName } from "config/chains";
+import {
+  AnyChainId,
+  getChainName,
+  isChainDisabled,
+  ContractsChainId,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getMappedTokenId } from "config/multichain";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -45,8 +52,8 @@ export type ValidationResult =
 export function getCommonError(p: { chainId: number; isConnected: boolean; hasOutdatedUi: boolean }): ValidationResult {
   const { chainId, isConnected, hasOutdatedUi } = p;
 
-  if (IS_NETWORK_DISABLED[chainId]) {
-    return [t`App disabled, pending ${getChainName(chainId)} upgrade`];
+  if (isChainDisabled(chainId as ContractsChainId)) {
+    return [t`App disabled, pending ${getChainName(chainId as AnyChainId)} upgrade`];
   }
 
   if (hasOutdatedUi) {

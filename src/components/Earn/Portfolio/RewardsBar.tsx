@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 
-import { BOTANIX, ContractsChainId, getConstant } from "config/chains";
+import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { UserEarningsData } from "domain/synthetics/markets/types";
@@ -27,7 +27,7 @@ export function RewardsBar({
   mutateProcessedData: () => void;
 }) {
   const { chainId, srcChainId } = useChainId();
-  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+  const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
