@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { AnyChainId, AVALANCHE_FUJI } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getExpressRpcUrl, getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
+import { getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { getCurrentExpressRpcUrl, getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 
@@ -74,7 +74,7 @@ export function useJsonRpcProvider(chainId: number | undefined, { isExpress = fa
 
   const { primary } = useCurrentRpcUrls(chainId as AnyChainId);
   const rpcUrl = useMemo(
-    () => (isExpress && chainId ? getExpressRpcUrl(chainId) : primary),
+    () => (isExpress && chainId ? getCurrentExpressRpcUrl(chainId) : primary),
     [chainId, isExpress, primary]
   );
 
