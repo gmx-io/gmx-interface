@@ -343,7 +343,7 @@ export function getOrderErrors(p: {
             <Trans>
               The order may not execute as the max.&nbsp;allowed&nbsp;leverage is exceeded. Consider decreasing the
               order's leverage by editing and decreasing its size.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
             </Trans>
           ),
           key: "maxLeverage",

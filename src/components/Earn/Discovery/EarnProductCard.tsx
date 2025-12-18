@@ -50,7 +50,7 @@ const getCardContent = (type: EarnProductType) => {
       badge: t`Passive Management`,
       title: t`What is GLV?`,
       description: t`GLV (GMX Liquidity Vault) contains various GM tokens, offering you diversified exposure to GMX's markets. The Vault automatically rebalances its liquidity to in-demand markets, unlocking higher potential yield compared to individual, isolated pools.`,
-      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity/v2#glv-pools",
+      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity#glv-pools",
       bullets: [
         t`Get optimized exposure to the highest-utilized pools`,
         t`No active management required`,
@@ -68,7 +68,7 @@ const getCardContent = (type: EarnProductType) => {
       badge: t`Active Management`,
       title: t`What is GM?`,
       description: t`GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded for you instantly.`,
-      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity/v2#gm-pools",
+      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity#gm-pools",
       bullets: [
         t`Support isolated liquidity per market`,
         t`Become a market maker`,

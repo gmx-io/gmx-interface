@@ -24,14 +24,14 @@ export default function EarnDocumentation() {
           <Trans>GMX Rewards</Trans>
         </ExternalLink>
         <ExternalLink
-          href="https://docs.gmx.io/docs/providing-liquidity/v2#glv-pools"
+          href="https://docs.gmx.io/docs/providing-liquidity#glv-pools"
           variant="icon"
           className="text-12 font-medium text-typography-secondary"
         >
           <Trans>GLV Vaults</Trans>
         </ExternalLink>
         <ExternalLink
-          href="https://docs.gmx.io/docs/providing-liquidity/v2#gm-pools"
+          href="https://docs.gmx.io/docs/providing-liquidity#gm-pools"
           variant="icon"
           className="text-12 font-medium text-typography-secondary"
         >

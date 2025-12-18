@@ -179,8 +179,8 @@ msgid "RabbitHole"
 msgstr "RabbitHole"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0} 高于其目标权重。<0/><1/>获取较低费用，以 <2>交换</2> 代币为 {1}。"
+#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
+#~ msgstr "{0} 高于其目标权重。<0/><1/>获取较低费用，以 <2>交换</2> 代币为 {1}。"
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -3846,7 +3846,6 @@ msgstr "<0>GMX 与动态平衡的流动性池执行交易，与传统订单簿�
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "阅读更多"
 
@@ -5085,8 +5084,8 @@ msgid "Total circulating supply of GMX tokens."
 msgstr "GMX 代币的总流通供应量。"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "Target Weight"
-msgstr "目标权重"
+#~ msgid "Target Weight"
+#~ msgstr "目标权重"
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
@@ -6327,8 +6326,8 @@ msgid "Search Type"
 msgstr "搜索类型"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0} 低于其目标权重。<0/><1/>获取较低费用，以 <2>用 {1} 购买 GLP</2>，并 <3>交换</3> {2} 为其他代币。"
+#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+#~ msgstr "{0} 低于其目标权重。<0/><1/>获取较低费用，以 <2>用 {1} 购买 GLP</2>，并 <3>交换</3> {2} 为其他代币。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -6981,8 +6980,8 @@ msgid "Request Settlement of Funding Fees"
 msgstr "请求结算资金费用"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "Current Weight"
-msgstr "当前权重"
+#~ msgid "Current Weight"
+#~ msgstr "当前权重"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"

@@ -50,7 +50,7 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
               Claimable price impact rebates.
               <br />
               <br />
-              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/v2/#price-impact-rebates">
+              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/#price-impact-rebates">
                 Read more
               </ExternalLink>
               .
