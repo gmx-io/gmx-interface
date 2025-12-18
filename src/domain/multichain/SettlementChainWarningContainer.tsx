@@ -2,12 +2,12 @@ import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
-import { getChainName, SettlementChainId } from "config/static/chains";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
+import { getChainName, SettlementChainId } from "sdk/configs/chains";
 
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { useAvailableToTradeAssetMultichainRequest } from "components/GmxAccountModal/hooks";

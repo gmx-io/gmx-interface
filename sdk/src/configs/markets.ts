@@ -1173,6 +1173,14 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
 
 export type MarketLabel = `${string}/USD [${string}-${string}]`;
 
+export function getMarketsByChainId(chainId: ContractsChainId): Record<string, MarketConfig> {
+  if (!MARKETS[chainId]) {
+    throw new Error(`Markets not found for chainId ${chainId}`);
+  }
+
+  return MARKETS[chainId];
+}
+
 export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel): MarketConfig {
   const marketsByAddress = MARKETS[chainId];
 
