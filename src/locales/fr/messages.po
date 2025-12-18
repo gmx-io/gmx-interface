@@ -3647,7 +3647,7 @@ msgstr "Ordre de déplacement exécuté."
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "Vous n'avez pas encore atteint le minimum de \"Capital Utilisé\" de {0} pour vous qualifier pour les classements."
 
-#: src/domain/multichain/useSourceChainError.ts
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
