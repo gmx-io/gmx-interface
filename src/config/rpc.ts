@@ -1,6 +1,6 @@
 import sample from "lodash/sample";
 
-import { _debugRpcTracker } from "lib/rpc/_debug";
+import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 import { RpcTrackerConfig } from "lib/rpc/RpcTracker";
 import { RpcConfig } from "lib/rpc/types";
 import { mustNeverExist } from "lib/types";
@@ -11,12 +11,14 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
-  ETH_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "sdk/configs/chains";
+
+import { isDevelopment } from "./env";
 
 export type { RpcConfig } from "lib/rpc/types";
 export * from "sdk/configs/chains";
@@ -37,6 +39,7 @@ export const ALCHEMY_WS_SUPPORT_CHAINS = [
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SOURCE_BSC_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
 ];
 
 export const RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS: RpcTrackerConfig = {
@@ -275,15 +278,26 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
   ],
 
   // ADDITIONAL CHAINS
-  [ETH_MAINNET]: [
-    ...["https://rpc.ankr.com/eth"].map((url) => ({
+  [SOURCE_ETHEREUM_MAINNET]: [
+    ...[
+      "https://eth.llamarpc.com",
+      "https://rpc.ankr.com/eth",
+      "https://eth.drpc.org",
+      "https://ethereum.publicnode.com",
+    ].map((url) => ({
       url,
       isPublic: true,
       purpose: "default",
     })),
 
+    // Fallback
+    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "fallback"),
+
+    // Large account
+    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "largeAccount"),
+
     // Debug endpoints from settings
-    ...(_debugRpcTracker?.getDebugRpcEndpoints(ETH_MAINNET) ?? []),
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_ETHEREUM_MAINNET) ?? []),
   ],
 };
 
@@ -310,6 +324,10 @@ export const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
   [SOURCE_BSC_MAINNET]: [
     getAlchemyProvider(SOURCE_BSC_MAINNET, "fallback", "ws"),
     getAlchemyProvider(SOURCE_BSC_MAINNET, "largeAccount", "ws"),
+  ],
+  [SOURCE_ETHEREUM_MAINNET]: [
+    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "fallback", "ws"),
+    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "largeAccount", "ws"),
   ],
 };
 
@@ -359,21 +377,25 @@ export function getAlchemyProvider(
 
   let alchemyKey: string;
 
-  switch (purpose) {
-    case "fallback":
-      alchemyKey = "NnWkTZJp8dNKXlCIfJwej";
-      break;
-    case "largeAccount":
-      alchemyKey = "UnfP5Io4K9X8UZnUnFy2a";
-      break;
-    case "express":
-      alchemyKey = "vZoYuLP1GVpvE0wpgPKwC";
-      break;
-    case "default":
-      throw new Error(`Unsupported purpose: ${purpose}`);
-    default:
-      mustNeverExist(purpose);
-      throw new Error(`Unsupported purpose: ${purpose}`);
+  if (isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.DebugAlchemy)) {
+    alchemyKey = "EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+  } else {
+    switch (purpose) {
+      case "fallback":
+        alchemyKey = "NnWkTZJp8dNKXlCIfJwej";
+        break;
+      case "largeAccount":
+        alchemyKey = "UnfP5Io4K9X8UZnUnFy2a";
+        break;
+      case "express":
+        alchemyKey = "vZoYuLP1GVpvE0wpgPKwC";
+        break;
+      case "default":
+        throw new Error(`Unsupported purpose: ${purpose}`);
+      default:
+        mustNeverExist(purpose);
+        throw new Error(`Unsupported purpose: ${purpose}`);
+    }
   }
 
   let baseUrl: string;
@@ -401,6 +423,9 @@ export function getAlchemyProvider(
       break;
     case SOURCE_BSC_MAINNET:
       baseUrl = `bnb-mainnet.g.alchemy.com/v2`;
+      break;
+    case SOURCE_ETHEREUM_MAINNET:
+      baseUrl = `eth-mainnet.g.alchemy.com/v2`;
       break;
     default: {
       mustNeverExist(chainId);
