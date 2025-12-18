@@ -496,10 +496,6 @@ msgstr "Clásico"
 msgid "Unstaking"
 msgstr "Desestacando"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Monitoring"
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -645,10 +641,6 @@ msgstr "Reembolsos en V2"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr "Impacto de Precio Aceptable"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "Añadir a Metamask"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
@@ -1021,10 +1013,6 @@ msgstr "GMX usa TradingView para proporcionar gráficos de criptomonedas en tiem
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "Los Reembolsos de GMX V2 se aplican automáticamente como descuentos en tarifas en cada operación y no se muestran en esta tabla."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "Abrir {0} en Coingecko"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -2437,10 +2425,6 @@ msgstr "Número máximo de partes: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "Abrir App"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Large Account RPC"
-#~ msgstr ""
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Disponible para Pagar"
@@ -2693,10 +2677,6 @@ msgstr "Comisión de Liquidación"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr ""
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Permits"
-#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -5477,10 +5457,6 @@ msgstr "El PnL total realizado y no realizado para el período, incluyendo comis
 msgid "Ann. Performance"
 msgstr "Rendimiento Anualizado"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Fallback RPC"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} órdenes no se actualizaron ya que se alcanzó el límite máximo de órdenes"
@@ -6339,10 +6315,6 @@ msgstr "Tasa de Ganancia"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "Abrir {0} en Explorer"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
 msgstr ""
@@ -6663,10 +6635,6 @@ msgstr "Comprar GMX"
 msgid "Copy error"
 msgstr "Error de copia"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "RPC Tracker Logging"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Proyectos desarrollados por la comunidad GMX. <0/>Por favor, ejerce precaución al interactuar con cualquier app, las apps son mantenidas completamente por desarrolladores de la comunidad."
@@ -6919,10 +6887,6 @@ msgstr "Cuenta de Telegram"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Vender {operationTokenSymbol}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Links"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -7674,10 +7638,6 @@ msgstr "Funding reclamado."
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Mantener apalancamiento no disponible ya que la Posición excede el apal. máximo permitido. <0>Leer más</0>."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "Agregar {0} a Metamask"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"

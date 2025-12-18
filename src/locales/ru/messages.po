@@ -496,10 +496,6 @@ msgstr "Классический"
 msgid "Unstaking"
 msgstr "Анстейкинг"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Monitoring"
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -645,10 +641,6 @@ msgstr "Ребейты на V2"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable Price Impact"
 msgstr "Допустимое влияние на цену"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "Добавить в MetaMask"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
@@ -1021,10 +1013,6 @@ msgstr "GMX использует TradingView для предоставления
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "Возмещения GMX V2 автоматически применяются как скидки на комиссии для каждой сделки и не отображаются в этой таблице."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "Открыть {0} в Coingecko"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -2437,10 +2425,6 @@ msgstr "Максимальное количество частей: {MAX_TWAP_NU
 msgid "Launch App"
 msgstr "Запустить Приложение"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Large Account RPC"
-#~ msgstr ""
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Доступно для оплаты"
@@ -2693,10 +2677,6 @@ msgstr "Комиссия за Ликвидацию"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr ""
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Permits"
-#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -5477,10 +5457,6 @@ msgstr "Общий реализованный и нереализованный 
 msgid "Ann. Performance"
 msgstr "Годовая производительность"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Fallback RPC"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} ордеров не обновлены, так как достигнут максимальный лимит ордеров"
@@ -6339,10 +6315,6 @@ msgstr "Процент побед"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "Открыть {0} в Explorer"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
 msgstr ""
@@ -6663,10 +6635,6 @@ msgstr "Купить GMX"
 msgid "Copy error"
 msgstr "Ошибка копирования"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "RPC Tracker Logging"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Проекты, разработанные сообществом GMX. <0/>Пожалуйста, будьте осторожны при взаимодействии с любым приложением, приложения полностью поддерживаются разработчиками сообщества."
@@ -6919,10 +6887,6 @@ msgstr "Аккаунт в Telegram"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Продать {operationTokenSymbol}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Links"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -7674,10 +7638,6 @@ msgstr "Финансирование клеймлено."
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Сохранение плеча недоступно, поскольку позиция превышает макс. допустимое плечо. <0>Подробнее</0>."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "Добавить {0} в Metamask"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"
