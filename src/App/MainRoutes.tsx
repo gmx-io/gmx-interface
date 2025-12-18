@@ -28,7 +28,6 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -117,9 +116,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="stats">
           <DashboardV2 />
         </SyntheticsStateContextProvider>
-      </Route>
-      <Route exact path="/monitor/v1">
-        <Stats />
       </Route>
       <Route exact path="/monitor">
         <SyntheticsStats />
@@ -212,9 +208,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/referrals-tier">
         <ReferralsTier />
-      </Route>
-      <Route exact path="/monitor">
-        <Stats />
       </Route>
       <Route path="/parsetx/:network/:tx">
         <ParseTransactionPage />

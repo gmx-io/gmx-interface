@@ -11,8 +11,8 @@ import {
   ResolveCallback,
   SubscribeBarsCallback,
 } from "charting_library";
-import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { getChainlinkChartPricesFromGraph, getLimitChartPricesFromStats } from "domain/prices";
+import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
   formatTimeInBarToMs,
@@ -55,7 +55,6 @@ let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 let metricsIsFirstDrawTime = true;
 
-const V1_UPDATE_INTERVAL = 1000;
 const V2_UPDATE_INTERVAL = 1000;
 
 const PREFETCH_CANDLES_COUNT = 300;
@@ -70,8 +69,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   constructor(
     private chainId: number,
-    private oracleFetcher: OracleFetcher,
-    private tradePageVersion = 2
+    private oracleFetcher: OracleFetcher
   ) {
     super();
 
@@ -223,63 +221,60 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     const visualMultiplier = parseInt(symbolInfo.unit_id ?? "1");
 
-    const interval = new PauseableInterval<Bar | undefined>(
-      async ({ lastReturnedValue }) => {
-        let candlesToFetch = 1;
+    const interval = new PauseableInterval<Bar | undefined>(async ({ lastReturnedValue }) => {
+      let candlesToFetch = 1;
 
-        const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+      const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
 
-        if (lastReturnedValue) {
-          const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
+      if (lastReturnedValue) {
+        const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
 
-          const diff = Math.abs(currentCandleTime - lastReturnedValue.time);
-          if (diff >= periodSeconds) {
-            candlesToFetch = Math.ceil(diff / periodSeconds);
-          }
+        const diff = Math.abs(currentCandleTime - lastReturnedValue.time);
+        if (diff >= periodSeconds) {
+          candlesToFetch = Math.ceil(diff / periodSeconds);
+        }
+      }
+
+      let prices: FromOldToNewArray<Bar> = [];
+
+      try {
+        prices = !isStable
+          ? await this.fetchCandles(symbolInfo.name, resolution, candlesToFetch)
+          : this.getStableCandles(currentCandleTime, resolution, candlesToFetch);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+        return lastReturnedValue;
+      }
+
+      let newLastReturnedValue: Bar | undefined = lastReturnedValue;
+
+      let didPatchPreviousCandle = false;
+
+      for (const price of prices) {
+        if (lastReturnedValue?.time && price.time < lastReturnedValue.time) {
+          continue;
         }
 
-        let prices: FromOldToNewArray<Bar> = [];
+        if (lastReturnedValue?.time && price.time > lastReturnedValue.time && !didPatchPreviousCandle) {
+          didPatchPreviousCandle = true;
+          const previousBarWithNewClose = {
+            ...lastReturnedValue,
+            close: price.open,
+            low: Math.min(lastReturnedValue.low, price.open),
+            high: Math.max(lastReturnedValue.high, price.open),
+          };
 
-        try {
-          prices = !isStable
-            ? await this.fetchCandles(symbolInfo.name, resolution, candlesToFetch)
-            : this.getStableCandles(currentCandleTime, resolution, candlesToFetch);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(e);
-          return lastReturnedValue;
+          onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
         }
 
-        let newLastReturnedValue: Bar | undefined = lastReturnedValue;
+        onTick(multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier));
 
-        let didPatchPreviousCandle = false;
+        newLastReturnedValue = price;
+      }
 
-        for (const price of prices) {
-          if (lastReturnedValue?.time && price.time < lastReturnedValue.time) {
-            continue;
-          }
-
-          if (lastReturnedValue?.time && price.time > lastReturnedValue.time && !didPatchPreviousCandle) {
-            didPatchPreviousCandle = true;
-            const previousBarWithNewClose = {
-              ...lastReturnedValue,
-              close: price.open,
-              low: Math.min(lastReturnedValue.low, price.open),
-              high: Math.max(lastReturnedValue.high, price.open),
-            };
-
-            onTick(multiplyBarValues(formatTimeInBarToMs(previousBarWithNewClose), visualMultiplier));
-          }
-
-          onTick(multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier));
-
-          newLastReturnedValue = price;
-        }
-
-        return newLastReturnedValue;
-      },
-      this.tradePageVersion === 1 ? V1_UPDATE_INTERVAL : V2_UPDATE_INTERVAL
-    );
+      return newLastReturnedValue;
+    }, V2_UPDATE_INTERVAL);
 
     this.subscriptions[listenerGuid] = interval;
   }
@@ -305,9 +300,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     setTimeout(() => {
       callback({
-        supported_resolutions: Object.keys(
-          this.tradePageVersion === 1 ? SUPPORTED_RESOLUTIONS_V1 : SUPPORTED_RESOLUTIONS_V2
-        ) as ResolutionString[],
+        supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS_V2) as ResolutionString[],
         supports_marks: false,
         supports_timescale_marks: false,
         supports_time: true,
@@ -367,49 +360,27 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     let success = true;
     let result: FromOldToNewArray<Bar> = [];
 
-    if (this.tradePageVersion === 1) {
-      result = await Promise.race([
-        getLimitChartPricesFromStats(this.chainId, symbol, SUPPORTED_RESOLUTIONS_V1[resolution], count),
-        sleep(5000).then(() => Promise.reject("Stats candles timeout")),
-      ])
-        .catch((ex) => {
-          // eslint-disable-next-line no-console
-          console.warn(ex, "Switching to graph chainlink data");
-          return Promise.race([
-            getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V1[resolution]),
-            sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
-          ]);
-        })
-        .catch((ex) => {
-          success = false;
-          onCandlesLoadFailed(ex, isPrefetch);
-          // eslint-disable-next-line no-console
-          console.warn("Load history candles failed", ex);
-          return [];
-        });
-    } else {
-      result = await Promise.race([
-        this.oracleFetcher
-          .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
-          .then((bars) => bars.slice().reverse()),
-        sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
-      ])
-        .catch((ex) => {
-          // eslint-disable-next-line no-console
-          console.warn(ex, "Switching to graph chainlink data");
-          return Promise.race([
-            getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
-            sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
-          ]);
-        })
-        .catch((ex) => {
-          success = false;
-          onCandlesLoadFailed(ex, isPrefetch);
-          // eslint-disable-next-line no-console
-          console.warn("Load history candles failed", ex);
-          return [];
-        });
-    }
+    result = await Promise.race([
+      this.oracleFetcher
+        .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
+        .then((bars) => bars.slice().reverse()),
+      sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
+    ])
+      .catch((ex) => {
+        // eslint-disable-next-line no-console
+        console.warn(ex, "Switching to graph chainlink data");
+        return Promise.race([
+          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
+          sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
+        ]);
+      })
+      .catch((ex) => {
+        success = false;
+        onCandlesLoadFailed(ex, isPrefetch);
+        // eslint-disable-next-line no-console
+        console.warn("Load history candles failed", ex);
+        return [];
+      });
 
     if (success) {
       freshnessMetrics.reportThrottled(this.chainId, FreshnessMetricId.Candles);
