@@ -281,23 +281,23 @@ export function isTestnetChain(chainId: number): boolean {
 }
 
 export function getMaxFeePerGas(chainId: ContractsChainId): bigint | undefined {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].maxFeePerGas;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.maxFeePerGas;
 }
 
 export function getGasPricePremium(chainId: ContractsChainId): bigint | undefined {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].gasPricePremium;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPricePremium;
 }
 
 export function getMaxPriorityFeePerGas(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].maxPriorityFeePerGas;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.maxPriorityFeePerGas;
 }
 
 export function getMinExecutionFeeUsd(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].minExecutionFee;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.minExecutionFee;
 }
 
 export function getGasPriceBuffer(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].gasPriceBuffer;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPriceBuffer;
 }
 
 export function isChainDisabled(chainId: ContractsChainId) {
@@ -305,15 +305,15 @@ export function isChainDisabled(chainId: ContractsChainId) {
 }
 
 export function getChainNativeTokenSymbol(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].nativeTokenSymbol;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.nativeTokenSymbol;
 }
 
 export function getChainWrappedTokenSymbol(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].wrappedTokenSymbol;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.wrappedTokenSymbol;
 }
 
 export function getChainDefaultCollateralSymbol(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId].defaultCollateralSymbol;
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.defaultCollateralSymbol;
 }
 
 export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testnet"): string {
