@@ -3,6 +3,7 @@ import useSWR from "swr";
 
 import { parseValue, PRECISION_DECIMALS } from "lib/numbers";
 import { PerformanceAnnualizedResponse, PerformancePeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { ContractsChainId } from "sdk/configs/chains";
 
 export type PerformanceData = {
   [address: string]: bigint;
@@ -17,7 +18,7 @@ export function usePerformanceAnnualized({
   period: PerformancePeriod;
   address?: string;
 }) {
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
   const { data, error, isLoading } = useSWR<PerformanceAnnualizedResponse>(
     ["usePerformanceAnnualized", chainId, period, address],

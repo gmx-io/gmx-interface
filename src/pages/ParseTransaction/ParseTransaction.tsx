@@ -1,16 +1,13 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import invert from "lodash/invert";
-import mapValues from "lodash/mapValues";
 import { useCallback, useMemo, useState } from "react";
-import { Fragment } from "react/jsx-runtime";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
 import { Hash, PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
-import { ARBITRUM, CHAIN_SLUGS_MAP, ContractsChainId, getExplorerUrl } from "config/chains";
+import { ARBITRUM, getExplorerUrl } from "config/chains";
 import { getIcon } from "config/icons";
 import {
   GlvInfoData,
@@ -28,6 +25,7 @@ import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { defined } from "lib/guards";
 import { formatFactor, formatUsd } from "lib/numbers";
 import { ParseTransactionEvent, parseTxEvents } from "pages/ParseTransaction/parseTxEvents";
+import { ContractsChainId, getChainIdBySlug, getChainSlug } from "sdk/configs/chains";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -62,8 +60,6 @@ import {
 } from "./formatting";
 import { LogEntryComponentProps } from "./types";
 import { OrderTransactionsSummary, useOrderTransactions } from "./useOrderTransactions";
-
-const NETWORKS = mapValues(invert(CHAIN_SLUGS_MAP), Number) as Record<string, ContractsChainId>;
 
 type OrderLifecycleTxnType = "created" | "executed" | "cancelled";
 
@@ -102,7 +98,7 @@ export function ParseTransactionPage() {
   const [, copyToClipboard] = useCopyToClipboard();
 
   /** Default is Arbitrum to prevent page crashes in hooks, wrong networks handled on :207 */
-  const chainId = NETWORKS[network as string] ?? ARBITRUM;
+  const chainId = (getChainIdBySlug(network) as ContractsChainId) ?? ARBITRUM;
 
   const client = usePublicClient({
     chainId,
@@ -217,7 +213,7 @@ export function ParseTransactionPage() {
 
   const orderLifecycleEventsByHash = orderLifecycleEventsMap ?? {};
 
-  if (!network || typeof network !== "string" || !NETWORKS[network as string]) {
+  if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
         Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
@@ -532,7 +528,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (props.item === "trader" || props.item === "account" || props.item === "receiver") {
-    const network = CHAIN_SLUGS_MAP[props.chainId];
+    const network = getChainSlug(props.chainId);
     const explorerUrl = getExplorerUrl(props.chainId);
 
     value = (
