@@ -8,7 +8,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketPoolName } from "domain/synthetics/markets";
-import { usePoolSelection } from "domain/synthetics/trade/usePoolSelection";
 import { getByKey } from "lib/objects";
 
 import { BlockField } from "components/BlockField/BlockField";
@@ -24,26 +23,17 @@ export function MarketPoolSelectorField() {
   const selectedMarket = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
 
-  const { optionsWithBestPool, positionStatsWithBestPool, selectedPoolName, handlePoolSelect } = usePoolSelection({
-    relatedMarketStats,
-    relatedMarketsPositionStats,
-    tradeType,
-    currentMarketAddress: marketAddress,
-    currentPoolName: poolName,
-    setMarketAddress,
-  });
-
   return (
     <div className="flex flex-col gap-8">
       <BlockField
         label={t`Pool`}
         content={
           <PoolSelector2
-            selectedPoolName={selectedPoolName}
-            options={optionsWithBestPool}
+            selectedPoolName={poolName}
+            options={relatedMarketStats}
             tradeType={tradeType}
-            positionStats={positionStatsWithBestPool}
-            onSelect={handlePoolSelect}
+            positionStats={relatedMarketsPositionStats}
+            onSelect={setMarketAddress}
             handleClassName="inline-block overflow-hidden text-ellipsis whitespace-nowrap text-12"
             chevronClassName="w-12 text-typography-secondary max-lg:ml-4"
             wrapperClassName="overflow-hidden"

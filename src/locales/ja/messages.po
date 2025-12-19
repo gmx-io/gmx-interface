@@ -1558,8 +1558,8 @@ msgid "Failed to update order(s)"
 msgstr "注文の更新失敗"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Best Pool"
-msgstr ""
+#~ msgid "Best Pool"
+#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4844,8 +4844,8 @@ msgstr "TVL/キャップ"
 
 #: src/domain/synthetics/trade/usePoolSelection.ts
 #: src/domain/synthetics/trade/usePoolSelection.ts
-msgid "Best pool"
-msgstr ""
+#~ msgid "Best pool"
+#~ msgstr ""
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx

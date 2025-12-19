@@ -8,7 +8,6 @@ import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/s
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
-import { BEST_POOL_MARKER } from "domain/synthetics/trade/usePoolSelection";
 import { formatAmountHuman, formatRatePercentage, formatUsd } from "lib/numbers";
 
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
@@ -25,13 +24,6 @@ import {
 } from "../SelectorBase/SelectorBase";
 
 import "./PoolSelector2.scss";
-
-function getPoolDisplayName(marketStat: MarketStat): string {
-  if (marketStat.marketInfo.marketTokenAddress === BEST_POOL_MARKER) {
-    return t`Best Pool`;
-  }
-  return getMarketPoolName(marketStat.marketInfo);
-}
 
 type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
@@ -118,7 +110,7 @@ function PoolListItemDesktop({
   onSelect: () => void;
 } & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
-  const poolName = getPoolDisplayName(marketStat);
+  const poolName = getMarketPoolName(marketStat.marketInfo);
   const formattedLiquidity = formatAmountHuman(liquidity, USD_DECIMALS);
 
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
@@ -194,7 +186,7 @@ function PoolListItemMobile({
   const isLong = tradeType === TradeType.Long;
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
-  const poolName = getPoolDisplayName(marketStat);
+  const poolName = getMarketPoolName(marketStat.marketInfo);
   const formattedLiquidity = formatUsd(liquidity);
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
 

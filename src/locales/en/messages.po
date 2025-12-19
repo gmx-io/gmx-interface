@@ -1558,8 +1558,8 @@ msgid "Failed to update order(s)"
 msgstr "Failed to update order(s)"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
-msgid "Best Pool"
-msgstr "Best Pool"
+#~ msgid "Best Pool"
+#~ msgstr "Best Pool"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -4844,8 +4844,8 @@ msgstr "TVL/CAP"
 
 #: src/domain/synthetics/trade/usePoolSelection.ts
 #: src/domain/synthetics/trade/usePoolSelection.ts
-msgid "Best pool"
-msgstr "Best pool"
+#~ msgid "Best pool"
+#~ msgstr "Best pool"
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx
