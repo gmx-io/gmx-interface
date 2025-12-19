@@ -1773,6 +1773,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@date-fns/tz@npm:1.4.1":
+  version: 1.4.1
+  resolution: "@date-fns/tz@npm:1.4.1"
+  checksum: eceefcd68d3fc4f2fa07bdea5a22b05b0075850434cdcc765cea78995bb60cfe72d63c50e925188a1841af8d0a76a16d7d4f139d57d1c16ee03b30b2017a8d2d
+  languageName: node
+  linkType: hard
+
 "@davatar/react@npm:1.8.1":
   version: 1.8.1
   resolution: "@davatar/react@npm:1.8.1"
@@ -8716,10 +8723,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:2.27.0":
-  version: 2.27.0
-  resolution: "date-fns@npm:2.27.0"
-  checksum: db62036b3816eb0322c9532b353beac7f660a91e1a55dbd21c14893c621ebb8509f21c66ba287844dabd34dee0207edd54a9537bce6bb7cab9383dedc6b8bc90
+"date-fns@npm:4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: fb681b242cccabed45494468f64282a7d375ea970e0adbcc5dcc92dcb7aba49b2081c2c9739d41bf71ce89ed68dd73bebfe06ca35129490704775d091895710b
   languageName: node
   linkType: hard
 
@@ -11144,6 +11151,7 @@ __metadata:
     "@apollo/client": 3.5.6
     "@babel/plugin-proposal-private-property-in-object": 7.21.11
     "@binance/w3w-utils": 1.1.4
+    "@date-fns/tz": 1.4.1
     "@davatar/react": 1.8.1
     "@floating-ui/dom": 1.6.7
     "@floating-ui/react": 0.26.19
@@ -11186,7 +11194,7 @@ __metadata:
     classnames: 2.3.1
     core-js: 3.39.0
     crypto-js: 4.2.0
-    date-fns: 2.27.0
+    date-fns: 4.1.0
     env-cmd: ^10.1.0
     eslint: ^8.41.0
     eslint-config-prettier: 9.0.0

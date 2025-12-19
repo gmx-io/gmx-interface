@@ -23,7 +23,9 @@
     "baseUrl": "./src",
     "paths": {
       "sdk": ["../sdk/src/index.ts"],
-      "sdk/*": ["../sdk/src/*"]
+      "sdk/*": ["../sdk/src/*"],
+      "date-fns": ["../node_modules/date-fns"],
+      "date-fns/*": ["../node_modules/date-fns/*"]
     }
   },
   "references": [{ "path": "./sdk" }],

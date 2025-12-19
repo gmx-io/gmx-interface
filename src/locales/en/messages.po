@@ -6013,6 +6013,10 @@ msgstr "Submit"
 msgid "Permit signed!"
 msgstr "Permit signed!"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Performance and chart data are based on UTC times."
+msgstr "Performance and chart data are based on UTC times."
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "less than a minute"
