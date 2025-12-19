@@ -2,14 +2,14 @@ import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } 
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 
 import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
-import { SUPPORTED_RESOLUTIONS_V1, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import { useTradePageVersion } from "lib/useTradePageVersion";
+import { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Loader from "components/Loader/Loader";
@@ -36,7 +36,7 @@ type Props = {
         symbol: string;
       } & TokenPrices)
     | { symbol: string };
-  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V1 | typeof SUPPORTED_RESOLUTIONS_V2;
+  supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V2;
   visualMultiplier?: number;
   setIsCandlesLoaded?: (isCandlesLoaded: boolean) => void;
 };
@@ -62,9 +62,7 @@ export default function TVChartContainer({
 
   const { theme } = useTheme();
 
-  const [tradePageVersion] = useTradePageVersion();
-
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
 
@@ -78,7 +76,7 @@ export default function TVChartContainer({
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
   useEffect(() => {
-    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher, tradePageVersion);
+    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
     if (setIsCandlesLoaded) {
       newDatafeed.addEventListener("candlesDisplay.success", (event: Event) => {
         const isFirstDraw = (event as CustomEvent).detail.isFirstTimeLoad;
@@ -93,7 +91,7 @@ export default function TVChartContainer({
       }
       return newDatafeed;
     });
-  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, tradePageVersion]);
+  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded]);
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
@@ -172,7 +170,7 @@ export default function TVChartContainer({
       custom_formatters: defaultChartProps.custom_formatters,
       load_last_chart: true,
       auto_save_delay: 1,
-      save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts, tradePageVersion),
+      save_load_adapter: new SaveLoadAdapter(tvCharts, setTvCharts),
     };
     tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
 
@@ -197,7 +195,7 @@ export default function TVChartContainer({
             const period = supportedResolutions[interval];
             setPeriod(period);
             tvWidgetRef.current?.saveChartToServer(undefined, undefined, {
-              chartName: `gmx-chart-v${tradePageVersion}`,
+              chartName: `gmx-chart-v2`,
             });
 
             const priceScale = tvWidgetRef.current?.activeChart().getPanes().at(0)?.getMainSourcePriceScale();
@@ -209,7 +207,7 @@ export default function TVChartContainer({
 
       tvWidgetRef.current?.subscribe("onAutoSaveNeeded", () => {
         tvWidgetRef.current?.saveChartToServer(undefined, undefined, {
-          chartName: `gmx-chart-v${tradePageVersion}`,
+          chartName: `gmx-chart-v2`,
         });
       });
 
@@ -272,7 +270,7 @@ export default function TVChartContainer({
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
         <>
           <StaticLines tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
-          {tradePageVersion === 2 && <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />}
+          <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />
         </>
       )}
     </div>

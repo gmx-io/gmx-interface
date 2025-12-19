@@ -30,6 +30,19 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "open-interest-calculation-update",
+    isActive: true,
+    startDate: "19 Dec 2025, 08:00",
+    endDate: "26 Dec 2025, 08:00",
+    title: "Open Interest Calculation Update",
+    bodyText: (
+      <>
+        From 22nd December, the open interest will now be tracked in token amounts instead of USD values for improved
+        balance accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: AL16Z_DELISTING_EVENT_ID,
     isActive: true,
     startDate: "06 Nov 2025, 08:00",

@@ -14,8 +14,9 @@ import {
 import once from "lodash/once";
 import { createPublicClient, fallback, http, PublicClient, Transport } from "viem";
 
-import { getViemChain, isTestnetChain, RPC_PROVIDERS } from "config/chains";
+import { getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getRpcProviders } from "config/rpc";
 import { VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
@@ -55,7 +56,9 @@ export const getRainbowKitConfig = once(() => {
 
   const transports = chains.reduce(
     (acc, chain) => {
-      acc[chain.id] = fallback([...RPC_PROVIDERS[chain.id].map((url: string) => http(url))]);
+      const rpcProviders = getRpcProviders(chain.id, "default");
+
+      acc[chain.id] = fallback([...rpcProviders.map((provider) => http(provider.url))]);
       return acc;
     },
     {} as Record<number, Transport>
@@ -77,9 +80,12 @@ export function getPublicClientWithRpc(chainId: number): PublicClient {
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
   }
+
+  const rpcProviders = getRpcProviders(chainId, "default");
+
   const publicClient = createPublicClient({
     transport: fallback([
-      ...RPC_PROVIDERS[chainId].map((url: string) =>
+      ...rpcProviders.map(({ url }) =>
         http(
           url,
           import.meta.env.MODE === "test"

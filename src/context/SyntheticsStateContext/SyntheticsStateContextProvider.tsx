@@ -84,7 +84,8 @@ export type SyntheticsPageType =
   | "buy"
   | "home"
   | "gmxAccount"
-  | "referrals";
+  | "referrals"
+  | "rpcDebug";
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
