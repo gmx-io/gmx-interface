@@ -94,7 +94,7 @@ export const trimZeroDecimals = (amount: string) => {
 export function bigintToNumber(value: bigint, decimals: number) {
   const negative = value < 0;
   if (negative) value *= -1n;
-  const precision = 10n ** BigInt(decimals);
+  const precision = expandDecimals(1, decimals);
   const int = value / precision;
   const frac = value % precision;
 

@@ -30,46 +30,14 @@ export function PositionItemTPSLCell({
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
-  const { closestTp, tpCount, closestSl, slCount } = useMemo(() => {
-    const tpOrders: PositionOrderInfo[] = [];
-    const slOrders: PositionOrderInfo[] = [];
-
-    for (const { order } of ordersWithErrors) {
-      if (isTwapOrder(order)) continue;
-      if (isLimitDecreaseOrderType(order.orderType)) {
-        tpOrders.push(order);
-      } else if (isStopLossOrderType(order.orderType)) {
-        slOrders.push(order);
-      }
-    }
-
-    let closestTp: PositionOrderInfo | undefined;
-    let closestTpDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
-    for (const order of tpOrders) {
-      const distance = order.triggerPrice > markPrice ? order.triggerPrice - markPrice : markPrice - order.triggerPrice;
-      if (distance < closestTpDistance) {
-        closestTpDistance = distance;
-        closestTp = order;
-      }
-    }
-
-    let closestSl: PositionOrderInfo | undefined;
-    let closestSlDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
-    for (const order of slOrders) {
-      const distance = order.triggerPrice > markPrice ? order.triggerPrice - markPrice : markPrice - order.triggerPrice;
-      if (distance < closestSlDistance) {
-        closestSlDistance = distance;
-        closestSl = order;
-      }
-    }
-
-    return {
-      closestTp,
-      tpCount: tpOrders.length,
-      closestSl,
-      slCount: slOrders.length,
-    };
-  }, [ordersWithErrors, markPrice]);
+  const { closestTp, tpCount, closestSl, slCount } = useMemo(
+    () =>
+      getClosestTpSlOrders({
+        ordersWithErrors,
+        markPrice,
+      }),
+    [ordersWithErrors, markPrice]
+  );
 
   const hasTpOrSl = tpCount > 0 || slCount > 0;
 
@@ -153,4 +121,52 @@ export function PositionItemTPSLCell({
       </button>
     </div>
   );
+}
+
+function getClosestTpSlOrders(p: { ordersWithErrors: { order: PositionOrderInfo }[]; markPrice: bigint }): {
+  closestTp: PositionOrderInfo | undefined;
+  closestSl: PositionOrderInfo | undefined;
+  tpCount: number;
+  slCount: number;
+} {
+  const tpOrders: PositionOrderInfo[] = [];
+  const slOrders: PositionOrderInfo[] = [];
+
+  for (const { order } of p.ordersWithErrors) {
+    if (isTwapOrder(order)) continue;
+    if (isLimitDecreaseOrderType(order.orderType)) {
+      tpOrders.push(order);
+    } else if (isStopLossOrderType(order.orderType)) {
+      slOrders.push(order);
+    }
+  }
+
+  let closestTp: PositionOrderInfo | undefined;
+  let closestTpDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
+  for (const order of tpOrders) {
+    const distance =
+      order.triggerPrice > p.markPrice ? order.triggerPrice - p.markPrice : p.markPrice - order.triggerPrice;
+    if (distance < closestTpDistance) {
+      closestTpDistance = distance;
+      closestTp = order;
+    }
+  }
+
+  let closestSl: PositionOrderInfo | undefined;
+  let closestSlDistance = BigInt(Number.MAX_SAFE_INTEGER) * 10n ** 30n;
+  for (const order of slOrders) {
+    const distance =
+      order.triggerPrice > p.markPrice ? order.triggerPrice - p.markPrice : p.markPrice - order.triggerPrice;
+    if (distance < closestSlDistance) {
+      closestSlDistance = distance;
+      closestSl = order;
+    }
+  }
+
+  return {
+    closestTp,
+    tpCount: tpOrders.length,
+    closestSl,
+    slCount: slOrders.length,
+  };
 }
