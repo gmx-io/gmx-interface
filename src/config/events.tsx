@@ -33,11 +33,11 @@ export const appEventsData: EventData[] = [
     id: "open-interest-calculation-update",
     isActive: true,
     startDate: "19 Dec 2025, 08:00",
-    endDate: "22 Dec 2025, 08:00",
+    endDate: "26 Dec 2025, 08:00",
     title: "Open Interest Calculation Update",
     bodyText: (
       <>
-        Starting Monday, the open interest will now be tracked in token amounts instead of USD values for improved
+        From 22nd December, the open interest will now be tracked in token amounts instead of USD values for improved
         balance accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
       </>
     ),
