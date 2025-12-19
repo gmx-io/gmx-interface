@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { getSubsquidGraphClient } from "lib/indexers";
 import { metrics } from "lib/metrics";
-import { getSubsquidGraphClient } from "lib/subgraph";
 import { MarketInfo as SquidMarketInfo } from "sdk/types/subsquid";
-import { queryPaginated } from "sdk/utils/subgraph";
+import { queryPaginated } from "sdk/utils/indexers";
 
 import { FastMarketInfoData } from "..";
 
@@ -81,7 +81,8 @@ const MARKETS_INFO_QUERY = gql`
       lentPositionImpactPoolAmount
       atomicSwapFeeFactor
       maxPositionImpactFactorForLiquidations
-      positionImpactExponentFactor
+      positionImpactExponentFactorPositive
+      positionImpactExponentFactorNegative
 
       swapFeeFactorForPositiveImpact
       swapFeeFactorForNegativeImpact
@@ -106,7 +107,7 @@ const MARKETS_INFO_QUERY = gql`
   }
 `;
 
-const MARKETS_INFO_QUERY_LIMIT = 250;
+const MARKETS_INFO_QUERY_LIMIT = 150;
 
 export function useFastMarketsInfoRequest(chainId: number) {
   const {
@@ -212,7 +213,8 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxLendableImpactFactorForWithdrawals: BigInt(mInfo.maxLendableImpactFactorForWithdrawals),
             maxLendableImpactUsd: BigInt(mInfo.maxLendableImpactUsd),
             lentPositionImpactPoolAmount: BigInt(mInfo.lentPositionImpactPoolAmount),
-            positionImpactExponentFactor: BigInt(mInfo.positionImpactExponentFactor),
+            positionImpactExponentFactorPositive: BigInt(mInfo.positionImpactExponentFactorPositive),
+            positionImpactExponentFactorNegative: BigInt(mInfo.positionImpactExponentFactorNegative),
 
             swapFeeFactorForBalanceWasImproved: BigInt(mInfo.swapFeeFactorForPositiveImpact),
             swapFeeFactorForBalanceWasNotImproved: BigInt(mInfo.swapFeeFactorForNegativeImpact),

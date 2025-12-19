@@ -1,22 +1,24 @@
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
+import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getTotalTokensBalance } from "domain/tokens/getTotalTokensBalance";
-import { PRECISION, expandDecimals } from "lib/numbers";
+import { expandDecimals, PRECISION } from "lib/numbers";
+import { getIsSpotOnlyMarket, getTokenSymbolByMarket } from "sdk/configs/markets";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import {
   getAvailableUsdLiquidityForCollateral,
+  getCappedPoolPnl,
   getMarketPnl,
   getOpenInterestUsd,
   getPoolUsdWithoutPnl,
   getReservedUsd,
   getTokenPoolType,
-  getCappedPoolPnl,
 } from "sdk/utils/markets";
 
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
-import { isGlvInfo } from "./glv";
+import { isGlvAddress, isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
 import { TokenData, TokensData } from "../tokens/types";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
@@ -41,9 +43,24 @@ export function getGlvOrMarketAddress(marketOrGlvInfo?: MarketInfo | GlvInfo) {
   return isMarketInfo(marketOrGlvInfo) ? marketOrGlvInfo.marketTokenAddress : marketOrGlvInfo.glvTokenAddress;
 }
 
-export function getMarketBadge(chainId: number, market: GlvOrMarketInfo | undefined) {
+export function getMarketBadge(
+  chainId: number,
+  market: string | GlvOrMarketInfo | undefined
+): string | [string, string] | undefined {
   if (!market) {
     return undefined;
+  }
+
+  if (typeof market === "string") {
+    if (isGlvAddress(chainId, market)) {
+      return getGlvMarketShortening(chainId, market) || "GLV";
+    }
+
+    if (getIsSpotOnlyMarket(chainId, market)) {
+      return undefined;
+    }
+
+    return [getTokenSymbolByMarket(chainId, market, "long"), getTokenSymbolByMarket(chainId, market, "short")];
   }
 
   if (isGlvInfo(market)) {
@@ -378,12 +395,24 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
-export function getTotalGmInfo(tokensData?: TokensData) {
-  return getTotalTokensBalance(tokensData, ["GM"]);
+export function getTotalGmInfo({
+  tokensData,
+  multichainMarketTokensBalances,
+}: {
+  tokensData: TokensData | undefined;
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+}) {
+  return getTotalTokensBalance(tokensData, ["GM"], multichainMarketTokensBalances);
 }
 
-export function getTotalGlvInfo(tokensData?: TokensData) {
-  return getTotalTokensBalance(tokensData, ["GLV"]);
+export function getTotalGlvInfo({
+  tokensData,
+  multichainMarketTokensBalances,
+}: {
+  tokensData: TokensData | undefined;
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+}) {
+  return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
 }
 
 export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {

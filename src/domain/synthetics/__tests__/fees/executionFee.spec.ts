@@ -87,6 +87,10 @@ describe("getMinimumExecutionFeeBufferBps", () => {
         const newDelta = newExecutionFee - params.minBufferParams.minExecutionFee;
         const newDeltaBps = (newDelta * BASIS_POINTS_DIVISOR_BIGINT) / params.minBufferParams.minExecutionFee;
 
+        if (requiredBufferBps === undefined) {
+          throw new Error(`Required buffer bps is undefined`);
+        }
+
         expect(requiredBufferBps / 100n).toBe(params.expectedBufferBps / 100n);
         expect(newExecutionFee).toBe(params.expectedExecutionFee);
         // <1% deviation

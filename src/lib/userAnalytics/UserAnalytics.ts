@@ -183,7 +183,7 @@ export class UserAnalytics {
     }
 
     if (options.instantSend) {
-      await metrics.sendBatchItems([item], true);
+      await metrics.sendBatchItems([item]);
     } else {
       metrics.pushBatchItem(item);
     }
@@ -223,7 +223,7 @@ export class UserAnalytics {
 
     const items = this.earlyEventsQueue.map(this.fillCommonParams);
 
-    await metrics.sendBatchItems(items, true);
+    await metrics.sendBatchItems(items);
   };
 
   fillCommonParams = (item: UserAnalyticsEventItem): UserAnalyticsEventItem => {

@@ -1,3 +1,4 @@
+import { useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { getContract } from "config/contracts";
@@ -5,8 +6,10 @@ import {
   useTokensBalancesUpdates,
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { Token } from "domain/tokens";
+import { Token, TokenBalanceType } from "domain/tokens";
 import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
+import { FreshnessMetricId } from "lib/metrics/types";
 import { CacheKey, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getToken, getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -76,24 +79,37 @@ export function useTokenBalances(
 
   const account = overrideAccount ?? currentAccount;
 
+  const balancesKey = useMemo(
+    () => (account && enabled ? [account, overrideTokenList?.map((t) => t.address)] : null),
+    [account, enabled, overrideTokenList]
+  );
+
   const { data, error } = useMulticall(chainId, "useTokenBalances", {
-    key: account && enabled ? [account, overrideTokenList?.map((t) => t.address)] : null,
+    key: balancesKey,
     refreshInterval,
     request: buildTokenBalancesRequest,
-    parseResponse: (res) => {
+    parseResponse: (res, chainId) => {
       let result: TokenBalancesData = {};
 
       Object.keys(res.data).forEach((tokenAddress) => {
         result[tokenAddress] = res.data[tokenAddress].balance.returnValues[0];
       });
 
-      resetTokensBalancesUpdates(Object.keys(result), "wallet");
+      resetTokensBalancesUpdates(Object.keys(result), TokenBalanceType.Wallet);
+
+      freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Balances);
 
       return result;
     },
   });
 
-  const balancesData = useUpdatedTokensBalances(data, "wallet");
+  useEffect(() => {
+    if (!balancesKey) {
+      freshnessMetrics.clear(chainId, FreshnessMetricId.Balances);
+    }
+  }, [balancesKey, chainId]);
+
+  const balancesData = useUpdatedTokensBalances(data, TokenBalanceType.Wallet);
 
   return {
     balancesData,

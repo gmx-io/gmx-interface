@@ -7,7 +7,7 @@ import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
 export const SUBACCOUNT_MESSAGE =
   "Generate a GMX 1CT (One-Click Trading) session. Only sign this message on a trusted website.";
-export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/v2/#one-click-trading";
+export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/#one-click-trading";
 
 export const DEFAULT_SUBACCOUNT_EXPIRY_DURATION = periodToSeconds(7, "1d"); // 1 week
 export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 90;
@@ -19,6 +19,12 @@ export const MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL = expandDecimals(100, USD
 export const MIN_RELAYER_FEE_USD = 5n ** BigInt(USD_DECIMALS - 1); // 0.5$
 
 export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
+
+export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER = 20;
+export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER, USD_DECIMALS);
+const EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER = 40;
+export const EXPRESS_DEFAULT_MAX_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER, USD_DECIMALS);
+export const EXPRESS_RESIDUAL_AMOUNT_MULTIPLIER = 20n;
 
 const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
   [ARBITRUM]: [

@@ -9,10 +9,10 @@ import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
+import { getReferralsGraphClient } from "lib/indexers";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { basisPointsToFloat } from "lib/numbers";
 import { getProvider } from "lib/rpc";
-import { getReferralsGraphClient } from "lib/subgraph";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -132,7 +132,8 @@ export function useTiers(signer: Signer | undefined, chainId: ContractsChainId, 
 
 export async function setAffiliateTier(chainId: ContractsChainId, affiliate: string, tierId: number, signer, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const timelockAddress = getContract(chainId, "Timelock");
+  const referralStorageContract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, signer);
+  const timelockAddress = await referralStorageContract.gov();
   const contract = new ethers.Contract(timelockAddress, abis.Timelock, signer);
   return callContract(chainId, contract, "setReferrerTier", [referralStorageAddress, affiliate, tierId], opts);
 }

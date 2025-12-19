@@ -3,14 +3,10 @@ import { Signer } from "ethers";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { getChainName } from "config/chains";
+import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  getExecutionFeeBufferBps,
-  getGasPremium,
-  getMinimumExecutionFeeBufferBps,
-} from "domain/synthetics/fees/utils/executionFee";
+import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
 import { ErrorData } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
@@ -250,7 +246,7 @@ export function getErrorMessage(
             <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
             <br />
             <br />
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v1#rpc-urls">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading#rpc-urls">Read more</ExternalLink>.
           </Trans>
           <br />
           <br />
@@ -349,22 +345,24 @@ export function getInsufficientExecutionFeeToastContent({
     minExecutionFee: minExecutionFee,
     estimatedExecutionFee: executionFee,
     currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-    premium: getGasPremium(chainId),
+    premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
     gasLimit: estimatedExecutionGasLimit,
   });
+
+  const bufferText =
+    requiredBufferBps !== undefined ? t`to ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })} ` : t``;
 
   const suggestText = shouldOfferExpress ? (
     <>
       Please{" "}
-      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         enable Express trading
       </div>{" "}
       under settings, which should offer a better experience.
       <br />
       <br />
-      Otherwise, try increasing the max network fee buffer to{" "}
-      {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
-      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+      Otherwise, try increasing the max network fee buffer {bufferText}in{" "}
+      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         settings
       </div>
       .
@@ -373,7 +371,7 @@ export function getInsufficientExecutionFeeToastContent({
     <>
       Please try increasing the max network fee buffer to {formatPercentage(requiredBufferBps, { displayDecimals: 0 })}{" "}
       in{" "}
-      <div className=" muted inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         settings
       </div>
       .
@@ -383,10 +381,13 @@ export function getInsufficientExecutionFeeToastContent({
   return (
     <div>
       <Trans>
-        Transaction failed due to execution fee validation. <ExternalLink href={txUrl}>View</ExternalLink>.
+        Transaction failed due to execution fee validation.
         <br />
         <br />
         {suggestText}
+        <br />
+        <br />
+        <ExternalLink href={txUrl}>View transaction details.</ExternalLink>
       </Trans>
       <br />
       <br />

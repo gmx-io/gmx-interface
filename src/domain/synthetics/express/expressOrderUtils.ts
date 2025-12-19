@@ -1,11 +1,23 @@
 import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
-import { Address, encodeFunctionData, recoverTypedDataAddress, size, zeroAddress, zeroHash } from "viem";
+import {
+  Address,
+  encodeFunctionData,
+  maxUint256,
+  PublicClient,
+  recoverTypedDataAddress,
+  size,
+  toHex,
+  zeroAddress,
+  zeroHash,
+} from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
-import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { isSourceChain } from "config/multichain";
+import { calculateMappingSlot, DATASTORE_SLOT_INDEXES } from "domain/multichain/arbitraryRelayParams";
+import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
   ExpressParamsEstimationMethod,
@@ -27,14 +39,14 @@ import {
   hashSubaccountApproval,
   SignedSubacсountApproval,
   Subaccount,
-  SubaccountValidations,
 } from "domain/synthetics/subaccount";
-import { convertToTokenAmount, SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
-import { estimateGasLimit } from "lib/gas/estimateGasLimit";
+import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
-import { applyFactor, expandDecimals } from "lib/numbers";
+import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { ISigner } from "lib/transactions/iSigner";
 import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
@@ -181,26 +193,55 @@ function getBatchExpressEstimatorParams({
   };
 }
 
+class ExpressEstimationError extends Error {
+  name = "ExpressEstimationError";
+}
+export class ExpressEstimationInsufficientGasPaymentTokenBalanceError extends ExpressEstimationError {
+  name = "ExpressEstimationInsufficientGasPaymentTokenBalanceError";
+  constructor(
+    public readonly params?: {
+      balance?: bigint;
+      requiredAmount?: bigint;
+    }
+  ) {
+    super();
+  }
+}
+
 export async function estimateExpressParams({
   chainId,
   isGmxAccount,
-  provider,
   transactionParams,
   globalExpressParams,
   estimationMethod = "approximate",
   requireValidations = true,
   subaccount: rawSubaccount,
+  throwOnInvalid = false,
+  provider,
+  client,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
-  provider: Provider;
   globalExpressParams: GlobalExpressParams;
   transactionParams: ExpressTransactionEstimatorParams;
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
-}): Promise<ExpressTxnParams | undefined> {
+  throwOnInvalid?: boolean;
+} & (
+  | {
+      client: PublicClient;
+      provider?: undefined;
+    }
+  | {
+      provider: Provider;
+      client?: undefined;
+    }
+)): Promise<ExpressTxnParams | undefined> {
   if (requireValidations && !transactionParams.isValid) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("transactionParams is invalid");
+    }
     return undefined;
   }
 
@@ -210,11 +251,10 @@ export async function estimateExpressParams({
     gasPaymentToken,
     relayerFeeToken,
     l1Reference,
-    tokenPermits,
+    tokenPermits: rawTokenPermits,
     gasPrice,
     isSponsoredCall,
     bufferBps,
-    marketsInfoData,
     gasPaymentAllowanceData,
   } = globalExpressParams;
 
@@ -238,6 +278,8 @@ export async function estimateExpressParams({
     : undefined;
 
   const subaccount = subaccountValidations?.isValid ? rawSubaccount : undefined;
+
+  const tokenPermits = isGmxAccount ? [] : rawTokenPermits;
 
   const baseRelayerGasLimit = estimateRelayerGasLimit({
     gasLimits,
@@ -267,6 +309,9 @@ export async function estimateExpressParams({
   });
 
   if (!baseRelayFeeParams) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("baseRelayFeeParams is undefined");
+    }
     return undefined;
   }
 
@@ -277,7 +322,6 @@ export async function estimateExpressParams({
     feeParams: baseRelayFeeParams.feeParams,
     externalCalls: baseRelayFeeParams.externalCalls,
     tokenPermits,
-    marketsInfoData,
   });
 
   const baseTxn = await expressTransactionBuilder({
@@ -294,32 +338,64 @@ export async function estimateExpressParams({
     : 0n;
 
   let gasLimit: bigint;
-  if (estimationMethod === "estimateGas" && provider) {
-    const baseGasPaymentValidations = getGasPaymentValidations({
-      gasPaymentToken,
-      gasPaymentTokenAsCollateralAmount,
-      gasPaymentTokenAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
-      gasPaymentAllowanceData,
-      isGmxAccount,
-      tokenPermits,
-    });
-
-    if (
-      baseGasPaymentValidations.isOutGasTokenBalance ||
-      baseGasPaymentValidations.needGasPaymentTokenApproval ||
-      !transactionParams.isValid
-    ) {
-      // In this cases simulation will fail
-      return undefined;
-    }
-
+  if (estimationMethod === "estimateGas") {
     try {
-      gasLimit = await estimateGasLimit(provider, {
-        from: GMX_SIMULATION_ORIGIN,
-        to: baseTxn.txnData.to,
-        data: baseTxn.txnData.callData,
-        value: 0n,
-      });
+      if (provider) {
+        const baseGasPaymentValidations = getGasPaymentValidations({
+          gasPaymentToken,
+          gasPaymentTokenAsCollateralAmount,
+          gasPaymentTokenAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentAllowanceData,
+          isGmxAccount,
+          tokenPermits,
+        });
+
+        if (
+          baseGasPaymentValidations.isOutGasTokenBalance ||
+          baseGasPaymentValidations.needGasPaymentTokenApproval ||
+          !transactionParams.isValid
+        ) {
+          // In this cases simulation will fail
+          if (throwOnInvalid) {
+            throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError();
+          }
+          return undefined;
+        }
+
+        gasLimit = await estimateGasLimit(provider, {
+          from: GMX_SIMULATION_ORIGIN,
+          to: baseTxn.txnData.to,
+          data: baseTxn.txnData.callData,
+          value: 0n,
+        });
+      } else {
+        gasLimit = await fallbackCustomError(
+          async () =>
+            client
+              .estimateGas({
+                account: GMX_SIMULATION_ORIGIN,
+                to: baseTxn.txnData.to,
+                data: baseTxn.txnData.callData,
+                value: 0n,
+                stateOverride: [
+                  {
+                    address: getContract(chainId, "DataStore"),
+                    stateDiff: [
+                      {
+                        slot: calculateMappingSlot(
+                          multichainBalanceKey(account, gasPaymentToken.address),
+                          DATASTORE_SLOT_INDEXES.uintValues
+                        ),
+                        value: toHex(maxUint256),
+                      },
+                    ],
+                  },
+                ],
+              })
+              .then(applyGasLimitBuffer),
+          "gasLimit"
+        );
+      }
     } catch (error) {
       const extendedError = extendError(error, {
         data: {
@@ -328,6 +404,10 @@ export async function estimateExpressParams({
       });
 
       metrics.pushError(extendedError, "expressOrders.estimateGas");
+
+      if (throwOnInvalid) {
+        throw new ExpressEstimationError("gas limit estimation failed");
+      }
 
       return undefined;
     }
@@ -369,6 +449,9 @@ export async function estimateExpressParams({
   });
 
   if (!finalRelayFeeParams) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationError("finalRelayFeeParams is undefined");
+    }
     return undefined;
   }
 
@@ -379,7 +462,6 @@ export async function estimateExpressParams({
     feeParams: finalRelayFeeParams.feeParams,
     externalCalls: finalRelayFeeParams.externalCalls,
     tokenPermits,
-    marketsInfoData,
   });
 
   const gasPaymentValidations = getGasPaymentValidations({
@@ -391,10 +473,13 @@ export async function estimateExpressParams({
     tokenPermits,
   });
 
-  if (
-    requireValidations &&
-    !getIsValidExpressParams({ chainId, gasPaymentValidations, subaccountValidations, isSponsoredCall })
-  ) {
+  if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations, isSponsoredCall })) {
+    if (throwOnInvalid) {
+      throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
+        balance: isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance,
+        requiredAmount: finalRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
+    }
     return undefined;
   }
 
@@ -419,19 +504,17 @@ export async function estimateExpressParams({
 export function getIsValidExpressParams({
   chainId,
   gasPaymentValidations,
-  subaccountValidations,
   isSponsoredCall,
 }: {
   chainId: number;
   isSponsoredCall: boolean;
   gasPaymentValidations: GasPaymentValidations;
-  subaccountValidations: SubaccountValidations | undefined;
 }): boolean {
   if (chainId === BOTANIX && !isSponsoredCall) {
     return false;
   }
 
-  return gasPaymentValidations.isValid && (!subaccountValidations || subaccountValidations.isValid);
+  return gasPaymentValidations.isValid;
 }
 
 export function getGasPaymentValidations({
@@ -465,38 +548,6 @@ export function getGasPaymentValidations({
     needGasPaymentTokenApproval,
     isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,
   };
-}
-
-export function getMinResidualGasPaymentTokenAmount({
-  payTokenAddress,
-  expressParams,
-}: {
-  payTokenAddress: string | undefined;
-  expressParams: ExpressTxnParams | undefined;
-}): bigint {
-  if (!expressParams || !payTokenAddress) {
-    return 0n;
-  }
-
-  if (payTokenAddress !== expressParams.gasPaymentParams.gasPaymentTokenAddress) {
-    return 0n;
-  }
-
-  const { gasPaymentToken, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
-
-  const defaultMinResidualAmount = convertToTokenAmount(
-    expandDecimals(5, USD_DECIMALS),
-    gasPaymentToken.decimals,
-    gasPaymentToken.prices.minPrice
-  )!;
-
-  const minResidualAmount = gasPaymentTokenAmount * 2n;
-
-  if (minResidualAmount > defaultMinResidualAmount) {
-    return minResidualAmount;
-  }
-
-  return defaultMinResidualAmount;
 }
 
 export async function buildAndSignExpressBatchOrderTxn({
@@ -801,6 +852,7 @@ export function getOrderRelayRouterAddress(
   return getContract(chainId, contractName);
 }
 
+// TODO MLTCH: move to bridge out utils
 export async function buildAndSignBridgeOutTxn({
   chainId,
   srcChainId,
@@ -816,7 +868,7 @@ export async function buildAndSignBridgeOutTxn({
   srcChainId: SourceChainId;
   relayParamsPayload: RawRelayParamsPayload;
   params: BridgeOutParams;
-  signer: WalletSigner | undefined;
+  signer: WalletSigner | ISigner | undefined;
   account: string;
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
@@ -874,7 +926,7 @@ async function signBridgeOutPayload({
   chainId,
   srcChainId,
 }: {
-  signer: WalletSigner;
+  signer: WalletSigner | ISigner;
   relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;
@@ -996,10 +1048,11 @@ export async function signSetTraderReferralCode({
   return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
 }
 
-function updateExpressOrdersAddresses(addressess: CreateOrderPayload["addresses"]): CreateOrderPayload["addresses"] {
+function updateExpressOrdersAddresses(addresses: CreateOrderPayload["addresses"]) {
   return {
-    ...addressess,
-    uiFeeReceiver: setUiFeeReceiverIsExpress(addressess.uiFeeReceiver, true),
+    ...addresses,
+    receiver: addresses.receiver ?? zeroAddress,
+    uiFeeReceiver: setUiFeeReceiverIsExpress(addresses.uiFeeReceiver, true),
   };
 }
 

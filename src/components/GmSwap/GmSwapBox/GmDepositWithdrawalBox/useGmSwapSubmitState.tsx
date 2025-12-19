@@ -1,54 +1,62 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
-import { getContract } from "config/contracts";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectPoolsDetailsFlags,
+  selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsIsMarketTokenDeposit,
+  selectPoolsDetailsLongTokenAddress,
+  selectPoolsDetailsMarketInfo,
+  selectPoolsDetailsMarketTokenData,
+  selectPoolsDetailsMarketTokensData,
+  selectPoolsDetailsOperation,
+  selectPoolsDetailsPayLongToken,
+  selectPoolsDetailsPayShortToken,
+  selectPoolsDetailsPaySource,
+  selectPoolsDetailsShortTokenAddress,
+} from "context/PoolsDetailsContext/selectors";
+import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExecutionFee } from "domain/synthetics/fees";
-import { GlvAndGmMarketsInfoData, GlvInfo, MarketInfo, MarketsInfoData } from "domain/synthetics/markets";
-import { TokenData, TokensData } from "domain/synthetics/tokens";
+import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
+import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
+import type { ExecutionFee } from "domain/synthetics/fees";
+import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
+import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
+import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
+import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
+import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
+import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
-import { approveTokens } from "domain/tokens";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { GmSwapFees } from "sdk/types/trade";
+import { bigMath } from "sdk/utils/bigmath";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { useDepositWithdrawalAmounts } from "./useDepositWithdrawalAmounts";
-import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
-import { useDepositWithdrawalTransactions } from "./useDepositWithdrawalTransactions";
-import { useTokensToApprove } from "./useTokensToApprove";
-import { getGmSwapBoxApproveTokenSymbol } from "../getGmSwapBoxApproveToken";
 import { Operation } from "../types";
+import { useLpTransactions } from "./lpTxn/useLpTransactions";
+import { TechnicalFees } from "./useTechnicalFeesAsyncResult";
+import { useTokensToApprove } from "./useTokensToApprove";
 
 interface Props {
-  amounts: ReturnType<typeof useDepositWithdrawalAmounts>;
-  fees: ReturnType<typeof useDepositWithdrawalFees>["fees"];
-  isDeposit: boolean;
-  routerAddress: string;
-  marketInfo?: MarketInfo;
-  glvInfo?: GlvInfo;
-  marketToken: TokenData;
-  operation: Operation;
-  longToken: TokenData | undefined;
-  shortToken: TokenData | undefined;
-  glvToken: TokenData | undefined;
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
-
   shouldDisableValidation?: boolean;
-
-  tokensData: TokensData | undefined;
-  marketTokensData?: TokensData;
-  executionFee: ExecutionFee | undefined;
-  selectedMarketForGlv?: string;
-  isMarketTokenDeposit?: boolean;
+  technicalFees:
+    | ExecutionFee
+    | SourceChainGlvDepositFees
+    | SourceChainDepositFees
+    | SourceChainWithdrawalFees
+    | SourceChainGlvWithdrawalFees
+    | undefined;
+  logicalFees: GmSwapFees | undefined;
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
-  selectedMarketInfoForGlv?: MarketInfo;
 }
 
 const processingTextMap = {
@@ -68,34 +76,35 @@ type SubmitButtonState = {
 };
 
 export const useGmSwapSubmitState = ({
-  isDeposit,
-  routerAddress,
-  amounts,
-  fees,
-  marketInfo,
-  marketToken,
-  longToken,
-  operation,
-  shortToken,
-  glvToken,
+  logicalFees,
+  technicalFees,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
-
   shouldDisableValidation,
-
-  tokensData,
-  marketTokensData,
-  executionFee,
-  selectedMarketForGlv,
-  selectedMarketInfoForGlv,
-  glvInfo,
-  isMarketTokenDeposit,
-  glvAndMarketsInfoData,
 }: Props): SubmitButtonState => {
+  const { isDeposit, isPair } = useSelector(selectPoolsDetailsFlags);
+  const operation = useSelector(selectPoolsDetailsOperation);
+  const paySource = useSelector(selectPoolsDetailsPaySource);
+  const isMarketTokenDeposit = useSelector(selectPoolsDetailsIsMarketTokenDeposit);
+  const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
+  const glvToken = glvInfo?.glvToken;
+  const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
+  const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
+
+  const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
+  const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
+  const payLongToken = useSelector(selectPoolsDetailsPayLongToken);
+  const payShortToken = useSelector(selectPoolsDetailsPayShortToken);
+
+  const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
+  const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
+  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
   const hasOutdatedUi = useHasOutdatedUi();
   const { openConnectModal } = useConnectModal();
-  const { account, signer } = useWallet();
+  const { account } = useWallet();
 
   const {
     glvTokenAmount = 0n,
@@ -108,28 +117,14 @@ export const useGmSwapSubmitState = ({
     shortTokenUsd = 0n,
   } = amounts ?? {};
 
-  const isFirstBuy = Object.values(marketTokensData ?? {}).every((marketToken) => marketToken.balance === 0n);
-
-  const { isSubmitting, onSubmit } = useDepositWithdrawalTransactions({
-    marketInfo,
-    marketToken,
-    operation,
-    longToken,
-    longTokenAmount,
-    shortToken,
-    shortTokenAmount,
-    marketTokenAmount,
-    glvTokenAmount,
-    glvTokenUsd,
+  const {
+    isSubmitting,
+    onSubmit,
+    isLoading,
+    error: estimationError,
+  } = useLpTransactions({
     shouldDisableValidation,
-    tokensData,
-    executionFee,
-    selectedMarketForGlv,
-    glvInfo,
-    isMarketTokenDeposit,
-    selectedMarketInfoForGlv,
-    marketTokenUsd,
-    isFirstBuy,
+    technicalFees,
   });
 
   const onConnectAccount = useCallback(() => {
@@ -146,9 +141,8 @@ export const useGmSwapSubmitState = ({
     isDeposit,
     marketInfo,
     glvInfo,
-    marketToken,
-    longToken,
-    shortToken,
+    longToken: payLongToken,
+    shortToken: payShortToken,
     glvToken,
     glvTokenAmount,
     glvTokenUsd,
@@ -160,36 +154,54 @@ export const useGmSwapSubmitState = ({
     shortTokenUsd,
     longTokenLiquidityUsd: longTokenLiquidityUsd,
     shortTokenLiquidityUsd: shortTokenLiquidityUsd,
-    fees,
-    priceImpactUsd: fees?.swapPriceImpact?.deltaUsd,
+    fees: logicalFees,
+    priceImpactUsd: logicalFees?.swapPriceImpact?.deltaUsd,
     marketTokensData,
     isMarketTokenDeposit,
+    paySource,
+    isPair,
+    chainId,
+    srcChainId,
+    marketToken: marketToken,
   });
 
-  const error = commonError || swapError;
-
-  const { tokensToApprove, isAllowanceLoading, isAllowanceLoaded } = useTokensToApprove({
-    routerAddress,
-    glvInfo,
-    operation,
-    marketToken,
-    marketTokenAmount,
-    longToken,
+  const expressError = useExpressError({
+    paySource,
+    technicalFees,
+    gasPaymentToken,
+    gasPaymentTokenAddress,
+    longTokenAddress,
+    shortTokenAddress,
     longTokenAmount,
-    shortToken,
     shortTokenAmount,
-    glvToken,
-    glvTokenAmount,
-    isMarketTokenDeposit,
+    isDeposit,
   });
 
-  const [isApproving, setIsApproving] = useState(false);
+  const sourceChainNativeFeeError = useSourceChainNativeFeeError({
+    networkFeeUsd:
+      logicalFees?.logicalNetworkFee?.deltaUsd !== undefined
+        ? bigMath.abs(logicalFees.logicalNetworkFee.deltaUsd)
+        : undefined,
+    paySource,
+    chainId,
+    srcChainId,
+  });
 
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
+  const formattedEstimationError = useMemo(() => {
+    if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+      if (gasPaymentToken) {
+        return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
+      }
+    } else if (estimationError) {
+      return estimationError.name;
     }
-  }, [isApproving, tokensToApprove]);
+
+    return undefined;
+  }, [estimationError, gasPaymentToken]);
+
+  const error = commonError || swapError || expressError || sourceChainNativeFeeError || formattedEstimationError;
+
+  const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
 
   return useMemo((): SubmitButtonState => {
     if (!account) {
@@ -201,7 +213,12 @@ export const useGmSwapSubmitState = ({
 
     if (isAllowanceLoading) {
       return {
-        text: t`Loading...`,
+        text: (
+          <>
+            <Trans>Loading</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
         disabled: true,
       };
     }
@@ -211,65 +228,28 @@ export const useGmSwapSubmitState = ({
         text: error,
         disabled: !shouldDisableValidation,
         onSubmit: onSubmit,
-        tokensToApprove,
         isAllowanceLoaded,
         isAllowanceLoading,
         errorDescription: swapErrorDescription,
       };
     }
 
-    if (isApproving && tokensToApprove.length) {
-      const tokenSymbol = getGmSwapBoxApproveTokenSymbol(tokensToApprove[0], tokensData, glvAndMarketsInfoData);
-
+    if (isApproving && tokensToApproveSymbols.length) {
       return {
         text: (
           <>
-            {t`Allow ${tokenSymbol} to be spent`} <SpinnerIcon className="ml-4 animate-spin" />
+            {t`Allow ${tokensToApproveSymbols[0]} to be spent`} <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,
       };
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length > 0) {
-      const onApprove = () => {
-        const tokenAddress = tokensToApprove[0];
-
-        if (!chainId || isApproving || !tokenAddress) return;
-
-        userAnalytics.pushEvent<TokenApproveClickEvent>({
-          event: "TokenApproveAction",
-          data: {
-            action: "ApproveClick",
-          },
-        });
-
-        approveTokens({
-          setIsApproving,
-          signer,
-          tokenAddress,
-          spender: getContract(chainId, "SyntheticsRouter"),
-          pendingTxns: [],
-          setPendingTxns: () => null,
-          infoTokens: {},
-          chainId,
-          approveAmount: undefined,
-          onApproveFail: () => {
-            userAnalytics.pushEvent<TokenApproveResultEvent>({
-              event: "TokenApproveAction",
-              data: {
-                action: "ApproveFail",
-              },
-            });
-          },
-          permitParams: undefined,
-        });
-      };
-
-      const tokenSymbol = getGmSwapBoxApproveTokenSymbol(tokensToApprove[0], tokensData, glvAndMarketsInfoData);
+    if (isAllowanceLoaded && tokensToApproveSymbols.length > 0) {
+      const onApprove = approve;
 
       return {
-        text: t`Allow ${tokenSymbol} to be spent`,
+        text: t`Allow ${tokensToApproveSymbols[0]} to be spent`,
         onSubmit: onApprove,
       };
     }
@@ -283,6 +263,18 @@ export const useGmSwapSubmitState = ({
       };
     }
 
+    if (!technicalFees || isLoading) {
+      return {
+        text: (
+          <>
+            <Trans>Loading</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     return {
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
@@ -290,9 +282,10 @@ export const useGmSwapSubmitState = ({
   }, [
     account,
     isAllowanceLoading,
+    technicalFees,
     error,
     isApproving,
-    tokensToApprove,
+    tokensToApproveSymbols,
     isAllowanceLoaded,
     glvInfo,
     isSubmitting,
@@ -301,10 +294,88 @@ export const useGmSwapSubmitState = ({
     onConnectAccount,
     shouldDisableValidation,
     swapErrorDescription,
-    chainId,
-    tokensData,
-    glvAndMarketsInfoData,
-    signer,
+    approve,
     operation,
+    isLoading,
   ]);
 };
+
+function useExpressError({
+  paySource,
+  technicalFees,
+  gasPaymentToken,
+  gasPaymentTokenAddress,
+  longTokenAddress,
+  shortTokenAddress,
+  longTokenAmount,
+  shortTokenAmount,
+  isDeposit,
+}: {
+  paySource: GmPaySource | undefined;
+  technicalFees: TechnicalFees | undefined;
+  gasPaymentToken: TokenData | undefined;
+  gasPaymentTokenAddress: string | undefined;
+  longTokenAddress: string | undefined;
+  shortTokenAddress: string | undefined;
+  longTokenAmount: bigint | undefined;
+  shortTokenAmount: bigint | undefined;
+  isDeposit: boolean;
+}): string | undefined {
+  return useMemo(() => {
+    if (paySource !== "gmxAccount" || !technicalFees || !gasPaymentToken || !gasPaymentTokenAddress) {
+      return undefined;
+    }
+
+    if (!("feeUsd" in technicalFees)) {
+      return undefined;
+    }
+
+    const executionFee = technicalFees as ExecutionFee;
+
+    if (gasPaymentToken.prices.minPrice === undefined) {
+      return undefined;
+    }
+
+    const gasPaymentTokenAmount = convertToTokenAmount(
+      executionFee.feeUsd,
+      gasPaymentToken.decimals,
+      gasPaymentToken.prices.minPrice
+    );
+
+    if (gasPaymentTokenAmount === undefined || gasPaymentTokenAmount === 0n) {
+      return undefined;
+    }
+
+    let collateralAmount = 0n;
+    if (isDeposit) {
+      if (longTokenAddress === gasPaymentTokenAddress) {
+        collateralAmount = longTokenAmount ?? 0n;
+      } else if (shortTokenAddress === gasPaymentTokenAddress) {
+        collateralAmount = shortTokenAmount ?? 0n;
+      }
+    }
+
+    const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
+    const totalRequired = collateralAmount + gasPaymentTokenAmount;
+
+    if (gasPaymentTokenAmount > gmxAccountBalance) {
+      return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees`;
+    }
+
+    if (totalRequired > gmxAccountBalance) {
+      return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
+    }
+
+    return undefined;
+  }, [
+    paySource,
+    technicalFees,
+    gasPaymentToken,
+    gasPaymentTokenAddress,
+    longTokenAddress,
+    shortTokenAddress,
+    isDeposit,
+    longTokenAmount,
+    shortTokenAmount,
+  ]);
+}

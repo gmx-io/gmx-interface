@@ -20,15 +20,6 @@ export type GlobalMetricData = {
   srcChainId?: SourceChainId;
 };
 
-export type OracleKeeperMetricMethodId =
-  | "tickers"
-  | "24hPrices"
-  | "candles"
-  | "incentives"
-  | "uiVersion"
-  | "annualized"
-  | "snapshots";
-
 export enum OrderStage {
   Submitted = "submitted",
   Simulated = "simulated",
@@ -163,6 +154,25 @@ export type LoadingFailedEvent = {
   } & ErrorData;
 };
 
+export enum FreshnessMetricId {
+  Tickers = `tickers`,
+  Candles = "candles",
+  Prices24h = "24Prices",
+  MarketsValues = "marketsValues",
+  MarketsConfigs = "marketsConfigs",
+  Positions = "positions",
+  Orders = "orders",
+  Balances = "balances",
+}
+
+export type FreshnessTiming = {
+  event: `freshness.${FreshnessMetricId}`;
+  data: {
+    chainId: number;
+    metricId: FreshnessMetricId;
+  };
+};
+
 // Transactions tracking
 export type SubmittedOrderEvent = {
   event: `${OrderMetricType}.${OrderStage.Submitted}`;
@@ -237,6 +247,79 @@ export type OrderCancelledEvent = {
   isError: true;
   time: number | undefined;
   data: OrderMetricData & ErrorData;
+};
+
+// Fallback tracking
+export type RpcTrackerEndpointBannedEvent = {
+  event: "rpcTracker.endpoint.banned";
+  isError: false;
+  data: {
+    chainId: number;
+    chainName: string;
+    endpoint: string;
+    reason: string;
+  };
+};
+
+export type RpcTrackerUpdateEndpointsEvent = {
+  event: "rpcTracker.endpoint.updated";
+  isError: false;
+  data: {
+    isOld: boolean;
+    chainName: string;
+    chainId: number;
+    primary: string;
+    secondary: string;
+    primaryBlockGap: number | "unknown";
+    secondaryBlockGap: number | "unknown";
+  };
+};
+
+export type RpcTrackerEndpointTiming = {
+  event: "rpcTracker.endpoint.timing";
+  data: {
+    endpoint: string;
+    chainId: number;
+  };
+};
+
+export type RpcTrackerEndpointBlockGapTiming = {
+  event: "rpcTracker.endpoint.blockGap";
+  data: {
+    endpoint: string;
+    chainId: number;
+  };
+};
+
+export type OracleKeeperUpdateEndpointsEvent = {
+  event: "oracleKeeper.endpoint.updated";
+  isError: false;
+  data: {
+    chainId: number;
+    chainName: string;
+    primary: string;
+    secondary: string;
+  };
+};
+
+export type OracleKeeperEndpointBannedEvent = {
+  event: "oracleKeeper.endpoint.banned";
+  isError: false;
+  data: {
+    chainId: number;
+    chainName: string;
+    endpoint: string;
+    reason: string;
+  };
+};
+
+export type OracleKeeperFailureCounter = {
+  // Keep it for compatibility with old events
+  event: "oracleKeeper.failure";
+  data: {
+    chainId: number;
+    method: string;
+  };
 };
 
 // Multicall tracking
@@ -471,6 +554,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
@@ -515,21 +599,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
-  };
-};
-
-export type OracleKeeperFallbackCounter = {
-  event: "oracleKeeper.fallback";
-  data: {
-    chainId: number;
-  };
-};
-
-export type OracleKeeperFailureCounter = {
-  event: "oracleKeeper.failure";
-  data: {
-    chainId: number;
-    method: string;
+    callsCount: number;
   };
 };
 
@@ -538,6 +608,7 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
+    callsCount: number;
   };
 };
 
@@ -561,16 +632,6 @@ export type MulticallFallbackRpcModeCounter = {
   data: {
     chainId: number;
     isInMainThread: boolean;
-  };
-};
-
-export type RpcTrackerRankingCounter = {
-  event: "rpcTracker.ranking.setBestRpc";
-  data: {
-    chainId: number;
-    rpcProvider: string;
-    bestBlockGap: number | "unknown";
-    isLargeAccount: boolean;
   };
 };
 

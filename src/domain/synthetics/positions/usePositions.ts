@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
+import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
-import { ContractsChainId } from "config/static/chains";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,
@@ -11,7 +11,8 @@ import {
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
 import type { Position } from "domain/synthetics/positions/types";
-import { metrics, MissedMarketPricesCounter } from "lib/metrics";
+import { FreshnessMetricId, metrics, MissedMarketPricesCounter } from "lib/metrics";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -47,12 +48,17 @@ export function usePositions(
     account,
   });
 
+  const positionsKey = useMemo(
+    () => (account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null),
+    [account, keysAndPrices.marketsKeys]
+  );
+
   const {
     data: positionsData,
     error: positionsError,
     isLoading,
   } = useMulticall(chainId, "usePositionsData", {
-    key: account && keysAndPrices.marketsKeys.length ? [account, keysAndPrices.marketsKeys] : null,
+    key: positionsKey,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,
@@ -83,8 +89,10 @@ export function usePositions(
         },
       };
     },
-    parseResponse: (res) => {
+    parseResponse: (res, chainId) => {
       const positions = res.data.reader.positions.returnValues;
+
+      freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
 
       return positions.reduce((positionsMap: PositionsData, positionInfo) => {
         const { position, fees, basePnlUsd } = positionInfo;
@@ -133,6 +141,12 @@ export function usePositions(
       setDisableBatching(false);
     }
   }, [disableBatching, positionsData]);
+
+  useEffect(() => {
+    if (!positionsKey) {
+      freshnessMetrics.clear(chainId, FreshnessMetricId.Positions);
+    }
+  }, [positionsKey, chainId]);
 
   const optimisticPositionsData = useOptimisticPositions({
     positionsData: positionsData,

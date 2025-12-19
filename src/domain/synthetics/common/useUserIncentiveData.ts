@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { getSubsquidGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { Distribution } from "sdk/types/subsquid";
 
 const USER_INCENTIVE_QUERY = gql`

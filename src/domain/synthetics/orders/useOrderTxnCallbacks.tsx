@@ -1,6 +1,7 @@
 import { plural, t, Trans } from "@lingui/macro";
 import mapValues from "lodash/mapValues";
 import { useCallback, useMemo } from "react";
+import { zeroAddress } from "viem";
 
 import { PendingTransaction, usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -19,6 +20,7 @@ import {
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
+import { TokenBalanceType } from "domain/tokens";
 import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
@@ -124,7 +126,7 @@ export function useOrderTxnCallbacks() {
             (amount): TokenBalanceUpdate => ({
               diff: -amount,
               isPending: true,
-              balanceType: expressParams?.isGmxAccount ? "gmxAccount" : "wallet",
+              balanceType: expressParams?.isGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
             })
           )
         );
@@ -463,7 +465,7 @@ export function getPendingPositionFromParams({
   const sizeDeltaInTokens = createOrderPayload.params.sizeDeltaInTokens;
 
   const positionKey = getPositionKey(
-    createOrderPayload.orderPayload.addresses.receiver,
+    createOrderPayload.orderPayload.addresses.receiver ?? zeroAddress,
     createOrderPayload.orderPayload.addresses.market,
     collateralAddress,
     createOrderPayload.orderPayload.isLong
@@ -534,7 +536,7 @@ export function getPendingCreateOrder(
   createdAt = Date.now()
 ): PendingOrderData {
   return {
-    account: createOrderPayload.orderPayload.addresses.receiver,
+    account: createOrderPayload.orderPayload.addresses.receiver ?? zeroAddress,
     marketAddress: createOrderPayload.orderPayload.addresses.market,
     initialCollateralTokenAddress: createOrderPayload.orderPayload.addresses.initialCollateralToken,
     initialCollateralDeltaAmount: createOrderPayload.orderPayload.numbers.initialCollateralDeltaAmount,

@@ -6,7 +6,7 @@ import { getBridgingOptionsForToken } from "config/bridging";
 import { BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
-import { MULTICHAIN_TRANSFER_SUPPORTED_TOKENS } from "config/multichain";
+import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
@@ -69,7 +69,7 @@ import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { convertTokenAddress, getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { TokenData } from "sdk/types/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
@@ -240,7 +240,7 @@ export function useTradeboxButtonState({
               ) : (
                 <Trans>Decrease the size to match the max. allowed leverage:</Trans>
               )}{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
@@ -302,9 +302,8 @@ export function useTradeboxButtonState({
 
     if (shouldShowDepositButton) {
       if (fromToken) {
-        const wrappedAddress = convertTokenAddress(chainId, fromToken.address, "wrapped");
-        const isSupportedToDeposit = Boolean(
-          MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[chainId as SettlementChainId]?.includes(wrappedAddress)
+        const isSupportedToDeposit = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[chainId as SettlementChainId].includes(
+          fromToken.address
         );
 
         if (isSupportedToDeposit) {

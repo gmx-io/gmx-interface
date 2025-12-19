@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -7,6 +8,8 @@ import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
 import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
+
+import FeedbackIcon from "img/ic_feedback.svg?react";
 
 import { getFooterLinks, SOCIAL_LINKS } from "./constants";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
@@ -54,6 +57,10 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
               </Button>
             );
           })}
+          <Button variant="ghost" onClick={() => setFeedbackModalVisible(true)}>
+            {isMobileSideNav ? null : <FeedbackIcon />}
+            <Trans>Leave Feedback</Trans>
+          </Button>
         </div>
         <div
           className={cx("flex", {

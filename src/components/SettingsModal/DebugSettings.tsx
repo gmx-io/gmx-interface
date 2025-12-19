@@ -1,12 +1,15 @@
 import { Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
+import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDebugSettings";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
+import { RpcDebugSettings } from "./RpcDebugSettings";
 import { SettingsSection } from "./shared";
 
 interface DebugSettingsProps {
@@ -41,7 +44,52 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
 
         <DebugSwapsSettings />
 
+        <MetricsDebugSettings />
+
+        <RpcDebugSettings />
+
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
+      </SettingsSection>
+      <SettingsSection className="mt-16 gap-16">
+        <div className="text-14 font-medium text-typography-primary">
+          <Trans>Links</Trans>
+        </div>
+        <Link
+          to="/monitor"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>Markets Monitoring</Trans>
+        </Link>
+        <Link
+          to="/rpc-debug"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>RPC Monitoring</Trans>
+        </Link>
+        <Link
+          to="/oracle-keeper-debug"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>Oracle Keeper Monitoring</Trans>
+        </Link>
+        <Link
+          to="/permits"
+          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <Trans>Permits Testing</Trans>
+        </Link>
       </SettingsSection>
     </div>
   );

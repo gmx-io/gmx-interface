@@ -1,6 +1,7 @@
 import { zeroAddress } from "viem";
 
 import { getContract } from "configs/contracts";
+import { USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE } from "configs/dataStore";
 import { convertTokenAddress, getToken } from "configs/tokens";
 import { ClaimableFundingData, MarketInfo, MarketsData, MarketSdkConfig, MarketsInfoData } from "types/markets";
 import { TokensData } from "types/tokens";
@@ -262,7 +263,8 @@ export class Markets extends Module {
               dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
             maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
             lentPositionImpactPoolAmount: dataStoreValues.lentPositionImpactPoolAmount.returnValues[0],
-            positionImpactExponentFactor: dataStoreValues.positionImpactExponentFactor.returnValues[0],
+            positionImpactExponentFactorPositive: dataStoreValues.positionImpactExponentFactorPositive.returnValues[0],
+            positionImpactExponentFactorNegative: dataStoreValues.positionImpactExponentFactorNegative.returnValues[0],
             swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
             swapFeeFactorForBalanceWasNotImproved:
               dataStoreValues.swapFeeFactorForBalanceWasNotImproved.returnValues[0],
@@ -270,6 +272,10 @@ export class Markets extends Module {
             atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
             swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
             swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
+            withdrawalFeeFactorBalanceWasImproved:
+              dataStoreValues.withdrawalFeeFactorBalanceWasImproved.returnValues[0],
+            withdrawalFeeFactorBalanceWasNotImproved:
+              dataStoreValues.withdrawalFeeFactorBalanceWasNotImproved.returnValues[0],
 
             virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
             virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
@@ -285,6 +291,35 @@ export class Markets extends Module {
 
       return result;
     });
+  }
+
+  private async getMarketsConstants(): Promise<{ useOpenInterestInTokensForBalance: boolean } | undefined> {
+    const dataStoreAddress = getContract(this.chainId, "DataStore");
+
+    return this.sdk
+      .executeMulticall({
+        dataStore: {
+          contractAddress: dataStoreAddress,
+          abiId: "DataStore",
+          calls: {
+            useOpenInterestInTokensForBalance: {
+              methodName: "getBool",
+              params: [USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE],
+            },
+          },
+        },
+      })
+      .then((res) => {
+        if (res.errors.dataStore || !res.data.dataStore) {
+          // eslint-disable-next-line no-console
+          console.warn("Failed to get markets constants", res.errors.dataStore, res.data.dataStore);
+          return undefined;
+        }
+
+        return {
+          useOpenInterestInTokensForBalance: res.data.dataStore.useOpenInterestInTokensForBalance.returnValues[0],
+        };
+      });
   }
 
   private _marketsData: MarketsResult | undefined;
@@ -392,7 +427,7 @@ export class Markets extends Module {
 
     const { tokensData, pricesUpdatedAt } = await this.sdk.tokens.getTokensData();
 
-    const [marketsValues, marketsConfigs, claimableFundingData] = await Promise.all([
+    const [marketsValues, marketsConfigs, claimableFundingData, marketsConstants] = await Promise.all([
       this.getMarketsValues({
         account: this.account,
         marketsAddresses,
@@ -404,6 +439,7 @@ export class Markets extends Module {
         marketsData,
       }),
       this.getClaimableFundingData(),
+      this.getMarketsConstants(),
     ]);
 
     if (!marketsValues || !marketsConfigs || !marketsAddresses || !claimableFundingData) {
@@ -427,7 +463,7 @@ export class Markets extends Module {
         ? getByKey(tokensData!, convertTokenAddress(this.chainId, market.indexTokenAddress, "native"))
         : undefined;
 
-      if (!market || !marketValues || !marketConfig || !longToken || !shortToken || !indexToken) {
+      if (!market || !marketValues || !marketConfig || !longToken || !shortToken || !indexToken || !marketsConstants) {
         continue;
       }
 
@@ -436,6 +472,7 @@ export class Markets extends Module {
         ...marketConfig,
         ...claimableFundingData[marketAddress],
         ...market,
+        ...marketsConstants,
         longToken,
         shortToken,
         indexToken,

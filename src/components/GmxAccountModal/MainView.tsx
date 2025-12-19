@@ -35,6 +35,7 @@ import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
 
 import BellIcon from "img/ic_bell.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
@@ -53,18 +54,6 @@ import {
   useAvailableToTradeAssetSymbolsSettlementChain,
 } from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
-
-function UsdValueWithSkeleton({ usd }: { usd: bigint | undefined }) {
-  return (
-    <span className="numbers">
-      {usd !== undefined ? (
-        formatUsd(usd)
-      ) : (
-        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={54} className="leading-base" inline={true} />
-      )}
-    </span>
-  );
-}
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);
@@ -227,7 +216,7 @@ function GmxAccountBalanceTooltipContent() {
   return (
     <Trans>
       Your GMX Account balance, usable for trading from any supported chain.{" "}
-      <ExternalLink href="https://docs.gmx.io/docs/trading/v2#multichain-trading">Read more</ExternalLink>.
+      <ExternalLink href="https://docs.gmx.io/docs/trading#multichain-trading">Read more</ExternalLink>.
     </Trans>
   );
 }

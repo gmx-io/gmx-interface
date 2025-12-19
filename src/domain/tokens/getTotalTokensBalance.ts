@@ -1,7 +1,12 @@
+import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { TokensData } from "domain/synthetics/tokens/types";
-import { convertToUsd } from "domain/synthetics/tokens/utils";
+import { sumBigInts } from "lib/sumBigInts";
 
-export function getTotalTokensBalance(tokensData: TokensData | undefined, tokenSymbols: string[]) {
+export function getTotalTokensBalance(
+  tokensData: TokensData | undefined,
+  tokenSymbols: string[],
+  multichainMarketTokensBalances?: MultichainMarketTokensBalances
+): { balance: bigint; balanceUsd: bigint } {
   const defaultResult = {
     balance: 0n,
     balanceUsd: 0n,
@@ -14,9 +19,10 @@ export function getTotalTokensBalance(tokensData: TokensData | undefined, tokenS
   const tokens = Object.values(tokensData).filter((token) => tokenSymbols.includes(token.symbol));
 
   return tokens.reduce((acc, token) => {
-    const balanceUsd = convertToUsd(token.balance, token.decimals, token.prices.minPrice);
-    acc.balance = acc.balance + (token.balance ?? 0n);
-    acc.balanceUsd = acc.balanceUsd + (balanceUsd ?? 0n);
+    const balance = multichainMarketTokensBalances?.[token.address]?.totalBalance;
+    const balanceUsd = multichainMarketTokensBalances?.[token.address]?.totalBalanceUsd;
+    acc.balance = sumBigInts(acc.balance, balance);
+    acc.balanceUsd = sumBigInts(acc.balanceUsd, balanceUsd);
     return acc;
   }, defaultResult);
 }

@@ -43,6 +43,7 @@ export function useThrottledAsync<T, D extends object>(
     params,
     throttleMs = 5000,
     forceRecalculate = false,
+    resetOnForceRecalculate = false,
     withLoading = false,
     leading = true,
     trailing = false,
@@ -50,6 +51,7 @@ export function useThrottledAsync<T, D extends object>(
     params: D | undefined;
     throttleMs?: number;
     forceRecalculate?: boolean;
+    resetOnForceRecalculate?: boolean;
     withLoading?: boolean;
     leading?: boolean;
     trailing?: boolean;
@@ -138,9 +140,18 @@ export function useThrottledAsync<T, D extends object>(
 
   useEffect(() => {
     if (forceRecalculate && params) {
+      if (resetOnForceRecalculate) {
+        setState({
+          data: undefined,
+          isLoading: false,
+          error: undefined,
+          promise: undefined,
+          lastEstimated: 0,
+        });
+      }
       latestHandlerRef.current?.(params);
     }
-  }, [forceRecalculate, params]);
+  }, [forceRecalculate, params, resetOnForceRecalculate]);
 
   useEffect(() => {
     if (!params) {

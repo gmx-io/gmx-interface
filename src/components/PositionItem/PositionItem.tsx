@@ -60,7 +60,7 @@ export type Props = {
   showPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
-  onShareClick: () => void;
+  onShareClick?: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
   isLarge: boolean;
   onOrdersClick?: (key?: string) => void;
@@ -518,15 +518,16 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  className={cx("text-body-small flex cursor-pointer items-center gap-2 numbers", {
+                  className={cx("text-body-small flex items-center gap-2 numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
+                    "cursor-pointer": Boolean(p.onShareClick),
                   })}
                   onClick={p.onShareClick}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                  <NewLinkThinIcon className="mt-1 size-14" />
+                  {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14" />}
                 </div>
               )}
             </div>
@@ -663,15 +664,16 @@ export function PositionItem(p: Props) {
             </div>
             <div>
               <span
-                className={cx("flex cursor-pointer items-center gap-2 numbers", {
+                className={cx("flex items-center gap-2 numbers", {
                   positive: displayedPnl > 0,
                   negative: displayedPnl < 0,
                   muted: displayedPnl == 0n,
+                  "cursor-pointer": Boolean(p.onShareClick),
                 })}
                 onClick={p.onShareClick}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                <NewLinkThinIcon className="mt-2 size-16" />
+                {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16" />}
               </span>
             </div>
           </div>

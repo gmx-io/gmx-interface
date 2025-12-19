@@ -29,10 +29,16 @@ export type SwapOrderType = OrderType.MarketSwap | OrderType.LimitSwap;
 export type IncreaseOrderType = OrderType.MarketIncrease | OrderType.LimitIncrease | OrderType.StopIncrease;
 export type DecreaseOrderType = OrderType.MarketDecrease | OrderType.LimitDecrease | OrderType.StopLossDecrease;
 
+/**
+ * @see https://github.com/gmx-io/gmx-synthetics/blob/a54f774198d79954d66d694af1be479bb6da61f1/contracts/pricing/ISwapPricingUtils.sol#L5
+ */
 export enum SwapPricingType {
-  TwoStep = 0,
-  Shift = 1,
-  Atomic = 2,
+  Swap,
+  Shift,
+  AtomicWithdrawal,
+  Deposit,
+  Withdrawal,
+  AtomicSwap,
 }
 
 export enum DecreasePositionSwapType {
@@ -74,6 +80,8 @@ export type SwapOrderInfo = Order & {
   isTwap: false;
   swapPathStats?: SwapPathStats;
   triggerRatio?: TokensRatio | TokensRatioAndSlippage;
+  // Store trigger ratio value
+  triggerPrice: bigint;
   initialCollateralToken: TokenData;
   targetCollateralToken: TokenData;
 };

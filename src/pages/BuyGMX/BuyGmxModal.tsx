@@ -1,15 +1,23 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode } from "react";
+import { MouseEvent, ReactNode, useState } from "react";
+import { useHistory } from "react-router-dom";
 
+import { ARBITRUM } from "config/chains";
 import { useChainId } from "lib/chains";
+import { metrics } from "lib/metrics";
+import { switchNetwork } from "lib/wallets";
+import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import GmxRoundedWhiteIcon from "img/ic_gmx_rounded_white.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { BUY_GMX_MODAL_LINKS } from "./buyGmxModalConfig";
+
+const DIRECT_BUY_PATH = "/trade/swap?from=usdc&to=gmx";
 
 export function BuyGmxModal({
   isVisible,
@@ -19,6 +27,38 @@ export function BuyGmxModal({
   setIsVisible: (isVisible: boolean) => void;
 }) {
   const { chainId } = useChainId();
+  const { active } = useWallet();
+  const history = useHistory();
+  const [isSwitching, setIsSwitching] = useState(false);
+
+  const handleBuyDirectClick = async (event: MouseEvent) => {
+    event.preventDefault();
+
+    if (isSwitching) {
+      return;
+    }
+
+    if (chainId === ARBITRUM) {
+      history.push(DIRECT_BUY_PATH);
+      return;
+    }
+
+    setIsSwitching(true);
+
+    try {
+      if (!active) {
+        history.push(DIRECT_BUY_PATH);
+        switchNetwork(ARBITRUM, active);
+      } else {
+        await switchNetwork(ARBITRUM, active);
+        history.push(DIRECT_BUY_PATH);
+      }
+    } catch (e) {
+      metrics.pushError(e, "buyGmxModal.switchNetworkError");
+    }
+
+    setIsSwitching(false);
+  };
 
   return (
     <ModalWithPortal
@@ -31,9 +71,11 @@ export function BuyGmxModal({
       <div className="flex flex-col gap-16">
         <BuyGmxModalButton
           variant="primary"
-          to="/trade/swap?from=usdc&to=gmx"
           icon={<GmxRoundedWhiteIcon className="size-20" />}
           newTab={false}
+          onClick={handleBuyDirectClick}
+          isLoading={isSwitching}
+          disabled={isSwitching}
         >
           <Trans>Buy on GMX directly</Trans>
         </BuyGmxModalButton>
@@ -64,12 +106,18 @@ export function BuyGmxModalButton({
   children,
   variant,
   newTab,
+  onClick,
+  isLoading,
+  disabled,
 }: {
-  to: string;
+  to?: string;
   icon: ReactNode;
   children: ReactNode;
   variant: "primary" | "secondary";
   newTab: boolean;
+  onClick?: (event: MouseEvent) => void;
+  isLoading?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <Button
@@ -78,12 +126,14 @@ export function BuyGmxModalButton({
       to={to}
       newTab={newTab}
       showExternalLinkArrow={false}
+      onClick={onClick}
+      disabled={disabled}
     >
       <span className="flex items-center gap-8">
         {icon}
         {children}
       </span>
-      <ArrowRightIcon className="size-20" />
+      {isLoading ? <SpinnerIcon className="spin size-20" /> : <ArrowRightIcon className="size-20" />}
     </Button>
   );
 }

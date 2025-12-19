@@ -427,9 +427,13 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.minCollateralFactorForOpenInterestShort],
         },
-        positionImpactExponentFactor: {
+        positionImpactExponentFactorPositive: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.positionImpactExponentFactor],
+          params: [prebuiltHashedKeys.positionImpactExponentFactorPositive],
+        },
+        positionImpactExponentFactorNegative: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.positionImpactExponentFactorNegative],
         },
         swapFeeFactorForBalanceWasImproved: {
           methodName: "getUint",
@@ -454,6 +458,14 @@ export async function buildMarketsConfigsRequest(
         swapImpactExponentFactor: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.swapImpactExponentFactor],
+        },
+        withdrawalFeeFactorBalanceWasImproved: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.withdrawalFeeFactorBalanceWasImproved],
+        },
+        withdrawalFeeFactorBalanceWasNotImproved: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.withdrawalFeeFactorBalanceWasNotImproved],
         },
         virtualMarketId: {
           methodName: "getBytes32",

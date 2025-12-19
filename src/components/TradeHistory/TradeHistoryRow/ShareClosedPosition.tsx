@@ -37,30 +37,43 @@ export default function ShareClosedPosition({
       tradeAction.initialCollateralToken.prices.minPrice
     ) ?? 0n;
 
-  const leverage = getLeverage({
+  const pnlUsd = tradeAction.pnlUsd ?? 0n;
+  const pnlAfterFeesPercentage = collateralUsd != 0n && pnlUsd != 0n ? getBasisPoints(pnlUsd, collateralUsd) : 0n;
+
+  const getLeverageProps = {
     sizeInUsd: tradeAction.sizeDeltaUsd ?? 0n,
     collateralUsd: collateralUsd,
-    pnl: 0n,
     pendingBorrowingFeesUsd: 0n,
     pendingFundingFeesUsd: 0n,
+  };
+
+  const leverageWithoutPnl = getLeverage({
+    ...getLeverageProps,
+    pnl: 0n,
   });
 
-  const pnlAfterFeesPercentage = collateralUsd != 0n ? getBasisPoints(tradeAction.pnlUsd ?? 0n, collateralUsd) : 0n;
+  const leverageWithPnl = getLeverage({
+    ...getLeverageProps,
+    pnl: pnlUsd,
+  });
 
   const markPrice = getTokenPriceByTradeAction(tradeAction);
 
-  const entryPrice = getEntryPrice({
-    sizeInTokens: tradeAction.sizeDeltaInTokens ?? 0n,
-    sizeInUsd: tradeAction.sizeDeltaUsd ?? 0n,
-    indexToken: tradeAction.marketInfo.indexToken,
-  });
+  const entryPrice = tradeAction.sizeDeltaInTokens
+    ? getEntryPrice({
+        sizeInTokens: tradeAction.sizeDeltaInTokens,
+        sizeInUsd: tradeAction.sizeDeltaUsd,
+        indexToken: tradeAction.marketInfo.indexToken,
+      })
+    : 0n;
 
   return (
     <PositionShare
       entryPrice={entryPrice}
       indexToken={tradeAction.marketInfo.indexToken}
       isLong={tradeAction.isLong}
-      leverage={leverage}
+      leverageWithPnl={leverageWithPnl}
+      leverageWithoutPnl={leverageWithoutPnl}
       markPrice={markPrice ?? 0n}
       pnlAfterFeesPercentage={pnlAfterFeesPercentage}
       chainId={chainId}
@@ -72,6 +85,7 @@ export default function ShareClosedPosition({
       onDoNotShowAgainChange={onDoNotShowAgainChange}
       onShareAction={onShareAction}
       shareSource={shareSource}
+      isRpnl={true}
     />
   );
 }

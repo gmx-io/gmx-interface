@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, withRetry } from "viem";
 
 import { getExplorerUrl } from "config/chains";
-import { createAndSignTokenPermit, getTokenPermitParams } from "domain/tokens/permitUtils";
+import {
+  createAndSignTokenPermit,
+  getTokenPermitParams,
+  validateTokenPermitSignature,
+} from "domain/tokens/permitUtils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { sleep } from "lib/sleep";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { getV2Tokens } from "sdk/configs/tokens";
@@ -33,32 +38,57 @@ export function TestPermits() {
   const tokens = getV2Tokens(chainId).filter((token) => !token.isNative);
 
   useEffect(() => {
-    if (!signer?.provider || !account) return;
+    if (!signer?.provider || !account) {
+      return;
+    }
 
-    tokens.forEach((token) => {
-      if (onchainParams[token.address] || onchainLoading[token.address]) {
-        return;
-      }
-      setOnchainLoading((prev) => ({ ...prev, [token.address]: true }));
-      getTokenPermitParams(chainId, account, token.address, signer.provider)
-        .then((params) => {
+    fetchOnchainParams();
+
+    async function fetchOnchainParams() {
+      for (const token of tokens) {
+        if (onchainParams[token.address] || onchainLoading[token.address]) {
+          continue;
+        }
+
+        setOnchainLoading((prev) => ({ ...prev, [token.address]: true }));
+
+        try {
+          const params = await withRetry(
+            () => getTokenPermitParams(chainId, account!, token.address, signer!.provider!),
+            {
+              shouldRetry: ({ error }) => {
+                return Boolean(error.message && !error.message.includes("Cannot decode zero data "));
+              },
+              retryCount: 5,
+              delay: 200,
+            }
+          );
+
           setOnchainParams((prev) => ({
             ...prev,
             [token.address]: { name: params.name, version: params.version, nonce: params.nonce, error: false },
           }));
-        })
-        .catch(() => {
+        } catch (error) {
+          if (!error.message.includes("Cannot decode zero data ")) {
+            // eslint-disable-next-line no-console
+            console.error("Error fetching onchain params for token", token.symbol, token.address, error);
+            return;
+          }
+
           setOnchainParams((prev) => ({
             ...prev,
             [token.address]: { error: true },
           }));
-        })
-        .finally(() => {
+        } finally {
           setOnchainLoading((prev) => ({ ...prev, [token.address]: false }));
-        });
-    });
+        }
+
+        await sleep(200);
+      }
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokens, signer, account, chainId]);
+  }, [account, chainId, signer?.provider]);
 
   const handleSignPermit = async () => {
     if (!selectedToken || !account || !signer) return;
@@ -68,6 +98,15 @@ export function TestPermits() {
       const value = MaxUint256;
 
       const { permit } = await createAndSignTokenPermit(chainId, signer, selectedToken.address, account, value);
+
+      const validationResult = await validateTokenPermitSignature(chainId, permit);
+
+      if (!validationResult.isValid) {
+        helperToast.error(`Permit validation error: ${validationResult.error?.errorMessage}`);
+        // eslint-disable-next-line no-console
+        console.error(validationResult);
+        return;
+      }
 
       setPermitData(permit);
       helperToast.success(`Permit signed successfully for ${selectedToken.symbol}`);

@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import useSWR from "swr";
 
-import { getSubgraphUrl } from "config/subgraph";
+import { getIndexerUrl } from "config/indexers";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
@@ -31,6 +31,7 @@ type GmGlvTokensAPRResult = {
   marketsTokensLidoAprData?: MarketTokensAPRData;
   marketsTokensApyData?: MarketTokensAPRData;
   avgMarketsApy?: bigint;
+  isLoading: boolean;
 };
 
 type SwrResult = {
@@ -252,6 +253,7 @@ export function useGmMarketsApy(
     tokensData,
     chainId,
     account,
+    srcChainId,
   });
 
   const marketsInfoData = {
@@ -261,7 +263,7 @@ export function useGmMarketsApy(
 
   const marketAddresses = useMarketAddresses(marketsInfoData);
 
-  const subsquidUrl = getSubgraphUrl(chainId, "subsquid");
+  const subsquidUrl = getIndexerUrl(chainId, "subsquid");
 
   const key =
     marketAddresses.length && marketTokensData && subsquidUrl
@@ -272,7 +274,7 @@ export function useGmMarketsApy(
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
-  const { data } = useSWR(key, {
+  const { data, isLoading } = useSWR(key, {
     fetcher: async (): Promise<SwrResult> => {
       const apys = await oracleKeeperFetcher.fetchApys(period);
       const wstEthToken = getTokenBySymbolSafe(chainId, "wstETH");
@@ -347,5 +349,6 @@ export function useGmMarketsApy(
     glvTokensIncentiveAprData: marketsTokensIncentiveAprData.glvTokensAPRData,
     avgMarketsApy: data?.avgMarketsApy,
     marketsTokensApyData: data?.marketsTokensApyData,
+    isLoading,
   };
 }

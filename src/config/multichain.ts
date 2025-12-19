@@ -12,6 +12,9 @@ import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployme
 import { address as usdcPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
 import { address as usdcPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDC.json";
 import { address as usdtPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDT.json";
+import { address as ethPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolNative.json";
+import { address as usdcPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolUSDC.json";
+import { address as usdtPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
@@ -31,9 +34,11 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  ContractsChainId,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
@@ -43,6 +48,8 @@ import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { isSettlementChain, isSourceChain, SOURCE_CHAINS } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
+
+import platformTokensData from "./static/platformTokens.json";
 
 export * from "sdk/configs/multichain";
 
@@ -56,7 +63,7 @@ export {
   usdcSgPoolSepolia,
 };
 
-type MultichainTokenMapping = Record<
+export type MultichainTokenMapping = Record<
   // settlement chain id
   SettlementChainId,
   Record<
@@ -75,15 +82,6 @@ type MultichainTokenMapping = Record<
   >
 >;
 
-type MultichainWithdrawSupportedTokens = Partial<
-  Record<
-    // settlement chain id
-    SettlementChainId,
-    // settlement chain wrapped token address
-    string[]
-  >
->;
-
 type MultichainSourceToSettlementsMap = Record<SourceChainId, SettlementChainId[]>;
 
 export type MultichainTokenId = {
@@ -93,6 +91,7 @@ export type MultichainTokenId = {
   stargate: string;
   symbol: string;
   isTestnet?: boolean;
+  isPlatformToken?: boolean;
 };
 
 const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>> = {
@@ -125,6 +124,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdcPoolBsc,
       symbol: "USDC",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      decimals: 6,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: usdcPoolEthereum,
+      symbol: "USDC",
+    },
   },
   ["USDT"]: {
     [ARBITRUM]: {
@@ -148,6 +154,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdtPoolBsc,
       symbol: "USDT",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      decimals: 6,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: usdtPoolEthereum,
+      symbol: "USDT",
+    },
   },
   ["ETH"]: {
     [ARBITRUM]: {
@@ -164,8 +177,22 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: ethPoolBase,
       symbol: "ETH",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: ethPoolEthereum,
+      symbol: "ETH",
+    },
   },
 };
+
+for (const [symbol, chainAddresses] of Object.entries(platformTokensData.mainnets)) {
+  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+    symbol,
+    chainAddresses,
+  });
+}
 
 if (isDevelopment()) {
   TOKEN_GROUPS["USDC.SG"] = {
@@ -243,6 +270,45 @@ if (isDevelopment()) {
       isTestnet: true,
     },
   };
+
+  for (const [symbol, chainAddresses] of Object.entries(platformTokensData.testnets)) {
+    addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+      symbol,
+      chainAddresses,
+    });
+  }
+}
+
+function addMultichainPlatformTokenConfig(
+  tokenGroups: typeof TOKEN_GROUPS,
+  {
+    symbol,
+    chainAddresses,
+  }: {
+    symbol: string;
+    chainAddresses: Partial<
+      Record<
+        AnyChainId,
+        {
+          address: string;
+          stargate: string;
+        }
+      >
+    >;
+  }
+) {
+  tokenGroups[symbol] = {};
+
+  for (const chainIdString in chainAddresses) {
+    tokenGroups[symbol]![chainIdString] = {
+      address: chainAddresses[chainIdString].address,
+      decimals: 18,
+      chainId: parseInt(chainIdString) as SettlementChainId | SourceChainId,
+      stargate: chainAddresses[chainIdString].stargate,
+      symbol: symbol,
+      isPlatformToken: true,
+    } satisfies MultichainTokenId;
+  }
 }
 
 export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
@@ -251,9 +317,10 @@ if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
   SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
 }
 
-export const MULTICHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
-
-export const MULTICHAIN_TRANSFER_SUPPORTED_TOKENS = {} as MultichainWithdrawSupportedTokens;
+export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
+export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
+export const MULTI_CHAIN_PLATFORM_TOKENS_MAP = {} as Record<SettlementChainId, string[]>;
 
 export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
   SettlementChainId | SourceChainId,
@@ -267,10 +334,13 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     const firstChainId = parseInt(chainIdString) as SettlementChainId | SourceChainId;
 
     const tokenId = TOKEN_GROUPS[tokenSymbol]![firstChainId]!;
-    if (tokenId) {
-      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
-      CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
+
+    if (!tokenId) {
+      continue;
     }
+
+    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
+    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
 
     if (!isSettlementChain(firstChainId)) {
       continue;
@@ -278,7 +348,16 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
     const settlementChainId = firstChainId;
 
-    let empty = true;
+    if (!tokenId?.isPlatformToken) {
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] = MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId] || [];
+      MULTI_CHAIN_DEPOSIT_TRADE_TOKENS[settlementChainId].push(tokenId.address);
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId] =
+        MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId] || [];
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[settlementChainId].push(
+        convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
+      );
+    }
+
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
       const sourceChainId = parseInt(sourceChainIdString) as SettlementChainId | SourceChainId;
       if (!isSourceChain(sourceChainId)) {
@@ -295,31 +374,26 @@ for (const tokenSymbol in TOKEN_GROUPS) {
         continue;
       }
 
-      empty = false;
-
       MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] =
         MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] || [];
       MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId] = uniq(
         MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[sourceChainId].concat(settlementChainId)
       );
 
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId] = MULTICHAIN_TOKEN_MAPPING[settlementChainId] || {};
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
-        MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
+        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
 
-      MULTICHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
         settlementChainTokenAddress: tokenId.address,
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
       };
     }
 
-    if (!empty) {
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] =
-        MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId] || [];
-      MULTICHAIN_TRANSFER_SUPPORTED_TOKENS[settlementChainId]!.push(
-        convertTokenAddress(settlementChainId, tokenId.address, "wrapped")
-      );
+    if (tokenId?.isPlatformToken) {
+      MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId] = MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId] || [];
+      MULTI_CHAIN_PLATFORM_TOKENS_MAP[settlementChainId].push(tokenId.address);
     }
   }
 }
@@ -328,6 +402,7 @@ export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChain
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
+  [SOURCE_ETHEREUM_MAINNET]: ARBITRUM,
   [SOURCE_BASE_MAINNET]: ARBITRUM,
   [SOURCE_BSC_MAINNET]: ARBITRUM,
   [BOTANIX]: ARBITRUM,
@@ -371,6 +446,7 @@ export function getMappedTokenId(
 }
 
 export const MULTICALLS_MAP: Record<SourceChainId, string> = {
+  [SOURCE_ETHEREUM_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
@@ -404,6 +480,7 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [SOURCE_SEPOLIA]: 40161,
   [SOURCE_OPTIMISM_SEPOLIA]: 40232,
   [ARBITRUM]: 30110,
+  [SOURCE_ETHEREUM_MAINNET]: 30101,
   [SOURCE_BASE_MAINNET]: 30184,
   [AVALANCHE]: 30106,
   [SOURCE_BSC_MAINNET]: 30102,
@@ -421,3 +498,12 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
 export const RANDOM_WALLET = Wallet.createRandom();
+
+export function getSourceChainDecimalsMapped(
+  chainId: ContractsChainId,
+  srcChainId: SourceChainId,
+  tokenAddress: string
+): number | undefined {
+  const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId as SourceChainId);
+  return tokenId?.decimals;
+}

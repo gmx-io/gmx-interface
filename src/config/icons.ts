@@ -5,8 +5,11 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  GmxAccountPseudoChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "config/chains";
@@ -29,6 +32,7 @@ import avalancheTestnet from "img/tokens/ic_avalanche_testnet.svg";
 import base from "img/tokens/ic_base.svg";
 import botanix from "img/tokens/ic_botanix.svg";
 import esGMXIcon from "img/tokens/ic_esgmx.svg";
+import eth from "img/tokens/ic_eth.svg";
 import glpIcon from "img/tokens/ic_glp.svg";
 import glvIcon from "img/tokens/ic_glv.svg";
 import gmxIcon from "img/tokens/ic_gmx.svg";
@@ -90,10 +94,11 @@ const ICONS: Record<number | "common", ChainIcons> = {
   },
 };
 
-export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | 0, string> = {
+export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChainId, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
-  0: gmxIcon,
+  [GMX_ACCOUNT_PSEUDO_CHAIN_ID]: gmxIcon,
+  [SOURCE_ETHEREUM_MAINNET]: eth,
   [SOURCE_BASE_MAINNET]: base,
   [AVALANCHE_FUJI]: avalancheTestnet,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,

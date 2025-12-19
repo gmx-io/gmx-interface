@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import mapKeys from "lodash/mapKeys";
 import { useEnsName } from "wagmi";
 
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
+import { ARBITRUM, SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -30,6 +30,8 @@ const { ZeroAddress } = ethers;
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
 export const MIN_PROFIT_TIME = 0;
+
+export const CHAIN_ID = ARBITRUM;
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 
@@ -142,7 +144,7 @@ export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols
   if (opts.omitSymbols) {
     return rateValue;
   }
-  return `${rateValue} ${tokenA.symbol} / ${tokenB.symbol}`;
+  return `${rateValue} ${tokenA.symbol} per ${tokenB.symbol}`;
 }
 
 const adjustForDecimalsFactory = (n: number) => (number: bigint) => {
@@ -765,7 +767,7 @@ export function shortenAddress(address, length, padStart = 1) {
 export function useENS(address) {
   const { data } = useEnsName({
     address,
-    chainId: ETH_MAINNET,
+    chainId: SOURCE_ETHEREUM_MAINNET,
   });
   const ensName = data || undefined;
 

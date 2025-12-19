@@ -8,7 +8,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
 import { needSwitchToSettlementChain } from "./utils";
 
-export function SwitchToSettlementChainWarning({ topic }: { topic: "liquidity" | "staking" | "vesting" }) {
+export function SwitchToSettlementChainWarning({ topic }: { topic: "liquidity" | "staking" | "vesting" | "shift" }) {
   const { chainId: walletChainId } = useAccount();
 
   if (!needSwitchToSettlementChain(walletChainId)) {
@@ -25,13 +25,24 @@ export function SwitchToSettlementChainWarning({ topic }: { topic: "liquidity" |
   if (topic === "liquidity") {
     message = multipleChains ? (
       <Trans>
-        Liquidity providing is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or{" "}
-        {lastChainName} to access earning opportunities.
+        Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to{" "}
+        {chainNames} or {lastChainName} to access earning opportunities.
       </Trans>
     ) : (
       <Trans>
-        Liquidity providing is only available on {chainNames}. Please switch to {chainNames} to access earning
-        opportunities.
+        Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access
+        earning opportunities.
+      </Trans>
+    );
+  } else if (topic === "shift") {
+    message = multipleChains ? (
+      <Trans>
+        Shifting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName}{" "}
+        to access earning opportunities.
+      </Trans>
+    ) : (
+      <Trans>
+        Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities.
       </Trans>
     );
   } else if (topic === "staking") {

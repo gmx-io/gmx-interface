@@ -1,8 +1,11 @@
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
-import { metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
-import { registerOracleKeeperFailure, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
+import { ContractsChainId } from "config/chains";
+import { FreshnessMetricId, metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
+import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
+import { _debugOracleKeeper } from "lib/oracleKeeperFetcher/_debug";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/types/tokens";
@@ -18,7 +21,14 @@ export type TokenPricesDataResult = {
   isPriceDataLoading: boolean;
 };
 
-export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataResult {
+const PRICES_CACHE: { [chainId: number]: TokenPricesData } = {};
+const PRICES_CACHE_UPDATED: { [chainId: number]: { [address: string]: number } } = {};
+
+export function useTokenRecentPricesRequest(
+  chainId: ContractsChainId,
+  params?: { enabled?: boolean }
+): TokenPricesDataResult {
+  const { enabled = true } = params ?? {};
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const pathname = useLocation().pathname;
 
@@ -29,21 +39,21 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       : PRICES_UPDATE_INTERVAL;
   }, [pathname]);
 
-  const pricesCacheRef = useRef<TokenPricesData>({});
-  const pricesCacheUpdatedRef = useRef<{ [address: string]: number }>({});
+  PRICES_CACHE[chainId] = PRICES_CACHE[chainId] || {};
+  PRICES_CACHE_UPDATED[chainId] = PRICES_CACHE_UPDATED[chainId] || {};
 
-  const { data, error, isLoading } = useSequentialTimedSWR([chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"], {
+  const key = enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
+
+  const { data, error, isLoading } = useSequentialTimedSWR(key, {
     refreshInterval: refreshPricesInterval,
 
-    keepPreviousData: true,
-
     fetcher: async ([chainId]) => {
-      const result: TokenPricesData = {};
-
-      let priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
+      const priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
         metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
         return [];
       });
+
+      const result: TokenPricesData = {};
 
       priceItems.forEach((priceItem) => {
         let tokenConfig: Token;
@@ -56,30 +66,44 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
           return;
         }
 
-        result[tokenConfig.address] = {
+        const formattedPrices = {
           minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
           maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
         };
 
+        result[tokenConfig.address] = formattedPrices;
+
         // Update cache of new received tokens
-        pricesCacheRef.current[tokenConfig.address] = result[tokenConfig.address];
-        pricesCacheUpdatedRef.current[tokenConfig.address] = Date.now();
+        PRICES_CACHE[chainId][tokenConfig.address] = formattedPrices;
+        PRICES_CACHE_UPDATED[chainId][tokenConfig.address] = Date.now();
       });
 
-      const hasPartialData = Object.keys(result).length < Object.keys(pricesCacheRef.current).length;
+      const hasPartialData = Object.keys(result).length < Object.keys(PRICES_CACHE[chainId]).length;
 
       if (hasPartialData) {
         // eslint-disable-next-line no-console
-        console.warn("tickersPartialData");
-        metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
-        registerOracleKeeperFailure(chainId, "tickers");
+        console.warn("tickersPartialData", {
+          result,
+          priceItems,
+          pricesCacheRef: PRICES_CACHE[chainId],
+          pricesCacheUpdatedRef: PRICES_CACHE_UPDATED[chainId],
+        });
 
-        Object.keys(pricesCacheUpdatedRef.current).forEach((address) => {
-          const cacheUpdatedAt = pricesCacheUpdatedRef.current[address];
+        _debugOracleKeeper?.dispatchEvent({
+          type: "tickers-partial",
+          chainId: chainId,
+          endpoint: oracleKeeperFetcher.url,
+        });
+
+        metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
+        oracleKeeperFetcher.handleFailure("tickers");
+
+        Object.keys(PRICES_CACHE_UPDATED[chainId]).forEach((address) => {
+          const cacheUpdatedAt = PRICES_CACHE_UPDATED[chainId][address];
           const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
 
           if (!result[address] && canUseCache) {
-            result[address] = pricesCacheRef.current[address];
+            result[address] = PRICES_CACHE[chainId][address];
           }
         });
       }
@@ -89,6 +113,8 @@ export function useTokenRecentPricesRequest(chainId: number): TokenPricesDataRes
       if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
         result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
       }
+
+      freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Tickers);
 
       return {
         pricesData: result,

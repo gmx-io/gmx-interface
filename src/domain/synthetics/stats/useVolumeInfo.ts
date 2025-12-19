@@ -1,16 +1,16 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { getSyntheticsGraphClient } from "lib/subgraph";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const query = gql`
   query volumeInfo($lastTimestamp: Int!) {
-    hourlyVolumeInfos: volumeInfos(where: { timestamp_gte: $lastTimestamp, period: "1h" }) {
+    hourlyVolumeInfos: volumeInfos(where: { timestamp_gte: $lastTimestamp, period_eq: "1h" }, limit: 3000) {
       volumeUsd
       id
     }
-    totalVolumeInfos: volumeInfos(where: { period: "total" }) {
+    totalVolumeInfos: volumeInfos(where: { period_eq: "total" }, limit: 1000) {
       volumeUsd
       period
       id
@@ -21,7 +21,7 @@ const query = gql`
 export default function useVolumeInfo(chainId: number) {
   async function fetchVolumeData(chain: number, lastTimestamp: number) {
     try {
-      const client = getSyntheticsGraphClient(chain);
+      const client = getSubsquidGraphClient(chain);
       const { data } = await client!.query({
         query,
         variables: {

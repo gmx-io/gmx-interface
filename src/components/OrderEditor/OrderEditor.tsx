@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 import { zeroAddress } from "viem";
 
@@ -199,7 +199,7 @@ export function OrderEditor(p: Props) {
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
-  function getIsMaxLeverageError() {
+  const isMaxLeverageError = useMemo(() => {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
       if (nextPositionValuesWithoutPnlForIncrease?.nextLeverage === undefined) {
         return false;
@@ -214,11 +214,11 @@ export function OrderEditor(p: Props) {
       );
     }
     return false;
-  }
+  }, [p.order, sizeDeltaUsd, nextPositionValuesWithoutPnlForIncrease?.nextLeverage]);
 
   const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
-  function detectAndSetAvailableMaxLeverage() {
+  const detectAndSetAvailableMaxLeverage = useCallback(() => {
     const positionOrder = p.order as PositionOrderInfo;
     const marketInfo = positionOrder.marketInfo;
     const collateralToken = positionOrder.targetCollateralToken;
@@ -297,38 +297,74 @@ export function OrderEditor(p: Props) {
     } else {
       helperToast.error(t`No available leverage found`);
     }
-  }
+  }, [
+    p.order,
+    positionIndexToken,
+    fromToken,
+    minCollateralUsd,
+    maxAllowedLeverage,
+    indexTokenAmount,
+    findSwapPath,
+    existingPosition,
+    uiFeeFactor,
+    userReferralInfo,
+    savedAcceptablePriceImpactBuffer,
+    acceptablePriceImpactBps,
+    triggerPrice,
+    marketsInfoData,
+    chainId,
+    isSetAcceptablePriceImpactEnabled,
+    setSizeInputValue,
+  ]);
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     if (!signer || !tokensData || !marketsInfoData) {
       return undefined;
     }
 
-    const positionOrder = p.order as PositionOrderInfo;
+    if (isSwapOrderType(p.order.orderType)) {
+      return {
+        createOrderParams: [],
+        updateOrderParams: [
+          buildUpdateOrderPayload({
+            chainId,
+            indexTokenAddress: zeroAddress,
+            orderKey: p.order.key,
+            orderType: p.order.orderType,
+            sizeDeltaUsd: 0n,
+            triggerPrice: triggerRatio?.ratio ?? p.order.triggerPrice,
+            acceptablePrice: 0n,
+            minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
+            autoCancel: p.order.autoCancel,
+            validFromTime: 0n,
+            executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+          }),
+        ],
+        cancelOrderParams: [],
+      };
+    } else {
+      const positionOrder = p.order as PositionOrderInfo;
 
-    const orderTriggerPrice = isSwapOrderType(p.order.orderType)
-      ? triggerRatio?.ratio ?? triggerPrice ?? positionOrder.triggerPrice
-      : triggerPrice ?? positionOrder.triggerPrice;
-
-    const updateOrderParams = buildUpdateOrderPayload({
-      chainId,
-      indexTokenAddress: isSwapOrderType(p.order.orderType) ? zeroAddress : positionOrder.indexToken.address,
-      orderKey: p.order.key,
-      orderType: p.order.orderType,
-      sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
-      triggerPrice: orderTriggerPrice,
-      acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
-      minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
-      autoCancel: positionOrder.autoCancel,
-      validFromTime: 0n,
-      executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
-    });
-
-    return {
-      createOrderParams: [],
-      updateOrderParams: [updateOrderParams],
-      cancelOrderParams: [],
-    };
+      return {
+        createOrderParams: [],
+        updateOrderParams: [
+          buildUpdateOrderPayload({
+            chainId,
+            indexTokenAddress: positionOrder.indexToken.address,
+            orderKey: p.order.key,
+            orderType: p.order.orderType,
+            sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+            triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
+            acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
+            minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
+            autoCancel: positionOrder.autoCancel,
+            validFromTime: 0n,
+            executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+          }),
+        ],
+        cancelOrderParams: [],
+      };
+    }
   }, [
     signer,
     tokensData,
@@ -373,7 +409,7 @@ export function OrderEditor(p: Props) {
     };
   }, [additionalExecutionFee, expressParams, tokensData]);
 
-  function getError() {
+  const error = useMemo(() => {
     if (isSubmitting) {
       return t`Updating order...`;
     }
@@ -409,47 +445,21 @@ export function OrderEditor(p: Props) {
     }
 
     return calcSelector(selectOrderEditorPositionOrderError);
-  }
+  }, [
+    isSubmitting,
+    p.order.orderType,
+    p.order.minOutputAmount,
+    calcSelector,
+    triggerRatio,
+    minOutputAmount,
+    isRatioInverted,
+    markRatio,
+    chainId,
+    expressParams,
+    tokensData,
+  ]);
 
-  function getSubmitButtonState(): { text: ReactNode; disabled?: boolean; tooltip?: ReactNode; onClick?: () => void } {
-    const error = getError();
-    const isMaxLeverageError = getIsMaxLeverageError();
-
-    if (isMaxLeverageError) {
-      return {
-        text: t`Max. Leverage Exceeded`,
-        tooltip: (
-          <>
-            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
-            <br />
-            <br />
-            <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-              <Trans>Set Max Leverage</Trans>
-            </span>
-          </>
-        ),
-        disabled: true,
-      };
-    }
-
-    if (error) {
-      return {
-        text: error,
-        disabled: true,
-      };
-    }
-
-    const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
-
-    return {
-      text: `Update ${orderTypeName} Order`,
-      disabled: false,
-      onClick: onSubmit,
-    };
-  }
-
-  async function onSubmit() {
+  const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
       return;
     }
@@ -489,19 +499,66 @@ export function OrderEditor(p: Props) {
       .finally(() => {
         setIsSubmitting(false);
       });
-  }
+  }, [
+    batchParams,
+    signer,
+    tokensData,
+    marketsInfoData,
+    provider,
+    setIsSubmitting,
+    expressParamsPromise,
+    chainId,
+    makeOrderTxnCallback,
+    srcChainId,
+    expressParams?.subaccount,
+    p,
+    market,
+  ]);
 
-  const submitButtonState = getSubmitButtonState();
+  const submitButtonState = useMemo(() => {
+    if (isMaxLeverageError) {
+      return {
+        text: t`Max. Leverage Exceeded`,
+        tooltip: (
+          <>
+            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+            <br />
+            <br />
+            <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
+              <Trans>Set Max Leverage</Trans>
+            </span>
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (error) {
+      return {
+        text: error,
+        disabled: true,
+      };
+    }
+
+    const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
+
+    return {
+      text: t`Update ${orderTypeName} Order`,
+      disabled: false,
+      onClick: onSubmit,
+    };
+  }, [error, isMaxLeverageError, p.order.orderType, p.order.isTwap, onSubmit, detectAndSetAvailableMaxLeverage]);
 
   useKey(
     "Enter",
     () => {
       if (!submitButtonState.disabled) {
-        onSubmit();
+        submitButtonState.onClick?.();
       }
     },
     {},
-    [submitButtonState.disabled]
+    [submitButtonState]
   );
 
   useEffect(

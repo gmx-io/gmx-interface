@@ -294,6 +294,11 @@ export function useTradeboxState(
   const tradeFlags = useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
   const { isSwap } = tradeFlags;
 
+  const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
+    "limit-price-warning-hidden",
+    false
+  );
+
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
   const isFromTokenGmxAccount = Boolean(storedOptions?.isFromTokenGmxAccount);
 
@@ -802,6 +807,8 @@ export function useTradeboxState(
     setNumberOfParts,
     duration,
     setDuration,
+    limitPriceWarningHidden,
+    setLimitPriceWarningHidden,
   };
 }
 

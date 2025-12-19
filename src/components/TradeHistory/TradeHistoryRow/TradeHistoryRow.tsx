@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
-import { CHAIN_SLUGS_MAP, getExplorerUrl } from "config/chains";
+import { getChainSlug, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -19,6 +19,7 @@ import {
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import Button from "components/Button/Button";
@@ -120,6 +121,7 @@ const PRICE_TOOLTIP_WIDTH = 400;
 
 export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAccount, showDebugValues }: Props) {
   const chainId = useSelector(selectChainId);
+  const { account } = useWallet();
   const marketsInfoData = useMarketsInfoData();
 
   const msg = useMemo(() => {
@@ -200,6 +202,11 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     setIsShareModalOpen(true);
   }, [setIsShareModalOpen]);
 
+  const shouldDisplayShareButton =
+    isDecreaseOrderType(tradeAction.orderType) &&
+    tradeAction.eventName === TradeActionType.OrderExecuted &&
+    account === tradeAction.account;
+
   return (
     <>
       <TableTr
@@ -239,7 +246,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             <div className="flex flex-row items-center">
               {showDebugValues && (
                 <Link
-                  to={`/parsetx/${CHAIN_SLUGS_MAP[chainId]}/${tradeAction.transaction.hash}`}
+                  to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transaction.hash}`}
                   className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
                 >
                   Events
@@ -312,7 +319,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           )}
         </TableTd>
         <TableTd>
-          {isDecreaseOrderType(tradeAction.orderType) && tradeAction.eventName === TradeActionType.OrderExecuted ? (
+          {shouldDisplayShareButton ? (
             <Button variant="ghost" onClick={handleShareClick}>
               <NewLinkIconThin className="size-16" />
               <Trans>Share</Trans>

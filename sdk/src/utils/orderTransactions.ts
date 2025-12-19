@@ -51,7 +51,7 @@ export type CancelOrderTxnParams = {
 
 export type CreateOrderPayload = {
   addresses: {
-    receiver: string;
+    receiver: string | undefined;
     cancellationReceiver: string;
     callbackContract: string;
     uiFeeReceiver: string;
@@ -142,7 +142,7 @@ export type ExternalCallsPayload = {
 
 export type CommonOrderParams = {
   chainId: ContractsChainId;
-  receiver: string;
+  receiver: string | undefined;
   executionFeeAmount: bigint;
   executionGasLimit: bigint;
   referralCode: string | undefined;
@@ -522,8 +522,8 @@ export function getBatchTotalExecutionFee({
   }
 
   const feeUsd = convertToUsd(feeTokenAmount, wnt.decimals, wnt.prices.maxPrice)!;
-  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS);
-  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS);
+  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
+  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
 
   return {
     feeTokenAmount,
@@ -616,7 +616,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   swapPath,
 }: {
   chainId: ContractsChainId;
-  receiver: string;
+  receiver: string | undefined;
   payTokenAddress: string;
   payTokenAmount: bigint;
   receiveTokenAddress: string | undefined;
@@ -649,7 +649,7 @@ export function buildTokenTransfersParamsForIncreaseOrSwap({
   let initialCollateralDeltaAmount = payTokenAmount;
   let externalCalls: ExternalCallsPayload | undefined;
 
-  if (externalSwapQuote) {
+  if (externalSwapQuote && receiver) {
     /**
      * External swap will be executed before order creation logic,
      * so the final order has no swap parameters and must treat the outToken address as an initial collateral

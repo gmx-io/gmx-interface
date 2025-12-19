@@ -13,6 +13,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   OrderInfo,
@@ -428,7 +429,9 @@ function TriggerPrice({
       </span>
     );
 
-    return !isSetAcceptablePriceImpactEnabled ? (
+    const isBoundary = isBoundaryAcceptablePrice(positionOrder.acceptablePrice);
+
+    return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
       handle
     ) : (
       <TooltipWithPortal
@@ -488,6 +491,8 @@ function TriggerPrice({
       positionOrder?.indexToken?.visualMultiplier
     );
 
+    const isBoundary = isBoundaryAcceptablePrice(positionOrder.acceptablePrice);
+
     const handle = (
       <span>
         {positionOrder.triggerThresholdType}{" "}
@@ -497,7 +502,7 @@ function TriggerPrice({
         })}
       </span>
     );
-    return !isSetAcceptablePriceImpactEnabled ? (
+    return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
       handle
     ) : (
       <TooltipWithPortal
@@ -873,7 +878,7 @@ function getSwapRatioText(order: OrderInfo) {
     USD_DECIMALS,
     ratioDecimals,
     true
-  )} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
+  )} ${triggerRatio?.smallestToken.symbol} per ${triggerRatio?.largestToken.symbol}`;
 
   const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
 

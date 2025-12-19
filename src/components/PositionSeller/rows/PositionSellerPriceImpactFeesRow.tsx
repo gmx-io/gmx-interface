@@ -58,7 +58,7 @@ export function PositionSellerPriceImpactFeesRow() {
             content={
               <Trans>
                 Net price impact is the price impact for your position.{" "}
-                <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact-and-price-impact-rebates"} newTab>
+                <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>
                 .

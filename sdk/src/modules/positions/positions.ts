@@ -643,6 +643,14 @@ export class Positions extends Module {
         pendingFundingFeesUsd: pendingFundingFeesUsd,
       });
 
+      const leverageWithoutPnl = getLeverage({
+        sizeInUsd: position.sizeInUsd,
+        collateralUsd: collateralUsd,
+        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+        pendingFundingFeesUsd: pendingFundingFeesUsd,
+        pnl: undefined,
+      });
+
       const leverageWithPnl = getLeverage({
         sizeInUsd: position.sizeInUsd,
         collateralUsd: collateralUsd,
@@ -693,6 +701,7 @@ export class Positions extends Module {
         hasLowCollateral,
         leverage,
         leverageWithPnl,
+        leverageWithoutPnl,
         pnl,
         pnlPercentage,
         pnlAfterFees,

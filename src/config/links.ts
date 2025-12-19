@@ -43,9 +43,10 @@ export function getLeaderboardLink(chainId) {
 
 export const DOCS_LINKS = {
   multiplierPoints: "https://docs.gmx.io/docs/tokenomics/rewards/#multiplier-points",
-  fundingFees: "https://docs.gmx.io/docs/trading/v2/#funding-fees",
-  adaptiveFunding: "https://docs.gmx.io/docs/trading/v2/#adaptive-funding",
-  borrowingFees: "https://docs.gmx.io/docs/trading/v2/#borrowing-fees",
+  fundingFees: "https://docs.gmx.io/docs/trading/#funding-fees",
+  adaptiveFunding: "https://docs.gmx.io/docs/trading/#adaptive-funding",
+  borrowingFees: "https://docs.gmx.io/docs/trading/#borrowing-fees",
+  priceImpact: "https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates",
 };
 
 export const ARBITRUM_INCENTIVES_V2_URL =
@@ -64,3 +65,6 @@ export function getIncentivesV2Url(chainId: number): string {
 
   return ARBITRUM_INCENTIVES_V2_URL;
 }
+
+export const GLP_REIMBURSEMENT_TERMS_URL =
+  "https://gateway.pinata.cloud/ipfs/bafkreiemqapoduhh2j5spg7ndmkqdx2l5s2uloqqcv4egu5qiy5oiv4kaq";

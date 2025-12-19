@@ -222,6 +222,7 @@ export const selectTradeboxMockPosition = createSelector((q) => {
     hasLowCollateral: false,
     leverage: nextPositionValues.nextLeverage,
     leverageWithPnl: nextPositionValues.nextLeverage,
+    leverageWithoutPnl: nextPositionValues.nextLeverage,
     pnl: 0n,
     pnlPercentage: 0n,
     pnlAfterFees: 0n,
