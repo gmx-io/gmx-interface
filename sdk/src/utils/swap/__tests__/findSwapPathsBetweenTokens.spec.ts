@@ -161,11 +161,15 @@ describe("findSwapPathsBetweenTokens", () => {
 
     expect(result).toEqual({
       A: {
+        A: [["USDC"]],
         B: [["USDC"]],
         USDC: [[], ["USDC", "A"]],
       },
       B: {
         USDC: [[], ["USDC", "A"]],
+      },
+      USDC: {
+        USDC: [["A"]],
       },
     });
   });
