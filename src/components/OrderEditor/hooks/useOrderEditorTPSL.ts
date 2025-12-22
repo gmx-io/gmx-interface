@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
@@ -34,23 +35,29 @@ import {
 import {
   DecreasePositionSwapType,
   OrderType,
+  PositionOrderInfo,
   isLimitIncreaseOrderType,
   isPositionOrder,
   isStopIncreaseOrderType,
 } from "domain/synthetics/orders";
-import { SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
-import { getDefaultEntryField } from "domain/synthetics/sidecarOrders/utils";
+import { PositionInfo, PositionInfoLoaded } from "domain/synthetics/positions";
+import { EntryField, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
+import {
+  getDefaultEntryField,
+  handleEntryError,
+  MAX_PERCENTAGE,
+  PERCENTAGE_DECIMALS,
+} from "domain/synthetics/sidecarOrders/utils";
 import {
   buildPositionInfoLoaded,
   buildTpSlCreatePayloads,
-  buildTpSlEntry,
   calculateTotalSizeInTokens,
   calculateTotalSizeUsd,
   getCollateralDeltaAmount,
   getCollateralDeltaUsd,
   getDecreaseAmountsForEntry,
-  getTpSlErrorState,
 } from "domain/tpsl/utils";
+import { DecreasePositionAmounts } from "sdk/types/trade";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 
 export function useOrderEditorTPSL() {
@@ -261,17 +268,17 @@ export function useOrderEditorTPSL() {
     () =>
       getDecreaseAmountsForEntry({
         isSetAcceptablePriceImpactEnabled,
-      isTpSlEnabled,
-      minCollateralUsd,
-      minPositionSizeUsd,
-      order,
-      positionForTpSl,
-      priceEntry: tpEntry.price,
-      triggerOrderType: OrderType.LimitDecrease,
-      triggerPrice: resolvedTriggerPrice,
-      uiFeeFactor,
-      userReferralInfo,
-    }),
+        isTpSlEnabled,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        order,
+        positionForTpSl,
+        price: tpEntry.price.value,
+        triggerOrderType: OrderType.LimitDecrease,
+        triggerPrice: resolvedTriggerPrice,
+        uiFeeFactor,
+        userReferralInfo,
+      }),
     [
       isSetAcceptablePriceImpactEnabled,
       isTpSlEnabled,
@@ -280,7 +287,7 @@ export function useOrderEditorTPSL() {
       order,
       positionForTpSl,
       resolvedTriggerPrice,
-      tpEntry.price,
+      tpEntry.price.value,
       uiFeeFactor,
       userReferralInfo,
     ]
@@ -290,17 +297,17 @@ export function useOrderEditorTPSL() {
     () =>
       getDecreaseAmountsForEntry({
         isSetAcceptablePriceImpactEnabled,
-      isTpSlEnabled,
-      minCollateralUsd,
-      minPositionSizeUsd,
-      order,
-      positionForTpSl,
-      priceEntry: slEntry.price,
-      triggerOrderType: OrderType.StopLossDecrease,
-      triggerPrice: resolvedTriggerPrice,
-      uiFeeFactor,
-      userReferralInfo,
-    }),
+        isTpSlEnabled,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        order,
+        positionForTpSl,
+        price: slEntry.price.value,
+        triggerOrderType: OrderType.StopLossDecrease,
+        triggerPrice: resolvedTriggerPrice,
+        uiFeeFactor,
+        userReferralInfo,
+      }),
     [
       isSetAcceptablePriceImpactEnabled,
       isTpSlEnabled,
@@ -309,7 +316,7 @@ export function useOrderEditorTPSL() {
       order,
       positionForTpSl,
       resolvedTriggerPrice,
-      slEntry.price,
+      slEntry.price.value,
       uiFeeFactor,
       userReferralInfo,
     ]
@@ -373,25 +380,19 @@ export function useOrderEditorTPSL() {
         chainId,
         isTpSlEnabled,
         order,
-        positionForTpSl,
-        slDecreaseAmounts,
-        slEntry,
-        slExecutionFee,
-        tpDecreaseAmounts,
-        tpEntry,
-        tpExecutionFee,
+        entries: [
+          { amounts: tpDecreaseAmounts, executionFee: tpExecutionFee },
+          { amounts: slDecreaseAmounts, executionFee: slExecutionFee },
+        ],
         userReferralCode: userReferralInfo?.referralCodeForTxn,
       }),
     [
       autoCancelOrdersLimit,
       chainId,
       isTpSlEnabled,
-      positionForTpSl,
       order,
-      tpEntry,
       tpDecreaseAmounts,
       tpExecutionFee,
-      slEntry,
       slDecreaseAmounts,
       slExecutionFee,
       userReferralInfo?.referralCodeForTxn,
@@ -403,14 +404,27 @@ export function useOrderEditorTPSL() {
       getTpSlErrorState({
         isTpSlEnabled,
         positionForTpSl,
-        slDecreaseAmounts,
-        slEntry,
-        slPriceEntry,
-        tpDecreaseAmounts,
-        tpEntry,
-        tpPriceEntry,
+        sl: {
+          price: slPriceEntry.value,
+          priceError: slPriceEntry.error,
+          decreaseAmounts: slDecreaseAmounts,
+        },
+        tp: {
+          price: tpPriceEntry.value,
+          priceError: tpPriceEntry.error,
+          decreaseAmounts: tpDecreaseAmounts,
+        },
       }),
-    [isTpSlEnabled, positionForTpSl, slDecreaseAmounts, slEntry, slPriceEntry, tpDecreaseAmounts, tpEntry, tpPriceEntry]
+    [
+      isTpSlEnabled,
+      positionForTpSl,
+      slDecreaseAmounts,
+      slPriceEntry.error,
+      slPriceEntry.value,
+      tpDecreaseAmounts,
+      tpPriceEntry.error,
+      tpPriceEntry.value,
+    ]
   );
 
   return {
@@ -427,5 +441,79 @@ export function useOrderEditorTPSL() {
     hasTpSlValues,
     setTpPriceInputValue,
     setSlPriceInputValue,
+  };
+}
+
+function buildTpSlEntry(p: {
+  existingPosition: PositionInfo | undefined;
+  id: "tp" | "sl";
+  isLimitOrStopIncrease: boolean;
+  isTpSlEnabled: boolean;
+  markPrice: bigint | undefined;
+  order: PositionOrderInfo | undefined;
+  positionForTpSl: PositionInfoLoaded | undefined;
+  priceEntry: EntryField;
+  triggerPrice: bigint | undefined;
+}): SidecarSlTpOrderEntry {
+  const sizeUsdEntry = getDefaultEntryField(USD_DECIMALS, { value: p.positionForTpSl?.sizeInUsd ?? null });
+  const percentageEntry = getDefaultEntryField(PERCENTAGE_DECIMALS, { value: MAX_PERCENTAGE });
+
+  const entry: SidecarSlTpOrderEntry = {
+    id: p.id,
+    price: p.priceEntry,
+    sizeUsd: sizeUsdEntry,
+    percentage: percentageEntry,
+    mode: "keepPercentage",
+    order: null,
+    txnType: p.priceEntry.value ? "create" : null,
+    decreaseAmounts: undefined,
+    increaseAmounts: undefined,
+  };
+
+  if (!p.isLimitOrStopIncrease || !p.isTpSlEnabled) {
+    return entry;
+  }
+
+  return handleEntryError(entry, p.id, {
+    liqPrice: p.positionForTpSl?.liquidationPrice,
+    triggerPrice: p.triggerPrice ?? p.order?.triggerPrice,
+    markPrice: p.markPrice,
+    isLong: p.order?.isLong,
+    isLimit: true,
+    isExistingPosition: Boolean(p.existingPosition),
+  });
+}
+
+export type TpSlValidationInput = {
+  price: bigint | null | undefined;
+  priceError?: string | null;
+  decreaseAmounts?: DecreasePositionAmounts;
+};
+
+export function getTpSlErrorState(p: {
+  isTpSlEnabled: boolean;
+  positionForTpSl: PositionInfoLoaded | undefined;
+  sl: TpSlValidationInput;
+  tp: TpSlValidationInput;
+}) {
+  const hasTpSlValues = typeof p.tp.price === "bigint" || typeof p.sl.price === "bigint";
+  const hasEntryErrors = Boolean(p.tp.priceError) || Boolean(p.sl.priceError);
+  const hasInvalidTp = !p.tp.decreaseAmounts && typeof p.tp.price === "bigint";
+  const hasInvalidSl = !p.sl.decreaseAmounts && typeof p.sl.price === "bigint";
+
+  const tpSlHasError = p.isTpSlEnabled && (!p.positionForTpSl || hasEntryErrors || hasInvalidTp || hasInvalidSl);
+
+  let tpSlError: string | undefined;
+
+  if (p.isTpSlEnabled && !hasTpSlValues) {
+    tpSlError = t`Enter TP/SL price`;
+  } else if (tpSlHasError) {
+    tpSlError = t`There are issues in the TP/SL orders.`;
+  }
+
+  return {
+    hasTpSlValues,
+    tpSlError,
+    tpSlHasError,
   };
 }

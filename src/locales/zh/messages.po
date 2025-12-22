@@ -2663,9 +2663,9 @@ msgstr "以其他代币："
 msgid "Returned Collateral"
 msgstr "返回抵押品"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
-#: src/domain/tpsl/utils.ts
 msgid "There are issues in the TP/SL orders."
 msgstr "TP/SL 订单存在问题。"
 
@@ -6474,7 +6474,7 @@ msgstr "Kudai AI 代理"
 msgid "Current Price"
 msgstr "当前价格"
 
-#: src/domain/tpsl/utils.ts
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
 msgid "Enter TP/SL price"
 msgstr ""
 
