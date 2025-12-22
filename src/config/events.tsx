@@ -32,8 +32,8 @@ export const appEventsData: EventData[] = [
   {
     id: "mon-sky-zec-listing",
     isActive: true,
-    startDate: "22 Dec 2025, 14:30",
-    endDate: "29 Dec 2025, 14:30",
+    startDate: "22 Dec 2025, 16:10",
+    endDate: "29 Dec 2025, 16:10",
     title: "MON (Monad), SKY and ZEC (Zcash) markets added on Arbitrum",
     bodyText: (
       <>
