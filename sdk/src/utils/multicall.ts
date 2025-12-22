@@ -163,7 +163,12 @@ export class Multicall {
               return response;
             } catch (error) {
               batchTimeoutController.abort();
-              throw error;
+              const e = new Error((error instanceof Error ? error.message : String(error)).slice(0, 150));
+
+              /* eslint-disable-next-line */
+              console.error(e);
+
+              throw e;
             }
           })
         );
