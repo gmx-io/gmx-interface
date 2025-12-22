@@ -5,6 +5,7 @@ import { Address } from "viem";
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
+import { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 export type PriceDelta = {
@@ -24,7 +25,7 @@ export function use24hPriceDeltaMap(
   chainId: number,
   tokenAddresses: (Address | undefined)[]
 ): PriceDeltaMap | undefined {
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
   const { data } = useSWR<
     {

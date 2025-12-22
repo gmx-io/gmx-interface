@@ -28,7 +28,7 @@ export function usePageParams(initialChainId: ContractsChainId) {
 
   useEffect(() => {
     let patch = undefined as any;
-    if (!chainIdFromParams || !CONTRACTS_CHAIN_IDS.includes(chainIdFromParams as ContractsChainId)) {
+    if (!chainIdFromParams || !CONTRACTS_CHAIN_IDS.includes(chainIdFromParams)) {
       patch = { chainId: initialChainId };
     }
 

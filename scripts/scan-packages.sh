@@ -33,25 +33,17 @@ version_compare() {
     fi
 }
 
-check_package() {
+check_package_in_tree() {
     package=$1
     vulnerable_version=$2
     folder=$3
+    all_packages_tree=$4
     
     echo "Package: $package"
     echo "Vulnerable version: $vulnerable_version"
     echo "Folder: $folder"
     
-    # Check if package.json exists in the folder
-    if [ ! -f "$folder/package.json" ]; then
-        echo "Installed version: Not found (no package.json in $folder)"
-        echo "Status: ✓ Package not installed"
-        echo "------------------------------------------------"
-        return
-    fi
-    
-    # Use npm ls to find installed versions in the specific folder
-    installed_versions=$(cd "$folder" && yarn dlx npm ls $package --all --depth=Infinity 2>/dev/null | grep -E "($package@[^ ]+)" | sed -E "s/^.*($package@[^ ]+).*$/\1/" | cut -d "@" -f2 | sort -u)
+    installed_versions=$(echo "$all_packages_tree" | grep -E "($package@[^ ]+)" | sed -E "s/^.*($package@[^ ]+).*$/\1/" | cut -d "@" -f2 | sort -u)
     
     if [ -z "$installed_versions" ]; then
         echo "Installed version: Not found"
@@ -107,6 +99,9 @@ supports-color:10.2.1
 debug:4.4.2
 color:5.0.1
 has-ansi:6.0.1
+react-server-dom-webpack:19.2.0
+react-server-dom-parcel:19.2.0
+react-server-dom-turbopack:19.2.0
 "
 
 # Check each folder
@@ -114,12 +109,23 @@ for folder in $folders; do
     echo "Scanning folder: $folder"
     echo "================================================"
     
+    # Check if package.json exists in the folder
+    if [ ! -f "$folder/package.json" ]; then
+        echo "No package.json found in $folder, skipping..."
+        echo ""
+        continue
+    fi
+    
+    # Run npm ls ONCE per folder to get all packages (much faster than per-package)
+    echo "Analyzing dependency tree..."
+    all_packages_tree=$(cd "$folder" && yarn dlx npm ls --all --depth=Infinity 2>/dev/null)
+    
     # Check each vulnerable package in this folder
     for package_info in $vulnerable_packages_list; do
         if [ -n "$package_info" ]; then
             package=$(echo "$package_info" | cut -d':' -f1)
             vulnerable_version=$(echo "$package_info" | cut -d':' -f2)
-            check_package "$package" "$vulnerable_version" "$folder"
+            check_package_in_tree "$package" "$vulnerable_version" "$folder" "$all_packages_tree"
         fi
     done
     

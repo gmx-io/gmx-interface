@@ -12,6 +12,9 @@ import { address as ethPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployme
 import { address as usdcPoolBase } from "@stargatefinance/stg-evm-sdk-v2/deployments/base-mainnet/StargatePoolUSDC.json";
 import { address as usdcPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDC.json";
 import { address as usdtPoolBsc } from "@stargatefinance/stg-evm-sdk-v2/deployments/bsc-mainnet/StargatePoolUSDT.json";
+import { address as ethPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolNative.json";
+import { address as usdcPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolUSDC.json";
+import { address as usdtPoolEthereum } from "@stargatefinance/stg-evm-sdk-v2/deployments/ethereum-mainnet/StargatePoolUSDT.json";
 import { address as ethPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/optsep-testnet/StargatePoolUSDC.json";
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
@@ -35,6 +38,7 @@ import {
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
@@ -44,6 +48,8 @@ import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { isSettlementChain, isSourceChain, SOURCE_CHAINS } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
+
+import platformTokensData from "./static/platformTokens.json";
 
 export * from "sdk/configs/multichain";
 
@@ -118,6 +124,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdcPoolBsc,
       symbol: "USDC",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      decimals: 6,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: usdcPoolEthereum,
+      symbol: "USDC",
+    },
   },
   ["USDT"]: {
     [ARBITRUM]: {
@@ -141,6 +154,13 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: usdtPoolBsc,
       symbol: "USDT",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      decimals: 6,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: usdtPoolEthereum,
+      symbol: "USDT",
+    },
   },
   ["ETH"]: {
     [ARBITRUM]: {
@@ -157,80 +177,22 @@ const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | Settle
       stargate: ethPoolBase,
       symbol: "ETH",
     },
+    [SOURCE_ETHEREUM_MAINNET]: {
+      address: zeroAddress,
+      decimals: 18,
+      chainId: SOURCE_ETHEREUM_MAINNET,
+      stargate: ethPoolEthereum,
+      symbol: "ETH",
+    },
   },
 };
 
-addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
-  symbol: "<GLV-GLV-WBTC-USDC>",
-  chainAddresses: {
-    [ARBITRUM]: {
-      address: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
-      stargate: "0x27Ef981E6fcB274a6C5C75983725d265Fd3dCdac",
-    },
-    [SOURCE_BASE_MAINNET]: {
-      address: "0xbCB170fEDDa90cd7593f016DFdabA032Ca1F222b",
-      stargate: "0xbCB170fEDDa90cd7593f016DFdabA032Ca1F222b",
-    },
-    [SOURCE_BSC_MAINNET]: {
-      address: "0x3c21894169D669C5f0767c1289E71Ec8d6132C0F",
-      stargate: "0x3c21894169D669C5f0767c1289E71Ec8d6132C0F",
-    },
-  },
-});
-
-addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
-  symbol: "<GLV-GLV-WETH-USDC>",
-  chainAddresses: {
-    [ARBITRUM]: {
-      address: "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
-      stargate: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
-    },
-    [SOURCE_BASE_MAINNET]: {
-      address: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
-      stargate: "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6",
-    },
-    [SOURCE_BSC_MAINNET]: {
-      address: "0x0BC5aB50Fd581b34681A9be180179b1Ef0b238c7",
-      stargate: "0x0BC5aB50Fd581b34681A9be180179b1Ef0b238c7",
-    },
-  },
-});
-
-addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
-  symbol: "<GM-BTC-WBTC-USDC>",
-  chainAddresses: {
-    [ARBITRUM]: {
-      address: "0x47c031236e19d024b42f8AE6780E44A573170703",
-      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
-    },
-    [SOURCE_BASE_MAINNET]: {
-      address: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
-      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
-    },
-    [SOURCE_BSC_MAINNET]: {
-      address: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
-      stargate: "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
-    },
-  },
-});
-
-addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
-  symbol: "<GM-ETH-WETH-USDC>",
-  chainAddresses: {
-    [ARBITRUM]: {
-      address: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
-      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
-    },
-    [SOURCE_BASE_MAINNET]: {
-      address: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
-      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
-    },
-    [SOURCE_BSC_MAINNET]: {
-      address: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
-      stargate: "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7",
-    },
-  },
-});
+for (const [symbol, chainAddresses] of Object.entries(platformTokensData.mainnets)) {
+  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+    symbol,
+    chainAddresses,
+  });
+}
 
 if (isDevelopment()) {
   TOKEN_GROUPS["USDC.SG"] = {
@@ -309,33 +271,12 @@ if (isDevelopment()) {
     },
   };
 
-  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
-    symbol: "<GM-ETH-WETH-USDC.SG>",
-    chainAddresses: {
-      [ARBITRUM_SEPOLIA]: {
-        address: "0xb6fC4C9eB02C35A134044526C62bb15014Ac0Bcc",
-        stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
-      },
-      [SOURCE_SEPOLIA]: {
-        address: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
-        stargate: "0xe4EBcAC4a2e6CBEE385eE407f7D5E278Bc07e11e",
-      },
-    },
-  });
-
-  addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
-    symbol: "<GLV-HIGH_CAPS-WETH-USDC.SG>",
-    chainAddresses: {
-      [ARBITRUM_SEPOLIA]: {
-        address: "0xAb3567e55c205c62B141967145F37b7695a9F854",
-        stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
-      },
-      [SOURCE_SEPOLIA]: {
-        address: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
-        stargate: "0xD5BdEa6dC8E4B7429b72675386fC903DEf06599d",
-      },
-    },
-  });
+  for (const [symbol, chainAddresses] of Object.entries(platformTokensData.testnets)) {
+    addMultichainPlatformTokenConfig(TOKEN_GROUPS, {
+      symbol,
+      chainAddresses,
+    });
+  }
 }
 
 function addMultichainPlatformTokenConfig(
@@ -461,6 +402,7 @@ export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChain
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
+  [SOURCE_ETHEREUM_MAINNET]: ARBITRUM,
   [SOURCE_BASE_MAINNET]: ARBITRUM,
   [SOURCE_BSC_MAINNET]: ARBITRUM,
   [BOTANIX]: ARBITRUM,
@@ -504,6 +446,7 @@ export function getMappedTokenId(
 }
 
 export const MULTICALLS_MAP: Record<SourceChainId, string> = {
+  [SOURCE_ETHEREUM_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
@@ -537,6 +480,7 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [SOURCE_SEPOLIA]: 40161,
   [SOURCE_OPTIMISM_SEPOLIA]: 40232,
   [ARBITRUM]: 30110,
+  [SOURCE_ETHEREUM_MAINNET]: 30101,
   [SOURCE_BASE_MAINNET]: 30184,
   [AVALANCHE]: 30106,
   [SOURCE_BSC_MAINNET]: 30102,

@@ -28,7 +28,6 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import Referrals from "pages/Referrals/Referrals";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import Stats from "pages/Stats/Stats";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -39,6 +38,20 @@ const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 export const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyUiPage />
+  </Suspense>
+);
+
+const LazyRpcDebug = lazy(() => import("pages/RpcDebug/RpcDebug"));
+export const RpcDebugPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyRpcDebug />
+  </Suspense>
+);
+
+const LazyDebugOracleKeeper = lazy(() => import("pages/DebugOracleKeeper/DebugOracleKeeper"));
+export const OracleDebugPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDebugOracleKeeper />
   </Suspense>
 );
 
@@ -90,7 +103,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {/* redirect from previous stake(earn) url */}
       <RedirectWithQuery exact from="/stake" to="/earn" />
       <RedirectWithQuery from="/v2" to="/trade" />
-
       <Route exact path="/">
         <RedirectWithQuery to="/trade" />
       </Route>
@@ -105,15 +117,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <DashboardV2 />
         </SyntheticsStateContextProvider>
       </Route>
-
-      <Route exact path="/monitor/v1">
-        <Stats />
-      </Route>
-
       <Route exact path="/monitor">
         <SyntheticsStats />
       </Route>
-
       <Route exact path="/earn/discover">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
           <EarnDiscoveryPage />
@@ -139,25 +145,21 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <EarnRedirect />
         </SyntheticsStateContextProvider>
       </Route>
-
       <Route exact path="/pools">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
           <Pools />
         </SyntheticsStateContextProvider>
       </Route>
-
       <Route exact path="/pools/details">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
           <PoolsDetails />
         </SyntheticsStateContextProvider>
       </Route>
-
       <Route exact path="/trade/:tradeType?">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="trade">
           <SyntheticsPage openSettings={openSettings} />
         </SyntheticsStateContextProvider>
       </Route>
-
       <Route exact path="/jobs">
         <Jobs />
       </Route>
@@ -167,37 +169,30 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/ecosystem">
         <Ecosystem />
       </Route>
-
       <Route path="/leaderboard/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
           <LeaderboardPage />
         </SyntheticsStateContextProvider>
       </Route>
-
       <Route exact path="/competitions/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
           <CompetitionRedirect />
         </SyntheticsStateContextProvider>
       </Route>
-
       <Route path="/competitions/:leaderboardPageKey">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="competitions">
           <LeaderboardPage />
         </SyntheticsStateContextProvider>
       </Route>
-
       <Route exact path="/referrals">
         <Referrals />
       </Route>
-
       <Route exact path="/referrals/:account">
         <Referrals />
       </Route>
-
       <Route exact path="/nft_wallet">
         <NftWallet />
       </Route>
-
       <Route exact path="/actions/:v/:account">
         {({ match }) => (
           <Redirect
@@ -205,35 +200,24 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           />
         )}
       </Route>
-
       <Route exact path="/accounts">
         <AccountsRouter />
       </Route>
-
       <Route exact path="/accounts/:account">
         <AccountDashboard />
       </Route>
-
       <Route exact path="/referrals-tier">
         <ReferralsTier />
       </Route>
-
-      <Route exact path="/monitor">
-        <Stats />
-      </Route>
-
       <Route path="/parsetx/:network/:tx">
         <ParseTransactionPage />
       </Route>
-
       <Route exact path="/begin_account_transfer">
         <BeginAccountTransfer />
       </Route>
-
       <Route exact path="/complete_account_transfer/:sender/:receiver">
         <CompleteAccountTransfer />
       </Route>
-
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
@@ -247,8 +231,15 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
         </Route>,
+        <Route exact path="/rpc-debug" key="rpc-debug">
+          <SyntheticsStateContextProvider skipLocalReferralCode pageType="rpcDebug">
+            <RpcDebugPage />
+          </SyntheticsStateContextProvider>
+        </Route>,
+        <Route exact path="/oracle-keeper-debug" key="oracle-keeper-debug">
+          <OracleDebugPage />
+        </Route>,
       ]}
-
       <Route path="*">
         <PageNotFound />
       </Route>

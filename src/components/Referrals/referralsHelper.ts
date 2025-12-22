@@ -61,7 +61,7 @@ export async function getReferralCodeTakenStatus(
 
   await Promise.all(
     CONTRACTS_CHAIN_IDS.map(async (otherChainId) => {
-      const res = await getReferralCodeOwner(otherChainId, referralCodeBytes32);
+      const res = await getReferralCodeOwner(otherChainId as ContractsChainId, referralCodeBytes32);
       ownerMap[otherChainId] = res;
     })
   );
@@ -195,7 +195,7 @@ export const getSampleReferrarStat = ({
             if (!taken) return undefined;
 
             return [
-              chainId,
+              chainId as ContractsChainId,
               {
                 code: encodeReferralCode(code),
                 codeString: code,

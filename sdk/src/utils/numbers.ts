@@ -29,6 +29,17 @@ const MIN_EXCEEDING_THRESHOLD = "0.01";
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
+declare const __nonZero: unique symbol;
+export type NonZero<T extends number | bigint> = T & { readonly [__nonZero]: true };
+
+export function isNonZero<T extends number | bigint>(value: T): value is NonZero<T> {
+  return value !== 0 && value !== 0n;
+}
+
+export function safeDivide<T extends number | bigint>(a: T, b: NonZero<T>): T {
+  return (a / b) as T;
+}
+
 export function expandDecimals(n: BigNumberish, decimals: number): bigint {
   return BigInt(n) * 10n ** BigInt(decimals);
 }

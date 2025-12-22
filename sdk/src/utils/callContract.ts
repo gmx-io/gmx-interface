@@ -1,11 +1,13 @@
 import { Abi, Address, encodeFunctionData, PublicClient, withRetry } from "viem";
 
 import {
-  GAS_PRICE_BUFFER_MAP,
-  GAS_PRICE_PREMIUM_MAP,
+  AnyChainId,
+  ContractsChainId,
+  getGasPriceBuffer,
+  getGasPricePremium,
+  getMaxFeePerGas,
+  getMaxPriorityFeePerGas,
   getViemChain,
-  MAX_FEE_PER_GAS_MAP,
-  MAX_PRIORITY_FEE_PER_GAS_MAP,
 } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 
@@ -13,14 +15,14 @@ import type { GmxSdk } from "../index";
 import { bigMath } from "./bigmath";
 
 export async function getGasPrice(client: PublicClient, chainId: number) {
-  let maxFeePerGas = MAX_FEE_PER_GAS_MAP[chainId];
-  const premium: bigint = GAS_PRICE_PREMIUM_MAP[chainId] || 0n;
+  let maxFeePerGas = getMaxFeePerGas(chainId as ContractsChainId);
+  const premium: bigint = getGasPricePremium(chainId as ContractsChainId) || 0n;
 
   const feeData = await withRetry(
     () =>
       client.estimateFeesPerGas({
         type: "legacy",
-        chain: getViemChain(chainId),
+        chain: getViemChain(chainId as AnyChainId),
       }),
     {
       delay: 200,
@@ -45,7 +47,7 @@ export async function getGasPrice(client: PublicClient, chainId: number) {
     if (block.baseFeePerGas !== undefined && block.baseFeePerGas !== null) {
       const baseFeePerGas = block.baseFeePerGas;
 
-      const maxPriorityFeePerGas = bigMath.max(MAX_PRIORITY_FEE_PER_GAS_MAP[chainId] ?? 0n, premium);
+      const maxPriorityFeePerGas = bigMath.max(getMaxPriorityFeePerGas(chainId as ContractsChainId) || 0n, premium);
 
       // Calculate maxFeePerGas
       const calculatedMaxFeePerGas = baseFeePerGas + maxPriorityFeePerGas + premium;
@@ -61,7 +63,7 @@ export async function getGasPrice(client: PublicClient, chainId: number) {
     throw new Error("Can't fetch gas price");
   }
 
-  const bufferBps: bigint = GAS_PRICE_BUFFER_MAP[chainId] || 0n;
+  const bufferBps: bigint = getGasPriceBuffer(chainId as ContractsChainId) || 0n;
   const buffer = bigMath.mulDiv(gasPrice, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
 
   return {

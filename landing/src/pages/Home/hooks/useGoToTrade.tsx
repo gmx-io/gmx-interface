@@ -2,7 +2,14 @@ import { useCallback } from "react";
 
 import type { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
-import { ARBITRUM, AVALANCHE, BOTANIX, SOURCE_BASE_MAINNET, SOURCE_BSC_MAINNET } from "sdk/configs/chainIds";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  BOTANIX,
+  SOURCE_ETHEREUM_MAINNET,
+  SOURCE_BASE_MAINNET,
+  SOURCE_BSC_MAINNET,
+} from "sdk/configs/chainIds";
 import { getChainName } from "sdk/configs/chains";
 
 import { useHomePageContext } from "../contexts/HomePageContext";
@@ -13,6 +20,7 @@ export enum RedirectChainIds {
   Botanix = BOTANIX,
   Base = SOURCE_BASE_MAINNET,
   Bsc = SOURCE_BSC_MAINNET,
+  Ethereum = SOURCE_ETHEREUM_MAINNET,
   Solana = -1,
 }
 
@@ -28,6 +36,7 @@ const REDIRECT_MAP: Record<RedirectChainIds, string> = {
   [RedirectChainIds.Avalanche]: makeLink(AVALANCHE),
   [RedirectChainIds.Botanix]: makeLink(BOTANIX),
   [RedirectChainIds.Bsc]: makeLink(SOURCE_BSC_MAINNET),
+  [RedirectChainIds.Ethereum]: makeLink(SOURCE_ETHEREUM_MAINNET),
 };
 
 export function useGoToTrade({ buttonPosition, chainId }: Props) {
