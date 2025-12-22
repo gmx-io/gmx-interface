@@ -2651,9 +2651,9 @@ msgstr "In anderen Tokens:"
 msgid "Returned Collateral"
 msgstr "Zurückgegebenes Kollateral"
 
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
+#: src/domain/tpsl/utils.ts
 msgid "There are issues in the TP/SL orders."
 msgstr "Es gibt Probleme in den TP/SL-Orders."
 
@@ -6445,7 +6445,7 @@ msgstr "Kudai AI Agent"
 msgid "Current Price"
 msgstr "Aktueller Preis"
 
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+#: src/domain/tpsl/utils.ts
 msgid "Enter TP/SL price"
 msgstr ""
 
