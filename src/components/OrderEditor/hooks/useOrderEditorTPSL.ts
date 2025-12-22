@@ -42,7 +42,7 @@ import {
   isPositionOrder,
   isStopIncreaseOrderType,
 } from "domain/synthetics/orders";
-import { PositionInfo } from "domain/synthetics/positions";
+import { PositionInfo, PositionInfoLoaded } from "domain/synthetics/positions";
 import { getPendingMockPosition } from "domain/synthetics/positions/usePositions";
 import { EntryField, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
 import {
@@ -130,7 +130,7 @@ export function useOrderEditorTPSL() {
 
   const collateralDeltaAmountForTpSl = useMemo(
     () =>
-      resolveCollateralDeltaAmount({
+      getCollateralDeltaAmount({
         collateralDeltaAmount: increaseAmounts?.collateralDeltaAmount,
         isLimitOrStopIncrease,
         order,
@@ -142,7 +142,7 @@ export function useOrderEditorTPSL() {
 
   const collateralDeltaUsdForTpSl = useMemo(
     () =>
-      resolveCollateralDeltaUsd({
+      getCollateralDeltaUsd({
         collateralDeltaAmount: collateralDeltaAmountForTpSl,
         collateralDeltaUsd: increaseAmounts?.collateralDeltaUsd,
         isLimitOrStopIncrease,
@@ -155,7 +155,7 @@ export function useOrderEditorTPSL() {
 
   const positionForTpSl = useMemo(
     () =>
-      buildPositionForTpSl({
+      buildPositionInfoLoaded({
         existingPosition,
         isLimitOrStopIncrease,
         markPrice,
@@ -403,7 +403,7 @@ export function useOrderEditorTPSL() {
 
   const { hasTpSlValues, tpSlError, tpSlHasError } = useMemo(
     () =>
-      resolveTpSlErrorState({
+      getTpSlErrorState({
         isTpSlEnabled,
         positionForTpSl,
         slDecreaseAmounts,
@@ -442,13 +442,6 @@ type NextPositionValues =
       leverageWithoutPnl?: bigint;
     }
   | undefined;
-
-type PositionForTpSl = PositionInfo & {
-  marketInfo: MarketInfo;
-  collateralToken: TokenData;
-  pnlToken: TokenData;
-  triggerPrice?: bigint;
-};
 
 function calculateTotalSizeUsd(p: {
   existingPositionSizeUsd: bigint | undefined;
@@ -491,7 +484,7 @@ function calculateTotalSizeInTokens(p: {
   return baseSizeInTokens + orderSizeInTokens;
 }
 
-function resolveCollateralDeltaAmount(p: {
+function getCollateralDeltaAmount(p: {
   collateralDeltaAmount: bigint | undefined;
   isLimitOrStopIncrease: boolean;
   order: PositionOrderInfo | undefined;
@@ -507,7 +500,7 @@ function resolveCollateralDeltaAmount(p: {
   return p.order.initialCollateralDeltaAmount ?? 0n;
 }
 
-function resolveCollateralDeltaUsd(p: {
+function getCollateralDeltaUsd(p: {
   collateralDeltaAmount: bigint;
   collateralDeltaUsd: bigint | undefined;
   isLimitOrStopIncrease: boolean;
@@ -530,7 +523,7 @@ function resolveCollateralDeltaUsd(p: {
   );
 }
 
-function buildPositionForTpSl(p: {
+function buildPositionInfoLoaded(p: {
   existingPosition: PositionInfo | undefined;
   isLimitOrStopIncrease: boolean;
   markPrice: bigint | undefined;
@@ -543,7 +536,7 @@ function buildPositionForTpSl(p: {
   totalSizeInTokensForTpSl: bigint;
   totalSizeUsdForTpSl: bigint;
   triggerPrice: bigint | undefined;
-}): PositionForTpSl | undefined {
+}): PositionInfoLoaded | undefined {
   if (
     !p.isLimitOrStopIncrease ||
     !p.market ||
@@ -588,7 +581,6 @@ function buildPositionForTpSl(p: {
     pnlToken: p.order.isLong ? p.market.longToken : p.market.shortToken,
     markPrice: baseMarkPrice,
     entryPrice: nextEntryPrice,
-    triggerPrice: p.triggerPrice ?? p.order.triggerPrice,
     liquidationPrice: nextLiqPrice,
     collateralUsd: p.totalCollateralUsdForTpSl,
     remainingCollateralUsd: p.totalCollateralUsdForTpSl,
@@ -625,7 +617,7 @@ function buildTpSlEntry(p: {
   isTpSlEnabled: boolean;
   markPrice: bigint | undefined;
   order: PositionOrderInfo | undefined;
-  positionForTpSl: PositionForTpSl | undefined;
+  positionForTpSl: PositionInfoLoaded | undefined;
   priceField: EntryField;
   triggerPrice: bigint | undefined;
 }): SidecarSlTpOrderEntry {
@@ -664,7 +656,7 @@ function getDecreaseAmountsForEntry(p: {
   minCollateralUsd: bigint | undefined;
   minPositionSizeUsd: bigint | undefined;
   order: PositionOrderInfo | undefined;
-  positionForTpSl: PositionForTpSl | undefined;
+  positionForTpSl: PositionInfoLoaded | undefined;
   priceField: EntryField;
   triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease;
   triggerPrice: bigint | undefined;
@@ -706,7 +698,7 @@ function buildTpSlCreatePayloads(p: {
   chainId: number;
   isTpSlEnabled: boolean;
   order: PositionOrderInfo | undefined;
-  positionForTpSl: PositionForTpSl | undefined;
+  positionForTpSl: PositionInfoLoaded | undefined;
   slDecreaseAmounts: DecreasePositionAmounts | undefined;
   slEntry: SidecarSlTpOrderEntry;
   slExecutionFee: Pick<ExecutionFee, "feeToken" | "feeTokenAmount" | "feeUsd"> | undefined;
@@ -768,9 +760,9 @@ function buildTpSlCreatePayloads(p: {
   );
 }
 
-function resolveTpSlErrorState(p: {
+function getTpSlErrorState(p: {
   isTpSlEnabled: boolean;
-  positionForTpSl: PositionForTpSl | undefined;
+  positionForTpSl: PositionInfoLoaded | undefined;
   slDecreaseAmounts: DecreasePositionAmounts | undefined;
   slEntry: SidecarSlTpOrderEntry;
   slPriceField: EntryField;
@@ -779,20 +771,20 @@ function resolveTpSlErrorState(p: {
   tpPriceField: EntryField;
 }) {
   const hasTpSlValues = typeof p.tpPriceField.value === "bigint" || typeof p.slPriceField.value === "bigint";
-  const tpSlHasError =
-    p.isTpSlEnabled &&
-    (!p.positionForTpSl ||
-      Boolean(p.tpEntry.price.error) ||
-      Boolean(p.slEntry.price.error) ||
-      (!p.tpDecreaseAmounts && typeof p.tpPriceField.value === "bigint") ||
-      (!p.slDecreaseAmounts && typeof p.slPriceField.value === "bigint"));
+  const hasEntryErrors = Boolean(p.tpEntry.price.error) || Boolean(p.slEntry.price.error);
+  const hasInvalidTp = !p.tpDecreaseAmounts && typeof p.tpPriceField.value === "bigint";
+  const hasInvalidSl = !p.slDecreaseAmounts && typeof p.slPriceField.value === "bigint";
 
-  const tpSlError =
-    p.isTpSlEnabled && !hasTpSlValues
-      ? t`Enter TP/SL price`
-      : tpSlHasError
-        ? t`There are issues in the TP/SL orders.`
-        : undefined;
+  const tpSlHasError =
+    p.isTpSlEnabled && (!p.positionForTpSl || hasEntryErrors || hasInvalidTp || hasInvalidSl);
+
+  let tpSlError: string | undefined;
+
+  if (p.isTpSlEnabled && !hasTpSlValues) {
+    tpSlError = t`Enter TP/SL price`;
+  } else if (tpSlHasError) {
+    tpSlError = t`There are issues in the TP/SL orders.`;
+  }
 
   return {
     hasTpSlValues,
