@@ -394,15 +394,15 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long BTC/USD",
         "marketPrice": undefined,
         "poolName": "BTC-USDC",
-        "price": ">  $\u200a95,600.00",
+        "price": ">  $ 95,600.00",
         "priceComment": [
           "Trigger price for the order.",
         ],
         "priceImpact": undefined,
-        "size": "+$\u200a3.62",
+        "size": "+$ 3.62",
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
-        "triggerPrice": ">  $\u200a95,600.00",
+        "triggerPrice": ">  $ 95,600.00",
       }
     `);
 
