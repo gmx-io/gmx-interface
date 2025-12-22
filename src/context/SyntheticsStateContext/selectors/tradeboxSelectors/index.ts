@@ -585,6 +585,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       marketsInfoData,
       chainId,
       externalSwapQuoteParams,
+      allowSameTokenSwap: tradeFlags.isSwap,
     });
   } else {
     return getSwapAmountsByToValue({
@@ -600,6 +601,7 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       marketsInfoData,
       chainId,
       externalSwapQuoteParams,
+      allowSameTokenSwap: tradeFlags.isSwap,
     });
   }
 });

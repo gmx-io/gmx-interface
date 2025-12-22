@@ -10,6 +10,8 @@ import {
   getIsEquivalentTokens,
   getIsStake,
   getIsUnstake,
+  getIsUnwrap,
+  getIsWrap,
   getMidPrice,
 } from "utils/tokens";
 
@@ -34,6 +36,7 @@ export function buildSwapStrategy({
   swapOptimizationOrder,
   externalSwapQuoteParams,
   swapPricingType = SwapPricingType.Swap,
+  allowSameTokenSwap = false,
 }: {
   chainId: number;
   amountIn: bigint;
@@ -43,6 +46,7 @@ export function buildSwapStrategy({
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
   externalSwapQuoteParams: ExternalSwapQuoteParams;
   swapPricingType: SwapPricingType;
+  allowSameTokenSwap?: boolean;
 }): SwapStrategyForSwapOrders {
   const priceIn = tokenIn.prices.minPrice;
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
@@ -64,7 +68,13 @@ export function buildSwapStrategy({
     feesUsd: 0n,
   };
 
-  if (getIsEquivalentTokens(tokenIn, tokenOut) || getIsStake(tokenIn, tokenOut) || getIsUnstake(tokenIn, tokenOut)) {
+  if (
+    (!allowSameTokenSwap && getIsEquivalentTokens(tokenIn, tokenOut)) ||
+    getIsWrap(tokenIn, tokenOut) ||
+    getIsUnwrap(tokenIn, tokenOut) ||
+    getIsStake(tokenIn, tokenOut) ||
+    getIsUnstake(tokenIn, tokenOut)
+  ) {
     return defaultSwapStrategy;
   }
 
@@ -156,6 +166,7 @@ export function buildReverseSwapStrategy({
   externalSwapQuoteParams,
   swapOptimizationOrder,
   swapPricingType,
+  allowSameTokenSwap = false,
 }: {
   chainId: number;
   amountOut: bigint;
@@ -165,6 +176,7 @@ export function buildReverseSwapStrategy({
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
   swapPricingType: SwapPricingType;
+  allowSameTokenSwap?: boolean;
 }): SwapStrategyForSwapOrders {
   const priceIn = getMidPrice(tokenIn.prices);
   const priceOut = getMidPrice(tokenOut.prices);
@@ -186,7 +198,13 @@ export function buildReverseSwapStrategy({
     feesUsd: 0n,
   };
 
-  if (getIsEquivalentTokens(tokenIn, tokenOut) || getIsStake(tokenIn, tokenOut) || getIsUnstake(tokenIn, tokenOut)) {
+  if (
+    (!allowSameTokenSwap && getIsEquivalentTokens(tokenIn, tokenOut)) ||
+    getIsWrap(tokenIn, tokenOut) ||
+    getIsUnwrap(tokenIn, tokenOut) ||
+    getIsStake(tokenIn, tokenOut) ||
+    getIsUnstake(tokenIn, tokenOut)
+  ) {
     return defaultSwapStrategy;
   }
 

@@ -14,7 +14,7 @@ export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapPaths {
 
     let empty = true;
     for (const tokenBAddress of allTokens) {
-      if (tokenAAddress === tokenBAddress || swapRoutes[tokenBAddress]?.[tokenAAddress]) {
+      if (swapRoutes[tokenBAddress]?.[tokenAAddress]) {
         continue;
       }
 
@@ -63,9 +63,13 @@ export function findSwapPathsBetweenTokens(graph: MarketsGraph): SwapPaths {
 
         if (currentToken === tokenBAddress) {
           const intermediateTokenPath = tokenPath.slice(1, -1);
-          const pathKey = intermediateTokenPath.join(",");
-          if (!result[pathKey]) {
-            result[pathKey] = intermediateTokenPath;
+
+          // For same-token swaps, require at least one intermediate token
+          if (!(tokenAAddress === tokenBAddress && intermediateTokenPath.length === 0)) {
+            const pathKey = intermediateTokenPath.join(",");
+            if (!result[pathKey]) {
+              result[pathKey] = intermediateTokenPath;
+            }
           }
         }
 

@@ -5284,8 +5284,8 @@ msgid "Est. Impact Rebate"
 msgstr "估计影响返利"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "选择不同的代币"
+#~ msgid "Select different tokens"
+#~ msgstr "选择不同的代币"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"

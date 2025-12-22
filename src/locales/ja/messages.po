@@ -5284,8 +5284,8 @@ msgid "Est. Impact Rebate"
 msgstr "推定影響リベート"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "別のトークンを選択"
+#~ msgid "Select different tokens"
+#~ msgstr "別のトークンを選択"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"

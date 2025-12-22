@@ -5284,8 +5284,8 @@ msgid "Est. Impact Rebate"
 msgstr "Reembolso de Impacto Est."
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "Selecciona tokens diferentes"
+#~ msgid "Select different tokens"
+#~ msgstr "Selecciona tokens diferentes"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"
