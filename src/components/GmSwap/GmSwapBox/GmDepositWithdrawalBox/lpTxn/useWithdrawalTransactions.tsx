@@ -115,7 +115,7 @@ export const useWithdrawalTransactions = ({
     }
 
     let executionFee: bigint | undefined;
-    if (technicalFees.kind === "sourceChain" && technicalFees.isDeposit) {
+    if (technicalFees.kind === "sourceChain" && !technicalFees.isDeposit) {
       executionFee = technicalFees.fees.executionFee;
     } else if (technicalFees.kind === "gmxAccount") {
       executionFee = technicalFees.fees.executionFee.feeTokenAmount;

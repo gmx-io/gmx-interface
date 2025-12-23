@@ -315,10 +315,6 @@ function useExpressError({
       return undefined;
     }
 
-    if (!("feeUsd" in technicalFees)) {
-      return undefined;
-    }
-
     const fees = technicalFees.kind === "gmxAccount" ? technicalFees.fees : undefined;
     if (!fees) {
       return undefined;
