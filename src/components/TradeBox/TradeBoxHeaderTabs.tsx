@@ -112,6 +112,8 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     e.stopPropagation();
   };
 
+  const isSwap = tradeType === TradeType.Swap;
+
   return (
     <>
       {isInCurtain && !isCurtainOpen ? null : fieldsRow}
@@ -124,7 +126,16 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
             size="l"
             qa="trade-direction"
             className="grow overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
-            regularOptionClassname={cx("mb-0 grow", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}
+            regularOptionClassname={cx(
+              "mb-0 grow",
+              isSwap &&
+                `last:relative last:after:absolute last:after:left-0 last:after:top-[calc(50%+1px)]
+                last:after:block last:after:h-20 last:after:w-2 last:after:-translate-y-1/2 last:after:rounded-full
+                last:after:bg-slate-600 last:after:content-[''] max-md:last:after:h-16`,
+              {
+                "!py-6 text-13": isInCurtain && !isCurtainOpen,
+              }
+            )}
           />
           <Tabs
             options={swapTabOptions}

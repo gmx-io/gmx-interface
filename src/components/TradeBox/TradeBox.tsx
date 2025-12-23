@@ -1014,7 +1014,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16 pt-12">
+      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16 pt-4">
         <div className="flex flex-col gap-12 px-12">
           <div className="flex items-center justify-between">
             <Tabs

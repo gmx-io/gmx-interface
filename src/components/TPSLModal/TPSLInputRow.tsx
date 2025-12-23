@@ -297,7 +297,7 @@ export function TPSLInputRow({
 
   if (variant === "compact") {
     return (
-      <div className="flex gap-4">
+      <div className="flex gap-8">
         <div
           className={cx(
             "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
