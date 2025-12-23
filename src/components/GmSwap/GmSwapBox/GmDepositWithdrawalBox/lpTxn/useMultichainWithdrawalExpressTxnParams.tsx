@@ -5,7 +5,6 @@ import { buildAndSignMultichainGlvWithdrawalTxn } from "domain/synthetics/market
 import { buildAndSignMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
 import type { GmPaySource } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 

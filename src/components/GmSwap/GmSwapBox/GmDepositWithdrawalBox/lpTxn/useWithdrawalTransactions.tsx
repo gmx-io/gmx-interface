@@ -377,7 +377,6 @@ export const useWithdrawalTransactions = ({
           technicalFees.kind === "sourceChain" && !technicalFees.isDeposit && !technicalFees.isGlv
             ? technicalFees.fees
             : undefined;
-
         if (!fees || !transferRequests) {
           helperToast.error(t`Error submitting order`);
           sendTxnValidationErrorMetric(metricData.metricId);
