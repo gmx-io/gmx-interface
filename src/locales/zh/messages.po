@@ -178,10 +178,6 @@ msgstr "更新 {updateOrdersCount} 个 TP/SL 订单"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-#~ msgstr "{0} 高于其目标权重。<0/><1/>获取较低费用，以 <2>交换</2> 代币为 {1}。"
-
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -5063,10 +5059,6 @@ msgstr "支付"
 msgid "Total circulating supply of GMX tokens."
 msgstr "GMX 代币的总流通供应量。"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Target Weight"
-#~ msgstr "目标权重"
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "您最多可以有 {allowedAutoCancelOrdersNumber} 个活跃的可自动取消 TP/SL 订单。额外订单必须手动取消，而现有订单仍将与其相关头寸自动关闭。"
@@ -6301,10 +6293,6 @@ msgstr "费用超过金额"
 msgid "Search Type"
 msgstr "搜索类型"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-#~ msgstr "{0} 低于其目标权重。<0/><1/>获取较低费用，以 <2>用 {1} 购买 GLP</2>，并 <3>交换</3> {2} 为其他代币。"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6954,10 +6942,6 @@ msgstr "最小部分数量：{MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "请求结算资金费用"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Current Weight"
-#~ msgstr "当前权重"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
