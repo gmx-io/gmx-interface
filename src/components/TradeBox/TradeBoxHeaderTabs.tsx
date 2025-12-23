@@ -72,22 +72,20 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const fieldsColumnsClass = leverageFieldVisible ? "md:grid-cols-3" : "md:grid-cols-2";
 
   const fields = (
-    <div className="flex gap-8">
+    <div className="grid grid-cols-[44px_1fr_1fr] gap-8">
       {leverageFieldVisible ? (
-        <div className="w-44 shrink-0">
-          <LeverageField
-            marks={leverageSliderMarks}
-            value={isLeverageSliderEnabled ? leverageOption ?? null : null}
-            onChange={setLeverageOption}
-          />
-        </div>
+        <LeverageField
+          marks={leverageSliderMarks}
+          value={isLeverageSliderEnabled ? leverageOption ?? null : null}
+          onChange={setLeverageOption}
+        />
       ) : null}
 
-      <div className="grow overflow-hidden">
+      <div className="overflow-hidden">
         <MarketPoolSelectorField />
       </div>
 
-      <div className="grow overflow-hidden">
+      <div className="overflow-hidden">
         <CollateralSelectorField
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           onSelectCollateralAddress={onSelectCollateralAddress}

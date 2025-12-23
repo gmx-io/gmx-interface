@@ -178,7 +178,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     return (
       <div
         data-qa={props.qa ? props.qa + "-button-disabled" : undefined}
-        className="SelectorBase-button SelectorBase-button-disabled"
+        className={cx("SelectorBase-button SelectorBase-button-disabled", props.handleClassName)}
       >
         {props.label}
       </div>
