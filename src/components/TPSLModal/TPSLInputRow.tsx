@@ -349,7 +349,7 @@ export function TPSLInputRow({
     <div className="flex gap-8">
       <div
         className={cx(
-          "flex flex-1 cursor-text flex-col gap-2 rounded-4 border bg-slate-800 px-8 py-6",
+          "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
           priceError ? "border-red-500" : "border-slate-800",
           "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
         )}
@@ -371,7 +371,7 @@ export function TPSLInputRow({
       </div>
       <div
         className={cx(
-          "flex flex-1 cursor-text flex-col gap-2 rounded-4 border border-slate-800 bg-slate-800 px-8 py-6",
+          "flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-slate-800 bg-slate-800 px-8 py-6",
           "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
         )}
         onClick={handleBoxClick(secondInputRef)}
