@@ -6,6 +6,7 @@ import { getFeeItem, getTotalFeeItem, type FeeItem, type GasLimitsConfig } from 
 import { GlvInfo } from "domain/synthetics/markets";
 import { convertToUsd, getMidPrice, TokensData } from "domain/synthetics/tokens";
 import { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "domain/synthetics/trade";
+import { getByKey } from "lib/objects";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
 
@@ -58,13 +59,15 @@ export const useDepositWithdrawalFees = ({
       shouldRoundUp: true,
     });
 
-    const wrappedToken = getWrappedToken(chainId);
-    const wrappedTokenData = tokensData[wrappedToken.address];
-    const wrappedTokenPrice = getMidPrice(wrappedTokenData.prices);
-
     let logicalNetworkFeeUsd = 0n;
 
     if (technicalFees.kind === "settlementChain") {
+      const wrappedToken = getWrappedToken(chainId);
+      const wrappedTokenData = getByKey(tokensData, wrappedToken.address);
+      if (!wrappedTokenData) {
+        return { logicalFees: undefined };
+      }
+      const wrappedTokenPrice = getMidPrice(wrappedTokenData.prices);
       const keeperUsd = convertToUsd(technicalFees.fees.feeTokenAmount, wrappedToken.decimals, wrappedTokenPrice)!;
       logicalNetworkFeeUsd = keeperUsd * -1n;
     } else if (technicalFees.kind === "gmxAccount") {
