@@ -5,7 +5,7 @@ import { sleep } from "./common";
 
 export const MAX_TIMEOUT = 40000;
 export const MAX_CALLS_PER_BATCH = 500;
-export const MAX_CONCURRENT_BATCHES = 5;
+export const MAX_CONCURRENT_BATCHES = 3;
 
 export type MulticallProviderUrls = {
   primary: string;
