@@ -115,6 +115,8 @@ export function useTechnicalFees(): TechnicalGmFees {
             return {
               kind: "settlementChain",
               fees,
+              isDeposit: true,
+              isGlv: true,
             };
           } else {
             const castedParams = p.params.rawParams as RawCreateDepositParams;
@@ -135,6 +137,8 @@ export function useTechnicalFees(): TechnicalGmFees {
             return {
               kind: "settlementChain",
               fees,
+              isDeposit: true,
+              isGlv: false,
             };
           }
         } else if (p.params.operation === Operation.Withdrawal) {
@@ -158,6 +162,8 @@ export function useTechnicalFees(): TechnicalGmFees {
             return {
               kind: "settlementChain",
               fees,
+              isDeposit: false,
+              isGlv: true,
             };
           } else {
             const castedParams = p.params.rawParams as RawCreateWithdrawalParams;
@@ -178,6 +184,8 @@ export function useTechnicalFees(): TechnicalGmFees {
             return {
               kind: "settlementChain",
               fees,
+              isDeposit: false,
+              isGlv: false,
             };
           }
         }
@@ -276,6 +284,8 @@ export function useTechnicalFees(): TechnicalGmFees {
                 executionFee,
                 relayFeeUsd,
               },
+              isDeposit: true,
+              isGlv: true,
             };
           } else {
             const castedParams = p.params.rawParams as RawCreateDepositParams;
@@ -354,6 +364,8 @@ export function useTechnicalFees(): TechnicalGmFees {
                 executionFee,
                 relayFeeUsd,
               },
+              isDeposit: true,
+              isGlv: false,
             };
           }
         } else if (p.params.operation === Operation.Withdrawal) {
@@ -430,6 +442,8 @@ export function useTechnicalFees(): TechnicalGmFees {
                 executionFee: fees,
                 relayFeeUsd,
               },
+              isDeposit: false,
+              isGlv: true,
             };
           } else {
             const castedParams = p.params.rawParams as RawCreateWithdrawalParams;
@@ -503,6 +517,8 @@ export function useTechnicalFees(): TechnicalGmFees {
                 executionFee: fees,
                 relayFeeUsd,
               },
+              isDeposit: false,
+              isGlv: false,
             };
           }
         }

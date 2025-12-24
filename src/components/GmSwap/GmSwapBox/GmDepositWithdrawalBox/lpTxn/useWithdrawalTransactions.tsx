@@ -110,12 +110,12 @@ export const useWithdrawalTransactions = ({
   const rawParams = useSelector(selectPoolsDetailsParams);
 
   const params = useMemo((): CreateWithdrawalParams | CreateGlvWithdrawalParams | undefined => {
-    if (!rawParams || !technicalFees || !isWithdrawal) {
+    if (!rawParams || !technicalFees || !isWithdrawal || technicalFees.isDeposit) {
       return undefined;
     }
 
     let executionFee: bigint | undefined;
-    if (technicalFees.kind === "sourceChain" && !technicalFees.isDeposit) {
+    if (technicalFees.kind === "sourceChain") {
       executionFee = technicalFees.fees.executionFee;
     } else if (technicalFees.kind === "gmxAccount") {
       executionFee = technicalFees.fees.executionFee.feeTokenAmount;

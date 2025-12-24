@@ -7,6 +7,8 @@ import type { ExecutionFee } from "sdk/types/fees";
 type SameChainGmFees = {
   kind: "settlementChain";
   fees: ExecutionFee;
+  isDeposit: boolean;
+  isGlv: boolean;
 };
 
 type GmxAccountGmFees = {
@@ -15,6 +17,8 @@ type GmxAccountGmFees = {
     executionFee: ExecutionFee;
     relayFeeUsd: bigint;
   };
+  isDeposit: boolean;
+  isGlv: boolean;
 };
 
 type SourceChainGmFees = {

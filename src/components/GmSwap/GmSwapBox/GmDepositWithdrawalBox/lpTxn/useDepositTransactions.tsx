@@ -120,12 +120,12 @@ export const useDepositTransactions = ({
   const rawParams = useSelector(selectPoolsDetailsParams);
 
   const params = useMemo((): CreateDepositParams | CreateGlvDepositParams | undefined => {
-    if (!rawParams || !technicalFees || !isDeposit) {
+    if (!rawParams || !technicalFees || !isDeposit || !technicalFees.isDeposit) {
       return undefined;
     }
 
     let executionFee: bigint | undefined;
-    if (technicalFees.kind === "sourceChain" && technicalFees.isDeposit) {
+    if (technicalFees.kind === "sourceChain") {
       executionFee = technicalFees.fees.executionFee;
     } else if (technicalFees.kind === "gmxAccount") {
       executionFee = technicalFees.fees.executionFee.feeTokenAmount;
