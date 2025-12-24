@@ -34,7 +34,7 @@ export function getSwapAmountsByFromValue(p: {
   chainId: number;
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   findSwapPath: FindSwapPath;
-  allowSameTokenSwap?: boolean;
+  allowSameTokenSwap: boolean;
 }): SwapAmounts {
   const {
     tokenIn,
@@ -142,7 +142,7 @@ export function getSwapAmountsByToValue(p: {
   chainId: number;
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   findSwapPath: FindSwapPath;
-  allowSameTokenSwap?: boolean;
+  allowSameTokenSwap: boolean;
 }): SwapAmounts {
   const {
     tokenIn,
@@ -156,7 +156,7 @@ export function getSwapAmountsByToValue(p: {
     marketsInfoData,
     chainId,
     externalSwapQuoteParams,
-    allowSameTokenSwap = false,
+    allowSameTokenSwap,
   } = p;
 
   if (!externalSwapQuoteParams) {
@@ -260,7 +260,7 @@ function getSwapAmountsByFromValueDefault(p: {
   allowedSwapSlippageBps?: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
-  allowSameTokenSwap?: boolean;
+  allowSameTokenSwap: boolean;
 }): SwapAmounts {
   const {
     tokenIn,
@@ -272,7 +272,7 @@ function getSwapAmountsByFromValueDefault(p: {
     findSwapPath,
     uiFeeFactor,
     allowedSwapSlippageBps,
-    allowSameTokenSwap = false,
+    allowSameTokenSwap,
   } = p;
 
   const priceIn = tokenIn.prices.minPrice;
@@ -424,7 +424,7 @@ function getSwapAmountsByToValueDefault(p: {
   swapOptimizationOrder?: SwapOptimizationOrderArray;
   allowedSwapSlippageBps?: bigint;
   uiFeeFactor: bigint;
-  allowSameTokenSwap?: boolean;
+  allowSameTokenSwap: boolean;
 }): SwapAmounts {
   const {
     tokenIn,
@@ -436,7 +436,7 @@ function getSwapAmountsByToValueDefault(p: {
     uiFeeFactor,
     swapOptimizationOrder,
     allowedSwapSlippageBps,
-    allowSameTokenSwap = false,
+    allowSameTokenSwap,
   } = p;
 
   const priceIn = tokenIn.prices.minPrice;

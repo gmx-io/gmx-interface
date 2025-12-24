@@ -36,7 +36,7 @@ export function buildSwapStrategy({
   swapOptimizationOrder,
   externalSwapQuoteParams,
   swapPricingType = SwapPricingType.Swap,
-  allowSameTokenSwap = false,
+  allowSameTokenSwap,
 }: {
   chainId: number;
   amountIn: bigint;
@@ -46,7 +46,7 @@ export function buildSwapStrategy({
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
   externalSwapQuoteParams: ExternalSwapQuoteParams;
   swapPricingType: SwapPricingType;
-  allowSameTokenSwap?: boolean;
+  allowSameTokenSwap: boolean;
 }): SwapStrategyForSwapOrders {
   const priceIn = tokenIn.prices.minPrice;
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
@@ -166,7 +166,7 @@ export function buildReverseSwapStrategy({
   externalSwapQuoteParams,
   swapOptimizationOrder,
   swapPricingType,
-  allowSameTokenSwap = false,
+  allowSameTokenSwap,
 }: {
   chainId: number;
   amountOut: bigint;
@@ -176,7 +176,7 @@ export function buildReverseSwapStrategy({
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
   swapPricingType: SwapPricingType;
-  allowSameTokenSwap?: boolean;
+  allowSameTokenSwap: boolean;
 }): SwapStrategyForSwapOrders {
   const priceIn = getMidPrice(tokenIn.prices);
   const priceOut = getMidPrice(tokenOut.prices);

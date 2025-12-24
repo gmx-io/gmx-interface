@@ -43,6 +43,7 @@ export function getExternalSwapInputsByFromValue({
     marketsInfoData,
     chainId,
     externalSwapQuoteParams: undefined,
+    allowSameTokenSwap: false,
   });
 
   const internalSwapTotalFeesDeltaUsd = swapAmounts.swapStrategy.swapPathStats
@@ -135,6 +136,7 @@ export function getExternalSwapInputsByLeverageSize({
     marketsInfoData,
     chainId,
     externalSwapQuoteParams: undefined,
+    allowSameTokenSwap: false,
   });
 
   const internalSwapTotalFeesDeltaUsd = swapAmounts.swapStrategy.swapPathStats
