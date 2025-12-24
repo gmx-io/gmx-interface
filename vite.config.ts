@@ -80,9 +80,6 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    ssr: {
-      noExternal: ["@vanilla-extract/sprinkles"],
-    },
     test: {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
