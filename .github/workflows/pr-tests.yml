@@ -78,3 +78,28 @@ jobs:
 
       - name: Run tests
         run: yarn test:ci
+
+      - name: Run SDK linting
+        run: |
+          cd sdk
+          yarn lint:ci
+
+      - name: Run SDK type checking
+        run: |
+          cd sdk
+          yarn tscheck:ci
+
+      - name: Run SDK tests
+        run: |
+          cd sdk
+          yarn test:ci
+
+      - name: Build SDK
+        run: |
+          cd sdk
+          yarn build
+
+      - name: Run SDK multicall tests
+        run: |
+          cd sdk
+          yarn test:multicall
