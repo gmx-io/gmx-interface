@@ -29,13 +29,14 @@ export function useHasOutdatedUi() {
     hasOutdatedUi = true;
   }
 
-  if (isDevelopment()) {
-    const localStorageVersion = localStorage.getItem(REQUIRED_UI_VERSION_KEY);
+  // for testing purposes, should be reverted before merging
+  // if (isDevelopment()) {
+  const localStorageVersion = localStorage.getItem(REQUIRED_UI_VERSION_KEY);
 
-    if (localStorageVersion) {
-      hasOutdatedUi = Boolean(parseFloat(localStorageVersion) > UI_VERSION);
-    }
+  if (localStorageVersion) {
+    hasOutdatedUi = Boolean(parseFloat(localStorageVersion) > UI_VERSION);
   }
+  // }
 
   return hasOutdatedUi;
 }
