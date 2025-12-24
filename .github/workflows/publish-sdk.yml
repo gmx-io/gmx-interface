@@ -23,7 +23,7 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
           always-auth: true
           scope: "@gmx-io"
-          auth-token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         working-directory: ./sdk
@@ -38,5 +38,3 @@ jobs:
 
       - run: npm publish --access public
         working-directory: ./sdk
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

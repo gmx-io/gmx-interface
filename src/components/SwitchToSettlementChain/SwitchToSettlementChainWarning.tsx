@@ -1,14 +1,20 @@
 import { Trans } from "@lingui/macro";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
-import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
+import { getChainName, type SettlementChainId } from "config/chains";
+import { isSettlementChain, MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
 import { needSwitchToSettlementChain } from "./utils";
 
-export function SwitchToSettlementChainWarning({ topic }: { topic: "liquidity" | "staking" | "vesting" | "shift" }) {
+export function SwitchToSettlementChainWarning({
+  topic,
+  settlementChainId,
+}: {
+  topic: "liquidity" | "staking" | "vesting" | "shift" | "claimRewards";
+  settlementChainId?: SettlementChainId;
+}) {
   const { chainId: walletChainId } = useAccount();
 
   if (!needSwitchToSettlementChain(walletChainId)) {
@@ -65,6 +71,14 @@ export function SwitchToSettlementChainWarning({ topic }: { topic: "liquidity" |
     ) : (
       <Trans>
         Vesting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities.
+      </Trans>
+    );
+  } else if (topic === "claimRewards" && settlementChainId && isSettlementChain(settlementChainId)) {
+    const settlementChainName = getChainName(settlementChainId);
+    message = (
+      <Trans>
+        Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim
+        your referral rewards.
       </Trans>
     );
   }

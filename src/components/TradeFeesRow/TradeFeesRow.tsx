@@ -495,7 +495,7 @@ export function TradeFeesRow(p: Props) {
     return (
       <Trans>
         Price impact rebates for closing trades are claimable under the claims tab.{" "}
-        <ExternalLink href={"https://docs.gmx.io/docs/trading/v2#price-impact-and-price-impact-rebates"} newTab>
+        <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
           Read more
         </ExternalLink>
       </Trans>

@@ -7,6 +7,7 @@ import {
   base,
   bsc,
   Chain,
+  mainnet,
   optimismSepolia,
   sepolia,
 } from "viem/chains";
@@ -19,7 +20,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
-  ETH_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -28,11 +29,11 @@ import {
 
 export {
   ARBITRUM,
-  ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
-  ETH_MAINNET,
+  ARBITRUM_SEPOLIA,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -48,6 +49,7 @@ export const SOURCE_CHAIN_IDS = [
   SOURCE_SEPOLIA,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
+  SOURCE_ETHEREUM_MAINNET,
 ] as const;
 
 export type ContractsChainId = (typeof CONTRACTS_CHAIN_IDS_DEV)[number];
@@ -187,6 +189,12 @@ const SOURCE_CHAIN_CONFIGS = {
     slug: "bnb-mainnet",
     explorerUrl: "https://bscscan.com/",
   },
+  [SOURCE_ETHEREUM_MAINNET]: {
+    chainId: SOURCE_ETHEREUM_MAINNET,
+    name: "Ethereum",
+    slug: "ethereum-mainnet",
+    explorerUrl: "https://etherscan.io/",
+  },
   // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<SourceChainId, SourceChainConfig>;
 
@@ -240,6 +248,7 @@ export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [BOTANIX]: botanix,
+  [SOURCE_ETHEREUM_MAINNET]: mainnet,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
   [SOURCE_BASE_MAINNET]: base,
