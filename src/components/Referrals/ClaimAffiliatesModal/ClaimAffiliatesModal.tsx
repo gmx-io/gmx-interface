@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
 
+import { isSettlementChain } from "config/multichain";
 import {
   getMarketIndexName,
   getMarketPoolName,
@@ -20,6 +21,8 @@ import useWallet from "lib/wallets/useWallet";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
+import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import { Table, TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -59,7 +62,7 @@ export function ClaimAffiliatesModal(p: Props) {
   const selectedRewards = rewards.filter((reward) => selectedMarketAddresses.includes(reward.marketAddress));
 
   function onSubmit() {
-    if (!account || !signer || !affiliateRewardsData || !marketsInfoData) return;
+    if (!account || !signer || !affiliateRewardsData || !marketsInfoData || srcChainId !== undefined) return;
 
     const marketAddresses: string[] = [];
     const tokenAddresses: string[] = [];
@@ -155,9 +158,14 @@ export function ClaimAffiliatesModal(p: Props) {
           ))}
         </Table>
 
-        <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isButtonDisabled}>
-          {buttonText}
-        </Button>
+        {isSettlementChain(chainId) && (
+          <SwitchToSettlementChainWarning topic="claimRewards" settlementChainId={chainId} />
+        )}
+        <SwitchToSettlementChainButtons settlementChainId={isSettlementChain(chainId) ? chainId : undefined}>
+          <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isButtonDisabled}>
+            {buttonText}
+          </Button>
+        </SwitchToSettlementChainButtons>
       </div>
     </Modal>
   );

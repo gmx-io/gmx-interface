@@ -2,27 +2,30 @@ import { Chain, createPublicClient, http } from "viem";
 
 import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
+import { getProviderNameFromUrl } from "config/rpc";
+import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
+import { withFallback } from "lib/FallbackTracker/withFallback";
 import type {
   MulticallErrorEvent,
-  MulticallFallbackRpcModeCounter,
   MulticallRequestCounter,
   MulticallRequestTiming,
   MulticallTimeoutEvent,
 } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
-import { serializeMulticallErrors } from "lib/multicall/utils";
-import { getProviderNameFromUrl } from "lib/rpc/getProviderNameFromUrl";
-import { sleep } from "lib/sleep";
-import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
+import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
+import { sleepWithSignal } from "lib/sleep";
 import { AbiId, abis as allAbis } from "sdk/abis";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
 
-export const MAX_TIMEOUT = 20000;
+import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
+
+export const MAX_PRIMARY_TIMEOUT = 20_000;
 
 export type MulticallProviderUrls = {
   primary: string;
   secondary: string;
+  trackerKey: string;
 };
 
 export class Multicall {
@@ -49,37 +52,13 @@ export class Multicall {
         retryCount: 0,
         retryDelay: 10000000,
         batch: BATCH_CONFIGS[chainId].http,
-        timeout: MAX_TIMEOUT,
+        timeout: MAX_PRIMARY_TIMEOUT,
       }),
       pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
       chain: getViemChain(chainId) as Chain,
     });
   }
-
-  fallbackRpcSwitcher = new SlidingWindowFallbackSwitcher({
-    fallbackTimeout: 60 * 1000, // 1 minute
-    restoreTimeout: 5 * 60 * 1000, // 5 minutes
-    eventsThreshold: 3,
-    onFallback: () => {
-      emitMetricCounter<MulticallFallbackRpcModeCounter>({
-        event: "multicall.fallbackRpcMode.on",
-        data: {
-          chainId: this.chainId,
-          isInMainThread: !isWebWorker,
-        },
-      });
-    },
-    onRestore: () => {
-      emitMetricCounter<MulticallFallbackRpcModeCounter>({
-        event: "multicall.fallbackRpcMode.off",
-        data: {
-          chainId: this.chainId,
-          isInMainThread: !isWebWorker,
-        },
-      });
-    },
-  });
 
   getClient: (options?: { forceFallback?: boolean }) => ReturnType<typeof Multicall.getViemClient>;
 
@@ -89,10 +68,10 @@ export class Multicall {
   ) {}
 
   async call(
-    providerUrls: MulticallProviderUrls,
+    providerUrls: CurrentRpcEndpoints,
     request: MulticallRequestConfig<any>,
-    maxTimeout: number,
-    isLargeAccount: boolean
+    isLargeAccount: boolean,
+    debugState?: MulticallDebugState
   ) {
     const originalKeys: {
       contractKey: string;
@@ -143,9 +122,7 @@ export class Multicall {
       });
     });
 
-    const providerUrl = this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.secondary : providerUrls.primary;
-    const client = Multicall.getViemClient(this.chainId, providerUrl);
-    const rpcProviderName = getProviderNameFromUrl(providerUrl);
+    const providerUrl = providerUrls.primary;
 
     const sendCounterEvent = (
       event: "call" | "timeout" | "error",
@@ -181,6 +158,16 @@ export class Multicall {
           rpcProvider,
           isLargeAccount,
         },
+      });
+    };
+
+    const sendDebugEvent = (type: MulticallDebugEventType, options: { providerUrl: string; error?: Error }) => {
+      _debugMulticall?.dispatchEvent({
+        type,
+        isInWorker: isWebWorker,
+        chainId: this.chainId,
+        providerUrl: options.providerUrl,
+        error: options.error,
       });
     };
 
@@ -230,140 +217,122 @@ export class Multicall {
       return multicallResult;
     };
 
-    const fallbackMulticall = (e: Error) => {
-      const fallbackProviderUrl = providerUrls.secondary;
-      const fallbackProviderName = getProviderNameFromUrl(fallbackProviderUrl);
+    return withFallback({
+      endpoints: [providerUrl, ...providerUrls.fallbacks],
+      fn: async (providerUrl: string) => {
+        const isFallback = providerUrl !== providerUrls.primary;
 
-      sendCounterEvent("call", {
-        requestType: "retry",
-        rpcProvider: fallbackProviderName,
-      });
+        const rpcProviderName = getProviderNameFromUrl(providerUrl);
 
-      // eslint-disable-next-line no-console
-      console.groupCollapsed("multicall error:");
-      // eslint-disable-next-line no-console
-      console.error(e);
-      // eslint-disable-next-line no-console
-      console.groupEnd();
+        sendDebugEvent(isFallback ? "fallback-start" : "primary-start", { providerUrl });
 
-      if (!this.fallbackRpcSwitcher?.isFallbackMode) {
-        this.fallbackRpcSwitcher?.trigger();
-      }
-
-      // eslint-disable-next-line no-console
-      console.debug(`using multicall fallback for chain ${this.chainId}`);
-
-      const fallbackClient = Multicall.getViemClient(this.chainId, fallbackProviderUrl);
-
-      const durationStart = performance.now();
-
-      return fallbackClient
-        .multicall({ contracts: encodedPayload as any })
-        .then((response) => {
-          sendTiming({
-            time: Math.round(performance.now() - durationStart),
-            requestType: "retry",
-            rpcProvider: fallbackProviderName,
-          });
-
-          return response;
-        })
-        .catch((_viemError) => {
-          const e = new Error(_viemError.message.slice(0, 150));
-          // eslint-disable-next-line no-console
-          console.groupCollapsed("multicall fallback error:");
-          // eslint-disable-next-line no-console
-          console.error(e);
-          // eslint-disable-next-line no-console
-          console.groupEnd();
-
-          emitMetricEvent<MulticallErrorEvent>({
-            event: "multicall.error",
-            isError: true,
-            data: {
-              requestType: "retry",
-              rpcProvider: fallbackProviderName,
-              isInMainThread: !isWebWorker,
-              errorMessage: _viemError.message,
-            },
-          });
-
-          sendCounterEvent("error", {
-            requestType: "retry",
-            rpcProvider: fallbackProviderName,
-          });
-
-          throw e;
-        });
-    };
-
-    sendCounterEvent("call", {
-      requestType: "initial",
-      rpcProvider: rpcProviderName,
-    });
-
-    const durationStart = performance.now();
-
-    const result = await Promise.race([
-      client.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout).then(() => Promise.reject(new Error("multicall timeout"))),
-    ])
-      .then((response) => {
-        sendTiming({
-          time: Math.round(performance.now() - durationStart),
-          requestType: "initial",
+        sendCounterEvent("call", {
+          requestType: isFallback ? "retry" : "initial",
           rpcProvider: rpcProviderName,
         });
 
-        return processResponse(response);
-      })
-      .catch((_viemError) => {
-        const e = new Error(_viemError.message.slice(0, 150));
+        const client = Multicall.getViemClient(this.chainId, providerUrl);
 
-        emitMetricEvent<MulticallTimeoutEvent>({
-          event: "multicall.timeout",
-          isError: true,
-          data: {
-            metricType: "rpcTimeout",
-            isInMainThread: !isWebWorker,
-            requestType: "initial",
-            rpcProvider: rpcProviderName,
-            errorMessage: _viemError.message.slice(0, 150),
-          },
-        });
+        const durationStart = performance.now();
 
-        sendCounterEvent("timeout", {
-          requestType: "initial",
-          rpcProvider: rpcProviderName,
-        });
+        const debugShouldTimeout = !isFallback && isWebWorker && debugState?.triggerPrimaryTimeoutInWorker;
 
-        return fallbackMulticall(e).then(processResponse);
-      });
+        const timeoutController = new AbortController();
 
-    if (result.success) {
-      return result;
-    }
+        return await Promise.race([
+          sleepWithSignal(debugShouldTimeout ? 100 : MAX_PRIMARY_TIMEOUT, timeoutController.signal).then(() => {
+            sendDebugEvent("primary-timeout", { providerUrl });
 
-    emitMetricEvent<MulticallErrorEvent>({
-      event: "multicall.error",
-      isError: true,
-      data: {
-        requestType: "initial",
-        rpcProvider: rpcProviderName,
-        isInMainThread: !isWebWorker,
-        errorMessage: serializeMulticallErrors(result.errors),
+            emitReportEndpointFailure({
+              endpoint: providerUrl,
+              trackerKey: providerUrls.trackerKey,
+            });
+
+            sendCounterEvent("timeout", {
+              requestType: isFallback ? "retry" : "initial",
+              rpcProvider: rpcProviderName,
+            });
+
+            emitMetricEvent<MulticallTimeoutEvent>({
+              event: "multicall.timeout",
+              isError: true,
+              data: {
+                metricType: "rpcTimeout",
+                isInMainThread: !isWebWorker,
+                requestType: isFallback ? "retry" : "initial",
+                rpcProvider: rpcProviderName,
+                errorMessage: "multicall timeout",
+              },
+            });
+
+            return Promise.reject(new Error("multicall timeout"));
+          }),
+          client.multicall({ contracts: encodedPayload as any }),
+        ])
+          .then((response) => {
+            timeoutController.abort();
+
+            sendTiming({
+              time: Math.round(performance.now() - durationStart),
+              requestType: isFallback ? "retry" : "initial",
+              rpcProvider: rpcProviderName,
+            });
+
+            const debugShouldFail = Boolean(
+              !isFallback &&
+                ((isWebWorker && debugState?.triggerPrimaryAsFailedInWorker) ||
+                  (!isWebWorker && debugState?.triggerPrimaryAsFailedInMainThread))
+            );
+
+            if (debugShouldFail) {
+              throw new Error("Debug trigger: primary failed");
+            }
+
+            sendDebugEvent(isFallback ? "fallback-success" : "primary-success", { providerUrl });
+
+            const processed = processResponse(response);
+
+            if (processed.success) {
+              return processed;
+            } else {
+              throw new Error("Multicall failed");
+            }
+          })
+          .catch((_viemError) => {
+            const e = new Error(_viemError.message.slice(0, 150));
+            // eslint-disable-next-line no-console
+            console.groupCollapsed("multicall error:");
+            // eslint-disable-next-line no-console
+            console.error(e);
+            // eslint-disable-next-line no-console
+            console.groupEnd();
+
+            emitMetricEvent<MulticallErrorEvent>({
+              event: "multicall.error",
+              isError: true,
+              data: {
+                requestType: isFallback ? "retry" : "initial",
+                rpcProvider: rpcProviderName,
+                isInMainThread: !isWebWorker,
+                errorMessage: _viemError.message,
+              },
+            });
+
+            sendCounterEvent("error", {
+              requestType: "initial",
+              rpcProvider: rpcProviderName,
+            });
+
+            sendDebugEvent(isFallback ? "fallback-failed" : "primary-failed", { providerUrl });
+
+            emitReportEndpointFailure({
+              endpoint: providerUrl,
+              trackerKey: providerUrls.trackerKey,
+            });
+
+            throw e;
+          });
       },
     });
-
-    sendCounterEvent("error", {
-      requestType: "initial",
-      rpcProvider: rpcProviderName,
-    });
-
-    if (!this.fallbackRpcSwitcher?.isFallbackMode) {
-      this.fallbackRpcSwitcher?.trigger();
-    }
-
-    return await fallbackMulticall(new Error("multicall fallback error")).then(processResponse);
   }
 }

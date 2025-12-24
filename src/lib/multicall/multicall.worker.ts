@@ -1,34 +1,39 @@
-import { isWebWorker } from "config/env";
+import { fallbackTrackerEventKeys } from "lib/FallbackTracker/events";
 import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "lib/metrics/emitMetricEvent";
+import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 
-import { MAX_TIMEOUT, Multicall, MulticallProviderUrls } from "./Multicall";
+import { MULTICALL_DEBUG_EVENT_NAME } from "./_debug";
+import type { MulticallDebugState } from "./_debug";
+import { Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 
 async function executeMulticall(
   chainId: number,
-  providerUrls: MulticallProviderUrls,
+  providerUrls: CurrentRpcEndpoints,
   request: MulticallRequestConfig<any>,
   abFlags: Record<string, boolean>,
-  isLargeAccount: boolean
+  isLargeAccount: boolean,
+  debugState?: MulticallDebugState
 ) {
   const multicall = await Multicall.getInstance(chainId, abFlags);
 
-  return multicall?.call(providerUrls, request, MAX_TIMEOUT, isLargeAccount);
+  return multicall?.call(providerUrls, request, isLargeAccount, debugState);
 }
 
 self.addEventListener("message", run);
 
 async function run(event) {
-  const { PRODUCTION_PREVIEW_KEY, chainId, providerUrls, request, id, abFlags, isLargeAccount } = event.data;
+  const { PRODUCTION_PREVIEW_KEY, chainId, providerUrls, request, id, abFlags, isLargeAccount, debugState } =
+    event.data;
   // @ts-ignore
   self.PRODUCTION_PREVIEW_KEY = PRODUCTION_PREVIEW_KEY;
 
   try {
-    const result = await executeMulticall(chainId, providerUrls, request, abFlags, isLargeAccount);
+    const result = await executeMulticall(chainId, providerUrls, request, abFlags, isLargeAccount, debugState);
 
     postMessage({
       id,
@@ -46,25 +51,39 @@ async function run(event) {
   }
 }
 
-if (isWebWorker) {
-  globalThis.addEventListener(METRIC_EVENT_DISPATCH_NAME, (event) => {
-    postMessage({
-      isMetrics: true,
-      detail: (event as CustomEvent).detail,
-    });
+// Register listeners for metric and debug events
+// In worker context, these listeners forward events to main thread via postMessage
+globalThis.addEventListener(METRIC_EVENT_DISPATCH_NAME, (event) => {
+  postMessage({
+    isMetrics: true,
+    detail: (event as CustomEvent).detail,
   });
+});
 
-  globalThis.addEventListener(METRIC_COUNTER_DISPATCH_NAME, (event) => {
-    postMessage({
-      isCounter: true,
-      detail: (event as CustomEvent).detail,
-    });
+globalThis.addEventListener(METRIC_COUNTER_DISPATCH_NAME, (event) => {
+  postMessage({
+    isCounter: true,
+    detail: (event as CustomEvent).detail,
   });
+});
 
-  globalThis.addEventListener(METRIC_TIMING_DISPATCH_NAME, (event) => {
-    postMessage({
-      isTiming: true,
-      detail: (event as CustomEvent).detail,
-    });
+globalThis.addEventListener(METRIC_TIMING_DISPATCH_NAME, (event) => {
+  postMessage({
+    isTiming: true,
+    detail: (event as CustomEvent).detail,
   });
-}
+});
+
+globalThis.addEventListener(MULTICALL_DEBUG_EVENT_NAME, (event) => {
+  postMessage({
+    isDebug: true,
+    detail: (event as CustomEvent).detail,
+  });
+});
+
+globalThis.addEventListener(fallbackTrackerEventKeys.reportEndpointFailure, (event) => {
+  postMessage({
+    isFallbackTrackerFailure: true,
+    detail: (event as CustomEvent).detail,
+  });
+});

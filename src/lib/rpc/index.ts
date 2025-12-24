@@ -1,31 +1,11 @@
 import { ethers, JsonRpcProvider, Network, Signer, WebSocketProvider } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
-import {
-  AnyChainId,
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  FALLBACK_PROVIDERS,
-  getAlchemyArbitrumSepoliaWsUrl,
-  getAlchemyArbitrumWsUrl,
-  getAlchemyBaseMainnetWsUrl,
-  getAlchemyBotanixWsUrl,
-  getAlchemyBscMainnetWsUrl,
-  getAlchemyOptimismSepoliaWsUrl,
-  getAlchemySepoliaWsUrl,
-  getExpressRpcUrl,
-  getFallbackRpcUrl,
-  SOURCE_BASE_MAINNET,
-  SOURCE_BSC_MAINNET,
-  SOURCE_OPTIMISM_SEPOLIA,
-  SOURCE_SEPOLIA,
-} from "config/chains";
+import { AnyChainId, AVALANCHE_FUJI } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
-import { getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/bestRpcTracker";
+import { getCurrentExpressRpcUrl, getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
 export function getProvider(signer: Signer, chainId: number): Signer;
@@ -49,41 +29,15 @@ export function getWsUrl(chainId: AnyChainId): string | undefined {
     return undefined;
   }
 
-  if (chainId === ARBITRUM) {
-    return getAlchemyArbitrumWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
+  const wsProviderConfig =
+    getWsRpcProviders(chainId, getIsLargeAccount() ? "largeAccount" : "fallback")[0] ??
+    getWsRpcProviders(chainId, "fallback")[0];
+
+  if (wsProviderConfig) {
+    return wsProviderConfig.url;
   }
 
-  if (chainId === AVALANCHE) {
-    return "wss://api.avax.network/ext/bc/C/ws";
-  }
-
-  if (chainId === ARBITRUM_SEPOLIA) {
-    return getAlchemyArbitrumSepoliaWsUrl("fallback");
-  }
-
-  if (chainId === SOURCE_SEPOLIA) {
-    return getAlchemySepoliaWsUrl("fallback");
-  }
-
-  if (chainId === SOURCE_OPTIMISM_SEPOLIA) {
-    return getAlchemyOptimismSepoliaWsUrl("fallback");
-  }
-
-  if (chainId === BOTANIX) {
-    return getAlchemyBotanixWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
-  }
-
-  if (chainId === SOURCE_BASE_MAINNET) {
-    return getAlchemyBaseMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
-  }
-
-  if (chainId === SOURCE_BSC_MAINNET) {
-    return getAlchemyBscMainnetWsUrl(getIsLargeAccount() ? "largeAccount" : "fallback");
-  }
-
-  const castedChainId: never = chainId;
-
-  throw new Error(`Unsupported websocket URL for chain id: ${castedChainId}`);
+  throw new Error(`Unsupported websocket URL for chain id: ${chainId}`);
 }
 
 export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
@@ -101,11 +55,11 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
 }
 
 export function getFallbackProvider(chainId: number) {
-  if (!FALLBACK_PROVIDERS[chainId]) {
+  const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
+
+  if (!providerUrl) {
     return;
   }
-
-  const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccount());
 
   return new ethers.JsonRpcProvider(providerUrl, chainId, {
     staticNetwork: Network.from(chainId),
@@ -113,7 +67,7 @@ export function getFallbackProvider(chainId: number) {
 }
 
 export function getExpressProvider(chainId: number): JsonRpcProvider | undefined {
-  const providerUrl: string | undefined = getExpressRpcUrl(chainId);
+  const providerUrl: string | undefined = getCurrentExpressRpcUrl(chainId);
 
   if (!providerUrl) {
     return;
@@ -127,9 +81,9 @@ export function getExpressProvider(chainId: number): JsonRpcProvider | undefined
 export function useJsonRpcProvider(chainId: number | undefined, { isExpress = false }: { isExpress?: boolean } = {}) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 
-  const { primary } = useCurrentRpcUrls(chainId);
+  const { primary } = useCurrentRpcUrls(chainId as AnyChainId);
   const rpcUrl = useMemo(
-    () => (isExpress && chainId ? getExpressRpcUrl(chainId) : primary),
+    () => (isExpress && chainId ? getCurrentExpressRpcUrl(chainId) : primary),
     [chainId, isExpress, primary]
   );
 

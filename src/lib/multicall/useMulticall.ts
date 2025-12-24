@@ -5,8 +5,9 @@ import { KeyedMutator, stableHash } from "swr/_internal";
 
 import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { sleep } from "lib/sleep";
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-import { ContractsChainId, AnyChainId } from "sdk/configs/chains";
+import { AnyChainId, ContractsChainId } from "sdk/configs/chains";
 
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";
@@ -14,6 +15,8 @@ import type { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from 
 import { serializeMulticallErrors } from "./utils";
 
 const mutateFlagsRef: { current: Record<string, boolean> } = { current: {} };
+
+const EXECUTE_MULTICALL_TIMEOUT = 60_000;
 
 /**
  * A hook to fetch data from contracts via multicall.
@@ -90,7 +93,7 @@ export function useMulticall<
           throw new Error(`Multicall request is empty`);
         }
 
-        let responseOrFailure: any;
+        let responseOrFailure: MulticallResult<TConfig>;
 
         let priority: "urgent" | "background" = "urgent";
 
@@ -121,7 +124,10 @@ export function useMulticall<
             startTime = Date.now();
           });
 
-          responseOrFailure = await executeMulticall(chainId!, request, priority, name, params.disableBatching);
+          responseOrFailure = await Promise.race([
+            sleep(EXECUTE_MULTICALL_TIMEOUT).then(() => Promise.reject(new Error("executeMulticall timeout"))),
+            executeMulticall(chainId!, request, priority, name, params.disableBatching),
+          ]);
 
           debugLog(() => {
             const endTime = Date.now();

@@ -46,7 +46,7 @@ describe("increaseOrderHelper", () => {
       marketsInfoData,
       tokensData,
     };
-  });
+  }, 90_000);
 
   describe("validation", () => {
     it("should throw an error if wrong collateral token selected", async () => {

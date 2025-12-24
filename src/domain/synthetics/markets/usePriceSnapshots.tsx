@@ -12,7 +12,7 @@ import { Period } from "./usePoolsTimeRange";
 const PRICES_QUERY = gql`
   query Prices($fromTimestamp: Int, $tokenAddress: String!, $limit: Int, $offset: Int) {
     prices(
-      where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp, token_eq: $tokenAddress }
+      where: { isSnapshot_eq: true, snapshotTimestamp_gt: $fromTimestamp, token_eq: $tokenAddress, type_not_eq: v2 }
       orderBy: snapshotTimestamp_ASC
       limit: $limit
       offset: $offset

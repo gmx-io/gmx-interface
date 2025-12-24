@@ -4,7 +4,7 @@ import { zeroAddress, zeroHash } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
-import { CHAIN_ID, ETH_MAINNET, getExplorerUrl } from "config/chains";
+import { ARBITRUM, SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
 import { getContract } from "config/contracts";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -29,6 +29,8 @@ export { adjustForDecimals } from "./numbers";
 export const PLACEHOLDER_ACCOUNT = privateKeyToAccount(generatePrivateKey()).address;
 
 export const MIN_PROFIT_TIME = 0;
+
+export const CHAIN_ID = ARBITRUM;
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 
@@ -757,7 +759,7 @@ export function shortenAddress(address, length, padStart = 1) {
 export function useENS(address) {
   const { data } = useEnsName({
     address,
-    chainId: ETH_MAINNET,
+    chainId: SOURCE_ETHEREUM_MAINNET,
   });
   const ensName = data || undefined;
 

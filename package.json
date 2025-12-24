@@ -12,11 +12,13 @@
     "build-home": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts",
     "build-home:analyze": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts --mode analyze",
     "build-app": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
+    "build-sdk": "cd ./sdk && yarn build",
     "test": "vitest",
     "test:ci": "vitest run",
-    "lint": "node node_modules/.bin/eslint src",
+    "lint": "node node_modules/.bin/eslint src --fix --cache --cache-location .eslintcache",
+    "lint:ci": "node node_modules/.bin/eslint src --max-warnings=0",
     "lint:fix": "node node_modules/.bin/eslint src --fix",
-    "check:ci": "yarn lint && yarn test:ci && yarn tscheck",
+    "check:ci": "yarn lint:ci && yarn test:ci && yarn tscheck:ci",
     "pre-commit": "yarn run lint",
     "pre-push": "vitest run",
     "prepare": "husky install && yarn lingui:prepare",
@@ -24,12 +26,14 @@
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
-    "ts:clean": "tsc --build --clean && tsc --build",
-    "tscheck": "yarn ts:clean && tsc -p tsconfig.json --noEmit",
+    "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
+    "tscheck:ci": "tsc -p tsconfig.json --noEmit",
+    "clean:cache": "rm -rf .eslintcache tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
+    "clean:lint": "rm -rf .eslintcache",
+    "clean:ts": "rm -rf tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
-    "prebuild": "cd ./sdk && yarn tsx scripts/prebuild",
-    "openapi:lz": "openapi-typescript https://scan.layerzero-api.com/v1/openapi -o src/domain/multichain/tracker/gen.ts"
+    "prebuild": "cd ./sdk && yarn tsx scripts/prebuild"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
@@ -76,7 +80,6 @@
     "html-to-image": "^1.10.8",
     "immer": "10.1.1",
     "lodash": "4.17.21",
-    "openapi-fetch": "0.15.0",
     "qrcode.react": "^3.1.0",
     "query-string": "7.1.1",
     "rc-slider": "9.7.5",
@@ -136,20 +139,19 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@babel/plugin-transform-private-property-in-object": "^7.25.9",
     "@lingui/cli": "4.10.0",
     "@lingui/loader": "4.10.0",
     "@lingui/vite-plugin": "4.11.3",
-    "@types/react-calendar": "4.1.0",
     "@types/react-date-range": "1.4.9",
     "@typescript-eslint/eslint-plugin": "8.26.1",
     "@typescript-eslint/parser": "8.26.1",
     "@vitejs/plugin-react": "4.3.1",
-    "@vitest/web-worker": "2.0.5",
+    "@vitest/web-worker": "^2.1.9",
     "autoprefixer": "10.4.20",
     "babel-plugin-macros": "3.1.0",
     "buffer": "6.0.3",
-    "eslint": "^8.41.0",
+    "eslint": "^8.57.1",
     "eslint-config-react-app": "^7.0.1",
     "eslint-import-resolver-typescript": "4.2.2",
     "eslint-plugin-es-x": "8.1.0",
@@ -158,10 +160,9 @@
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-react-perf": "3.3.2",
-    "happy-dom": "14.12.3",
+    "happy-dom": "^20.0.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "openapi-typescript": "7.10.1",
     "postcss": "8.4.41",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.6.5",
@@ -169,11 +170,11 @@
     "tailwindcss": "3.4.4",
     "terser": "5.43.1",
     "tsx": "4.19.0",
-    "vite": "5.4.0",
+    "vite": "^5.4.18",
     "vite-bundle-analyzer": "0.20.1",
     "vite-plugin-svgr": "4.2.0",
     "vite-tsconfig-paths": "5.0.1",
-    "vitest": "2.0.5"
+    "vitest": "^2.1.9"
   },
   "lint-staged": {
     "sdk/**/*.{js,ts,jsx,tsx}": [
@@ -188,5 +189,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.1.0"
+  "packageManager": "yarn@4.12.0"
 }

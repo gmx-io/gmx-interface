@@ -3,17 +3,26 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   SettlementChainId,
+  SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SourceChainId,
-} from "config/static/chains";
+} from "config/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 export const NATIVE_TOKEN_PRICE_MAP: Partial<
   Record<SourceChainId, Partial<Record<SettlementChainId, Partial<Record<SettlementChainId, string>>>>>
 > = {
+  [SOURCE_ETHEREUM_MAINNET]: {
+    [AVALANCHE]: {
+      [AVALANCHE]: getTokenBySymbol(AVALANCHE, "ETH").address,
+    },
+    [ARBITRUM]: {
+      [ARBITRUM]: getTokenBySymbol(ARBITRUM, "ETH").address,
+    },
+  },
   [SOURCE_BASE_MAINNET]: {
     [AVALANCHE]: {
       [AVALANCHE]: getTokenBySymbol(AVALANCHE, "ETH").address,

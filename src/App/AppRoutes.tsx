@@ -3,7 +3,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { Hash, zeroHash } from "viem";
 
-import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
+import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,7 +12,7 @@ import { useMultichainFundingToast } from "domain/multichain/useMultichainFundin
 import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
-import { REFERRAL_CODE_QUERY_PARAM, getAppBaseUrl } from "lib/legacy";
+import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
@@ -53,6 +53,7 @@ export function AppRoutes() {
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
+
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
   useHashQueryParams();

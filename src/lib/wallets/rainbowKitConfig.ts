@@ -14,8 +14,10 @@ import {
 import once from "lodash/once";
 import { createPublicClient, fallback, http, PublicClient, Transport, webSocket } from "viem";
 
-import { getExpressRpcUrl, getViemChain, isTestnetChain, RPC_PROVIDERS } from "config/chains";
+import { getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getRpcProviders } from "config/rpc";
+import { RpcPurpose } from "config/rpc";
 import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
@@ -56,7 +58,9 @@ export const getRainbowKitConfig = once(() => {
 
   const transports = chains.reduce(
     (acc, chain) => {
-      acc[chain.id] = fallback([...RPC_PROVIDERS[chain.id].map((url: string) => http(url))]);
+      const rpcProviders = getRpcProviders(chain.id, "default");
+
+      acc[chain.id] = fallback([...rpcProviders.map((provider) => http(provider.url))]);
       return acc;
     },
     {} as Record<number, Transport>
@@ -71,7 +75,7 @@ export const getRainbowKitConfig = once(() => {
   });
 });
 
-const FALLBACK_TRANSPORTS_CACHE = new LRUCache<Transport>(100);
+const TRANSPORTS_CACHE = new LRUCache<Transport>(100);
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
 const HTTP_TRANSPORT_OPTIONS =
@@ -85,13 +89,15 @@ const HTTP_TRANSPORT_OPTIONS =
       }
     : undefined;
 
-export function getFallbackTransport(chainId: AnyChainId): Transport {
-  const key = `chainId:${chainId}`;
-  if (FALLBACK_TRANSPORTS_CACHE.has(key)) {
-    return FALLBACK_TRANSPORTS_CACHE.get(key)!;
+export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Transport {
+  const key = `chainId:${chainId}:purpose:${purpose}`;
+  if (TRANSPORTS_CACHE.has(key)) {
+    return TRANSPORTS_CACHE.get(key)!;
   }
-  const transport = fallback([...RPC_PROVIDERS[chainId].map((url: string) => http(url, HTTP_TRANSPORT_OPTIONS))]);
-  FALLBACK_TRANSPORTS_CACHE.set(key, transport);
+  const transport = fallback([
+    ...getRpcProviders(chainId, purpose).map((provider) => http(provider.url, HTTP_TRANSPORT_OPTIONS)),
+  ]);
+  TRANSPORTS_CACHE.set(key, transport);
   return transport;
 }
 
@@ -110,14 +116,14 @@ export function getPublicClientWithRpc(
     if (!wsUrl) {
       // eslint-disable-next-line no-console
       console.warn(`No WebSocket URL found for chain id: ${chainId}. Using HTTP instead.`);
-      transport = getFallbackTransport(chainId as AnyChainId);
+      transport = getRpcTransport(chainId as AnyChainId, "default");
     } else {
       transport = webSocket(wsUrl);
     }
   } else if (options.withExpress) {
-    transport = http(getExpressRpcUrl(chainId), HTTP_TRANSPORT_OPTIONS);
+    transport = getRpcTransport(chainId as AnyChainId, "express");
   } else {
-    transport = getFallbackTransport(chainId as AnyChainId);
+    transport = getRpcTransport(chainId as AnyChainId, "fallback");
   }
 
   const publicClient = createPublicClient({

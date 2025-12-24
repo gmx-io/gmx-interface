@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { ContractFunctionParameters, zeroAddress } from "viem";
 
+import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
-import { ContractsChainId } from "config/static/chains";
 import {
   PendingPositionUpdate,
   PositionDecreaseEvent,

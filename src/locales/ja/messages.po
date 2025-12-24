@@ -129,6 +129,10 @@ msgstr ""
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche上のイールドオプティマイザー"
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
+#~ msgstr ""
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
@@ -179,8 +183,8 @@ msgid "RabbitHole"
 msgstr "RabbitHole"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
+#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
+#~ msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -642,10 +646,6 @@ msgstr "V2のリベート"
 msgid "Acceptable Price Impact"
 msgstr "許容価格影響"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "メタマスクに追加"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "ステークされたトークン不足"
@@ -773,6 +773,10 @@ msgstr "平均ポジションサイズ。"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> から </1>{1} <2/>"
+
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "See <0>Tenderly Docs</0>."
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
@@ -1014,10 +1018,6 @@ msgstr "GMXはTradingViewを使用してリアルタイムの暗号通貨チャ�
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "GMX V2リベートは各取引で手数料割引として自動適用され、このテーブルに表示されません。"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "{0}をCoingeckoで開く"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
 msgstr "{operationTokenSymbol}を購入"
@@ -1063,6 +1063,10 @@ msgstr "資金手数料を請求中"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "All Time"
 msgstr "全期間"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "RPC Debug"
+msgstr ""
 
 #: src/components/Referrals/referralsHelper.ts
 msgid "The referral code can't be more than {MAX_REFERRAL_CODE_LENGTH} characters."
@@ -1341,6 +1345,10 @@ msgstr "GMはGMX V2市場の流動性プロバイダートークンです。V2�
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "現在の価格影響は{0}です。注文が処理されやすくなるよう0.30%のバッファを追加することを検討してください。"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Public"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "エラーを隠す"
@@ -1481,6 +1489,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "受け取りトークン流動性不足"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Permits Testing"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -2053,6 +2065,10 @@ msgstr "エラーが発生しました。もう一度お試しください。"
 msgid "Dune Analytics"
 msgstr "Dune Analytics"
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Debug Swaps"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
 msgstr "売却リクエストを満たすためのGLV内のGM: {0} [{1}]流動性が不足しています。別のプールを選択するか、売却サイズを減らすか、複数のプールから出金を分割してください。"
@@ -2143,6 +2159,10 @@ msgstr "DeFiダッシュボード"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "More Details"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Current Endpoints ({0})"
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -2574,6 +2594,10 @@ msgstr "と"
 msgid "Insufficient GLV liquidity"
 msgstr "GLV流動性が不足しています"
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Tenderly Settings"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."
 msgstr "ショートポジションからのみ{indexSymbol}をショートします。"
@@ -2654,6 +2678,10 @@ msgstr "<0>はい、GMXの上に構築したりDeFiアプリに統合するこ�
 msgid "Liquidation Fee"
 msgstr "清算手数料"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "URL"
+msgstr ""
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
 msgstr ""
@@ -2730,6 +2758,7 @@ msgstr "このスワップは最低の手数料と価格インパクトのため
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -3647,7 +3676,7 @@ msgstr "シフト注文が実行されました。"
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "ランキング資格を得るための最小\"資本使用額\"{0}にまだ達していません。"
 
-#: src/domain/multichain/useSourceChainError.ts
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
@@ -3801,7 +3830,6 @@ msgstr "<0>GMXは伝統的な注文ブックとは異なり、動的にバラン
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "詳細について読む"
 
@@ -3947,6 +3975,10 @@ msgstr "清算価格"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trading Pair Price Alerts"
 msgstr "トレーディングペア価格アラート"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Links"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
@@ -4420,6 +4452,10 @@ msgstr "GMX承認待ち"
 msgid "No markets found."
 msgstr "マーケットが見つかりません。"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "RPC Monitoring"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
 msgstr "ODOS"
@@ -4850,6 +4886,8 @@ msgstr "{ordersText}をキャンセル中。"
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -5030,8 +5068,8 @@ msgid "Total circulating supply of GMX tokens."
 msgstr "GMXトークンの総循環供給量。"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "Target Weight"
-msgstr "ターゲットウェイト"
+#~ msgid "Target Weight"
+#~ msgstr "ターゲットウェイト"
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
@@ -5050,6 +5088,18 @@ msgstr "トップPnL (%)"
 msgid "There may not be sufficient liquidity to execute your order when the price conditions are met."
 msgstr "価格条件が満たされた場合でも、注文を執行するための十分な流動性がない可能性があります。"
 
+#: src/components/AbFlagsSettings/AbFlagsSettings.tsx
+msgid "AB Flags"
+msgstr ""
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim your referral rewards."
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr ""
@@ -5061,6 +5111,10 @@ msgstr "Avalanche Fujiでは請求が利用できません"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel TWAP Swap"
 msgstr "TWAPスワップをキャンセル"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add Endpoint"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5341,6 +5395,10 @@ msgstr "GMXアカウントからの引き出し"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance Alerts"
 msgstr "ガバナンスアラート"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Purpose"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
@@ -5658,6 +5716,10 @@ msgstr "十分な流動性を持つスワップパスが見つかりませんで
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time Limit"
 msgstr "時間制限"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Oracle Keeper Monitoring"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield Trading"
@@ -6248,8 +6310,8 @@ msgid "Search Type"
 msgstr "検索タイプ"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>してください。"
+#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+#~ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>してください。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -6259,10 +6321,6 @@ msgstr "勝率"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "{0} をエクスプローラーで開く"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
@@ -6451,6 +6509,10 @@ msgstr "選択された支払いトークンを使ったプールGM: {0} の購�
 msgid "Active Management"
 msgstr ""
 
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Simulate TXs"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
 msgstr ""
@@ -6583,6 +6645,10 @@ msgstr "コピーエラー"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "GMXコミュニティによって開発されたプロジェクト。<0/>アプリとの相互作用時は注意してください。アプリはコミュニティ開発者によって完全に維持されています。"
+
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Add RPC"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What areas can we improve to make your experience better?"
@@ -6886,8 +6952,8 @@ msgid "Request Settlement of Funding Fees"
 msgstr "ファンディング手数料の決済リクエスト"
 
 #: src/pages/Dashboard/WeightText.tsx
-msgid "Current Weight"
-msgstr "現在のウェイト"
+#~ msgid "Current Weight"
+#~ msgstr "現在のウェイト"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
@@ -7580,10 +7646,6 @@ msgstr "資金が請求されました。"
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "ポジションが最大許容レバレッジを超えるため、レバレッジ維持が利用できません。<0>詳細を読む</0>。"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "{0}をMetamaskに追加"
-
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"
 msgstr ""
@@ -8269,6 +8331,10 @@ msgstr "分散型オプションプロトコル"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap Part"
 msgstr "TWAPスワップパートを更新"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Markets Monitoring"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Part"

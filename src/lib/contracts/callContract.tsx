@@ -20,7 +20,7 @@ import { getErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { helperToast } from "../helperToast";
-import { getBestNonce, getGasLimit } from "./utils";
+import { getGasLimit } from "./utils";
 
 /**
  * @deprecated use sendWalletTransaction instead
@@ -43,9 +43,6 @@ export async function callContract(
     hideSuccessMsg?: boolean;
     showPreliminaryMsg?: boolean;
     failMsg?: string;
-    customSigners?: Wallet[];
-    customSignersGasLimits?: (bigint | number)[];
-    customSignersGasPrices?: GasPriceData[];
     bestNonce?: number;
     setPendingTxns?: SetPendingTransactions;
     pendingTransactionData?: PendingTransactionData;
@@ -100,10 +97,6 @@ export async function callContract(
 
     if (opts.bestNonce) {
       txnOpts.nonce = opts.bestNonce;
-    } else if (opts.customSigners) {
-      // If we send the transaction to multiple RPCs simultaneously,
-      // we should specify a fixed nonce to avoid possible txn duplication.
-      txnOpts.nonce = await getBestNonce([wallet, ...opts.customSigners]);
     }
 
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
@@ -114,12 +107,10 @@ export async function callContract(
       });
     }
 
-    const customSignerContracts = opts.customSigners?.map((signer) => contract.connect(signer)) || [];
+    const customGasLimits = [opts.gasLimit];
+    const customGasPrices = [opts.gasPriceData];
 
-    const customGasLimits = [opts.gasLimit].concat(opts.customSignersGasLimits || []);
-    const customGasPrices = [opts.gasPriceData].concat(opts.customSignersGasPrices || []);
-
-    const txnCalls = [contract, ...customSignerContracts].map(async (cntrct, i) => {
+    const txnCalls = [contract].map(async (cntrct, i) => {
       const txnInstance = { ...txnOpts };
 
       if (!cntrct.runner?.provider) {

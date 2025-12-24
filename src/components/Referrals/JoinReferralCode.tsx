@@ -32,7 +32,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
 import { ISigner } from "lib/transactions/iSigner";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { getFallbackTransport, getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc, getRpcTransport } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { getViemChain } from "sdk/configs/chains";
@@ -260,7 +260,7 @@ function ReferralCodeFormMultichain({
       createWalletClient({
         chain: getViemChain(srcChainId),
         account: RANDOM_ACCOUNT,
-        transport: getFallbackTransport(srcChainId),
+        transport: getRpcTransport(srcChainId, "default"),
       }).extend(publicActions)
     );
   }, [srcChainId]);

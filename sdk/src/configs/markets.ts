@@ -824,6 +824,27 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // MON/USD [WETH-USDC]
+    "0x66AB9D61A0124b61C8892A4ac687Ac48DbA8ff2c": {
+      marketTokenAddress: "0x66AB9D61A0124b61C8892A4ac687Ac48DbA8ff2c",
+      indexTokenAddress: "0xB96e60CA3a7677b29f1e10dd109E952B275038Be",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // ZEC/USD [WBTC.e-USDC]
+    "0x587759c237acCa739bCE3911647BacF56C876E60": {
+      marketTokenAddress: "0x587759c237acCa739bCE3911647BacF56C876E60",
+      indexTokenAddress: "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // SKY/USD [WETH-USDC]
+    "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf": {
+      marketTokenAddress: "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf",
+      indexTokenAddress: "0xeeA41ceA2204D1156De1BDF2CF4ab6184d17f90B",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -1172,6 +1193,14 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
 };
 
 export type MarketLabel = `${string}/USD [${string}-${string}]`;
+
+export function getMarketsByChainId(chainId: ContractsChainId): Record<string, MarketConfig> {
+  if (!MARKETS[chainId]) {
+    throw new Error(`Markets not found for chainId ${chainId}`);
+  }
+
+  return MARKETS[chainId];
+}
 
 export function getMarketByLabel(chainId: ContractsChainId, label: MarketLabel): MarketConfig {
   const marketsByAddress = MARKETS[chainId];
