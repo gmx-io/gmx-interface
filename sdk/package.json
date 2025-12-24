@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "type": "module",
   "main": "./build/cjs/src/index.js",
   "module": "./build/esm/src/index.js",
@@ -48,6 +48,7 @@
     "prepare": "ts-patch install -s",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:multicall": "vitest run --config vitest.multicall.config.ts",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",

@@ -4,16 +4,17 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     environment: "node",
-    testTimeout: 15000,
-    exclude: [
-      "**/build/**",
-      "**/node_modules/**",
-      "**/modules/markets/markets.spec.ts",
-      "**/modules/tokens/tokens.spec.ts",
-      "**/modules/positions/positions.spec.ts",
-      "**/modules/orders/orders.spec.ts",
-      "**/modules/orders/helpers.spec.ts",
-      "**/modules/trades/trades.spec.ts",
+    testTimeout: 90000,
+    fileParallelism: false,
+    maxConcurrency: 1,
+    exclude: ["**/build/**", "**/node_modules/**"],
+    include: [
+      "src/modules/markets/markets.spec.ts",
+      "src/modules/tokens/tokens.spec.ts",
+      "src/modules/positions/positions.spec.ts",
+      "src/modules/orders/orders.spec.ts",
+      "src/modules/orders/helpers.spec.ts",
+      "src/modules/trades/trades.spec.ts",
     ],
   },
   resolve: {

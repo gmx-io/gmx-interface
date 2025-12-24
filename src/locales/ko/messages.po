@@ -129,6 +129,10 @@ msgstr ""
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 일드 옵티마이저"
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
+#~ msgstr ""
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
@@ -5090,6 +5094,10 @@ msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim your referral rewards."
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx

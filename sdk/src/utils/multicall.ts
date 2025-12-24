@@ -3,7 +3,9 @@ import type { GmxSdk } from "index";
 
 import { sleep } from "./common";
 
-export const MAX_TIMEOUT = 20000;
+export const MAX_TIMEOUT = 40000;
+export const MAX_CALLS_PER_BATCH = 500;
+export const MAX_CONCURRENT_BATCHES = 3;
 
 export type MulticallProviderUrls = {
   primary: string;
@@ -135,23 +137,65 @@ export class Multicall {
 
     const timeoutController = new AbortController();
 
-    const result = await Promise.race([
-      client.multicall({ contracts: encodedPayload as any }),
-      sleep(maxTimeout, timeoutController.signal).then(() => Promise.reject(new Error("multicall timeout"))),
-    ])
-      .then((response) => {
-        timeoutController.abort();
-        return processResponse(response);
-      })
-      .catch((_viemError) => {
-        timeoutController.abort();
-        const e = new Error(_viemError.message.slice(0, 150));
+    const payloadSize = encodedPayload.length;
+    let result: MulticallResult<any>;
 
-        /* eslint-disable-next-line */
-        console.error(e);
+    if (payloadSize > MAX_CALLS_PER_BATCH) {
+      const batches: (typeof encodedPayload)[] = [];
+      for (let i = 0; i < encodedPayload.length; i += MAX_CALLS_PER_BATCH) {
+        batches.push(encodedPayload.slice(i, i + MAX_CALLS_PER_BATCH));
+      }
 
-        throw e;
-      });
+      const batchResults: any[] = [];
+      for (let i = 0; i < batches.length; i += MAX_CONCURRENT_BATCHES) {
+        const batchGroup = batches.slice(i, i + MAX_CONCURRENT_BATCHES);
+        const groupResults = await Promise.all(
+          batchGroup.map(async (batch) => {
+            const batchTimeoutController = new AbortController();
+            try {
+              const response = await Promise.race([
+                client.multicall({ contracts: batch as any }),
+                sleep(maxTimeout, batchTimeoutController.signal).then(() =>
+                  Promise.reject(new Error("multicall timeout"))
+                ),
+              ]);
+              batchTimeoutController.abort();
+              return response;
+            } catch (error) {
+              batchTimeoutController.abort();
+              const e = new Error((error instanceof Error ? error.message : String(error)).slice(0, 150));
+
+              /* eslint-disable-next-line */
+              console.error(e);
+
+              throw e;
+            }
+          })
+        );
+        batchResults.push(...groupResults);
+      }
+
+      const combinedResponse = batchResults.flat();
+      result = processResponse(combinedResponse);
+    } else {
+      result = await Promise.race([
+        client.multicall({ contracts: encodedPayload as any }),
+        sleep(maxTimeout, timeoutController.signal).then(() => Promise.reject(new Error("multicall timeout"))),
+      ])
+        .then((response) => {
+          timeoutController.abort();
+          return processResponse(response);
+        })
+        .catch((_viemError) => {
+          timeoutController.abort();
+          const e = new Error(_viemError.message.slice(0, 150));
+
+          /* eslint-disable-next-line */
+          console.error(e);
+
+          throw e;
+        });
+    }
 
     if (result.success) {
       return result;
