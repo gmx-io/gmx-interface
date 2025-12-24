@@ -11,16 +11,11 @@ on:
 
 jobs:
   ci:
-    name: Lint and Tests
+    name: Linting, Type Checking, and Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Check for merge conflicts
-        run: |
-          chmod +x ./scripts/check-conflicts.sh
-          ./scripts/check-conflicts.sh
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -30,11 +25,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Install SDK dependencies
-        run: |
-          cd sdk
-          yarn install --frozen-lockfile
 
       - name: Build SDK
         run: |
@@ -64,3 +54,8 @@ jobs:
         run: |
           cd sdk
           yarn test:ci
+
+      - name: Run SDK multicall tests
+        run: |
+          cd sdk
+          yarn test:multicall

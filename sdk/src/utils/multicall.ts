@@ -4,8 +4,8 @@ import type { GmxSdk } from "index";
 import { sleep } from "./common";
 
 export const MAX_TIMEOUT = 40000;
-export const MAX_CALLS_PER_BATCH = 500;
-export const MAX_CONCURRENT_BATCHES = 5;
+export const MAX_CALLS_PER_BATCH = 1000;
+export const MAX_CONCURRENT_BATCHES = 1;
 
 export type MulticallProviderUrls = {
   primary: string;

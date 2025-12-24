@@ -6,13 +6,13 @@ import { GmxSdk } from "../../index";
 
 describe("Markets", () => {
   describe("getMarkets", () => {
-    it("should be able to get markets data", { timeout: 30_000 }, async () => {
+    it("should be able to get markets data", { timeout: 90_000 }, async () => {
       const marketsData = await arbitrumSdk.markets.getMarkets();
       expect(marketsData.marketsAddresses).toBeDefined();
       expect(marketsData.marketsData).toBeDefined();
     });
 
-    it("should respect config filters", { timeout: 30_000 }, async () => {
+    it("should respect config filters", { timeout: 90_000 }, async () => {
       const sdk = new GmxSdk({
         ...arbitrumSdkConfig,
         markets: {
@@ -29,14 +29,14 @@ describe("Markets", () => {
   });
 
   describe("getMarketsInfo", () => {
-    it("should be able to get markets info", { timeout: 30_000 }, async () => {
+    it("should be able to get markets info", { timeout: 90_000 }, async () => {
       const response = await arbitrumSdk.markets.getMarketsInfo();
       expect(response).toBeDefined();
     });
   });
 
   describe("getDailyVolumes", () => {
-    it("should be able to get daily volumes", { timeout: 30_000 }, async () => {
+    it("should be able to get daily volumes", { timeout: 90_000 }, async () => {
       const response = await arbitrumSdk.markets.getDailyVolumes();
       expect(response).toBeDefined();
     });

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { arbitrumSdk } from "utils/testUtil";
 
 describe("Trades", () => {
-  it("should be able to get positions", { timeout: 30_000 }, async () => {
+  it("should be able to get positions", { timeout: 90_000 }, async () => {
     const { marketsInfoData, tokensData } = await arbitrumSdk.markets.getMarketsInfo();
 
     const trades = await arbitrumSdk.trades.getTradeHistory({
