@@ -24,6 +24,7 @@ const marketKeys = [
   "ETH-ETH-USDC",
   "BTC-BTC-USDC",
   "BTC-BTC-DAI",
+  "BTC-SOL-DAI",
 
   "SOL-SOL-USDC",
   "SOL-ETH-USDC",
@@ -744,12 +745,10 @@ describe("same token arbitrage swaps", () => {
     const { usdOut } = networkEstimator(swapPathStats!.usdOut, topPath!.length);
     expect(usdOut).toBeGreaterThan(USD_IN);
 
-    // Verify that the selected path includes BTC markets (more profitable)
-    const hasBtcMarkets = topPath!.some((market) => market.includes("BTC"));
-    expect(hasBtcMarkets).toBe(true);
+    expect(topPath).toEqual(["SOL-BTC-USDC", "BTC-BTC-USDC"]);
   });
 
-  it("should find same-token arbitrage swap path with more than 1 market", () => {
+  it("should find longer arbitrage swap path with higher profit", () => {
     const USD_IN = expandDecimals(5_000n, USD_DECIMALS);
 
     const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
@@ -766,23 +765,24 @@ describe("same token arbitrage swaps", () => {
         maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
         maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
       },
-      // Path 2: USDC -> BTC -> SOL -> USDC (3 markets, higher profit)
-      "BTC-BTC-USDC": {
-        longPoolAmount: usdToToken(50_000, tokensData.BTC),
-        shortPoolAmount: usdToToken(150_000, tokensData.USDC),
-        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
-        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
-      },
-      "SOL-BTC-USDC": {
-        longPoolAmount: usdToToken(150_000, tokensData.BTC),
-        shortPoolAmount: usdToToken(50_000, tokensData.USDC),
-        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
-        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
-      },
+
+      // Path 2: USDC -> SOL -> DAI -> USDC (3 markets, higher profit)
       "SOL-SOL-USDC": {
-        longPoolAmount: usdToToken(50_000, tokensData.SOL),
-        shortPoolAmount: usdToToken(150_000, tokensData.USDC),
+        longPoolAmount: usdToToken(150_000, tokensData.SOL),
+        shortPoolAmount: usdToToken(50_000, tokensData.USDC),
         maxLongPoolAmount: usdToToken(1_000_000, tokensData.SOL),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "BTC-SOL-DAI": {
+        longPoolAmount: usdToToken(50_000, tokensData.SOL),
+        shortPoolAmount: usdToToken(150_000, tokensData.DAI),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.SOL),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.DAI),
+      },
+      "SPOT-DAI-USDC": {
+        longPoolAmount: usdToToken(50_000, tokensData.DAI),
+        shortPoolAmount: usdToToken(150_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.DAI),
         maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
       },
     });
@@ -817,6 +817,6 @@ describe("same token arbitrage swaps", () => {
     const topPath = paths?.[0];
 
     expect(topPath).toBeDefined();
-    expect(topPath!.length).toBeGreaterThanOrEqual(2);
+    expect(topPath!.length).toEqual(3);
   });
 });
