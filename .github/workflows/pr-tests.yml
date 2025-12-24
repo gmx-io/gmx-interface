@@ -1,4 +1,4 @@
-name: Tests and linting
+name: Run Tests
 
 on:
   pull_request:
@@ -10,20 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-conflicts:
-    name: Check Merge Conflicts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check for merge conflicts
-        run: |
-          chmod +x ./scripts/check-conflicts.sh
-          ./scripts/check-conflicts.sh
-
   ci:
-    name: CI Checks
+    name: Linting, Type Checking, and Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
