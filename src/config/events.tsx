@@ -30,6 +30,19 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "mon-sky-zec-listing",
+    isActive: true,
+    startDate: "22 Dec 2025, 16:10",
+    endDate: "29 Dec 2025, 16:10",
+    title: "MON (Monad), SKY and ZEC (Zcash) markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+  },
+  {
     id: "open-interest-calculation-update",
     isActive: true,
     startDate: "19 Dec 2025, 08:00",

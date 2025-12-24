@@ -37,11 +37,7 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
 
   getAllCharts(): Promise<ChartMetaInfo[]> {
     const charts = this.charts || [];
-    const filteredCharts = charts.filter((chart) => {
-      if (!chart.id) {
-        return false;
-      }
-    }) as ChartMetaInfo[];
+    const filteredCharts = charts.filter((chart) => chart.id && isValidChartId(chart.id)) as ChartMetaInfo[];
 
     return Promise.resolve(filteredCharts);
   }

@@ -15,6 +15,12 @@ export default defineConfig(({ mode }) => {
     worker: {
       format: "es",
     },
+    optimizeDeps: {
+      include: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
+      esbuildOptions: {
+        target: "es2020",
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -78,7 +84,12 @@ export default defineConfig(({ mode }) => {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
       exclude: ["./autotests", "node_modules", "./sdk"],
-      setupFiles: ["@vitest/web-worker"],
+      setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
+      server: {
+        deps: {
+          inline: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
+        },
+      },
     },
   };
 });
