@@ -178,10 +178,6 @@ msgstr "Обновление {updateOrdersCount} TP/SL ордеров"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-#~ msgstr "{0} превышает целевой вес.<0/><1/>Получите меньшую комиссию, чтобы <2>обменять</2> токены на {1}."
-
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -5063,10 +5059,6 @@ msgstr "оплатить"
 msgid "Total circulating supply of GMX tokens."
 msgstr "Общий циркулирующий запас токенов GMX."
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Target Weight"
-#~ msgstr "Целевой вес"
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "У вас может быть до {allowedAutoCancelOrdersNumber} активных автоканцелируемых ордеров TP/SL. Дополнительные ордера должны отменяться вручную, в то время как существующие все равно закроются автоматически с связанной позицией."
@@ -5282,10 +5274,6 @@ msgstr "30д"
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Est. Impact Rebate"
 msgstr "Оцен. возмещение влияния"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Select different tokens"
-#~ msgstr "Выбрать разные токены"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"
@@ -6301,10 +6289,6 @@ msgstr "Комиссии превышают сумму"
 msgid "Search Type"
 msgstr "Тип поиска"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-#~ msgstr "{0} ниже целевого веса.<0/><1/>Получите более низкие комиссии для <2>покупки GLP</2> с {1}, и для <3>обмена</3> {2} на другие токены."
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6942,10 +6926,6 @@ msgstr "Минимальное количество частей: {MIN_TWAP_NUMB
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Запрос на расчет комиссий за финансирование"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Current Weight"
-#~ msgstr "Текущий вес"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"

@@ -6,6 +6,7 @@ import { GasLimitsConfig } from "types/fees";
 import { MarketInfo } from "types/markets";
 import { SwapPricingType } from "types/orders";
 import { expandDecimals } from "utils/numbers";
+import { getSwapPathStats } from "utils/swap";
 import { buildMarketsAdjacencyGraph } from "utils/swap/buildMarketsAdjacencyGraph";
 import { findSwapPathsBetweenTokens } from "utils/swap/findSwapPathsBetweenTokens";
 import {
@@ -525,5 +526,297 @@ describe("getMaxLiquidityMarketSwapPathFromTokenSwapPaths", () => {
       path: ["BTC-BTC-DAI"],
       liquidity: 999000000000000000000000000000000000n,
     });
+  });
+});
+
+describe("same token arbitrage swaps", () => {
+  it("should yield profit (usdOut > usdIn) for USDC->USDC swap when markets have opposite imbalances", () => {
+    const USD_IN = expandDecimals(10_000n, USD_DECIMALS);
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      "ETH-ETH-USDC": {
+        longPoolAmount: usdToToken(30_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(170_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "SOL-ETH-USDC": {
+        longPoolAmount: usdToToken(170_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(30_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "USDC");
+    const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
+
+    const networkEstimator = createNaiveNetworkEstimator({
+      chainId: 1,
+      gasLimits: {
+        ...baseGasLimits,
+        singleSwap: baseGasLimits.singleSwap * 3n,
+      },
+      gasPrice: baseGasPrice * 100n,
+      tokensData: {
+        ...tokensData,
+        [NATIVE_TOKEN_ADDRESS]: {
+          ...tokensData.ETH,
+          address: NATIVE_TOKEN_ADDRESS,
+        },
+      },
+    });
+
+    const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      topPathsCount: 1,
+      tokenInAddress: "USDC",
+      tokenOutAddress: "USDC",
+      estimator,
+      usdIn: USD_IN,
+      networkEstimator,
+    });
+
+    const topPath = paths?.[0];
+
+    expect(topPath).toBeDefined();
+    expect(topPath?.length).toBe(2);
+
+    const swapPathStats = getSwapPathStats({
+      marketsInfoData,
+      swapPath: topPath!,
+      initialCollateralAddress: "USDC",
+      wrappedNativeTokenAddress: "WETH",
+      usdIn: USD_IN,
+      shouldUnwrapNativeToken: false,
+      shouldApplyPriceImpact: true,
+      swapPricingType: SwapPricingType.Swap,
+    });
+
+    expect(swapPathStats).toBeDefined();
+    const { usdOut } = networkEstimator(swapPathStats!.usdOut, topPath!.length);
+    expect(usdOut).toBeGreaterThan(USD_IN);
+  });
+
+  it("should yield loss when markets are balanced", () => {
+    const USD_IN = expandDecimals(10_000n, USD_DECIMALS);
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      "ETH-ETH-USDC": {
+        longPoolAmount: usdToToken(100_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(100_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "SOL-ETH-USDC": {
+        longPoolAmount: usdToToken(100_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(100_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "USDC");
+    const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
+
+    const networkEstimator = createNaiveNetworkEstimator({
+      chainId: 1,
+      gasLimits: baseGasLimits,
+      gasPrice: baseGasPrice,
+      tokensData: {
+        ...tokensData,
+        [NATIVE_TOKEN_ADDRESS]: {
+          ...tokensData.ETH,
+          address: NATIVE_TOKEN_ADDRESS,
+        },
+      },
+    });
+
+    const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      topPathsCount: 1,
+      tokenInAddress: "USDC",
+      tokenOutAddress: "USDC",
+      estimator,
+      usdIn: USD_IN,
+      networkEstimator,
+    });
+
+    const topPath = paths?.[0];
+
+    expect(topPath).toBeDefined();
+    expect(topPath?.length).toBeGreaterThan(0);
+
+    const swapPathStats = getSwapPathStats({
+      marketsInfoData,
+      swapPath: topPath!,
+      initialCollateralAddress: "USDC",
+      wrappedNativeTokenAddress: "WETH",
+      usdIn: USD_IN,
+      shouldUnwrapNativeToken: false,
+      shouldApplyPriceImpact: true,
+      swapPricingType: SwapPricingType.Swap,
+    });
+
+    expect(swapPathStats).toBeDefined();
+    const { usdOut } = networkEstimator(swapPathStats!.usdOut, topPath!.length);
+    expect(usdOut).toBeLessThan(USD_IN);
+  });
+
+  it("should find most profitable arbitrage path", () => {
+    const USD_IN = expandDecimals(10_000n, USD_DECIMALS);
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      // Path 1: ETH-ETH-USDC -> SOL-ETH-USDC (moderate profit)
+      "ETH-ETH-USDC": {
+        longPoolAmount: usdToToken(50_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(150_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "SOL-ETH-USDC": {
+        longPoolAmount: usdToToken(150_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(50_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      // Path 2: BTC-BTC-USDC -> SOL-BTC-USDC (higher profit)
+      "BTC-BTC-USDC": {
+        longPoolAmount: usdToToken(30_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(170_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "SOL-BTC-USDC": {
+        longPoolAmount: usdToToken(170_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(30_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "USDC");
+    const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
+
+    const networkEstimator = createNaiveNetworkEstimator({
+      chainId: 1,
+      gasLimits: baseGasLimits,
+      gasPrice: baseGasPrice,
+      tokensData: {
+        ...tokensData,
+        [NATIVE_TOKEN_ADDRESS]: {
+          ...tokensData.ETH,
+          address: NATIVE_TOKEN_ADDRESS,
+        },
+      },
+    });
+
+    const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      topPathsCount: 1,
+      tokenInAddress: "USDC",
+      tokenOutAddress: "USDC",
+      estimator,
+      usdIn: USD_IN,
+      networkEstimator,
+    });
+
+    const topPath = paths?.[0];
+
+    expect(topPath).toBeDefined();
+    expect(topPath?.length).toBe(2);
+
+    const swapPathStats = getSwapPathStats({
+      marketsInfoData,
+      swapPath: topPath!,
+      initialCollateralAddress: "USDC",
+      wrappedNativeTokenAddress: "WETH",
+      usdIn: USD_IN,
+      shouldUnwrapNativeToken: false,
+      shouldApplyPriceImpact: true,
+      swapPricingType: SwapPricingType.Swap,
+    });
+
+    expect(swapPathStats).toBeDefined();
+    const { usdOut } = networkEstimator(swapPathStats!.usdOut, topPath!.length);
+    expect(usdOut).toBeGreaterThan(USD_IN);
+
+    // Verify that the selected path includes BTC markets (more profitable)
+    const hasBtcMarkets = topPath!.some((market) => market.includes("BTC"));
+    expect(hasBtcMarkets).toBe(true);
+  });
+
+  it("should find same-token arbitrage swap path with more than 1 market", () => {
+    const USD_IN = expandDecimals(5_000n, USD_DECIMALS);
+
+    const marketsInfoData = mockMarketsInfoData(tokensData, marketKeys, {
+      // Path 1: USDC -> ETH -> USDC (2 markets, moderate profit)
+      "ETH-ETH-USDC": {
+        longPoolAmount: usdToToken(60_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(140_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "SOL-ETH-USDC": {
+        longPoolAmount: usdToToken(140_000, tokensData.ETH),
+        shortPoolAmount: usdToToken(60_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      // Path 2: USDC -> BTC -> SOL -> USDC (3 markets, higher profit)
+      "BTC-BTC-USDC": {
+        longPoolAmount: usdToToken(50_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(150_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "SOL-BTC-USDC": {
+        longPoolAmount: usdToToken(150_000, tokensData.BTC),
+        shortPoolAmount: usdToToken(50_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.BTC),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+      "SOL-SOL-USDC": {
+        longPoolAmount: usdToToken(50_000, tokensData.SOL),
+        shortPoolAmount: usdToToken(150_000, tokensData.USDC),
+        maxLongPoolAmount: usdToToken(1_000_000, tokensData.SOL),
+        maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+      },
+    });
+
+    const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "USDC", "USDC");
+    const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
+
+    const networkEstimator = createNaiveNetworkEstimator({
+      chainId: 1,
+      gasLimits: baseGasLimits,
+      gasPrice: baseGasPrice,
+      tokensData: {
+        ...tokensData,
+        [NATIVE_TOKEN_ADDRESS]: {
+          ...tokensData.ETH,
+          address: NATIVE_TOKEN_ADDRESS,
+        },
+      },
+    });
+
+    const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+      graph: marketAdjacencyGraph,
+      tokenSwapPaths,
+      topPathsCount: 1,
+      tokenInAddress: "USDC",
+      tokenOutAddress: "USDC",
+      estimator,
+      usdIn: USD_IN,
+      networkEstimator,
+    });
+
+    const topPath = paths?.[0];
+
+    expect(topPath).toBeDefined();
+    expect(topPath!.length).toBeGreaterThanOrEqual(2);
   });
 });
