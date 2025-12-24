@@ -32,13 +32,23 @@ jobs:
           yarn build
 
       - name: Run linting
-        run: yarn lint
+        run: yarn lint:ci
 
       - name: Run type checking
-        run: yarn tscheck
+        run: yarn tscheck:ci
 
       - name: Run tests
         run: yarn test:ci
+
+      - name: Run SDK linting
+        run: |
+          cd sdk
+          yarn lint:ci
+
+      - name: Run SDK type checking
+        run: |
+          cd sdk
+          yarn tscheck:ci
 
       - name: Run SDK tests
         run: |
