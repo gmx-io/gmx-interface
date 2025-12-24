@@ -1,9 +1,19 @@
 import { useMemo } from "react";
-import { encodeAbiParameters, encodePacked, keccak256, maxUint256, PublicClient, toHex } from "viem";
+import {
+  encodeAbiParameters,
+  encodePacked,
+  EstimateGasParameters,
+  keccak256,
+  maxUint256,
+  PublicClient,
+  toHex,
+  zeroHash,
+} from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
+import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT } from "config/multichain";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
@@ -151,30 +161,39 @@ async function estimateArbitraryGasLimit({
     [baseTxnData.callData, getContract(chainId, "GelatoRelayAddress"), baseTxnData.feeToken, baseTxnData.feeAmount]
   );
 
+  const params: EstimateGasParameters = {
+    account: GMX_SIMULATION_ORIGIN,
+    to: baseTxnData.to,
+    data: baseData,
+    value: 0n,
+    stateOverride: [
+      {
+        address: getContract(chainId, "DataStore"),
+        stateDiff: [
+          {
+            slot: calculateMappingSlot(
+              multichainBalanceKey(account, gasPaymentParams.gasPaymentTokenAddress),
+              DATASTORE_SLOT_INDEXES.uintValues
+            ),
+            value: toHex(maxUint256 / 100n, { size: 32 }),
+          },
+        ],
+      },
+      {
+        address: gasPaymentParams.relayerFeeTokenAddress,
+        code: OVERRIDE_ERC20_BYTECODE,
+        state: [
+          {
+            slot: RANDOM_SLOT,
+            value: zeroHash,
+          },
+        ],
+      },
+    ],
+  };
+
   const gasLimit = await fallbackCustomError(
-    async () =>
-      client
-        .estimateGas({
-          account: GMX_SIMULATION_ORIGIN,
-          to: baseTxnData.to,
-          data: baseData,
-          value: 0n,
-          stateOverride: [
-            {
-              address: getContract(chainId, "DataStore"),
-              stateDiff: [
-                {
-                  slot: calculateMappingSlot(
-                    multichainBalanceKey(account, gasPaymentParams.gasPaymentTokenAddress),
-                    DATASTORE_SLOT_INDEXES.uintValues
-                  ),
-                  value: toHex(maxUint256),
-                },
-              ],
-            },
-          ],
-        })
-        .then(applyGasLimitBuffer),
+    async () => client.estimateGas(params).then(applyGasLimitBuffer),
     "gasLimit"
   );
 
