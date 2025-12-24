@@ -473,6 +473,18 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x065577D05c3D4C11505ed7bc97BBF85d462A6A6f": {
       enabled: true,
     },
+    // MON/USD [WETH-USDC]
+    "0x66AB9D61A0124b61C8892A4ac687Ac48DbA8ff2c": {
+      enabled: true,
+    },
+    // ZEC/USD [WBTC.e-USDC]
+    "0x587759c237acCa739bCE3911647BacF56C876E60": {
+      enabled: true,
+    },
+    // SKY/USD [WETH-USDC]
+    "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
