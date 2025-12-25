@@ -3,7 +3,16 @@ import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
-import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { useMedia } from "react-use";
 
@@ -31,6 +40,7 @@ type Props = PropsWithChildren<{
   popoverPlacement?: Placement;
   footerContent?: ReactNode;
   qa?: string;
+  popoverReferenceRef?: React.RefObject<HTMLElement | null>;
 }>;
 
 type SelectorContextType = { close: () => void; mobileHeader?: HTMLDivElement };
@@ -169,10 +179,36 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     placement: props.popoverPlacement ?? "bottom-end",
     whileElementsMounted: autoUpdate,
   });
+  const buttonRef = useRef<HTMLElement | null>(null);
 
   const suppressPointerDown = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
   }, []);
+
+  const setButtonRef = useCallback(
+    (node: HTMLElement | null) => {
+      buttonRef.current = node;
+
+      if (!props.popoverReferenceRef?.current) {
+        refs.setReference(node);
+      }
+    },
+    [props.popoverReferenceRef, refs]
+  );
+
+  const setPopoverButtonRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      setButtonRef(node);
+    },
+    [setButtonRef]
+  );
+
+  // Keep the floating reference synced with an external element when provided.
+  useEffect(() => {
+    const referenceElement = props.popoverReferenceRef?.current ?? buttonRef.current;
+
+    refs.setReference(referenceElement);
+  });
 
   if (props.disabled) {
     return (
@@ -196,7 +232,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
               popoverProps.open && "text-blue-300",
               props.handleClassName
             )}
-            ref={refs.setReference}
+            ref={setPopoverButtonRef}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
             <span className="overflow-hidden text-ellipsis">{props.label}</span>

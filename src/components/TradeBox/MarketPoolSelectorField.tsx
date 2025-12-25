@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { useRef } from "react";
 
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -19,12 +20,13 @@ export function MarketPoolSelectorField() {
   const { marketAddress, setMarketAddress } = useSelector(selectTradeboxState);
   const tradeType = useSelector(selectTradeboxTradeType);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const popoverReferenceRef = useRef<HTMLDivElement | null>(null);
 
   const selectedMarket = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8" ref={popoverReferenceRef}>
       <BlockField
         label={t`Pool`}
         content={
@@ -37,6 +39,7 @@ export function MarketPoolSelectorField() {
             handleClassName="inline-block overflow-hidden text-ellipsis whitespace-nowrap text-12"
             chevronClassName="w-12 text-typography-secondary max-lg:ml-4"
             wrapperClassName="overflow-hidden"
+            popoverReferenceRef={popoverReferenceRef}
           />
         }
       />

@@ -1,7 +1,8 @@
+import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { calculateDisplayDecimals, expandDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
@@ -45,6 +46,7 @@ export function TPSLInputRow({
 }: Props) {
   const priceInputRef = useRef<HTMLInputElement>(null);
   const secondInputRef = useRef<HTMLInputElement>(null);
+  const displayModePopoverReferenceRef = useRef<HTMLDivElement | null>(null);
   const [displayMode, setDisplayMode] = useState<TPSLDisplayMode>(defaultDisplayMode);
   const [lastEditedField, setLastEditedField] = useState<"price" | "gainLoss" | undefined>(undefined);
   const [gainLossInputValue, setGainLossInputValue] = useState<string>("");
@@ -326,6 +328,7 @@ export function TPSLInputRow({
             "border-slate-800",
             "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
           )}
+          ref={displayModePopoverReferenceRef}
           onClick={handleBoxClick(secondInputRef)}
         >
           <div className="flex items-center justify-between">
@@ -338,7 +341,12 @@ export function TPSLInputRow({
                 placeholder={secondLabel}
               />
             </div>
-            <DisplayModeSelector mode={displayMode} setMode={handleDisplayModeChange} size="small" />
+            <DisplayModeSelector
+              mode={displayMode}
+              setMode={handleDisplayModeChange}
+              size="small"
+              popoverReferenceRef={displayModePopoverReferenceRef}
+            />
           </div>
         </div>
       </div>
@@ -374,6 +382,7 @@ export function TPSLInputRow({
           "flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-slate-800 bg-slate-800 px-8 py-6",
           "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
         )}
+        ref={displayModePopoverReferenceRef}
         onClick={handleBoxClick(secondInputRef)}
       >
         <div className="text-body-small text-typography-secondary">
@@ -387,7 +396,12 @@ export function TPSLInputRow({
             onValueChange={handleGainLossChange}
             placeholder="0"
           />
-          <DisplayModeSelector mode={displayMode} setMode={handleDisplayModeChange} size="normal" />
+          <DisplayModeSelector
+            mode={displayMode}
+            setMode={handleDisplayModeChange}
+            size="normal"
+            popoverReferenceRef={displayModePopoverReferenceRef}
+          />
         </div>
       </div>
     </div>
@@ -398,54 +412,107 @@ function DisplayModeSelector({
   mode,
   setMode,
   size = "normal",
+  popoverReferenceRef,
 }: {
   mode: TPSLDisplayMode;
   setMode: (mode: TPSLDisplayMode) => void;
   size?: "small" | "normal";
+  popoverReferenceRef?: RefObject<HTMLElement | null>;
 }) {
+  const { refs, floatingStyles } = useFloating({
+    middleware: [offset(4), flip(), shift()],
+    placement: "bottom-end",
+    whileElementsMounted: autoUpdate,
+  });
+
+  const buttonRef = useRef<HTMLElement | null>(null);
+
+  const setButtonRef = useCallback(
+    (node: HTMLElement | null) => {
+      buttonRef.current = node;
+
+      if (!popoverReferenceRef?.current) {
+        refs.setReference(node);
+      }
+    },
+    [popoverReferenceRef, refs]
+  );
+
+  const setPopoverButtonRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      setButtonRef(node);
+    },
+    [setButtonRef]
+  );
+
+  useEffect(() => {
+    const referenceElement = popoverReferenceRef?.current ?? buttonRef.current;
+
+    refs.setReference(referenceElement);
+  });
+
+  const popoverPanelStyle = useMemo(
+    () => ({ ...floatingStyles, zIndex: "calc(var(--modal-z-index) + 1)" }),
+    [floatingStyles]
+  );
+
   return (
     <Popover className="relative" data-dropdown>
-      <Popover.Button
-        className={cx(
-          "flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-typography-secondary outline-none hover:text-typography-primary",
-          size === "small" ? "text-13" : "text-14"
-        )}
-      >
-        {mode === "percentage" ? "%" : "$"}
-        <ChevronDownIcon className="w-12" />
-      </Popover.Button>
-      <Popover.Panel className="absolute right-0 top-full z-10 mt-4 overflow-hidden rounded-8 border border-slate-600 bg-slate-800 shadow-lg">
-        {({ close }) => (
-          <>
-            <button
-              type="button"
-              className={cx(
-                "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
-                mode === "percentage" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
-              )}
-              onClick={() => {
-                setMode("percentage");
-                close();
-              }}
-            >
-              %
-            </button>
-            <button
-              type="button"
-              className={cx(
-                "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
-                mode === "usd" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
-              )}
-              onClick={() => {
-                setMode("usd");
-                close();
-              }}
-            >
-              $
-            </button>
-          </>
-        )}
-      </Popover.Panel>
+      {({ open }) => (
+        <>
+          <Popover.Button
+            className={cx(
+              "flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-typography-secondary outline-none hover:text-typography-primary",
+              size === "small" ? "text-13" : "text-14"
+            )}
+            ref={setPopoverButtonRef}
+          >
+            {mode === "percentage" ? "%" : "$"}
+            <ChevronDownIcon className="w-12" />
+          </Popover.Button>
+          {open && (
+            <FloatingPortal>
+              <Popover.Panel
+                static
+                className="z-10 overflow-hidden rounded-8 border border-slate-600 bg-slate-800 shadow-lg"
+                ref={refs.setFloating}
+                style={popoverPanelStyle}
+              >
+                {({ close }) => (
+                  <>
+                    <button
+                      type="button"
+                      className={cx(
+                        "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
+                        mode === "percentage" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
+                      )}
+                      onClick={() => {
+                        setMode("percentage");
+                        close();
+                      }}
+                    >
+                      %
+                    </button>
+                    <button
+                      type="button"
+                      className={cx(
+                        "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
+                        mode === "usd" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
+                      )}
+                      onClick={() => {
+                        setMode("usd");
+                        close();
+                      }}
+                    >
+                      $
+                    </button>
+                  </>
+                )}
+              </Popover.Panel>
+            </FloatingPortal>
+          )}
+        </>
+      )}
     </Popover>
   );
 }

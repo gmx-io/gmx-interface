@@ -40,6 +40,8 @@ type Props = {
   chevronClassName?: string;
   // eslint-disable-next-line react/no-unused-prop-types
   wrapperClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  popoverReferenceRef?: React.RefObject<HTMLElement | null>;
 };
 
 export function PoolSelector2(props: Props) {
@@ -55,6 +57,7 @@ export function PoolSelector2(props: Props) {
       handleClassName={props.handleClassName}
       chevronClassName={props.chevronClassName}
       wrapperClassName={props.wrapperClassName}
+      popoverReferenceRef={props.popoverReferenceRef}
     >
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </SelectorBase>

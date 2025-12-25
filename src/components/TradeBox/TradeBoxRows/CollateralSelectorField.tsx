@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 
 import {
   selectTradeboxAvailableMarketsOptions,
@@ -31,13 +31,14 @@ export type Props = {
 export function CollateralSelectorField(p: Props) {
   const { onSelectCollateralAddress } = p;
   const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
+  const popoverReferenceRef = useRef<HTMLDivElement | null>(null);
 
   const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
   const collateralInTooltipContent = useCollateralInTooltipContent();
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8" ref={popoverReferenceRef}>
       <BlockField
         label={
           <TooltipWithPortal
@@ -62,6 +63,7 @@ export function CollateralSelectorField(p: Props) {
             options={availableTokens}
             disabledOptions={disabledTokens}
             selectedTokenSymbol={selectedTokenName}
+            popoverReferenceRef={popoverReferenceRef}
           />
         }
       />
