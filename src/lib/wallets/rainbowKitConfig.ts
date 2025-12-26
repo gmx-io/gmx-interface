@@ -16,7 +16,7 @@ import { createPublicClient, fallback, http, PublicClient, Transport, webSocket 
 
 import { getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
-import { getRpcProviders } from "config/rpc";
+import { getRpcProviders, RpcConfig } from "config/rpc";
 import { RpcPurpose } from "config/rpc";
 import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
@@ -94,9 +94,9 @@ export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Trans
   if (TRANSPORTS_CACHE.has(key)) {
     return TRANSPORTS_CACHE.get(key)!;
   }
-  const transport = fallback([
-    ...getRpcProviders(chainId, purpose).map((provider) => http(provider.url, HTTP_TRANSPORT_OPTIONS)),
-  ]);
+  const transport = fallback(
+    getRpcProviders(chainId, purpose).map((provider: RpcConfig) => http(provider.url, HTTP_TRANSPORT_OPTIONS))
+  );
   TRANSPORTS_CACHE.set(key, transport);
   return transport;
 }
@@ -123,7 +123,7 @@ export function getPublicClientWithRpc(
   } else if (options.withExpress) {
     transport = getRpcTransport(chainId as AnyChainId, "express");
   } else {
-    transport = getRpcTransport(chainId as AnyChainId, "fallback");
+    transport = getRpcTransport(chainId as AnyChainId, "default");
   }
 
   const publicClient = createPublicClient({
