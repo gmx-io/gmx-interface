@@ -166,23 +166,25 @@ export function formatTradeActionTimestampISO(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export function tryGetError(reasonBytes: string):
-  | {
-      name: string;
-      args?: {
-        [key in ExtractAbiItem<
-          typeof abis.CustomErrors,
-          ContractErrorName<typeof abis.CustomErrors>
-        >["inputs"][number]["name"]]: AbiParameterToPrimitiveType<
-          Extract<
-            ExtractAbiItem<typeof abis.CustomErrors, ContractErrorName<typeof abis.CustomErrors>>["inputs"][number],
-            { name: key }
-          >,
-          "inputs"
-        >;
-      };
-    }
-  | undefined {
+type ParsedCustomError = {
+  name: string;
+  args?: {
+    [key in ExtractAbiItem<
+      typeof abis.CustomErrors,
+      ContractErrorName<typeof abis.CustomErrors>
+    >["inputs"][number]["name"]]: AbiParameterToPrimitiveType<
+      Extract<
+        ExtractAbiItem<typeof abis.CustomErrors, ContractErrorName<typeof abis.CustomErrors>>["inputs"][number],
+        {
+          name: key;
+        }
+      >,
+      "inputs"
+    >;
+  };
+};
+
+export function tryGetError(reasonBytes: string): ParsedCustomError | undefined {
   try {
     const decoded = decodeErrorResult({
       abi: abis.CustomErrors,

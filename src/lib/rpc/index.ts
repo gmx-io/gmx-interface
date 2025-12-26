@@ -51,7 +51,13 @@ export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcP
     return provider;
   }
 
-  return new ethers.WebSocketProvider(getWsUrl(chainId)!, network, { staticNetwork: network });
+  const wsUrl = getWsUrl(chainId);
+
+  if (!wsUrl) {
+    throw new Error(`Unsupported websocket URL for chain id: ${chainId}`);
+  }
+
+  return new ethers.WebSocketProvider(wsUrl, network, { staticNetwork: network });
 }
 
 export function getFallbackProvider(chainId: number) {
