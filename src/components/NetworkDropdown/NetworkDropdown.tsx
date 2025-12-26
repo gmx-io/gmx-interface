@@ -6,6 +6,7 @@ import partition from "lodash/partition";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { ARBITRUM } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { isSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
@@ -20,7 +21,8 @@ import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
-import SettingsIcon from "img/ic_settings.svg?react";
+import InfoIcon from "img/ic_info.svg?react";
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import SolanaNetworkItem from "./SolanaNetworkItem";
 
@@ -28,24 +30,13 @@ import "./NetworkDropdown.scss";
 
 const NETWORK_MODAL_KEY = "NETWORK";
 
-export default function NetworkDropdown(props: {
-  chainId: number;
-  networkOptions: NetworkOption[];
-  openSettings: () => void;
-}) {
+export default function NetworkDropdown(props: { chainId: number; networkOptions: NetworkOption[] }) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
 
   function getModalContent(modalName) {
     switch (modalName) {
       case NETWORK_MODAL_KEY:
-        return (
-          <NetworkModalContent
-            setActiveModal={setActiveModal}
-            networkOptions={props.networkOptions}
-            chainId={props.chainId}
-            openSettings={props.openSettings}
-          />
-        );
+        return <NetworkModalContent networkOptions={props.networkOptions} chainId={props.chainId} />;
       default:
         return;
     }
@@ -87,15 +78,7 @@ function NavIcons({ chainId, open }) {
   );
 }
 
-function DesktopDropdown({
-  chainId,
-  networkOptions,
-  openSettings,
-}: {
-  chainId: number;
-  networkOptions: NetworkOption[];
-  openSettings: () => void;
-}) {
+function DesktopDropdown({ chainId, networkOptions }: { chainId: number; networkOptions: NetworkOption[] }) {
   return (
     <div className="relative flex items-center gap-8">
       <Menu>
@@ -112,32 +95,12 @@ function DesktopDropdown({
             </Menu.Button>
             <Menu.Items
               as="div"
-              className="menu-items network-dropdown-items rounded-8 border-1/2 border-slate-600"
+              className="menu-items network-dropdown-items rounded-8 border-1/2 border-slate-600 bg-slate-900/90 shadow-[0px_12px_40px_-4px] shadow-slate-950 backdrop-blur-[50px]"
               data-qa="networks-dropdown"
             >
-              <div className="p-12 pb-8 text-13 font-medium text-typography-secondary">
-                <Trans>Network</Trans>
-              </div>
               <div className="network-dropdown-list">
                 <NetworkMenuItems networkOptions={networkOptions} chainId={chainId} />
               </div>
-              <div className="network-dropdown-divider mb-6 pt-6" />
-              <Menu.Item>
-                <div
-                  className="network-dropdown-menu-item menu-item last-dropdown-menu"
-                  onClick={openSettings}
-                  data-qa="networks-dropdown-settings"
-                >
-                  <div className="menu-item-group">
-                    <div className="menu-item-icon">
-                      <SettingsIcon className="network-dropdown-icon" />
-                    </div>
-                    <span className="network-dropdown-item-label">
-                      <Trans>Settings</Trans>
-                    </span>
-                  </div>
-                </div>
-              </Menu.Item>
             </Menu.Items>
           </>
         )}
@@ -154,11 +117,58 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
     (network) => isSourceChain(network.value) && isNonEoaAccountOnAnyChain
   );
 
+  const walletAndGmxAccountNetworks = enabledNetworks.filter(
+    (network) => isSourceChain(network.value) || network.value === ARBITRUM
+  );
+  const walletOnlyNetworks = enabledNetworks.filter(
+    (network) => !isSourceChain(network.value) && network.value !== ARBITRUM
+  );
+
   return (
     <>
-      {enabledNetworks.map((network) => (
-        <NetworkMenuItem key={network.value} network={network} chainId={chainId} disabled={false} />
-      ))}
+      {walletAndGmxAccountNetworks.length > 0 && (
+        <>
+          <div className="flex items-center gap-4 px-12 pb-4 pt-8">
+            <span className="text-13 font-medium text-typography-secondary">
+              <Trans>Wallet & GMX Account</Trans>
+            </span>
+            <TooltipWithPortal
+              handle={<InfoIcon className="size-12 text-typography-secondary" />}
+              position="top"
+              variant="none"
+              className="flex"
+              renderContent={() => (
+                <Trans>
+                  These networks share liquidity with Arbitrum and allow trading through a GMX Account. On Arbitrum,
+                  trading is also available directly from the wallet.
+                </Trans>
+              )}
+            />
+          </div>
+          {walletAndGmxAccountNetworks.map((network) => (
+            <NetworkMenuItem key={network.value} network={network} chainId={chainId} disabled={false} />
+          ))}
+        </>
+      )}
+      {walletOnlyNetworks.length > 0 && (
+        <>
+          <div className="flex items-center gap-4 px-12 pb-4 pt-8">
+            <span className="text-13 font-medium text-typography-secondary">
+              <Trans>Wallet-only</Trans>
+            </span>
+            <TooltipWithPortal
+              handle={<InfoIcon className="size-12 text-typography-secondary" />}
+              position="top"
+              variant="none"
+              className="flex"
+              renderContent={() => <Trans>These networks support only trading directly from wallet.</Trans>}
+            />
+          </div>
+          {walletOnlyNetworks.map((network) => (
+            <NetworkMenuItem key={network.value} network={network} chainId={chainId} disabled={false} />
+          ))}
+        </>
+      )}
       <Menu.Item key="solana">
         <SolanaNetworkItem />
       </Menu.Item>
@@ -180,6 +190,7 @@ function NetworkMenuItem({
 }) {
   const { isConnected } = useAccount();
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
+  const isArbitrum = network.value === ARBITRUM;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
@@ -203,18 +214,26 @@ function NetworkMenuItem({
                 <img className="network-dropdown-icon" src={network.icon} alt={network.label} />
               </div>
               <span
-                className={cx("network-dropdown-item-label", {
-                  "text-typography-primary": chainId === network.value,
-                })}
+                className={cx(
+                  "network-dropdown-item-label",
+                  chainId === network.value ? "text-typography-primary" : "text-typography-secondary"
+                )}
               >
                 {network.label}
               </span>
-            </div>
-            <div className="network-dropdown-menu-item-img">
-              {chainId === network.value && (
-                <div className={"h-8 w-8 rounded-full border-[2.5px] border-green-600 bg-green-500"} />
+              {isArbitrum && (
+                <TooltipWithPortal
+                  handle={<WalletIcon className="size-16 text-typography-secondary" />}
+                  position="top"
+                  variant="none"
+                  className="flex"
+                  renderContent={() => <Trans>Trade directly from wallet or use GMX Account.</Trans>}
+                />
               )}
             </div>
+            {chainId === network.value && (
+              <div className="size-[5px] rounded-full bg-[#56dba8] shadow-[0_0_0_2.5px_rgba(86,219,168,0.2)]" />
+            )}
           </div>
         </Wrapper>
       )}
@@ -222,17 +241,7 @@ function NetworkMenuItem({
   );
 }
 
-function NetworkModalContent({
-  networkOptions,
-  chainId,
-  setActiveModal,
-  openSettings,
-}: {
-  networkOptions: NetworkOption[];
-  chainId: number;
-  setActiveModal: (modal: string | null) => void;
-  openSettings: () => void;
-}) {
+function NetworkModalContent({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
@@ -247,20 +256,6 @@ function NetworkModalContent({
           <Trans>More Options</Trans>
         </span>
         <SolanaNetworkItem />
-        <div
-          className="network-option"
-          onClick={() => {
-            openSettings();
-            setActiveModal(null);
-          }}
-        >
-          <div className="menu-item-group">
-            <SettingsIcon className="mr-16 text-typography-secondary" />
-            <span className="network-option-img-label">
-              <Trans>Settings</Trans>
-            </span>
-          </div>
-        </div>
       </div>
     </div>
   );
