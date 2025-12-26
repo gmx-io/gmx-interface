@@ -41,7 +41,7 @@ export const contractFetcher =
       priority = "background";
     }
 
-    const method = isAddress(arg0) ? arg1 : arg0;
+    const method = isAddress(arg0, { strict: false }) ? arg1 : arg0;
 
     const contractCall = fetchContractData({
       chainId,
@@ -120,7 +120,7 @@ export const contractFetcher =
           handleFallback(resolve, reject, e);
         });
 
-      const isThroughMulticall = isAddress(arg0);
+      const isThroughMulticall = isAddress(arg0, { strict: false });
       const isUrgent = priority === "urgent";
 
       let timeout = CONTRACT_FETCHER_DEFAULT_FETCH_TIMEOUT;
@@ -162,7 +162,7 @@ async function fetchContractData({
   priority: "urgent" | "background";
   id: string;
 }): Promise<any | undefined> {
-  if (isAddress(arg0)) {
+  if (isAddress(arg0, { strict: false })) {
     const address = arg0;
     const contract = new ethers.Contract(address, abis[abiId], provider);
 

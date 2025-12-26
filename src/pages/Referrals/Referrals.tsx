@@ -53,7 +53,7 @@ function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
   let account;
-  if (queryAccount && isAddress(queryAccount)) {
+  if (queryAccount && isAddress(queryAccount, { strict: false })) {
     account = getAddress(queryAccount);
   } else {
     account = walletAccount;

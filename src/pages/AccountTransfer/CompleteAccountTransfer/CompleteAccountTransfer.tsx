@@ -22,7 +22,8 @@ import PageTitle from "components/PageTitle/PageTitle";
 export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams<{ sender: string | undefined; receiver: string | undefined }>();
-  const isSenderAndReceiverValid = sender && receiver && isAddress(sender) && isAddress(receiver);
+  const isSenderAndReceiverValid =
+    sender && receiver && isAddress(sender, { strict: false }) && isAddress(receiver, { strict: false });
   const { setPendingTxns } = usePendingTxns();
   const { signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);

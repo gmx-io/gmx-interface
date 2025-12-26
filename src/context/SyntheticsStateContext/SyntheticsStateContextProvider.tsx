@@ -172,7 +172,7 @@ export function SyntheticsStateContextProvider({
 
   let checkSummedAccount: string | undefined;
 
-  if (paramsAccount && isAddress(paramsAccount)) {
+  if (paramsAccount && isAddress(paramsAccount, { strict: false })) {
     checkSummedAccount = getAddress(paramsAccount);
   }
 
