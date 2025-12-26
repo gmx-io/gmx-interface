@@ -1,7 +1,7 @@
 import { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
+  schema: "https://gmx.squids.live/gmx-synthetics-arbitrum@4911ee/api/graphql",
   overwrite: true,
   debug: true,
   generates: {
