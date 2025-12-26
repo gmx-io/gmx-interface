@@ -73,6 +73,7 @@ type SubmitButtonState = {
   isAllowanceLoaded?: boolean;
   isAllowanceLoading?: boolean;
   errorDescription?: string;
+  warningText?: string;
 };
 
 export const useGmSwapSubmitState = ({
@@ -199,7 +200,8 @@ export const useGmSwapSubmitState = ({
     return undefined;
   }, [estimationError, gasPaymentToken]);
 
-  const error = commonError || swapError || expressError || sourceChainNativeFeeError || formattedEstimationError;
+  const error =
+    commonError || swapError || expressError || sourceChainNativeFeeError?.buttonText || formattedEstimationError;
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
 
@@ -231,6 +233,7 @@ export const useGmSwapSubmitState = ({
         isAllowanceLoaded,
         isAllowanceLoading,
         errorDescription: swapErrorDescription,
+        warningText: sourceChainNativeFeeError?.warningText,
       };
     }
 
@@ -294,6 +297,7 @@ export const useGmSwapSubmitState = ({
     onConnectAccount,
     shouldDisableValidation,
     swapErrorDescription,
+    sourceChainNativeFeeError?.warningText,
     approve,
     operation,
     isLoading,

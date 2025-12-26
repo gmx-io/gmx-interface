@@ -1,11 +1,17 @@
 import { t } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { ContractsChainId, getChainName, getViemChain, SourceChainId } from "config/chains";
+import { ContractsChainId, getViemChain, SourceChainId } from "config/chains";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
+import { useUsdToNativeTokenMultichain } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
+import { formatBalanceAmount } from "sdk/utils/numbers";
+
+export type SourceChainNativeFeeError = {
+  buttonText: string;
+  warningText: string;
+};
 
 export function useSourceChainNativeFeeError({
   networkFeeUsd,
@@ -17,12 +23,12 @@ export function useSourceChainNativeFeeError({
   paySource?: "sourceChain" | string;
   chainId: ContractsChainId | undefined;
   srcChainId: SourceChainId | undefined;
-}): string | undefined {
+}): SourceChainNativeFeeError | undefined {
   const account = useSelector(selectAccount);
   const sourceChainNativeTokenBalance = useNativeTokenBalance(srcChainId, account);
-  const sourceChainNativeTokenBalanceUsd = useNativeTokenMultichainUsd({
+  const nativeFee = useUsdToNativeTokenMultichain({
     sourceChainId: srcChainId,
-    sourceChainTokenAmount: sourceChainNativeTokenBalance,
+    usdAmount: networkFeeUsd,
     targetChainId: chainId,
   });
 
@@ -30,18 +36,26 @@ export function useSourceChainNativeFeeError({
     if (
       (paySource !== undefined && paySource !== "sourceChain") ||
       srcChainId === undefined ||
-      networkFeeUsd === undefined ||
-      sourceChainNativeTokenBalanceUsd === undefined
+      nativeFee === undefined ||
+      sourceChainNativeTokenBalance === undefined
     ) {
       return undefined;
     }
 
-    const symbol = getViemChain(srcChainId).nativeCurrency.symbol;
+    const nativeCurrency = getViemChain(srcChainId).nativeCurrency;
+    const symbol = nativeCurrency.symbol;
+    const decimals = nativeCurrency.decimals;
 
-    if (sourceChainNativeTokenBalanceUsd < networkFeeUsd) {
-      return t`${symbol} balance on ${getChainName(srcChainId)} chain is insufficient to cover network fee`;
+    if (sourceChainNativeTokenBalance < nativeFee) {
+      const availableFormatted = formatBalanceAmount(sourceChainNativeTokenBalance, decimals);
+      const requiredFormatted = formatBalanceAmount(nativeFee, decimals);
+
+      return {
+        buttonText: t`Insufficient ${symbol} balance`,
+        warningText: t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`,
+      };
     }
 
     return undefined;
-  }, [paySource, srcChainId, networkFeeUsd, sourceChainNativeTokenBalanceUsd]);
+  }, [paySource, srcChainId, nativeFee, sourceChainNativeTokenBalance]);
 }

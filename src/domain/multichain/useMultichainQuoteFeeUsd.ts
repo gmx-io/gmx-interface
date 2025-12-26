@@ -6,6 +6,7 @@ import { getMappedTokenId } from "config/multichain";
 import { getMidPrice, useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
+import { convertToTokenAmount } from "sdk/utils/tokens";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
 import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
@@ -57,7 +58,7 @@ export function useNativeTokenMultichainUsd({
     return undefined;
   }
 
-  const nativeFeeUsd =
+  const nativeUsd =
     sourceChainTokenAmount !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
       ? convertToUsd(
           sourceChainTokenAmount as bigint,
@@ -66,8 +67,67 @@ export function useNativeTokenMultichainUsd({
         )
       : undefined;
 
-  return nativeFeeUsd;
+  return nativeUsd;
 }
+
+export function useUsdToNativeTokenMultichain({
+  sourceChainId,
+  usdAmount,
+  targetChainId,
+}: {
+  sourceChainId: AnyChainId | undefined;
+  usdAmount: bigint | undefined;
+  targetChainId: AnyChainId | undefined;
+}): bigint | undefined {
+  const { chainId } = useChainId();
+
+  let sourceNativeTokenPriceChain = chainId;
+  let sourceNativeTokenAddress = zeroAddress;
+  let hasSourceNativeTokenPrice = false;
+  if (sourceChainId !== undefined && targetChainId !== undefined && sourceChainId !== chainId) {
+    if (NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[targetChainId]) {
+      sourceNativeTokenPriceChain = chainId;
+      sourceNativeTokenAddress = NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[targetChainId];
+      hasSourceNativeTokenPrice = true;
+    } else {
+      const someChain = Object.keys(NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId] ?? {})[0];
+      if (someChain) {
+        sourceNativeTokenPriceChain = parseInt(someChain) as SettlementChainId;
+        sourceNativeTokenAddress =
+          NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[sourceNativeTokenPriceChain];
+        hasSourceNativeTokenPrice = true;
+      }
+    }
+  } else if (sourceChainId === chainId) {
+    sourceNativeTokenPriceChain = chainId;
+    sourceNativeTokenAddress = zeroAddress;
+    hasSourceNativeTokenPrice = true;
+  }
+
+  const { pricesData: priceChainTokenPricesData } = useTokenRecentPricesRequest(sourceNativeTokenPriceChain);
+
+  if (
+    usdAmount === undefined ||
+    sourceChainId === undefined ||
+    targetChainId === undefined ||
+    chainId === undefined ||
+    !hasSourceNativeTokenPrice
+  ) {
+    return undefined;
+  }
+
+  const nativeTokenAmount =
+    usdAmount !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
+      ? convertToTokenAmount(
+          usdAmount,
+          getViemChain(sourceChainId).nativeCurrency.decimals,
+          getMidPrice(priceChainTokenPricesData[sourceNativeTokenAddress])
+        )
+      : undefined;
+
+  return nativeTokenAmount;
+}
+
 export function useGasMultichainUsd({
   sourceChainId,
   sourceChainGas,

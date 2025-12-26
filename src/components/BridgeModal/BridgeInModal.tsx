@@ -29,6 +29,7 @@ import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
@@ -266,7 +267,7 @@ export function BridgeInModal({
 
     if (sourceChainNativeFeeError) {
       return {
-        text: sourceChainNativeFeeError,
+        text: sourceChainNativeFeeError.buttonText,
         disabled: true,
       };
     }
@@ -329,6 +330,11 @@ export function BridgeInModal({
             hideTabs
           />
         </BuyInputSection>
+        {sourceChainNativeFeeError?.warningText && (
+          <AlertInfoCard type="warning" hideClose>
+            {sourceChainNativeFeeError.warningText}
+          </AlertInfoCard>
+        )}
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}
         </Button>
