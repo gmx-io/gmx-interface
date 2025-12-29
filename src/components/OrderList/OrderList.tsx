@@ -1,4 +1,4 @@
-import { Plural, Trans } from "@lingui/macro";
+import { t, Plural, Trans } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
@@ -36,9 +36,11 @@ import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { helperToast } from "lib/helperToast";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 
@@ -96,6 +98,7 @@ export function OrderList({
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const subaccount = useSelector(selectSubaccountForChainAction);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const orders = useFilteredOrders({
     chainId,
@@ -155,6 +158,11 @@ export function OrderList({
 
   async function onCancelOrder(order: OrderInfo) {
     if (!signer || !provider) return;
+
+    if (hasOutdatedUi) {
+      helperToast.error(t`Page outdated, please refresh`);
+      return;
+    }
 
     const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
     setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
