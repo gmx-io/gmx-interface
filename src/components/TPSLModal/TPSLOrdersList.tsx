@@ -30,16 +30,21 @@ type Props = {
   position: PositionInfo;
   marketDecimals: number | undefined;
   isMobile: boolean;
+  onEdit?: (orderKey: string) => void;
 };
 
-export function TPSLOrdersList({ orders, position, marketDecimals, isMobile }: Props) {
+export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, onEdit }: Props) {
   const [, setEditingOrderState] = useEditingOrderState();
 
   const handleEditOrder = useCallback(
     (orderKey: string) => {
+      if (onEdit) {
+        onEdit(orderKey);
+        return;
+      }
       setEditingOrderState({ orderKey, source: "PositionsList" });
     },
-    [setEditingOrderState]
+    [onEdit, setEditingOrderState]
   );
 
   if (orders.length === 0) {

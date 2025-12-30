@@ -115,6 +115,7 @@ type Props = {
   order: OrderInfo;
   source: EditingOrderSource;
   onClose: () => void;
+  onBack?: () => void;
 };
 
 export function OrderEditor(p: Props) {
@@ -536,8 +537,10 @@ export function OrderEditor(p: Props) {
       isGmxAccount: srcChainId !== undefined,
     });
 
+    const closeAfterSubmit = p.onBack ?? p.onClose;
+
     if (expressParams?.subaccount) {
-      p.onClose();
+      closeAfterSubmit();
       setIsSubmitting(false);
       if (market) {
         sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
@@ -547,7 +550,7 @@ export function OrderEditor(p: Props) {
 
     txnPromise
       .then(() => {
-        p.onClose();
+        closeAfterSubmit();
         if (market) {
           sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
         }
@@ -699,6 +702,15 @@ export function OrderEditor(p: Props) {
 
   const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
 
+  const handleBack = useCallback(() => {
+    if (p.onBack) {
+      p.onBack();
+      return;
+    }
+
+    p.onClose();
+  }, [p]);
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -707,6 +719,7 @@ export function OrderEditor(p: Props) {
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
         contentPadding={false}
+        onBack={p.onBack ? handleBack : undefined}
       >
         <div className="mb-14 flex flex-col gap-2 px-adaptive pt-12">
           {!isSwapOrderType(p.order.orderType) && (

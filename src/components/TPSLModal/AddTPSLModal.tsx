@@ -87,9 +87,10 @@ type Props = {
   setIsVisible: (visible: boolean) => void;
   position: PositionInfo;
   onSuccess?: () => void;
+  onBack?: () => void;
 };
 
-export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess }: Props) {
+export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onBack }: Props) {
   const [tpPriceInput, setTpPriceInput] = useState("");
   const [slPriceInput, setSlPriceInput] = useState("");
   const [keepLeverage, setKeepLeverage] = useState(true);
@@ -662,11 +663,21 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess }: P
     return formatDeltaUsd(netFee);
   }, [fees]);
 
+  const handleBack = useCallback(() => {
+    if (onBack) {
+      onBack();
+      return;
+    }
+
+    setIsVisible(false);
+  }, [onBack, setIsVisible]);
+
   return (
     <Modal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={<Trans>TP/SL: {positionTitle} Decrease</Trans>}
+      onBack={onBack ? handleBack : undefined}
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-16">

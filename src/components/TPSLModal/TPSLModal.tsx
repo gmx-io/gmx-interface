@@ -1,7 +1,10 @@
 import { Trans, t } from "@lingui/macro";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import {
+  useCancellingOrdersKeysState,
+  useEditingOrderState,
+} from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
@@ -50,6 +53,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
+  const [shouldReopenOnAddClose, setShouldReopenOnAddClose] = useState(false);
 
   const { isTablet } = useBreakpoints();
   const isMobile = isTablet;
@@ -59,6 +63,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
+  const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const subaccount = useSelector(selectSubaccountForChainAction);
@@ -175,99 +180,141 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
     setCancellingOrdersKeys,
   ]);
 
-  const handleAddTPSL = useCallback(() => {
+  const handleAddTPSLOpen = useCallback(() => {
+    setShouldReopenOnAddClose(false);
+    setIsVisible(false);
     setIsAddFormVisible(true);
-  }, []);
+  }, [setIsAddFormVisible, setIsVisible, setShouldReopenOnAddClose]);
+
+  const handleAddTPSLBack = useCallback(() => {
+    setShouldReopenOnAddClose(true);
+    setIsAddFormVisible(false);
+  }, [setIsAddFormVisible, setShouldReopenOnAddClose]);
+
+  const handleAddTPSLSuccess = useCallback(() => {
+    setShouldReopenOnAddClose(true);
+  }, [setShouldReopenOnAddClose]);
+
+  const handleEditOrder = useCallback(
+    (orderKey: string) => {
+      setIsVisible(false);
+      setEditingOrderState({ orderKey, source: "TPSLModal" });
+    },
+    [setEditingOrderState, setIsVisible]
+  );
+
+  useEffect(() => {
+    if (!isAddFormVisible && shouldReopenOnAddClose) {
+      setIsVisible(true);
+      setShouldReopenOnAddClose(false);
+    }
+  }, [isAddFormVisible, shouldReopenOnAddClose, setIsVisible]);
+
+  useEffect(() => {
+    if (editingOrderState?.source === "TPSLModal" && !editingOrderState.orderKey) {
+      setIsVisible(true);
+      setEditingOrderState(undefined);
+    }
+  }, [editingOrderState, setEditingOrderState, setIsVisible]);
 
   const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${getMarketIndexName({ indexToken: position.indexToken, isSpotOnly: false })} `;
 
   return (
-    <Modal
-      isVisible={isVisible}
-      setIsVisible={setIsVisible}
-      label={<Trans>TP/SL: {positionTitle}</Trans>}
-      className="max-lg:!w-full max-lg:!items-end"
-      contentClassName="!max-w-[896px] w-[95%] h-[min(90vh,500px)] max-lg:h-[85vh] max-lg:!w-full max-lg:!max-w-none"
-      contentPadding={false}
-      withMobileBottomPosition={true}
-    >
-      <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12 max-md:gap-16 max-md:px-16">
-        <div className="flex flex-col">
-          <span className="text-body-small text-typography-secondary">
-            <Trans>Entry Price</Trans>
-          </span>
-          <span className="text-body-medium numbers">
-            {formatUsd(position.entryPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: position.indexToken.visualMultiplier,
-            })}
-          </span>
+    <>
+      <Modal
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        label={<Trans>TP/SL: {positionTitle}</Trans>}
+        className="max-lg:!w-full max-lg:!items-end"
+        contentClassName="!max-w-[896px] w-[95%] h-[min(90vh,500px)] max-lg:h-[85vh] max-lg:!w-full max-lg:!max-w-none"
+        contentPadding={false}
+        withMobileBottomPosition={true}
+      >
+        <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12 max-md:gap-16 max-md:px-16">
+          <div className="flex flex-col">
+            <span className="text-body-small text-typography-secondary">
+              <Trans>Entry Price</Trans>
+            </span>
+            <span className="text-body-medium numbers">
+              {formatUsd(position.entryPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: position.indexToken.visualMultiplier,
+              })}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-body-small text-typography-secondary">
+              <Trans>Mark Price</Trans>
+            </span>
+            <span className="text-body-medium numbers">
+              {formatUsd(position.markPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: position.indexToken.visualMultiplier,
+              })}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-body-small text-typography-secondary">
+              <Trans>Liquidation Price</Trans>
+            </span>
+            <span className="text-body-medium text-red-500 numbers">
+              {formatLiquidationPrice(position.liquidationPrice, {
+                displayDecimals: marketDecimals,
+                visualMultiplier: position.indexToken.visualMultiplier,
+              }) || "..."}
+            </span>
+          </div>
         </div>
-        <div className="flex flex-col">
-          <span className="text-body-small text-typography-secondary">
-            <Trans>Mark Price</Trans>
-          </span>
-          <span className="text-body-medium numbers">
-            {formatUsd(position.markPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: position.indexToken.visualMultiplier,
-            })}
-          </span>
-        </div>
-        <div className="flex flex-col">
-          <span className="text-body-small text-typography-secondary">
-            <Trans>Liquidation Price</Trans>
-          </span>
-          <span className="text-body-medium text-red-500 numbers">
-            {formatLiquidationPrice(position.liquidationPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: position.indexToken.visualMultiplier,
-            }) || "..."}
-          </span>
-        </div>
-      </div>
 
-      <div className="flex items-center justify-between border-b-1/2 border-t-1/2 border-slate-600 bg-slate-800/50">
-        <Tabs
-          options={tabOptions}
-          selectedValue={activeTab}
-          onChange={setActiveTab}
-          type="block"
-          className="-mb-1 w-full pr-20 max-md:pr-16"
-          rightContent={
-            <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
-              {allOrders.length > 0 && (
-                <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
-                  <Trans>Cancel all</Trans>
-                </Button>
-              )}
-              {!isMobile && (
-                <Button variant="ghost" onClick={handleAddTPSL}>
-                  <Trans>Add TP/SL</Trans>
-                  <PlusCircleIcon className="size-16" />
-                </Button>
-              )}
-            </div>
-          }
+        <div className="flex items-center justify-between border-b-1/2 border-t-1/2 border-slate-600 bg-slate-800/50">
+          <Tabs
+            options={tabOptions}
+            selectedValue={activeTab}
+            onChange={setActiveTab}
+            type="block"
+            className="-mb-1 w-full pr-20 max-md:pr-16"
+            rightContent={
+              <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
+                {allOrders.length > 0 && (
+                  <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
+                    <Trans>Cancel all</Trans>
+                  </Button>
+                )}
+                {!isMobile && (
+                  <Button variant="ghost" onClick={handleAddTPSLOpen}>
+                    <Trans>Add TP/SL</Trans>
+                    <PlusCircleIcon className="size-16" />
+                  </Button>
+                )}
+              </div>
+            }
+          />
+        </div>
+
+        <TPSLOrdersList
+          orders={displayedOrders}
+          position={position}
+          marketDecimals={marketDecimals}
+          isMobile={isMobile}
+          onEdit={handleEditOrder}
         />
-      </div>
 
-      <TPSLOrdersList
-        orders={displayedOrders}
+        {isMobile && (
+          <div className="fixed bottom-0 left-0 right-0 border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
+            <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen}>
+              <Trans>Add TP/SL</Trans>
+            </Button>
+          </div>
+        )}
+      </Modal>
+
+      <AddTPSLModal
+        isVisible={isAddFormVisible}
+        setIsVisible={setIsAddFormVisible}
         position={position}
-        marketDecimals={marketDecimals}
-        isMobile={isMobile}
+        onBack={handleAddTPSLBack}
+        onSuccess={handleAddTPSLSuccess}
       />
-
-      {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
-          <Button variant="primary" className="w-full" onClick={handleAddTPSL}>
-            <Trans>Add TP/SL</Trans>
-          </Button>
-        </div>
-      )}
-
-      <AddTPSLModal isVisible={isAddFormVisible} setIsVisible={setIsAddFormVisible} position={position} />
-    </Modal>
+    </>
   );
 }
