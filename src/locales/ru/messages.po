@@ -1794,7 +1794,6 @@ msgid "Min size per part: {0}"
 msgstr "Мин. размер на часть: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above liq. price"
 msgstr "Триггерная цена выше цены ликв."
@@ -3114,7 +3113,6 @@ msgid "Debug values are not available"
 msgstr "Значения отладки недоступны"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "Триггерная цена ниже ликв. цены"
@@ -3170,8 +3168,8 @@ msgid "Unstake submitted."
 msgstr "Анстейкинг отправлен."
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be above Mark Price"
-msgstr ""
+#~ msgid "TP price must be above Mark Price"
+#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3635,8 +3633,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX в настоящее время не активно ищет новых сотрудников. Однако, если вы считаете, что можете внести вклад в проект, пожалуйста, напишите <0>jobs@gmx.io</0>."
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be above Mark Price"
-msgstr ""
+#~ msgid "SL price must be above Mark Price"
+#~ msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
@@ -6938,8 +6936,8 @@ msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messagin
 msgstr "<0>С большинством голосов 75.5% GMX выбрал LayerZero как партнера по messaging для мультичейн-расширения! Интеграция приносит GMX:</0><1><2>Возможность расширения на 125+ цепей</2><3>Полное владение всеми контрактами и безопасностью</3><4>Быстрые переводы без slippage</4><5>Боевые рельсы, уже доверенные миллиардам долларов в активах и сотням приложений... <6>см. больше</6></5></1>"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be below Mark Price"
-msgstr ""
+#~ msgid "SL price must be below Mark Price"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7819,8 +7817,8 @@ msgid "You sign each transaction on-chain using your own RPC, typically provided
 msgstr "Вы подписываете каждую транзакцию на цепи, используя свой собственный RPC, обычно предоставляемый вашим кошельком. Оплата газа в {nativeTokenSymbol}."
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be below Mark Price"
-msgstr ""
+#~ msgid "TP price must be below Mark Price"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Tier {0}: {currentTierDiscount}% discount"

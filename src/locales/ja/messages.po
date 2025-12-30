@@ -1794,7 +1794,6 @@ msgid "Min size per part: {0}"
 msgstr "部分あたり最小サイズ: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above liq. price"
 msgstr "トリガー価格が清算価格を上回っています"
@@ -3114,7 +3113,6 @@ msgid "Debug values are not available"
 msgstr "デバッグ値は利用できません"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "トリガー価格が清算価格を下回っています"
@@ -3170,8 +3168,8 @@ msgid "Unstake submitted."
 msgstr "アンステークが送信されました。"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be above Mark Price"
-msgstr ""
+#~ msgid "TP price must be above Mark Price"
+#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3635,8 +3633,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMXは現在積極的には求人を行っていませんが、プロジェクトに貢献できると思われる方は、<0>jobs@gmx.io</0>にメールをしてください。"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be above Mark Price"
-msgstr ""
+#~ msgid "SL price must be above Mark Price"
+#~ msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
@@ -6938,8 +6936,8 @@ msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messagin
 msgstr "<0>75.5%の多数決でGMXはマルチチェーン拡張のメッセージングパートナーとしてLayerZeroを選択！統合によりGMXに：</0><1><2>125+チェーンへの拡張能力</2><3>すべてのコントラクトとセキュリティの完全所有</3><4>高速、ゼロスリッページ転送</4><5>数十億ドルの資産と数百のアプリケーションで信頼されたバトルテスト済みレール... <6>もっと見る</6></5></1>"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be below Mark Price"
-msgstr ""
+#~ msgid "SL price must be below Mark Price"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7819,8 +7817,8 @@ msgid "You sign each transaction on-chain using your own RPC, typically provided
 msgstr "ウォレットが通常提供する独自RPCを使用して各取引をオンチェーンで署名します。ガス支払いは {nativeTokenSymbol}。"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be below Mark Price"
-msgstr ""
+#~ msgid "TP price must be below Mark Price"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Tier {0}: {currentTierDiscount}% discount"

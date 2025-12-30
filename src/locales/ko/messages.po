@@ -1794,7 +1794,6 @@ msgid "Min size per part: {0}"
 msgstr "부분당 최소 크기: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above liq. price"
 msgstr "트리거 가격이 청산 가격 초과"
@@ -3114,7 +3113,6 @@ msgid "Debug values are not available"
 msgstr "디버그 값 사용 불가"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "트리거 가격이 청산 가격 미만"
@@ -3170,8 +3168,8 @@ msgid "Unstake submitted."
 msgstr "언스테이크 제출됨."
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be above Mark Price"
-msgstr ""
+#~ msgid "TP price must be above Mark Price"
+#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3635,8 +3633,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be above Mark Price"
-msgstr ""
+#~ msgid "SL price must be above Mark Price"
+#~ msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
@@ -6938,8 +6936,8 @@ msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messagin
 msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징 파트너로 LayerZero를 선택했습니다! 이 통합은 GMX에:</0><1><2>125+ 체인으로 확장 능력</2><3>모든 계약 및 보안의 완전 소유권</3><4>빠르고 제로 슬리피지 전송</4><5>수십억 달러 자산과 수백 개 애플리케이션에서 이미 신뢰받는 전투 테스트된 레일... <6>더 보기</6></5></1>"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be below Mark Price"
-msgstr ""
+#~ msgid "SL price must be below Mark Price"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7819,8 +7817,8 @@ msgid "You sign each transaction on-chain using your own RPC, typically provided
 msgstr "지갑에서 일반적으로 제공되는 자체 RPC를 사용하여 각 거래를 온체인으로 서명합니다. 가스 결제는 {nativeTokenSymbol}로 합니다."
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be below Mark Price"
-msgstr ""
+#~ msgid "TP price must be below Mark Price"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Tier {0}: {currentTierDiscount}% discount"

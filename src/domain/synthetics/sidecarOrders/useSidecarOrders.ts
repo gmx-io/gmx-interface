@@ -7,9 +7,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
-  selectTradeboxCollateralToken,
-  selectTradeboxIncreasePositionAmounts,
-  selectTradeboxMarketInfo,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
@@ -22,7 +19,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
-import { getDecreasePositionAmounts } from "domain/synthetics/trade";
+import { getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import { usePrevious } from "lib/usePrevious";
 
 import { SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
@@ -40,9 +37,6 @@ export function useSidecarOrders() {
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const collateralToken = useSelector(selectTradeboxCollateralToken);
-  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
@@ -101,13 +95,6 @@ export function useSidecarOrders() {
         price?.value === undefined ||
         price?.value === null ||
         price.error ||
-        !marketInfo
-      )
-        return;
-
-      if (
-        !increaseAmounts ||
-        !collateralToken ||
         !mockPositionInfo ||
         minPositionSizeUsd === undefined ||
         minCollateralUsd === undefined
@@ -115,34 +102,26 @@ export function useSidecarOrders() {
         return;
       }
 
-      return getDecreasePositionAmounts({
-        marketInfo,
-        collateralToken,
-        isLong,
+      return getTpSlDecreaseAmounts({
         position: mockPositionInfo,
         closeSizeUsd: sizeUsd.value,
-        keepLeverage: true,
         triggerPrice: price.value,
-        userReferralInfo,
+        triggerOrderType,
+        isLimit,
+        limitPrice: triggerPrice,
         minCollateralUsd,
         minPositionSizeUsd,
         uiFeeFactor,
-        isLimit,
-        limitPrice: triggerPrice,
-        triggerOrderType,
+        userReferralInfo,
         isSetAcceptablePriceImpactEnabled,
       });
     },
     [
-      collateralToken,
-      mockPositionInfo,
-      increaseAmounts,
-      isLong,
       isLimit,
-      marketInfo,
-      triggerPrice,
       minCollateralUsd,
       minPositionSizeUsd,
+      mockPositionInfo,
+      triggerPrice,
       uiFeeFactor,
       userReferralInfo,
       isSetAcceptablePriceImpactEnabled,

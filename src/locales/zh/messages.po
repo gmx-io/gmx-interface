@@ -1794,7 +1794,6 @@ msgid "Min size per part: {0}"
 msgstr "每个部分最小规模：{0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above liq. price"
 msgstr "触发价格高于清算价格"
@@ -3114,7 +3113,6 @@ msgid "Debug values are not available"
 msgstr "调试值不可用"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "触发价格低于清算价格"
@@ -3170,8 +3168,8 @@ msgid "Unstake submitted."
 msgstr "取消质押已提交。"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be above Mark Price"
-msgstr ""
+#~ msgid "TP price must be above Mark Price"
+#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3635,8 +3633,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以为项目做出贡献，请发送电子邮件至 <0>jobs@gmx.io</0>。"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be above Mark Price"
-msgstr ""
+#~ msgid "SL price must be above Mark Price"
+#~ msgstr ""
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
 msgid "After you scan, a connection prompt will appear for you to connect your wallet."
@@ -6938,8 +6936,8 @@ msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messagin
 msgstr "<0>以 75.5% 的多数票，GMX 已选择 LayerZero 作为其多链扩展的消息合作伙伴！该集成为 GMX 带来：</0><1><2>扩展到 125+ 链的能力</2><3>所有合约和安全的完全所有权</3><4>快速、无滑点转移</4><5>已由数十亿美元资产和数百个应用信任的经过战斗测试的轨道... <6>查看更多</6></5></1>"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "SL price must be below Mark Price"
-msgstr ""
+#~ msgid "SL price must be below Mark Price"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7819,8 +7817,8 @@ msgid "You sign each transaction on-chain using your own RPC, typically provided
 msgstr "您使用自己的 RPC（通常由您的钱包提供）在链上签署每笔交易。Gas 支付以 {nativeTokenSymbol}。"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP price must be below Mark Price"
-msgstr ""
+#~ msgid "TP price must be below Mark Price"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "Tier {0}: {currentTierDiscount}% discount"

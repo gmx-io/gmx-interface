@@ -3,7 +3,6 @@ import cx from "classnames";
 import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
@@ -28,7 +27,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
@@ -38,7 +37,12 @@ import {
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
 import {
-  getDecreasePositionAmounts,
+  getDefaultEntryField,
+  handleEntryError,
+  MAX_PERCENTAGE,
+  PERCENTAGE_DECIMALS,
+} from "domain/synthetics/sidecarOrders/utils";
+import {
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
   getTradeFees,
@@ -46,6 +50,7 @@ import {
   DecreasePositionAmounts,
 } from "domain/synthetics/trade";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   calculateDisplayDecimals,
@@ -59,13 +64,10 @@ import {
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
+import { SidecarSlTpOrderEntry } from "sdk/types/sidecarOrders";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import {
-  buildDecreaseOrderPayload,
-  CreateOrderTxnParams,
-  DecreasePositionOrderParams,
-} from "sdk/utils/orderTransactions";
+import { CreateOrderTxnParams, DecreasePositionOrderParams } from "sdk/utils/orderTransactions";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -134,36 +136,36 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     return getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false });
   }, [position.indexToken.prices, position.isLong]);
 
-  const positionData = useMemo(() => {
-    return {
-      sizeInUsd: position.sizeInUsd,
-      sizeInTokens: position.sizeInTokens,
-      collateralUsd: position.collateralUsd,
-      entryPrice: position.entryPrice ?? 0n,
-      liquidationPrice: position.liquidationPrice,
-      isLong,
-      indexTokenDecimals: indexToken?.decimals ?? 18,
-      visualMultiplier,
-    };
-  }, [position, isLong, indexToken?.decimals, visualMultiplier]);
+  const positionData = useMemo(
+    () =>
+      buildTpSlInputPositionData({
+        position,
+        collateralUsd: position.collateralUsd,
+        indexTokenDecimals: indexToken?.decimals ?? 18,
+        visualMultiplier,
+      })!,
+    [position, indexToken?.decimals, visualMultiplier]
+  );
 
-  const tpTriggerPrice = useMemo(() => {
-    if (!tpPriceInput) return undefined;
-    let price = parseValue(tpPriceInput, USD_DECIMALS);
-    if (price !== undefined && visualMultiplier) {
-      price = price / BigInt(visualMultiplier);
-    }
-    return price;
-  }, [tpPriceInput, visualMultiplier]);
+  const tpPriceEntry = useMemo(
+    () => getDefaultEntryField(USD_DECIMALS, { input: tpPriceInput }, visualMultiplier),
+    [tpPriceInput, visualMultiplier]
+  );
 
-  const slTriggerPrice = useMemo(() => {
-    if (!slPriceInput) return undefined;
-    let price = parseValue(slPriceInput, USD_DECIMALS);
-    if (price !== undefined && visualMultiplier) {
-      price = price / BigInt(visualMultiplier);
-    }
-    return price;
-  }, [slPriceInput, visualMultiplier]);
+  const slPriceEntry = useMemo(
+    () => getDefaultEntryField(USD_DECIMALS, { input: slPriceInput }, visualMultiplier),
+    [slPriceInput, visualMultiplier]
+  );
+
+  const tpTriggerPrice = useMemo(
+    () => (tpPriceEntry.value === null ? undefined : tpPriceEntry.value),
+    [tpPriceEntry.value]
+  );
+
+  const slTriggerPrice = useMemo(
+    () => (slPriceEntry.value === null ? undefined : slPriceEntry.value),
+    [slPriceEntry.value]
+  );
 
   const closeSizeUsd = useMemo(() => {
     if (!editTPSLSize || !closeSizeInput) {
@@ -171,6 +173,10 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     }
     return parseValue(closeSizeInput, USD_DECIMALS) ?? position.sizeInUsd;
   }, [editTPSLSize, closeSizeInput, position.sizeInUsd]);
+
+  const sizeUsdEntry = useMemo(() => getDefaultEntryField(USD_DECIMALS, { value: closeSizeUsd }), [closeSizeUsd]);
+
+  const percentageEntry = useMemo(() => getDefaultEntryField(PERCENTAGE_DECIMALS, { value: MAX_PERCENTAGE }), []);
 
   const tpTriggerOrderType = useMemo(() => {
     if (tpTriggerPrice === undefined || markPrice === undefined) return undefined;
@@ -191,87 +197,65 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   }, [slTriggerPrice, markPrice, isLong]);
 
   const tpDecreaseAmounts: DecreasePositionAmounts | undefined = useMemo(() => {
-    if (
-      tpTriggerPrice === undefined ||
-      !marketInfo ||
-      minCollateralUsd === undefined ||
-      minPositionSizeUsd === undefined ||
-      !tpTriggerOrderType ||
-      !getIsPositionInfoLoaded(position)
-    ) {
+    if (tpTriggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
       return undefined;
     }
 
-    return getDecreasePositionAmounts({
-      marketInfo,
-      collateralToken,
-      isLong,
+    return getTpSlDecreaseAmounts({
       position,
       closeSizeUsd,
-      keepLeverage,
       triggerPrice: tpTriggerPrice,
-      userReferralInfo,
+      triggerOrderType: tpTriggerOrderType,
+      keepLeverage,
+      isLimit: false,
+      limitPrice: undefined,
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,
-      triggerOrderType: tpTriggerOrderType,
+      userReferralInfo,
       isSetAcceptablePriceImpactEnabled,
     });
   }, [
     tpTriggerPrice,
-    marketInfo,
-    collateralToken,
-    isLong,
     position,
     closeSizeUsd,
     keepLeverage,
-    userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
+    userReferralInfo,
     tpTriggerOrderType,
     isSetAcceptablePriceImpactEnabled,
   ]);
 
   const slDecreaseAmounts: DecreasePositionAmounts | undefined = useMemo(() => {
-    if (
-      slTriggerPrice === undefined ||
-      !marketInfo ||
-      minCollateralUsd === undefined ||
-      minPositionSizeUsd === undefined ||
-      !slTriggerOrderType ||
-      !getIsPositionInfoLoaded(position)
-    ) {
+    if (slTriggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
       return undefined;
     }
 
-    return getDecreasePositionAmounts({
-      marketInfo,
-      collateralToken,
-      isLong,
+    return getTpSlDecreaseAmounts({
       position,
       closeSizeUsd,
-      keepLeverage,
       triggerPrice: slTriggerPrice,
-      userReferralInfo,
+      triggerOrderType: slTriggerOrderType,
+      keepLeverage,
+      isLimit: false,
+      limitPrice: undefined,
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,
-      triggerOrderType: slTriggerOrderType,
+      userReferralInfo,
       isSetAcceptablePriceImpactEnabled,
     });
   }, [
     slTriggerPrice,
-    marketInfo,
-    collateralToken,
-    isLong,
     position,
     closeSizeUsd,
     keepLeverage,
-    userReferralInfo,
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,
+    userReferralInfo,
     slTriggerOrderType,
     isSetAcceptablePriceImpactEnabled,
   ]);
@@ -437,102 +421,93 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   );
 
   const tpPriceError = useMemo(() => {
-    if (tpTriggerPrice === undefined || tpTriggerPrice === 0n || markPrice === undefined) return undefined;
+    if (markPrice === undefined) return undefined;
 
-    if (isLong && tpTriggerPrice <= markPrice) {
-      return t`TP price must be above Mark Price`;
-    }
-    if (!isLong && tpTriggerPrice >= markPrice) {
-      return t`TP price must be below Mark Price`;
-    }
-    return undefined;
-  }, [tpTriggerPrice, isLong, markPrice]);
+    const entry: SidecarSlTpOrderEntry = {
+      id: "tp",
+      price: tpPriceEntry,
+      sizeUsd: sizeUsdEntry,
+      percentage: percentageEntry,
+      mode: "keepPercentage",
+      order: null,
+      txnType: tpPriceEntry.value ? "create" : null,
+      decreaseAmounts: undefined,
+      increaseAmounts: undefined,
+    };
+
+    return (
+      handleEntryError(entry, "tp", {
+        liqPrice: position.liquidationPrice,
+        markPrice,
+        isLong,
+        isLimit: false,
+        isExistingPosition: true,
+      }).price.error ?? undefined
+    );
+  }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, isLong]);
 
   const slPriceError = useMemo(() => {
-    if (slTriggerPrice === undefined || slTriggerPrice === 0n || markPrice === undefined) return undefined;
+    if (markPrice === undefined) return undefined;
 
-    if (isLong && slTriggerPrice >= markPrice) {
-      return t`SL price must be below Mark Price`;
-    }
-    if (!isLong && slTriggerPrice <= markPrice) {
-      return t`SL price must be above Mark Price`;
-    }
-    return undefined;
-  }, [slTriggerPrice, isLong, markPrice]);
+    const entry: SidecarSlTpOrderEntry = {
+      id: "sl",
+      price: slPriceEntry,
+      sizeUsd: sizeUsdEntry,
+      percentage: percentageEntry,
+      mode: "keepPercentage",
+      order: null,
+      txnType: slPriceEntry.value ? "create" : null,
+      decreaseAmounts: undefined,
+      increaseAmounts: undefined,
+    };
+
+    return (
+      handleEntryError(entry, "sl", {
+        liqPrice: position.liquidationPrice,
+        markPrice,
+        isLong,
+        isLimit: false,
+        isExistingPosition: true,
+      }).price.error ?? undefined
+    );
+  }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, isLong]);
 
   const orderPayloads = useMemo((): CreateOrderTxnParams<DecreasePositionOrderParams>[] => {
-    const payloads: CreateOrderTxnParams<DecreasePositionOrderParams>[] = [];
-
-    if (tpDecreaseAmounts && account && marketInfo && !tpPriceError && executionFee) {
-      payloads.push(
-        buildDecreaseOrderPayload({
-          chainId,
-          receiver: account,
-          collateralDeltaAmount: tpDecreaseAmounts.collateralDeltaAmount ?? 0n,
-          collateralTokenAddress: collateralToken.address,
-          sizeDeltaUsd: tpDecreaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: tpDecreaseAmounts.sizeDeltaInTokens,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
-          allowedSlippage: 0,
-          orderType: tpDecreaseAmounts.triggerOrderType ?? OrderType.LimitDecrease,
-          autoCancel: autoCancelOrdersLimit > 0,
-          swapPath: [],
-          externalSwapQuote: undefined,
-          marketAddress: marketInfo.marketTokenAddress,
-          indexTokenAddress: marketInfo.indexTokenAddress,
-          isLong,
-          acceptablePrice: tpDecreaseAmounts.acceptablePrice,
-          triggerPrice: tpDecreaseAmounts.triggerPrice,
-          receiveTokenAddress: collateralToken.address,
-          minOutputUsd: 0n,
-          decreasePositionSwapType: tpDecreaseAmounts.decreaseSwapType,
-          executionFeeAmount: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
-          validFromTime: 0n,
-        })
-      );
+    if (!account || !marketInfo || !collateralToken || !executionFee) {
+      return [];
     }
 
-    if (slDecreaseAmounts && account && marketInfo && !slPriceError && executionFee) {
-      payloads.push(
-        buildDecreaseOrderPayload({
-          chainId,
-          receiver: account,
-          collateralDeltaAmount: slDecreaseAmounts.collateralDeltaAmount ?? 0n,
-          collateralTokenAddress: collateralToken.address,
-          sizeDeltaUsd: slDecreaseAmounts.sizeDeltaUsd,
-          sizeDeltaInTokens: slDecreaseAmounts.sizeDeltaInTokens,
-          referralCode: userReferralInfo?.referralCodeForTxn,
-          uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
-          allowedSlippage: 0,
-          orderType: slDecreaseAmounts.triggerOrderType ?? OrderType.StopLossDecrease,
-          autoCancel: autoCancelOrdersLimit > 0,
-          swapPath: [],
-          externalSwapQuote: undefined,
-          marketAddress: marketInfo.marketTokenAddress,
-          indexTokenAddress: marketInfo.indexTokenAddress,
-          isLong,
-          acceptablePrice: slDecreaseAmounts.acceptablePrice,
-          triggerPrice: slDecreaseAmounts.triggerPrice,
-          receiveTokenAddress: collateralToken.address,
-          minOutputUsd: 0n,
-          decreasePositionSwapType: slDecreaseAmounts.decreaseSwapType,
+    const autoCancelOrdersLimitForModal = autoCancelOrdersLimit > 0 ? 2 : 0;
+
+    return buildTpSlCreatePayloads({
+      autoCancelOrdersLimit: autoCancelOrdersLimitForModal,
+      chainId,
+      account,
+      marketAddress: marketInfo.marketTokenAddress,
+      indexTokenAddress: marketInfo.indexTokenAddress,
+      collateralTokenAddress: collateralToken.address,
+      isLong,
+      entries: [
+        {
+          amounts: tpPriceError ? undefined : tpDecreaseAmounts,
           executionFeeAmount: executionFee.feeTokenAmount,
           executionGasLimit: executionFee.gasLimit,
-          validFromTime: 0n,
-        })
-      );
-    }
-
-    return payloads;
+        },
+        {
+          amounts: slPriceError ? undefined : slDecreaseAmounts,
+          executionFeeAmount: executionFee.feeTokenAmount,
+          executionGasLimit: executionFee.gasLimit,
+        },
+      ],
+      userReferralCode: userReferralInfo?.referralCodeForTxn,
+    });
   }, [
     tpDecreaseAmounts,
     slDecreaseAmounts,
     account,
     marketInfo,
     chainId,
-    collateralToken.address,
+    collateralToken,
     userReferralInfo?.referralCodeForTxn,
     autoCancelOrdersLimit,
     isLong,

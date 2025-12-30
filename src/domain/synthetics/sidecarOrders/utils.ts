@@ -97,7 +97,6 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   entry: T,
   type: "sl" | "tp",
   {
-    liqPrice,
     triggerPrice,
     markPrice,
     isLong,
@@ -119,16 +118,6 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   const inputPrice = entry.price.value;
 
   if (inputPrice !== undefined && inputPrice !== null && inputPrice > 0) {
-    if (liqPrice !== undefined && liqPrice !== null) {
-      if (type === "sl") {
-        const nextError = isLong
-          ? inputPrice < liqPrice && t`Trigger price below liq. price`
-          : inputPrice > liqPrice && t`Trigger price above liq. price`;
-
-        priceError = nextError || priceError;
-      }
-    }
-
     if (isExistingPosition || !isLimit) {
       if (markPrice !== undefined && markPrice !== null) {
         if (type === "tp") {

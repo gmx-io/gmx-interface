@@ -1,21 +1,19 @@
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelectorFactory } from "context/SyntheticsStateContext/utils";
-import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   isLimitDecreaseOrderType,
   isLimitIncreaseOrderType,
   isStopLossOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
-import { getPendingMockPosition } from "domain/synthetics/positions";
 import { prepareInitialEntries } from "domain/synthetics/sidecarOrders/utils";
+import { buildTpSlPositionInfo } from "domain/tpsl/sidecar";
 
 import {
   selectTradeboxCollateralToken,
   selectTradeboxMarketInfo,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPositionKey,
-  selectTradeboxTriggerPrice,
 } from ".";
 import { createSelector } from "../../utils";
 import { makeSelectOrdersByPositionKey } from "../orderSelectors";
@@ -181,63 +179,27 @@ export const selectTradeboxMockPosition = createSelector((q) => {
   const tradeFlags = q(selectTradeboxTradeFlags);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-  const triggerPrice = q(selectTradeboxTriggerPrice);
 
   if (!positionKey || !marketInfo || !collateralToken || !increaseAmounts || !nextPositionValues) return;
 
-  const mockPosition = getPendingMockPosition({
+  return buildTpSlPositionInfo({
     isIncrease: tradeFlags.isIncrease,
     positionKey,
+    marketInfo,
+    collateralToken,
+    isLong: tradeFlags.isLong,
     sizeDeltaUsd: (existingPosition?.sizeInUsd ?? 0n) + (increaseAmounts?.sizeDeltaUsd ?? 0n),
     sizeDeltaInTokens: (existingPosition?.sizeInTokens ?? 0n) + (increaseAmounts?.sizeDeltaInTokens ?? 0n),
     collateralDeltaAmount: (existingPosition?.collateralAmount ?? 0n) + (increaseAmounts?.collateralDeltaAmount ?? 0n),
-    updatedAt: Date.now(),
-    updatedAtBlock: 0n,
-  });
-
-  const indexName = getMarketIndexName(marketInfo);
-  const poolName = getMarketPoolName(marketInfo);
-
-  if (!mockPosition) return;
-
-  return {
-    ...mockPosition,
-    marketInfo,
-    market: marketInfo,
-    indexToken: marketInfo.indexToken,
-    indexName,
-    poolName,
-    longToken: marketInfo.longToken,
-    shortToken: marketInfo.shortToken,
-    collateralToken,
-    pnlToken: tradeFlags.isLong ? marketInfo.longToken : marketInfo.shortToken,
-    markPrice: nextPositionValues.nextEntryPrice!,
+    markPrice: nextPositionValues.nextEntryPrice,
     entryPrice: nextPositionValues.nextEntryPrice,
-    triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
     liquidationPrice: nextPositionValues.nextLiqPrice,
-    collateralUsd: increaseAmounts?.initialCollateralUsd,
-    remainingCollateralUsd: increaseAmounts?.collateralDeltaUsd,
-    remainingCollateralAmount: increaseAmounts?.collateralDeltaAmount,
-    netValue: increaseAmounts?.collateralDeltaUsd,
-    hasLowCollateral: false,
+    collateralUsd: increaseAmounts.initialCollateralUsd,
+    remainingCollateralUsd: increaseAmounts.collateralDeltaUsd,
+    remainingCollateralAmount: increaseAmounts.collateralDeltaAmount,
+    netValue: increaseAmounts.collateralDeltaUsd,
     leverage: nextPositionValues.nextLeverage,
     leverageWithPnl: nextPositionValues.nextLeverage,
     leverageWithoutPnl: nextPositionValues.nextLeverage,
-    pnl: 0n,
-    pnlPercentage: 0n,
-    pnlAfterFees: 0n,
-    pnlAfterFeesPercentage: 0n,
-    closingFeeUsd: 0n,
-    uiFeeUsd: 0n,
-    pendingFundingFeesUsd: 0n,
-    pendingClaimableFundingFeesUsd: 0n,
-    pendingImpactAmount: 0n,
-    positionFeeAmount: 0n,
-    netPriceImapctDeltaUsd: 0n,
-    priceImpactDiffUsd: 0n,
-    traderDiscountAmount: 0n,
-    uiFeeAmount: 0n,
-    pendingImpactUsd: 0n,
-    closePriceImpactDeltaUsd: 0n,
-  };
+  });
 });

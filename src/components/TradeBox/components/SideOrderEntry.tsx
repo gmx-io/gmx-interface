@@ -7,6 +7,7 @@ import {
 import { selectTradeboxMockPosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { SidecarSlTpOrderEntry, SidecarOrderEntryGroupBase } from "domain/synthetics/sidecarOrders/types";
+import { buildTpSlInputPositionData } from "domain/tpsl/sidecar";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -40,18 +41,23 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
     );
   }, [mockPosition?.collateralAmount, mockPosition?.collateralToken]);
 
-  const positionData = useMemo(() => {
-    return {
-      sizeInUsd: mockPosition?.sizeInUsd ?? 0n,
-      sizeInTokens: mockPosition?.sizeInTokens ?? 0n,
-      collateralUsd,
-      entryPrice: mockPosition?.entryPrice ?? 0n,
-      liquidationPrice: mockPosition?.liquidationPrice,
-      isLong,
-      indexTokenDecimals: marketInfo?.indexToken?.decimals ?? 18,
-      visualMultiplier: marketInfo?.indexToken?.visualMultiplier ?? 1,
-    };
-  }, [mockPosition, collateralUsd, isLong, marketInfo]);
+  const positionData = useMemo(
+    () =>
+      buildTpSlInputPositionData({
+        position: mockPosition ?? {
+          sizeInUsd: 0n,
+          sizeInTokens: 0n,
+          collateralUsd: 0n,
+          entryPrice: 0n,
+          liquidationPrice: undefined,
+          isLong,
+        },
+        collateralUsd,
+        indexTokenDecimals: marketInfo?.indexToken?.decimals ?? 18,
+        visualMultiplier: marketInfo?.indexToken?.visualMultiplier ?? 1,
+      })!,
+    [mockPosition, collateralUsd, isLong, marketInfo]
+  );
 
   const handlePriceChange = useCallback(
     (value: string) => {
