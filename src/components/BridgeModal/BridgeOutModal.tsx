@@ -28,6 +28,7 @@ import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domai
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
@@ -150,6 +151,7 @@ export function BridgeOutModal({
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -200,6 +202,13 @@ export function BridgeOutModal({
   }, [bridgeOutChain, isVisible, srcChainId]);
 
   const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
+    if (hasOutdatedUi) {
+      return {
+        text: t`Page outdated, please refresh`,
+        disabled: true,
+      };
+    }
+
     if (isCreatingTxn) {
       return {
         text: (
@@ -262,6 +271,7 @@ export function BridgeOutModal({
       disabled: false,
     };
   }, [
+    hasOutdatedUi,
     isCreatingTxn,
     bridgeOutInputValue,
     bridgeOutChain,

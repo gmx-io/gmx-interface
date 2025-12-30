@@ -134,6 +134,10 @@ msgstr "Estimated time"
 msgid "Yield Optimizer on Avalanche"
 msgstr "Yield Optimizer on Avalanche"
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
+#~ msgstr "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
@@ -5162,6 +5166,10 @@ msgstr "AB Flags"
 msgid "Debug RPC Endpoints ({0})"
 msgstr "Debug RPC Endpoints ({0})"
 
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim your referral rewards."
+msgstr "Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim your referral rewards."
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in Leverage Display"
 msgstr "Include rPnL in Leverage Display"
@@ -6955,7 +6963,28 @@ msgstr "Creating code"
 msgid "Swap failed."
 msgstr "Swap failed."
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderList/OrderList.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/components/TVChartContainer/DynamicLines.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/context/SyntheticsStateContext/hooks/orderHooks.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 

@@ -87,6 +87,7 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { ExecutionFee } from "sdk/types/fees";
@@ -123,6 +124,7 @@ export function OrderEditor(p: Props) {
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
+  const hasOutdatedUi = useHasOutdatedUi();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
@@ -575,6 +577,13 @@ export function OrderEditor(p: Props) {
   ]);
 
   const submitButtonState = useMemo(() => {
+    if (hasOutdatedUi) {
+      return {
+        text: t`Page outdated, please refresh`,
+        disabled: true,
+      };
+    }
+
     if (isMaxLeverageError) {
       return {
         text: t`Max. Leverage Exceeded`,
@@ -607,7 +616,15 @@ export function OrderEditor(p: Props) {
       disabled: false,
       onClick: onSubmit,
     };
-  }, [error, isMaxLeverageError, p.order.orderType, p.order.isTwap, onSubmit, detectAndSetAvailableMaxLeverage]);
+  }, [
+    error,
+    hasOutdatedUi,
+    isMaxLeverageError,
+    p.order.orderType,
+    p.order.isTwap,
+    onSubmit,
+    detectAndSetAvailableMaxLeverage,
+  ]);
 
   useKey(
     "Enter",
