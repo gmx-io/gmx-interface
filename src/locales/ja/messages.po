@@ -129,10 +129,6 @@ msgstr ""
 msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche上のイールドオプティマイザー"
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
-#~ msgstr ""
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
@@ -181,10 +177,6 @@ msgstr "{updateOrdersCount}件のTP/SL注文を更新中"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-#~ msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -467,6 +459,11 @@ msgstr "展開"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>初めて<1>@GMX_IO</1> を試しました。</0><2> かなり印象的な体験 - スリッページなし、高速実行 </2><3> サイズ上限が低いですが、デジェンギャンブルをするのに楽しい </3>"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instantly"
+msgstr "即座に"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
@@ -1303,6 +1300,11 @@ msgstr "指値スワップ失敗"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Failed"
 msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "手数料なし"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
@@ -2923,6 +2925,11 @@ msgstr "セッション生成中..."
 msgid "How do I get started on GMX?"
 msgstr "GMXを始めるにはどうしたらいいですか？"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "引き出し失敗"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "ステーク総額"
@@ -3870,6 +3877,10 @@ msgstr "なぜ2つの異なるGLVトークンを受け取るのですか？"
 msgid "Set TP/SL"
 msgstr "TP/SLを設定"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "すべてのネットワーク"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -4768,6 +4779,10 @@ msgstr "V1 Avalanche"
 msgid "Collateral ({0})"
 msgstr "担保 ({0})"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "{0}、ガス・トークンを引き出しています。エクスプレストレーディングにはガスが必要なので、{2}に少なくとも<0>{1}</0>を保持するか<1>設定</1>でガス・トークンを切り替えてください。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "このアクションで{0}%多くの報酬を獲得できます。"
@@ -5066,10 +5081,6 @@ msgstr "支払い"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total circulating supply of GMX tokens."
 msgstr "GMXトークンの総循環供給量。"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Target Weight"
-#~ msgstr "ターゲットウェイト"
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
@@ -6309,10 +6320,6 @@ msgstr "手数料が額を超過"
 msgid "Search Type"
 msgstr "検索タイプ"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-#~ msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>してください。"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6971,10 +6978,6 @@ msgstr "最小パート数: {MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "ファンディング手数料の決済リクエスト"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Current Weight"
-#~ msgstr "現在のウェイト"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"

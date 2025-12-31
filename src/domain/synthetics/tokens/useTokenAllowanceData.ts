@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { isSourceChain } from "config/multichain";
+import { isSourceChainForAnySettlementChain } from "config/multichain";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -77,7 +77,7 @@ export function useTokensAllowanceData(
     const newData: TokensAllowanceData = {};
 
     let statuses = approvalStatuses;
-    if (chainId !== undefined && !isSourceChain(chainId)) {
+    if (isSourceChainForAnySettlementChain(chainId)) {
       statuses = multichainSourceChainApprovalStatuses;
     }
 

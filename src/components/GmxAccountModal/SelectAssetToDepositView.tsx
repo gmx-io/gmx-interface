@@ -1,9 +1,9 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { getChainName, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import {
@@ -12,6 +12,8 @@ import {
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "domain/multichain/types";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { TokenData, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -68,7 +70,7 @@ type DisplayTokenChainData = TokenChainData & {
 };
 
 export const SelectAssetToDepositView = () => {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { address: account } = useAccount();
 
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
@@ -79,26 +81,32 @@ export const SelectAssetToDepositView = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { tokenChainDataArray } = useMultichainTradeTokensRequest(chainId, account);
+  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId, srcChainId);
 
-  const NETWORKS_FILTER = useMemo(() => {
-    const wildCard = { id: "all" as const, name: "All Networks" };
+  const networksFilter = useMemo(() => {
+    const wildCard = { id: "all" as const, name: t`All Networks` };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
-      id: parseInt(sourceChainId),
-      name: getChainName(parseInt(sourceChainId)),
-    }));
+    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT)
+      .map((sourceChainId) => ({
+        id: parseInt(sourceChainId),
+        name: getChainName(parseInt(sourceChainId)),
+      }))
+      .concat({
+        id: chainId,
+        name: getChainName(chainId),
+      });
 
     return [wildCard, ...chainFilters];
   }, [chainId]);
 
   const filteredBalances: DisplayTokenChainData[] = useMemo(() => {
-    return tokenChainDataArray
+    const multichainTokens = tokenChainDataArray
       .filter((tokenChainData) => {
         const matchesSearch = tokenChainData.symbol.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesNetwork = selectedNetwork === "all" || tokenChainData.sourceChainId === selectedNetwork;
         return matchesSearch && matchesNetwork;
       })
-      .map((tokenChainData) => {
+      .map((tokenChainData): DisplayTokenChainData => {
         let balanceUsd = 0n;
 
         if (tokenChainData.sourceChainPrices) {
@@ -122,7 +130,37 @@ export const SelectAssetToDepositView = () => {
 
         return a.sourceChainBalanceUsd > b.sourceChainBalanceUsd ? -1 : 1;
       });
-  }, [tokenChainDataArray, searchQuery, selectedNetwork]);
+
+    const settlementChainTokens: DisplayTokenChainData[] = Object.values(
+      settlementChainTokensData || (EMPTY_OBJECT as TokensData)
+    )
+      .filter((token: TokenData) => {
+        const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesNetwork = selectedNetwork === "all" || chainId === selectedNetwork;
+        const hasBalance = token.balance !== undefined && token.balance > 0n;
+        return matchesSearch && matchesNetwork && hasBalance;
+      })
+      .map((token: TokenData): DisplayTokenChainData => {
+        const balanceUsd = convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)) ?? 0n;
+        return {
+          ...token,
+          sourceChainId: chainId as SourceChainId,
+          sourceChainDecimals: token.decimals,
+          sourceChainPrices: token.prices,
+          sourceChainBalance: token.balance,
+          sourceChainBalanceUsd: balanceUsd,
+        };
+      })
+      .sort((a, b) => {
+        if (a.sourceChainBalanceUsd === b.sourceChainBalanceUsd) {
+          return 0;
+        }
+
+        return a.sourceChainBalanceUsd > b.sourceChainBalanceUsd ? -1 : 1;
+      });
+
+    return multichainTokens.concat(settlementChainTokens);
+  }, [tokenChainDataArray, settlementChainTokensData, searchQuery, selectedNetwork, chainId]);
 
   return (
     <div className="flex grow flex-col overflow-y-hidden">
@@ -133,7 +171,7 @@ export const SelectAssetToDepositView = () => {
       <div className="mb-12 px-adaptive">
         <ButtonRowScrollFadeContainer>
           <div className="flex gap-4">
-            {NETWORKS_FILTER.map((network) => (
+            {networksFilter.map((network) => (
               <Button
                 key={network.id}
                 type="button"

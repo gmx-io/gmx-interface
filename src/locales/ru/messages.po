@@ -129,10 +129,6 @@ msgstr ""
 msgid "Yield Optimizer on Avalanche"
 msgstr "Оптимизатор доходности на Avalanche"
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
-#~ msgstr ""
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
@@ -181,10 +177,6 @@ msgstr "Обновление {updateOrdersCount} TP/SL ордеров"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-#~ msgstr "{0} превышает целевой вес.<0/><1/>Получите меньшую комиссию, чтобы <2>обменять</2> токены на {1}."
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -467,6 +459,11 @@ msgstr "Развернуть"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>Попробовал <1>@GMX_IO</1> впервые. </0><2> Довольно впечатляющий опыт - без slippage, быстрое исполнение </2><3> Низкие лимиты размера, но весело для деген-гэмблинга </3>"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instantly"
+msgstr "Мгновенно"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
@@ -1303,6 +1300,11 @@ msgstr "Лимитный обмен не удался"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Failed"
 msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "Без комиссии"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
@@ -2923,6 +2925,11 @@ msgstr "Генерация сессии..."
 msgid "How do I get started on GMX?"
 msgstr "Как начать на GMX?"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "Вывод не удался"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "Всего Стейкано"
@@ -3870,6 +3877,10 @@ msgstr "Почему я получаю два разных токена GLV?"
 msgid "Set TP/SL"
 msgstr "Установить TP/SL"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "Все сети"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -4768,6 +4779,10 @@ msgstr "V1 Avalanche"
 msgid "Collateral ({0})"
 msgstr "Залог ({0})"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Вы выводите {0}, ваш газовый токен. Газ требуется для экспресс-трейдинга, поэтому пожалуйста, оставьте как минимум <0>{1}</0> в {2} или переключите газовый токен в <1>настройках</1>."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "Вы заработаете {0}% больше вознаграждений с этим действием."
@@ -5066,10 +5081,6 @@ msgstr "оплатить"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total circulating supply of GMX tokens."
 msgstr "Общий циркулирующий запас токенов GMX."
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Target Weight"
-#~ msgstr "Целевой вес"
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
@@ -6309,10 +6320,6 @@ msgstr "Комиссии превышают сумму"
 msgid "Search Type"
 msgstr "Тип поиска"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-#~ msgstr "{0} ниже целевого веса.<0/><1/>Получите более низкие комиссии для <2>покупки GLP</2> с {1}, и для <3>обмена</3> {2} на другие токены."
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6971,10 +6978,6 @@ msgstr "Минимальное количество частей: {MIN_TWAP_NUMB
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Запрос на расчет комиссий за финансирование"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Current Weight"
-#~ msgstr "Текущий вес"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"

@@ -4,7 +4,7 @@ import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
-import { Address, encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
+import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -18,7 +18,6 @@ import {
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
-  FAKE_INPUT_AMOUNT_MAP,
   getLayerZeroEndpointId,
   getMappedTokenId,
   getMultichainTokenId,
@@ -47,6 +46,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import {
+  estimateSameChainWithdrawalGas,
+  sendSameChainWithdrawalTxn,
+} from "domain/multichain/sendSameChainWithdrawalTxn";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
@@ -57,6 +60,7 @@ import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express/types";
+import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -74,11 +78,12 @@ import {
 import { bigintToNumber, expandDecimals, formatAmountFree, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
-import { sendWalletTransaction } from "lib/transactions";
+import { TxnEventName } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
-import { abis } from "sdk/abis";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -156,6 +161,7 @@ export const WithdrawalView = () => {
   const { chainId } = useChainId();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawalViewChain();
+  const isSameChain = withdrawalViewChain === chainId;
   const { address: account } = useAccount();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
   const [, setDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
@@ -164,7 +170,6 @@ export const WithdrawalView = () => {
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isFirstWithdrawal = useIsFirstWithdrawal();
-  const { setIsSettingsVisible } = useSettings();
   const { setMultichainSubmittedWithdrawal, setMultichainWithdrawalSentTxnHash, setMultichainWithdrawalSentError } =
     useSyntheticsEvents();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -206,6 +211,10 @@ export const WithdrawalView = () => {
     }
 
     return networks.filter((network) => {
+      if (network.id === chainId) {
+        return true;
+      }
+
       const mappedTokenId = getMappedTokenId(
         chainId as SettlementChainId,
         unwrappedSelectedTokenAddress,
@@ -215,9 +224,27 @@ export const WithdrawalView = () => {
     });
   }, [unwrappedSelectedTokenAddress, networks, chainId]);
 
-  const options = useMemo((): TokenData[] => {
+  const tokenOptions = useMemo((): TokenData[] => {
     if (!isSettlementChain(chainId) || !tokensData) {
       return EMPTY_ARRAY;
+    }
+
+    if (isSameChain) {
+      return Object.values(tokensData)
+        .filter((token): token is TokenData => {
+          return (
+            token !== undefined &&
+            token.address !== zeroAddress &&
+            token.gmxAccountBalance !== undefined &&
+            token.gmxAccountBalance > 0n
+          );
+        })
+        .sort((a, b) => {
+          const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
+          const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
+
+          return bFloat - aFloat;
+        });
     }
 
     return (
@@ -233,7 +260,7 @@ export const WithdrawalView = () => {
           return bFloat - aFloat;
         }) ?? EMPTY_ARRAY
     );
-  }, [chainId, tokensData]);
+  }, [chainId, isSameChain, tokensData]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
@@ -248,7 +275,13 @@ export const WithdrawalView = () => {
   }, [selectedToken, inputAmount, inputAmountUsd, gmxAccountUsd]);
 
   const sendParamsWithoutSlippage: SendParam | undefined = useMemo(() => {
-    if (!account || inputAmount === undefined || inputAmount <= 0n || withdrawalViewChain === undefined) {
+    if (
+      isSameChain ||
+      !account ||
+      inputAmount === undefined ||
+      inputAmount <= 0n ||
+      withdrawalViewChain === undefined
+    ) {
       return;
     }
 
@@ -258,7 +291,7 @@ export const WithdrawalView = () => {
       amountLD: inputAmount,
       isToGmx: false,
     });
-  }, [account, inputAmount, withdrawalViewChain]);
+  }, [isSameChain, account, inputAmount, withdrawalViewChain]);
 
   const quoteOft = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
@@ -301,11 +334,18 @@ export const WithdrawalView = () => {
   });
 
   const baseSendParams = useMemo(() => {
-    if (!withdrawalViewChain || !account || !unwrappedSelectedTokenSymbol) {
+    if (isSameChain || !withdrawalViewChain || !account || !unwrappedSelectedTokenSymbol) {
       return;
     }
 
-    const fakeInputAmount = FAKE_INPUT_AMOUNT_MAP[unwrappedSelectedTokenSymbol];
+    const prices = getByKey(tokensData, unwrappedSelectedTokenAddress)?.prices;
+    const decimals = selectedTokenSettlementChainTokenId?.decimals;
+
+    if (!prices || decimals === undefined) {
+      return;
+    }
+
+    const fakeInputAmount = convertToTokenAmount(expandDecimals(1, USD_DECIMALS), decimals, getMidPrice(prices));
 
     if (fakeInputAmount === undefined) {
       return;
@@ -318,15 +358,28 @@ export const WithdrawalView = () => {
       isToGmx: false,
       srcChainId: chainId,
     });
-  }, [account, chainId, unwrappedSelectedTokenSymbol, withdrawalViewChain]);
+  }, [
+    account,
+    chainId,
+    isSameChain,
+    selectedTokenSettlementChainTokenId?.decimals,
+    tokensData,
+    unwrappedSelectedTokenAddress,
+    unwrappedSelectedTokenSymbol,
+    withdrawalViewChain,
+  ]);
 
   const isMaxButtonDisabled = useMemo(() => {
+    if (isSameChain) {
+      return false;
+    }
+
     if (!baseSendParams) {
       return true;
     }
 
     return false;
-  }, [baseSendParams]);
+  }, [baseSendParams, isSameChain]);
 
   const baseNativeFee = useQuoteSendNativeFee({
     sendParams: baseSendParams,
@@ -360,6 +413,16 @@ export const WithdrawalView = () => {
       return;
     }
 
+    if (isSameChain) {
+      return {
+        token: selectedTokenAddress as Address,
+        amount: inputAmount,
+        minAmountOut: inputAmount, // Not actually used in smart contracts
+        data: "0x",
+        provider: zeroAddress,
+      };
+    }
+
     const dstEid = getLayerZeroEndpointId(withdrawalViewChain);
     const stargateAddress = getStargatePoolAddress(chainId, unwrappedSelectedTokenAddress);
 
@@ -382,10 +445,60 @@ export const WithdrawalView = () => {
       ),
       provider: stargateAddress,
     };
-  }, [withdrawalViewChain, selectedTokenAddress, unwrappedSelectedTokenAddress, inputAmount, chainId]);
+  }, [withdrawalViewChain, selectedTokenAddress, unwrappedSelectedTokenAddress, inputAmount, isSameChain, chainId]);
+
+  const gasPrice = useGasPrice(chainId);
+
+  const sameChainNetworkFeeAsyncResult = useThrottledAsync(
+    async ({ params }) => {
+      const client = getPublicClientWithRpc(params.chainId);
+
+      return estimateSameChainWithdrawalGas({
+        chainId: params.chainId as SettlementChainId,
+        client,
+        bridgeOutParams: params.bridgeOutParams,
+        account: params.account,
+      });
+    },
+    {
+      params:
+        isSameChain && account && bridgeOutParams && chainId
+          ? {
+              account,
+              bridgeOutParams,
+              chainId,
+            }
+          : undefined,
+    }
+  );
+
+  const sameChainNetworkFee = useMemo(():
+    | { amount: bigint; usd: bigint; decimals: number; symbol: string }
+    | undefined => {
+    if (sameChainNetworkFeeAsyncResult.data === undefined || gasPrice === undefined) {
+      return undefined;
+    }
+
+    const nativeTokenAmount = sameChainNetworkFeeAsyncResult.data * gasPrice;
+    const nativeTokenData = getByKey(tokensData, zeroAddress);
+
+    if (nativeTokenData === undefined) {
+      return undefined;
+    }
+
+    const usd: bigint =
+      convertToUsd(nativeTokenAmount, nativeTokenData.decimals, getMidPrice(nativeTokenData.prices)) ?? 0n;
+
+    return {
+      amount: nativeTokenAmount,
+      usd,
+      decimals: nativeTokenData.decimals,
+      symbol: nativeTokenData.symbol,
+    };
+  }, [sameChainNetworkFeeAsyncResult.data, gasPrice, tokensData]);
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
-    if (account === undefined || bridgeOutParams === undefined || withdrawalViewChain === undefined) {
+    if (account === undefined || bridgeOutParams === undefined || withdrawalViewChain === undefined || isSameChain) {
       return;
     }
 
@@ -404,7 +517,7 @@ export const WithdrawalView = () => {
     });
 
     return expressTransactionBuilder;
-  }, [account, bridgeOutParams, chainId, withdrawalViewChain]);
+  }, [account, bridgeOutParams, chainId, isSameChain, withdrawalViewChain]);
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
@@ -493,7 +606,7 @@ export const WithdrawalView = () => {
     (tokenAddress: string) => {
       setSelectedTokenAddress(tokenAddress);
 
-      if (withdrawalViewChain !== undefined) {
+      if (withdrawalViewChain !== undefined && !isSameChain) {
         const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenId = getMappedTokenId(chainId as SettlementChainId, unwrappedTokenAddress, withdrawalViewChain);
         if (tokenId === undefined) {
@@ -518,7 +631,7 @@ export const WithdrawalView = () => {
         }
       }
     },
-    [chainId, setSelectedTokenAddress, setWithdrawalViewChain, withdrawalViewChain]
+    [chainId, isSameChain, setSelectedTokenAddress, setWithdrawalViewChain, withdrawalViewChain]
   );
 
   const handleWithdraw = async () => {
@@ -526,7 +639,7 @@ export const WithdrawalView = () => {
       return;
     }
 
-    if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) === chainId) {
+    if (isSameChain) {
       if (!bridgeOutParams) {
         helperToast.error(t`Missing required parameters`);
 
@@ -537,18 +650,21 @@ export const WithdrawalView = () => {
 
       await wrapChainAction(chainId, setSettlementChainId, async (signer) => {
         try {
-          await sendWalletTransaction({
-            chainId,
-            to: getContract(chainId, "MultichainTransferRouter"),
+          await sendSameChainWithdrawalTxn({
+            chainId: chainId as SettlementChainId,
             signer,
-            callData: encodeFunctionData({
-              abi: abis.MultichainTransferRouter,
-              functionName: "transferOut",
-              args: [bridgeOutParams],
-            }),
+            bridgeOutParams,
+            callback: (txnEvent) => {
+              if (txnEvent.event === TxnEventName.Sent) {
+                helperToast.success("Withdrawal sent", { toastId: "same-chain-gmx-account-withdrawal" });
+                setIsVisibleOrView("main");
+              } else if (txnEvent.event === TxnEventName.Error) {
+                helperToast.error(t`Withdrawal failed`, { toastId: "same-chain-gmx-account-withdrawal" });
+              }
+            },
           });
         } catch (error) {
-          alert("Failed to send withdrawal. Retry");
+          helperToast.error(t`Withdrawal failed`, { toastId: "same-chain-gmx-account-withdrawal" });
         } finally {
           setIsSubmitting(false);
         }
@@ -891,6 +1007,70 @@ export const WithdrawalView = () => {
 
   const isTestnet = isTestnetChain(chainId);
 
+  const estimatedTimeValue = useMemo(() => {
+    if (isSameChain) {
+      return <Trans>Instantly</Trans>;
+    }
+
+    if (inputAmount === undefined || inputAmount === 0n) {
+      return "...";
+    }
+
+    return isTestnet ? <Trans>1m 40s</Trans> : <Trans>20s</Trans>;
+  }, [isSameChain, inputAmount, isTestnet]);
+
+  const networkFeeValue = useMemo(() => {
+    if (isSameChain) {
+      if (!sameChainNetworkFee) {
+        return "...";
+      }
+
+      return (
+        <AmountWithUsdBalance
+          className="leading-1"
+          amount={sameChainNetworkFee.amount}
+          decimals={sameChainNetworkFee.decimals}
+          usd={sameChainNetworkFee.usd}
+          symbol={sameChainNetworkFee.symbol}
+        />
+      );
+    }
+
+    if (networkFeeUsd === undefined || relayerFeeToken === undefined) {
+      return "...";
+    }
+
+    return (
+      <AmountWithUsdBalance
+        className="leading-1"
+        amount={networkFee}
+        decimals={relayerFeeToken.decimals}
+        usd={networkFeeUsd}
+        symbol={relayerFeeToken.symbol}
+      />
+    );
+  }, [isSameChain, sameChainNetworkFee, networkFee, networkFeeUsd, relayerFeeToken]);
+
+  const withdrawFeeValue = useMemo(() => {
+    if (isSameChain) {
+      return <Trans>No fee</Trans>;
+    }
+
+    if (protocolFeeUsd === undefined || selectedTokenSettlementChainTokenId === undefined) {
+      return "...";
+    }
+
+    return (
+      <AmountWithUsdBalance
+        className="leading-1"
+        amount={protocolFeeAmount}
+        decimals={selectedTokenSettlementChainTokenId.decimals}
+        usd={protocolFeeUsd}
+        symbol={selectedToken?.symbol}
+      />
+    );
+  }, [isSameChain, protocolFeeUsd, selectedTokenSettlementChainTokenId, protocolFeeAmount, selectedToken?.symbol]);
+
   return (
     <div className="flex grow flex-col overflow-y-auto p-adaptive">
       <div className="flex flex-col gap-[--padding-adaptive]">
@@ -910,7 +1090,7 @@ export const WithdrawalView = () => {
                 </div>
               ) : undefined
             }
-            options={options}
+            options={tokenOptions}
             item={WithdrawAssetItem}
             itemKey={withdrawAssetItemKey}
           />
@@ -1025,24 +1205,23 @@ export const WithdrawalView = () => {
           {shouldShowMinRecommendedAmount && (
             <AlertInfoCard type="info" className="my-4">
               <div>
-                <Trans>
-                  You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
-                  please keep at least{" "}
-                  <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-                  {selectedToken?.symbol} or switch your gas token in{" "}
-                  <span
-                    className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
-                    onClick={() => {
-                      setIsSettingsVisible(true);
-                      setTimeout(() => {
-                        setIsVisibleOrView(false);
-                      }, 200);
-                    }}
-                  >
-                    settings
-                  </span>
-                  .
-                </Trans>
+                {isSameChain ? (
+                  <Trans>
+                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for express trading, so
+                    please keep at least{" "}
+                    <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
+                    {selectedToken?.symbol} or switch your gas token in{" "}
+                    <WarningSettingsButton>settings</WarningSettingsButton>.
+                  </Trans>
+                ) : (
+                  <Trans>
+                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
+                    please keep at least{" "}
+                    <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
+                    {selectedToken?.symbol} or switch your gas token in{" "}
+                    <WarningSettingsButton>settings</WarningSettingsButton>.
+                  </Trans>
+                )}
               </div>
             </AlertInfoCard>
           )}
@@ -1116,48 +1295,10 @@ export const WithdrawalView = () => {
           <SyntheticsInfoRow
             label={<Trans>Estimated Time</Trans>}
             valueClassName="numbers"
-            value={
-              inputAmount === undefined || inputAmount === 0n ? (
-                "..."
-              ) : isTestnet ? (
-                <Trans>1m 40s</Trans>
-              ) : (
-                <Trans>20s</Trans>
-              )
-            }
+            value={estimatedTimeValue}
           />
-          <SyntheticsInfoRow
-            label={<Trans>Network Fee</Trans>}
-            value={
-              networkFeeUsd !== undefined && relayerFeeToken ? (
-                <AmountWithUsdBalance
-                  className="leading-1"
-                  amount={networkFee}
-                  decimals={relayerFeeToken.decimals}
-                  usd={networkFeeUsd}
-                  symbol={relayerFeeToken.symbol}
-                />
-              ) : (
-                "..."
-              )
-            }
-          />
-          <SyntheticsInfoRow
-            label={<Trans>Withdraw Fee</Trans>}
-            value={
-              protocolFeeUsd !== undefined && selectedTokenSettlementChainTokenId ? (
-                <AmountWithUsdBalance
-                  className="leading-1"
-                  amount={protocolFeeAmount}
-                  decimals={selectedTokenSettlementChainTokenId.decimals}
-                  usd={protocolFeeUsd}
-                  symbol={selectedToken?.symbol}
-                />
-              ) : (
-                "..."
-              )
-            }
-          />
+          <SyntheticsInfoRow label={<Trans>Network Fee</Trans>} value={networkFeeValue} />
+          <SyntheticsInfoRow label={<Trans>Withdraw Fee</Trans>} value={withdrawFeeValue} />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
             value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
@@ -1265,4 +1406,23 @@ async function simulateWithdraw({
       relayRouterAddress: to as Address,
     });
   }, "simulation");
+}
+
+function WarningSettingsButton({ children }: { children: React.ReactNode }) {
+  const { setIsSettingsVisible } = useSettings();
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+
+  return (
+    <span
+      className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+      onClick={() => {
+        setIsSettingsVisible(true);
+        setTimeout(() => {
+          setIsVisibleOrView(false);
+        }, 200);
+      }}
+    >
+      {children}
+    </span>
+  );
 }
