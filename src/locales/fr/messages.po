@@ -182,10 +182,6 @@ msgstr "Mise à jour de {updateOrdersCount} ordre(s) TP/SL"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-#~ msgstr "{0} est au-dessus de son poids cible.<0/><1/>Obtenez une réduction des frais pour <2>échanger</2> les tokens pour {1}."
-
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -5067,10 +5063,6 @@ msgstr "payer"
 msgid "Total circulating supply of GMX tokens."
 msgstr "Offre totale en circulation de tokens GMX."
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Target Weight"
-#~ msgstr "Poids cible"
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "Vous pouvez avoir jusqu'à {allowedAutoCancelOrdersNumber} ordres TP/SL auto-annulables actifs. Les ordres supplémentaires doivent être annulés manuellement, tandis que les existants se fermeront automatiquement avec leur position associée."
@@ -5290,10 +5282,6 @@ msgstr "30j"
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Est. Impact Rebate"
 msgstr "Remise d'Impact Est."
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "Sélectionner des tokens différents"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"
@@ -6309,10 +6297,6 @@ msgstr "Frais dépassent le montant"
 msgid "Search Type"
 msgstr "Type de recherche"
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-#~ msgstr "{0} est en dessous de son poids cible.<0/><1/>Obtenez des frais réduits pour <2>acheter GLP</2> avec {1}, et pour <3>échanger</3> {2} contre d'autres tokens."
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6971,10 +6955,6 @@ msgstr "Nombre min. de parties : {MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Demander le règlement des frais de financement"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Current Weight"
-#~ msgstr "Poids actuel"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
