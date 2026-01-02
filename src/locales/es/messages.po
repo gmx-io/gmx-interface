@@ -129,10 +129,6 @@ msgstr ""
 msgid "Yield Optimizer on Avalanche"
 msgstr "Optimizador de rendimientos en Avalanche"
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
-#~ msgstr ""
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
@@ -181,10 +177,6 @@ msgstr "Actualizando {updateOrdersCount} orden(es) TP/SL"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-#~ msgstr "{0} está por encima de su peso objetivo.<0/><1/>Consigue menores comisiones para <2>intercambiar</2> tokens por {1}."
 
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
@@ -672,10 +664,6 @@ msgstr "Historial de distribución para reembolsos reclamados y airdrops."
 msgid "providing liquidity"
 msgstr "proporcionando liquidez"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-#~ msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-#~ msgstr "Toca [Crear cartera] para empezar a usar tu cartera Web3."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -716,10 +704,6 @@ msgstr "Precio límite por encima del precio de referencia"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Interés Abierto (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-#~ msgid "Create or Import a Wallet"
-#~ msgstr "Crear o Importar un Monedero"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -3579,10 +3563,6 @@ msgstr "Código de referencia enviado."
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX no está buscando activamente nuevas contrataciones en este momento. Sin embargo, si crees que puedes contribuir al proyecto, por favor envía un email a <0>jobs@gmx.io</0>."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-#~ msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-#~ msgstr "Después de escanear, aparecerá un mensaje de conexión para que conectes tu monedero."
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr "La provisión de liquidez para este mercado solo está disponible en {chainNames} y {lastChainName}. Por favor, cambia a {chainNames} o {lastChainName} para acceder a oportunidades de ganancias."
@@ -4179,10 +4159,6 @@ msgstr "TP"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Comisión de Financiación Reclamable.</0>"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-#~ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-#~ msgstr "Inicia sesión en tu app de Binance y toca [Wallets]. Ve a [Web3]."
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5067,10 +5043,6 @@ msgstr "pagar"
 msgid "Total circulating supply of GMX tokens."
 msgstr "Suministro circulante total de tokens GMX."
 
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Target Weight"
-#~ msgstr "Peso Objetivo"
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "Puedes tener hasta {allowedAutoCancelOrdersNumber} órdenes TP/SL autocancelables activas. Órdenes adicionales deben cancelarse manualmente, mientras que las existentes se cerrarán automáticamente con su posición relacionada."
@@ -5504,10 +5476,6 @@ msgstr "Ingresa nueva cantidad o precio"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Wins and losses for fully closed positions."
 msgstr "Ganancias y pérdidas para posiciones completamente cerradas."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-#~ msgid "Open Binance app"
-#~ msgstr "Abrir la app de Binance"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6180,10 +6148,6 @@ msgstr "Comienza en"
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Las tasas de red son altas actualmente, lo que puede deberse a un aumento temporal en las transacciones en la red {chainName}."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-#~ msgid "Scan the QR code"
-#~ msgstr "Escanear el código QR"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "Orden de cambio GM desconocida"
@@ -6308,10 +6272,6 @@ msgstr "Comisiones exceden la cantidad"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search Type"
 msgstr "Buscar Tipo"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-#~ msgstr "{0} está por debajo de su peso objetivo.<0/><1/>Consigue menores comisiones <2>comprar GLP</2> con {1}, y para <3>intercambiar</3> {2} por otros tokens."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -6971,10 +6931,6 @@ msgstr "Número mínimo de partes: {MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Solicitar liquidación de comisiones de financiación"
-
-#: src/pages/Dashboard/WeightText.tsx
-#~ msgid "Current Weight"
-#~ msgstr "Peso Actual"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
