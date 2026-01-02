@@ -218,6 +218,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/complete_account_transfer/:sender/:receiver">
         <CompleteAccountTransfer />
       </Route>
+      <Route exact path="/rpc-debug" key="rpc-debug">
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="rpcDebug">
+          <RpcDebugPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/oracle-keeper-debug" key="oracle-keeper-debug">
+        <OracleDebugPage />
+      </Route>
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
@@ -230,14 +238,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
-        </Route>,
-        <Route exact path="/rpc-debug" key="rpc-debug">
-          <SyntheticsStateContextProvider skipLocalReferralCode pageType="rpcDebug">
-            <RpcDebugPage />
-          </SyntheticsStateContextProvider>
-        </Route>,
-        <Route exact path="/oracle-keeper-debug" key="oracle-keeper-debug">
-          <OracleDebugPage />
         </Route>,
       ]}
       <Route path="*">
