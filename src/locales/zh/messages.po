@@ -673,8 +673,8 @@ msgid "providing liquidity"
 msgstr "提供流动性"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "点击[创建钱包]开始使用您的 Web3 钱包。"
+#~ msgid "Tap [Create Wallet] to start using your Web3 Wallet."
+#~ msgstr "点击[创建钱包]开始使用您的 Web3 钱包。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -718,8 +718,8 @@ msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "开仓利息 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "创建或导入钱包"
+#~ msgid "Create or Import a Wallet"
+#~ msgstr "创建或导入钱包"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -3580,8 +3580,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以为项目做出贡献，请发送电子邮件至 <0>jobs@gmx.io</0>。"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
+#~ msgid "After you scan, a connection prompt will appear for you to connect your wallet."
+#~ msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4181,8 +4181,8 @@ msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>可领取资金费用。</0>"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "登录您的 Binance 应用程序并点击 [Wallets]。转到 [Web3]。"
+#~ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+#~ msgstr "登录您的 Binance 应用程序并点击 [Wallets]。转到 [Web3]。"
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5506,8 +5506,8 @@ msgid "Wins and losses for fully closed positions."
 msgstr "完全平仓头寸的胜负。"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "打开 Binance 应用"
+#~ msgid "Open Binance app"
+#~ msgstr "打开 Binance 应用"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6181,8 +6181,8 @@ msgid "The network fees are high currently, which may be due to a temporary incr
 msgstr "当前网络费用较高，这可能是由于 {chainName} 网络上的交易暂时增加。"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "扫描二维码"
+#~ msgid "Scan the QR code"
+#~ msgstr "扫描二维码"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"

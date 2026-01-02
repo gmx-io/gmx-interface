@@ -673,8 +673,8 @@ msgid "providing liquidity"
 msgstr "유동성 제공"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
+#~ msgid "Tap [Create Wallet] to start using your Web3 Wallet."
+#~ msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -718,8 +718,8 @@ msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "미결제 약정 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "지갑 생성 또는 가져오기"
+#~ msgid "Create or Import a Wallet"
+#~ msgstr "지갑 생성 또는 가져오기"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -3580,8 +3580,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "스캔 후, 지갑을 연결할 수 있는 연결 프롬프트가 나타납니다."
+#~ msgid "After you scan, a connection prompt will appear for you to connect your wallet."
+#~ msgstr "스캔 후, 지갑을 연결할 수 있는 연결 프롬프트가 나타납니다."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4181,8 +4181,8 @@ msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>수령 가능 자금 수수료.</0>"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Binance 앱에 로그인하고 [지갑]을 탭하세요. [Web3]로 이동하세요."
+#~ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+#~ msgstr "Binance 앱에 로그인하고 [지갑]을 탭하세요. [Web3]로 이동하세요."
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5506,8 +5506,8 @@ msgid "Wins and losses for fully closed positions."
 msgstr "완전히 종료된 포지션의 승패."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Binance 앱 열기"
+#~ msgid "Open Binance app"
+#~ msgstr "Binance 앱 열기"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6181,8 +6181,8 @@ msgid "The network fees are high currently, which may be due to a temporary incr
 msgstr "현재 네트워크 수수료가 높습니다. 이는 {chainName} 네트워크의 일시적인 거래량 증가로 인한 것일 수 있습니다."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "QR 코드 스캔"
+#~ msgid "Scan the QR code"
+#~ msgstr "QR 코드 스캔"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
