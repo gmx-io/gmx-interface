@@ -6,7 +6,6 @@ import { MultichainMarketTokenBalances } from "domain/multichain/types";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import { convertToUsd } from "domain/synthetics/tokens";
 import { ProgressiveTokenData } from "domain/tokens";
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -27,6 +26,7 @@ export const GmTokensBalanceInfo = ({
   multichainBalances,
   isGlv = false,
   singleLine = false,
+  isMultichainBalancesLoading = false,
 }: {
   token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
@@ -35,23 +35,19 @@ export const GmTokensBalanceInfo = ({
   multichainBalances: MultichainMarketTokenBalances | undefined;
   isGlv?: boolean;
   singleLine?: boolean;
+  isMultichainBalancesLoading?: boolean;
 }) => {
   const balance = multichainBalances?.totalBalance ?? 0n;
   const balanceUsd = getPlatformTokenBalanceAfterThreshold(multichainBalances?.totalBalanceUsd);
 
   const content =
-    token && balanceUsd !== 0n && balance !== 0n ? (
+    token && balance !== 0n ? (
       <TokenValuesInfoCell
         value={formatBalanceAmount(balance, token.decimals)}
-        usd={
-          balance !== 0n
-            ? formatUsd(convertToUsd(balance, token.decimals, token.prices?.minPrice), {
-                fallbackToZero: true,
-              })
-            : undefined
-        }
+        usd={formatUsd(balanceUsd)}
         symbol={token.symbol}
         singleLine={singleLine}
+        isLoading={isMultichainBalancesLoading}
       />
     ) : (
       <span>-</span>
