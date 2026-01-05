@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { useCallback } from "react";
 
 import { USD_DECIMALS } from "config/factors";
@@ -25,9 +26,11 @@ import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrd
 import { useMarkets } from "domain/synthetics/markets";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { helperToast } from "lib/helperToast";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { PositionOrderInfo } from "sdk/types/orders";
@@ -58,10 +61,17 @@ export function DynamicLines({
   const { pendingOrdersUpdates } = useSyntheticsEvents();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const subaccount = useSelector(selectSubaccountForChainAction);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const onCancelOrder = useCallback(
     async (key: string) => {
       if (!signer || !provider) return;
+
+      if (hasOutdatedUi) {
+        helperToast.error(t`Page outdated, please refresh`);
+        return;
+      }
+
       const order = getByKey(ordersInfoData, key);
 
       if (!order) return;
@@ -103,6 +113,7 @@ export function DynamicLines({
     [
       chainId,
       globalExpressParams,
+      hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
       provider,

@@ -43,6 +43,7 @@ import { useInterviewNotification } from "domain/synthetics/userFeedback/useInte
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
+import { helperToast } from "lib/helperToast";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
@@ -50,6 +51,7 @@ import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -509,6 +511,7 @@ function useOrdersControl() {
   const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
@@ -522,6 +525,10 @@ function useOrdersControl() {
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
+      if (hasOutdatedUi) {
+        helperToast.error(t`Page outdated, please refresh`);
+        return;
+      }
       if (!signer || !provider) return;
       const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
       const orderKeys = orders.flatMap(getOrderKeys);
@@ -568,6 +575,7 @@ function useOrdersControl() {
     [
       chainId,
       globalExpressParams,
+      hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
       provider,
@@ -581,6 +589,10 @@ function useOrdersControl() {
 
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
+      if (hasOutdatedUi) {
+        helperToast.error(t`Page outdated, please refresh`);
+        return;
+      }
       if (!signer || !provider) return;
       const order = getByKey(ordersInfoData, key);
       if (!order) return;
@@ -624,6 +636,7 @@ function useOrdersControl() {
     [
       chainId,
       globalExpressParams,
+      hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
       provider,
