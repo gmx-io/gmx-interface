@@ -129,10 +129,6 @@ msgstr "Estimated time"
 msgid "Yield Optimizer on Avalanche"
 msgstr "Yield Optimizer on Avalanche"
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
-#~ msgstr "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
@@ -545,11 +541,6 @@ msgstr "High external swap impact"
 msgid "Adding"
 msgstr "Adding"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "{0} balance in GMX account is insufficient to cover gas fees and input amount"
-msgstr "{0} balance in GMX account is insufficient to cover gas fees and input amount"
-
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "90+ crypto tokens"
 msgstr "90+ crypto tokens"
@@ -668,10 +659,6 @@ msgstr "Distribution history for claimed rebates and airdrops."
 msgid "providing liquidity"
 msgstr "providing liquidity"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "Tap [Create Wallet] to start using your Web3 Wallet."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -712,10 +699,6 @@ msgstr "Limit price above mark price"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "Create or Import a Wallet"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -989,6 +972,11 @@ msgstr "using GLV and GM tokens. Buying or staking GMX, or using referrals, is n
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional network fee is needed."
 msgstr "As network fees have increased, an additional network fee is needed."
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
+msgstr "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached."
@@ -1481,6 +1469,10 @@ msgstr "Transfer submitted."
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "{nativeTokenSymbol} rewards:"
+
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
+msgid "Insufficient {symbol} balance"
+msgstr "Insufficient {symbol} balance"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
@@ -2243,6 +2235,10 @@ msgstr "Swaps"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
 msgstr "Allow {0} to be spent"
+
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
+msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
+msgstr "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "POSITION"
@@ -3285,10 +3281,6 @@ msgstr "TWAP"
 msgid "Wallet Balance"
 msgstr "Wallet Balance"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "{0} balance in GMX account is insufficient to cover gas fees"
-msgstr "{0} balance in GMX account is insufficient to cover gas fees"
-
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
@@ -3575,10 +3567,6 @@ msgstr "Referral code submitted."
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "After you scan, a connection prompt will appear for you to connect your wallet."
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -3671,10 +3659,6 @@ msgstr "Shift order executed."
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
 msgstr "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
-
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
-msgstr "{symbol} balance on {0} chain is insufficient to cover network fee"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -4175,10 +4159,6 @@ msgstr "TP"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Claimable Funding Fee.</0>"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5493,10 +5473,6 @@ msgstr "Enter new amount or price"
 msgid "Wins and losses for fully closed positions."
 msgstr "Wins and losses for fully closed positions."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Open Binance app"
-
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr "Enter your answer here."
@@ -6167,10 +6143,6 @@ msgstr "Starts in"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "Scan the QR code"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"

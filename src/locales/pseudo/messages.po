@@ -129,10 +129,6 @@ msgstr ""
 msgid "Yield Optimizer on Avalanche"
 msgstr ""
 
-#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
-#~ msgid "Claim Rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to access earning opportunities."
-#~ msgstr ""
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Arbitrum"
 msgstr ""
@@ -545,11 +541,6 @@ msgstr ""
 msgid "Adding"
 msgstr ""
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "{0} balance in GMX account is insufficient to cover gas fees and input amount"
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "90+ crypto tokens"
 msgstr ""
@@ -668,10 +659,6 @@ msgstr ""
 msgid "providing liquidity"
 msgstr ""
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr ""
@@ -712,10 +699,6 @@ msgstr ""
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -988,6 +971,11 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "As network fees have increased, an additional network fee is needed."
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -1480,6 +1468,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "{nativeTokenSymbol} rewards:"
+msgstr ""
+
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
+msgid "Insufficient {symbol} balance"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2242,6 +2234,10 @@ msgstr ""
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Allow {0} to be spent"
+msgstr ""
+
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
+msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -3285,10 +3281,6 @@ msgstr ""
 msgid "Wallet Balance"
 msgstr ""
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "{0} balance in GMX account is insufficient to cover gas fees"
-msgstr ""
-
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
@@ -3575,10 +3567,6 @@ msgstr ""
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr ""
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr ""
@@ -3670,10 +3658,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have yet to reach the minimum \"Capital Used\" of {0} to qualify for the rankings."
-msgstr ""
-
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-msgid "{symbol} balance on {0} chain is insufficient to cover network fee"
 msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
@@ -4174,10 +4158,6 @@ msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
-msgstr ""
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
@@ -5493,10 +5473,6 @@ msgstr ""
 msgid "Wins and losses for fully closed positions."
 msgstr ""
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr ""
-
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr ""
@@ -6166,10 +6142,6 @@ msgstr ""
 
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
-msgstr ""
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx

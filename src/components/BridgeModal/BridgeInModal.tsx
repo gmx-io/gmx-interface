@@ -175,6 +175,7 @@ export function BridgeInModal({
     paySource: "sourceChain",
     chainId,
     srcChainId: bridgeInChain,
+    payNativeTokenAmount: undefined,
   });
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -341,7 +342,7 @@ export function BridgeInModal({
           />
         </BuyInputSection>
         {sourceChainNativeFeeError?.warningText && (
-          <AlertInfoCard type="warning" hideClose>
+          <AlertInfoCard type="info" hideClose>
             {sourceChainNativeFeeError.warningText}
           </AlertInfoCard>
         )}

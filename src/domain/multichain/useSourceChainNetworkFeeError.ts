@@ -18,11 +18,13 @@ export function useSourceChainNativeFeeError({
   paySource,
   chainId,
   srcChainId,
+  payNativeTokenAmount = 0n,
 }: {
   networkFeeUsd: bigint | undefined;
   paySource?: "sourceChain" | string;
   chainId: ContractsChainId | undefined;
   srcChainId: SourceChainId | undefined;
+  payNativeTokenAmount: bigint | undefined;
 }): SourceChainNativeFeeError | undefined {
   const account = useSelector(selectAccount);
   const sourceChainNativeTokenBalance = useNativeTokenBalance(srcChainId, account);
@@ -45,10 +47,11 @@ export function useSourceChainNativeFeeError({
     const nativeCurrency = getViemChain(srcChainId).nativeCurrency;
     const symbol = nativeCurrency.symbol;
     const decimals = nativeCurrency.decimals;
+    const requiredAmount = nativeFee + payNativeTokenAmount;
 
-    if (sourceChainNativeTokenBalance < nativeFee) {
+    if (sourceChainNativeTokenBalance < requiredAmount) {
       const availableFormatted = formatBalanceAmount(sourceChainNativeTokenBalance, decimals);
-      const requiredFormatted = formatBalanceAmount(nativeFee, decimals);
+      const requiredFormatted = formatBalanceAmount(requiredAmount, decimals);
 
       return {
         buttonText: t`Insufficient ${symbol} balance`,
@@ -57,5 +60,5 @@ export function useSourceChainNativeFeeError({
     }
 
     return undefined;
-  }, [paySource, srcChainId, nativeFee, sourceChainNativeTokenBalance]);
+  }, [paySource, srcChainId, nativeFee, sourceChainNativeTokenBalance, payNativeTokenAmount]);
 }

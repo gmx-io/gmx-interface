@@ -35,7 +35,7 @@ export function GmSwapWarningsRow({
 
   if (insufficientGasWarningText) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="warning" key="swapBoxInsufficientGasWarning" onClose={noop}>
+      <AlertInfoCard className="mb-14" type="info" key="swapBoxInsufficientGasWarning" hideClose>
         {insufficientGasWarningText}
       </AlertInfoCard>
     );
