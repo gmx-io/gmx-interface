@@ -36,7 +36,7 @@ import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
 
-import PlusCircleIcon from "img/ic_plus_circle.svg?react";
+import PlusIcon from "img/ic_buy.svg?react";
 
 import { AddTPSLModal } from "./AddTPSLModal";
 import { TPSLOrdersList } from "./TPSLOrdersList";
@@ -283,7 +283,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
                 {!isMobile && (
                   <Button variant="ghost" onClick={handleAddTPSLOpen}>
                     <Trans>Add TP/SL</Trans>
-                    <PlusCircleIcon className="size-16" />
+                    <PlusIcon className="size-16" />
                   </Button>
                 )}
               </div>
