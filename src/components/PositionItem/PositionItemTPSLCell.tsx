@@ -20,6 +20,7 @@ export function PositionItemTPSLCell({
   visualMultiplier,
   isLarge,
   onOpenTPSLModal,
+  isDisabled = false,
 }: {
   positionKey: string;
   markPrice: bigint;
@@ -27,6 +28,7 @@ export function PositionItemTPSLCell({
   visualMultiplier?: number;
   isLarge: boolean;
   onOpenTPSLModal: () => void;
+  isDisabled?: boolean;
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
@@ -74,8 +76,12 @@ export function PositionItemTPSLCell({
           </span>
         </div>
         <button
-          onClick={onOpenTPSLModal}
-          className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
+          onClick={isDisabled ? undefined : onOpenTPSLModal}
+          disabled={isDisabled}
+          className={cx(
+            "flex size-20 items-center justify-center rounded-4 text-typography-secondary",
+            isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:text-typography-primary"
+          )}
         >
           {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
         </button>
@@ -114,8 +120,12 @@ export function PositionItemTPSLCell({
         </span>
       </div>
       <button
-        onClick={onOpenTPSLModal}
-        className="flex size-20 cursor-pointer items-center justify-center rounded-4 text-typography-secondary hover:text-typography-primary"
+        onClick={isDisabled ? undefined : onOpenTPSLModal}
+        disabled={isDisabled}
+        className={cx(
+          "flex size-20 items-center justify-center rounded-4 text-typography-secondary",
+          isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:text-typography-primary"
+        )}
       >
         {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
       </button>

@@ -66,6 +66,8 @@ export function PositionItem(p: Props) {
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
+  const isActionsDisabled = p.position.isOpening;
+  const isCloseDisabled = isActionsDisabled || p.position.sizeInUsd == 0n;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
 
@@ -579,46 +581,42 @@ export function PositionItem(p: Props) {
             visualMultiplier={p.position.indexToken.visualMultiplier}
             isLarge={true}
             onOpenTPSLModal={handleOpenTPSLModal}
+            isDisabled={isActionsDisabled}
           />
         </TableTd>
         {!p.hideActions && (
-          <>
-            {!p.position.isOpening ? (
-              <TableTd>
-                <div className="flex items-center justify-end gap-4">
-                  <Button
-                    variant="ghost"
-                    onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
-                    disabled={p.position.sizeInUsd == 0n}
-                    data-qa="position-close-market-button"
-                  >
-                    <Trans>Market</Trans>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                    disabled={p.position.sizeInUsd == 0n}
-                    data-qa="position-close-twap-button"
-                  >
-                    <Trans>TWAP</Trans>
-                  </Button>
+          <TableTd>
+            <div className="flex items-center justify-end gap-4">
+              <Button
+                variant="ghost"
+                onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
+                disabled={isCloseDisabled}
+                data-qa="position-close-market-button"
+              >
+                <Trans>Market</Trans>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
+                disabled={isCloseDisabled}
+                data-qa="position-close-twap-button"
+              >
+                <Trans>TWAP</Trans>
+              </Button>
 
-                  <PositionDropdown
-                    handleEditCollateral={p.onEditCollateralClick}
-                    handleMarketSelect={() => p.onSelectPositionClick?.()}
-                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
-                    handleShare={p.onShareClick}
-                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
-                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
-                    handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
-                    handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
-                  />
-                </div>
-              </TableTd>
-            ) : (
-              <TableTd />
-            )}
-          </>
+              <PositionDropdown
+                handleEditCollateral={p.onEditCollateralClick}
+                handleMarketSelect={() => p.onSelectPositionClick?.()}
+                handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                handleShare={p.onShareClick}
+                handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
+                handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
+                handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
+                disabled={isActionsDisabled}
+              />
+            </div>
+          </TableTd>
         )}
       </TableTr>
     );
@@ -759,6 +757,7 @@ export function PositionItem(p: Props) {
                 visualMultiplier={p.position.indexToken.visualMultiplier}
                 isLarge={false}
                 onOpenTPSLModal={handleOpenTPSLModal}
+                isDisabled={isActionsDisabled}
               />
             </div>
           </div>
@@ -777,32 +776,31 @@ export function PositionItem(p: Props) {
               <div className="flex gap-8">
                 <Button
                   variant="secondary"
-                  disabled={p.position.sizeInUsd == 0n}
+                  disabled={isCloseDisabled}
                   onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
                 >
                   <Trans>Market</Trans>
                 </Button>
                 <Button
                   variant="secondary"
-                  disabled={p.position.sizeInUsd == 0n}
+                  disabled={isCloseDisabled}
                   onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
                 >
                   <Trans>TWAP</Trans>
                 </Button>
               </div>
               <div>
-                {!p.position.isOpening && !p.hideActions && (
-                  <PositionDropdown
-                    handleEditCollateral={p.onEditCollateralClick}
-                    handleMarketSelect={() => p.onSelectPositionClick?.()}
-                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
-                    handleShare={p.onShareClick}
-                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                    handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
-                    handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger, true)}
-                  />
-                )}
+                <PositionDropdown
+                  handleEditCollateral={p.onEditCollateralClick}
+                  handleMarketSelect={() => p.onSelectPositionClick?.()}
+                  handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
+                  handleShare={p.onShareClick}
+                  handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
+                  handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
+                  handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
+                  handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger, true)}
+                  disabled={isActionsDisabled}
+                />
               </div>
             </div>
           </AppCardSection>

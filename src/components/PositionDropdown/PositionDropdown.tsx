@@ -24,6 +24,7 @@ type Props = {
   handleStopMarketIncreaseSize?: () => void;
   handleTwapIncreaseSize?: () => void;
   handleTriggerClose?: () => void;
+  disabled?: boolean;
 };
 
 export default function PositionDropdown({
@@ -35,12 +36,21 @@ export default function PositionDropdown({
   handleStopMarketIncreaseSize,
   handleTwapIncreaseSize,
   handleTriggerClose,
+  disabled,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset({ mainAxis: 8 }), flip(), shift()],
     placement: "bottom-start",
     whileElementsMounted: autoUpdate,
   });
+
+  if (disabled) {
+    return (
+      <Button variant="ghost" disabled>
+        <MenuDotsIcon fontSize={14} fontWeight={500} className="text-typography-secondary" />
+      </Button>
+    );
+  }
 
   return (
     <Menu>
