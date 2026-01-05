@@ -48,6 +48,7 @@ import {
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
 } from "domain/synthetics/sidecarOrders/utils";
+import type { NextPositionValues } from "domain/synthetics/trade/types";
 import {
   buildTpSlCreatePayloads,
   buildTpSlInputPositionData,
@@ -161,41 +162,19 @@ export function useOrderEditorTPSL() {
   const totalCollateralUsdForTpSl = (existingPosition?.collateralUsd ?? 0n) + collateralDeltaUsdForTpSl;
 
   const positionForTpSl = useMemo(() => {
-    if (!isLimitOrStopIncrease || !market || !order || !positionKey) {
-      return undefined;
-    }
-
-    const nextEntryPrice =
-      nextPositionValuesForIncrease?.nextEntryPrice ??
-      existingPosition?.entryPrice ??
-      resolvedTriggerPrice ??
-      order.triggerPrice;
-    const nextLiqPrice = nextPositionValuesForIncrease?.nextLiqPrice ?? existingPosition?.liquidationPrice;
-    const baseMarkPrice = markPrice ?? existingPosition?.markPrice ?? 0n;
-    const nextLeverage = nextPositionValuesForIncrease?.nextLeverage;
-
-    return buildTpSlPositionInfo({
-      isIncrease: true,
-      positionKey,
-      marketInfo: market,
-      collateralToken: order.targetCollateralToken,
-      isLong: order.isLong,
-      sizeDeltaUsd: totalSizeUsdForTpSl,
-      sizeDeltaInTokens: totalSizeInTokensForTpSl,
-      collateralDeltaAmount: totalCollateralAmountForTpSl,
-      markPrice: baseMarkPrice,
-      entryPrice: nextEntryPrice,
-      liquidationPrice: nextLiqPrice,
-      collateralUsd: totalCollateralUsdForTpSl,
-      remainingCollateralUsd: totalCollateralUsdForTpSl,
-      remainingCollateralAmount: totalCollateralAmountForTpSl,
-      netValue: totalCollateralUsdForTpSl,
-      leverage: nextLeverage,
-      leverageWithPnl: nextLeverage,
-      leverageWithoutPnl: nextLeverage,
+    return getPositionForTpSl({
       existingPosition,
-      includeExistingFees: true,
-      requirePositiveSizes: true,
+      isLimitOrStopIncrease,
+      markPrice,
+      market,
+      nextPositionValuesForIncrease,
+      order,
+      positionKey,
+      resolvedTriggerPrice,
+      totalCollateralAmountForTpSl,
+      totalCollateralUsdForTpSl,
+      totalSizeInTokensForTpSl,
+      totalSizeUsdForTpSl,
     });
   }, [
     existingPosition,
@@ -473,6 +452,58 @@ export function useOrderEditorTPSL() {
     setTpPriceInputValue,
     setSlPriceInputValue,
   };
+}
+
+function getPositionForTpSl(p: {
+  existingPosition: PositionInfo | undefined;
+  isLimitOrStopIncrease: boolean;
+  markPrice: bigint | undefined;
+  market: ReturnType<typeof useMarketInfo>;
+  nextPositionValuesForIncrease: NextPositionValues | undefined;
+  order: PositionOrderInfo | undefined;
+  positionKey: string | undefined;
+  resolvedTriggerPrice: bigint | undefined;
+  totalCollateralAmountForTpSl: bigint;
+  totalCollateralUsdForTpSl: bigint;
+  totalSizeInTokensForTpSl: bigint;
+  totalSizeUsdForTpSl: bigint;
+}): PositionInfoLoaded | undefined {
+  if (!p.isLimitOrStopIncrease || !p.market || !p.order || !p.positionKey) {
+    return undefined;
+  }
+
+  const nextEntryPrice =
+    p.nextPositionValuesForIncrease?.nextEntryPrice ??
+    p.existingPosition?.entryPrice ??
+    p.resolvedTriggerPrice ??
+    p.order.triggerPrice;
+  const nextLiqPrice = p.nextPositionValuesForIncrease?.nextLiqPrice ?? p.existingPosition?.liquidationPrice;
+  const baseMarkPrice = p.markPrice ?? p.existingPosition?.markPrice ?? 0n;
+  const nextLeverage = p.nextPositionValuesForIncrease?.nextLeverage;
+
+  return buildTpSlPositionInfo({
+    isIncrease: true,
+    positionKey: p.positionKey,
+    marketInfo: p.market,
+    collateralToken: p.order.targetCollateralToken,
+    isLong: p.order.isLong,
+    sizeDeltaUsd: p.totalSizeUsdForTpSl,
+    sizeDeltaInTokens: p.totalSizeInTokensForTpSl,
+    collateralDeltaAmount: p.totalCollateralAmountForTpSl,
+    markPrice: baseMarkPrice,
+    entryPrice: nextEntryPrice,
+    liquidationPrice: nextLiqPrice,
+    collateralUsd: p.totalCollateralUsdForTpSl,
+    remainingCollateralUsd: p.totalCollateralUsdForTpSl,
+    remainingCollateralAmount: p.totalCollateralAmountForTpSl,
+    netValue: p.totalCollateralUsdForTpSl,
+    leverage: nextLeverage,
+    leverageWithPnl: nextLeverage,
+    leverageWithoutPnl: nextLeverage,
+    existingPosition: p.existingPosition,
+    includeExistingFees: true,
+    requirePositiveSizes: true,
+  });
 }
 
 function buildTpSlEntry(p: {
