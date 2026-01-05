@@ -875,7 +875,7 @@ export const DepositView = () => {
 
   const estimatedTimeValue = useMemo(() => {
     if (depositViewChain === settlementChainId) {
-      return <Trans>Instantly</Trans>;
+      return <Trans>Instant</Trans>;
     }
 
     if (inputAmount === undefined || inputAmount === 0n) {

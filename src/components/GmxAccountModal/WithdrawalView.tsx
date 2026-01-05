@@ -1009,7 +1009,7 @@ export const WithdrawalView = () => {
 
   const estimatedTimeValue = useMemo(() => {
     if (isSameChain) {
-      return <Trans>Instantly</Trans>;
+      return <Trans>Instant</Trans>;
     }
 
     if (inputAmount === undefined || inputAmount === 0n) {

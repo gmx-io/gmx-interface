@@ -460,11 +460,6 @@ msgstr "展开"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>第一次尝试 <1>@GMX_IO</1>。</0><2> 非常令人印象深刻的体验 - 无滑点，执行快速 </2><3> 规模上限较低，但进行一些高风险赌博很有趣 </3>"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Instantly"
-msgstr "立即"
-
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "由于 RPC 错误，交易失败。<0/><1/>请在设置下启用 <2>快速交易</2>，这应该提供更好的体验。"
@@ -2050,6 +2045,11 @@ msgstr "系统"
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
+msgstr "立即"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
