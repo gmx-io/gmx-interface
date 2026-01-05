@@ -419,13 +419,16 @@ function DisplayModeSelector({
   size?: "small" | "normal";
   popoverReferenceRef?: RefObject<HTMLElement | null>;
 }) {
+  const buttonRef = useRef<HTMLElement | null>(null);
+
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(4), flip(), shift()],
     placement: "bottom-end",
     whileElementsMounted: autoUpdate,
+    elements: {
+      reference: popoverReferenceRef?.current ?? buttonRef.current,
+    },
   });
-
-  const buttonRef = useRef<HTMLElement | null>(null);
 
   const setButtonRef = useCallback(
     (node: HTMLElement | null) => {
@@ -444,12 +447,6 @@ function DisplayModeSelector({
     },
     [setButtonRef]
   );
-
-  useEffect(() => {
-    const referenceElement = popoverReferenceRef?.current ?? buttonRef.current;
-
-    refs.setReference(referenceElement);
-  });
 
   const popoverPanelStyle = useMemo(
     () => ({ ...floatingStyles, zIndex: "calc(var(--modal-z-index) + 1)" }),

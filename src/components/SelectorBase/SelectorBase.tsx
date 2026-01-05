@@ -3,16 +3,7 @@ import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
-import React, {
-  PropsWithChildren,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useMedia } from "react-use";
 
@@ -167,6 +158,8 @@ export function SelectorBaseMobileHeaderContent(props: PropsWithChildren) {
 //#endregion
 
 function SelectorBaseDesktop(props: Props & { qa?: string }) {
+  const buttonRef = useRef<HTMLElement | null>(null);
+
   const { refs, floatingStyles } = useFloating({
     middleware: [
       offset({
@@ -178,8 +171,10 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     ],
     placement: props.popoverPlacement ?? "bottom-end",
     whileElementsMounted: autoUpdate,
+    elements: {
+      reference: props.popoverReferenceRef?.current ?? buttonRef.current,
+    },
   });
-  const buttonRef = useRef<HTMLElement | null>(null);
 
   const suppressPointerDown = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -202,13 +197,6 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     },
     [setButtonRef]
   );
-
-  // Keep the floating reference synced with an external element when provided.
-  useEffect(() => {
-    const referenceElement = props.popoverReferenceRef?.current ?? buttonRef.current;
-
-    refs.setReference(referenceElement);
-  });
 
   if (props.disabled) {
     return (
