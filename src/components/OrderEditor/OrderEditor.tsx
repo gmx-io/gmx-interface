@@ -85,14 +85,12 @@ import {
   formatUsdPrice,
   parseValue,
 } from "lib/numbers";
-import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
-import { ExecutionFee } from "sdk/types/fees";
 import { bigMath } from "sdk/utils/bigmath";
-import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, buildUpdateOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import Button from "components/Button/Button";
@@ -407,53 +405,13 @@ export function OrderEditor(p: Props) {
     isGmxAccount: srcChainId !== undefined,
   });
 
-  const networkFee = useMemo((): Pick<ExecutionFee, "feeToken" | "feeTokenAmount" | "feeUsd"> | undefined => {
-    let baseFee = additionalExecutionFee;
-
-    const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
-
-    if (baseFee && gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
-      baseFee = {
-        feeToken: gasPaymentToken,
-        feeTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount ?? 0n,
-        feeUsd:
-          convertToUsd(
-            expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            gasPaymentToken.decimals,
-            gasPaymentToken.prices.minPrice
-          ) ?? 0n,
-      };
-    }
-
-    const fees: Array<Pick<ExecutionFee, "feeToken" | "feeTokenAmount" | "feeUsd">> = [];
-
-    if (baseFee) {
-      fees.push(baseFee);
-    }
-
-    if (sidecarExecutionFee) {
-      fees.push(sidecarExecutionFee);
-    }
-
-    if (!fees.length) {
+  const networkFee = useMemo(() => {
+    if (!batchParams || !tokensData) {
       return undefined;
     }
 
-    let feeToken = fees[0]!.feeToken;
-    let feeTokenAmount = 0n;
-    let feeUsd = 0n;
-
-    fees.forEach((fee) => {
-      feeUsd = feeUsd + (fee.feeUsd ?? 0n);
-      feeTokenAmount = feeTokenAmount + (fee.feeTokenAmount ?? 0n);
-    });
-
-    return {
-      feeToken,
-      feeTokenAmount,
-      feeUsd,
-    };
-  }, [additionalExecutionFee, expressParams, sidecarExecutionFee, tokensData]);
+    return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
+  }, [batchParams, chainId, tokensData]);
 
   const error = useMemo(() => {
     if (isSubmitting) {
@@ -920,7 +878,7 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
-          {networkFee && (
+          {networkFee && isTpSlEnabled && (
             <SyntheticsInfoRow
               label={t`Fees`}
               value={

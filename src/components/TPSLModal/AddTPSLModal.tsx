@@ -67,7 +67,11 @@ import useWallet from "lib/wallets/useWallet";
 import { SidecarSlTpOrderEntry } from "sdk/types/sidecarOrders";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import { CreateOrderTxnParams, DecreasePositionOrderParams } from "sdk/utils/orderTransactions";
+import {
+  CreateOrderTxnParams,
+  DecreasePositionOrderParams,
+  getBatchTotalExecutionFee,
+} from "sdk/utils/orderTransactions";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -262,20 +266,33 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
 
   const activeDecreaseAmounts = tpDecreaseAmounts || slDecreaseAmounts;
 
-  const executionFee = useMemo(() => {
-    if (!gasLimits || !tokensData || gasPrice === undefined) {
-      return undefined;
-    }
+  const getSidecarExecutionFee = useCallback(
+    (decreaseSwapType: DecreasePositionSwapType | undefined) => {
+      if (!gasLimits || !tokensData || gasPrice === undefined) {
+        return undefined;
+      }
 
-    const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-      swapsCount: 0,
-      decreaseSwapType: activeDecreaseAmounts?.decreaseSwapType ?? DecreasePositionSwapType.NoSwap,
-    });
+      const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+        swapsCount: 0,
+        decreaseSwapType: decreaseSwapType ?? DecreasePositionSwapType.NoSwap,
+      });
 
-    const oraclePriceCount = estimateOrderOraclePriceCount(0);
+      const oraclePriceCount = estimateOrderOraclePriceCount(0);
 
-    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
-  }, [gasLimits, tokensData, gasPrice, chainId, activeDecreaseAmounts]);
+      return getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+    },
+    [chainId, gasLimits, gasPrice, tokensData]
+  );
+
+  const tpExecutionFee = useMemo(() => {
+    if (!tpDecreaseAmounts) return undefined;
+    return getSidecarExecutionFee(tpDecreaseAmounts.decreaseSwapType);
+  }, [getSidecarExecutionFee, tpDecreaseAmounts]);
+
+  const slExecutionFee = useMemo(() => {
+    if (!slDecreaseAmounts) return undefined;
+    return getSidecarExecutionFee(slDecreaseAmounts.decreaseSwapType);
+  }, [getSidecarExecutionFee, slDecreaseAmounts]);
 
   const fees = useMemo(() => {
     if (!activeDecreaseAmounts || !position) {
@@ -473,7 +490,18 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, isLong]);
 
   const orderPayloads = useMemo((): CreateOrderTxnParams<DecreasePositionOrderParams>[] => {
-    if (!account || !marketInfo || !collateralToken || !executionFee) {
+    if (!account || !marketInfo || !collateralToken) {
+      return [];
+    }
+
+    const tpCreateAmounts = tpPriceError ? undefined : tpDecreaseAmounts;
+    const slCreateAmounts = slPriceError ? undefined : slDecreaseAmounts;
+
+    if (!tpCreateAmounts && !slCreateAmounts) {
+      return [];
+    }
+
+    if ((tpCreateAmounts && !tpExecutionFee) || (slCreateAmounts && !slExecutionFee)) {
       return [];
     }
 
@@ -489,14 +517,14 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       isLong,
       entries: [
         {
-          amounts: tpPriceError ? undefined : tpDecreaseAmounts,
-          executionFeeAmount: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
+          amounts: tpCreateAmounts,
+          executionFeeAmount: tpExecutionFee?.feeTokenAmount,
+          executionGasLimit: tpExecutionFee?.gasLimit,
         },
         {
-          amounts: slPriceError ? undefined : slDecreaseAmounts,
-          executionFeeAmount: executionFee.feeTokenAmount,
-          executionGasLimit: executionFee.gasLimit,
+          amounts: slCreateAmounts,
+          executionFeeAmount: slExecutionFee?.feeTokenAmount,
+          executionGasLimit: slExecutionFee?.gasLimit,
         },
       ],
       userReferralCode: userReferralInfo?.referralCodeForTxn,
@@ -513,7 +541,8 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     isLong,
     tpPriceError,
     slPriceError,
-    executionFee,
+    tpExecutionFee,
+    slExecutionFee,
   ]);
 
   const batchParams = useMemo(() => {
@@ -524,6 +553,12 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       cancelOrderParams: [],
     };
   }, [orderPayloads]);
+
+  const totalExecutionFee = useMemo(() => {
+    if (!batchParams || !tokensData) return undefined;
+
+    return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
+  }, [batchParams, chainId, tokensData]);
 
   const { expressParamsPromise } = useExpressOrdersParams({
     orderParams: batchParams,
@@ -819,7 +854,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
         >
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={fees} />
           <TradeFeesRow {...(fees || {})} feesType="decrease" />
-          <NetworkFeeRow executionFee={executionFee} />
+          <NetworkFeeRow executionFee={totalExecutionFee} />
           <SyntheticsInfoRow label={<Trans>Leverage</Trans>} value={leverageValue} />
           <SyntheticsInfoRow
             label={<Trans>Size</Trans>}
