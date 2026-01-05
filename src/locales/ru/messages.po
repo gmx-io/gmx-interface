@@ -973,11 +973,6 @@ msgstr "используя токены GLV и GM. Покупка или сте�
 msgid "As network fees have increased, an additional network fee is needed."
 msgstr "Поскольку сетевые комиссии увеличились, требуется дополнительная сетевая комиссия."
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
-msgstr ""
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached."
 msgstr "Лимитный своп: Обменять токены при достижении триггерной цены."
@@ -2236,6 +2231,8 @@ msgstr "Обмены"
 msgid "Allow {0} to be spent"
 msgstr "Разрешить тратить {0}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""

@@ -973,11 +973,6 @@ msgstr "using GLV and GM tokens. Buying or staking GMX, or using referrals, is n
 msgid "As network fees have increased, an additional network fee is needed."
 msgstr "As network fees have increased, an additional network fee is needed."
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
-msgstr "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached."
 msgstr "Swap Limit: Swap tokens when the trigger price is reached."
@@ -2236,6 +2231,8 @@ msgstr "Swaps"
 msgid "Allow {0} to be spent"
 msgstr "Allow {0} to be spent"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"

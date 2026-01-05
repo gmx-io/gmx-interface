@@ -973,11 +973,6 @@ msgstr "GLVおよびGMトークンを使用。GMXの購入またはステーク�
 msgid "As network fees have increased, an additional network fee is needed."
 msgstr "ネットワーク手数料が増加したため、追加のネットワーク手数料が必要です。"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
-msgstr ""
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached."
 msgstr "スワップ制限: トリガー価格に達したときにトークンをスワップします。"
@@ -2236,6 +2231,8 @@ msgstr "スワップ"
 msgid "Allow {0} to be spent"
 msgstr "{0}の支出を許可"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""

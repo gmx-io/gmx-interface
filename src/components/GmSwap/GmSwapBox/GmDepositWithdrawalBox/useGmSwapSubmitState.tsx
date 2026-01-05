@@ -206,11 +206,9 @@ export const useGmSwapSubmitState = ({
   const formattedEstimationError = useMemo(() => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
-        const availableFormatted = formatBalanceAmount(
-          gasPaymentToken.gmxAccountBalance ?? 0n,
-          gasPaymentToken.decimals,
-          gasPaymentToken.symbol
-        );
+        const { symbol, decimals } = gasPaymentToken;
+
+        const availableFormatted = formatBalanceAmount(gasPaymentToken.gmxAccountBalance ?? 0n, decimals, symbol);
 
         let collateralAmount = 0n;
         if (isDeposit) {
@@ -223,9 +221,9 @@ export const useGmSwapSubmitState = ({
         }
 
         const totalRequired = collateralAmount + (estimationError.params?.requiredAmount ?? 0n);
-        const requiredFormatted = formatBalanceAmount(totalRequired, gasPaymentToken.decimals, gasPaymentToken.symbol);
+        const requiredFormatted = formatBalanceAmount(totalRequired, decimals, symbol);
 
-        return t`Insufficient ${gasPaymentToken.symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
+        return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
       }
     } else if (estimationError) {
       return estimationError.name;
@@ -405,14 +403,12 @@ function useExpressError({
     const totalRequired = collateralAmount + gasPaymentTokenAmount;
 
     if (totalRequired > gmxAccountBalance) {
-      const availableFormatted = formatBalanceAmount(
-        gmxAccountBalance,
-        gasPaymentToken.decimals,
-        gasPaymentToken.symbol
-      );
-      const requiredFormatted = formatBalanceAmount(totalRequired, gasPaymentToken.decimals, gasPaymentToken.symbol);
+      const { symbol, decimals } = gasPaymentToken;
 
-      return t`Insufficient ${gasPaymentToken.symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
+      const availableFormatted = formatBalanceAmount(gmxAccountBalance, decimals, symbol);
+      const requiredFormatted = formatBalanceAmount(totalRequired, decimals, symbol);
+
+      return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
     }
 
     return undefined;

@@ -973,11 +973,6 @@ msgstr "使用 GLV 和 GM 代币。目前不支持购买或质押 GMX，或使�
 msgid "As network fees have increased, an additional network fee is needed."
 msgstr "由于网络费用增加，需要额外网络费用。"
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-msgid "Insufficient {0} balance: {availableFormatted} available, {requiredFormatted} required"
-msgstr ""
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Limit: Swap tokens when the trigger price is reached."
 msgstr "交换限价：当达到触发价格时交换代币。"
@@ -2236,6 +2231,8 @@ msgstr "交换"
 msgid "Allow {0} to be spent"
 msgstr "允许花费 {0}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
