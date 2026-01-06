@@ -5874,6 +5874,10 @@ msgstr "<0>Switch to the {0} pool</0> for potentially lower net price impact"
 msgid "market"
 msgstr "market"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "Withdrawing {0} to {1} is not currently supported"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"

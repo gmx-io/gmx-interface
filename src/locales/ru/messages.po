@@ -5874,6 +5874,10 @@ msgstr ""
 msgid "market"
 msgstr "рынок"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "Вывод {0} на {1} в настоящее время не поддерживается"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"

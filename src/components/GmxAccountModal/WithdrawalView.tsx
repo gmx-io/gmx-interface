@@ -75,7 +75,7 @@ import {
   sendTxnSentMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
-import { bigintToNumber, expandDecimals, formatAmountFree, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
+import { expandDecimals, formatAmountFree, formatUsd, parseValue, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
@@ -156,6 +156,23 @@ const useIsFirstWithdrawal = () => {
   return isFirstWithdrawal;
 };
 
+function tokenDataSorter(a: TokenData, b: TokenData): 1 | -1 | 0 {
+  const aBalanceUsd =
+    a.prices && a.gmxAccountBalance !== undefined
+      ? convertToUsd(a.gmxAccountBalance, a.decimals, getMidPrice(a.prices)) ?? 0n
+      : 0n;
+  const bBalanceUsd =
+    b.prices && b.gmxAccountBalance !== undefined
+      ? convertToUsd(b.gmxAccountBalance, b.decimals, getMidPrice(b.prices)) ?? 0n
+      : 0n;
+
+  if (aBalanceUsd === bBalanceUsd) {
+    return 0;
+  }
+
+  return bBalanceUsd > aBalanceUsd ? 1 : -1;
+}
+
 export const WithdrawalView = () => {
   const history = useHistory();
   const { chainId } = useChainId();
@@ -210,18 +227,26 @@ export const WithdrawalView = () => {
       return networks;
     }
 
-    return networks.filter((network) => {
-      if (network.id === chainId) {
-        return true;
-      }
+    return networks
+      .map((network): { id: number; name: string; disabled?: boolean } => {
+        if (network.id === chainId) {
+          return network;
+        }
 
-      const mappedTokenId = getMappedTokenId(
-        chainId as SettlementChainId,
-        unwrappedSelectedTokenAddress,
-        network.id as SourceChainId
-      );
-      return mappedTokenId !== undefined;
-    });
+        const mappedTokenId = getMappedTokenId(
+          chainId as SettlementChainId,
+          unwrappedSelectedTokenAddress,
+          network.id as SourceChainId
+        );
+        const isTransferable = mappedTokenId !== undefined;
+        return {
+          ...network,
+          disabled: !isTransferable,
+        };
+      })
+      .sort((a, b) => {
+        return a.disabled ? 1 : b.disabled ? -1 : 0;
+      });
   }, [unwrappedSelectedTokenAddress, networks, chainId]);
 
   const tokenOptions = useMemo((): TokenData[] => {
@@ -229,38 +254,28 @@ export const WithdrawalView = () => {
       return EMPTY_ARRAY;
     }
 
-    if (isSameChain) {
-      return Object.values(tokensData)
-        .filter((token): token is TokenData => {
-          return (
-            token !== undefined &&
-            token.address !== zeroAddress &&
-            token.gmxAccountBalance !== undefined &&
-            token.gmxAccountBalance > 0n
-          );
-        })
-        .sort((a, b) => {
-          const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
-          const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
-
-          return bFloat - aFloat;
-        });
-    }
-
-    return (
-      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]
+    const multichainTokens =
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]
         ?.map((tokenAddress) => tokensData[tokenAddress] as TokenData | undefined)
         .filter((token): token is TokenData => {
           return token !== undefined && token.address !== zeroAddress;
         })
-        .sort((a, b) => {
-          const aFloat = bigintToNumber(a.gmxAccountBalance ?? 0n, a.decimals);
-          const bFloat = bigintToNumber(b.gmxAccountBalance ?? 0n, b.decimals);
+        .sort(tokenDataSorter) || EMPTY_ARRAY;
 
-          return bFloat - aFloat;
-        }) ?? EMPTY_ARRAY
-    );
-  }, [chainId, isSameChain, tokensData]);
+    const sameChainTokens = Object.values(tokensData)
+      .filter((token): token is TokenData => {
+        return (
+          token !== undefined &&
+          token.address !== zeroAddress &&
+          token.gmxAccountBalance !== undefined &&
+          token.gmxAccountBalance > 0n &&
+          !MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(token.address)
+        );
+      })
+      .sort(tokenDataSorter);
+
+    return multichainTokens.concat(sameChainTokens);
+  }, [chainId, tokensData]);
 
   const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
 
@@ -1071,6 +1086,13 @@ export const WithdrawalView = () => {
     );
   }, [isSameChain, protocolFeeUsd, selectedTokenSettlementChainTokenId, protocolFeeAmount, selectedToken?.symbol]);
 
+  const networkItemDisabledMessage = useCallback(
+    (option: { id: number; name: string; disabled?: boolean | string }) => {
+      return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not currently supported`;
+    },
+    [selectedToken?.symbol]
+  );
+
   return (
     <div className="flex grow flex-col overflow-y-auto p-adaptive">
       <div className="flex flex-col gap-[--padding-adaptive]">
@@ -1134,6 +1156,8 @@ export const WithdrawalView = () => {
             options={filteredNetworks}
             item={NetworkItem}
             itemKey={networkItemKey}
+            itemDisabled={networkItemDisabled}
+            itemDisabledMessage={networkItemDisabledMessage}
           />
         </div>
 
@@ -1322,7 +1346,11 @@ function networkItemKey(option: { id: number; name: string }) {
   return option.id;
 }
 
-function NetworkItem({ option }: { option: { id: number; name: string } }) {
+function networkItemDisabled(option: { id: number; name: string; disabled?: boolean | string }): boolean {
+  return !!option.disabled;
+}
+
+function NetworkItem({ option }: { option: { id: number; name: string; disabled?: boolean } }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-8">
