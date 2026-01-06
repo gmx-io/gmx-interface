@@ -88,29 +88,24 @@ export function useNativeTokenMultichainUsd({
 
 export function useUsdToNativeTokenMultichain({
   sourceChainId,
-  usdAmount,
+  usd,
   targetChainId,
 }: {
   sourceChainId: AnyChainId | undefined;
-  usdAmount: bigint | undefined;
+  usd: bigint | undefined;
   targetChainId: AnyChainId | undefined;
 }): bigint | undefined {
   const { sourceNativeTokenAddress, hasSourceNativeTokenPrice, priceChainTokenPricesData } =
     useSourceNativeTokenPriceInfo({ sourceChainId, targetChainId });
 
-  if (
-    usdAmount === undefined ||
-    sourceChainId === undefined ||
-    targetChainId === undefined ||
-    !hasSourceNativeTokenPrice
-  ) {
+  if (usd === undefined || sourceChainId === undefined || targetChainId === undefined || !hasSourceNativeTokenPrice) {
     return undefined;
   }
 
   const nativeTokenAmount =
-    usdAmount !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
+    usd !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
       ? convertToTokenAmount(
-          usdAmount,
+          usd,
           getViemChain(sourceChainId).nativeCurrency.decimals,
           getMidPrice(priceChainTokenPricesData[sourceNativeTokenAddress])
         )

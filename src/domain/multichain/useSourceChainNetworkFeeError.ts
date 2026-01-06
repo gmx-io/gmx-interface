@@ -30,7 +30,7 @@ export function useSourceChainNativeFeeError({
   const sourceChainNativeTokenBalance = useNativeTokenBalance(srcChainId, account);
   const nativeFee = useUsdToNativeTokenMultichain({
     sourceChainId: srcChainId,
-    usdAmount: networkFeeUsd,
+    usd: networkFeeUsd,
     targetChainId: chainId,
   });
 

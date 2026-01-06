@@ -179,6 +179,21 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   });
 
+  const payNativeTokenAmount = useMemo(() => {
+    let payNativeTokenAmount = 0n;
+
+    if (isDeposit) {
+      if (payLongToken?.isNative) {
+        payNativeTokenAmount += longTokenAmount;
+      }
+      if (payShortToken?.isNative) {
+        payNativeTokenAmount += shortTokenAmount;
+      }
+    }
+
+    return payNativeTokenAmount;
+  }, [isDeposit, payLongToken, longTokenAmount, payShortToken, shortTokenAmount]);
+
   const sourceChainNativeFeeError = useSourceChainNativeFeeError({
     networkFeeUsd:
       logicalFees?.logicalNetworkFee?.deltaUsd !== undefined
@@ -187,20 +202,7 @@ export const useGmSwapSubmitState = ({
     paySource,
     chainId,
     srcChainId,
-    payNativeTokenAmount: (() => {
-      let payNativeTokenAmount = 0n;
-
-      if (isDeposit) {
-        if (payLongToken?.isNative) {
-          payNativeTokenAmount += longTokenAmount;
-        }
-        if (payShortToken?.isNative) {
-          payNativeTokenAmount += shortTokenAmount;
-        }
-      }
-
-      return payNativeTokenAmount;
-    })(),
+    payNativeTokenAmount,
   });
 
   const formattedEstimationError = useMemo(() => {
@@ -208,7 +210,7 @@ export const useGmSwapSubmitState = ({
       if (gasPaymentToken) {
         const { symbol, decimals } = gasPaymentToken;
 
-        const availableFormatted = formatBalanceAmount(gasPaymentToken.gmxAccountBalance ?? 0n, decimals, symbol);
+        const availableFormatted = formatBalanceAmount(gasPaymentToken.gmxAccountBalance ?? 0n, decimals);
 
         let collateralAmount = 0n;
         if (isDeposit) {
@@ -221,7 +223,7 @@ export const useGmSwapSubmitState = ({
         }
 
         const totalRequired = collateralAmount + (estimationError.params?.requiredAmount ?? 0n);
-        const requiredFormatted = formatBalanceAmount(totalRequired, decimals, symbol);
+        const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
         return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
       }
@@ -405,8 +407,8 @@ function useExpressError({
     if (totalRequired > gmxAccountBalance) {
       const { symbol, decimals } = gasPaymentToken;
 
-      const availableFormatted = formatBalanceAmount(gmxAccountBalance, decimals, symbol);
-      const requiredFormatted = formatBalanceAmount(totalRequired, decimals, symbol);
+      const availableFormatted = formatBalanceAmount(gmxAccountBalance, decimals);
+      const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
       return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
     }
