@@ -92,7 +92,7 @@ export function PositionList(p: Props) {
           <Table className="!w-[max(100%,1020px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>
-                <TableTh className="w-[16%]">
+                <TableTh className="w-[15%]">
                   <Trans>Position</Trans>
                 </TableTh>
                 <TableTh>
@@ -118,7 +118,7 @@ export function PositionList(p: Props) {
                 </TableTh>
                 {!isLoading && !p.hideActions && (
                   <>
-                    <TableTh className="w-[16%]"></TableTh>
+                    <TableTh className="w-[18%] !text-left">Close</TableTh>
                   </>
                 )}
               </TableTheadTr>
