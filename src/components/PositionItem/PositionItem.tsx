@@ -39,6 +39,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
 import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
+import { AddTPSLModal } from "../TPSLModal/AddTPSLModal";
 import { TPSLModal } from "../TPSLModal/TPSLModal";
 
 import "./PositionItem.scss";
@@ -66,6 +67,7 @@ export function PositionItem(p: Props) {
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
+  const [isAddTPSLModalVisible, setIsAddTPSLModalVisible] = useState(false);
   const isActionsDisabled = p.position.isOpening;
   const isCloseDisabled = isActionsDisabled || p.position.sizeInUsd == 0n;
 
@@ -76,6 +78,22 @@ export function PositionItem(p: Props) {
   }, []);
 
   const handleOpenTPSLModal = useCallback(() => {
+    setIsAddTPSLModalVisible(false);
+    setIsTPSLModalVisible(true);
+  }, []);
+
+  const handleOpenAddTPSLModal = useCallback(() => {
+    setIsTPSLModalVisible(false);
+    setIsAddTPSLModalVisible(true);
+  }, []);
+
+  const handleAddTPSLBack = useCallback(() => {
+    setIsAddTPSLModalVisible(false);
+    setIsTPSLModalVisible(true);
+  }, []);
+
+  const handleAddTPSLSuccess = useCallback(() => {
+    setIsAddTPSLModalVisible(false);
     setIsTPSLModalVisible(true);
   }, []);
 
@@ -469,10 +487,10 @@ export function PositionItem(p: Props) {
                     <br />
 
                     <div>
-                      <Trans>
-                        Click on the position to select it, then use the trade box to increase it or to set TP/SL
-                        orders.
-                      </Trans>
+                      <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
+                      <br />
+                      <br />
+                      <Trans>Use the TP/SL button to set TP/SL orders.</Trans>
                       <br />
                       <br />
                       <Trans>Use the "Close" button to reduce your position.</Trans>
@@ -612,7 +630,7 @@ export function PositionItem(p: Props) {
                 handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
                 handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
                 handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
-                handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
+                handleTriggerClose={handleOpenAddTPSLModal}
                 disabled={isActionsDisabled}
               />
             </div>
@@ -798,7 +816,7 @@ export function PositionItem(p: Props) {
                   handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
                   handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
                   handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
-                  handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger, true)}
+                  handleTriggerClose={handleOpenAddTPSLModal}
                   disabled={isActionsDisabled}
                 />
               </div>
@@ -813,6 +831,13 @@ export function PositionItem(p: Props) {
     <>
       {p.isLarge ? renderLarge() : renderSmall()}
       <TPSLModal isVisible={isTPSLModalVisible} setIsVisible={setIsTPSLModalVisible} position={p.position} />
+      <AddTPSLModal
+        isVisible={isAddTPSLModalVisible}
+        setIsVisible={setIsAddTPSLModalVisible}
+        position={p.position}
+        onBack={handleAddTPSLBack}
+        onSuccess={handleAddTPSLSuccess}
+      />
     </>
   );
 }

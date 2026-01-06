@@ -82,7 +82,7 @@ export function getPositionSellerTradeFlags(isLong: boolean | undefined, orderOp
     isShort: !isLong,
     isSwap: false,
     isPosition: true,
-    isTrigger: orderOption === OrderOption.Trigger,
+    isTrigger: false,
     isTwap: orderOption === OrderOption.Twap,
   };
 }

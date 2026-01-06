@@ -1825,7 +1825,6 @@ msgstr "옵션 기반 볼트"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Mark"
@@ -3396,8 +3395,8 @@ msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} pe
 msgstr "{longOrShort} 포지션은 시간당 {fundingRate} 자금 수수료를 {fundingAction}하며 차입 수수료를 지불하지 않습니다."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-msgstr "{typeString} 숏 TP/SL: 트리거 가격에 도달할 때 숏 포지션 {0}."
+#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
+#~ msgstr "{typeString} 숏 TP/SL: 트리거 가격에 도달할 때 숏 포지션 {0}."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
@@ -3518,7 +3517,6 @@ msgstr "스왑 제출 완료."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3874,8 +3872,6 @@ msgstr "<0>GMX는 전통적인 주문장과 달리 동적으로 균형 잡힌 �
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -5031,8 +5027,8 @@ msgid "Telegram Group"
 msgstr "텔레그램 그룹"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-msgstr "{typeString} Long TP/SL: 트리거 가격에 도달할 때 {0} 롱 포지션."
+#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+#~ msgstr "{typeString} Long TP/SL: 트리거 가격에 도달할 때 {0} 롱 포지션."
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
@@ -5247,7 +5243,6 @@ msgstr "시프트 요청 이행 중."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
@@ -6026,8 +6021,8 @@ msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText}에서 {toExecutionText}로"
 
 #: src/components/PositionItem/PositionItem.tsx
-msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-msgstr "포지션을 클릭하여 선택한 후 거래 박스를 사용하여 증가시키거나 TP/SL 주문을 설정하세요."
+#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
+#~ msgstr "포지션을 클릭하여 선택한 후 거래 박스를 사용하여 증가시키거나 TP/SL 주문을 설정하세요."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
@@ -6589,7 +6584,6 @@ msgstr "<0>{0}</0> 수령"
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -6843,7 +6837,6 @@ msgstr ""
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -7502,6 +7495,10 @@ msgstr "문자, 숫자 및 언더스코어만 허용됩니다."
 msgid "High TWAP network fee"
 msgstr "높은 TWAP 네트워크 수수료"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the TP/SL button to set TP/SL orders."
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr ""
@@ -8061,6 +8058,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "레이지 트레이드"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Click on the position to select it, then use the trade box to increase it."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"

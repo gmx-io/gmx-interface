@@ -1825,7 +1825,6 @@ msgstr "基于期权的金库"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Mark"
@@ -3396,8 +3395,8 @@ msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} pe
 msgstr "{longOrShort} 仓位 {fundingAction} 每小时 {fundingRate} 的资金费用，且不支付借贷费用。"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-msgstr "{typeString} 做空 TP/SL：当达到触发价格时 {0} 一个做空仓位。"
+#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
+#~ msgstr "{typeString} 做空 TP/SL：当达到触发价格时 {0} 一个做空仓位。"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
@@ -3518,7 +3517,6 @@ msgstr "交换已提交。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3874,8 +3872,6 @@ msgstr "<0>GMX 与动态平衡的流动性池执行交易，与传统订单簿�
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -5031,8 +5027,8 @@ msgid "Telegram Group"
 msgstr "Telegram 群组"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-msgstr "{typeString} 多头 TP/SL：{0} 当达到触发价格时开立多头头寸。"
+#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+#~ msgstr "{typeString} 多头 TP/SL：{0} 当达到触发价格时开立多头头寸。"
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
@@ -5247,7 +5243,6 @@ msgstr "履行转移请求。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
@@ -6026,8 +6021,8 @@ msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} 到 {toExecutionText}"
 
 #: src/components/PositionItem/PositionItem.tsx
-msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-msgstr "点击仓位选择它，然后使用交易框增加它或设置 TP/SL 订单。"
+#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
+#~ msgstr "点击仓位选择它，然后使用交易框增加它或设置 TP/SL 订单。"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
@@ -6589,7 +6584,6 @@ msgstr "领取 <0>{0}</0>"
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -6843,7 +6837,6 @@ msgstr ""
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -7502,6 +7495,10 @@ msgstr "仅允许字母、数字和下划线。"
 msgid "High TWAP network fee"
 msgstr "高 TWAP 网络费用"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the TP/SL button to set TP/SL orders."
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr ""
@@ -8061,6 +8058,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Click on the position to select it, then use the trade box to increase it."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"

@@ -627,7 +627,7 @@ export function useTradeboxState(
         return;
       }
 
-      if (tradeType && tradeMode && !availableTradeModes.flat().includes(tradeMode)) {
+      if (tradeType && tradeMode && !availableTradeModes.flat().some((mode) => mode === tradeMode)) {
         setTradeMode(availableTradeModes[0]);
       }
     },

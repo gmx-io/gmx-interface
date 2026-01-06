@@ -1825,7 +1825,6 @@ msgstr "Bóvedas Basadas en Opciones"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Mark"
@@ -3396,8 +3395,8 @@ msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} pe
 msgstr "Posiciones {longOrShort} {fundingAction} una comisión de financiación de {fundingRate} por hora y no pagan comisión de préstamo."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-msgstr "{typeString} Corto TP/SL: {0} una posición corta cuando se alcanza el precio de activación."
+#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
+#~ msgstr "{typeString} Corto TP/SL: {0} una posición corta cuando se alcanza el precio de activación."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
@@ -3518,7 +3517,6 @@ msgstr "Intercambio enviado."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3874,8 +3872,6 @@ msgstr "<0>GMX ejecuta operaciones contra un pool de liquidez equilibrado dinám
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -5031,8 +5027,8 @@ msgid "Telegram Group"
 msgstr "Grupo de Telegram"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-msgstr "{typeString} Largo TP/SL: {0} una posición larga cuando se alcanza el precio de activación."
+#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+#~ msgstr "{typeString} Largo TP/SL: {0} una posición larga cuando se alcanza el precio de activación."
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
@@ -5247,7 +5243,6 @@ msgstr "Cumpliendo solicitud de shift."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
@@ -6026,8 +6021,8 @@ msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} a {toExecutionText}"
 
 #: src/components/PositionItem/PositionItem.tsx
-msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-msgstr "Haz clic en la posición para seleccionarla, luego usa el cuadro de operación para aumentarla o establecer órdenes TP/SL."
+#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
+#~ msgstr "Haz clic en la posición para seleccionarla, luego usa el cuadro de operación para aumentarla o establecer órdenes TP/SL."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
@@ -6589,7 +6584,6 @@ msgstr "Reclamar <0>{0}</0>"
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -6843,7 +6837,6 @@ msgstr ""
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -7502,6 +7495,10 @@ msgstr "Solo letras, números y guiones bajos están permitidos"
 msgid "High TWAP network fee"
 msgstr "Alta tarifa de red TWAP"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the TP/SL button to set TP/SL orders."
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr ""
@@ -8061,6 +8058,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Click on the position to select it, then use the trade box to increase it."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"

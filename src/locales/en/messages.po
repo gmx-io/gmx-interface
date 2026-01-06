@@ -1825,7 +1825,6 @@ msgstr "Option-based Vaults"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Mark"
@@ -3396,8 +3395,8 @@ msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} pe
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-msgstr "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
+#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
+#~ msgstr "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
@@ -3518,7 +3517,6 @@ msgstr "Swap submitted."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -3874,8 +3872,6 @@ msgstr "<0>GMX executes trades against a dynamically balanced liquidity pool, un
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -5031,8 +5027,8 @@ msgid "Telegram Group"
 msgstr "Telegram Group"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-msgstr "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
+#~ msgstr "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
@@ -5247,7 +5243,6 @@ msgstr "Fulfilling shift request."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
@@ -6026,8 +6021,8 @@ msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} to {toExecutionText}"
 
 #: src/components/PositionItem/PositionItem.tsx
-msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-msgstr "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
+#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
+#~ msgstr "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
@@ -6589,7 +6584,6 @@ msgstr "Claim <0>{0}</0>"
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -6843,7 +6837,6 @@ msgstr "GMX rewards:"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -7502,6 +7495,10 @@ msgstr "Only letters, numbers and underscores are allowed."
 msgid "High TWAP network fee"
 msgstr "High TWAP network fee"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the TP/SL button to set TP/SL orders."
+msgstr "Use the TP/SL button to set TP/SL orders."
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "What is GM?"
@@ -8061,6 +8058,10 @@ msgstr "TP/SL fees"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Click on the position to select it, then use the trade box to increase it."
+msgstr "Click on the position to select it, then use the trade box to increase it."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"

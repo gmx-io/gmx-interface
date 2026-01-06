@@ -11,13 +11,11 @@ import { PositionInfo } from "../positions";
 
 export enum OrderOption {
   Market = "Market",
-  Trigger = "Trigger",
   Twap = "TWAP",
 }
 
 export const ORDER_OPTION_TO_TRADE_MODE: Record<OrderOption, TradeMode> = {
   [OrderOption.Market]: TradeMode.Market,
-  [OrderOption.Trigger]: TradeMode.Trigger,
   [OrderOption.Twap]: TradeMode.Twap,
 };
 
