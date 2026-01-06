@@ -26,23 +26,24 @@ export function MarketPoolSelectorField() {
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
 
   return (
-    <div className="flex flex-col gap-8" ref={popoverReferenceRef}>
-      <BlockField
-        label={t`Pool`}
-        content={
-          <PoolSelector2
-            selectedPoolName={poolName}
-            options={relatedMarketStats}
-            tradeType={tradeType}
-            positionStats={relatedMarketsPositionStats}
-            onSelect={setMarketAddress}
-            handleClassName="inline-block overflow-hidden text-ellipsis whitespace-nowrap text-12"
-            chevronClassName="w-12 text-typography-secondary max-lg:ml-4"
-            wrapperClassName="overflow-hidden"
-            popoverReferenceRef={popoverReferenceRef}
-          />
-        }
-      />
-    </div>
+    <BlockField
+      containerRef={popoverReferenceRef}
+      forwardClickToSelector
+      label={t`Pool`}
+      className="group/selector-field"
+      content={
+        <PoolSelector2
+          selectedPoolName={poolName}
+          options={relatedMarketStats}
+          tradeType={tradeType}
+          positionStats={relatedMarketsPositionStats}
+          onSelect={setMarketAddress}
+          handleClassName="inline-block overflow-hidden text-ellipsis whitespace-nowrap text-12 group-gmx-hover/selector-field:text-blue-300"
+          chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
+          wrapperClassName="overflow-hidden"
+          popoverReferenceRef={popoverReferenceRef}
+        />
+      }
+    />
   );
 }

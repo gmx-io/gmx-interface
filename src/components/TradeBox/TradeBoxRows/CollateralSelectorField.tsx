@@ -38,36 +38,36 @@ export function CollateralSelectorField(p: Props) {
   const collateralInTooltipContent = useCollateralInTooltipContent();
 
   return (
-    <div className="flex flex-col gap-8" ref={popoverReferenceRef}>
-      <BlockField
-        label={
-          <TooltipWithPortal
-            position="bottom-end"
-            content={collateralInTooltipContent}
-            variant="none"
-            className="overflow-hidden"
-            handleClassName="!flex overflow-hidden"
-            contentClassName="overflow-hidden"
-          >
-            <span className="overflow-hidden text-ellipsis">
-              <Trans>Collateral</Trans>
-            </span>
-          </TooltipWithPortal>
-        }
-        labelClassName="overflow-hidden shrink-1 grow-0 flex"
-        contentClassName="shrink-0 min-w-[unset]"
-        className="overflow-hidden"
-        content={
-          <CollateralSelector
-            onSelect={onSelectCollateralAddress}
-            options={availableTokens}
-            disabledOptions={disabledTokens}
-            selectedTokenSymbol={selectedTokenName}
-            popoverReferenceRef={popoverReferenceRef}
-          />
-        }
-      />
-    </div>
+    <BlockField
+      containerRef={popoverReferenceRef}
+      forwardClickToSelector
+      label={
+        <TooltipWithPortal
+          position="bottom-end"
+          content={collateralInTooltipContent}
+          variant="none"
+          className="overflow-hidden"
+          handleClassName="!flex overflow-hidden"
+          contentClassName="overflow-hidden"
+        >
+          <span className="overflow-hidden text-ellipsis">
+            <Trans>Collateral</Trans>
+          </span>
+        </TooltipWithPortal>
+      }
+      labelClassName="overflow-hidden shrink-1 grow-0 flex"
+      contentClassName="shrink-0 min-w-[unset]"
+      className="group/selector-field overflow-hidden"
+      content={
+        <CollateralSelector
+          onSelect={onSelectCollateralAddress}
+          options={availableTokens}
+          disabledOptions={disabledTokens}
+          selectedTokenSymbol={selectedTokenName}
+          popoverReferenceRef={popoverReferenceRef}
+        />
+      }
+    />
   );
 }
 

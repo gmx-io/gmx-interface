@@ -45,8 +45,8 @@ export function CollateralSelector(props: Props) {
       label={props.selectedTokenSymbol}
       modalLabel={t`Collateral In`}
       qa="collateral-in-selector"
-      chevronClassName="w-12 text-typography-secondary max-lg:ml-4"
-      handleClassName="text-12"
+      chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
+      handleClassName="text-12 group-gmx-hover/selector-field:text-blue-300"
       popoverReferenceRef={props.popoverReferenceRef}
     >
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
