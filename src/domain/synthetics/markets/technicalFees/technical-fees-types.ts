@@ -75,8 +75,8 @@ export type CalculateTechnicalFeesParams = {
   srcChainId: SourceChainId | undefined;
   firstTokenAddress: NativeTokenSupportedAddress | ERC20Address | undefined;
   firstTokenAmount: bigint;
-  secondTokenAddress: NativeTokenSupportedAddress | ERC20Address | undefined;
-  secondTokenAmount: bigint;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
   marketTokenAmount: bigint;
   operation: Operation;
   amounts: DepositAmounts | WithdrawalAmounts | undefined;

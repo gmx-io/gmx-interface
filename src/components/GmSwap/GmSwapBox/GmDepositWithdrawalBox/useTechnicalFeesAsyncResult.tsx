@@ -3,12 +3,12 @@ import {
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
+  selectPoolsDetailsLongTokenAmount,
   selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
-  selectPoolsDetailsSecondTokenAddress,
-  selectPoolsDetailsSecondTokenAmount,
   selectPoolsDetailsSelectedMarketAddressForGlv,
+  selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
@@ -20,7 +20,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calculateTechnicalFees } from "domain/synthetics/markets/technicalFees/calculateTechnicalFees";
-import type { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
+import type {
+  CalculateTechnicalFeesParams,
+  TechnicalGmFees,
+} from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { useChainId } from "lib/chains";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
@@ -39,8 +42,8 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
 
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
-  const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
-  const secondTokenAmount = useSelector(selectPoolsDetailsSecondTokenAmount);
+  const longTokenAmount = useSelector(selectPoolsDetailsLongTokenAmount);
+  const shortTokenAmount = useSelector(selectPoolsDetailsShortTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
 
   const prevPaySource = usePrevious(paySource);
@@ -66,7 +69,7 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
   const technicalFeesAsyncResult = useThrottledAsync(async (p) => calculateTechnicalFees(p.params), {
     params:
       rawParams && gasLimits && tokensData && gasPrice !== undefined
-        ? {
+        ? ({
             chainId,
             globalExpressParams,
             rawParams,
@@ -76,15 +79,15 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
             srcChainId,
             firstTokenAddress,
             firstTokenAmount,
-            secondTokenAddress,
-            secondTokenAmount,
+            longTokenAmount,
+            shortTokenAmount,
             marketTokenAmount: marketOrGlvTokenAmount,
             operation,
             amounts,
             gasLimits,
             tokensData,
             gasPrice,
-          }
+          } satisfies CalculateTechnicalFeesParams)
         : undefined,
     withLoading: false,
     forceRecalculate,
