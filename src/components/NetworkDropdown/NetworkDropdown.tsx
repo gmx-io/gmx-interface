@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 import { getChainIcon } from "config/icons";
 import { isSettlementChain, isSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { switchNetwork } from "lib/wallets";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { getChainName } from "sdk/configs/chains";
@@ -150,8 +151,9 @@ function NetworkMenuItem({
   disabled?: boolean;
 }) {
   const { isConnected } = useAccount();
+  const [settlementChainId] = useGmxAccountSettlementChainId();
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
-  const isArbitrum = isSettlementChain(network.value);
+  const isSelectedSettlementChain = network.value === settlementChainId;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
@@ -182,7 +184,7 @@ function NetworkMenuItem({
               >
                 {network.label}
               </span>
-              {isArbitrum && (
+              {isSelectedSettlementChain && (
                 <TooltipWithPortal
                   handle={<WalletIcon className="size-16 text-typography-secondary" />}
                   position="top"
