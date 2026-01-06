@@ -6,7 +6,7 @@ import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUsdToNativeTokenMultichain } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
-import { formatBalanceAmount } from "sdk/utils/numbers";
+import { adjustForDecimals, formatBalanceAmount } from "sdk/utils/numbers";
 
 export type SourceChainNativeFeeError = {
   buttonText: string;
@@ -37,6 +37,7 @@ export function useSourceChainNativeFeeError({
   return useMemo(() => {
     if (
       (paySource !== undefined && paySource !== "sourceChain") ||
+      chainId === undefined ||
       srcChainId === undefined ||
       nativeFee === undefined ||
       sourceChainNativeTokenBalance === undefined
@@ -44,10 +45,18 @@ export function useSourceChainNativeFeeError({
       return undefined;
     }
 
-    const nativeCurrency = getViemChain(srcChainId).nativeCurrency;
-    const symbol = nativeCurrency.symbol;
-    const decimals = nativeCurrency.decimals;
-    const requiredAmount = nativeFee + payNativeTokenAmount;
+    const settlementChainNativeCurrency = getViemChain(chainId).nativeCurrency;
+    const sourceChainNativeCurrency = getViemChain(srcChainId).nativeCurrency;
+    const symbol = sourceChainNativeCurrency.symbol;
+    const decimals = sourceChainNativeCurrency.decimals;
+
+    const payNativeTokenAmountInSourceDecimals = adjustForDecimals(
+      payNativeTokenAmount,
+      settlementChainNativeCurrency.decimals,
+      sourceChainNativeCurrency.decimals
+    );
+
+    const requiredAmount = nativeFee + payNativeTokenAmountInSourceDecimals;
 
     if (sourceChainNativeTokenBalance < requiredAmount) {
       const availableFormatted = formatBalanceAmount(sourceChainNativeTokenBalance, decimals);
@@ -60,5 +69,5 @@ export function useSourceChainNativeFeeError({
     }
 
     return undefined;
-  }, [paySource, srcChainId, nativeFee, sourceChainNativeTokenBalance, payNativeTokenAmount]);
+  }, [paySource, chainId, srcChainId, nativeFee, sourceChainNativeTokenBalance, payNativeTokenAmount]);
 }
