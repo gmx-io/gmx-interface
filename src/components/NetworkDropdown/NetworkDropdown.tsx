@@ -5,7 +5,7 @@ import partition from "lodash/partition";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
-import { isSettlementChain, isSourceChain } from "config/multichain";
+import { isSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { switchNetwork } from "lib/wallets";
@@ -72,6 +72,7 @@ export default function NetworkDropdown({
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const [selectedSettlementChainId] = useGmxAccountSettlementChainId();
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,
@@ -79,10 +80,10 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
   );
 
   const walletAndGmxAccountNetworks = enabledNetworks.filter(
-    (network) => isSourceChain(network.value) || isSettlementChain(network.value)
+    (network) => isSourceChain(network.value) || network.value === selectedSettlementChainId
   );
   const walletOnlyNetworks = enabledNetworks.filter(
-    (network) => !isSourceChain(network.value) && !isSettlementChain(network.value)
+    (network) => !isSourceChain(network.value) && network.value !== selectedSettlementChainId
   );
 
   return (
@@ -151,9 +152,9 @@ function NetworkMenuItem({
   disabled?: boolean;
 }) {
   const { isConnected } = useAccount();
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const [selectedSettlementChainId] = useGmxAccountSettlementChainId();
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
-  const isSelectedSettlementChain = network.value === settlementChainId;
+  const isSelectedSettlementChain = network.value === selectedSettlementChainId;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
