@@ -1882,27 +1882,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@binance/w3w-types@npm:1.1.4":
-  version: 1.1.4
-  resolution: "@binance/w3w-types@npm:1.1.4"
-  dependencies:
-    eventemitter3: "npm:^5.0.0"
-  checksum: 10/8f4ff788966b2c5b87d5cff83e229f9c372030091a203ac2639c9c3d0fbe4548f4d3efe552aae53a8f762847a3c39d485ad066e357440febe63ddb1a28a37e87
-  languageName: node
-  linkType: hard
-
-"@binance/w3w-utils@npm:1.1.4":
-  version: 1.1.4
-  resolution: "@binance/w3w-utils@npm:1.1.4"
-  dependencies:
-    "@binance/w3w-types": "npm:1.1.4"
-    eventemitter3: "npm:^5.0.0"
-    hash.js: "npm:^1.1.7"
-    js-base64: "npm:^3.7.5"
-  checksum: 10/c50fcae1d3053112a040a66eefdf241e56ad13a7d09cb0f7e52ffd5cd434e7d4e1de3f2aeeb848d99f81e2c984b85624b1533536e0e012fcbcae2c2ae9f91398
-  languageName: node
-  linkType: hard
-
 "@coinbase/cdp-sdk@npm:^1.0.0":
   version: 1.38.5
   resolution: "@coinbase/cdp-sdk@npm:1.38.5"
@@ -10771,7 +10750,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:5.0.1, eventemitter3@npm:^5.0.0, eventemitter3@npm:^5.0.1":
+"eventemitter3@npm:5.0.1, eventemitter3@npm:^5.0.1":
   version: 5.0.1
   resolution: "eventemitter3@npm:5.0.1"
   checksum: 10/ac6423ec31124629c84c7077eed1e6987f6d66c31cf43c6fcbf6c87791d56317ce808d9ead483652436df171b526fc7220eccdc9f3225df334e81582c3cf7dd5
@@ -11486,7 +11465,6 @@ __metadata:
   dependencies:
     "@apollo/client": "npm:3.5.6"
     "@babel/plugin-transform-private-property-in-object": "npm:^7.25.9"
-    "@binance/w3w-utils": "npm:1.1.4"
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
@@ -11753,7 +11731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hash.js@npm:1.1.7, hash.js@npm:^1.0.0, hash.js@npm:^1.0.3, hash.js@npm:^1.1.7":
+"hash.js@npm:1.1.7, hash.js@npm:^1.0.0, hash.js@npm:^1.0.3":
   version: 1.1.7
   resolution: "hash.js@npm:1.1.7"
   dependencies:
@@ -12667,13 +12645,6 @@ __metadata:
   version: 6.1.1
   resolution: "jose@npm:6.1.1"
   checksum: 10/30a9a269cb54e6b1b01abaffba16fc4553ee9ef46c4dd6bf4e0f0b8500b5b6ae8145898412eab3bdc5ebdcd397309da9b8a01d2855ec862ad434d054e3416446
-  languageName: node
-  linkType: hard
-
-"js-base64@npm:^3.7.5":
-  version: 3.7.7
-  resolution: "js-base64@npm:3.7.7"
-  checksum: 10/185e34c536a6b1c4e1ad8bd96d25b49a9ea4e6803e259eaaaca95f1b392a0d590b2933c5ca8580c776f7279507944b81ff1faf889d84baa5e31f026e96d676a5
   languageName: node
   linkType: hard
 

@@ -447,6 +447,7 @@ function getIsMaxLeverageError({
     marketsInfoData: undefined,
     externalSwapQuoteParams: undefined,
     chainId,
+    allowSameTokenSwap: false,
   });
   const markPrice = order.marketInfo.indexToken.prices.minPrice;
   const sizeDeltaUsd = order.sizeDeltaUsd;

@@ -205,6 +205,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         marketsInfoData,
         chainId,
         externalSwapQuoteParams,
+        allowSameTokenSwap: false,
       });
 
       values.swapStrategy = swapAmounts.swapStrategy;
@@ -299,6 +300,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         marketsInfoData,
         chainId,
         externalSwapQuoteParams,
+        allowSameTokenSwap: false,
       });
       values.swapStrategy = swapAmounts.swapStrategy;
     }
@@ -353,6 +355,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           marketsInfoData,
           chainId,
           externalSwapQuoteParams,
+          allowSameTokenSwap: false,
         });
         values.swapStrategy = swapAmounts.swapStrategy;
       }

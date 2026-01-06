@@ -151,6 +151,7 @@ export function getRelayerFeeParams({
         marketsInfoData: undefined,
         chainId,
         externalSwapQuoteParams: undefined,
+        allowSameTokenSwap: false,
       });
     }
 
