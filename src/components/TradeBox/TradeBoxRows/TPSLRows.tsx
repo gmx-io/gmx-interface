@@ -80,7 +80,7 @@ export function TPSLGroup() {
         <TooltipWithPortal
           handle={<Trans>Take Profit / Stop Loss</Trans>}
           variant="iconStroke"
-          position="bottom"
+          position="top"
           content={
             <Trans>
               Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list

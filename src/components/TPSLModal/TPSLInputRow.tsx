@@ -9,6 +9,7 @@ import { calculateDisplayDecimals, expandDecimals, formatAmount, parseValue, rem
 import { bigMath } from "sdk/utils/bigmath";
 
 import NumberInput from "components/NumberInput/NumberInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -300,27 +301,35 @@ export function TPSLInputRow({
   if (variant === "compact") {
     return (
       <div className="flex gap-8">
-        <div
-          className={cx(
-            "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
-            priceError ? "border-red-500" : "border-slate-800",
-            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
-          )}
-          onClick={handleBoxClick(priceInputRef)}
+        <TooltipWithPortal
+          className="flex-1"
+          handleClassName="w-full"
+          variant="none"
+          disabled={!priceError}
+          content={priceError}
         >
-          <div className="flex items-center justify-between gap-4">
-            <div className="relative grow">
-              <NumberInput
-                value={priceValue}
-                className={cx("h-18 w-full min-w-0 p-0 text-13 outline-none", { "text-red-500": priceError })}
-                inputRef={priceInputRef}
-                onValueChange={handlePriceChange}
-                placeholder={pricePlaceholder}
-              />
+          <div
+            className={cx(
+              "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
+              priceError ? "border-red-500" : "border-slate-800",
+              "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
+            )}
+            onClick={handleBoxClick(priceInputRef)}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="relative grow">
+                <NumberInput
+                  value={priceValue}
+                  className={cx("h-18 w-full min-w-0 p-0 text-13 outline-none", { "text-red-500": priceError })}
+                  inputRef={priceInputRef}
+                  onValueChange={handlePriceChange}
+                  placeholder={pricePlaceholder}
+                />
+              </div>
+              <span className="text-13 text-typography-secondary">USD</span>
             </div>
-            <span className="text-13 text-typography-secondary">USD</span>
           </div>
-        </div>
+        </TooltipWithPortal>
 
         <div
           className={cx(
@@ -355,28 +364,36 @@ export function TPSLInputRow({
 
   return (
     <div className="flex gap-8">
-      <div
-        className={cx(
-          "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
-          priceError ? "border-red-500" : "border-slate-800",
-          "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
-        )}
-        onClick={handleBoxClick(priceInputRef)}
+      <TooltipWithPortal
+        className="flex-1"
+        handleClassName="w-full"
+        variant="none"
+        disabled={!priceError}
+        content={priceError}
       >
-        <div className="text-body-small text-typography-secondary">{priceLabel}</div>
-        <div className="flex items-center justify-between">
-          <NumberInput
-            value={priceValue}
-            className={cx("bg-transparent h-24 w-full min-w-0 p-0 text-16 outline-none", {
-              "text-red-500": priceError,
-            })}
-            inputRef={priceInputRef}
-            onValueChange={handlePriceChange}
-            placeholder="0.00"
-          />
-          <span className="text-14 text-typography-secondary">USD</span>
+        <div
+          className={cx(
+            "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
+            priceError ? "border-red-500" : "border-slate-800",
+            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+          )}
+          onClick={handleBoxClick(priceInputRef)}
+        >
+          <div className="text-body-small text-typography-secondary">{priceLabel}</div>
+          <div className="flex items-center justify-between">
+            <NumberInput
+              value={priceValue}
+              className={cx("bg-transparent h-24 w-full min-w-0 p-0 text-16 outline-none", {
+                "text-red-500": priceError,
+              })}
+              inputRef={priceInputRef}
+              onValueChange={handlePriceChange}
+              placeholder="0.00"
+            />
+            <span className="text-14 text-typography-secondary">USD</span>
+          </div>
         </div>
-      </div>
+      </TooltipWithPortal>
       <div
         className={cx(
           "flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-slate-800 bg-slate-800 px-8 py-6",
