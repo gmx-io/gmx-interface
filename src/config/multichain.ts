@@ -35,6 +35,8 @@ import {
   AVALANCHE_FUJI,
   BOTANIX,
   ContractsChainId,
+  SETTLEMENT_CHAIN_IDS,
+  SETTLEMENT_CHAIN_IDS_DEV,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -46,7 +48,7 @@ import {
 import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
-import { isSettlementChain, isSourceChain, SOURCE_CHAINS } from "sdk/configs/multichain";
+import { isSettlementChain, isSourceChain } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
 import platformTokensData from "./static/platformTokens.json";
@@ -93,6 +95,10 @@ export type MultichainTokenId = {
   isTestnet?: boolean;
   isPlatformToken?: boolean;
 };
+
+export const SETTLEMENT_CHAINS: SettlementChainId[] = isDevelopment()
+  ? (SETTLEMENT_CHAIN_IDS as unknown as SettlementChainId[]).concat(SETTLEMENT_CHAIN_IDS_DEV)
+  : (SETTLEMENT_CHAIN_IDS as unknown as SettlementChainId[]);
 
 const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>> = {
   ["USDC"]: {
@@ -311,12 +317,6 @@ function addMultichainPlatformTokenConfig(
   }
 }
 
-export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
-
-if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
-}
-
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
 export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
 export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
@@ -360,11 +360,11 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
       const sourceChainId = parseInt(sourceChainIdString) as SettlementChainId | SourceChainId;
-      if (!isSourceChain(sourceChainId)) {
+      if (!isSourceChain(sourceChainId, settlementChainId)) {
         continue;
       }
 
-      if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) {
+      if ((settlementChainId as number) === (sourceChainId as number)) {
         continue;
       }
 
@@ -451,12 +451,11 @@ export const MULTICALLS_MAP: Record<SourceChainId, string> = {
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BSC_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [ARBITRUM]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [AVALANCHE]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [ARBITRUM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [AVALANCHE_FUJI]: "0xca11bde05977b3631167028862be2a173976ca11",
 };
-
-if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  MULTICALLS_MAP[ARBITRUM_SEPOLIA as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
-  MULTICALLS_MAP[ARBITRUM as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
-}
 
 /**
  * Compiled bytecode for MockUnlimitedToken
@@ -469,6 +468,7 @@ export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string>
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", // USDC.SG
   [ARBITRUM]: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", // USDC
   [AVALANCHE]: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E", // USDC
+  [AVALANCHE_FUJI]: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F", // USDC
 };
 
 export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;
@@ -484,6 +484,7 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [SOURCE_BASE_MAINNET]: 30184,
   [AVALANCHE]: 30106,
   [SOURCE_BSC_MAINNET]: 30102,
+  [AVALANCHE_FUJI]: 40106,
 };
 
 export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =

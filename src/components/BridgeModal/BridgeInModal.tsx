@@ -185,7 +185,7 @@ export function BridgeInModal({
     const firstChainWithBalance = Object.entries(multichainMarketTokenBalances.balances).find(([chainIdStr, data]) => {
       const chainIdNum = Number(chainIdStr);
       if (
-        !isSourceChain(chainIdNum) ||
+        !isSourceChain(chainIdNum, chainId) ||
         (chainIdNum as number) === chainId ||
         (chainIdNum as number) === GMX_ACCOUNT_PSEUDO_CHAIN_ID
       ) {
@@ -328,7 +328,7 @@ export function BridgeInModal({
             paySource={"sourceChain"}
             label={t`Deposit`}
             onSelectTokenAddress={(newBridgeInChain) => {
-              if (!isSourceChain(newBridgeInChain)) {
+              if (!isSourceChain(newBridgeInChain, chainId)) {
                 return;
               }
               setBridgeInChain(newBridgeInChain);

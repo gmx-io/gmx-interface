@@ -10,7 +10,7 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-250410222518-4486206/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@f9ee39/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@e7f9a3/api/graphql",
   },
 
   [AVALANCHE]: {

@@ -25,7 +25,7 @@ const realChainId = window.ethereum?.chainId ? parseInt(window.ethereum?.chainId
 
 export const context = createContext<ChainContext>({
   chainId: initialChainId,
-  srcChainId: isSourceChain(realChainId) ? realChainId : undefined,
+  srcChainId: isSourceChain(realChainId, initialChainId) ? realChainId : undefined,
   isConnectedToChainId: false,
 });
 

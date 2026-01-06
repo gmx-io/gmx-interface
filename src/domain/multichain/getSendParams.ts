@@ -63,7 +63,7 @@ export function getMultichainTransferSendParams({
   let extraOptions = "0x";
 
   if (isToGmx) {
-    if (srcChainId === undefined || !isSourceChain(srcChainId)) {
+    if (srcChainId === undefined || !isSourceChain(srcChainId, dstChainId)) {
       throw new Error("Source chain is not supported");
     }
 
