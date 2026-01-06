@@ -1,6 +1,8 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   useCancellingOrdersKeysState,
   useEditingOrderState,
@@ -23,7 +25,7 @@ import {
 } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import { PositionInfo, formatLiquidationPrice } from "domain/synthetics/positions";
+import { PositionInfo, formatLiquidationPrice, getEstimatedLiquidationTimeInHours } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -70,6 +72,11 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
 
   const ordersWithErrors = usePositionOrdersWithErrors(position.key);
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position.market.indexTokenAddress));
+  const { minCollateralUsd } = usePositionsConstants();
+  const estimatedLiquidationHours = useMemo(
+    () => getEstimatedLiquidationTimeInHours(position, minCollateralUsd),
+    [position, minCollateralUsd]
+  );
 
   const { tpOrders, slOrders, allOrders } = useMemo(() => {
     const tpOrders: PositionOrderInfo[] = [];
@@ -257,7 +264,12 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
             <span className="text-body-small text-typography-secondary">
               <Trans>Liquidation Price</Trans>
             </span>
-            <span className="text-body-medium text-red-500 numbers">
+            <span
+              className={cx("text-body-medium numbers", {
+                "color-yellow-300": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+                "color-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
+              })}
+            >
               {formatLiquidationPrice(position.liquidationPrice, {
                 displayDecimals: marketDecimals,
                 visualMultiplier: position.indexToken.visualMultiplier,
