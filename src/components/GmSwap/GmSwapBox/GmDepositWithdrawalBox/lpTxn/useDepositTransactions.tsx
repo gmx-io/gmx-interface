@@ -35,9 +35,7 @@ import {
   TokensBalancesUpdates,
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { buildDepositTransferRequests } from "domain/multichain/buildDepositTransferRequests";
 import { GlvBuyTask, GmBuyTask } from "domain/multichain/progress/GmOrGlvBuyProgress";
-import type { TechnicalGmFees } from "domain/multichain/technical-fees-types";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { TransferRequests } from "domain/multichain/types";
 import {
@@ -47,11 +45,13 @@ import {
   RawCreateDepositParams,
   RawCreateGlvDepositParams,
 } from "domain/synthetics/markets";
+import { buildDepositTransferRequests } from "domain/synthetics/markets/buildDepositTransferRequests";
 import { createGlvDepositTxn } from "domain/synthetics/markets/createGlvDepositTxn";
 import { createMultichainDepositTxn } from "domain/synthetics/markets/createMultichainDepositTxn";
 import { createMultichainGlvDepositTxn } from "domain/synthetics/markets/createMultichainGlvDepositTxn";
 import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSourceChainDepositTxn";
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
+import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { ERC20Address, NativeTokenSupportedAddress, TokenBalanceType } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {

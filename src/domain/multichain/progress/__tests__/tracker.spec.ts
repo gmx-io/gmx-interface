@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET, SOURCE_SEPOLIA } from "config/chains";
+import { Operation } from "domain/synthetics/markets/types";
 import { getGlvToken, getGmToken } from "domain/tokens";
 import { expandDecimals, numberToBigint } from "lib/numbers";
-
-import { Operation } from "components/GmSwap/GmSwapBox/types";
 
 import { GlvBuyTask, GmBuyTask } from "../GmOrGlvBuyProgress";
 import { GlvSellTask, GmSellTask } from "../GmOrGlvSellProgress";

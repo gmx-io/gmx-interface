@@ -184,7 +184,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const technicalFees = useTechnicalFees();
 
-  const { logicalFees } = useDepositWithdrawalFees({
+  const logicalFees = useDepositWithdrawalFees({
     amounts,
     chainId,
     gasLimits,

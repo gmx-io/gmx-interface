@@ -2,11 +2,11 @@ import { useCallback, useState } from "react";
 
 import { selectPoolsDetailsOperation } from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { TechnicalGmFees } from "domain/multichain/technical-fees-types";
+import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
+import { Operation } from "domain/synthetics/markets/types";
 
 import { useDepositTransactions } from "./useDepositTransactions";
 import { useWithdrawalTransactions } from "./useWithdrawalTransactions";
-import { Operation } from "../../types";
 
 export interface UseLpTransactionProps {
   shouldDisableValidation?: boolean;

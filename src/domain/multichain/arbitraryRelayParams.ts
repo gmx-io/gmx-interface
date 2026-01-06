@@ -4,7 +4,6 @@ import {
   encodePacked,
   EstimateGasParameters,
   keccak256,
-  maxUint256,
   PublicClient,
   toHex,
   zeroHash,
@@ -13,6 +12,7 @@ import {
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
+import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
 import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT } from "config/multichain";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
@@ -175,7 +175,7 @@ async function estimateArbitraryGasLimit({
               multichainBalanceKey(account, gasPaymentParams.gasPaymentTokenAddress),
               DATASTORE_SLOT_INDEXES.uintValues
             ),
-            value: toHex(maxUint256 / 100n, { size: 32 }),
+            value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
           },
         ],
       },

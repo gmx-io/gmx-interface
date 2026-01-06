@@ -2,10 +2,11 @@ import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
-import type { TechnicalGmFees } from "domain/multichain/technical-fees-types";
 import type { TransferRequests } from "domain/multichain/types";
 import type { GmPaySource } from "domain/synthetics/markets";
 import { applySlippageToMinOut } from "sdk/utils/trade";
+
+import type { TechnicalGmFees } from "./technicalFees/technical-fees-types";
 
 export function buildDepositTransferRequests({
   isDeposit,

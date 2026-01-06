@@ -2,10 +2,10 @@ import { useEffect, useMemo } from "react";
 
 import {
   selectPoolsDetailsFlags,
-  selectPoolsDetailsIsMarketForGlvSelectedManually,
   selectPoolsDetailsFocusedInput,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsGlvTokenAmount,
+  selectPoolsDetailsIsMarketForGlvSelectedManually,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsLongTokenAmount,
@@ -23,8 +23,7 @@ import { getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { absDiffBps } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-
-import type { useDepositWithdrawalFees } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useDepositWithdrawalFees";
+import type { GmSwapFees } from "sdk/types/trade";
 
 import { useGlvGmMarketsWithComposition } from "./useMarketGlvGmMarketsCompositions";
 
@@ -39,7 +38,7 @@ export const useBestGmPoolAddressForGlv = ({
   uiFeeFactor: bigint;
   marketTokenAmount: bigint;
   marketTokensData: TokensData | undefined;
-  fees: ReturnType<typeof useDepositWithdrawalFees>["logicalFees"];
+  fees: GmSwapFees | undefined;
 }) => {
   const { chainId, srcChainId } = useChainId();
 

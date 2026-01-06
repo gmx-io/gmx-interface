@@ -21,10 +21,11 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { TechnicalGmFees } from "domain/multichain/technical-fees-types";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
+import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
+import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -34,7 +35,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { Operation } from "../types";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
 import { useTokensToApprove } from "./useTokensToApprove";
 

@@ -4,7 +4,7 @@ import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
 import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
 import { isGlvAddress } from "domain/synthetics/markets/glv";
-import { GmPaySource } from "domain/synthetics/markets/types";
+import { GmPaySource, Mode, Operation, isMode, isOperation } from "domain/synthetics/markets/types";
 import { TokensData } from "domain/synthetics/tokens";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -17,7 +17,6 @@ import { isMarketTokenAddress } from "sdk/configs/markets";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 import { FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
-import { Mode, Operation, isMode, isOperation } from "components/GmSwap/GmSwapBox/types";
 import {
   useMultichainMarketTokensBalancesRequest,
   useMultichainTokens,

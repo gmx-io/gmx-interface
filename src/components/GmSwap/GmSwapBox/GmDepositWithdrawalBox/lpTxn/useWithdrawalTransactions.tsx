@@ -29,7 +29,6 @@ import {
   TokensBalancesUpdates,
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
-import { buildWithdrawalTransferRequests } from "domain/multichain/buildWithdrawalTransferRequests";
 import { GlvSellTask, GmSellTask } from "domain/multichain/progress/GmOrGlvSellProgress";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { TransferRequests } from "domain/multichain/types";
@@ -40,6 +39,7 @@ import {
   RawCreateGlvWithdrawalParams,
   RawCreateWithdrawalParams,
 } from "domain/synthetics/markets";
+import { buildWithdrawalTransferRequests } from "domain/synthetics/markets/buildWithdrawalTransferRequests";
 import { createGlvWithdrawalTxn } from "domain/synthetics/markets/createGlvWithdrawalTxn";
 import { createMultichainGlvWithdrawalTxn } from "domain/synthetics/markets/createMultichainGlvWithdrawalTxn";
 import { createMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
@@ -535,10 +535,8 @@ function useWithdrawalTransferRequests(): TransferRequests | undefined {
       isWithdrawal,
       isGlv,
       chainId: chainId,
-      glvTokenAddress,
-      glvTokenAmount,
-      marketTokenAddress,
-      marketTokenAmount,
+      glvOrMarketTokenAddress: isGlv ? glvTokenAddress : marketTokenAddress,
+      glvOrMarketAmount: isGlv ? glvTokenAmount : marketTokenAmount,
     });
   }, [chainId, glvTokenAddress, glvTokenAmount, isGlv, isWithdrawal, marketTokenAddress, marketTokenAmount]);
 }
