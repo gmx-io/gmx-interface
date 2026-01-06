@@ -664,10 +664,6 @@ msgstr "청구된 리베이트 및 에어드랍의 분배 내역."
 msgid "providing liquidity"
 msgstr "유동성 제공"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -708,14 +704,6 @@ msgstr "지정가 가격이 마크 가격 초과"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "미결제 약정 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "지갑 생성 또는 가져오기"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks and Settings"
-msgstr "네트워크 및 설정"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
@@ -3422,10 +3410,6 @@ msgstr "언스테이킹"
 msgid "Debug Settings"
 msgstr "디버그 설정"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "More Options"
-msgstr "더 많은 설정"
-
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms."
 msgstr ""
@@ -3578,10 +3562,6 @@ msgstr "추천 코드 제출됨."
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "스캔 후, 지갑을 연결할 수 있는 연결 프롬프트가 나타납니다."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4180,10 +4160,6 @@ msgstr "TP"
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>수령 가능 자금 수수료.</0>"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Binance 앱에 로그인하고 [지갑]을 탭하세요. [Web3]로 이동하세요."
-
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
@@ -4514,10 +4490,6 @@ msgstr "<0>솔라나 지원</0><1>Botanix 지원</1><2>GMX 익스프레스</2>"
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 msgstr "결합된 이익 실현이 최대(100%)입니다. 기존 값을 줄여 더 많은 주문을 추가하세요."
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks"
-msgstr "네트워크"
 
 #: src/components/GmList/GmList.tsx
 msgid "POOL"
@@ -5499,10 +5471,6 @@ msgstr "새 금액 또는 가격 입력"
 msgid "Wins and losses for fully closed positions."
 msgstr "완전히 종료된 포지션의 승패."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Binance 앱 열기"
-
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr "여기에 답변을 입력하세요."
@@ -6173,10 +6141,6 @@ msgstr "시작까지"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "현재 네트워크 수수료가 높습니다. 이는 {chainName} 네트워크의 일시적인 거래량 증가로 인한 것일 수 있습니다."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "QR 코드 스캔"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"

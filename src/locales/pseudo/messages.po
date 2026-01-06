@@ -664,10 +664,6 @@ msgstr ""
 msgid "providing liquidity"
 msgstr ""
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr ""
@@ -708,14 +704,6 @@ msgstr ""
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr ""
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks and Settings"
-msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
@@ -3422,10 +3410,6 @@ msgstr ""
 msgid "Debug Settings"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "More Options"
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms."
 msgstr ""
@@ -3577,10 +3561,6 @@ msgstr ""
 
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
-msgstr ""
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
 msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
@@ -4180,10 +4160,6 @@ msgstr ""
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr ""
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr ""
-
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
@@ -4513,10 +4489,6 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-msgstr ""
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks"
 msgstr ""
 
 #: src/components/GmList/GmList.tsx
@@ -5499,10 +5471,6 @@ msgstr ""
 msgid "Wins and losses for fully closed positions."
 msgstr ""
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr ""
-
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr ""
@@ -6172,10 +6140,6 @@ msgstr ""
 
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
-msgstr ""
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx

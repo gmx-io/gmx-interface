@@ -664,10 +664,6 @@ msgstr "Historial de distribución para reembolsos reclamados y airdrops."
 msgid "providing liquidity"
 msgstr "proporcionando liquidez"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "Toca [Crear cartera] para empezar a usar tu cartera Web3."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -708,14 +704,6 @@ msgstr "Precio límite por encima del precio de referencia"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Interés Abierto (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "Crear o Importar un Monedero"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks and Settings"
-msgstr "Redes y Ajustes"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
@@ -3422,10 +3410,6 @@ msgstr "Destakear"
 msgid "Debug Settings"
 msgstr "Ajustes de Depuración"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "More Options"
-msgstr "Más Opciones"
-
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms."
 msgstr ""
@@ -3578,10 +3562,6 @@ msgstr "Código de referencia enviado."
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX no está buscando activamente nuevas contrataciones en este momento. Sin embargo, si crees que puedes contribuir al proyecto, por favor envía un email a <0>jobs@gmx.io</0>."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "Después de escanear, aparecerá un mensaje de conexión para que conectes tu monedero."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4180,10 +4160,6 @@ msgstr "TP"
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Comisión de Financiación Reclamable.</0>"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Inicia sesión en tu app de Binance y toca [Wallets]. Ve a [Web3]."
-
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
@@ -4514,10 +4490,6 @@ msgstr "<0>Soporte para Solana</0><1>Soporte para Botanix</1><2>GMX Express</2>"
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 msgstr "Take profits combinados están al máximo (100%). Reduce valores existentes para agregar más órdenes."
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks"
-msgstr "Redes"
 
 #: src/components/GmList/GmList.tsx
 msgid "POOL"
@@ -5499,10 +5471,6 @@ msgstr "Ingresa nueva cantidad o precio"
 msgid "Wins and losses for fully closed positions."
 msgstr "Ganancias y pérdidas para posiciones completamente cerradas."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Abrir la app de Binance"
-
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr "Ingresa tu respuesta aquí."
@@ -6173,10 +6141,6 @@ msgstr "Comienza en"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Las tasas de red son altas actualmente, lo que puede deberse a un aumento temporal en las transacciones en la red {chainName}."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "Escanear el código QR"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"

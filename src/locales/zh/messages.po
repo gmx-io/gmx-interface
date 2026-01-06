@@ -664,10 +664,6 @@ msgstr "已申领返利和空投的分配历史。"
 msgid "providing liquidity"
 msgstr "提供流动性"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "点击[创建钱包]开始使用您的 Web3 钱包。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -708,14 +704,6 @@ msgstr "限价高于标记价格"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "开仓利息 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "创建或导入钱包"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks and Settings"
-msgstr "网络和设置"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
@@ -3422,10 +3410,6 @@ msgstr "解除质押"
 msgid "Debug Settings"
 msgstr "调试设置"
 
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "More Options"
-msgstr "更多选项"
-
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms."
 msgstr ""
@@ -3578,10 +3562,6 @@ msgstr "推荐码已提交。"
 #: src/pages/Jobs/Jobs.jsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以为项目做出贡献，请发送电子邮件至 <0>jobs@gmx.io</0>。"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4180,10 +4160,6 @@ msgstr "TP"
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>可领取资金费用。</0>"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "登录您的 Binance 应用程序并点击 [Wallets]。转到 [Web3]。"
-
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
@@ -4514,10 +4490,6 @@ msgstr "<0>Solana 支持</0><1>Botanix 支持</1><2>GMX 快速</2>"
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
 msgstr "组合止盈已达到最大 (100%)。减少现有值以添加更多订单。"
-
-#: src/components/NetworkDropdown/NetworkDropdown.tsx
-msgid "Networks"
-msgstr "网络"
 
 #: src/components/GmList/GmList.tsx
 msgid "POOL"
@@ -5499,10 +5471,6 @@ msgstr "输入新金额或价格"
 msgid "Wins and losses for fully closed positions."
 msgstr "完全平仓头寸的胜负。"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "打开 Binance 应用"
-
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr "在此输入您的答案。"
@@ -6173,10 +6141,6 @@ msgstr "开始于"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "当前网络费用较高，这可能是由于 {chainName} 网络上的交易暂时增加。"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "扫描二维码"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"

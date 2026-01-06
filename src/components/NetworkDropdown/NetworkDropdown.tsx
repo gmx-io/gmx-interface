@@ -97,12 +97,12 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
               position="top"
               variant="none"
               className="flex"
-              renderContent={() => (
+              content={
                 <Trans>
                   These networks share liquidity with Arbitrum and allow trading through a GMX Account. On Arbitrum,
                   trading is also available directly from the wallet.
                 </Trans>
-              )}
+              }
             />
           </div>
           {walletAndGmxAccountNetworks.map((network) => (
