@@ -1914,6 +1914,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@date-fns/tz@npm:1.4.1":
+  version: 1.4.1
+  resolution: "@date-fns/tz@npm:1.4.1"
+  checksum: 10/062097590005cce3da4c7d9880f9c77d386cff5b4dd58fa3dde3c346a8b2e4f4a8025a613306351a7cad8eb71178a0f67b4840d5884f73aa4c759085fac92063
+  languageName: node
+  linkType: hard
+
 "@davatar/react@npm:1.8.1":
   version: 1.8.1
   resolution: "@davatar/react@npm:1.8.1"
@@ -11465,6 +11472,7 @@ __metadata:
   dependencies:
     "@apollo/client": "npm:3.5.6"
     "@babel/plugin-transform-private-property-in-object": "npm:^7.25.9"
+    "@date-fns/tz": "npm:1.4.1"
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
