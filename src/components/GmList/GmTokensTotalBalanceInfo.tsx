@@ -44,7 +44,7 @@ export const GmTokensBalanceInfo = ({
     token && balance !== 0n ? (
       <TokenValuesInfoCell
         value={formatBalanceAmount(balance, token.decimals)}
-        usd={formatUsd(balanceUsd)}
+        usd={balanceUsd !== 0n ? formatUsd(balanceUsd) : "..."}
         symbol={token.symbol}
         singleLine={singleLine}
         isLoading={isMultichainBalancesLoading}

@@ -4,7 +4,8 @@
   initial-value: 0px;
 }
 
-$white: var(--color-typography-primary);
+// $white: var(--color-typography-primary);
+$white: red;
 $gray: rgba(var(--color-typography-primary-raw) / 0.75);
 
 .shimmer-text {
