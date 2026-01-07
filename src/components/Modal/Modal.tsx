@@ -3,6 +3,9 @@ import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import Button from "components/Button/Button";
+
+import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 
 import "./Modal.css";
@@ -30,6 +33,7 @@ export type ModalProps = PropsWithChildren<{
   setIsVisible: (isVisible: boolean) => void;
   zIndex?: number;
   label?: React.ReactNode;
+  onBack?: () => void;
   headerContent?: React.ReactNode;
   footerContent?: ReactNode;
   onAfterOpen?: () => void;
@@ -47,6 +51,7 @@ export default function Modal({
   className,
   isVisible,
   label,
+  onBack,
   zIndex,
   children,
   headerContent,
@@ -130,7 +135,14 @@ export default function Modal({
             >
               <div className="Modal-header-wrapper flex flex-col gap-8 px-adaptive pt-adaptive">
                 <div className="Modal-title-bar h-28">
-                  <div className="Modal-title font-medium text-typography-primary">{label}</div>
+                  <div className="Modal-title-group">
+                    {onBack && (
+                      <Button variant="ghost" size="small" className="px-8" onClick={onBack} aria-label="Back">
+                        <ChevronLeftIcon className="size-16" />
+                      </Button>
+                    )}
+                    <div className="Modal-title font-medium text-typography-primary">{label}</div>
+                  </div>
                   <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
                     <CloseIcon className="Modal-close-icon size-20" />
                   </div>

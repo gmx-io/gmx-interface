@@ -36,7 +36,6 @@ import {
   selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
   selectPositionSellerSwapAmounts,
-  selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -48,13 +47,12 @@ import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeH
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import { formatLeverage, formatLiquidationPrice, getNameByOrderType } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { getApprovalRequirements } from "domain/synthetics/tokens";
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
@@ -65,15 +63,7 @@ import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import {
-  calculateDisplayDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatDeltaUsd,
-  formatPercentage,
-  formatUsd,
-  parseValue,
-} from "lib/numbers";
+import { formatAmountFree, formatDeltaUsd, formatUsd, parseValue } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -107,6 +97,7 @@ import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows"
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
+import { tradeModeLabels, tradeTypeLabels } from "../TradeBox/tradeboxConstants";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
@@ -119,7 +110,6 @@ export type Props = {
 
 const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Market]: msg`Market`,
-  [OrderOption.Trigger]: msg`TP/SL`,
   [OrderOption.Twap]: msg`TWAP`,
 };
 
@@ -145,6 +135,8 @@ export function PositionSeller() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
+  const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
+  const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
@@ -172,8 +164,7 @@ export function PositionSeller() {
     setIsSubmitting,
     setReceiveTokenAddress,
     setSelectedTriggerAcceptablePriceImpactBps,
-    setTriggerPriceInputValue: setTriggerPriceInputValueRaw,
-    triggerPriceInputValue: triggerPriceInputValueRaw,
+    triggerPriceInputValue,
     resetPositionSeller,
     setIsReceiveTokenChanged,
     setKeepLeverage,
@@ -182,21 +173,16 @@ export function PositionSeller() {
     setDuration,
     setNumberOfParts,
   } = usePositionSeller();
+  const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
+  const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
 
   const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
     closeUsdInputValueRaw,
     setCloseUsdInputValueRaw
   );
-  const [triggerPriceInputValue, setTriggerPriceInputValue] = useDebouncedInputValue(
-    triggerPriceInputValueRaw,
-    setTriggerPriceInputValueRaw
-  );
 
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
 
-  const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
-
-  const isTrigger = orderOption === OrderOption.Trigger;
   const isTwap = orderOption === OrderOption.Twap;
   const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
@@ -270,11 +256,8 @@ export function PositionSeller() {
     }
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
-  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position?.key });
-
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
-    let orderType = isTrigger ? decreaseAmounts?.triggerOrderType : OrderType.MarketDecrease;
-    orderType = isTwap ? OrderType.LimitDecrease : orderType;
+    const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
     // TODO findSwapPath considering decreasePositionSwapType?
     const swapPath =
@@ -304,7 +287,7 @@ export function PositionSeller() {
       executionGasLimit: executionFee.gasLimit,
       referralCode: userReferralInfo?.referralCodeForTxn,
       allowedSlippage: isMarket ? allowedSlippage : 0,
-      autoCancel: isTrigger ? autoCancelOrdersLimit > 0 : false,
+      autoCancel: false,
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
       orderType,
       marketAddress: position.marketAddress,
@@ -315,7 +298,7 @@ export function PositionSeller() {
       swapPath,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
       sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-      triggerPrice: isTrigger ? triggerPrice : undefined,
+      triggerPrice: undefined,
       acceptablePrice: decreaseAmounts.acceptablePrice,
       decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
       externalSwapQuote: undefined,
@@ -340,19 +323,16 @@ export function PositionSeller() {
   }, [
     account,
     allowedSlippage,
-    autoCancelOrdersLimit,
     chainId,
     decreaseAmounts?.acceptablePrice,
     decreaseAmounts?.collateralDeltaAmount,
     decreaseAmounts?.decreaseSwapType,
     decreaseAmounts?.sizeDeltaInTokens,
     decreaseAmounts?.sizeDeltaUsd,
-    decreaseAmounts?.triggerOrderType,
     duration,
     executionFee?.feeTokenAmount,
     executionFee?.gasLimit,
     isMarket,
-    isTrigger,
     isTwap,
     marketsInfoData,
     numberOfParts,
@@ -362,7 +342,6 @@ export function PositionSeller() {
     signer,
     swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     tokensData,
-    triggerPrice,
     userReferralInfo?.referralCodeForTxn,
   ]);
 
@@ -434,8 +413,8 @@ export function PositionSeller() {
       inputSizeUsd: closeSizeUsd,
       sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
       receiveToken,
-      isTrigger,
-      triggerPrice,
+      isTrigger: false,
+      triggerPrice: undefined,
       triggerThresholdType: undefined,
       existingPosition: position,
       markPrice,
@@ -465,14 +444,12 @@ export function PositionSeller() {
     hasOutdatedUi,
     isNotEnoughReceiveTokenLiquidity,
     isSubmitting,
-    isTrigger,
     markPrice,
     minCollateralUsd,
     nextPositionValues,
     position,
     receiveToken,
     tokensData,
-    triggerPrice,
     minPositionSizeUsd,
     isTwap,
     numberOfParts,
@@ -509,7 +486,7 @@ export function PositionSeller() {
       orderType: params?.orderPayload.orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
       subaccount: expressParams?.subaccount,
-      triggerPrice,
+      triggerPrice: undefined,
       marketInfo: position?.marketInfo,
       executionFeeBufferBps,
       isTwap,
@@ -594,7 +571,7 @@ export function PositionSeller() {
     () => {
       if (isVisible && !error) {
         submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        if (closeUsdInputValue === closeUsdInputValueRaw && triggerPriceInputValue === triggerPriceInputValueRaw) {
+        if (closeUsdInputValue === closeUsdInputValueRaw) {
           latestOnSubmit.current();
         } else {
           setIsWaitingForDebounceBeforeSubmit(true);
@@ -602,15 +579,7 @@ export function PositionSeller() {
       }
     },
     {},
-    [
-      isVisible,
-      error,
-      closeUsdInputValue,
-      triggerPriceInputValue,
-      closeUsdInputValueRaw,
-      triggerPriceInputValueRaw,
-      latestOnSubmit,
-    ]
+    [isVisible, error, closeUsdInputValue, closeUsdInputValueRaw, latestOnSubmit]
   );
 
   useEffect(() => {
@@ -620,22 +589,11 @@ export function PositionSeller() {
   }, [isApproving, tokensToApprove.length]);
 
   useEffect(() => {
-    if (
-      isWaitingForDebounceBeforeSubmit &&
-      closeUsdInputValue === closeUsdInputValueRaw &&
-      triggerPriceInputValue === triggerPriceInputValueRaw
-    ) {
+    if (isWaitingForDebounceBeforeSubmit && closeUsdInputValue === closeUsdInputValueRaw) {
       setIsWaitingForDebounceBeforeSubmit(false);
       latestOnSubmit.current();
     }
-  }, [
-    isWaitingForDebounceBeforeSubmit,
-    latestOnSubmit,
-    closeUsdInputValue,
-    triggerPriceInputValue,
-    closeUsdInputValueRaw,
-    triggerPriceInputValueRaw,
-  ]);
+  }, [isWaitingForDebounceBeforeSubmit, latestOnSubmit, closeUsdInputValue, closeUsdInputValueRaw]);
 
   useEffect(() => {
     if (!isVisible) {
@@ -654,7 +612,7 @@ export function PositionSeller() {
   );
 
   useEffect(() => {
-    if (isTrigger && decreaseAmounts) {
+    if (isTwap && decreaseAmounts) {
       if (
         defaultTriggerAcceptablePriceImpactBps === undefined ||
         defaultTriggerAcceptablePriceImpactBps !== bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps)
@@ -666,7 +624,7 @@ export function PositionSeller() {
   }, [
     decreaseAmounts,
     defaultTriggerAcceptablePriceImpactBps,
-    isTrigger,
+    isTwap,
     setDefaultTriggerAcceptablePriceImpactBps,
     setSelectedTriggerAcceptablePriceImpactBps,
   ]);
@@ -697,21 +655,7 @@ export function PositionSeller() {
     />
   );
 
-  const receiveTokenRow = isTrigger ? (
-    <SyntheticsInfoRow
-      className="SwapBox-info-row"
-      label={t`Receive`}
-      value={
-        <AmountWithUsdBalance
-          amount={decreaseAmounts?.receiveTokenAmount}
-          decimals={position?.collateralToken.decimals ?? 0}
-          symbol={position?.collateralToken.symbol}
-          usd={decreaseAmounts?.receiveUsd}
-          isStable={position?.collateralToken.isStable}
-        />
-      }
-    />
-  ) : (
+  const receiveTokenRow = (
     <SyntheticsInfoRow
       label={t`Receive`}
       value={
@@ -749,10 +693,6 @@ export function PositionSeller() {
     />
   );
 
-  const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
-    positionKey: position?.key,
-    isCreatingNewAutoCancel: isTrigger,
-  });
   const leverageCheckboxDisabledByCollateral = usePositionSellerLeverageDisabledByCollateral();
   const keepLeverage = usePositionSellerKeepLeverage();
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
@@ -778,44 +718,20 @@ export function PositionSeller() {
     keepLeverageText
   );
 
-  const pnlRow =
-    position &&
-    (isTrigger ? (
-      <SyntheticsInfoRow
-        label={t`PnL`}
-        value={
-          <ValueTransition
-            from={
-              <>
-                {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-              </>
-            }
-            to={
-              decreaseAmounts?.sizeDeltaUsd ? (
-                <>
-                  {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                  {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                </>
-              ) : undefined
-            }
-          />
-        }
-      />
-    ) : (
-      <SyntheticsInfoRow
-        label={t`PnL`}
-        value={
-          <ValueTransition
-            from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
-            to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
-          />
-        }
-      />
-    ));
+  const pnlRow = position && (
+    <SyntheticsInfoRow
+      label={t`PnL`}
+      value={
+        <ValueTransition
+          from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
+          to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
+        />
+      }
+    />
+  );
 
   const tabsOptions = useMemo(() => {
-    return Object.values(OrderOption).map((option) => ({
+    return [OrderOption.Market, OrderOption.Twap].map((option) => ({
       value: option,
       label: localizedOrderOptionLabels[option],
     }));
@@ -865,21 +781,22 @@ export function PositionSeller() {
     return {
       text:
         error ||
-        (isTrigger || isTwap
-          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
+        (tradeType !== undefined
+          ? `${localizedTradeModeLabels[tradeMode]}: ${localizedTradeTypeLabels[tradeType]} ${t`Decrease`}`
           : t`Close`),
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
   }, [
     chainId,
-    decreaseAmounts?.triggerOrderType,
     error,
     isAllowanceLoaded,
     isApproving,
     isExpressLoading,
-    isTrigger,
-    isTwap,
+    localizedTradeModeLabels,
+    localizedTradeTypeLabels,
     shouldDisableValidationForTesting,
+    tradeMode,
+    tradeType,
     tokensToApprove,
   ]);
 
@@ -963,35 +880,6 @@ export function PositionSeller() {
                   >
                     USD
                   </BuyInputSection>
-                  {isTrigger && (
-                    <BuyInputSection
-                      topLeftLabel={t`Trigger Price`}
-                      topRightLabel={t`Mark`}
-                      topRightValue={formatUsd(markPrice, {
-                        displayDecimals: marketDecimals,
-                        visualMultiplier: toToken?.visualMultiplier,
-                      })}
-                      onClickTopRightLabel={() => {
-                        setTriggerPriceInputValueRaw(
-                          formatAmount(
-                            markPrice,
-                            USD_DECIMALS,
-                            calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
-                            undefined,
-                            undefined,
-                            toToken?.visualMultiplier
-                          )
-                        );
-                      }}
-                      inputValue={triggerPriceInputValue}
-                      onInputValueChange={(e) => {
-                        setTriggerPriceInputValue(e.target.value);
-                      }}
-                      qa="trigger-input"
-                    >
-                      USD
-                    </BuyInputSection>
-                  )}
                 </div>
               </div>
 
@@ -1011,7 +899,6 @@ export function PositionSeller() {
               )}
 
               <div className="flex w-full flex-col gap-14 pt-14">
-                {isTrigger && maxAutoCancelOrdersWarning}
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
                   swapPriceImpact={fees?.swapPriceImpact}

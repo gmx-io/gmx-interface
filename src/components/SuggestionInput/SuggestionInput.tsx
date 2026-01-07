@@ -1,4 +1,13 @@
-import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import {
+  autoUpdate,
+  flip,
+  offset,
+  Placement,
+  shift,
+  useDismiss,
+  useFloating,
+  useInteractions,
+} from "@floating-ui/react";
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 
@@ -13,7 +22,7 @@ type Props = {
   setValue?: (value: string) => void;
   placeholder?: string;
   suggestionList?: number[];
-  symbol?: string;
+  suffix?: string;
   isError?: boolean;
   inputClassName?: string;
   onBlur?: () => void;
@@ -21,6 +30,8 @@ type Props = {
   className?: string;
   label?: React.ReactNode;
   onPanelVisibleChange?: (isPanelVisible: boolean) => void;
+  suggestionWithSuffix?: boolean;
+  suggestionsPlacement?: Placement;
 };
 
 export default function SuggestionInput({
@@ -28,7 +39,7 @@ export default function SuggestionInput({
   value,
   setValue,
   suggestionList,
-  symbol,
+  suffix,
   isError,
   inputClassName,
   onBlur,
@@ -37,6 +48,8 @@ export default function SuggestionInput({
   label,
   onPanelVisibleChange,
   inputId,
+  suggestionWithSuffix,
+  suggestionsPlacement = "bottom-end",
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -87,18 +100,22 @@ export default function SuggestionInput({
     [onKeyDown]
   );
 
-  const { refs, floatingStyles } = useFloating({
+  const { refs, floatingStyles, context } = useFloating({
+    open: isPanelVisible,
+    onOpenChange: setIsPanelVisible,
     middleware: [offset(4), flip(), shift()],
-    placement: "bottom-end",
+    placement: suggestionsPlacement,
     whileElementsMounted: autoUpdate,
   });
+  const { getReferenceProps, getFloatingProps } = useInteractions([useDismiss(context)]);
 
   return (
     <div className="Suggestion-input-wrapper">
       <div
-        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !symbol })}
+        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !suffix })}
         onClick={() => inputRef.current?.focus()}
         ref={refs.setReference}
+        {...getReferenceProps()}
       >
         {label ? <span className="pl-7 pr-7 text-typography-secondary">{label}</span> : null}
         <NumberInput
@@ -112,19 +129,20 @@ export default function SuggestionInput({
           onValueChange={handleChange}
           onKeyDown={handleKeyDown}
         />
-        {symbol && (
+        {suffix && (
           <div className="pr-7 text-typography-secondary">
-            <span>{symbol}</span>
+            <span>{suffix}</span>
           </div>
         )}
       </div>
       {suggestionList && isPanelVisible && (
         <Portal>
-          <div className="z-[100]" ref={refs.setFloating} style={floatingStyles}>
+          <div className="z-[100]" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
             <ul className="Suggestion-list">
               {suggestionList.map((suggestion) => (
                 <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>
-                  {suggestion}%
+                  {suggestion}
+                  {suggestionWithSuffix ? suffix : "%"}
                 </li>
               ))}
             </ul>

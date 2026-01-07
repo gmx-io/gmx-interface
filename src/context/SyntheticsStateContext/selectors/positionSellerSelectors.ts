@@ -101,7 +101,7 @@ const selectPositionSellerDecreaseAmountArgs = createSelector((q) => {
     fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
     marketAddress,
     positionKey,
-    tradeMode: orderOption === OrderOption.Market ? TradeMode.Market : TradeMode.Trigger,
+    tradeMode: orderOption === OrderOption.Twap ? TradeMode.Twap : TradeMode.Market,
     tradeType,
     triggerPrice,
     closeSizeUsd,
@@ -187,8 +187,6 @@ export const selectPositionSellerAcceptablePrice = createSelector((q) => {
 
   if (orderOption === OrderOption.Market) {
     return applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong);
-  } else if (orderOption === OrderOption.Trigger) {
-    return decreaseAmounts.acceptablePrice;
   } else if (orderOption === OrderOption.Twap) {
     return decreaseAmounts.acceptablePrice;
   } else {
@@ -271,15 +269,12 @@ export const selectPositionSellerFees = createSelector((q) => {
 });
 
 export const selectPositionSellerReceiveToken = createSelector((q) => {
-  const orderOption = q(selectPositionSellerOrderOption);
-  const position = q(selectPositionSellerPosition);
-  const isTrigger = orderOption === OrderOption.Trigger;
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
   const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
     ? q(selectPositionSellerReceiveTokenAddress)
     : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
-  return isTrigger ? position?.collateralToken : q((state) => getByKey(selectTokensData(state), receiveTokenAddress));
+  return q((state) => getByKey(selectTokensData(state), receiveTokenAddress));
 });
 
 export const selectPositionSellerShouldSwap = createSelector((q) => {
