@@ -21,7 +21,7 @@ export function GmSwapWarningsRow({
   if (shouldShowWarningForPosition) {
     warnings.push(
       <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighPriceImpactWarning" onClose={noop}>
-        <Trans>High Price Impact</Trans>
+        <Trans>High price impact</Trans>
       </AlertInfoCard>
     );
   }
@@ -29,7 +29,7 @@ export function GmSwapWarningsRow({
   if (shouldShowWarningForExecutionFee) {
     warnings.push(
       <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighNetworkFeeWarning" onClose={noop}>
-        <Trans>High Network Fees</Trans>
+        <Trans>High network fees</Trans>
       </AlertInfoCard>
     );
   }

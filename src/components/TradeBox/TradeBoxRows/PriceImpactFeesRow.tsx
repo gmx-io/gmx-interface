@@ -100,10 +100,11 @@ export function PriceImpactFeesRow() {
             handle={t`Net Price Impact / Fees`}
             content={
               <Trans>
-                Net price impact is the price impact for your position, calculated when decreasing it.{" "}
+                Net price impact is the price impact for your position.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>
+                .
               </Trans>
             }
           />
@@ -166,8 +167,7 @@ export function PriceImpactFeesRow() {
             handle={t`Price Impact`}
             content={
               <Trans>
-                There is no price impact for increase orders, orders are filled at the mark price. Price impact is
-                applied during decrease orders.{" "}
+                There is no price impact for increase orders, orders are filled at the mark price.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>

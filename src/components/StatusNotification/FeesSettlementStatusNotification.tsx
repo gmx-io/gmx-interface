@@ -152,7 +152,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
             </Trans>
           );
 
-          let text = <Trans>{positionName} Settling fees.</Trans>;
+          let text = <Trans>{positionName} Settling fees...</Trans>;
           let status: TransactionStatusType = "muted";
           let txnHash: string | undefined;
 

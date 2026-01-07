@@ -730,7 +730,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Approving</Trans>
+          <Trans>Approving...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -753,7 +753,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Depositing</Trans>
+          <Trans>Depositing...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

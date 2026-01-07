@@ -233,7 +233,7 @@ export function OrderStatusNotification({
   }, [orderData, orderStatus?.createdTxnHash, isGelatoTaskFailed]);
 
   const sendingStatus = useMemo(() => {
-    let text = t`Sending order request`;
+    let text = t`Sending order request...`;
     let status: TransactionStatusType = "loading";
     let txnHash: string | undefined;
     let txnLink: string | undefined;
@@ -282,7 +282,7 @@ export function OrderStatusNotification({
       return null;
     }
 
-    let text = t`Fulfilling order request`;
+    let text = t`Fulfilling order request...`;
     let status: TransactionStatusType = "muted";
     let txnHash: string | undefined;
 

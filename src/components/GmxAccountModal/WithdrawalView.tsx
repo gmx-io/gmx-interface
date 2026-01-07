@@ -824,7 +824,7 @@ export const WithdrawalView = () => {
       buttonState = {
         text: (
           <>
-            <Trans>Loading</Trans>
+            <Trans>Loading...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
