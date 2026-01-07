@@ -100,6 +100,8 @@ const MARKETS_INFO_QUERY = gql`
       virtualPoolAmountForShortToken
       virtualInventoryForPositions
 
+      useOpenInterestInTokensForBalance
+
       virtualMarketId
       virtualLongTokenId
       virtualShortTokenId
@@ -231,6 +233,8 @@ export function useFastMarketsInfoRequest(chainId: number) {
             virtualPoolAmountForLongToken: BigInt(mInfo.virtualPoolAmountForLongToken),
             virtualPoolAmountForShortToken: BigInt(mInfo.virtualPoolAmountForShortToken),
             virtualInventoryForPositions: BigInt(mInfo.virtualInventoryForPositions),
+
+            useOpenInterestInTokensForBalance: mInfo.useOpenInterestInTokensForBalance,
 
             virtualMarketId: mInfo.virtualMarketId,
             virtualLongTokenId: mInfo.virtualLongTokenId,

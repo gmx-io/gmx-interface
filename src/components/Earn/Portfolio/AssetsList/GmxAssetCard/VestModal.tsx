@@ -13,6 +13,7 @@ import { StakingProcessedData } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
@@ -63,6 +64,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
   const [isDepositing, setIsDepositing] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const activeAction = selectedActionByVault[selectedVault];
 
@@ -320,6 +322,10 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
   const canWithdraw = vestedAmount !== undefined && vestedAmount > 0n;
 
   const actionPrimaryText = useMemo(() => {
+    if (hasOutdatedUi) {
+      return t`Page outdated, please refresh`;
+    }
+
     if (activeAction === "deposit") {
       if (depositError) {
         return depositError;
@@ -338,11 +344,24 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     }
 
     return isClaiming ? <Trans>Claiming...</Trans> : <Trans>Claim</Trans>;
-  }, [activeAction, depositError, isClaiming, isDepositing, isWithdrawing, vestedAmount, claimableAmount]);
+  }, [
+    activeAction,
+    depositError,
+    hasOutdatedUi,
+    isClaiming,
+    isDepositing,
+    isWithdrawing,
+    vestedAmount,
+    claimableAmount,
+  ]);
 
   const isPrimaryDisabled = useMemo(() => {
     if (!active) {
       return false;
+    }
+
+    if (hasOutdatedUi) {
+      return true;
     }
 
     if (chainId === undefined || !signer) {
@@ -365,6 +384,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     canWithdraw,
     chainId,
     depositError,
+    hasOutdatedUi,
     isClaiming,
     isDepositing,
     isWithdrawing,

@@ -26,5 +26,5 @@ describe("fetchMultichainTokenBalances", () => {
       account,
     });
     expect(result[SOURCE_BASE_MAINNET][NATIVE_TOKEN_ADDRESS]).toBeGreaterThan(0n);
-  }, 10_000);
+  }, 60_000);
 });

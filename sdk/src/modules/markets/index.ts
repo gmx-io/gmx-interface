@@ -323,8 +323,10 @@ export class Markets extends Module {
   }
 
   private _marketsData: MarketsResult | undefined;
-  async getMarkets(offset = 0n, limit = 100n): Promise<MarketsResult> {
-    if (this._marketsData) {
+  private _marketsDataOffset: bigint | undefined;
+  private _marketsDataLimit: bigint | undefined;
+  async getMarkets(offset = 0n, limit = 300n): Promise<MarketsResult> {
+    if (this._marketsData && this._marketsDataOffset === offset && this._marketsDataLimit === limit) {
       return this._marketsData;
     }
 
@@ -419,6 +421,8 @@ export class Markets extends Module {
     );
 
     this._marketsData = marketsResult;
+    this._marketsDataOffset = offset;
+    this._marketsDataLimit = limit;
     return marketsResult;
   }
 

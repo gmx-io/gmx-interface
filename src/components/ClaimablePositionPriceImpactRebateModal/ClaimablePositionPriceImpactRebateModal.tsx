@@ -26,6 +26,7 @@ import { metrics } from "lib/metrics";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
@@ -65,6 +66,7 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
   const { chainId, srcChainId } = useChainId();
   const { signer, account, active } = useWallet();
   const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const handleSubmit = useCallback(async () => {
     if (!signer) throw new Error("No signer");
@@ -93,11 +95,14 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
     disabled?: boolean;
     onSubmit?: () => void;
   } = useMemo(() => {
+    if (hasOutdatedUi) {
+      return { text: t`Page outdated, please refresh`, disabled: true };
+    }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
-  }, [handleSubmit, isSubmitting]);
+  }, [handleSubmit, hasOutdatedUi, isSubmitting]);
 
   return (
     <ClaimablePositionPriceImpactRebateModalComponent
@@ -120,6 +125,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
   const { signer, account } = useWallet();
   const claimablePositionPriceImpactFees = useSelector(selectClaimablePositionPriceImpactFees);
   const { provider } = useJsonRpcProvider(chainId);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const expressTransactionBuilder = useMemo((): ExpressTransactionBuilder | undefined => {
     if (
@@ -246,11 +252,14 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     disabled?: boolean;
     onSubmit?: () => void;
   } = useMemo(() => {
+    if (hasOutdatedUi) {
+      return { text: t`Page outdated, please refresh`, disabled: true };
+    }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
-  }, [handleSubmit, isSubmitting]);
+  }, [handleSubmit, hasOutdatedUi, isSubmitting]);
 
   return (
     <ClaimablePositionPriceImpactRebateModalComponent
