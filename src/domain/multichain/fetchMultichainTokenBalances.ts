@@ -1,7 +1,7 @@
 import pickBy from "lodash/pickBy";
 import { zeroAddress } from "viem";
 
-import { SOURCE_BSC_MAINNET, SettlementChainId, SourceChainId, getChainName } from "config/chains";
+import { SettlementChainId, SourceChainId, getChainName } from "config/chains";
 import {
   MULTICALLS_MAP,
   MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
@@ -10,7 +10,6 @@ import {
 } from "config/multichain";
 import { executeMulticall } from "lib/multicall/executeMulticall";
 import type { MulticallRequestConfig } from "lib/multicall/types";
-import { sleep } from "lib/sleep";
 
 export async function fetchMultichainTokenBalances({
   settlementChainId,
@@ -50,10 +49,7 @@ export async function fetchMultichainTokenBalances({
       sourceChainId,
       account,
       sourceChainTokenIdMap,
-    }).then(async (res) => {
-      if (sourceChainId === SOURCE_BSC_MAINNET) {
-        await sleep(10000);
-      }
+    }).then((res) => {
       result[sourceChainId] = res;
       progressCallback?.(sourceChainId, res);
     });
