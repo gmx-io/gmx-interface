@@ -1,9 +1,8 @@
-import { MessageDescriptor } from "@lingui/core";
-import { msg, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { useKey, useLatest, useMedia } from "react-use";
+import { useKey, useLatest } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -84,7 +83,6 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -98,7 +96,6 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { tradeModeLabels, tradeTypeLabels } from "../TradeBox/tradeboxConstants";
-import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
 
@@ -106,11 +103,6 @@ import "./PositionSeller.scss";
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
-};
-
-const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
-  [OrderOption.Market]: msg`Market`,
-  [OrderOption.Twap]: msg`TWAP`,
 };
 
 export function PositionSeller() {
@@ -134,7 +126,6 @@ export function PositionSeller() {
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const { shouldDisableValidationForTesting } = useSettings();
-  const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -730,13 +721,6 @@ export function PositionSeller() {
     />
   );
 
-  const tabsOptions = useMemo(() => {
-    return [OrderOption.Market, OrderOption.Twap].map((option) => ({
-      value: option,
-      label: localizedOrderOptionLabels[option],
-    }));
-  }, [localizedOrderOptionLabels]);
-
   const buttonState = useMemo(() => {
     if (!isAllowanceLoaded) {
       return {
@@ -800,8 +784,6 @@ export function PositionSeller() {
     tokensToApprove,
   ]);
 
-  const isMobile = useMedia("(max-width: 1024px)");
-
   return (
     <div className="text-body-medium">
       <Modal
@@ -817,22 +799,6 @@ export function PositionSeller() {
         qa="position-close-modal"
         contentClassName="w-[380px]"
       >
-        <div className="mb-[10.5px] flex w-full items-center justify-between">
-          <Tabs
-            options={tabsOptions}
-            selectedValue={orderOption}
-            type="inline"
-            onChange={handleSetOrderOption}
-            qa="operation-tabs"
-          />
-
-          <TradeInfoIcon
-            isMobile={isMobile}
-            tradeType={position?.isLong ? TradeType.Long : TradeType.Short}
-            tradePlace="position-seller"
-          />
-        </div>
-
         <div className="w-full">
           {position && (
             <>
