@@ -130,6 +130,7 @@ export type SubmittedMultichainWithdrawal = {
   settlementChainId: number;
   sourceChainId: number;
   tokenAddress: string;
+  sentTxn?: string;
 };
 
 export type PendingMultichainFunding = MultichainFundingHistoryItem[];

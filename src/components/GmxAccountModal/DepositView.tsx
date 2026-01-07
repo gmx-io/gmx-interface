@@ -1,10 +1,11 @@
+import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
-import { Hex, decodeErrorResult, zeroAddress } from "viem";
+import { Hex, decodeErrorResult, encodeEventTopics, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
 import {
@@ -38,6 +39,7 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
 import { estimateSameChainDepositGas, sendSameChainDepositTxn } from "domain/multichain/sendSameChainDepositTxn";
 import { SendParam } from "domain/multichain/types";
@@ -71,8 +73,8 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -124,7 +126,6 @@ export const DepositView = () => {
 
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
-  const walletSigner = useEthersSigner({ chainId: srcChainId });
   const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
 
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
@@ -142,7 +143,7 @@ export const DepositView = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
-  const { setMultichainSubmittedDeposit } = useSyntheticsEvents();
+  const { setMultichainSubmittedDeposit, setMultichainFundingPendingId } = useSyntheticsEvents();
 
   const selectedToken =
     depositViewTokenAddress !== undefined ? getToken(settlementChainId, depositViewTokenAddress) : undefined;
@@ -485,30 +486,88 @@ export const DepositView = () => {
 
   const sameChainCallback: TxnCallback<WalletTxnCtx> = useCallback(
     (txnEvent) => {
+      if (!account) {
+        return;
+      }
+
       if (txnEvent.event === TxnEventName.Sent) {
         helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
         setIsVisibleOrView("main");
+        setIsSubmitting(false);
+        if (txnEvent.data.type === "wallet" && depositViewTokenAddress && inputAmount !== undefined) {
+          const txnHash = txnEvent.data.transactionHash;
+          const mockId = setMultichainSubmittedDeposit({
+            amount: inputAmount,
+            settlementChainId,
+            sourceChainId: 0,
+            tokenAddress: depositViewTokenAddress,
+            sentTxn: txnHash,
+          });
+
+          if (!mockId) {
+            return;
+          }
+
+          getPublicClientWithRpc(settlementChainId)
+            .waitForTransactionReceipt({
+              hash: txnHash,
+            })
+            .then((receipt) => {
+              const bridgeInEvent = receipt.logs.find(
+                (log) =>
+                  isStringEqualInsensitive(log.address, getContract(settlementChainId, "EventEmitter")) &&
+                  matchLogRequest(
+                    encodeEventTopics({
+                      abi: abis.EventEmitter,
+                      eventName: "EventLog1",
+                      args: { eventNameHash: "MultichainBridgeIn", topic1: toHex(addressToBytes32(account)) },
+                    }),
+                    log.topics
+                  )
+              );
+              const bridgeInEventIndex = bridgeInEvent?.logIndex;
+              if (bridgeInEventIndex === undefined) {
+                return;
+              }
+
+              const id = `${txnHash.toLowerCase()}:${bridgeInEventIndex}`;
+              setMultichainFundingPendingId(mockId, id);
+            });
+        }
       } else if (txnEvent.event === TxnEventName.Error) {
         helperToast.error(t`Deposit failed`, { toastId: "same-chain-gmx-account-deposit" });
+        setIsSubmitting(false);
       }
     },
-    [setIsVisibleOrView]
+    [
+      account,
+      depositViewTokenAddress,
+      inputAmount,
+      setIsVisibleOrView,
+      setMultichainFundingPendingId,
+      setMultichainSubmittedDeposit,
+      settlementChainId,
+    ]
   );
 
   const handleSameChainDeposit = useCallback(async () => {
-    if (!account || !depositViewTokenAddress || inputAmount === undefined || !walletSigner) {
+    if (!account || !depositViewTokenAddress || inputAmount === undefined) {
       return;
     }
 
-    await sendSameChainDepositTxn({
-      chainId: settlementChainId as SettlementChainId,
-      signer: walletSigner,
-      tokenAddress: depositViewTokenAddress,
-      amount: inputAmount,
-      account,
-      callback: sameChainCallback,
+    setIsSubmitting(true);
+
+    await wrapChainAction(settlementChainId, setSettlementChainId, async (signer) => {
+      await sendSameChainDepositTxn({
+        chainId: settlementChainId as SettlementChainId,
+        signer,
+        tokenAddress: depositViewTokenAddress,
+        amount: inputAmount,
+        account,
+        callback: sameChainCallback,
+      });
     });
-  }, [account, depositViewTokenAddress, inputAmount, sameChainCallback, settlementChainId, walletSigner]);
+  }, [account, depositViewTokenAddress, inputAmount, sameChainCallback, settlementChainId, setSettlementChainId]);
 
   const makeCrossChainCallback = useCallback(
     (params: {
@@ -676,13 +735,13 @@ export const DepositView = () => {
   ]);
 
   const handleDeposit = useCallback(async () => {
-    if (walletChainId === settlementChainId) {
+    if (depositViewChain === settlementChainId) {
       await handleSameChainDeposit();
     } else {
       setIsSubmitting(true);
       setShouldSendCrossChainDepositWhenLoaded(true);
     }
-  }, [walletChainId, settlementChainId, handleSameChainDeposit]);
+  }, [depositViewChain, settlementChainId, handleSameChainDeposit]);
 
   const isCrossChainDepositLoading = useRef(false);
   useEffect(() => {

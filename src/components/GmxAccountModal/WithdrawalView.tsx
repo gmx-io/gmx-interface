@@ -1,10 +1,11 @@
+import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
-import { Address, encodeAbiParameters, zeroAddress } from "viem";
+import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -46,6 +47,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import {
   estimateSameChainWithdrawalGas,
   sendSameChainWithdrawalTxn,
@@ -84,6 +86,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -187,8 +190,12 @@ export const WithdrawalView = () => {
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isFirstWithdrawal = useIsFirstWithdrawal();
-  const { setMultichainSubmittedWithdrawal, setMultichainWithdrawalSentTxnHash, setMultichainWithdrawalSentError } =
-    useSyntheticsEvents();
+  const {
+    setMultichainSubmittedWithdrawal,
+    setMultichainWithdrawalSentTxnHash,
+    setMultichainWithdrawalSentError,
+    setMultichainFundingPendingId,
+  } = useSyntheticsEvents();
   const hasOutdatedUi = useHasOutdatedUi();
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
@@ -673,8 +680,54 @@ export const WithdrawalView = () => {
               if (txnEvent.event === TxnEventName.Sent) {
                 helperToast.success("Withdrawal sent", { toastId: "same-chain-gmx-account-withdrawal" });
                 setIsVisibleOrView("main");
+                setIsSubmitting(false);
+
+                if (txnEvent.data.type === "wallet") {
+                  const txnHash = txnEvent.data.transactionHash;
+                  const mockId = setMultichainSubmittedWithdrawal({
+                    amount: bridgeOutParams.amount,
+                    settlementChainId: chainId,
+                    sourceChainId: 0,
+                    tokenAddress: unwrappedSelectedTokenAddress ?? selectedToken.address,
+                    sentTxn: txnHash,
+                  });
+
+                  if (!mockId) {
+                    return;
+                  }
+
+                  getPublicClientWithRpc(chainId)
+                    .waitForTransactionReceipt({
+                      hash: txnHash,
+                    })
+                    .then((receipt) => {
+                      const bridgeOutEvent = receipt.logs.find(
+                        (log) =>
+                          isStringEqualInsensitive(log.address, getContract(chainId, "EventEmitter")) &&
+                          matchLogRequest(
+                            encodeEventTopics({
+                              abi: abis.EventEmitter,
+                              eventName: "EventLog1",
+                              args: {
+                                eventNameHash: "MultichainBridgeOut",
+                                topic1: toHex(addressToBytes32(account)),
+                              },
+                            }),
+                            log.topics
+                          )
+                      );
+                      const bridgeOutEventIndex = bridgeOutEvent?.logIndex;
+                      if (bridgeOutEventIndex === undefined) {
+                        return;
+                      }
+
+                      const id = `${txnHash.toLowerCase()}:${bridgeOutEventIndex}`;
+                      setMultichainFundingPendingId(mockId, id);
+                    });
+                }
               } else if (txnEvent.event === TxnEventName.Error) {
                 helperToast.error(t`Withdrawal failed`, { toastId: "same-chain-gmx-account-withdrawal" });
+                setIsSubmitting(false);
               }
             },
           });

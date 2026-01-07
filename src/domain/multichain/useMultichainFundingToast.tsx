@@ -31,7 +31,7 @@ function useGmxAccountPendingFundingHistoryItems(
     const result: Record<string, MultichainFundingHistoryItem> = {};
 
     for (const item of fundingHistory) {
-      if (guids.includes(item.id)) {
+      if (guids.includes(item.id) && item.sourceChainId !== 0) {
         result[item.id] = item;
       }
     }

@@ -137,17 +137,17 @@ export const SelectAssetToDepositView = () => {
       .filter((token: TokenData) => {
         const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesNetwork = selectedNetwork === "all" || chainId === selectedNetwork;
-        const hasBalance = token.balance !== undefined && token.balance > 0n;
+        const hasBalance = token.walletBalance !== undefined && token.walletBalance > 0n;
         return matchesSearch && matchesNetwork && hasBalance;
       })
       .map((token: TokenData): DisplayTokenChainData => {
-        const balanceUsd = convertToUsd(token.balance, token.decimals, getMidPrice(token.prices)) ?? 0n;
+        const balanceUsd = convertToUsd(token.walletBalance, token.decimals, getMidPrice(token.prices)) ?? 0n;
         return {
           ...token,
           sourceChainId: chainId as SourceChainId,
           sourceChainDecimals: token.decimals,
           sourceChainPrices: token.prices,
-          sourceChainBalance: token.balance,
+          sourceChainBalance: token.walletBalance,
           sourceChainBalanceUsd: balanceUsd,
         };
       })
