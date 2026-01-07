@@ -18,9 +18,9 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org/"
           scope: "@gmx-io"
 
@@ -35,7 +35,5 @@ jobs:
           yarn prebuild
           yarn build
 
-      - run: npm publish --access public
-        env:
-           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --provenance --access public
         working-directory: ./sdk
