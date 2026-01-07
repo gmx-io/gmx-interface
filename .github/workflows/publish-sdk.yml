@@ -2,7 +2,7 @@ name: Publish SDK
 
 permissions:
   id-token: write  # OIDC for npm
-  contents: write
+  contents: read
 
 on:
   workflow_dispatch:
@@ -36,6 +36,4 @@ jobs:
           yarn build
 
       - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ./sdk
