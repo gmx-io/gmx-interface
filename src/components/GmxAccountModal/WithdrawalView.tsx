@@ -790,40 +790,47 @@ export const WithdrawalView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
-  } else if (
-    (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
-      errors?.isOutOfTokenError?.isGasPaymentToken) &&
-    !expressTxnParamsAsyncResult.isLoading
-  ) {
-    buttonState = {
-      text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
-      disabled: true,
-    };
-  } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
-    buttonState = {
-      text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
-      disabled: true,
-    };
-  } else if (showWntWarning) {
-    buttonState = {
-      text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
-      disabled: true,
-    };
-  } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
-    buttonState = {
-      text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
-      disabled: true,
-    };
-  } else if (!expressTxnParamsAsyncResult.data) {
-    buttonState = {
-      text: (
-        <>
-          <Trans>Loading...</Trans>
-          <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
-      disabled: true,
-    };
+  } else if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) !== chainId) {
+    if (
+      (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
+        errors?.isOutOfTokenError?.isGasPaymentToken) &&
+      !expressTxnParamsAsyncResult.isLoading
+    ) {
+      buttonState = {
+        text: t`Insufficient ${gasPaymentToken?.symbol} balance to pay for gas`,
+        disabled: true,
+      };
+    } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
+      buttonState = {
+        text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
+        disabled: true,
+      };
+    } else if (showWntWarning) {
+      buttonState = {
+        text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
+        disabled: true,
+      };
+    } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
+      buttonState = {
+        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
+        disabled: true,
+      };
+    } else if (
+      // We do not show loading state if we have valid params
+      // But show loafing periodically if the params are not valid to show the user some action
+      !expressTxnParamsAsyncResult.data ||
+      (expressTxnParamsAsyncResult.isLoading && !expressTxnParamsAsyncResult.data.gasPaymentValidations.isValid)
+    ) {
+      buttonState = {
+        text: (
+          <>
+            <Trans>Loading...</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
   }
 
   const hasSelectedToken = selectedTokenAddress !== undefined;
