@@ -175,7 +175,7 @@ export function BridgeInModal({
     paySource: "sourceChain",
     chainId,
     srcChainId: bridgeInChain,
-    payNativeTokenAmount: undefined,
+    paySourceChainNativeTokenAmount: undefined,
   });
   const hasOutdatedUi = useHasOutdatedUi();
 

@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 
+import { getViemChain } from "config/chains";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
@@ -31,7 +32,7 @@ import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstim
 import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
-import { formatBalanceAmount } from "lib/numbers";
+import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { GmSwapFees } from "sdk/types/trade";
@@ -179,20 +180,36 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   });
 
-  const payNativeTokenAmount = useMemo(() => {
-    let payNativeTokenAmount = 0n;
+  const paySourceChainNativeTokenAmount = useMemo(() => {
+    if (srcChainId === undefined || !isDeposit) {
+      return 0n;
+    }
 
-    if (isDeposit) {
-      if (payLongToken?.isNative) {
-        payNativeTokenAmount += longTokenAmount;
+    const sourceChainNativeToken = getViemChain(srcChainId).nativeCurrency;
+
+    let paySourceChainNativeTokenAmount = 0n;
+
+    if (payLongToken !== undefined) {
+      if (payLongToken.symbol === sourceChainNativeToken.symbol) {
+        paySourceChainNativeTokenAmount += adjustForDecimals(
+          longTokenAmount,
+          payLongToken.decimals,
+          sourceChainNativeToken.decimals
+        );
       }
-      if (payShortToken?.isNative) {
-        payNativeTokenAmount += shortTokenAmount;
+    }
+    if (payShortToken !== undefined) {
+      if (payShortToken.symbol === sourceChainNativeToken.symbol) {
+        paySourceChainNativeTokenAmount += adjustForDecimals(
+          shortTokenAmount,
+          payShortToken.decimals,
+          sourceChainNativeToken.decimals
+        );
       }
     }
 
-    return payNativeTokenAmount;
-  }, [isDeposit, payLongToken, longTokenAmount, payShortToken, shortTokenAmount]);
+    return paySourceChainNativeTokenAmount;
+  }, [isDeposit, payLongToken, longTokenAmount, payShortToken, shortTokenAmount, srcChainId]);
 
   const sourceChainNativeFeeError = useSourceChainNativeFeeError({
     networkFeeUsd:
@@ -202,7 +219,7 @@ export const useGmSwapSubmitState = ({
     paySource,
     chainId,
     srcChainId,
-    payNativeTokenAmount,
+    paySourceChainNativeTokenAmount,
   });
 
   const formattedEstimationError = useMemo(() => {

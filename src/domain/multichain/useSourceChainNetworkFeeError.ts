@@ -6,7 +6,7 @@ import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUsdToNativeTokenMultichain } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
-import { adjustForDecimals, formatBalanceAmount } from "sdk/utils/numbers";
+import { formatBalanceAmount } from "sdk/utils/numbers";
 
 export type SourceChainNativeFeeError = {
   buttonText: string;
@@ -18,13 +18,13 @@ export function useSourceChainNativeFeeError({
   paySource,
   chainId,
   srcChainId,
-  payNativeTokenAmount = 0n,
+  paySourceChainNativeTokenAmount = 0n,
 }: {
   networkFeeUsd: bigint | undefined;
   paySource?: "sourceChain" | string;
   chainId: ContractsChainId | undefined;
   srcChainId: SourceChainId | undefined;
-  payNativeTokenAmount: bigint | undefined;
+  paySourceChainNativeTokenAmount: bigint | undefined;
 }): SourceChainNativeFeeError | undefined {
   const account = useSelector(selectAccount);
   const sourceChainNativeTokenBalance = useNativeTokenBalance(srcChainId, account);
@@ -45,18 +45,11 @@ export function useSourceChainNativeFeeError({
       return undefined;
     }
 
-    const settlementChainNativeCurrency = getViemChain(chainId).nativeCurrency;
     const sourceChainNativeCurrency = getViemChain(srcChainId).nativeCurrency;
     const symbol = sourceChainNativeCurrency.symbol;
     const decimals = sourceChainNativeCurrency.decimals;
 
-    const payNativeTokenAmountInSourceDecimals = adjustForDecimals(
-      payNativeTokenAmount,
-      settlementChainNativeCurrency.decimals,
-      sourceChainNativeCurrency.decimals
-    );
-
-    const requiredAmount = nativeFee + payNativeTokenAmountInSourceDecimals;
+    const requiredAmount = nativeFee + paySourceChainNativeTokenAmount;
 
     if (sourceChainNativeTokenBalance < requiredAmount) {
       const availableFormatted = formatBalanceAmount(sourceChainNativeTokenBalance, decimals);
@@ -69,5 +62,5 @@ export function useSourceChainNativeFeeError({
     }
 
     return undefined;
-  }, [paySource, chainId, srcChainId, nativeFee, sourceChainNativeTokenBalance, payNativeTokenAmount]);
+  }, [paySource, chainId, srcChainId, nativeFee, sourceChainNativeTokenBalance, paySourceChainNativeTokenAmount]);
 }
