@@ -1,8 +1,9 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
+import { zeroAddress } from "viem";
 
-import { getViemChain } from "config/chains";
+import { getMultichainTokenId } from "config/multichain";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
@@ -185,25 +186,27 @@ export const useGmSwapSubmitState = ({
       return 0n;
     }
 
-    const sourceChainNativeToken = getViemChain(srcChainId).nativeCurrency;
-
     let paySourceChainNativeTokenAmount = 0n;
 
     if (payLongToken !== undefined) {
-      if (payLongToken.symbol === sourceChainNativeToken.symbol) {
+      const sourceChainToken = getMultichainTokenId(srcChainId, payLongToken.address);
+
+      if (sourceChainToken !== undefined && sourceChainToken.address === zeroAddress) {
         paySourceChainNativeTokenAmount += adjustForDecimals(
           longTokenAmount,
           payLongToken.decimals,
-          sourceChainNativeToken.decimals
+          sourceChainToken.decimals
         );
       }
     }
     if (payShortToken !== undefined) {
-      if (payShortToken.symbol === sourceChainNativeToken.symbol) {
+      const sourceChainToken = getMultichainTokenId(srcChainId, payShortToken.address);
+
+      if (sourceChainToken !== undefined && sourceChainToken.address === zeroAddress) {
         paySourceChainNativeTokenAmount += adjustForDecimals(
           shortTokenAmount,
           payShortToken.decimals,
-          sourceChainNativeToken.decimals
+          sourceChainToken.decimals
         );
       }
     }
