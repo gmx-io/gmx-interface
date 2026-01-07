@@ -1,6 +1,7 @@
 name: Publish SDK
 
 permissions:
+  id-token: write # OIDC for npm
   contents: write
 
 on:
