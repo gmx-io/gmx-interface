@@ -266,8 +266,8 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
             </span>
             <span
               className={cx("text-body-medium numbers", {
-                "color-yellow-300": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
-                "color-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
+                "text-yellow-300": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+                "text-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
               })}
             >
               {formatLiquidationPrice(position.liquidationPrice, {

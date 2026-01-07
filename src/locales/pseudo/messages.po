@@ -2894,8 +2894,7 @@ msgstr ""
 msgid "No eligible tokens available on {0} for deposit"
 msgstr ""
 
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLInputRow.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Est. PnL"
 msgstr ""

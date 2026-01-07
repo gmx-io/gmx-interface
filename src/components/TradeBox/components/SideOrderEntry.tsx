@@ -66,6 +66,14 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
     [entriesInfo, entry.id]
   );
 
+  const estimatedPnl = useMemo(() => {
+    if (!entry.decreaseAmounts) return undefined;
+    return {
+      pnlUsd: entry.decreaseAmounts.realizedPnl,
+      pnlPercentage: entry.decreaseAmounts.realizedPnlPercentage,
+    };
+  }, [entry.decreaseAmounts]);
+
   return (
     <TPSLInputRow
       type={type}
@@ -74,6 +82,7 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
       positionData={positionData}
       priceError={priceError}
       variant="compact"
+      estimatedPnl={estimatedPnl}
     />
   );
 }

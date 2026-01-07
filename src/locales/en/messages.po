@@ -2894,8 +2894,7 @@ msgstr "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgid "No eligible tokens available on {0} for deposit"
 msgstr "No eligible tokens available on {0} for deposit"
 
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLInputRow.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Est. PnL"
 msgstr "Est. PnL"

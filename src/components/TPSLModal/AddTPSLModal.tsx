@@ -700,20 +700,8 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             priceError={tpPriceError}
             variant="full"
             defaultDisplayMode="percentage"
+            estimatedPnl={tpEstimatedPnl}
           />
-          <div className="text-body-small flex justify-end">
-            <span className="text-typography-secondary">
-              <Trans>Est. PnL</Trans>
-            </span>
-            <span
-              className={cx("ml-4 numbers", {
-                "text-green-500": tpEstimatedPnl && tpEstimatedPnl.pnlUsd > 0n,
-                "text-red-500": tpEstimatedPnl && tpEstimatedPnl.pnlUsd < 0n,
-              })}
-            >
-              {tpEstimatedPnl ? formatDeltaUsd(tpEstimatedPnl.pnlUsd, tpEstimatedPnl.pnlPercentage) : "-"}
-            </span>
-          </div>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -725,20 +713,8 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             priceError={slPriceError}
             variant="full"
             defaultDisplayMode="usd"
+            estimatedPnl={slEstimatedPnl}
           />
-          <div className="text-body-small flex justify-end">
-            <span className="text-typography-secondary">
-              <Trans>Est. PnL</Trans>
-            </span>
-            <span
-              className={cx("ml-4 numbers", {
-                "text-green-500": slEstimatedPnl && slEstimatedPnl.pnlUsd > 0n,
-                "text-red-500": slEstimatedPnl && slEstimatedPnl.pnlUsd < 0n,
-              })}
-            >
-              {slEstimatedPnl ? formatDeltaUsd(slEstimatedPnl.pnlUsd, slEstimatedPnl.pnlPercentage) : "-"}
-            </span>
-          </div>
         </div>
 
         <div className="flex flex-col gap-8">
