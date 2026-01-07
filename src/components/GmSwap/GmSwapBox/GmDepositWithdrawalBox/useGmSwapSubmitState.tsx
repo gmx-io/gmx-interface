@@ -3,7 +3,8 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { getMultichainTokenId } from "config/multichain";
+import { SettlementChainId } from "config/chains";
+import { getMappedTokenId } from "config/multichain";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
@@ -189,7 +190,7 @@ export const useGmSwapSubmitState = ({
     let paySourceChainNativeTokenAmount = 0n;
 
     if (payLongToken !== undefined) {
-      const sourceChainToken = getMultichainTokenId(srcChainId, payLongToken.address);
+      const sourceChainToken = getMappedTokenId(chainId as SettlementChainId, payLongToken.address, srcChainId);
 
       if (sourceChainToken !== undefined && sourceChainToken.address === zeroAddress) {
         paySourceChainNativeTokenAmount += adjustForDecimals(
@@ -200,7 +201,7 @@ export const useGmSwapSubmitState = ({
       }
     }
     if (payShortToken !== undefined) {
-      const sourceChainToken = getMultichainTokenId(srcChainId, payShortToken.address);
+      const sourceChainToken = getMappedTokenId(chainId as SettlementChainId, payShortToken.address, srcChainId);
 
       if (sourceChainToken !== undefined && sourceChainToken.address === zeroAddress) {
         paySourceChainNativeTokenAmount += adjustForDecimals(
@@ -212,7 +213,7 @@ export const useGmSwapSubmitState = ({
     }
 
     return paySourceChainNativeTokenAmount;
-  }, [isDeposit, payLongToken, longTokenAmount, payShortToken, shortTokenAmount, srcChainId]);
+  }, [isDeposit, payLongToken, longTokenAmount, payShortToken, shortTokenAmount, srcChainId, chainId]);
 
   const sourceChainNativeFeeError = useSourceChainNativeFeeError({
     networkFeeUsd:
