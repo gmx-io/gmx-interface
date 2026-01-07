@@ -3,10 +3,6 @@ import { EncodeEventTopicsReturnType, Hex } from "viem";
 
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
-export const testFetch = (input: Request) => {
-  return globalThis.fetch(input.url, input);
-};
-
 export function matchLogRequest(request: EncodeEventTopicsReturnType, logTopics: [Hex, ...Hex[]] | []): boolean {
   return request.every((filter, index) => {
     if (!filter) {

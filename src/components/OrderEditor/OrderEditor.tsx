@@ -87,6 +87,7 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -118,6 +119,7 @@ export function OrderEditor(p: Props) {
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
+  const hasOutdatedUi = useHasOutdatedUi();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
@@ -516,13 +518,20 @@ export function OrderEditor(p: Props) {
   ]);
 
   const submitButtonState = useMemo(() => {
+    if (hasOutdatedUi) {
+      return {
+        text: t`Page outdated, please refresh`,
+        disabled: true,
+      };
+    }
+
     if (isMaxLeverageError) {
       return {
         text: t`Max. Leverage Exceeded`,
         tooltip: (
           <>
             <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#max-leverage">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
             <br />
             <br />
             <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
@@ -548,7 +557,15 @@ export function OrderEditor(p: Props) {
       disabled: false,
       onClick: onSubmit,
     };
-  }, [error, isMaxLeverageError, p.order.orderType, p.order.isTwap, onSubmit, detectAndSetAvailableMaxLeverage]);
+  }, [
+    error,
+    hasOutdatedUi,
+    isMaxLeverageError,
+    p.order.orderType,
+    p.order.isTwap,
+    onSubmit,
+    detectAndSetAvailableMaxLeverage,
+  ]);
 
   useKey(
     "Enter",

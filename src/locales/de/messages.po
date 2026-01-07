@@ -178,10 +178,6 @@ msgstr "Aktualisiere {updateOrdersCount} TP/SL-Order(s)"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0} liegt über der Zielgewichtung.<0/><1/>Erhalte niedrigere Gebühren, um <2>Token für {1} zu tauschen</2>."
-
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -496,10 +492,6 @@ msgstr "Klassisch"
 msgid "Unstaking"
 msgstr "Unstaking"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Monitoring"
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -646,10 +638,6 @@ msgstr "Rabatte auf V2"
 msgid "Acceptable Price Impact"
 msgstr "Akzeptabler Preisimpakt"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "Zu Metamask hinzufügen"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "Unzureichend gestakete Token"
@@ -675,10 +663,6 @@ msgstr "Verteilungshistorie für eingelöste Rabatte und Airdrops."
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "providing liquidity"
 msgstr "Liquidität bereitstellen"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "Tippe auf [Wallet erstellen], um dein Web3 Wallet zu verwenden."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -720,10 +704,6 @@ msgstr "Limitpreis über Markpreis"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Offenes Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "Wallet erstellen oder importieren"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -1021,10 +1001,6 @@ msgstr "GMX verwendet TradingView, um Echtzeit-Kryptowährungscharts bereitzuste
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "GMX V2-Rabatte werden automatisch als Gebührensenkungen auf jeden Handel angewendet und nicht in dieser Tabelle angezeigt."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "Öffne {0} in Coingecko"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -2437,10 +2413,6 @@ msgstr "Maximale Anzahl von Teilen: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "App starten"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Large Account RPC"
-#~ msgstr ""
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Verfügbar zum Zahlen"
@@ -2693,10 +2665,6 @@ msgstr "Liquidationsgebühr"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr ""
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Permits"
-#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -3595,10 +3563,6 @@ msgstr "Empfehlungscode eingereicht."
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX sucht derzeit nicht aktiv nach neuen Mitarbeitern. Wenn du jedoch denkst, dass du zum Projekt beitragen kannst, sende bitte eine E-Mail an <0>jobs@gmx.io</0>."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "Nach dem Scannen erscheint eine Verbindungsaufforderung, um deine Wallet zu verbinden."
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr "Liquiditätsbereitstellung für diesen Markt ist nur auf {chainNames} und {lastChainName} verfügbar. Bitte wechseln Sie zu {chainNames} oder {lastChainName}, um Verdienstmöglichkeiten zu nutzen."
@@ -3846,7 +3810,6 @@ msgstr "<0>GMX führt Trades gegen einen dynamisch ausbalancierten Liquiditätsp
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "Mehr lesen"
 
@@ -4196,10 +4159,6 @@ msgstr "TP"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Beanspruchbare Finanzierungsgebühr.</0>"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Melde dich in deiner Binance-App an und tippe auf [Wallets]. Gehe zu [Web3]."
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5084,10 +5043,6 @@ msgstr "zahlen"
 msgid "Total circulating supply of GMX tokens."
 msgstr "Gesamte umlaufende Versorgung von GMX-Token."
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "Target Weight"
-msgstr "Ziel-Gewichtung"
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "Du kannst bis zu {allowedAutoCancelOrdersNumber} aktive auto-stornierbare TP/SL-Orders haben. Zusätzliche Orders müssen manuell storniert werden, während bestehende automatisch mit ihrer zugehörigen Position schließen."
@@ -5111,6 +5066,10 @@ msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim your referral rewards."
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
@@ -5304,10 +5263,6 @@ msgstr "30T"
 msgid "Est. Impact Rebate"
 msgstr "Gesch. Auswirkungs-Rabatt"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "Andere Token auswählen"
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"
 msgstr "Hohe Netzwerkgebühren"
@@ -5477,10 +5432,6 @@ msgstr "Der gesamte realisierte und unrealisierte Gewinn und Verlust für den Ze
 msgid "Ann. Performance"
 msgstr "Ann. Performance"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Fallback RPC"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} Orders wurden nicht aktualisiert, da das maximale Order-Limit erreicht wurde"
@@ -5521,10 +5472,6 @@ msgstr "Neuen Betrag oder Preis eingeben"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Wins and losses for fully closed positions."
 msgstr "Gewinne und Verluste für vollständig geschlossene Positionen."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Binance-App öffnen"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6201,10 +6148,6 @@ msgstr "Startet in"
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "Die Netzwerkgebühren sind derzeit hoch, was auf eine vorübergehende Zunahme von Transaktionen im {chainName}-Netzwerk zurückzuführen sein kann."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "Scanne den QR-Code"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "Unbekannte Shift-GM-Order"
@@ -6330,10 +6273,6 @@ msgstr "Gebühren überschreiten Betrag"
 msgid "Search Type"
 msgstr "Suchtyp"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0} ist unter seinem Zielgewicht.<0/><1/>Erhalte niedrigere Gebühren zum <2>Kaufen von GLP</2> mit {1}, und zum <3>Swappen</3> von {2} für andere Token."
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6342,10 +6281,6 @@ msgstr "Gewinnrate"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "{0} in Explorer öffnen"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
@@ -6667,10 +6602,6 @@ msgstr "GMX kaufen"
 msgid "Copy error"
 msgstr "Kopierfehler"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "RPC Tracker Logging"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "Projekte, die von der GMX-Community entwickelt wurden. <0/>Bitte sei vorsichtig bei der Interaktion mit Apps, Apps werden vollständig von Community-Entwicklern gepflegt."
@@ -6903,7 +6834,28 @@ msgstr ""
 msgid "Swap failed."
 msgstr "Tausch fehlgeschlagen."
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderList/OrderList.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/components/TVChartContainer/DynamicLines.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/context/SyntheticsStateContext/hooks/orderHooks.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated, please refresh"
 msgstr "Seite veraltet, bitte aktualisieren"
 
@@ -6923,10 +6875,6 @@ msgstr "Telegram-Account"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Verkaufe {operationTokenSymbol}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Links"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -6983,10 +6931,6 @@ msgstr "Min. Anzahl der Teile: {MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "Antrag auf Abrechnung von Finanzierungsgebühren"
-
-#: src/pages/Dashboard/WeightText.tsx
-msgid "Current Weight"
-msgstr "Aktuelle Gewichtung"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
@@ -7678,10 +7622,6 @@ msgstr "Funding eingelöst."
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Hebel halten ist nicht verfügbar, da Position max. erlaubten Hebel überschreitet. <0>Mehr lesen</0>."
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "{0} zu Metamask hinzufügen"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"

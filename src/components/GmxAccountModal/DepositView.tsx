@@ -7,7 +7,14 @@ import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
-import { AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
+import {
+  AnyChainId,
+  SettlementChainId,
+  SourceChainId,
+  getChainName,
+  getViemChain,
+  isTestnetChain,
+} from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -60,10 +67,11 @@ import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "li
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
-import { convertTokenAddress, getNativeToken, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
@@ -394,6 +402,7 @@ export const DepositView = () => {
   const isGeminiWallet = useIsGeminiWallet();
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
   const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const sameChainCallback: TxnCallback<WalletTxnCtx> = useCallback(
     (txnEvent) => {
@@ -712,7 +721,12 @@ export const DepositView = () => {
     onClick: handleDeposit,
   };
 
-  if (isApproving) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (isApproving) {
     buttonState = {
       text: (
         <>
@@ -759,8 +773,9 @@ export const DepositView = () => {
     const isNative = unwrappedSelectedTokenAddress === zeroAddress;
     const value = isNative ? amountLD : 0n;
 
-    if (quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
-      const nativeTokenSymbol = getNativeToken(settlementChainId)?.symbol;
+    if (depositViewChain !== undefined && quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
+      const nativeTokenSymbol = getViemChain(depositViewChain).nativeCurrency.symbol;
+
       buttonState = {
         text: t`Insufficient ${nativeTokenSymbol} balance`,
         disabled: true,

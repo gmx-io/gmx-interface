@@ -124,22 +124,13 @@ export class RpcTracker {
       return purpose === "express" || purpose === "default";
     });
 
+    const avgResponseTime = getAvgResponseTime(filtered);
+    const purposeOrder: RpcPurpose[] = ["express", "default"];
+
     const ranked = orderBy(
       filtered,
-      [
-        (result) => {
-          const bannedTimestamp = result.banned?.timestamp;
-          if (!bannedTimestamp) {
-            return -Infinity;
-          }
-          return bannedTimestamp;
-        },
-        (result) => {
-          const purpose = this.getRpcConfig(result.endpoint)?.purpose;
-          return purpose === "express" ? 1 : 0;
-        },
-      ],
-      ["asc", "desc"]
+      [scoreNotBanned, this.byMatchedPurpose(purposeOrder), scoreBySpeedAndConsistency(avgResponseTime)],
+      ["desc", "desc", "desc"]
     );
 
     return ranked[0]?.endpoint ?? this.fallbackTracker.getCurrentEndpoints().primary;

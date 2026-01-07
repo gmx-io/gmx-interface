@@ -1,11 +1,23 @@
 import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
-import { Address, encodeFunctionData, recoverTypedDataAddress, size, zeroAddress, zeroHash } from "viem";
+import {
+  Address,
+  encodeFunctionData,
+  maxUint256,
+  PublicClient,
+  recoverTypedDataAddress,
+  size,
+  toHex,
+  zeroAddress,
+  zeroHash,
+} from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
-import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
+import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { isSourceChain } from "config/multichain";
+import { calculateMappingSlot, DATASTORE_SLOT_INDEXES } from "domain/multichain/arbitraryRelayParams";
+import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
   ExpressParamsEstimationMethod,
@@ -30,7 +42,7 @@ import {
 } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
-import { estimateGasLimit } from "lib/gas/estimateGasLimit";
+import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -186,29 +198,46 @@ class ExpressEstimationError extends Error {
 }
 export class ExpressEstimationInsufficientGasPaymentTokenBalanceError extends ExpressEstimationError {
   name = "ExpressEstimationInsufficientGasPaymentTokenBalanceError";
+  constructor(
+    public readonly params?: {
+      balance?: bigint;
+      requiredAmount?: bigint;
+    }
+  ) {
+    super();
+  }
 }
 
 export async function estimateExpressParams({
   chainId,
   isGmxAccount,
-  provider,
   transactionParams,
   globalExpressParams,
   estimationMethod = "approximate",
   requireValidations = true,
   subaccount: rawSubaccount,
   throwOnInvalid = false,
+  provider,
+  client,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
-  provider: Provider;
   globalExpressParams: GlobalExpressParams;
   transactionParams: ExpressTransactionEstimatorParams;
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
   throwOnInvalid?: boolean;
-}): Promise<ExpressTxnParams | undefined> {
+} & (
+  | {
+      client: PublicClient;
+      provider?: undefined;
+    }
+  | {
+      provider: Provider;
+      client?: undefined;
+    }
+)): Promise<ExpressTxnParams | undefined> {
   if (requireValidations && !transactionParams.isValid) {
     if (throwOnInvalid) {
       throw new ExpressEstimationError("transactionParams is invalid");
@@ -309,35 +338,64 @@ export async function estimateExpressParams({
     : 0n;
 
   let gasLimit: bigint;
-  if (estimationMethod === "estimateGas" && provider) {
-    const baseGasPaymentValidations = getGasPaymentValidations({
-      gasPaymentToken,
-      gasPaymentTokenAsCollateralAmount,
-      gasPaymentTokenAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
-      gasPaymentAllowanceData,
-      isGmxAccount,
-      tokenPermits,
-    });
-
-    if (
-      baseGasPaymentValidations.isOutGasTokenBalance ||
-      baseGasPaymentValidations.needGasPaymentTokenApproval ||
-      !transactionParams.isValid
-    ) {
-      // In this cases simulation will fail
-      if (throwOnInvalid) {
-        throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError();
-      }
-      return undefined;
-    }
-
+  if (estimationMethod === "estimateGas") {
     try {
-      gasLimit = await estimateGasLimit(provider, {
-        from: GMX_SIMULATION_ORIGIN,
-        to: baseTxn.txnData.to,
-        data: baseTxn.txnData.callData,
-        value: 0n,
-      });
+      if (provider) {
+        const baseGasPaymentValidations = getGasPaymentValidations({
+          gasPaymentToken,
+          gasPaymentTokenAsCollateralAmount,
+          gasPaymentTokenAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentAllowanceData,
+          isGmxAccount,
+          tokenPermits,
+        });
+
+        if (
+          baseGasPaymentValidations.isOutGasTokenBalance ||
+          baseGasPaymentValidations.needGasPaymentTokenApproval ||
+          !transactionParams.isValid
+        ) {
+          // In this cases simulation will fail
+          if (throwOnInvalid) {
+            throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError();
+          }
+          return undefined;
+        }
+
+        gasLimit = await estimateGasLimit(provider, {
+          from: GMX_SIMULATION_ORIGIN,
+          to: baseTxn.txnData.to,
+          data: baseTxn.txnData.callData,
+          value: 0n,
+        });
+      } else {
+        gasLimit = await fallbackCustomError(
+          async () =>
+            client
+              .estimateGas({
+                account: GMX_SIMULATION_ORIGIN,
+                to: baseTxn.txnData.to,
+                data: baseTxn.txnData.callData,
+                value: 0n,
+                stateOverride: [
+                  {
+                    address: getContract(chainId, "DataStore"),
+                    stateDiff: [
+                      {
+                        slot: calculateMappingSlot(
+                          multichainBalanceKey(account, gasPaymentToken.address),
+                          DATASTORE_SLOT_INDEXES.uintValues
+                        ),
+                        value: toHex(maxUint256 / 100n, { size: 32 }),
+                      },
+                    ],
+                  },
+                ],
+              })
+              .then(applyGasLimitBuffer),
+          "gasLimit"
+        );
+      }
     } catch (error) {
       const extendedError = extendError(error, {
         data: {
@@ -417,7 +475,10 @@ export async function estimateExpressParams({
 
   if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations, isSponsoredCall })) {
     if (throwOnInvalid) {
-      throw new ExpressEstimationError("express params are invalid");
+      throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
+        balance: isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance,
+        requiredAmount: finalRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
     }
     return undefined;
   }

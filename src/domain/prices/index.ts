@@ -8,7 +8,7 @@ import { chainlinkClient } from "lib/indexers/clients";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatAmount, MaxInt256 } from "lib/numbers";
 import { sleep } from "lib/sleep";
-import { getNativeToken, getNormalizedTokenSymbol, isChartAvailableForToken } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { FEED_ID_MAP } from "./constants";
 import type { Bar, FromOldToNewArray } from "../tradingview/types";
@@ -60,34 +60,6 @@ export function fillGaps(prices, periodSeconds) {
   }
 
   return newPrices;
-}
-
-export async function getLimitChartPricesFromStats(
-  chainId: number,
-  symbol: string,
-  period: string,
-  limit = 1
-): Promise<FromOldToNewArray<Bar>> {
-  symbol = getNormalizedTokenSymbol(symbol);
-
-  if (!isChartAvailableForToken(chainId, symbol)) {
-    symbol = getNativeToken(chainId).symbol;
-  }
-
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&limit=${limit}`;
-
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const prices = await response.json().then(({ prices }) => prices);
-    return prices.map(formatBarInfo);
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(`Error fetching data: ${error}`);
-    return [];
-  }
 }
 
 export async function getChartPricesFromStats(

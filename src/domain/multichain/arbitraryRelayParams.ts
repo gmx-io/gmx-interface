@@ -38,7 +38,6 @@ import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
-import { useJsonRpcProvider } from "lib/rpc";
 import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
@@ -110,7 +109,7 @@ export function getRawBaseRelayerParams({
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
 }
 
-function calculateMappingSlot(key: string, mappingSlotIndex: number): string {
+export function calculateMappingSlot(key: string, mappingSlotIndex: number): string {
   const encodedKeyAndSlot = encodeAbiParameters(
     [{ type: "bytes32" }, { type: "uint256" }],
     [key, BigInt(mappingSlotIndex)]
@@ -120,7 +119,7 @@ function calculateMappingSlot(key: string, mappingSlotIndex: number): string {
   return storageSlot;
 }
 
-const DATASTORE_SLOT_INDEXES = {
+export const DATASTORE_SLOT_INDEXES = {
   uintValues: 0,
 };
 
@@ -169,7 +168,7 @@ async function estimateArbitraryGasLimit({
                     multichainBalanceKey(account, gasPaymentParams.gasPaymentTokenAddress),
                     DATASTORE_SLOT_INDEXES.uintValues
                   ),
-                  value: toHex(maxUint256),
+                  value: toHex(maxUint256 / 100n, { size: 32 }),
                 },
               ],
             },
@@ -320,6 +319,7 @@ export function useArbitraryRelayParamsAndPayload({
   executionFeeAmount,
   gasPaymentTokenAsCollateralAmount,
   withLoading = true,
+  requireValidations = true,
 }: {
   expressTransactionBuilder: ExpressTransactionBuilder | undefined;
   isGmxAccount: boolean;
@@ -327,6 +327,7 @@ export function useArbitraryRelayParamsAndPayload({
   executionFeeAmount?: bigint;
   gasPaymentTokenAsCollateralAmount?: bigint;
   withLoading?: boolean;
+  requireValidations?: boolean;
 }): AsyncResult<ExpressTxnParams> {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
@@ -334,7 +335,6 @@ export function useArbitraryRelayParamsAndPayload({
   const subaccount = useSelector(
     isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
   );
-  const { provider } = useJsonRpcProvider(chainId);
 
   const estimationKey = `${globalExpressParams?.gasPaymentTokenAddress}`;
   const prevEstimationKey = usePrevious(estimationKey);
@@ -343,6 +343,8 @@ export function useArbitraryRelayParamsAndPayload({
 
   const expressTxnParamsAsyncResult = useThrottledAsync(
     async ({ params: p }): Promise<ExpressTxnParams> => {
+      const client = getPublicClientWithRpc(chainId);
+
       const { baseRelayFeeSwapParams, rawBaseRelayParamsPayload } = getRawBaseRelayerParams({
         chainId,
         account: p.account,
@@ -356,7 +358,7 @@ export function useArbitraryRelayParamsAndPayload({
 
       const gasLimit: bigint = await estimateArbitraryGasLimit({
         chainId,
-        client: getPublicClientWithRpc(chainId),
+        client,
         account: p.account,
         expressTransactionBuilder: p.expressTransactionBuilder,
         rawRelayParamsPayload: rawBaseRelayParamsPayload,
@@ -372,8 +374,8 @@ export function useArbitraryRelayParamsAndPayload({
         isGmxAccount: p.isGmxAccount,
         estimationMethod: "estimateGas",
         globalExpressParams: p.globalExpressParams,
-        provider: p.provider,
-        requireValidations: true,
+        client,
+        requireValidations: p.requireValidations,
         subaccount: p.subaccount,
         transactionParams: {
           account: p.account,
@@ -401,21 +403,17 @@ export function useArbitraryRelayParamsAndPayload({
       throttleMs: 2500,
       withLoading,
       params:
-        enabled &&
-        account !== undefined &&
-        provider !== undefined &&
-        globalExpressParams !== undefined &&
-        expressTransactionBuilder !== undefined
+        enabled && account !== undefined && globalExpressParams !== undefined && expressTransactionBuilder !== undefined
           ? {
               account,
               chainId,
-              provider,
               globalExpressParams,
               expressTransactionBuilder,
               isGmxAccount,
               subaccount,
               executionFeeAmount,
               gasPaymentTokenAsCollateralAmount,
+              requireValidations,
             }
           : undefined,
       forceRecalculate,
@@ -445,6 +443,8 @@ export function useArbitraryError(
         isOutOfTokenError: {
           tokenAddress: gasPaymentTokenAddress,
           isGasPaymentToken: true,
+          balance: error.params?.balance,
+          requiredAmount: error.params?.requiredAmount,
         },
       };
     }

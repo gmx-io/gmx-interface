@@ -220,7 +220,7 @@ const valueFormatter = (marketGraphType: MarketGraphType) => (value: number) => 
 
   const valueMap: Record<MarketGraphType, string> = {
     performance: formatPerformanceBps(value),
-    price: formatUsdPrice(parseValue(value.toString(), USD_DECIMALS) ?? 0n) || "",
+    price: formatUsdPrice(parseValue(value.toFixed(USD_DECIMALS), USD_DECIMALS) ?? 0n) || "",
     feeApr: `${Number(value.toFixed(2))}%`,
   };
 

@@ -246,7 +246,7 @@ export function getErrorMessage(
             <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
             <br />
             <br />
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v1#rpc-urls">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading#rpc-urls">Read more</ExternalLink>.
           </Trans>
           <br />
           <br />

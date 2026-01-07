@@ -1,4 +1,4 @@
-name: Tests and linting
+name: Run Tests
 
 on:
   pull_request:
@@ -10,20 +10,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-conflicts:
-    name: Check Merge Conflicts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check for merge conflicts
-        run: |
-          chmod +x ./scripts/check-conflicts.sh
-          ./scripts/check-conflicts.sh
-
-  lint:
-    name: Run Linting
+  ci:
+    name: Linting, Type Checking, and Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,44 +25,37 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+      - name: Build SDK
+        run: |
+          cd sdk
+          yarn build
 
       - name: Run linting
-        run: yarn lint
-
-  type-check:
-    name: Run Type Checking
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22"
-          cache: "yarn"
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn lint:ci
 
       - name: Run type checking
-        run: yarn tscheck
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "22"
-          cache: "yarn"
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn tscheck:ci
 
       - name: Run tests
         run: yarn test:ci
+
+      - name: Run SDK linting
+        run: |
+          cd sdk
+          yarn lint:ci
+
+      - name: Run SDK type checking
+        run: |
+          cd sdk
+          yarn tscheck:ci
+
+      - name: Run SDK tests
+        run: |
+          cd sdk
+          yarn test:ci
+
+      - name: Run SDK multicall tests
+        run: |
+          cd sdk
+          yarn test:multicall

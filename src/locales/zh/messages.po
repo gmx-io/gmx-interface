@@ -178,10 +178,6 @@ msgstr "更新 {updateOrdersCount} 个 TP/SL 订单"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0} 高于其目标权重。<0/><1/>获取较低费用，以 <2>交换</2> 代币为 {1}。"
-
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -496,10 +492,6 @@ msgstr "经典"
 msgid "Unstaking"
 msgstr "取消质押"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Monitoring"
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -646,10 +638,6 @@ msgstr "V2 返利"
 msgid "Acceptable Price Impact"
 msgstr "可接受价格影响"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "添加到 Metamask"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "质押代币不足"
@@ -675,10 +663,6 @@ msgstr "已申领返利和空投的分配历史。"
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "providing liquidity"
 msgstr "提供流动性"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "点击[创建钱包]开始使用您的 Web3 钱包。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -720,10 +704,6 @@ msgstr "限价高于标记价格"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "开仓利息 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "创建或导入钱包"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -1021,10 +1001,6 @@ msgstr "GMX 使用 TradingView 提供实时加密货币图表，因此您可以�
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "GMX V2 返利自动应用于每笔交易的费用折扣，并未在此表格中显示。"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "在 Coingecko 中打开 {0}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -2437,10 +2413,6 @@ msgstr "最大部分数量：{MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "启动应用程序"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Large Account RPC"
-#~ msgstr ""
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "可用支付"
@@ -2693,10 +2665,6 @@ msgstr "清算费用"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr ""
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Permits"
-#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -3595,10 +3563,6 @@ msgstr "推荐码已提交。"
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以为项目做出贡献，请发送电子邮件至 <0>jobs@gmx.io</0>。"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr "此市场的流动性提供仅在 {chainNames} 和 {lastChainName} 上可用。请切换到 {chainNames} 或 {lastChainName} 以访问赚取机会。"
@@ -3846,7 +3810,6 @@ msgstr "<0>GMX 与动态平衡的流动性池执行交易，与传统订单簿�
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "阅读更多"
 
@@ -4196,10 +4159,6 @@ msgstr "TP"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>可领取资金费用。</0>"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "登录您的 Binance 应用程序并点击 [Wallets]。转到 [Web3]。"
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5084,10 +5043,6 @@ msgstr "支付"
 msgid "Total circulating supply of GMX tokens."
 msgstr "GMX 代币的总流通供应量。"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "Target Weight"
-msgstr "目标权重"
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "您最多可以有 {allowedAutoCancelOrdersNumber} 个活跃的可自动取消 TP/SL 订单。额外订单必须手动取消，而现有订单仍将与其相关头寸自动关闭。"
@@ -5111,6 +5066,10 @@ msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim your referral rewards."
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
@@ -5304,10 +5263,6 @@ msgstr "30 天"
 msgid "Est. Impact Rebate"
 msgstr "估计影响返利"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "选择不同的代币"
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"
 msgstr "高网络费用"
@@ -5477,10 +5432,6 @@ msgstr "期间的总已实现和未实现损益，包括费用和价格影响。
 msgid "Ann. Performance"
 msgstr "年化表现"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Fallback RPC"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "{0} 个订单未更新，因为达到最大订单限制"
@@ -5521,10 +5472,6 @@ msgstr "输入新金额或价格"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Wins and losses for fully closed positions."
 msgstr "完全平仓头寸的胜负。"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "打开 Binance 应用"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6201,10 +6148,6 @@ msgstr "开始于"
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "当前网络费用较高，这可能是由于 {chainName} 网络上的交易暂时增加。"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "扫描二维码"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "未知的转移 GM 订单"
@@ -6330,10 +6273,6 @@ msgstr "费用超过金额"
 msgid "Search Type"
 msgstr "搜索类型"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0} 低于其目标权重。<0/><1/>获取较低费用，以 <2>用 {1} 购买 GLP</2>，并 <3>交换</3> {2} 为其他代币。"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6342,10 +6281,6 @@ msgstr "胜率"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "在 Explorer 中打开 {0}"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
@@ -6667,10 +6602,6 @@ msgstr "购买 GMX"
 msgid "Copy error"
 msgstr "复制错误"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "RPC Tracker Logging"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "由 GMX 社区开发的项目。<0/>与任何应用互动时请谨慎，应用完全由社区开发者维护。"
@@ -6903,7 +6834,28 @@ msgstr ""
 msgid "Swap failed."
 msgstr "交换失败。"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderList/OrderList.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/components/TVChartContainer/DynamicLines.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/context/SyntheticsStateContext/hooks/orderHooks.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated, please refresh"
 msgstr "页面已过期，请刷新"
 
@@ -6923,10 +6875,6 @@ msgstr "Telegram 账户"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "出售 {operationTokenSymbol}"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Links"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -6983,10 +6931,6 @@ msgstr "最小部分数量：{MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "请求结算资金费用"
-
-#: src/pages/Dashboard/WeightText.tsx
-msgid "Current Weight"
-msgstr "当前权重"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
@@ -7678,10 +7622,6 @@ msgstr "资金已申领。"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "保持杠杆不可用，因为仓位超过最大允许杠杆。<0>阅读更多</0>。"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "将 {0} 添加到 Metamask"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"

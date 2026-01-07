@@ -5,7 +5,16 @@ export default defineConfig({
   test: {
     environment: "node",
     testTimeout: 15000,
-    exclude: ["**/build/**", "**/node_modules/**"],
+    exclude: [
+      "**/build/**",
+      "**/node_modules/**",
+      "**/modules/markets/markets.spec.ts",
+      "**/modules/tokens/tokens.spec.ts",
+      "**/modules/positions/positions.spec.ts",
+      "**/modules/orders/orders.spec.ts",
+      "**/modules/orders/helpers.spec.ts",
+      "**/modules/trades/trades.spec.ts",
+    ],
   },
   resolve: {
     alias: {

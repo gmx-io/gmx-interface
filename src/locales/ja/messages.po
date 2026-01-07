@@ -178,10 +178,6 @@ msgstr "{updateOrdersCount}件のTP/SL注文を更新中"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
-msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
-
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -496,10 +492,6 @@ msgstr "クラシック"
 msgid "Unstaking"
 msgstr "アンステーキング中"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Monitoring"
-#~ msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -646,10 +638,6 @@ msgstr "V2のリベート"
 msgid "Acceptable Price Impact"
 msgstr "許容価格影響"
 
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add to Metamask"
-msgstr "メタマスクに追加"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
 msgstr "ステークされたトークン不足"
@@ -675,10 +663,6 @@ msgstr "請求されたリベートおよびエアドロップの分配履歴。
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "providing liquidity"
 msgstr "流動性を提供"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "ウェブ3ウォレットを使用するには[ウォレットを作成]をタップしてください。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -720,10 +704,6 @@ msgstr "指値価格がマーク価格を上回っています"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "建玉 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "ウォレットの作成またはインポート"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -1021,10 +1001,6 @@ msgstr "GMXはTradingViewを使用してリアルタイムの暗号通貨チャ�
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
 msgstr "GMX V2リベートは各取引で手数料割引として自動適用され、このテーブルに表示されません。"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Coingecko"
-msgstr "{0}をCoingeckoで開く"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
@@ -2437,10 +2413,6 @@ msgstr "最大パート数: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "アプリ起動"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Large Account RPC"
-#~ msgstr ""
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "支払い可能"
@@ -2693,10 +2665,6 @@ msgstr "清算手数料"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "URL"
 msgstr ""
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Permits"
-#~ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match the selected filters."
@@ -3595,10 +3563,6 @@ msgstr "リファラルコードが送信されました。"
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMXは現在積極的には求人を行っていませんが、プロジェクトに貢献できると思われる方は、<0>jobs@gmx.io</0>にメールをしてください。"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "スキャン後、ウォレットを接続するためのプロンプトが表示されます。"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr "この市場の流動性提供は{chainNames}および{lastChainName}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}または{lastChainName}に切り替えてください。"
@@ -3846,7 +3810,6 @@ msgstr "<0>GMXは伝統的な注文ブックとは異なり、動的にバラン
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/pages/Dashboard/WeightText.tsx
 msgid "Read more"
 msgstr "詳細について読む"
 
@@ -4196,10 +4159,6 @@ msgstr "TP"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>請求可能ファンディング手数料。</0>"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Binanceアプリにログインし、[ウォレット]をタップして[Web3]に移動します。"
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5084,10 +5043,6 @@ msgstr "支払い"
 msgid "Total circulating supply of GMX tokens."
 msgstr "GMXトークンの総循環供給量。"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "Target Weight"
-msgstr "ターゲットウェイト"
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "最大{allowedAutoCancelOrdersNumber}件のアクティブな自動キャンセル可能TP/SL注文を持つことができます。追加注文は手動でキャンセルする必要があり、既存のものは関連ポジションとともに自動クローズされます。"
@@ -5111,6 +5066,10 @@ msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Debug RPC Endpoints ({0})"
+msgstr ""
+
+#: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
+msgid "Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim your referral rewards."
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
@@ -5304,10 +5263,6 @@ msgstr "30日"
 msgid "Est. Impact Rebate"
 msgstr "推定影響リベート"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "別のトークンを選択"
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"
 msgstr "高いネットワーク手数料"
@@ -5477,10 +5432,6 @@ msgstr "期間中の総実現および未実現損益で、手数料と価格イ
 msgid "Ann. Performance"
 msgstr "年率パフォーマンス"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Fallback RPC"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "{0} orders were not updated as max order limit reached"
 msgstr "最大注文制限に達したため{0}注文が更新されませんでした"
@@ -5521,10 +5472,6 @@ msgstr "新しい額または価格を入力"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Wins and losses for fully closed positions."
 msgstr "完全にクローズされたポジションの勝敗。"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Binanceアプリを開く"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6201,10 +6148,6 @@ msgstr "開始まで"
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "現在ネットワーク手数料が高いです。これは{chainName}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "QRコードをスキャン"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "不明なシフトGM注文"
@@ -6330,10 +6273,6 @@ msgstr "手数料が額を超過"
 msgid "Search Type"
 msgstr "検索タイプ"
 
-#: src/pages/Dashboard/WeightText.tsx
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>してください。"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Win Rate"
@@ -6342,10 +6281,6 @@ msgstr "勝率"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr ""
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Open {0} in Explorer"
-msgstr "{0} をエクスプローラーで開く"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
@@ -6667,10 +6602,6 @@ msgstr "GMXを購入"
 msgid "Copy error"
 msgstr "コピーエラー"
 
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "RPC Tracker Logging"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Please exercise caution when interacting with any app, apps are fully maintained by community developers."
 msgstr "GMXコミュニティによって開発されたプロジェクト。<0/>アプリとの相互作用時は注意してください。アプリはコミュニティ開発者によって完全に維持されています。"
@@ -6903,7 +6834,28 @@ msgstr ""
 msgid "Swap failed."
 msgstr "スワップに失敗しました。"
 
+#: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrderList/OrderList.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+#: src/components/TVChartContainer/DynamicLines.tsx
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/context/SyntheticsStateContext/hooks/orderHooks.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated, please refresh"
 msgstr "ページが古くなっています。更新してください。"
 
@@ -6923,10 +6875,6 @@ msgstr "Telegramアカウント"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol}を売却"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-#~ msgid "Debug Links"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perfectswap"
@@ -6983,10 +6931,6 @@ msgstr "最小パート数: {MIN_TWAP_NUMBER_OF_PARTS}"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Request Settlement of Funding Fees"
 msgstr "ファンディング手数料の決済リクエスト"
-
-#: src/pages/Dashboard/WeightText.tsx
-msgid "Current Weight"
-msgstr "現在のウェイト"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
@@ -7678,10 +7622,6 @@ msgstr "資金が請求されました。"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "ポジションが最大許容レバレッジを超えるため、レバレッジ維持が利用できません。<0>詳細を読む</0>。"
-
-#: src/pages/Dashboard/AssetDropdown.tsx
-msgid "Add {0} to Metamask"
-msgstr "{0}をMetamaskに追加"
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"

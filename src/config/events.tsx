@@ -30,6 +30,32 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "mon-sky-zec-listing",
+    isActive: true,
+    startDate: "22 Dec 2025, 16:10",
+    endDate: "29 Dec 2025, 16:10",
+    title: "MON (Monad), SKY and ZEC (Zcash) markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+  },
+  {
+    id: "open-interest-calculation-update",
+    isActive: true,
+    startDate: "19 Dec 2025, 08:00",
+    endDate: "26 Dec 2025, 08:00",
+    title: "Open Interest Calculation Update",
+    bodyText: (
+      <>
+        From 22nd December, the open interest will now be tracked in token amounts instead of USD values for improved
+        balance accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: AL16Z_DELISTING_EVENT_ID,
     isActive: true,
     startDate: "06 Nov 2025, 08:00",

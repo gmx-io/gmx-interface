@@ -76,6 +76,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -166,6 +167,7 @@ export const WithdrawalView = () => {
   const { setIsSettingsVisible } = useSettings();
   const { setMultichainSubmittedWithdrawal, setMultichainWithdrawalSentTxnHash, setMultichainWithdrawalSentError } =
     useSyntheticsEvents();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
   const networks = useGmxAccountWithdrawNetworks();
@@ -407,6 +409,7 @@ export const WithdrawalView = () => {
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
     isGmxAccount: true,
+    requireValidations: false,
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
@@ -577,7 +580,7 @@ export const WithdrawalView = () => {
 
     const expressTxnParams = await expressTxnParamsAsyncResult.promise;
 
-    if (expressTxnParams === undefined) {
+    if (expressTxnParams === undefined || !expressTxnParams.gasPaymentValidations.isValid) {
       helperToast.error(t`Missing required parameters`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
@@ -762,7 +765,12 @@ export const WithdrawalView = () => {
     onClick: handleWithdraw,
   };
 
-  if (isSubmitting) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (isSubmitting) {
     buttonState = {
       text: (
         <>
@@ -789,7 +797,7 @@ export const WithdrawalView = () => {
       !expressTxnParamsAsyncResult.isLoading
     ) {
       buttonState = {
-        text: t`Insufficient ${gasPaymentParams?.relayFeeToken.symbol} balance to pay for gas`,
+        text: t`Insufficient ${gasPaymentToken?.symbol} balance to pay for gas`,
         disabled: true,
       };
     } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
@@ -807,7 +815,12 @@ export const WithdrawalView = () => {
         text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
         disabled: true,
       };
-    } else if (!expressTxnParamsAsyncResult.data) {
+    } else if (
+      // We do not show loading state if we have valid params
+      // But show loafing periodically if the params are not valid to show the user some action
+      !expressTxnParamsAsyncResult.data ||
+      (expressTxnParamsAsyncResult.isLoading && !expressTxnParamsAsyncResult.data.gasPaymentValidations.isValid)
+    ) {
       buttonState = {
         text: (
           <>
@@ -1037,7 +1050,7 @@ export const WithdrawalView = () => {
           {errors?.isOutOfTokenError &&
             !errors.isOutOfTokenError.isGasPaymentToken &&
             isOutOfTokenErrorToken !== undefined && (
-              <AlertInfoCard type="error" className="my-4">
+              <AlertInfoCard type="info" className="my-4">
                 <div>
                   <Trans>
                     Withdrawing requires{" "}
