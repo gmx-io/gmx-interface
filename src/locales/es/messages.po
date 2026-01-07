@@ -3391,10 +3391,6 @@ msgstr "Deslizamiento Permitido"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr "Posiciones {longOrShort} {fundingAction} una comisión de financiación de {fundingRate} por hora y no pagan comisión de préstamo."
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-#~ msgstr "{typeString} Corto TP/SL: {0} una posición corta cuando se alcanza el precio de activación."
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr "Grupos de Telegram liderados por la comunidad."
@@ -5023,10 +5019,6 @@ msgstr "APR de wstETH"
 msgid "Telegram Group"
 msgstr "Grupo de Telegram"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-#~ msgstr "{typeString} Largo TP/SL: {0} una posición larga cuando se alcanza el precio de activación."
-
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> a </1>{toTokenIcon}"
@@ -6016,10 +6008,6 @@ msgstr "Tarifa de Funding Negativa"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} a {toExecutionText}"
-
-#: src/components/PositionItem/PositionItem.tsx
-#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-#~ msgstr "Haz clic en la posición para seleccionarla, luego usa el cuadro de operación para aumentarla o establecer órdenes TP/SL."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."

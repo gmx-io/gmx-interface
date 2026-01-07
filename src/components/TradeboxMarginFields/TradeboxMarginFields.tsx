@@ -245,7 +245,6 @@ export function TradeboxMarginFields({
         if (parsedUsd !== undefined) {
           const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
           const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
-          setFocusedInput("to");
           setToTokenInputValue(tokensValue, false);
           setSizeInputValue(tokensValue);
         } else {
@@ -255,7 +254,6 @@ export function TradeboxMarginFields({
         const parsedTokens = parseValue(toTokenInputValue || "0", toToken.decimals);
         if (parsedTokens !== undefined) {
           const sizeInUsd = (parsedTokens * visualMultiplier * markPrice) / 10n ** BigInt(toToken.decimals);
-          setFocusedInput("to");
           setSizeInputValue(formatAmount(sizeInUsd, USD_DECIMALS, sizeUsdDisplayDecimals));
         } else {
           setSizeInputValue("");
@@ -271,7 +269,6 @@ export function TradeboxMarginFields({
       sizeInputValue,
       toTokenInputValue,
       sizeUsdDisplayDecimals,
-      setFocusedInput,
       setToTokenInputValue,
     ]
   );

@@ -3391,10 +3391,6 @@ msgstr "最大スリッページ"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr "{longOrShort}ポジションは1時間あたり{fundingRate}のファンディング手数料を{fundingAction}し、借入手数料を支払いません。"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-#~ msgstr "{typeString} ショートTP/SL: トリガー価格に達したときにショートポジションを{0}。"
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr "コミュニティ主導のTelegramグループ"
@@ -5023,10 +5019,6 @@ msgstr "wstETH APR"
 msgid "Telegram Group"
 msgstr "Telegramグループ"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-#~ msgstr "{typeString} ロング TP/SL: トリガー価格に達したときに {0} のロングポジション。"
-
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> から </1>{toTokenIcon}"
@@ -6016,10 +6008,6 @@ msgstr "ネガティブ資金手数料"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText}から{toExecutionText}へ"
-
-#: src/components/PositionItem/PositionItem.tsx
-#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-#~ msgstr "ポジションをクリックして選択し、取引ボックスを使用して増加するかTP/SL注文を設定してください。"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."

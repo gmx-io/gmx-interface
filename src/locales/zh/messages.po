@@ -3391,10 +3391,6 @@ msgstr "允许滑点"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr "{longOrShort} 仓位 {fundingAction} 每小时 {fundingRate} 的资金费用，且不支付借贷费用。"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-#~ msgstr "{typeString} 做空 TP/SL：当达到触发价格时 {0} 一个做空仓位。"
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr "社区主导的 Telegram 群组。"
@@ -5023,10 +5019,6 @@ msgstr "wstETH APR"
 msgid "Telegram Group"
 msgstr "Telegram 群组"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-#~ msgstr "{typeString} 多头 TP/SL：{0} 当达到触发价格时开立多头头寸。"
-
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 到 </1>{toTokenIcon}"
@@ -6016,10 +6008,6 @@ msgstr "负资金费用"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} 到 {toExecutionText}"
-
-#: src/components/PositionItem/PositionItem.tsx
-#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-#~ msgstr "点击仓位选择它，然后使用交易框增加它或设置 TP/SL 订单。"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."

@@ -3391,10 +3391,6 @@ msgstr ""
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr ""
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-#~ msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr ""
@@ -5023,10 +5019,6 @@ msgstr ""
 msgid "Telegram Group"
 msgstr ""
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-#~ msgstr ""
-
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr ""
@@ -6016,10 +6008,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr ""
-
-#: src/components/PositionItem/PositionItem.tsx
-#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-#~ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."

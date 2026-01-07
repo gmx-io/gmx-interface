@@ -3391,10 +3391,6 @@ msgstr "Zulässiges Slippage"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr "{longOrShort}-Positionen {fundingAction} eine Finanzierungsgebühr von {fundingRate} pro Stunde und zahlen keine Leihgebühr."
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-#~ msgstr "{typeString} Short TP/SL: {0} eine Short-Position, wenn der Trigger-Preis erreicht wird."
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr "Von der Community geführte Telegram-Gruppen."
@@ -5023,10 +5019,6 @@ msgstr "wstETH APR"
 msgid "Telegram Group"
 msgstr "Telegram Gruppe"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-#~ msgstr "{typeString} Long TP/SL: {0} eine Long-Position, wenn der Trigger-Preis erreicht wird."
-
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> zu </1>{toTokenIcon}"
@@ -6016,10 +6008,6 @@ msgstr "Negative Funding-Gebühr"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} zu {toExecutionText}"
-
-#: src/components/PositionItem/PositionItem.tsx
-#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-#~ msgstr "Klicken Sie auf die Position, um sie auszuwählen, dann verwenden Sie das Trade-Feld, um sie zu erhöhen oder TP/SL-Orders zu setzen."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."

@@ -3391,10 +3391,6 @@ msgstr "허용 가능한 슬리피지"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr "{longOrShort} 포지션은 시간당 {fundingRate} 자금 수수료를 {fundingAction}하며 차입 수수료를 지불하지 않습니다."
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-#~ msgstr "{typeString} 숏 TP/SL: 트리거 가격에 도달할 때 숏 포지션 {0}."
-
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr "커뮤니티 주도 텔레그램 그룹"
@@ -5023,10 +5019,6 @@ msgstr "wstETH APR"
 msgid "Telegram Group"
 msgstr "텔레그램 그룹"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-#~ msgstr "{typeString} Long TP/SL: 트리거 가격에 도달할 때 {0} 롱 포지션."
-
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1>에서 </1>{toTokenIcon}"
@@ -6016,10 +6008,6 @@ msgstr "부정적 펀딩 수수료"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText}에서 {toExecutionText}로"
-
-#: src/components/PositionItem/PositionItem.tsx
-#~ msgid "Click on the position to select it, then use the trade box to increase it or to set TP/SL orders."
-#~ msgstr "포지션을 클릭하여 선택한 후 거래 박스를 사용하여 증가시키거나 TP/SL 주문을 설정하세요."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
