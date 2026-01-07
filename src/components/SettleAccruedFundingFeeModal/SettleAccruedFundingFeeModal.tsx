@@ -21,6 +21,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
@@ -51,6 +52,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -155,10 +157,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [isVisible]);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
+    if (hasOutdatedUi) return [t`Page outdated, please refresh`, true];
     if (isSubmitting) return [t`Settling`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];
-  }, [isSubmitting, positionKeys.length]);
+  }, [hasOutdatedUi, isSubmitting, positionKeys.length]);
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {

@@ -1,6 +1,7 @@
 import { Chain, getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
 import {
-  coinbaseWallet,
+  baseAccount,
+  binanceWallet,
   coreWallet,
   geminiWallet,
   injectedWallet,
@@ -21,8 +22,6 @@ import { RpcPurpose } from "config/rpc";
 import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
-
-import binanceWallet from "./connecters/binanceW3W/binanceWallet";
 
 const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
 const APP_NAME = "GMX";
@@ -47,7 +46,7 @@ const popularWalletList: WalletList = [
 const othersWalletList: WalletList = [
   {
     groupName: "Others",
-    wallets: [binanceWallet, coinbaseWallet, trustWallet, coreWallet, okxWallet],
+    wallets: [binanceWallet, baseAccount, trustWallet, coreWallet, okxWallet],
   },
 ];
 

@@ -76,6 +76,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -166,6 +167,7 @@ export const WithdrawalView = () => {
   const { setIsSettingsVisible } = useSettings();
   const { setMultichainSubmittedWithdrawal, setMultichainWithdrawalSentTxnHash, setMultichainWithdrawalSentError } =
     useSyntheticsEvents();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
   const networks = useGmxAccountWithdrawNetworks();
@@ -762,7 +764,12 @@ export const WithdrawalView = () => {
     onClick: handleWithdraw,
   };
 
-  if (isSubmitting) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (isSubmitting) {
     buttonState = {
       text: (
         <>

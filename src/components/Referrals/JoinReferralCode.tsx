@@ -31,6 +31,7 @@ import { formatUsd, numberToBigint } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
 import { ISigner } from "lib/transactions/iSigner";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc, getRpcTransport } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
@@ -250,6 +251,7 @@ function ReferralCodeFormMultichain({
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const settlementChainPublicClient = usePublicClient({ chainId });
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const simulationSigner = useMemo(() => {
     if (srcChainId === undefined) {
@@ -556,7 +558,12 @@ function ReferralCodeFormMultichain({
   };
   const isEdit = type === "edit";
 
-  if (isEdit && debouncedReferralCode === userReferralCodeString) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (isEdit && debouncedReferralCode === userReferralCodeString) {
     buttonState = {
       text: t`Same as current active code`,
       disabled: true,

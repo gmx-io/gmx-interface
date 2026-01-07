@@ -25,6 +25,7 @@ import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { EMPTY_OBJECT } from "lib/objects";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
@@ -174,6 +175,7 @@ export function BridgeInModal({
     chainId,
     srcChainId: bridgeInChain,
   });
+  const hasOutdatedUi = useHasOutdatedUi();
 
   useEffect(() => {
     if (bridgeInChain !== undefined || !multichainMarketTokenBalances?.balances) {
@@ -226,6 +228,13 @@ export function BridgeInModal({
   };
 
   const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
+    if (hasOutdatedUi) {
+      return {
+        text: t`Page outdated, please refresh`,
+        disabled: true,
+      };
+    }
+
     if (isCreatingTxn) {
       return {
         text: (
@@ -276,6 +285,7 @@ export function BridgeInModal({
       disabled: false,
     };
   }, [
+    hasOutdatedUi,
     isCreatingTxn,
     bridgeInInputValue,
     bridgeInChain,

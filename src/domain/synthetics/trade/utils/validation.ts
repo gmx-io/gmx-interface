@@ -135,10 +135,6 @@ export function getSwapError(p: {
     return [t`Select a token`];
   }
 
-  if (fromToken.address === toToken.address) {
-    return [t`Select different tokens`];
-  }
-
   if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount <= 0 || fromUsd <= 0) {
     return [t`Enter an amount`];
   }

@@ -20,6 +20,7 @@ import { metrics } from "lib/metrics";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
@@ -54,6 +55,7 @@ export function ClaimModalSettlementChain(p: Props) {
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -99,6 +101,13 @@ export function ClaimModalSettlementChain(p: Props) {
   }, [account, chainId, isVisible, marketsInfoData, onClose, setPendingTxns, signer]);
 
   const buttonState = useMemo(() => {
+    if (hasOutdatedUi) {
+      return {
+        text: t`Page outdated, please refresh`,
+        disabled: true,
+      };
+    }
+
     if (isSubmitting) {
       return {
         text: t`Claiming...`,
@@ -110,7 +119,7 @@ export function ClaimModalSettlementChain(p: Props) {
         onClick: onSubmit,
       };
     }
-  }, [isSubmitting, onSubmit]);
+  }, [isSubmitting, onSubmit, hasOutdatedUi]);
 
   return <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} />;
 }
@@ -122,6 +131,7 @@ export function ClaimModalMultichain(p: Props) {
   const marketsInfoData = useMarketsInfoData();
   const { provider } = useJsonRpcProvider(chainId);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { fundingMarketAddresses, fundingTokenAddresses } = useMemo(() => {
     const fundingMarketAddresses: string[] = [];
@@ -270,6 +280,13 @@ export function ClaimModalMultichain(p: Props) {
   ]);
 
   const buttonState = useMemo(() => {
+    if (hasOutdatedUi) {
+      return {
+        text: t`Page outdated, please refresh`,
+        disabled: true,
+      };
+    }
+
     if (isSubmitting) {
       return {
         text: t`Claiming...`,
@@ -293,7 +310,7 @@ export function ClaimModalMultichain(p: Props) {
       text: t`Claim`,
       onClick: onSubmit,
     };
-  }, [expressTxnParamsAsyncResult.data, isSubmitting, onSubmit]);
+  }, [hasOutdatedUi, expressTxnParamsAsyncResult.data, isSubmitting, onSubmit]);
 
   return <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} />;
 }
