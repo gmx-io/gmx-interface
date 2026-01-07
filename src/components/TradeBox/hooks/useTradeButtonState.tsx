@@ -34,6 +34,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxIsTPSLEnabled,
   selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxLeverage,
@@ -111,6 +112,7 @@ export function useTradeboxButtonState({
   const { isSwap, isIncrease } = tradeFlags;
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
+  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
   const hasOutdatedUi = useHasOutdatedUi();
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -434,7 +436,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (stopLoss.error?.percentage || takeProfit.error?.percentage) {
+    if (isTpSlEnabled && (stopLoss.error?.percentage || takeProfit.error?.percentage)) {
       return {
         ...commonState,
         text: t`TP/SL orders exceed the position`,
@@ -537,6 +539,7 @@ export function useTradeboxButtonState({
     stage,
     isIncrease,
     sidecarEntries,
+    isTpSlEnabled,
     chainId,
     isSwap,
     fromToken?.symbol,

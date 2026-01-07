@@ -340,6 +340,13 @@ export const selectTradeBoxTokensAllowanceLoaded = (s: SyntheticsState) => s.tra
 export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
 export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
 
+export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
+  const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
+  const { isSwap, isTrigger } = q(selectTradeboxTradeFlags);
+
+  return limitOrTPSL && !isSwap && !isTrigger;
+});
+
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxToToken);

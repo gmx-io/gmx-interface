@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 
 import {
   selectTradeboxAdvancedOptions,
+  selectTradeboxIsTPSLEnabled,
   selectTradeboxSetAdvancedOptions,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -42,6 +43,7 @@ export function TPSLGroup() {
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const { isTrigger, isSwap } = useSelector(selectTradeboxTradeFlags);
+  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
 
   const showTPSL = !isTrigger && !isSwap;
 
@@ -49,13 +51,17 @@ export function TPSLGroup() {
   const orders = useSidecarOrders();
 
   const hasError = useMemo(() => {
+    if (!isTpSlEnabled) {
+      return false;
+    }
+
     const hasAnyEntryError = entries.some((e) => {
       if (e.txnType === "cancel") return false;
 
       return e.sizeUsd?.error || e.percentage?.error || e.price?.error;
     });
     return Boolean(orders.stopLoss.error?.percentage || orders.takeProfit.error?.percentage || hasAnyEntryError);
-  }, [entries, orders]);
+  }, [entries, isTpSlEnabled, orders]);
 
   const isTpSlVisible = hasError ? true : options.limitOrTPSL;
 
