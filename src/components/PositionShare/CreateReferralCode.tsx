@@ -150,8 +150,9 @@ export function CreateReferralCode({ onSuccess }: Props) {
           <Trans>
             Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more.{" "}
             <ExternalLink className="font-medium text-blue-300 !no-underline" href={REFERRAL_DOCS_LINK} newTab>
-              <Trans>Learn more</Trans>
+              <Trans>Read more</Trans>
             </ExternalLink>
+            .
           </Trans>
         </p>
       </div>
