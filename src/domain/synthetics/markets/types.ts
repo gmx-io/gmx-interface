@@ -12,6 +12,7 @@ export type FastMarketInfo = Omit<
   longTokenAddress: string;
   shortTokenAddress: string;
   indexTokenAddress: string;
+  useOpenInterestInTokensForBalance: boolean;
 };
 
 export type FastMarketInfoData = {
