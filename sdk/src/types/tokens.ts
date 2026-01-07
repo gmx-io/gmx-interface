@@ -22,8 +22,6 @@ export type Token = {
   visualMultiplier?: number;
   visualPrefix?: string;
   wrappedAddress?: string;
-  coingeckoUrl?: string;
-  coingeckoSymbol?: string;
   metamaskSymbol?: string;
   explorerSymbol?: string;
   explorerUrl?: string;
@@ -46,7 +44,6 @@ export type Token = {
   isPlatformToken?: boolean;
   isPlatformTradingToken?: boolean;
   isStaking?: boolean;
-  shouldResetAllowance?: boolean;
 };
 
 /**

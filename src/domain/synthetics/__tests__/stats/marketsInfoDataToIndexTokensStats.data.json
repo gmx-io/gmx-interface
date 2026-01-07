@@ -17,7 +17,6 @@
       "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       "explorerUrl": "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       "isV1Available": true,
       "prices": {
@@ -34,7 +33,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -49,7 +47,6 @@
       "isSynthetic": true,
       "decimals": 8,
       "imageUrl": "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/bitcoin",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c23366137a14756b0cd3791800000" },
         "maxPrice": { "type": "bigint", "hex": "0x0c234f7166af910ae50d29b1400000" }
@@ -146,7 +143,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -162,7 +158,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -178,7 +173,6 @@
       "isNative": true,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "wrappedAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       "prices": {
@@ -278,7 +272,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -294,7 +287,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -310,7 +302,6 @@
       "address": "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
       "isSynthetic": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/5/small/dogecoin.png?1547792256",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/dogecoin",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x01efd2384482a367395a800000" },
         "maxPrice": { "type": "bigint", "hex": "0x01efe277330b2f0b88dd800000" }
@@ -406,8 +397,6 @@
       "decimals": 9,
       "address": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       "imageUrl": "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/solana",
-      "coingeckoSymbol": "SOL",
       "explorerUrl": "https://arbiscan.io/token/0x2bCc6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       "explorerSymbol": "SOL",
       "prices": {
@@ -424,7 +413,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -439,8 +427,6 @@
       "decimals": 9,
       "address": "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       "imageUrl": "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/solana",
-      "coingeckoSymbol": "SOL",
       "explorerUrl": "https://arbiscan.io/token/0x2bCc6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       "explorerSymbol": "SOL",
       "prices": {
@@ -540,7 +526,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -556,7 +541,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -571,7 +555,6 @@
       "address": "0xB46A094Bc4B0adBD801E14b9DB95e05E28962764",
       "isSynthetic": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/2/small/litecoin.png?1547033580",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/litecoin",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x03e275190270dc8d1da47e000000" },
         "maxPrice": { "type": "bigint", "hex": "0x03e2b23eacb9ae2b405e45000000" }
@@ -669,7 +652,6 @@
       "isStable": false,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/uniswap",
       "explorerUrl": "https://arbiscan.io/token/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
       "isV1Available": true,
       "prices": {
@@ -686,7 +668,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -703,7 +684,6 @@
       "isStable": false,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/uniswap",
       "explorerUrl": "https://arbiscan.io/token/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
       "isV1Available": true,
       "prices": {
@@ -804,7 +784,6 @@
       "isStable": false,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/chainlink",
       "explorerUrl": "https://arbiscan.io/token/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
       "isV1Available": true,
       "prices": {
@@ -821,7 +800,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -838,7 +816,6 @@
       "isStable": false,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/chainlink",
       "explorerUrl": "https://arbiscan.io/token/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
       "isV1Available": true,
       "prices": {
@@ -937,7 +914,6 @@
       "priceDecimals": 3,
       "address": "0x912CE59144191C1204E64559FE8253a0e49E6548",
       "imageUrl": "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/arbitrum",
       "explorerUrl": "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0e3e681aa962a3767fa9000000" },
@@ -953,7 +929,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -968,7 +943,6 @@
       "priceDecimals": 3,
       "address": "0x912CE59144191C1204E64559FE8253a0e49E6548",
       "imageUrl": "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/arbitrum",
       "explorerUrl": "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0e3e681aa962a3767fa9000000" },
@@ -1067,7 +1041,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -1082,7 +1055,6 @@
       "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       "isStable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/bridged-usdc-arbitrum",
       "explorerUrl": "https://arbiscan.io/token/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       "isV1Available": true,
       "prices": {
@@ -1099,7 +1071,6 @@
       "isNative": true,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "wrappedAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       "prices": {
@@ -1199,7 +1170,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -1215,7 +1185,6 @@
       "isStable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707",
       "explorerUrl": "https://arbiscan.io/address/0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/tether",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0ca030fe124499c04409800000" },
@@ -1231,7 +1200,6 @@
       "isNative": true,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "wrappedAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       "prices": {
@@ -1331,7 +1299,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -1346,7 +1313,6 @@
       "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
       "isStable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/dai",
       "explorerUrl": "https://arbiscan.io/token/0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
       "isV1Available": true,
       "prices": {
@@ -1363,7 +1329,6 @@
       "isNative": true,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "wrappedAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       "prices": {
@@ -1463,7 +1428,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -1479,7 +1443,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -1494,7 +1457,6 @@
       "priceDecimals": 4,
       "address": "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
       "imageUrl": "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/xrp",
       "isSynthetic": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x062b34b52096882a1befc00000" },
@@ -1591,8 +1553,6 @@
       "address": "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/825/standard/bnb-icon2_2x.png?1696501970",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/bnb",
-      "coingeckoSymbol": "BNB",
       "metamaskSymbol": "WBNB",
       "explorerUrl": "https://arbiscan.io/token/0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
       "explorerSymbol": "WBNB",
@@ -1610,7 +1570,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -1625,8 +1584,6 @@
       "address": "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/825/standard/bnb-icon2_2x.png?1696501970",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/bnb",
-      "coingeckoSymbol": "BNB",
       "metamaskSymbol": "WBNB",
       "explorerUrl": "https://arbiscan.io/token/0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
       "explorerSymbol": "WBNB",
@@ -1726,8 +1683,6 @@
       "address": "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/12645/standard/AAVE.png?1696512452",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/aave",
-      "coingeckoSymbol": "AAVE",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x042a120b9ae315beb2f096000000" },
         "maxPrice": { "type": "bigint", "hex": "0x042ac221a3c2ac66cc3176000000" }
@@ -1742,7 +1697,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -1757,8 +1711,6 @@
       "address": "0xba5DdD1f9d7F570dc94a51479a000E3BCE967196",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/12645/standard/AAVE.png?1696512452",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/aave",
-      "coingeckoSymbol": "AAVE",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x042a120b9ae315beb2f096000000" },
         "maxPrice": { "type": "bigint", "hex": "0x042ac221a3c2ac66cc3176000000" }
@@ -1856,7 +1808,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -1872,7 +1823,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -1887,8 +1837,6 @@
       "address": "0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA",
       "decimals": 6,
       "imageUrl": "https://assets.coingecko.com/coins/images/1481/standard/cosmos_hub.png?1696502525",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/cosmos-hub",
-      "coingeckoSymbol": "ATOM",
       "isSynthetic": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x65b8f578283ebe3dbbe2400000" },
@@ -1986,7 +1934,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -2002,7 +1949,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -2017,8 +1963,6 @@
       "address": "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C",
       "decimals": 24,
       "imageUrl": "https://assets.coingecko.com/coins/images/10365/standard/near.jpg?1696510367",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/near",
-      "coingeckoSymbol": "NEAR",
       "isSynthetic": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x41f7aa19c87e4b4bf84f000000" },
@@ -2118,8 +2062,6 @@
       "address": "0x565609fAF65B92F7be02468acF86f8979423e514",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/avalanche",
-      "coingeckoSymbol": "AVAX",
       "explorerSymbol": "WAVAX",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x01b2e2aa47d4160d350504000000" },
@@ -2135,7 +2077,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -2150,8 +2091,6 @@
       "address": "0x565609fAF65B92F7be02468acF86f8979423e514",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/avalanche",
-      "coingeckoSymbol": "AVAX",
       "explorerSymbol": "WAVAX",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x01b2e2aa47d4160d350504000000" },
@@ -2248,7 +2187,6 @@
       "address": "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/25244/standard/Optimism.png?1696524385",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/optimism",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x1b85ec1507e33391f942800000" },
         "maxPrice": { "type": "bigint", "hex": "0x1b895a4cc036c20fe245000000" }
@@ -2263,7 +2201,6 @@
       "isStable": true,
       "isV1Available": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/usd-coin",
       "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c9f1a74b864134223e5400000" },
@@ -2277,7 +2214,6 @@
       "address": "0xaC800FD6159c2a2CB8fC31EF74621eB430287a5A",
       "decimals": 18,
       "imageUrl": "https://assets.coingecko.com/coins/images/25244/standard/Optimism.png?1696524385",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/optimism",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x1b85ec1507e33391f942800000" },
         "maxPrice": { "type": "bigint", "hex": "0x1b895a4cc036c20fe245000000" }
@@ -2375,7 +2311,6 @@
       "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       "explorerUrl": "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       "isV1Available": true,
       "prices": {
@@ -2392,7 +2327,6 @@
       "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       "explorerUrl": "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       "isV1Available": true,
       "prices": {
@@ -2408,7 +2342,6 @@
       "isSynthetic": true,
       "decimals": 8,
       "imageUrl": "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/bitcoin",
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x0c23366137a14756b0cd3791800000" },
         "maxPrice": { "type": "bigint", "hex": "0x0c234f7166af910ae50d29b1400000" }
@@ -2505,7 +2438,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -2521,7 +2453,6 @@
       "isWrapped": true,
       "baseSymbol": "ETH",
       "imageUrl": "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "prices": {
         "minPrice": { "type": "bigint", "hex": "0x98207cd977eeebe1a08028000000" },
@@ -2537,7 +2468,6 @@
       "isNative": true,
       "isShortable": true,
       "imageUrl": "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      "coingeckoUrl": "https://www.coingecko.com/en/coins/ethereum",
       "isV1Available": true,
       "wrappedAddress": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       "prices": {
