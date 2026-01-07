@@ -8,7 +8,7 @@ import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
 const query = {
   query: gql`
     query VolumeInfos {
-      volumeInfos(where: { period_eq: "total" }) {
+      volumeInfos(where: { period_eq: "total" }, limit: 1) {
         volumeUsd
       }
     }

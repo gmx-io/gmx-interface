@@ -664,10 +664,6 @@ msgstr "Distribution history for claimed rebates and airdrops."
 msgid "providing liquidity"
 msgstr "providing liquidity"
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "Tap [Create Wallet] to start using your Web3 Wallet."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
 msgstr "Plutus"
@@ -708,10 +704,6 @@ msgstr "Limit price above mark price"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "Create or Import a Wallet"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -3586,10 +3578,6 @@ msgstr "Referral code submitted."
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "After you scan, a connection prompt will appear for you to connect your wallet."
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4190,10 +4178,6 @@ msgstr "TP"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Claimable Funding Fee.</0>"
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5302,10 +5286,6 @@ msgstr "30d"
 msgid "Est. Impact Rebate"
 msgstr "Est. Impact Rebate"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Select different tokens"
-msgstr "Select different tokens"
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High Network Fees"
 msgstr "High Network Fees"
@@ -5515,10 +5495,6 @@ msgstr "Enter new amount or price"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Wins and losses for fully closed positions."
 msgstr "Wins and losses for fully closed positions."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Open Binance app"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6194,10 +6170,6 @@ msgstr "Starts in"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
-
-#: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "Scan the QR code"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
