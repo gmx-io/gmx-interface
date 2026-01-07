@@ -2556,6 +2556,7 @@ export interface MarketInfo {
   thresholdForDecreaseFunding: Scalars["BigInt"]["output"];
   thresholdForStableFunding: Scalars["BigInt"]["output"];
   totalBorrowingFees: Scalars["BigInt"]["output"];
+  useOpenInterestInTokensForBalance: Scalars["Boolean"]["output"];
   virtualIndexTokenId: Scalars["String"]["output"];
   virtualInventoryForPositions: Scalars["BigInt"]["output"];
   virtualLongTokenId: Scalars["String"]["output"];
@@ -3088,6 +3089,12 @@ export enum MarketInfoOrderByInput {
   totalBorrowingFees_DESC = "totalBorrowingFees_DESC",
   totalBorrowingFees_DESC_NULLS_FIRST = "totalBorrowingFees_DESC_NULLS_FIRST",
   totalBorrowingFees_DESC_NULLS_LAST = "totalBorrowingFees_DESC_NULLS_LAST",
+  useOpenInterestInTokensForBalance_ASC = "useOpenInterestInTokensForBalance_ASC",
+  useOpenInterestInTokensForBalance_ASC_NULLS_FIRST = "useOpenInterestInTokensForBalance_ASC_NULLS_FIRST",
+  useOpenInterestInTokensForBalance_ASC_NULLS_LAST = "useOpenInterestInTokensForBalance_ASC_NULLS_LAST",
+  useOpenInterestInTokensForBalance_DESC = "useOpenInterestInTokensForBalance_DESC",
+  useOpenInterestInTokensForBalance_DESC_NULLS_FIRST = "useOpenInterestInTokensForBalance_DESC_NULLS_FIRST",
+  useOpenInterestInTokensForBalance_DESC_NULLS_LAST = "useOpenInterestInTokensForBalance_DESC_NULLS_LAST",
   virtualIndexTokenId_ASC = "virtualIndexTokenId_ASC",
   virtualIndexTokenId_ASC_NULLS_FIRST = "virtualIndexTokenId_ASC_NULLS_FIRST",
   virtualIndexTokenId_ASC_NULLS_LAST = "virtualIndexTokenId_ASC_NULLS_LAST",
@@ -3937,6 +3944,9 @@ export interface MarketInfoWhereInput {
   totalBorrowingFees_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalBorrowingFees_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalBorrowingFees_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  useOpenInterestInTokensForBalance_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
+  useOpenInterestInTokensForBalance_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  useOpenInterestInTokensForBalance_not_eq?: InputMaybe<Scalars["Boolean"]["input"]>;
   virtualIndexTokenId_contains?: InputMaybe<Scalars["String"]["input"]>;
   virtualIndexTokenId_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   virtualIndexTokenId_endsWith?: InputMaybe<Scalars["String"]["input"]>;
