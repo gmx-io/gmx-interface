@@ -76,26 +76,12 @@ export function TradeboxMarginFields({
 
   const { isLimit } = tradeFlags;
   const showPriceField = isLimit && triggerPriceInputValue !== undefined;
+  const sizeFieldInputValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
 
   const sizeUsdDisplayDecimals = useMemo(
     () => calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
     [markPrice, toToken?.visualMultiplier]
   );
-
-  useEffect(() => {
-    if (!toToken) {
-      setSizeInputValue(toTokenInputValue);
-      return;
-    }
-
-    if (sizeDisplayMode !== "token") {
-      return;
-    }
-
-    if (sizeInputValue !== toTokenInputValue) {
-      setSizeInputValue(toTokenInputValue);
-    }
-  }, [sizeDisplayMode, sizeInputValue, toToken, toTokenInputValue]);
 
   useEffect(() => {
     if (sizeDisplayMode !== "usd" || !toToken || markPrice === undefined || markPrice === 0n) {
@@ -193,6 +179,12 @@ export function TradeboxMarginFields({
     (e: ChangeEvent<HTMLInputElement>) => {
       setFocusedInput("to");
       const nextValue = e.target.value;
+
+      if (sizeDisplayMode === "token") {
+        setToTokenInputValue(nextValue, true);
+        return;
+      }
+
       setSizeInputValue(nextValue);
 
       if (!toToken) {
@@ -218,8 +210,6 @@ export function TradeboxMarginFields({
         const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
 
         setToTokenInputValue(tokensValue, true);
-      } else {
-        setToTokenInputValue(nextValue, true);
       }
     },
     [markPrice, setFocusedInput, setToTokenInputValue, sizeDisplayMode, toToken]
@@ -324,7 +314,7 @@ export function TradeboxMarginFields({
         indexToken={toToken}
         displayMode={sizeDisplayMode}
         onDisplayModeChange={handleSizeDisplayModeChange}
-        inputValue={sizeInputValue}
+        inputValue={sizeFieldInputValue}
         onInputValueChange={handleSizeInputChange}
         onFocus={() => setFocusedInput("to")}
         qa="position-size"
