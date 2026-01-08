@@ -7,12 +7,12 @@ import {
   useUpdatedTokensBalances,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { Token, TokenBalanceType } from "domain/tokens";
-import { PLACEHOLDER_ACCOUNT } from "lib/legacy";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
 import { CacheKey, MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getToken, getV2Tokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { PLACEHOLDER_ACCOUNT } from "sdk/utils/account";
 
 import type { BalancesDataResult, TokenBalancesData } from "./types";
 

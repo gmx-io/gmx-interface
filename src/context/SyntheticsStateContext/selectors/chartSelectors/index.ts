@@ -1,3 +1,4 @@
+import { CHART_PERIODS } from "config/tradingview";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxFromTokenAddress,
@@ -8,7 +9,6 @@ import {
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets";
-import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 
 export { selectChartToken } from "../shared/marketSelectors";

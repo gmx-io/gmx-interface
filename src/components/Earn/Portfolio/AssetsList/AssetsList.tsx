@@ -4,10 +4,10 @@ import { useMedia } from "react-use";
 
 import { ContractsChainId } from "config/chains";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
+import { StakingProcessedData } from "domain/stake/stakingData";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { MarketTokensAPRData } from "domain/synthetics/markets/types";
-import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";

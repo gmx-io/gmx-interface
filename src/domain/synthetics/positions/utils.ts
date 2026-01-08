@@ -1,10 +1,10 @@
 import { t } from "@lingui/macro";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { CHART_PERIODS } from "config/tradingview";
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { MarketInfo, getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
-import { CHART_PERIODS } from "lib/legacy";
 import {
   applyFactor,
   calculateDisplayDecimals,

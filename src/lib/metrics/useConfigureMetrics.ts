@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { getAbFlags } from "config/ab";
+import { isHomeSite } from "config/env";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { useChainId } from "lib/chains";
@@ -11,7 +12,6 @@ import useIsWindowVisible from "lib/useIsWindowVisible";
 import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 
-import { isHomeSite } from "../legacy";
 import { metrics } from "./Metrics";
 
 export function useConfigureMetrics() {

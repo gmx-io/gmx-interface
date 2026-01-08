@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { StakingProcessedData } from "lib/legacy";
+import { StakingProcessedData } from "domain/stake/stakingData";
 import { formatKeyAmount } from "lib/numbers";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";

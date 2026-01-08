@@ -4,10 +4,10 @@ import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
 import { getIndexerUrl } from "config/indexers";
-import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { GMX_DECIMALS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 

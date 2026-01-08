@@ -4,12 +4,12 @@ import { ReactNode, useMemo } from "react";
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { StakingProcessedData } from "domain/stake/stakingData";
 import { UserEarningsData } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils";
 import { useChainId } from "lib/chains";
-import { StakingProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";

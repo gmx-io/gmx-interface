@@ -17,7 +17,6 @@ import {
   useTokensBalancesUpdates,
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokenBalanceType } from "domain/tokens";
-import { GM_DECIMALS } from "lib/legacy";
 import {
   ContractCallConfig,
   ContractCallsConfig,
@@ -27,6 +26,7 @@ import {
 } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { GM_DECIMALS } from "sdk/configs/tokens";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";

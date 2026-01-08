@@ -5,7 +5,7 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
-import { shortenAddress } from "lib/legacy";
+import { shortenAddress } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 

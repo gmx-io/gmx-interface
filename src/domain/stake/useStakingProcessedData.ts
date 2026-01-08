@@ -5,20 +5,21 @@ import { zeroAddress } from "viem";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, BOTANIX, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { useGmxPrice } from "domain/legacy";
+import { useGmxPrice } from "domain/gmxToken";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
+import { useMulticall } from "lib/multicall";
+import type { MulticallRequestConfig, MulticallResult } from "lib/multicall";
+import useWallet from "lib/wallets/useWallet";
+import { PLACEHOLDER_ACCOUNT } from "sdk/utils/account";
+
 import {
-  PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getStakingProcessedData,
   getStakingData,
   StakingProcessedData,
-} from "lib/legacy";
-import { useMulticall } from "lib/multicall";
-import type { MulticallRequestConfig, MulticallResult } from "lib/multicall";
-import useWallet from "lib/wallets/useWallet";
+} from "./stakingData";
 
 export function useStakingProcessedData(targetChainId?: ContractsChainId) {
   const { active, signer, account } = useWallet();

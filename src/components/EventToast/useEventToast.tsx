@@ -4,13 +4,13 @@ import toast from "react-hot-toast";
 import { useLocalStorage } from "react-use";
 
 import { ARBITRUM } from "config/chains";
+import { isHomeSite } from "config/env";
 import { AL16Z_DELISTING_EVENT_ID, appEventsData, homeEventsData } from "config/events";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { usePositions } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { isHomeSite } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
 
 import EventToast from "./EventToast";

@@ -4,8 +4,8 @@ import useSWR from "swr";
 
 import { GMX_STATS_API_URL } from "config/backend";
 import { USD_DECIMALS } from "config/factors";
+import { CHART_PERIODS } from "config/tradingview";
 import { chainlinkClient } from "lib/indexers/clients";
-import { CHART_PERIODS } from "lib/legacy";
 import { formatAmount, MaxInt256 } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";

@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
@@ -15,41 +14,23 @@ import { getFooterLinks, SOCIAL_LINKS } from "./constants";
 import { UserFeedbackModal } from "../UserFeedbackModal/UserFeedbackModal";
 
 type Props = {
-  showRedirectModal?: (to: string) => void;
-  redirectPopupTimestamp?: number;
   isMobileSideNav?: boolean;
 };
 
-export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMobileSideNav }: Props) {
+export default function Footer({ isMobileSideNav }: Props) {
   const { feedbackModalVisible, setFeedbackModalVisible } = useSettings();
 
   return (
     <>
       <div className={cx("flex w-full justify-between", { "flex-col": isMobileSideNav })}>
         <div className={cx("flex flex-row items-center justify-center", { "flex-wrap": isMobileSideNav })}>
-          {getFooterLinks().map(({ external, label, link, isAppLink }) => {
+          {getFooterLinks().map(({ external, label, link }) => {
             if (external) {
               return (
                 <Button variant="ghost" key={link} to={link} newTab>
                   {label}
                 </Button>
               );
-            }
-            if (isAppLink) {
-              if (shouldShowRedirectModal(redirectPopupTimestamp)) {
-                return (
-                  <Button variant="ghost" key={link} onClick={() => showRedirectModal && showRedirectModal(link)}>
-                    {label}
-                  </Button>
-                );
-              } else {
-                const baseUrl = getAppBaseUrl();
-                return (
-                  <Button variant="ghost" key={link} href={baseUrl + link} newTab>
-                    {label}
-                  </Button>
-                );
-              }
             }
             return (
               <Button variant="ghost" key={link} to={link}>

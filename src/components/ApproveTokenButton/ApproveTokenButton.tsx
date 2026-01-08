@@ -2,9 +2,9 @@ import { Trans } from "@lingui/macro";
 import { useState } from "react";
 
 import { approveTokens } from "domain/tokens";
-import { isAddressZero } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
 import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { isAddressZero } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
 

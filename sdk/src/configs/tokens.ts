@@ -5,6 +5,9 @@ import type { Token, TokenAddressTypesMap, TokenCategory } from "types/tokens";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
 import { getContract } from "./contracts";
 
+export const GMX_DECIMALS = 18;
+export const GM_DECIMALS = 18;
+
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
 
 export const GM_STUB_ADDRESS = "<GM-ADDRESS>";

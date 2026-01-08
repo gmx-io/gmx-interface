@@ -3,8 +3,8 @@ import cx from "classnames";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 
+import { getHomeUrl } from "config/links";
 import { Token } from "domain/tokens";
-import { getHomeUrl } from "lib/legacy";
 import { calculateDisplayDecimals } from "lib/numbers";
 import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";

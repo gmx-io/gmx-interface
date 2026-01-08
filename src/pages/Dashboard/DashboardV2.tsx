@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
+import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/gmxToken";
 import { useChainId } from "lib/chains";
-import { GMX_DECIMALS, getPageTitle } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
+import { getPageTitle } from "lib/seo";
 import useWallet from "lib/wallets/useWallet";
+import { GMX_DECIMALS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";

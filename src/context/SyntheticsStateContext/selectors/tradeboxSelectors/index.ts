@@ -44,7 +44,6 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
@@ -53,6 +52,7 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { TokenBalanceType } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { getPositionKey } from "sdk/utils/positions";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
@@ -1079,11 +1079,7 @@ export const selectTradeboxExistingOrder = createSelector((q) => {
         order.shouldUnwrapNativeToken
           ? convertTokenAddress(chainId, order.targetCollateralToken.address, "wrapped")
           : order.targetCollateralToken.address,
-        order.isLong,
-        order.shouldUnwrapNativeToken
-          ? // Noop: if order.shouldUnwrapNativeToken is true, then order.targetCollateralToken.address is already native
-            convertTokenAddress(chainId, order.targetCollateralToken.address, "native")
-          : undefined
+        order.isLong
       );
 
       return positionKey === selectedPositionKey;
@@ -1108,11 +1104,7 @@ export const selectTradeboxExistingLimitOrder = createSelector((q) => {
         order.shouldUnwrapNativeToken
           ? convertTokenAddress(chainId, order.targetCollateralToken.address, "wrapped")
           : order.targetCollateralToken.address,
-        order.isLong,
-        order.shouldUnwrapNativeToken
-          ? // Noop: if order.shouldUnwrapNativeToken is true, then order.targetCollateralToken.address is already native
-            convertTokenAddress(chainId, order.targetCollateralToken.address, "native")
-          : undefined
+        order.isLong
       );
 
       return positionKey === selectedPositionKey;

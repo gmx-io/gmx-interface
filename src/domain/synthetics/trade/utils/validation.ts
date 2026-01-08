@@ -26,9 +26,9 @@ import {
 import type { GmPaySource } from "domain/synthetics/markets/types";
 import { PositionInfo, willPositionCollateralBeSufficientForPosition } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
-import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { isAddressZero } from "lib/wallets";
 import { NATIVE_TOKEN_ADDRESS, getToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import {
@@ -545,7 +545,7 @@ export function getDecreaseError(p: {
     }
 
     if (
-      existingPosition.sizeInUsd - sizeDeltaUsd > DUST_USD &&
+      existingPosition.sizeInUsd - sizeDeltaUsd > expandDecimals(1, USD_DECIMALS) &&
       (nextPositionValues?.nextCollateralUsd === undefined
         ? undefined
         : nextPositionValues.nextCollateralUsd < (minCollateralUsd ?? 0n))

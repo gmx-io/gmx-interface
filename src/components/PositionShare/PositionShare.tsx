@@ -3,12 +3,13 @@ import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 
+import { getRootShareApiUrl } from "config/links";
 import { useAffiliateCodes } from "domain/referrals";
 import { Token } from "domain/tokens";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
-import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getTwitterIntentURL } from "lib/social";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";

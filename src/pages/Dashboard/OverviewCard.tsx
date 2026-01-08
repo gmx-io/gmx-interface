@@ -5,16 +5,16 @@ import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
+import { useGmxPrice, useTotalGmxStaked } from "domain/gmxToken";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
-import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmountHuman } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import useWallet from "lib/wallets/useWallet";
+import { GMX_DECIMALS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
@@ -79,22 +79,22 @@ export function OverviewCard({
 
   const glpPriceArbitrum =
     glpTvlArbitrum !== undefined && glpTvlArbitrum > 0n && glpSupplyArbitrum !== undefined
-      ? bigMath.mulDiv(glpTvlArbitrum, expandDecimals(1, GLP_DECIMALS), glpSupplyArbitrum)
+      ? bigMath.mulDiv(glpTvlArbitrum, expandDecimals(1, 18), glpSupplyArbitrum)
       : expandDecimals(1, USD_DECIMALS);
 
   const glpPriceAvalanche =
     glpTvlAvalanche !== undefined && glpTvlAvalanche > 0n && glpSupplyAvalanche !== undefined
-      ? bigMath.mulDiv(glpTvlAvalanche, expandDecimals(1, GLP_DECIMALS), glpSupplyAvalanche)
+      ? bigMath.mulDiv(glpTvlAvalanche, expandDecimals(1, 18), glpSupplyAvalanche)
       : expandDecimals(1, USD_DECIMALS);
 
   const glpMarketCapArbitrum =
     glpSupplyArbitrum !== undefined
-      ? bigMath.mulDiv(glpPriceArbitrum, glpSupplyArbitrum, expandDecimals(1, GLP_DECIMALS))
+      ? bigMath.mulDiv(glpPriceArbitrum, glpSupplyArbitrum, expandDecimals(1, 18))
       : undefined;
 
   const glpMarketCapAvalanche =
     glpSupplyAvalanche !== undefined
-      ? bigMath.mulDiv(glpPriceAvalanche, glpSupplyAvalanche, expandDecimals(1, GLP_DECIMALS))
+      ? bigMath.mulDiv(glpPriceAvalanche, glpSupplyAvalanche, expandDecimals(1, 18))
       : undefined;
 
   const totalGlpTvl =

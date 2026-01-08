@@ -5,10 +5,10 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getIcons } from "config/icons";
 import { GMX_PRICE_DECIMALS } from "config/ui";
-import { useTotalGmxStaked } from "domain/legacy";
-import { GMX_DECIMALS } from "lib/legacy";
+import { useTotalGmxStaked } from "domain/gmxToken";
 import { expandDecimals, formatAmount, formatAmountHuman } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
+import { GMX_DECIMALS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";

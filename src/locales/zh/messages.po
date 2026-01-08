@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr "执行止损"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "同意"
+#~ msgid "Agree"
+#~ msgstr "同意"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -615,7 +615,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30 天内不再显示此消息。"
 
@@ -669,8 +668,8 @@ msgid "providing liquidity"
 msgstr "提供流动性"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "点击[创建钱包]开始使用您的 Web3 钱包。"
+#~ msgid "Tap [Create Wallet] to start using your Web3 Wallet."
+#~ msgstr "点击[创建钱包]开始使用您的 Web3 钱包。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -714,8 +713,8 @@ msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "开仓利息 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "创建或导入钱包"
+#~ msgid "Create or Import a Wallet"
+#~ msgstr "创建或导入钱包"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -1049,8 +1048,8 @@ msgid "TVL (Supply)"
 msgstr "TVL (供应)"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "可在 <0>文档</0> 中找到替代链接。<1/><2/>点击同意即接受 <3>条款与条件</3> 和 <4>推荐条款与条件</4>。<5/><6/>"
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr "可在 <0>文档</0> 中找到替代链接。<1/><2/>点击同意即接受 <3>条款与条件</3> 和 <4>推荐条款与条件</4>。<5/><6/>"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees"
@@ -1966,8 +1965,8 @@ msgid "Failed to deactivate"
 msgstr "停用失败"
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "没有开仓，订单无法执行，除非开仓"
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr "没有开仓，订单无法执行，除非开仓"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2421,7 +2420,6 @@ msgstr "最大部分数量：{MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "启动应用程序"
 
@@ -3234,8 +3232,8 @@ msgid "Sending settle request"
 msgstr "发送结算请求"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "订单无法执行，因为剩余仓位将小于 5.00 美元"
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr "订单无法执行，因为剩余仓位将小于 5.00 美元"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -3290,7 +3288,6 @@ msgid "{0} balance in GMX account is insufficient to cover gas fees"
 msgstr "GMX账户中的{0}余额不足以支付gas费用"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "该网站是社区部署和维护的开源 <0>GMX 前端</0> 实例，在分布式点对点 <1>IPFS 网络</1> 上托管和服务。"
 
@@ -3576,8 +3573,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以为项目做出贡献，请发送电子邮件至 <0>jobs@gmx.io</0>。"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
+#~ msgid "After you scan, a connection prompt will appear for you to connect your wallet."
+#~ msgstr "扫描后，将出现连接提示，您可以连接您的钱包。"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4035,7 +4032,6 @@ msgid "Failed to claim funds"
 msgstr "申领资金失败"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "您正在离开 GMX.io，并将被重定向到第三方独立网站。"
 
@@ -4177,8 +4173,8 @@ msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>可领取资金费用。</0>"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "登录您的 Binance 应用程序并点击 [Wallets]。转到 [Web3]。"
+#~ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+#~ msgstr "登录您的 Binance 应用程序并点击 [Wallets]。转到 [Web3]。"
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -4559,8 +4555,8 @@ msgid "Decrease"
 msgstr "减少"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5494,8 +5490,8 @@ msgid "Wins and losses for fully closed positions."
 msgstr "完全平仓头寸的胜负。"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "打开 Binance 应用"
+#~ msgid "Open Binance app"
+#~ msgstr "打开 Binance 应用"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6169,8 +6165,8 @@ msgid "The network fees are high currently, which may be due to a temporary incr
 msgstr "当前网络费用较高，这可能是由于 {chainName} 网络上的交易暂时增加。"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "扫描二维码"
+#~ msgid "Scan the QR code"
+#~ msgstr "扫描二维码"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -7311,8 +7307,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr ""
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7333,7 +7329,7 @@ msgstr "NFT ID"
 msgid "Select network"
 msgstr "选择网络"
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "去中心化永续交易所 | GMX"
 

@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr "손절 주문 실행"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "동의하기"
+#~ msgid "Agree"
+#~ msgstr "동의하기"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -615,7 +615,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30일 동안 해당 메시지 다시보지 않기"
 
@@ -669,8 +668,8 @@ msgid "providing liquidity"
 msgstr "유동성 제공"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
+#~ msgid "Tap [Create Wallet] to start using your Web3 Wallet."
+#~ msgstr "웹3 지갑을 사용하려면 [지갑 생성]을 탭하세요."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -714,8 +713,8 @@ msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "미결제 약정 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "지갑 생성 또는 가져오기"
+#~ msgid "Create or Import a Wallet"
+#~ msgstr "지갑 생성 또는 가져오기"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -1049,8 +1048,8 @@ msgid "TVL (Supply)"
 msgstr "TVL (공급)"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "이외의 링크는 <0>docs</0>에서 확인할 수 있습니다.<1/><2/>동의 버튼을 클릭하여 <3>T&Cs</3> 그리고 <4>Referral T&Cs</4>에 동의합니다.<5/><6/>"
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr "이외의 링크는 <0>docs</0>에서 확인할 수 있습니다.<1/><2/>동의 버튼을 클릭하여 <3>T&Cs</3> 그리고 <4>Referral T&Cs</4>에 동의합니다.<5/><6/>"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees"
@@ -1966,8 +1965,8 @@ msgid "Failed to deactivate"
 msgstr "비활성화 실패"
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "열려있는 포지션이 없습니다. 열려있는 포지션이 없는 경우 주문은 실행될 수 없습니다."
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr "열려있는 포지션이 없습니다. 열려있는 포지션이 없는 경우 주문은 실행될 수 없습니다."
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2421,7 +2420,6 @@ msgstr "최대 부분 수: {MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "앱 실행하기"
 
@@ -3234,8 +3232,8 @@ msgid "Sending settle request"
 msgstr "정산 요청 전송 중"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 수 없습니다"
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr "포지션의 금액이 $5.00 이하로 남게되면 주문은 실행될 수 없습니다"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -3290,7 +3288,6 @@ msgid "{0} balance in GMX account is insufficient to cover gas fees"
 msgstr "GMX 계정의 {0} 잔액이 가스 수수료를 충당하기에 부족합니다"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "웹사이트는 오픈소스인 <0>GMX front end</0>를 이용하고 커뮤니티에의해 배포되며, P2P <1>IPFS network<1/>에 의해 서빙및 호스팅됩니다."
 
@@ -3576,8 +3573,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX는 현재 구인하고 있지 않습니다. 하지만 해당 프로젝트에 기여할 수 있다고 생각하시면 email <0>jobs@gmx.io</0>으로 연락해주세요."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "스캔 후, 지갑을 연결할 수 있는 연결 프롬프트가 나타납니다."
+#~ msgid "After you scan, a connection prompt will appear for you to connect your wallet."
+#~ msgstr "스캔 후, 지갑을 연결할 수 있는 연결 프롬프트가 나타납니다."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4035,7 +4032,6 @@ msgid "Failed to claim funds"
 msgstr "자금 청구 실패"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "귀하는 GMX.io 페이지를 벗어나, 써드파티 웹사이트로 리다이렉트되고 있습니다."
 
@@ -4177,8 +4173,8 @@ msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>수령 가능 자금 수수료.</0>"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Binance 앱에 로그인하고 [지갑]을 탭하세요. [Web3]로 이동하세요."
+#~ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+#~ msgstr "Binance 앱에 로그인하고 [지갑]을 탭하세요. [Web3]로 이동하세요."
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -4559,8 +4555,8 @@ msgid "Decrease"
 msgstr "감소"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "포지션의 레버리지가 1 미만으로 감소되므로 주문을 실행할 수 없습니다"
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr "포지션의 레버리지가 1 미만으로 감소되므로 주문을 실행할 수 없습니다"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5494,8 +5490,8 @@ msgid "Wins and losses for fully closed positions."
 msgstr "완전히 종료된 포지션의 승패."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Binance 앱 열기"
+#~ msgid "Open Binance app"
+#~ msgstr "Binance 앱 열기"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6169,8 +6165,8 @@ msgid "The network fees are high currently, which may be due to a temporary incr
 msgstr "현재 네트워크 수수료가 높습니다. 이는 {chainName} 네트워크의 일시적인 거래량 증가로 인한 것일 수 있습니다."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "QR 코드 스캔"
+#~ msgid "Scan the QR code"
+#~ msgstr "QR 코드 스캔"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -7311,8 +7307,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr ""
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "주문 크기가 포지션보다 큽니다. 포지션 증가 시에만 실행 가능"
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr "주문 크기가 포지션보다 큽니다. 포지션 증가 시에만 실행 가능"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7333,7 +7329,7 @@ msgstr "NFT ID"
 msgid "Select network"
 msgstr "네트워크 선택"
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "탈중앙화 퍼페추얼 거래소 | GMX"
 

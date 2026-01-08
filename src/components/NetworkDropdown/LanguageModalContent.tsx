@@ -1,7 +1,7 @@
 import cx from "classnames";
 
 import { dynamicActivate, isTestLanguage, locales } from "lib/i18n";
-import { importImage } from "lib/legacy";
+import { importImage } from "lib/images";
 
 import Button from "components/Button/Button";
 

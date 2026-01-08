@@ -6,9 +6,9 @@ import Skeleton from "react-loading-skeleton";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { useChainId } from "lib/chains";
-import { useENS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { useENS } from "lib/wallets";
 import { shortenAddressOrEns } from "lib/wallets";
 
 import { Avatar } from "components/Avatar/Avatar";

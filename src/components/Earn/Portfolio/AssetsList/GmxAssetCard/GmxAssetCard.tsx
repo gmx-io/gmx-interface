@@ -10,14 +10,15 @@ import { zeroAddress } from "viem";
 import { ARBITRUM, getChainNativeTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useGmxPrice } from "domain/legacy";
+import { useGmxPrice } from "domain/gmxToken";
+import { StakingProcessedData } from "domain/stake/stakingData";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
+import { PLACEHOLDER_ACCOUNT } from "sdk/utils/account";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";

@@ -3,6 +3,7 @@ import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
+import { CHART_PERIODS } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
@@ -30,7 +31,6 @@ import {
   getNameByOrderType,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
-import { CHART_PERIODS } from "lib/legacy";
 import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getMarketIndexName } from "sdk/utils/markets";

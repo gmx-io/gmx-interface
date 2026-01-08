@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr "Ejecutar Stop Loss"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "Aceptar"
+#~ msgid "Agree"
+#~ msgstr "Aceptar"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -615,7 +615,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "No muestres este mensaje de nuevo en los próximos 30 días."
 
@@ -669,8 +668,8 @@ msgid "providing liquidity"
 msgstr "proporcionando liquidez"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Tap [Create Wallet] to start using your Web3 Wallet."
-msgstr "Toca [Crear cartera] para empezar a usar tu cartera Web3."
+#~ msgid "Tap [Create Wallet] to start using your Web3 Wallet."
+#~ msgstr "Toca [Crear cartera] para empezar a usar tu cartera Web3."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Plutus"
@@ -714,8 +713,8 @@ msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Interés Abierto (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Create or Import a Wallet"
-msgstr "Crear o Importar un Monedero"
+#~ msgid "Create or Import a Wallet"
+#~ msgstr "Crear o Importar un Monedero"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
@@ -1049,8 +1048,8 @@ msgid "TVL (Supply)"
 msgstr "TVL (Suministro)"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "Links alternativos pueden encontrarse en <0>docs</0>.<1/><2/>Haciendo clic aceptas el <3>T&Cs</3> y <4>Referidos T&Cs</4>.<5/><6/>"
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr "Links alternativos pueden encontrarse en <0>docs</0>.<1/><2/>Haciendo clic aceptas el <3>T&Cs</3> y <4>Referidos T&Cs</4>.<5/><6/>"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees"
@@ -1966,8 +1965,8 @@ msgid "Failed to deactivate"
 msgstr "Falló la desactivación"
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "No hay posiciones abiertas, la orden no se puede ejecutar sino se abre una posición"
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr "No hay posiciones abiertas, la orden no se puede ejecutar sino se abre una posición"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2421,7 +2420,6 @@ msgstr "Número máximo de partes: {MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "Abrir App"
 
@@ -3234,8 +3232,8 @@ msgid "Sending settle request"
 msgstr "Enviando solicitud de liquidación"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "La orden no se puede ejecutar ya que la posición restante sería menor a $5.00"
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr "La orden no se puede ejecutar ya que la posición restante sería menor a $5.00"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -3290,7 +3288,6 @@ msgid "{0} balance in GMX account is insufficient to cover gas fees"
 msgstr "El saldo de {0} en la cuenta GMX es insuficiente para cubrir las tarifas de gas"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "La página web es una instancia desplegada y mantenida por la comunidad del código abierto <0>frontend de GMX</0>, alojada y servida en la red distribuida peer-to-peer <1>IPFS</1>."
 
@@ -3576,8 +3573,8 @@ msgid "GMX is not actively looking for new hires at the moment. However, if you 
 msgstr "GMX no está buscando activamente nuevas contrataciones en este momento. Sin embargo, si crees que puedes contribuir al proyecto, por favor envía un email a <0>jobs@gmx.io</0>."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "After you scan, a connection prompt will appear for you to connect your wallet."
-msgstr "Después de escanear, aparecerá un mensaje de conexión para que conectes tu monedero."
+#~ msgid "After you scan, a connection prompt will appear for you to connect your wallet."
+#~ msgstr "Después de escanear, aparecerá un mensaje de conexión para que conectes tu monedero."
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -4035,7 +4032,6 @@ msgid "Failed to claim funds"
 msgstr "Falló la reclamación de fondos"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "Estás dejando GMX.io y serás redirigido a un sitio web independiente de terceros."
 
@@ -4177,8 +4173,8 @@ msgid "<0>Claimable Funding Fee.</0>"
 msgstr "<0>Comisión de Financiación Reclamable.</0>"
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
-msgstr "Inicia sesión en tu app de Binance y toca [Wallets]. Ve a [Web3]."
+#~ msgid "Log in to your Binance app and tap [Wallets]. Go to [Web3]."
+#~ msgstr "Inicia sesión en tu app de Binance y toca [Wallets]. Ve a [Web3]."
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -4559,8 +4555,8 @@ msgid "Decrease"
 msgstr "Reducir"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "La orden no se puede ejecutar pues reduciría el apalancamiento de la posición por debajo de 1"
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr "La orden no se puede ejecutar pues reduciría el apalancamiento de la posición por debajo de 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -5494,8 +5490,8 @@ msgid "Wins and losses for fully closed positions."
 msgstr "Ganancias y pérdidas para posiciones completamente cerradas."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Open Binance app"
-msgstr "Abrir la app de Binance"
+#~ msgid "Open Binance app"
+#~ msgstr "Abrir la app de Binance"
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
@@ -6169,8 +6165,8 @@ msgid "The network fees are high currently, which may be due to a temporary incr
 msgstr "Las tasas de red son altas actualmente, lo que puede deberse a un aumento temporal en las transacciones en la red {chainName}."
 
 #: src/lib/wallets/connecters/binanceW3W/binanceWallet.ts
-msgid "Scan the QR code"
-msgstr "Escanear el código QR"
+#~ msgid "Scan the QR code"
+#~ msgstr "Escanear el código QR"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -7311,8 +7307,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr ""
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "El tamaño de la orden es mayor que la posición, solo se ejecutará si la posición aumenta"
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr "El tamaño de la orden es mayor que la posición, solo se ejecutará si la posición aumenta"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7333,7 +7329,7 @@ msgstr "ID de NFT"
 msgid "Select network"
 msgstr "Seleccionar red"
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "Exchange Perpetuo Descentralizado | GMX"
 

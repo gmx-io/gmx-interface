@@ -5,11 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { StakingProcessedData } from "domain/stake/stakingData";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { defined } from "lib/guards";
-import { StakingProcessedData } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";

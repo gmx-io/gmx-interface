@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { ethers } from "ethers";
 
 import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
+import { CHART_PERIODS } from "config/tradingview";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -26,7 +27,6 @@ import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModel
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { CHART_PERIODS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatFactor, formatUsd, getPlusOrMinusSymbol, PRECISION } from "lib/numbers";
 import { formatAmountHuman } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";

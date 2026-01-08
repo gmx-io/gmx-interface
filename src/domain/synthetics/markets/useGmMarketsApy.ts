@@ -6,12 +6,12 @@ import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLidoStakeApr } from "domain/stake/useLidoStakeApr";
 import { getPoolUsdWithoutPnl, GlvInfoData } from "domain/synthetics/markets";
-import { GM_DECIMALS } from "lib/legacy";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { BN_ZERO, expandDecimals, numberToBigint, PRECISION } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { ApyPeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { GM_DECIMALS } from "sdk/configs/tokens";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 

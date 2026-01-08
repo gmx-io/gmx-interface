@@ -23,3 +23,7 @@ export function isDevelopment() {
 export function isLocal() {
   return self.location.host?.includes("localhost");
 }
+
+export function isHomeSite() {
+  return import.meta.env.VITE_APP_IS_HOME_SITE === "true";
+}

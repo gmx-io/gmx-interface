@@ -12,7 +12,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getTokenData } from "domain/synthetics/tokens";
-import { getPageTitle } from "lib/legacy";
+import { getPageTitle } from "lib/seo";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 

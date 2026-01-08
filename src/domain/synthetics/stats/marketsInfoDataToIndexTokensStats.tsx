@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { CHART_PERIODS } from "config/tradingview";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   MarketInfo,
@@ -10,7 +11,6 @@ import {
   getUsedLiquidity,
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
-import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 export type MarketStat = {
   marketInfo: MarketInfo;

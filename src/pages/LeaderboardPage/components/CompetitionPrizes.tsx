@@ -11,9 +11,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { CompetitionType, LeaderboardAccount, LeaderboardPageKey } from "domain/synthetics/leaderboard";
-import { shortenAddress } from "lib/legacy";
 import { mustNeverExist } from "lib/types";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { shortenAddress } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
