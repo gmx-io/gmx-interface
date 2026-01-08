@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import dateFnsFormat from "date-fns/format";
+import { format as dateFnsFormat } from "date-fns/format";
 import { useCallback, useState } from "react";
 import { withRetry } from "viem";
 

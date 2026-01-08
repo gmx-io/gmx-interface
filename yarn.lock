@@ -1914,6 +1914,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@date-fns/tz@npm:1.4.1":
+  version: 1.4.1
+  resolution: "@date-fns/tz@npm:1.4.1"
+  checksum: 10/062097590005cce3da4c7d9880f9c77d386cff5b4dd58fa3dde3c346a8b2e4f4a8025a613306351a7cad8eb71178a0f67b4840d5884f73aa4c759085fac92063
+  languageName: node
+  linkType: hard
+
 "@davatar/react@npm:1.8.1":
   version: 1.8.1
   resolution: "@davatar/react@npm:1.8.1"
@@ -9011,26 +9018,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:2.27.0":
-  version: 2.27.0
-  resolution: "date-fns@npm:2.27.0"
-  checksum: 10/2efc7b5b69e1c81b62ba36d577bc866cd4a67f183644341faeb5cdab62a3263be58ad9124620f0205be90b31608f79189bc18b722be0f0354619bc3717fdf585
-  languageName: node
-  linkType: hard
-
-"date-fns@npm:^2.16.1, date-fns@npm:^2.29.3":
-  version: 2.30.0
-  resolution: "date-fns@npm:2.30.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.21.0"
-  checksum: 10/70b3e8ea7aaaaeaa2cd80bd889622a4bcb5d8028b4de9162cbcda359db06e16ff6e9309e54eead5341e71031818497f19aaf9839c87d1aba1e27bb4796e758a9
-  languageName: node
-  linkType: hard
-
-"date-fns@npm:^3.6.0":
-  version: 3.6.0
-  resolution: "date-fns@npm:3.6.0"
-  checksum: 10/cac35c58926a3b5d577082ff2b253612ec1c79eb6754fddef46b6a8e826501ea2cb346ecbd211205f1ba382ddd1f9d8c3f00bf433ad63cc3063454d294e3a6b8
+"date-fns@npm:4.1.0":
+  version: 4.1.0
+  resolution: "date-fns@npm:4.1.0"
+  checksum: 10/d5f6e9de5bbc52310f786099e18609289ed5e30af60a71e0646784c8185ddd1d0eebcf7c96b7faaaefc4a8366f3a3a4244d099b6d0866ee2bec80d1361e64342
   languageName: node
   linkType: hard
 
@@ -11465,6 +11456,7 @@ __metadata:
   dependencies:
     "@apollo/client": "npm:3.5.6"
     "@babel/plugin-transform-private-property-in-object": "npm:^7.25.9"
+    "@date-fns/tz": "npm:1.4.1"
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
@@ -11506,7 +11498,7 @@ __metadata:
     classnames: "npm:2.3.1"
     core-js: "npm:3.39.0"
     crypto-js: "npm:4.2.0"
-    date-fns: "npm:2.27.0"
+    date-fns: "npm:4.1.0"
     env-cmd: "npm:^10.1.0"
     eslint: "npm:^8.57.1"
     eslint-config-prettier: "npm:9.0.0"
