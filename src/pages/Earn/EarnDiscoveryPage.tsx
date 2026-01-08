@@ -37,7 +37,6 @@ export default function EarnDiscoveryPage() {
 
       <div className="flex gap-8 max-md:flex-col">
         <div className="flex grow flex-col gap-8">
-          z
           <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-20" style={style}>
             <h4 className="text-16 font-medium text-typography-primary">
               <Trans>Discover GMX Earn</Trans>
