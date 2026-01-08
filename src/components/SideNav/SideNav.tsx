@@ -20,6 +20,7 @@ import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
+import { SettingsNavItem } from "./SettingsNavItem";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
@@ -42,6 +43,7 @@ function SideNav({ className }: { className?: string }) {
         <MenuSection isCollapsed={isCollapsed} />
 
         <ul className="flex list-none flex-col px-0">
+          <SettingsNavItem isCollapsed={isCollapsed} />
           <LanguageNavItem isCollapsed={isCollapsed} />
           <DocsNavItem isCollapsed={isCollapsed} />
           <NavItem

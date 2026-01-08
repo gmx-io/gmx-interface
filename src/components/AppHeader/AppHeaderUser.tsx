@@ -38,7 +38,7 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
               <Trans>Connect wallet</Trans>
             </ConnectWalletButton>
             <OneClickButton openSettings={openSettings} />
-            <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} openSettings={openSettings} />
+            <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
             {menuToggle ? menuToggle : null}
           </>
         ) : null}
@@ -52,7 +52,7 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
         <AddressDropdown account={account} />
       </div>
       <OneClickButton openSettings={openSettings} />
-      <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} openSettings={openSettings} />
+      <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
       {menuToggle ? menuToggle : null}
     </div>
   );
