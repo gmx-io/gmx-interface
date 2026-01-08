@@ -513,6 +513,8 @@ export const DepositView = () => {
             setSelectedTransferGuid(submittedDepositGuid);
             if (!subaccountState.subaccount && !isExpressTradingDisabled) {
               setIsVisibleOrView("depositStatus");
+            } else {
+              setIsVisibleOrView("main");
             }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
