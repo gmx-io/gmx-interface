@@ -76,6 +76,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -166,6 +167,7 @@ export const WithdrawalView = () => {
   const { setIsSettingsVisible } = useSettings();
   const { setMultichainSubmittedWithdrawal, setMultichainWithdrawalSentTxnHash, setMultichainWithdrawalSentError } =
     useSyntheticsEvents();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
   const networks = useGmxAccountWithdrawNetworks();
@@ -628,6 +630,8 @@ export const WithdrawalView = () => {
 
         sendOrderTxnSubmittedMetric(metricData.metricId);
 
+        setIsVisibleOrView("main");
+
         const txResult = await receipt.wait();
 
         if (txResult.status === "success") {
@@ -635,7 +639,6 @@ export const WithdrawalView = () => {
           if (txResult.transactionHash && mockWithdrawalId) {
             setMultichainWithdrawalSentTxnHash(mockWithdrawalId, txResult.transactionHash);
           }
-          setIsVisibleOrView("main");
         } else if (txResult.status === "failed" && mockWithdrawalId) {
           setMultichainWithdrawalSentError(mockWithdrawalId);
         }
@@ -763,7 +766,12 @@ export const WithdrawalView = () => {
     onClick: handleWithdraw,
   };
 
-  if (isSubmitting) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (isSubmitting) {
     buttonState = {
       text: (
         <>
@@ -817,7 +825,7 @@ export const WithdrawalView = () => {
       buttonState = {
         text: (
           <>
-            <Trans>Loading</Trans>
+            <Trans>Loading...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

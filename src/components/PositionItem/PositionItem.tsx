@@ -86,9 +86,7 @@ export function PositionItem(p: Props) {
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
-            <Trans>
-              Net value is the amount held in the position inclusive of PnL, fees and net price impact at close.
-            </Trans>
+            <Trans>Net value is the amount held in the position inclusive of PnL, fees and net price impact.</Trans>
             <br />
             <br />
             <StatsTooltipRow
@@ -271,7 +269,7 @@ export function PositionItem(p: Props) {
                   })}
                 />
                 <StatsTooltipRow
-                  label={t`Accrued Positive Funding Fee`}
+                  label={t`Positive Funding Fee`}
                   showDollar={false}
                   value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
                   valueClassName="numbers"
@@ -468,13 +466,10 @@ export function PositionItem(p: Props) {
                     <br />
 
                     <div>
-                      <Trans>
-                        Click on the position to select it, then use the trade box to increase it or to set TP/SL
-                        orders.
-                      </Trans>
+                      <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
                       <br />
                       <br />
-                      <Trans>Use the "Close" button to reduce your position.</Trans>
+                      <Trans>Use the "Close" button to reduce your position via market, TP/SL, or TWAP orders.</Trans>
                     </div>
 
                     {showDebugValues && (

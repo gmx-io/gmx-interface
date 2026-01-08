@@ -190,3 +190,6 @@ export const selectIsAutoCancelTPSLEnabled = (s: SyntheticsState) => s.settings.
 
 export const selectMultichainMarketTokensBalancesResult = (s: SyntheticsState) =>
   s.globals.multichainMarketTokensBalancesResult;
+
+export const selectMultichainMarketTokensBalancesIsLoading = (s: SyntheticsState) =>
+  s.globals.multichainMarketTokensBalancesResult?.isLoading ?? false;

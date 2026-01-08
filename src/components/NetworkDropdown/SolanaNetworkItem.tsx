@@ -3,7 +3,7 @@ import { forwardRef, useState } from "react";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import Modal from "components/Modal/Modal";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import solanaIcon from "img/tokens/ic_sol.svg";
 
@@ -34,7 +34,7 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
         </div>
       </div>
 
-      <Modal
+      <ModalWithPortal
         isVisible={isModalOpen}
         setIsVisible={setIsModalOpen}
         label={t`GMX Solana`}
@@ -56,7 +56,7 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
             </Button>
           </ExternalLink>
         </div>
-      </Modal>
+      </ModalWithPortal>
     </>
   );
 });

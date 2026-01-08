@@ -32,6 +32,7 @@ import { helperToast } from "lib/helperToast";
 import { formatUsd, numberToBigint } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
@@ -139,12 +140,12 @@ function ReferralCodeForm({
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating`,
+      text: t`Updating...`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding`,
+      text: t`Adding...`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
@@ -249,6 +250,7 @@ function ReferralCodeFormMultichain({
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const settlementChainPublicClient = usePublicClient({ chainId });
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const simulationSigner = useMemo(() => {
     if (!signer?.provider) {
@@ -539,19 +541,24 @@ function ReferralCodeFormMultichain({
   };
   const isEdit = type === "edit";
 
-  if (isEdit && debouncedReferralCode === userReferralCodeString) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (isEdit && debouncedReferralCode === userReferralCodeString) {
     buttonState = {
       text: t`Same as current active code`,
       disabled: true,
     };
   } else if (isEdit && isSubmitting) {
     buttonState = {
-      text: t`Updating`,
+      text: t`Updating...`,
       disabled: true,
     };
   } else if (isSubmitting) {
     buttonState = {
-      text: t`Adding`,
+      text: t`Adding...`,
       disabled: true,
     };
   } else if (debouncedReferralCode === "") {
@@ -573,7 +580,7 @@ function ReferralCodeFormMultichain({
     buttonState = {
       text: (
         <>
-          <Trans>Loading</Trans>
+          <Trans>Loading...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

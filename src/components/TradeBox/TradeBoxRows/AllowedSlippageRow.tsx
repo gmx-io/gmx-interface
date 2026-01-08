@@ -10,6 +10,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -39,13 +40,16 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
           content={
             <div className="text-typography-primary">
               <Trans>
-                The maximum allowed percentage difference between the mark price and the execution price for market
-                orders. You can edit the default value in the settings menu on the top right of the page.
+                Slippage is the difference between your expected and actual execution price due to price volatility.
+                Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.
+                <br />
+                <br />A low value (e.g. less than -
+                {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause failed orders during
+                volatility.
                 <br />
                 <br />
-                Note that a low allowed slippage, e.g. less than -
-                {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}, may result in failed orders if
-                prices are volatile.
+                Note: slippage is different from price impact, which is based on open interest imbalances.{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">Read more</ExternalLink>.
               </Trans>
             </div>
           }

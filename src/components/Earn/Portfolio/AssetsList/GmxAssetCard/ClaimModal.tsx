@@ -14,6 +14,7 @@ import { callContract } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -62,6 +63,7 @@ export function ClaimModal(props: {
     onClaimSuccess,
   } = props;
   const [isClaiming, setIsClaiming] = useState(false);
+  const hasOutdatedUi = useHasOutdatedUi();
   const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-gmx"],
     true
@@ -123,9 +125,13 @@ export function ClaimModal(props: {
     !needApproval &&
     !isUndelegatedGovToken &&
     hasAnyPendingRewards &&
-    isAnySelectedToClaim;
+    isAnySelectedToClaim &&
+    !hasOutdatedUi;
 
   const primaryText = useMemo(() => {
+    if (hasOutdatedUi) {
+      return t`Page outdated, please refresh`;
+    }
     if (!hasAnyPendingRewards) {
       return <Trans>No rewards</Trans>;
     }
@@ -139,7 +145,7 @@ export function ClaimModal(props: {
       return <Trans>Claiming...</Trans>;
     }
     return <Trans>Claim</Trans>;
-  }, [hasAnyPendingRewards, isAnySelectedToClaim, needApproval, isApproving, isClaiming]);
+  }, [hasOutdatedUi, hasAnyPendingRewards, isAnySelectedToClaim, needApproval, isApproving, isClaiming]);
 
   const onClickPrimary = useCallback(() => {
     if (needApproval) {

@@ -67,6 +67,7 @@ import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "li
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
@@ -401,6 +402,7 @@ export const DepositView = () => {
   const isGeminiWallet = useIsGeminiWallet();
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
   const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const sameChainCallback: TxnCallback<WalletTxnCtx> = useCallback(
     (txnEvent) => {
@@ -511,6 +513,8 @@ export const DepositView = () => {
             setSelectedTransferGuid(submittedDepositGuid);
             if (!subaccountState.subaccount && !isExpressTradingDisabled) {
               setIsVisibleOrView("depositStatus");
+            } else {
+              setIsVisibleOrView("main");
             }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
@@ -719,11 +723,16 @@ export const DepositView = () => {
     onClick: handleDeposit,
   };
 
-  if (isApproving) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (isApproving) {
     buttonState = {
       text: (
         <>
-          <Trans>Approving</Trans>
+          <Trans>Approving...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -746,7 +755,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Depositing</Trans>
+          <Trans>Depositing...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

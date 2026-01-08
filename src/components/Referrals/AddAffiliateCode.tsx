@@ -10,6 +10,7 @@ import type { ReferralCodeStats } from "domain/referrals/types";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { switchNetwork } from "lib/wallets";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -82,6 +83,7 @@ export function AffiliateCodeForm({
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const { chainId, srcChainId } = useChainId();
   const { address: account, isConnected } = useAccount();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -165,7 +167,12 @@ export function AffiliateCodeForm({
     onSubmit: undefined,
   };
 
-  if (srcChainId !== undefined) {
+  if (hasOutdatedUi) {
+    buttonState = {
+      text: t`Page outdated, please refresh`,
+      disabled: true,
+    };
+  } else if (srcChainId !== undefined) {
     buttonState = {
       text: t`Switch to ${getChainName(chainId)}`,
       disabled: false,
@@ -186,12 +193,12 @@ export function AffiliateCodeForm({
     };
   } else if (referralCodeCheckStatus === "checking") {
     buttonState = {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   } else if (isProcessing) {
     buttonState = {
-      text: t`Creating`,
+      text: t`Creating...`,
       disabled: true,
     };
   } else {
