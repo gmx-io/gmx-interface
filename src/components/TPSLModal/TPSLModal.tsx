@@ -133,11 +133,11 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   );
 
   const handleCancelAll = useCallback(async () => {
-    if (!signer || !provider || allOrders.length === 0) return;
+    if (!signer || !provider || displayedOrders.length === 0) return;
 
     setIsCancellingAll(true);
 
-    const orderKeys = allOrders.flatMap((order) => getOrderKeys(order));
+    const orderKeys = displayedOrders.flatMap((order) => getOrderKeys(order));
     setCancellingOrdersKeys((prev) => [...new Set([...prev, ...orderKeys])]);
 
     const batchParams = {
@@ -178,7 +178,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   }, [
     signer,
     provider,
-    allOrders,
+    displayedOrders,
     chainId,
     srcChainId,
     globalExpressParams,
@@ -287,7 +287,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
             className="-mb-1 w-full pr-20 max-md:pr-16"
             rightContent={
               <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
-                {allOrders.length > 0 && (
+                {displayedOrders.length > 0 && (
                   <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
                     <Trans>Cancel all</Trans>
                   </Button>
