@@ -30,7 +30,7 @@ export function NextStoredImpactRows() {
             handle={t`Stored Price Impact`}
             content={
               <Trans>
-                Price impact applies when you close. These are current estimates.{" "}
+                Price impact applies when you close. These are current estimates at increase.{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
                   Read more
                 </ExternalLink>

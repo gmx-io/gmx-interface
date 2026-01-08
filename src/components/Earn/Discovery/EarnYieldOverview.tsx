@@ -330,10 +330,7 @@ export default function EarnYieldOverview() {
                 value={<Trans>N/A</Trans>}
                 suffix=""
                 tooltip={
-                  <Trans>
-                    Staking GMX is currently not supported on Botanix. For access to these features, please visit the
-                    Arbitrum and Avalanche deployments.
-                  </Trans>
+                  <Trans>GMX staking unavailable on Botanix. Use Arbitrum or Avalanche.</Trans>
                 }
                 disabled
               />
@@ -350,11 +347,11 @@ export default function EarnYieldOverview() {
                 suffix=""
                 tooltip={
                   <Trans>
-                    Botanix currently has no GLV vault(s) active. You can provide liquidity by{" "}
+                    No GLV vaults on Botanix. Provide liquidity via{" "}
                     <Link to="/pools" className="underline hover:text-blue-300">
-                      purchasing
+                      GM tokens
                     </Link>{" "}
-                    GM tokens.
+                    instead.
                   </Trans>
                 }
                 disabled

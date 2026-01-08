@@ -86,7 +86,7 @@ export function PositionItem(p: Props) {
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
-            <Trans>Position value after PnL, fees, and price impact.</Trans>
+            <Trans>Position value after PnL, fees, and net price impact.</Trans>
             <br />
             <br />
             <StatsTooltipRow
@@ -228,9 +228,7 @@ export function PositionItem(p: Props) {
               <>
                 {p.position.hasLowCollateral && (
                   <div>
-                    <Trans>
-                      Warning: Low collateral after fees. Deposit more to reduce liquidation risk.
-                    </Trans>
+                    <Trans>Warning: Low collateral after fees. Deposit more to reduce liquidation risk.</Trans>
                     <br />
                     <br />
                   </div>
@@ -367,9 +365,7 @@ export function PositionItem(p: Props) {
                 Position may still liquidate from fees alone (funding + borrowing) reducing collateral over time.
               </Trans>
             ) : (
-              <Trans>
-                Position may liquidate from fees alone (funding + borrowing) reducing collateral over time.
-              </Trans>
+              <Trans>Position may liquidate from fees alone (funding + borrowing) reducing collateral over time.</Trans>
             )}
             <br />
             <br />

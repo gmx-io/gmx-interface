@@ -100,7 +100,7 @@ export function PriceImpactFeesRow() {
             handle={t`Net Price Impact / Fees`}
             content={
               <Trans>
-                Price impact from your trade affecting market balance. Positive = better price.{" "}
+                Net price impact from your trade.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>

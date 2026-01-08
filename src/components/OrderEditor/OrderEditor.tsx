@@ -530,7 +530,7 @@ export function OrderEditor(p: Props) {
         text: t`Max. Leverage Exceeded`,
         tooltip: (
           <>
-            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
+            <Trans>Order exceeds max leverage. Click to auto-adjust to maximum allowed.</Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
             <br />
             <br />

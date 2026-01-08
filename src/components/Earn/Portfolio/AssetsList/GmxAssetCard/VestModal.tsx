@@ -541,8 +541,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                   handleClassName="whitespace-nowrap"
                   content={
                     <span>
-                      {formatGmxAmount(claimSum)} tokens have been converted to GMX from the{" "}
-                      {formatGmxAmount(vestedAmount)} esGMX deposited for vesting.
+                      {formatGmxAmount(claimSum)} GMX converted from {formatGmxAmount(vestedAmount)} esGMX vested.
                     </span>
                   }
                 />

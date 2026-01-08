@@ -62,7 +62,8 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                       Return on capital used (PnL / capital).
                       <br />
                       <br />
-                      Capital = max(<i>collateral - realized PnL + starting pending PnL</i>).
+                      Capital used = max(
+                      <i>sum of collateral of open positions - realized PnL + starting pending PnL</i>).
                     </Trans>
                   }
                 >
