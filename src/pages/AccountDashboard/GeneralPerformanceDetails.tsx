@@ -47,7 +47,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
-                  content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                  content={t`Total PnL (realized + unrealized) after fees and price impact.`}
                   variant="iconStroke"
                 >
                   <Trans>PnL ($)</Trans>
@@ -59,11 +59,10 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                   variant="iconStroke"
                   content={
                     <Trans>
-                      The PnL ($) compared to the capital used.
+                      Return on capital used (PnL / capital).
                       <br />
                       <br />
-                      The capital used is calculated as the highest value of [
-                      <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                      Capital = max(<i>collateral - realized PnL + starting pending PnL</i>).
                     </Trans>
                   }
                 >

@@ -88,7 +88,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   iconClassName="text-typography-secondary ml-4"
                   renderContent={() => (
                     <p className="text-typography-primary">
-                      <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
+                      <Trans>Your discount: {currentTierDiscount}% off trading fees.</Trans>
                       {((discountShare ?? 0) > 0 && (
                         <>
                           <br />
@@ -110,7 +110,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.traderReferralTotalStats?.volume)}
           label={t`Trading Volume`}
-          labelTooltipText={t`Volume traded by this account with an active referral code.`}
+          labelTooltipText={t`Your trading volume with referral discount.`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -155,7 +155,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.traderReferralTotalStats?.discountUsd)}
           label={t`Rebates`}
-          labelTooltipText={t`Rebates earned by this account as a trader.`}
+          labelTooltipText={t`Your fee savings from referral discounts.`}
           tooltipContent={
             <>
               <StatsTooltipRow

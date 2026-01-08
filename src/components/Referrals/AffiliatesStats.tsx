@@ -172,7 +172,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={String(currentReferralsData?.affiliateTotalStats.registeredReferralsCount || 0)}
           label={t`Traders Referred`}
-          labelTooltipText={t`Amount of traders you referred.`}
+          labelTooltipText={t`Number of traders using your referral code.`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -200,7 +200,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.volume)}
           label={t`Trading Volume`}
-          labelTooltipText={t`Volume traded by your referred traders.`}
+          labelTooltipText={t`Total trading volume from your referrals.`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -245,7 +245,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
           label={t`Rebates`}
-          labelTooltipText={t`Rebates earned as an affiliate.`}
+          labelTooltipText={t`Your affiliate earnings from referrals.`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -294,7 +294,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           label={t`Claimable Rebates`}
           value={<span className="numbers">{formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}</span>}
-          labelTooltipText={t`Claimable rebates from your referred traders.`}
+          labelTooltipText={t`Available to claim now.`}
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">

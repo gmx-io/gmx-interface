@@ -118,7 +118,7 @@ export function GlvList({
                       handle={t`SNAPSHOT`}
                       className="normal-case"
                       position="bottom-end"
-                      content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
+                      content={<Trans>Performance vs benchmark over selected period.</Trans>}
                       variant="iconStroke"
                     />
                   </TableTh>

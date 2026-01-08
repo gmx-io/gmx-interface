@@ -394,14 +394,9 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value locked takes into account:</Trans>
+                      <Trans>TVL includes GMX staked, GLP pool, GM pools, and position collateral.</Trans>
                       <br />
-                      <ul className="my-8 list-disc">
-                        <li className="p-2">GMX Staked</li>
-                        <li className="p-2">GLP Pool</li>
-                        <li className="p-2">GM Pools</li>
-                        <li className="p-2">Positions' Collateral</li>
-                      </ul>
+                      <br />
                       <StatsTooltipRow
                         label="Arbitrum"
                         showDollar={false}
@@ -439,7 +434,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in the GLP pools.</Trans>
+                      <Trans>Total GLP pool value across networks.</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
@@ -460,8 +455,7 @@ export function OverviewCard({
                       />
                       <br />
                       <Trans>
-                        This value may be higher on other websites due to the collateral of positions being included in
-                        the calculation.
+                        May differ from other sites that include position collateral in calculations.
                       </Trans>
                     </>
                   }
@@ -479,7 +473,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in GM Pools.</Trans>
+                      <Trans>Total GM pool value across networks.</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow

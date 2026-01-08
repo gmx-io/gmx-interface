@@ -188,8 +188,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <div className="h-8" />
             <p>
               <Trans>
-                The max network fee is overestimated, including by the buffer set under settings. Upon execution, any
-                excess network fee is sent back to your account.
+                Max network fee includes buffer set under settings for gas spikes. Unused fees refunded after execution.
               </Trans>{" "}
               <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading#execution-fee">
                 <Trans>Read more</Trans>
@@ -229,12 +228,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           <TooltipWithPortal
             position="left-start"
             variant="icon"
-            content={
-              <Trans>
-                The maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
-                does not impact your collateral.
-              </Trans>
-            }
+            content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't affect your collateral.</Trans>}
           >
             <Trans>Network Fee</Trans>
           </TooltipWithPortal>

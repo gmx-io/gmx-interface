@@ -71,8 +71,8 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                 disabled={entriesInfo.allowAddEntry}
                 content={
                   isStopLoss
-                    ? t`Combined stop losses are at maximum (100%). Decrease existing values to add more orders.`
-                    : t`Combined take profits are at maximum (100%). Decrease existing values to add more orders.`
+                    ? t`Stop losses at 100%. Reduce existing orders to add more.`
+                    : t`Take profits at 100%. Reduce existing orders to add more.`
                 }
               >
                 <EntryButton

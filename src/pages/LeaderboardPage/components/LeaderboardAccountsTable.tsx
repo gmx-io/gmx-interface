@@ -184,15 +184,14 @@ export function LeaderboardAccountsTable({
                 width={6}
                 tooltip={
                   <Trans>
-                    Only addresses with over{" "}
+                    Minimum{" "}
                     {formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
                       displayDecimals: 0,
                     })}{" "}
-                    in capital used are ranked.
+                    capital required for ranking.
                     <br />
                     <br />
-                    The capital used is calculated as the highest value of [
-                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                    Capital = max(sum of collateral of open positions - realized PnL + starting pending PnL).
                   </Trans>
                 }
                 tooltipPosition="bottom-start"
@@ -201,43 +200,35 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`PnL ($)`}
                 width={12}
-                tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                tooltip={t`Total PnL (realized + unrealized) after fees and price impact.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("totalQualifyingPnl")}
               />
               <TableHeaderCell
                 title={t`PnL (%)`}
                 width={10}
-                tooltip={
-                  <Trans>
-                    The PnL ($) compared to the capital used.
-                    <br />
-                    <br />
-                    The capital used is calculated as the highest value of [
-                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
-                  </Trans>
-                }
+                tooltip={<Trans>PnL relative to capital used (return on capital).</Trans>}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("pnlPercentage")}
               />
               <TableHeaderCell
                 title={t`Avg. Size`}
                 width={12}
-                tooltip={t`Average position size.`}
+                tooltip={t`Average position size across all trades.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("averageSize")}
               />
               <TableHeaderCell
                 title={t`Avg. Lev.`}
                 width={1}
-                tooltip={t`Average leverage used.`}
+                tooltip={t`Average leverage across all positions.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("averageLeverage")}
               />
               <TableHeaderCell
                 title={t`Win/Loss`}
                 width={10}
-                tooltip={t`Wins and losses for fully closed positions.`}
+                tooltip={t`Win/loss record for closed positions only.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("wins")}
               />

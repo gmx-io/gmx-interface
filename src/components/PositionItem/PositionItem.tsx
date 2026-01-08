@@ -86,7 +86,7 @@ export function PositionItem(p: Props) {
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
-            <Trans>Net value is the amount held in the position inclusive of PnL, fees and net price impact.</Trans>
+            <Trans>Position value after PnL, fees, and price impact.</Trans>
             <br />
             <br />
             <StatsTooltipRow
@@ -229,8 +229,7 @@ export function PositionItem(p: Props) {
                 {p.position.hasLowCollateral && (
                   <div>
                     <Trans>
-                      WARNING: This position has a low amount of collateral after deducting fees, deposit more
-                      collateral to reduce the position's liquidation risk.
+                      Warning: Low collateral after fees. Deposit more to reduce liquidation risk.
                     </Trans>
                     <br />
                     <br />
@@ -295,12 +294,12 @@ export function PositionItem(p: Props) {
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                 />
                 <br />
-                <Trans>Use the edit collateral icon to deposit or withdraw collateral.</Trans>
+                <Trans>Click the edit icon to deposit or withdraw collateral.</Trans>
                 <br />
                 <br />
                 <Trans>
-                  Negative funding fees are automatically settled against the collateral and impact the liquidation
-                  price. Positive funding fees can be claimed under the claims tab.
+                  Negative funding fees reduce collateral and affect liquidation price. Positive funding fees are
+                  claimable in the Claims tab.
                 </Trans>
               </>
             }
@@ -358,20 +357,18 @@ export function PositionItem(p: Props) {
           <div>
             {!liqPriceWarning && (
               <>
-                <Trans>Liquidation price is influenced by fees and collateral value.</Trans>
+                <Trans>Liquidation price changes with fees and collateral value.</Trans>
                 <br />
               </>
             )}
             <br />
             {liqPriceWarning ? (
               <Trans>
-                This position could still be liquidated, excluding any price movement, due to funding and borrowing fee
-                rates reducing the position's collateral over time.
+                Position may still liquidate from fees alone (funding + borrowing) reducing collateral over time.
               </Trans>
             ) : (
               <Trans>
-                This position could be liquidated, excluding any price movement, due to funding and borrowing fee rates
-                reducing the position's collateral over time.
+                Position may liquidate from fees alone (funding + borrowing) reducing collateral over time.
               </Trans>
             )}
             <br />
@@ -466,10 +463,10 @@ export function PositionItem(p: Props) {
                     <br />
 
                     <div>
-                      <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
+                      <Trans>Click to select, then use trade box to increase size.</Trans>
                       <br />
                       <br />
-                      <Trans>Use the "Close" button to reduce your position via market, TP/SL, or TWAP orders.</Trans>
+                      <Trans>Use "Close" for market, TP/SL, or TWAP close orders.</Trans>
                     </div>
 
                     {showDebugValues && (

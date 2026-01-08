@@ -36,8 +36,7 @@ export function HighPriceImpactOrFeesWarningCard({
         value: undefined,
         tooltipContent: (
           <Trans>
-            The potential net price impact that will apply when closing this position may be high compared to the amount
-            of collateral you're using. Consider reducing leverage.{" "}
+            High potential net price impact relative to your collateral. Consider reducing leverage.{" "}
             <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
           </Trans>
         ),

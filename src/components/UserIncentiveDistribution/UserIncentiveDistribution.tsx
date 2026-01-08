@@ -145,7 +145,7 @@ export default function UserIncentiveDistribution() {
                 <div className="flex flex-col items-center">
                   <TooltipWithPortal
                     handle={t`No distribution history yet`}
-                    content={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+                    content={t`Your incentives, airdrops, and prizes will appear here.`}
                   />
                   {!active ? (
                     <div className="mt-15">

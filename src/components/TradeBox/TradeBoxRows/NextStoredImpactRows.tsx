@@ -30,8 +30,7 @@ export function NextStoredImpactRows() {
             handle={t`Stored Price Impact`}
             content={
               <Trans>
-                The price impact is not applied until the decrease action. These are the current estimated values at
-                increase.{" "}
+                Price impact applies when you close. These are current estimates.{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
                   Read more
                 </ExternalLink>

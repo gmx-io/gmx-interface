@@ -40,15 +40,17 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
           content={
             <div className="text-typography-primary">
               <Trans>
-                Slippage is the difference between your expected and actual execution price due to price volatility.
-                Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.
+                Slippage: The price difference between order submission and execution.
                 <br />
-                <br />A low value (e.g. less than -
-                {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause failed orders during
+                <br />
+                Too low ({"<"}
+                {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}): Orders may fail during
                 volatility.
                 <br />
+                Too high: You may get worse prices.
                 <br />
-                Note: slippage is different from price impact, which is based on open interest imbalances.{" "}
+                <br />
+                Note: Different from price impact.{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">Read more</ExternalLink>.
               </Trans>
             </div>

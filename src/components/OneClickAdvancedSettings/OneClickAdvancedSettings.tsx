@@ -107,7 +107,7 @@ export function OneClickAdvancedSettings() {
               <TooltipWithPortal
                 position="left-start"
                 variant="icon"
-                content={<Trans>Maximum number of actions allowed before reauthorization is required.</Trans>}
+                content={<Trans>Actions remaining before you need to reauthorize One-Click Trading.</Trans>}
               >
                 <Trans>Remaining Allowed Actions</Trans>
               </TooltipWithPortal>
@@ -127,7 +127,7 @@ export function OneClickAdvancedSettings() {
               <TooltipWithPortal
                 position="left-start"
                 variant="icon"
-                content={<Trans>Maximum number of days before reauthorization is required.</Trans>}
+                content={<Trans>Days remaining before you need to reauthorize One-Click Trading.</Trans>}
               >
                 <Trans>Time Limit</Trans>
               </TooltipWithPortal>

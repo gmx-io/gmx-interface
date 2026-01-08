@@ -310,8 +310,7 @@ const TableRow = memo(
     }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
     const renderNaLiquidationTooltip = useCallback(
-      () =>
-        t`There is no liquidation price, as the position's collateral value will increase to cover any negative PnL.`,
+      () => t`No liquidation price. Collateral covers any losses.`,
       []
     );
 

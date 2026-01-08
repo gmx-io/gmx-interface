@@ -181,8 +181,7 @@ export function TradingSettings({
               variant="icon"
               content={
                 <Trans>
-                  The settlement chain is the network used for your GMX Account and opening positions. GMX Account
-                  balances and positions are specific to the selected network.
+                  Your GMX Account uses this network for trading. Balances and positions are network-specific.
                 </Trans>
               }
               handle={<Trans>Settlement Chain</Trans>}
@@ -283,8 +282,8 @@ export function TradingSettings({
             content={
               <div>
                 <Trans>
-                  TP/SL orders will be automatically cancelled when the associated position is completely closed. This
-                  will only affect newly created TP/SL orders since the setting was enabled.
+                  Automatically cancel TP/SL orders when the position fully closes. Only applies to new orders created
+                  after enabling.
                 </Trans>
                 <br />
                 <br />

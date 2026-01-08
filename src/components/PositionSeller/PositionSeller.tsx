@@ -769,7 +769,7 @@ export function PositionSeller() {
       handle={keepLeverageText}
       content={
         <Trans>
-          Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
+          Cannot keep leverage: Position exceeds maximum allowed.{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
         </Trans>
       }

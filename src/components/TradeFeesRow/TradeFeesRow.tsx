@@ -475,8 +475,8 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The bonus rebate is an estimate and can be up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of
-        the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
+        Estimated rebate up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of open fee. Airdropped as{" "}
+        {incentivesTokenTitle} tokens pro-rata.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
@@ -494,7 +494,7 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        Price impact rebates for closing trades are claimable under the claims tab.{" "}
+        Price impact rebates from closing are claimable in the Claims tab.{" "}
         <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
           Read more
         </ExternalLink>
@@ -510,7 +510,7 @@ export function TradeFeesRow(p: Props) {
     return (
       <>
         <br />
-        <Trans>This swap is routed through several GM pools for the lowest possible fees and price impact.</Trans>
+        <Trans>Swap routed through multiple GM pools for lowest fees and price impact.</Trans>
       </>
     );
   }, [p.swapFees]);

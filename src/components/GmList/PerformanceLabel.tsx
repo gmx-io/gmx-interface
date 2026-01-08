@@ -22,15 +22,13 @@ export function PerformanceLabel({
       variant={variant}
       content={
         <Trans>
-          Annualized return of the pool or vault over the selected period, compared to a benchmark that follows Uniswap
-          V2–style rebalancing of the backing tokens in the same GM pool or GLV vault.
+          Projected yearly return vs. a Uniswap V2-style benchmark.
           <br />
           <br />
-          Annualized figures based on short periods may be distorted by short-term volatility.
+          Note: Short timeframes may not reflect long-term performance.
           <br />
           <br />
-          For detailed stats and comparisons, see the{" "}
-          <ExternalLink href="https://dune.com/gmx-io/v2-lp-dashboard">GMX V2 LP Dashboard</ExternalLink>.
+          <ExternalLink href="https://dune.com/gmx-io/v2-lp-dashboard">View detailed stats on Dune</ExternalLink>.
         </Trans>
       }
     />
