@@ -525,7 +525,3 @@ function createV2EventFilters(account: string): {
     },
   };
 }
-
-export function getTotalSubscribersEventsCount() {
-  return 2;
-}

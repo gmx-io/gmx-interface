@@ -107,10 +107,7 @@ export type WsProviderDisconnected = {
 export type WsProviderHealthCheckFailed = {
   event: "wsProvider.healthCheckFailed";
   isError: false;
-  data: {
-    requiredListenerCount: number;
-    listenerCount: number;
-  };
+  data: {};
 };
 
 // Loading measurements
