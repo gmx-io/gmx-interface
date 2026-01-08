@@ -86,9 +86,7 @@ export function PositionItem(p: Props) {
         position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
           <div>
-            <Trans>
-              Net value is the amount held in the position inclusive of PnL, fees and net price impact.
-            </Trans>
+            <Trans>Net value is the amount held in the position inclusive of PnL, fees and net price impact.</Trans>
             <br />
             <br />
             <StatsTooltipRow
@@ -468,9 +466,7 @@ export function PositionItem(p: Props) {
                     <br />
 
                     <div>
-                      <Trans>
-                        Click on the position to select it, then use the trade box to increase it.
-                      </Trans>
+                      <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
                       <br />
                       <br />
                       <Trans>Use the "Close" button to reduce your position via market, TP/SL, or TWAP orders.</Trans>

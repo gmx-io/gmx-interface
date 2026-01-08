@@ -7,19 +7,18 @@ import { getMidPrice, useTokenRecentPricesRequest } from "domain/synthetics/toke
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { convertToTokenAmount } from "sdk/utils/tokens";
 
 import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
 import type { QuoteOft } from "./types";
 
-export function useNativeTokenMultichainUsd({
+function useSourceNativeTokenPriceInfo({
   sourceChainId,
-  sourceChainTokenAmount,
   targetChainId,
 }: {
   sourceChainId: AnyChainId | undefined;
-  sourceChainTokenAmount: bigint | undefined;
   targetChainId: AnyChainId | undefined;
-}): bigint | undefined {
+}) {
   const { chainId } = useChainId();
 
   let sourceNativeTokenPriceChain = chainId;
@@ -47,17 +46,35 @@ export function useNativeTokenMultichainUsd({
 
   const { pricesData: priceChainTokenPricesData } = useTokenRecentPricesRequest(sourceNativeTokenPriceChain);
 
+  return {
+    sourceNativeTokenAddress,
+    hasSourceNativeTokenPrice,
+    priceChainTokenPricesData,
+  };
+}
+
+export function useNativeTokenMultichainUsd({
+  sourceChainId,
+  sourceChainTokenAmount,
+  targetChainId,
+}: {
+  sourceChainId: AnyChainId | undefined;
+  sourceChainTokenAmount: bigint | undefined;
+  targetChainId: AnyChainId | undefined;
+}): bigint | undefined {
+  const { sourceNativeTokenAddress, hasSourceNativeTokenPrice, priceChainTokenPricesData } =
+    useSourceNativeTokenPriceInfo({ sourceChainId, targetChainId });
+
   if (
     sourceChainTokenAmount === undefined ||
     sourceChainId === undefined ||
     targetChainId === undefined ||
-    chainId === undefined ||
     !hasSourceNativeTokenPrice
   ) {
     return undefined;
   }
 
-  const nativeFeeUsd =
+  const nativeUsd =
     sourceChainTokenAmount !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
       ? convertToUsd(
           sourceChainTokenAmount as bigint,
@@ -66,8 +83,37 @@ export function useNativeTokenMultichainUsd({
         )
       : undefined;
 
-  return nativeFeeUsd;
+  return nativeUsd;
 }
+
+export function useUsdToNativeTokenMultichain({
+  sourceChainId,
+  usd,
+  targetChainId,
+}: {
+  sourceChainId: AnyChainId | undefined;
+  usd: bigint | undefined;
+  targetChainId: AnyChainId | undefined;
+}): bigint | undefined {
+  const { sourceNativeTokenAddress, hasSourceNativeTokenPrice, priceChainTokenPricesData } =
+    useSourceNativeTokenPriceInfo({ sourceChainId, targetChainId });
+
+  if (usd === undefined || sourceChainId === undefined || targetChainId === undefined || !hasSourceNativeTokenPrice) {
+    return undefined;
+  }
+
+  const nativeTokenAmount =
+    usd !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
+      ? convertToTokenAmount(
+          usd,
+          getViemChain(sourceChainId).nativeCurrency.decimals,
+          getMidPrice(priceChainTokenPricesData[sourceNativeTokenAddress])
+        )
+      : undefined;
+
+  return nativeTokenAmount;
+}
+
 export function useGasMultichainUsd({
   sourceChainId,
   sourceChainGas,

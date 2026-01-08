@@ -8,16 +8,15 @@ export function GmSwapWarningsRow({
   shouldShowWarning,
   shouldShowWarningForPosition,
   shouldShowWarningForExecutionFee,
+  insufficientGasWarningText,
 }: {
   shouldShowWarning: boolean;
   shouldShowWarningForPosition: boolean;
   shouldShowWarningForExecutionFee: boolean;
+  insufficientGasWarningText?: string;
 }) {
-  if (!shouldShowWarning) {
-    return null;
-  }
-
   const warnings: ReactNode[] = [];
+
   if (shouldShowWarningForPosition) {
     warnings.push(
       <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighPriceImpactWarning" onClose={noop}>
@@ -32,6 +31,18 @@ export function GmSwapWarningsRow({
         <Trans>High network fees</Trans>
       </AlertInfoCard>
     );
+  }
+
+  if (insufficientGasWarningText) {
+    warnings.push(
+      <AlertInfoCard className="mb-14" type="info" key="swapBoxInsufficientGasWarning" hideClose>
+        {insufficientGasWarningText}
+      </AlertInfoCard>
+    );
+  }
+
+  if (!shouldShowWarning && warnings.length === 0) {
+    return null;
   }
 
   return <div className="flex flex-col">{warnings}</div>;
