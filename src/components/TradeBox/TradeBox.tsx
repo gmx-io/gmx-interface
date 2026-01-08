@@ -371,6 +371,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     nativeToken,
     fromTokenAmount,
     fromTokenInputValue,
+    tokenBalanceType: fromToken?.balanceType,
     minResidualAmount: getMinResidualGasPaymentTokenAmount({
       gasPaymentToken: gasPaymentTokenData,
       gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
