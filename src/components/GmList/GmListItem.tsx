@@ -10,6 +10,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   selectChainId,
   selectGlvAndMarketsInfoData,
+  selectMultichainMarketTokensBalancesIsLoading,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -86,6 +87,7 @@ export function GmListItem({
   const { showDebugValues } = useSettings();
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
   const multichainMarketTokenBalances = multichainMarketTokensBalances[token.address];
+  const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
 
   const marketOrGlv = getByKey(marketsInfoData, token?.address);
 
@@ -210,6 +212,7 @@ export function GmListItem({
                 isGlv={isGlv}
                 singleLine={true}
                 multichainBalances={multichainMarketTokenBalances}
+                isMultichainBalancesLoading={isMultichainBalancesLoading}
               />
             }
           />
@@ -305,6 +308,7 @@ export function GmListItem({
           earnedTotal={marketEarnings?.total}
           multichainBalances={multichainMarketTokenBalances}
           isGlv={isGlv}
+          isMultichainBalancesLoading={isMultichainBalancesLoading}
         />
       </TableTdActionable>
 

@@ -513,6 +513,8 @@ export const DepositView = () => {
             setSelectedTransferGuid(submittedDepositGuid);
             if (!subaccountState.subaccount && !isExpressTradingDisabled) {
               setIsVisibleOrView("depositStatus");
+            } else {
+              setIsVisibleOrView("main");
             }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
@@ -730,7 +732,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Approving</Trans>
+          <Trans>Approving...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -753,7 +755,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Depositing</Trans>
+          <Trans>Depositing...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
