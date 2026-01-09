@@ -8,17 +8,18 @@ import { useCopyToClipboard } from "react-use";
 import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { getTokenAddressByGlv } from "domain/synthetics/markets/glv";
+import { Operation } from "domain/synthetics/markets/types";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { shortenAddressOrEns } from "lib/wallets";
 import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import {
-  getMarketIndexToken,
   getIsSpotOnlyMarket,
-  isMarketTokenAddress,
+  getMarketIndexToken,
   getTokenAddressByMarket,
   getTokenSymbolByMarket,
+  isMarketTokenAddress,
 } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
@@ -28,7 +29,6 @@ import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { EXPAND_ANIMATION_VARIANTS } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { Operation } from "components/GmSwap/GmSwapBox/types";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 

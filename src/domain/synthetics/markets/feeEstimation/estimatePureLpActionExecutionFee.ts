@@ -13,7 +13,7 @@ import {
   getExecutionFee,
 } from "sdk/utils/fees";
 
-import { Operation } from "components/GmSwap/GmSwapBox/types";
+import { Operation } from "../types";
 
 export type PureAction =
   | { operation: Operation.Deposit; isGlv: false; swapsCount: bigint }

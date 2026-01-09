@@ -7,7 +7,6 @@ import { buildAndSignMultichainGlvDepositTxn } from "domain/synthetics/markets/c
 import type { GmPaySource } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { AsyncResult } from "lib/useThrottledAsync";
-import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
@@ -27,14 +26,8 @@ export function useMultichainDepositExpressTxnParams({
   gasPaymentTokenAsCollateralAmount: bigint | undefined;
 }): AsyncResult<ExpressTxnParams> {
   const { chainId, srcChainId } = useChainId();
-  const { signer } = useWallet();
 
-  const enabled =
-    paySource === "gmxAccount" &&
-    Boolean(params) &&
-    isDeposit &&
-    transferRequests !== undefined &&
-    signer !== undefined;
+  const enabled = paySource === "gmxAccount" && Boolean(params) && isDeposit && transferRequests !== undefined;
 
   const multichainDepositExpressTxnParams = useArbitraryRelayParamsAndPayload({
     isGmxAccount: paySource === "gmxAccount",
@@ -61,7 +54,6 @@ export function useMultichainDepositExpressTxnParams({
             ...relayParams,
             deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           },
-          signer,
           transferRequests,
         });
 
@@ -84,7 +76,6 @@ export function useMultichainDepositExpressTxnParams({
           ...relayParams,
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
         },
-        signer,
         transferRequests,
       });
 

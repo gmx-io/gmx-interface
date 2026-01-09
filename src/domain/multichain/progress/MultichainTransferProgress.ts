@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import { Operation } from "domain/synthetics/markets/types";
 import { Token } from "domain/tokens";
-
-import { Operation } from "components/GmSwap/GmSwapBox/types";
 
 import { LongCrossChainTask } from "./LongCrossChainTask";
 
