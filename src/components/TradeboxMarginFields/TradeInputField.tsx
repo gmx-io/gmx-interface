@@ -10,7 +10,9 @@ type Props = {
   alternateValue: string | undefined;
   tokenSymbol?: string;
   displayMode: DisplayMode;
-  onDisplayModeChange: (mode: DisplayMode) => void;
+  onDisplayModeChange?: (mode: DisplayMode) => void;
+  showDisplayModeToggle?: boolean;
+  unitLabel?: ReactNode;
   inputValue: string;
   onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
@@ -24,6 +26,8 @@ export function TradeInputField({
   tokenSymbol,
   displayMode,
   onDisplayModeChange,
+  showDisplayModeToggle = true,
+  unitLabel,
   inputValue,
   onInputValueChange,
   onFocus,
@@ -68,35 +72,39 @@ export function TradeInputField({
             />
           </div>
 
-          <div
-            className="flex shrink-0 items-center rounded-4 bg-slate-900 p-2 text-typography-secondary"
-            data-toggle-selector
-          >
-            <button
-              type="button"
-              className={cx(
-                "flex min-w-40 cursor-pointer items-center justify-center rounded-4 border-none px-8 py-2 text-13 hover:text-typography-primary",
-                {
-                  "bg-fill-accent text-typography-primary": displayMode === "token",
-                }
-              )}
-              onClick={() => onDisplayModeChange("token")}
+          {showDisplayModeToggle ? (
+            <div
+              className="flex shrink-0 items-center rounded-4 bg-slate-900 p-2 text-typography-secondary"
+              data-toggle-selector
             >
-              {tokenSymbol}
-            </button>
-            <button
-              type="button"
-              className={cx(
-                "flex min-w-40 cursor-pointer items-center justify-center rounded-4 border-none px-8 py-2 text-13 hover:text-typography-primary",
-                {
-                  "bg-fill-accent text-typography-primary": displayMode === "usd",
-                }
-              )}
-              onClick={() => onDisplayModeChange("usd")}
-            >
-              {"USD"}
-            </button>
-          </div>
+              <button
+                type="button"
+                className={cx(
+                  "flex min-w-40 cursor-pointer items-center justify-center rounded-4 border-none px-8 py-2 text-13 hover:text-typography-primary",
+                  {
+                    "bg-fill-accent text-typography-primary": displayMode === "token",
+                  }
+                )}
+                onClick={() => onDisplayModeChange?.("token")}
+              >
+                {tokenSymbol}
+              </button>
+              <button
+                type="button"
+                className={cx(
+                  "flex min-w-40 cursor-pointer items-center justify-center rounded-4 border-none px-8 py-2 text-13 hover:text-typography-primary",
+                  {
+                    "bg-fill-accent text-typography-primary": displayMode === "usd",
+                  }
+                )}
+                onClick={() => onDisplayModeChange?.("usd")}
+              >
+                {"USD"}
+              </button>
+            </div>
+          ) : unitLabel ? (
+            <div className="flex shrink-0 items-center text-13 text-typography-secondary">{unitLabel}</div>
+          ) : null}
         </div>
       </div>
     </div>

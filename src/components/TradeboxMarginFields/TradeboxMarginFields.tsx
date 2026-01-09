@@ -20,7 +20,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { MarginToPayField } from "./MarginToPayField";
-import { PriceField, PriceDisplayMode } from "./PriceField";
+import { PriceField } from "./PriceField";
 import { SizeField, SizeDisplayMode } from "./SizeField";
 
 type Props = {
@@ -70,7 +70,6 @@ export function TradeboxMarginFields({
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
 
   const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("token");
-  const [priceDisplayMode, setPriceDisplayMode] = useState<PriceDisplayMode>("usd");
   const [sizeInputValue, setSizeInputValue] = useState<string>(toTokenInputValue);
   const [marginPercentage, setMarginPercentage] = useState<number>(0);
 
@@ -264,17 +263,6 @@ export function TradeboxMarginFields({
     ]
   );
 
-  const handlePriceDisplayModeChange = useCallback(
-    (newMode: PriceDisplayMode) => {
-      if (newMode === priceDisplayMode) {
-        return;
-      }
-
-      setPriceDisplayMode(newMode);
-    },
-    [priceDisplayMode]
-  );
-
   return (
     <div className="flex flex-col gap-8">
       <MarginToPayField
@@ -301,8 +289,6 @@ export function TradeboxMarginFields({
         <PriceField
           indexToken={toToken}
           markPrice={markPrice}
-          displayMode={priceDisplayMode}
-          onDisplayModeChange={handlePriceDisplayModeChange}
           inputValue={triggerPriceInputValue}
           onInputValueChange={onTriggerPriceInputChange}
           qa="trigger-price"
