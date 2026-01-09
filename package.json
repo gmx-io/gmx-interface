@@ -168,14 +168,14 @@
   },
   "lint-staged": {
     "package.json": [
-      "eslint --fix --max-warnings=0"
+      "eslint --fix --max-warnings=0 package.json"
     ],
     "sdk/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix --max-warnings=0",
+      "eslint --fix --max-warnings=0 ./sdk",
       "prettier --write"
     ],
     "src/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix --max-warnings=0",
+      "eslint --fix --max-warnings=0 ./src",
       "prettier --write"
     ],
     "src/**/*.{css,scss}": [
