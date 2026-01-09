@@ -102,7 +102,7 @@ export function TradeHistory(p: Props) {
       <Button variant="ghost" to={url}>
         <PieChartIcon className="size-16" />
 
-        <Trans>PnL Analysis</Trans>
+        <Trans>PnL analysis</Trans>
       </Button>
     );
   }, [account, chainId, hideDashboardLink]);

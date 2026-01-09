@@ -17,10 +17,7 @@ export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalP
 
       <ModalBody>
         <p>
-          <Trans>
-            You're about to navigate to GMX Solana, which is operated by a separate team, so the experience may vary
-            slightly.
-          </Trans>
+          <Trans>GMX Solana is operated by a separate team, so the experience may differ.</Trans>
         </p>
 
         <button

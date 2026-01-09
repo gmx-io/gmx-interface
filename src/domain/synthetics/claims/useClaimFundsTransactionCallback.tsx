@@ -22,7 +22,7 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
                 <Trans>Processing your claim…</Trans>
               </div>
               <div className="flex flex-row gap-10 text-gray-200">
-                <Trans>This may take a few minutes.</Trans>
+                <Trans>This may take a few minutes</Trans>
                 <SpinnerIcon className="spin size-15 text-typography-primary" />
               </div>
             </div>
@@ -47,10 +47,7 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
                 <Trans>Funds claimed</Trans>
               </div>
               <div>
-                <Trans>
-                  {selectedDistributionIds.map(getDistributionTitle).join(", ")} distributions have been claimed
-                  successfully.
-                </Trans>
+                <Trans>{selectedDistributionIds.map(getDistributionTitle).join(", ")} claimed</Trans>
               </div>
             </div>
           );

@@ -545,7 +545,7 @@ export function PositionSeller() {
       !signer ||
       !provider
     ) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(t`Order submission failed`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -769,7 +769,7 @@ export function PositionSeller() {
       handle={keepLeverageText}
       content={
         <Trans>
-          Cannot keep leverage: Position exceeds maximum allowed.{" "}
+          Position exceeds max allowed leverage.{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
         </Trans>
       }
@@ -846,7 +846,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
+            {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -857,7 +857,7 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
-        text: t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`,
+        text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
         disabled: false,
       };
     }

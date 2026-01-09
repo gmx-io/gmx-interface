@@ -54,17 +54,17 @@ function JoinReferralCode({ active }: { active: boolean }) {
   return (
     <div className="referral-card section-center">
       <h2 className="title text-h2">
-        <Trans>Enter referral code</Trans>
+        <Trans>Enter Referral Code</Trans>
       </h2>
       <p className="sub-title">
-        <Trans>Please input a referral code to benefit from fee discounts.</Trans>
+        <Trans>Enter a referral code to get fee discounts.</Trans>
       </p>
       <div className="card-action">
         {active ? (
           <ReferralCodeEditFormContainer />
         ) : (
           <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
-            <Trans>Connect Wallet</Trans>
+            <Trans>Connect wallet</Trans>
           </Button>
         )}
       </div>
@@ -104,8 +104,8 @@ function ReferralCodeForm({
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
-        successMsg: isEdit ? t`Referral code updated.` : t`Referral code added.`,
-        failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
+        successMsg: isEdit ? t`Referral code updated` : t`Referral code added`,
+        failMsg: isEdit ? t`Referral code update failed` : t`Failed to add referral code`,
         setPendingTxns,
         pendingTxns,
       });
@@ -503,7 +503,7 @@ function ReferralCodeFormMultichain({
           args: [sendParams, { nativeFee: result.data.nativeFee, lzTokenFee: 0n }, account],
         }),
         value,
-        msg: t`Sent referral code transaction`,
+        msg: t`Sending referral code transaction`,
       });
 
       const receipt = await txnResult.wait();
@@ -518,10 +518,10 @@ function ReferralCodeFormMultichain({
 
       helperToast.success(
         <>
-          <Trans>Referral code added!</Trans>
+          <Trans>Referral code added</Trans>
           <br />
           <br />
-          <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+          <Trans>Changes may take a few minutes to appear</Trans>
         </>
       );
     } catch (error) {

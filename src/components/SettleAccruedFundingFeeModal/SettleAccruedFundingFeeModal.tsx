@@ -205,7 +205,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const renderTooltipContent = useCallback(
     () => (
       <span className="text-typography-primary">
-        <Trans>Accumulated funding fees to settle.</Trans>
+        <Trans>Accrued funding fees available for settlement.</Trans>
       </span>
     ),
     []
@@ -226,8 +226,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         <div className="App-card-content">
           <AlertInfo type="warning" compact>
             <Trans>
-              Consider selecting only positions where the accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost
-              to settle each position.
+              Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle.
             </Trans>
           </AlertInfo>
 

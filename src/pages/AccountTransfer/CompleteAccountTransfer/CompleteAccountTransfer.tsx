@@ -38,7 +38,7 @@ export default function CompleteAccountTransfer() {
       return t`Wallet is not connected`;
     }
     if (!isCorrectAccount) {
-      return t`Incorrect Account`;
+      return t`Incorrect account`;
     }
   };
 
@@ -58,7 +58,7 @@ export default function CompleteAccountTransfer() {
     if (error) {
       return error;
     }
-    return t`Complete Transfer`;
+    return t`Complete transfer`;
   };
 
   const onClickPrimary = () => {
@@ -67,8 +67,8 @@ export default function CompleteAccountTransfer() {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
-      sentMsg: t`Transfer submitted.`,
-      failMsg: t`Transfer failed.`,
+      sentMsg: t`Transfer submitted`,
+      failMsg: t`Transfer failed`,
       setPendingTxns,
     })
       .then(() => {
@@ -85,7 +85,7 @@ export default function CompleteAccountTransfer() {
         <PageTitle title={t`Complete Account Transfer`} />
 
         <ColorfulBanner color="red">
-          <Trans>Invalid Transfer Addresses: Please check the url.</Trans>
+          <Trans>Invalid transfer addresses. Check the URL</Trans>
         </ColorfulBanner>
       </AppPageLayout>
     );
@@ -119,16 +119,16 @@ export default function CompleteAccountTransfer() {
               <br />
               <br />
               <Trans>
-                You will need to be on this page to accept the transfer,{" "}
+                You must be on this page to accept the transfer.{" "}
                 <span
                   onClick={() => {
                     copyToClipboard(window.location.href);
-                    helperToast.success("Link copied to your clipboard");
+                    helperToast.success("Link copied to clipboard");
                   }}
                 >
-                  click here
+                  Click here
                 </span>{" "}
-                to copy the link to this page if needed.
+                to copy the link.
               </Trans>
               <br />
               <br />

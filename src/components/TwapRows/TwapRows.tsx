@@ -98,7 +98,7 @@ const TwapRows = ({
         <FrequencyField duration={duration} numberOfParts={numberOfParts} />
       </SyntheticsInfoRow>
       <SyntheticsInfoRow
-        label={t`Size per part`}
+        label={t`Size per Part`}
         value={formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
         valueClassName="numbers"
       />

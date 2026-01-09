@@ -168,7 +168,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
         </div>
         <div className="flex justify-end">
           <Button variant="primary" onClick={handleSubmit} disabled={!url.trim()}>
-            <Trans>Add Endpoint</Trans>
+            <Trans>Add endpoint</Trans>
           </Button>
         </div>
       </div>

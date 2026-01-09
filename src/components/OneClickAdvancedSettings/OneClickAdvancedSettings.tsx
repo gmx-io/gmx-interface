@@ -107,7 +107,7 @@ export function OneClickAdvancedSettings() {
               <TooltipWithPortal
                 position="left-start"
                 variant="icon"
-                content={<Trans>Actions remaining before you need to reauthorize One-Click Trading.</Trans>}
+                content={<Trans>Actions remaining before reauthorization required.</Trans>}
               >
                 <Trans>Remaining Allowed Actions</Trans>
               </TooltipWithPortal>
@@ -127,7 +127,7 @@ export function OneClickAdvancedSettings() {
               <TooltipWithPortal
                 position="left-start"
                 variant="icon"
-                content={<Trans>Days remaining before you need to reauthorize One-Click Trading.</Trans>}
+                content={<Trans>Days remaining before reauthorization required.</Trans>}
               >
                 <Trans>Time Limit</Trans>
               </TooltipWithPortal>
@@ -148,7 +148,7 @@ export function OneClickAdvancedSettings() {
             className="mt-6 h-36 w-full bg-blue-600 py-3 text-typography-primary"
             disabled={disabled}
           >
-            <Trans>Save One-Click Trading settings</Trans>
+            <Trans>Save settings</Trans>
           </Button>
         </div>
       </ExpandableRow>

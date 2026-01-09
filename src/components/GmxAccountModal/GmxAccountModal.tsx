@@ -80,7 +80,7 @@ const DepositTitle = () => {
 const DepositStatusTitle = () => {
   return (
     <div className="flex items-center gap-8">
-      <Trans>Your deposit is in progress</Trans>
+      <Trans>Your Deposit Is in Progress</Trans>
     </div>
   );
 };

@@ -231,7 +231,7 @@ export const useDepositTransactions = ({
       sendOrderSubmittedMetric(metricData.metricId);
 
       if (!tokensData || !account || !signer || !rawParams || !transferRequests) {
-        helperToast.error(t`Error submitting order`);
+        helperToast.error(t`Order submission failed`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
@@ -388,7 +388,7 @@ export const useDepositTransactions = ({
       sendOrderSubmittedMetric(metricData.metricId);
 
       if (!account || !marketInfo || !amounts || !tokensData || !signer || (isGlv && !rawParams) || !transferRequests) {
-        helperToast.error(t`Error submitting order`);
+        helperToast.error(t`Order submission failed`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }

@@ -56,7 +56,7 @@ export function AssetsList({
   return (
     <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
       <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
-        <Trans>My assets</Trans>
+        <Trans>My Assets</Trans>
       </h2>
 
       {hasAnyAssets && (
@@ -97,12 +97,12 @@ export function AssetsList({
           <span className="text-body-small text-center font-medium text-typography-secondary">
             {account ? (
               <>
-                <Trans>It seems you currently don't own any assets.</Trans>
+                <Trans>You don't own any assets yet.</Trans>
                 <br />
-                <Trans>Please check the recommended section above to start earning yield!</Trans>
+                <Trans>Check the recommended section above to start earning.</Trans>
               </>
             ) : (
-              <Trans>Please connect your wallet to see your assets.</Trans>
+              <Trans>Connect your wallet to see your assets.</Trans>
             )}
           </span>
         </div>

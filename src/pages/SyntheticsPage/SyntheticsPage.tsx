@@ -325,7 +325,7 @@ export function SyntheticsPage(p: Props) {
           className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
         >
           <span className="font-medium">
-            <Trans>Chart positions</Trans>
+            <Trans>Chart Positions</Trans>
           </span>
         </Checkbox>
       )}

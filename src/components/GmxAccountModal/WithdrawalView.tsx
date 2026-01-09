@@ -798,22 +798,22 @@ export const WithdrawalView = () => {
       !expressTxnParamsAsyncResult.isLoading
     ) {
       buttonState = {
-        text: t`Insufficient ${gasPaymentToken?.symbol} balance to pay for gas`,
+        text: t`Insufficient ${gasPaymentToken?.symbol} for gas`,
         disabled: true,
       };
     } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
       buttonState = {
-        text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
+        text: t`Insufficient ${isOutOfTokenErrorToken?.symbol}`,
         disabled: true,
       };
     } else if (showWntWarning) {
       buttonState = {
-        text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
+        text: t`Insufficient ${wrappedNativeToken?.symbol}`,
         disabled: true,
       };
     } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
       buttonState = {
-        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
+        text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Withdrawal simulation failed`,
         disabled: true,
       };
     } else if (
@@ -902,7 +902,7 @@ export const WithdrawalView = () => {
           <DropdownSelector
             value={selectedTokenAddress}
             onChange={handlePickToken}
-            placeholder={t`Select token`}
+            placeholder={t`Select Token`}
             button={
               selectedTokenAddress && selectedToken ? (
                 <div className="flex items-center gap-8">
@@ -926,7 +926,7 @@ export const WithdrawalView = () => {
             onChange={(value) => {
               setWithdrawalViewChain(Number(value) as SourceChainId);
             }}
-            placeholder={t`Select network`}
+            placeholder={t`Select Network`}
             button={
               <div className="flex items-center gap-8">
                 {withdrawalViewChain !== undefined ? (
@@ -1006,8 +1006,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4">
               <div>
                 <Trans>
-                  The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
-                  <span className="numbers">{upperLimitFormatted}</span>.
+                  Amount exceeds limit. Try less than <span className="numbers">{upperLimitFormatted}</span>.
                 </Trans>
               </div>
             </AlertInfoCard>
@@ -1016,8 +1015,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4">
               <div>
                 <Trans>
-                  The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
-                  <span className="numbers">{lowerLimitFormatted}</span>.
+                  Amount below limit. Try more than <span className="numbers">{lowerLimitFormatted}</span>.
                 </Trans>
               </div>
             </AlertInfoCard>
@@ -1027,10 +1025,9 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="info" className="my-4">
               <div>
                 <Trans>
-                  You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
-                  please keep at least{" "}
-                  <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-                  {selectedToken?.symbol} or switch your gas token in{" "}
+                  {selectedToken?.symbol} is your gas token. Keep at least{" "}
+                  <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> for fees, or
+                  change gas token in{" "}
                   <span
                     className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
                     onClick={() => {
@@ -1054,21 +1051,21 @@ export const WithdrawalView = () => {
               <AlertInfoCard type="info" className="my-4">
                 <div>
                   <Trans>
-                    Withdrawing requires{" "}
+                    Requires{" "}
                     <Amount
                       amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
                       decimals={isOutOfTokenErrorToken.decimals}
                       isStable={isOutOfTokenErrorToken.isStable}
                       symbol={isOutOfTokenErrorToken.symbol}
-                    />{" "}
-                    while you have{" "}
+                    />
+                    , you have{" "}
                     <Amount
                       amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
                       decimals={isOutOfTokenErrorToken.decimals}
                       isStable={isOutOfTokenErrorToken.isStable}
                       symbol={isOutOfTokenErrorToken.symbol}
                     />
-                    . Please{" "}
+                    .{" "}
                     <span
                       className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
                       onClick={() => {
@@ -1076,7 +1073,7 @@ export const WithdrawalView = () => {
                         history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
                       }}
                     >
-                      swap
+                      Swap
                     </span>{" "}
                     or{" "}
                     <span
@@ -1095,7 +1092,7 @@ export const WithdrawalView = () => {
                     >
                       deposit
                     </span>{" "}
-                    more {isOutOfTokenErrorToken?.symbol} to your GMX account.
+                    more {isOutOfTokenErrorToken?.symbol}.
                   </Trans>
                 </div>
               </AlertInfoCard>

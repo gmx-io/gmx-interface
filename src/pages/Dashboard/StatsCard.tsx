@@ -198,7 +198,7 @@ export function StatsCard() {
               content={
                 <div>
                   <StatsTooltipRow
-                    label={<Trans>In other tokens:</Trans>}
+                    label={<Trans>In Other Tokens:</Trans>}
                     value={formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, false, 2)}
                   />
                   <StatsTooltipRow

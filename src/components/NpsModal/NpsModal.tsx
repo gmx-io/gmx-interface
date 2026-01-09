@@ -24,7 +24,7 @@ export function NpsModal() {
 
     if (error) {
       return {
-        text: t`Error occurred. Please try again.`,
+        text: t`Error occurred, please try again`,
         disabled: true,
       };
     }
@@ -67,7 +67,7 @@ export function NpsModal() {
     <Modal
       isVisible={isModalVisible}
       setIsVisible={() => onSubmitSurvey({ answers: questions, contact })}
-      label={t`Help us improve`}
+      label={t`Help Us Improve`}
     >
       <div className="w-[300px]">
         {questions.map((question, index) => (
@@ -76,7 +76,7 @@ export function NpsModal() {
             <Textarea
               value={question.answer}
               onChange={(val) => onChangeAnswer(index, val)}
-              placeholder={t`Enter your answer here.`}
+              placeholder={t`Enter your answer here`}
             />
           </div>
         ))}

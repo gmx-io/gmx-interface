@@ -14,12 +14,12 @@ function PageNotFound() {
 
   return (
     <AppPageLayout>
-      <SEO title={getPageTitle(t`Page not found`)}>
+      <SEO title={getPageTitle(t`Page Not Found`)}>
         <div className="page-layout">
           <div className="page-not-found-container">
             <div className="page-not-found">
               <h2>
-                <Trans>Page not found</Trans>
+                <Trans>Page Not Found</Trans>
               </h2>
               <p className="go-back">
                 <Trans>

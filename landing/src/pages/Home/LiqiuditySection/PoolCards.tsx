@@ -31,7 +31,7 @@ export function PoolCards() {
       <PoolCard
         name="GMX"
         apr={gmxAprForGmxPercentage}
-        description={t`Stake for rewards and governance rights`}
+        description={t`Stake for rewards and governance rights.`}
         iconComponent={IcGmxPool}
         coinImage={gmxCoin}
         onClick={onClickGmx}
@@ -39,7 +39,7 @@ export function PoolCards() {
       <PoolCard
         name="GLV"
         apr={poolsData?.glvApy}
-        description={t`Steady returns without management`}
+        description={t`Steady returns without management.`}
         iconComponent={IcGlvPool}
         coinImage={glvCoin}
         onClick={onClickGlv}
@@ -47,7 +47,7 @@ export function PoolCards() {
       <PoolCard
         name="GM"
         apr={poolsData?.gmApy}
-        description={t`Invest with control over risk and reward`}
+        description={t`Invest with control over risk and reward.`}
         iconComponent={IcGmPool}
         coinImage={gmCoin}
         onClick={onClickGm}

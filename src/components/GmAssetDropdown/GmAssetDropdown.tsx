@@ -119,7 +119,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
               <ExternalLink href={`${explorerUrl}address/${token?.address}`} className="asset-item">
                 <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
                 <p>
-                  <Trans>Open {marketName} in Explorer</Trans>
+                  <Trans>Open {marketName} in explorer</Trans>
                 </p>
               </ExternalLink>
             </Menu.Item>
@@ -190,7 +190,7 @@ function AddToWalletButton({
       >
         <WalletIcon className="size-16 text-typography-secondary group-hover:text-typography-primary" />
         <p>
-          <Trans>Add {marketName} to Wallet</Trans>
+          <Trans>Add {marketName} to wallet</Trans>
         </p>
       </div>
     </Menu.Item>

@@ -46,7 +46,7 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForExecutionFee) {
       warnings.push({
         id: "high-network-fees",
-        key: t`High network fees`,
+        key: t`High Network Fees`,
         value: formatUsd(executionFeeUsd),
       });
     }
@@ -54,7 +54,7 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForTwapNetworkFee) {
       warnings.push({
         id: "high-twap-network-fee",
-        key: t`High TWAP network fee`,
+        key: t`High TWAP Network Fee`,
         value: formatUsd(executionFeeUsd),
       });
     }
@@ -62,7 +62,7 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForSwap) {
       warnings.push({
         id: "high-swap-price-impact",
-        key: t`High swap price impact`,
+        key: t`High Swap Price Impact`,
         value: formatUsd(swapPriceImpact?.deltaUsd),
       });
     }
@@ -70,7 +70,7 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForSwapProfitFee) {
       warnings.push({
         id: "high-swap-profit-fee",
-        key: t`High swap profit fee`,
+        key: t`High Swap Profit Fee`,
         value: formatUsd(swapProfitFee?.deltaUsd),
       });
     }
@@ -78,14 +78,14 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForTriggerOrders) {
       warnings.push({
         id: "high-trigger-orders",
-        key: t`Existing executable trigger orders`,
+        key: t`Existing Executable Trigger Orders`,
       });
     }
 
     if (externalSwapFeeItem) {
       warnings.push({
         id: "high-external-swap-fee",
-        key: t`High external swap impact`,
+        key: t`High External Swap Impact`,
         value: formatUsd(externalSwapFeeItem.deltaUsd),
       });
     }
