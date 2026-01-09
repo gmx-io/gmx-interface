@@ -40,6 +40,12 @@ jobs:
       - name: Run type checking
         run: yarn tscheck:ci
 
+      - name: Run landing linting
+        run: yarn lint:landing:ci
+
+      - name: Run landing type checking
+        run: yarn tscheck:landing:ci
+
       - name: Run tests
         run: yarn test:ci
 

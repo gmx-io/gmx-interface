@@ -2,8 +2,8 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
+import { getTotalVolumeSum } from "domain/stats/useTotalVolume";
 import { getSubsquidGraphClient } from "lib/indexers";
-import { getTotalVolumeSum } from "lib/legacy";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
 const query = {
   query: gql`

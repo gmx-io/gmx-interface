@@ -5,4 +5,5 @@ set -e
 yarn lingui:generate
 yarn lint-staged
 yarn tscheck
+yarn tscheck:landing
 git add src/locales/

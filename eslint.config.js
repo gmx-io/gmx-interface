@@ -19,9 +19,12 @@ export default tseslint.config(
       "sdk/**",
       "autotests/**",
       "postcss.config.js",
+      "**/postcss.config.js",
       "tailwind.config.js",
+      "**/tailwind.config.ts",
       "vite.config.ts",
       "vite.landing.config.ts",
+      "**/tsconfig.json",
       "vitest-env.js",
       "vitest.global-setup.js",
       "eslint-local-rules.cjs",
@@ -95,6 +98,14 @@ export default tseslint.config(
     return { ...config, files: ["**/*.{js,jsx,ts,tsx}"] };
   }),
 
+  // Disable no-undef for TypeScript files (TypeScript compiler already checks this)
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    rules: {
+      "no-undef": "off",
+    },
+  },
+
   // Main config for source files
   {
     files: ["src/**/*.{js,jsx,ts,tsx}", "landing/**/*.{js,jsx,ts,tsx}"],
@@ -126,7 +137,11 @@ export default tseslint.config(
       "import/resolver": {
         typescript: {
           alwaysTryTypes: true,
-          project: "./tsconfig.json",
+          project: ["./tsconfig.json", "./landing/tsconfig.json"],
+          noWarnOnMultipleProjects: true,
+        },
+        node: {
+          extensions: [".js", ".jsx", ".ts", ".tsx", ".d.ts"],
         },
       },
     },
@@ -151,6 +166,8 @@ export default tseslint.config(
       "@typescript-eslint/no-non-null-assertion": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/ban-types": "off",
+      "@typescript-eslint/no-empty-interface": "off",
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
@@ -169,7 +186,8 @@ export default tseslint.config(
       "@typescript-eslint/no-base-to-string": "off",
       "@typescript-eslint/await-thenable": "off",
 
-      // React rules
+      // React rules (from recommended + custom overrides)
+      ...reactPlugin.configs.flat.recommended.rules,
       "react/no-unused-prop-types": "error",
       "react/hook-use-state": "warn",
       "react/jsx-fragments": "warn",
@@ -254,6 +272,23 @@ export default tseslint.config(
     files: ["scripts/**/*.{js,ts}"],
     rules: {
       "no-restricted-globals": "off",
+    },
+  },
+
+  // SDK folder - check extraneous dependencies
+  {
+    files: ["./sdk/**/*.{ts,tsx}"],
+    rules: {
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          packageDir: "./sdk",
+          devDependencies: true,
+          optionalDependencies: false,
+          peerDependencies: false,
+          includeTypes: true,
+        },
+      ],
     },
   },
 

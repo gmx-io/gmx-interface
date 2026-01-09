@@ -101,6 +101,7 @@ export const TOKEN_PERMITS_KEY = "token-permits";
 export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
 export const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
+export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 
 export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 

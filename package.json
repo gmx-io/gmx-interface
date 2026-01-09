@@ -16,8 +16,10 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "lint": "node node_modules/.bin/eslint src --fix --cache --cache-location .eslintcache",
+    "lint:landing": "node node_modules/.bin/eslint landing --fix --cache --cache-location .eslintcache",
     "lint:package": "node node_modules/.bin/eslint package.json",
     "lint:ci": "node node_modules/.bin/eslint src --max-warnings=0",
+    "lint:landing:ci": "node node_modules/.bin/eslint landing --max-warnings=0",
     "pre-commit": "yarn run lint",
     "pre-push": "vitest run",
     "prepare": "husky install && yarn lingui:prepare",
@@ -26,7 +28,9 @@
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
+    "tscheck:landing": "tsc -p landing/tsconfig.json --noEmit --incremental",
     "tscheck:ci": "tsc -p tsconfig.json --noEmit",
+    "tscheck:landing:ci": "tsc -p landing/tsconfig.json --noEmit",
     "clean:cache": "rm -rf .eslintcache tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
     "clean:lint": "rm -rf .eslintcache",
     "clean:ts": "rm -rf tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
@@ -176,6 +180,10 @@
     ],
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix --max-warnings=0 ./src",
+      "prettier --write"
+    ],
+    "landing/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix --max-warnings=0 ./landing",
       "prettier --write"
     ],
     "src/**/*.{css,scss}": [
