@@ -84,8 +84,8 @@ function Referrals() {
 
   function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
-      sentMsg: t`Referral code submitted.`,
-      failMsg: t`Referral code creation failed.`,
+      sentMsg: t`Referral code submitted`,
+      failMsg: t`Referral code creation failed`,
       pendingTxns,
     });
   }

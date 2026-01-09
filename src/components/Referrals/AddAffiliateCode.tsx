@@ -41,7 +41,7 @@ function AddAffiliateCode({
       </h2>
       <p className="sub-title">
         <Trans>
-          Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
+          You don't have a referral code to share. <br /> Create one now and start earning rebates!
         </Trans>
       </p>
       <div className="card-action">
@@ -145,7 +145,7 @@ export function AffiliateCodeForm({
             recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
             setRecentlyAddedCodes(recentlyAddedCodes);
           }
-          helperToast.success(t`Referral code created.`);
+          helperToast.success(t`Referral code created`);
           setReferralCode("");
         }
       } catch (err) {
@@ -227,10 +227,7 @@ export function AffiliateCodeForm({
       {error && <p className="AffiliateCode-error">{error}</p>}
       {srcChainId && (
         <AlertInfoCard className="mb-15 text-left">
-          <Trans>
-            Please switch to {getChainName(chainId)} to create your referral code. It will work across all other
-            networks.
-          </Trans>
+          <Trans>Switch to {getChainName(chainId)} to create your referral code. It will work across all networks.</Trans>
         </AlertInfoCard>
       )}
       <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>

@@ -112,7 +112,7 @@ export const DepositStatusView = () => {
       <div className="mt-12 flex justify-between rounded-8 border-1/2 border-slate-600 bg-slate-950/50">
         <div className="flex flex-col gap-4 p-12">
           <h4 className="text-14 font-medium">
-            <Trans>Want to trade faster with One-Click?</Trans>
+            <Trans>Want to Trade Faster with One-Click?</Trans>
           </h4>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-8">
@@ -124,7 +124,7 @@ export const DepositStatusView = () => {
             <div className="flex items-center gap-8">
               <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-300" />
               <span className="text-12 text-typography-secondary">
-                <Trans>Faster execution with GMX premium RPCs</Trans>
+                <Trans>Faster execution with GMX Premium RPCs</Trans>
               </span>
             </div>
             <div className="flex items-center gap-8">
@@ -139,7 +139,7 @@ export const DepositStatusView = () => {
       </div>
       <Button variant="primary" size="medium" onClick={onEnableOneClickClick} disabled={isSubaccountActivating}>
         {isSubaccountActivating ? <SpinnerIcon className="size-16 animate-spin" /> : null}
-        <Trans>Enable One-Click Trading</Trans>
+        <Trans>Enable One-Click trading</Trans>
       </Button>
       <Button variant="ghost" size="medium" onClick={onRemindLaterClick}>
         <Trans>Remind me later</Trans>

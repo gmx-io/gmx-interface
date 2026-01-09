@@ -21,9 +21,11 @@ export function pushSuccessNotification(chainId: number, message: string, e: { t
   const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
   helperToast.success(
     <div>
-      {message}{" "}
+      {message}
+      <br />
+      <br />
       <ExternalLink href={txUrl}>
-        <Trans>View</Trans>
+        <Trans>View status</Trans>
       </ExternalLink>
     </div>
   );
@@ -41,9 +43,11 @@ export function pushErrorNotification(chainId: number, message: string, e: { tra
   const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
   helperToast.error(
     <div>
-      {message}{" "}
+      {message}
+      <br />
+      <br />
       <ExternalLink href={txUrl}>
-        <Trans>View</Trans>
+        <Trans>View status</Trans>
       </ExternalLink>
     </div>
   );

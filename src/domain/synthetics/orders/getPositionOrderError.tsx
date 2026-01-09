@@ -62,9 +62,9 @@ export function getPositionOrderError({
     }
   } else if (isStopIncreaseOrderType(positionOrder.orderType)) {
     if (positionOrder.isLong && triggerPrice <= markPrice) {
-      return t`Stop Market price is below mark price`;
+      return t`Stop market price below mark price`;
     } else if (!positionOrder.isLong && triggerPrice >= markPrice) {
-      return t`Stop Market price is above mark price`;
+      return t`Stop market price above mark price`;
     }
   }
 
@@ -83,11 +83,11 @@ export function getPositionOrderError({
 
     if (existingPosition?.liquidationPrice) {
       if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
-        return t`Trigger price below liq. price`;
+        return t`Trigger price below liquidation price`;
       }
 
       if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
-        return t`Trigger price above liq. price`;
+        return t`Trigger price above liquidation price`;
       }
     }
 

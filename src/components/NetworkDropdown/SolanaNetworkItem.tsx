@@ -43,10 +43,8 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
         <div className="flex flex-col gap-16">
           <p className="mb-8 text-15 text-typography-secondary">
             <Trans>
-              GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.
-              <br />
-              <br />
-              Clicking on the button below will open the GMX Solana frontend in a new tab.
+              GMX Solana is hosted on a separate website and operated by a different team. The experience may vary
+              slightly.
             </Trans>
           </p>
 

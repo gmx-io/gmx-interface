@@ -61,7 +61,7 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
       <div>
         {srcChainId !== undefined ? (
           <>
-            <Trans>Insufficient gas balance, please deposit more {gasPaymentTokensText}.</Trans>
+            <Trans>Insufficient gas balance. Deposit more {gasPaymentTokensText}</Trans>
             <br />
             <ColorfulButtonLink color="blue" onClick={onDepositClick}>
               <Trans>Deposit {gasPaymentTokensText}</Trans>
@@ -69,7 +69,7 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
           </>
         ) : (
           <>
-            <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>
+            <Trans>Insufficient gas balance. Express and One-Click Trading unavailable</Trans>
             <br />
             <ColorfulButtonLink color="blue" onClick={onBuyClick}>
               <Trans>Buy {gasPaymentTokensText}</Trans>

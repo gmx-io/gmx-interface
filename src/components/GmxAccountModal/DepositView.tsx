@@ -748,7 +748,7 @@ export const DepositView = () => {
     };
   } else if (needTokenApprove) {
     buttonState = {
-      text: t`Allow ${selectedToken?.symbol} to be spent`,
+      text: t`Approve ${selectedToken?.symbol}`,
       onClick: handleApprove,
     };
   } else if (isSubmitting) {
@@ -907,7 +907,7 @@ export const DepositView = () => {
         <AlertInfoCard type="warning" className="mt-8">
           <div>
             <Trans>
-              The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
+              Amount exceeds the limit. Try an amount smaller than{" "}
               <span className="numbers">{upperLimitFormatted}</span>.
             </Trans>
           </div>
@@ -917,7 +917,7 @@ export const DepositView = () => {
         <AlertInfoCard type="warning" className="mt-8">
           <div>
             <Trans>
-              The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
+              Amount is below the limit. Try an amount larger than{" "}
               <span className="numbers">{lowerLimitFormatted}</span>.
             </Trans>
           </div>

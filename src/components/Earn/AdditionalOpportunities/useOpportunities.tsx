@@ -124,10 +124,7 @@ export const useOpportunities = () => {
           name: "Dolomite",
           icon: dolomiteIcon,
           description: (
-            <Trans>
-              Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize
-              your yield.
-            </Trans>
+            <Trans>Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield.</Trans>
           ),
           tags: ["lending-and-borrowing", "looping"],
           assets: [
@@ -157,10 +154,7 @@ export const useOpportunities = () => {
           name: "Beefy",
           icon: beefyIcon,
           description: (
-            <Trans>
-              Autocompound your earned GMX rewards periodically without having to manually claim and compound your
-              rewards.
-            </Trans>
+            <Trans>Automatically compounds your GMX rewards without manual claiming.</Trans>
           ),
           tags: ["autocompound"],
           assets: [makeTokenAsset(ARBITRUM, "GMX")],
@@ -169,7 +163,7 @@ export const useOpportunities = () => {
         {
           name: "Morpho",
           icon: morphoIcon,
-          description: <Trans>Lend out your GLV or GM tokens, and borrow against them.</Trans>,
+          description: <Trans>Lend GLV or GM tokens and borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: [
             makeMarketAsset(ARBITRUM, "ETH/USD [WETH-USDC]"),
@@ -183,9 +177,7 @@ export const useOpportunities = () => {
           icon: umamiIcon,
           description: (
             <Trans>
-              Umami GM vaults enable depositors to provide single-sided liquidity to GMX liquidity pools. Deposits are
-              actively managed through a system of hedges and index rebalancing, optimizing for capital efficiency while
-              minimizing exposure to impermanent loss.
+              Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss.
             </Trans>
           ),
           tags: ["delta-neutral-vaults"],
@@ -195,7 +187,7 @@ export const useOpportunities = () => {
         {
           name: "Venus",
           icon: venusIcon,
-          description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
+          description: <Trans>Lend GM tokens and borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: [makeMarketAsset(ARBITRUM, "BTC/USD [WBTC-USDC]"), makeMarketAsset(ARBITRUM, "ETH/USD [WETH-USDC]")],
           link: "https://venus.io/",
@@ -203,7 +195,7 @@ export const useOpportunities = () => {
         {
           name: "Radiant",
           icon: radiantIcon,
-          description: <Trans>Lend out your GLV or GM tokens, and borrow against them.</Trans>,
+          description: <Trans>Lend GLV or GM tokens and borrow against them.</Trans>,
           tags: ["lending-and-borrowing", "looping"],
           assets: [
             makeGlvAsset(ARBITRUM, "GLV [WBTC-USDC]"),
@@ -216,7 +208,7 @@ export const useOpportunities = () => {
         {
           name: "DeltaPrime",
           icon: deltaPrimeIcon,
-          description: <Trans>Lend out your tokens, or borrow against it.</Trans>,
+          description: <Trans>Lend your tokens or borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: [makeTokenAsset(ARBITRUM, "GMX")],
           link: "https://deltaprime.io/",
@@ -224,7 +216,7 @@ export const useOpportunities = () => {
         {
           name: "Gloop",
           icon: gloopIcon,
-          description: <Trans>Lend out your GM tokens, and borrow against them.</Trans>,
+          description: <Trans>Lend GM tokens and borrow against them.</Trans>,
           tags: ["lending-and-borrowing", "looping"],
           assets: [
             makeMarketAsset(ARBITRUM, "BTC/USD [WBTC-USDC]"),
@@ -239,9 +231,7 @@ export const useOpportunities = () => {
           name: "Beefy",
           icon: beefyIcon,
           description: (
-            <Trans>
-              Autocompound your earned GMX rewards instantly without having to manually claim and compound your rewards.
-            </Trans>
+            <Trans>Automatically compounds your GMX rewards without manual claiming.</Trans>
           ),
           tags: ["autocompound"],
           assets: [makeTokenAsset(AVALANCHE, "GMX")],
@@ -250,7 +240,7 @@ export const useOpportunities = () => {
         {
           name: "DeltaPrime",
           icon: deltaPrimeIcon,
-          description: <Trans>Lend out your tokens, or borrow against it.</Trans>,
+          description: <Trans>Lend your tokens or borrow against them.</Trans>,
           tags: ["lending-and-borrowing"],
           assets: [makeTokenAsset(AVALANCHE, "GMX")],
           link: "https://deltaprime.io/",

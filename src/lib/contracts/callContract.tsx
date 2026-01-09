@@ -194,15 +194,23 @@ function showCallContractToast({
 }) {
   helperToast.success(
     <div>
-      {sentMsg || t`Transaction sent.`}{" "}
+      {sentMsg || t`Transaction sent.`}
       {hash && (
-        <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
-          <Trans>View status.</Trans>
-        </ExternalLink>
+        <>
+          <br />
+          <br />
+          <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
+            <Trans>View status</Trans>
+          </ExternalLink>
+        </>
       )}
-      <br />
-      {detailsMsg && <br />}
-      {detailsMsg}
+      {detailsMsg && (
+        <>
+          <br />
+          <br />
+          {detailsMsg}
+        </>
+      )}
     </div>,
     {
       toastId,

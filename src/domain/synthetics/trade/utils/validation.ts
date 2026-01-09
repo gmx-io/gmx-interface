@@ -140,7 +140,7 @@ export function getSwapError(p: {
   }
 
   if (isLimit && (triggerRatio?.ratio === undefined || triggerRatio.ratio < 0)) {
-    return [t`Enter a  price`];
+    return [t`Enter a price`];
   }
 
   if (fromTokenAmount > (fromToken.balance ?? 0n)) {
@@ -169,14 +169,14 @@ export function getSwapError(p: {
   const noExternalSwap = !externalSwapQuote;
 
   if (noInternalSwap && noExternalSwap) {
-    return [t`Couldn't find a swap path with enough liquidity`];
+    return [t`No swap path with enough liquidity`];
   }
 
   if (
     !fees?.payTotalFees ||
     (fees?.payTotalFees && fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
   ) {
-    return [t`Fees exceed Pay amount`];
+    return [t`Fees exceed pay amount`];
   }
 
   if (isLimit && triggerRatio) {
@@ -272,7 +272,7 @@ export function getIncreaseError(p: {
   }
 
   if (!initialCollateralToken) {
-    return [t`Select a Pay token`];
+    return [t`Select a pay token`];
   }
 
   if (!targetCollateralToken) {
@@ -382,11 +382,11 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && thresholdType === TriggerThresholdType.Above && triggerPrice < markPrice) {
-      return [t`Stop market price below mark price`];
+      return [t`Stop price below mark price`];
     }
 
     if (!isLong && thresholdType === TriggerThresholdType.Below && triggerPrice > markPrice) {
-      return [t`Stop market price above mark price`];
+      return [t`Stop price above mark price`];
     }
   }
 
@@ -400,7 +400,7 @@ export function getIncreaseError(p: {
     const maxLeverageError = getIsMaxLeverageExceeded(nextLeverageWithoutPnl, marketInfo, isLong, sizeDeltaUsd);
 
     if (maxLeverageError) {
-      return [t`Max. Leverage exceeded`, "maxLeverage"];
+      return [t`Max leverage exceeded`, "maxLeverage"];
     }
   }
 
@@ -414,11 +414,11 @@ export function getIncreaseError(p: {
 
   if (nextPositionValues?.nextLiqPrice !== undefined && markPrice !== undefined) {
     if (isLong && nextPositionValues.nextLiqPrice > markPrice) {
-      return [t`Invalid liq. price`, "liqPrice > markPrice"];
+      return [t`Invalid liquidation price`, "liqPrice > markPrice"];
     }
 
     if (!isLong && nextPositionValues.nextLiqPrice < markPrice) {
-      return [t`Invalid liq. price`, "liqPrice > markPrice"];
+      return [t`Invalid liquidation price`, "liqPrice > markPrice"];
     }
   }
 
@@ -498,7 +498,7 @@ export function getDecreaseError(p: {
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
-    return [t`${receiveToken?.symbol} can not be sent to smart contract addresses. Select another token.`];
+    return [t`${receiveToken?.symbol} cannot be sent to smart contract addresses. Select another token`];
   }
 
   if (!marketInfo) {
@@ -516,11 +516,11 @@ export function getDecreaseError(p: {
 
     if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== ethers.MaxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
-        return [t`Trigger price below liq. price`];
+        return [t`Trigger price below liquidation price`];
       }
 
       if (!isLong && triggerPrice >= existingPosition.liquidationPrice) {
-        return [t`Trigger price above liq. price`];
+        return [t`Trigger price above liquidation price`];
       }
     }
 
@@ -607,11 +607,11 @@ export function getEditCollateralError(p: {
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
     if (position?.isLong && nextLiqPrice < ethers.MaxUint256 && position?.markPrice < nextLiqPrice) {
-      return [t`Invalid liq. price`];
+      return [t`Invalid liquidation price`];
     }
 
     if (!position.isLong && position.markPrice > nextLiqPrice) {
-      return [t`Invalid liq. price`];
+      return [t`Invalid liquidation price`];
     }
   }
 
@@ -631,7 +631,7 @@ export function getEditCollateralError(p: {
     );
 
     if (!isPositionCollateralSufficient) {
-      return [t`Max. Leverage exceeded`, "maxLeverage"];
+      return [t`Max leverage exceeded`, "maxLeverage"];
     }
   }
 
@@ -744,10 +744,10 @@ export function getGmSwapError(p: {
     return [t`Loading...`];
   }
 
-  const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
+  const glvTooltipMessage = t`GM: ${marketInfo.name} buyable cap reached. Choose a different pool, reduce size, or select different tokens`;
 
   if (isPair && isDeposit && paySource === "sourceChain") {
-    return [t`Deposit from source chain support only single token`];
+    return [t`Deposits from source chain support single token only`];
   }
 
   if (isDeposit) {
@@ -778,7 +778,7 @@ export function getGmSwapError(p: {
       (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0) &&
       bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd
     ) {
-      return [t`Fees exceed Pay amount`];
+      return [t`Fees exceed pay amount`];
     }
 
     if (glvInfo) {
@@ -813,11 +813,11 @@ export function getGmSwapError(p: {
     (fees?.totalFees?.deltaUsd ?? 0n) < 0 &&
     bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > (marketTokenUsd ?? 0n)
   ) {
-    return [t`Fees exceed Pay amount`];
+    return [t`Fees exceed pay amount`];
   }
 
   if ((longTokenAmount ?? 0n) < 0 || (shortTokenAmount ?? 0n) < 0 || (marketTokenAmount ?? 0n) < 0) {
-    return [t`Amount should be greater than zero`];
+    return [t`Amount must be greater than zero`];
   }
 
   if (
@@ -869,8 +869,8 @@ export function getGmSwapError(p: {
         return [
           t`Max pool amount reached`,
           longToken?.symbol === "GM"
-            ? t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
-            : t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please choose a different pool or reduce the buy size.`,
+            ? t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Reduce size, pick different GM, or shift to another pool`
+            : t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Choose a different pool or reduce size`,
         ];
       }
     }
@@ -892,7 +892,7 @@ export function getGmSwapError(p: {
       if ((glvTokenAmount ?? 0n) > (sellableGlvInMarket.sellableAmount ?? 0n)) {
         return [
           t`Insufficient GLV liquidity`,
-          t`There isn't enough GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce size, or split withdrawal`,
         ];
       }
 
@@ -901,7 +901,7 @@ export function getGmSwapError(p: {
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return [
           t`Insufficient liquidity in GM Pool`,
-          t`The sellable cap for the pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal`,
         ];
       }
     }
@@ -983,11 +983,11 @@ export function getGmShiftError({
 
   const feesExistAndNegative = fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0;
   if (feesExistAndNegative && bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd) {
-    return [t`Fees exceed Pay amount`];
+    return [t`Fees exceed pay amount`];
   }
 
   if ((fromTokenAmount ?? 0n) < 0 || (toTokenAmount ?? 0n) < 0) {
-    return [t`Amount should be greater than zero`];
+    return [t`Amount must be greater than zero`];
   }
 
   if (fromTokenAmount === undefined || fromTokenAmount <= 0n || toTokenAmount === undefined || toTokenAmount <= 0n) {

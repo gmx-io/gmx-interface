@@ -170,7 +170,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Acceptable price for the order.`,
         "",
-        t`The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least ${toMinText} on order execution.`
+        t`Trigger price accounts for swap fees and price impact, guaranteeing at least ${toMinText} on execution.`
       ),
       size: t`${fromText} to ${toMinText}`,
       swapToTokenAmount: toMinAmountText,

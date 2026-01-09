@@ -122,7 +122,7 @@ const Toolbar = ({ account }: { account: string }) => {
   const handleCopyAddress = () => {
     if (account) {
       copyToClipboard(account);
-      helperToast.success(t`Address copied to your clipboard`);
+      helperToast.success(t`Address copied`);
     }
   };
 
@@ -215,7 +215,7 @@ const Toolbar = ({ account }: { account: string }) => {
 function GmxAccountBalanceTooltipContent() {
   return (
     <Trans>
-      GMX Account balance. Trade from any supported chain.{" "}
+      Your GMX Account balance, usable for trading from any supported chain.{" "}
       <ExternalLink href="https://docs.gmx.io/docs/trading#multichain-trading">Read more</ExternalLink>.
     </Trans>
   );

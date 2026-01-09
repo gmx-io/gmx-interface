@@ -168,9 +168,9 @@ export const SelectAssetToDepositView = () => {
         {filteredBalances.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-typography-secondary">
             {selectedNetwork === "all" ? (
-              <Trans>No assets are available for deposit</Trans>
+              <Trans>No assets available for deposit</Trans>
             ) : (
-              <Trans>No eligible tokens available on {getChainName(selectedNetwork)} for deposit</Trans>
+              <Trans>No tokens available on {getChainName(selectedNetwork)} for deposit</Trans>
             )}
           </div>
         )}

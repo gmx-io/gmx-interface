@@ -70,7 +70,7 @@ export function SwapCard(p: Props) {
               content={
                 <StatsTooltipRow
                   textClassName="al-swap"
-                  label={t`Max ${toToken?.symbol} out`}
+                  label={t`Max ${toToken?.symbol} Out`}
                   value={
                     <AmountWithUsdBalance
                       multiline

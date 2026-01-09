@@ -49,8 +49,8 @@ export function CreateReferralCode({ onSuccess }: Props) {
       }
 
       return registerReferralCode(chainId, referralCode, signer, {
-        sentMsg: t`Referral code submitted.`,
-        failMsg: t`Referral code creation failed.`,
+        sentMsg: t`Referral code submitted`,
+        failMsg: t`Referral code creation failed`,
         pendingTxns,
       });
     },
@@ -72,12 +72,12 @@ export function CreateReferralCode({ onSuccess }: Props) {
       const receipt = await tx.wait();
 
       if (receipt?.status === 1) {
-        helperToast.success(t`Referral code created.`);
+        helperToast.success(t`Referral code created`);
         onSuccess(referralCode);
         setReferralCode("");
       }
     } catch (err) {
-      setError("Referral code creation failed.");
+      setError("Referral code creation failed");
       metrics.pushError(err, "createReferralCode");
     } finally {
       setIsProcessing(false);
@@ -110,7 +110,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
     };
   } else if (isProcessing) {
     buttonState = {
-      text: t`Creating code`,
+      text: t`Creating code...`,
       disabled: true,
     };
   } else if (!referralCode) {

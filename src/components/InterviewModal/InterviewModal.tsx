@@ -16,11 +16,11 @@ type Props = {
 export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
   if (type === "trader") {
     return (
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous chat with GMX`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat With GMX`}>
         <div className="max-w-xl">
           <Trans>
-            We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the
-            message "I have feedback" to any of our official accounts:
+            Help us improve GMX. For security, we won't contact you first. Send "I have feedback" to our official
+            account:
           </Trans>
           <div className="mb-20 mt-20 flex flex-col gap-8">
             <div className="flex items-center gap-12 text-14">
@@ -37,11 +37,11 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
 
   if (type === "lp") {
     return (
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous chat with GMX team`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat With GMX Team`}>
         <div className="max-w-xl">
           <Trans>
-            We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact
-            you first. Please send the message "I’m a Liquidity Provider" to our official telegram account:
+            Help us improve GMX for Liquidity Providers. For security, we won't contact you first. Send "I'm a
+            Liquidity Provider" to our official Telegram account:
           </Trans>
           <div className="mb-20 mt-20 flex flex-col gap-8">
             <div className="flex items-center gap-12 text-14">
@@ -52,11 +52,11 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             </div>
           </div>
           <Trans>
-            We'll then schedule a chat or interview with you. As a thank you, you'll receive{" "}
+            We'll schedule a chat with you. As thanks, you'll receive{" "}
             <span className="font-400 text-green-500">
               100 <TokenSymbolWithIcon symbol="USDC" />
             </span>{" "}
-            for providing your feedback.
+            for your feedback.
           </Trans>
         </div>
       </Modal>

@@ -39,7 +39,7 @@ export function HeroSection() {
                 <Trans>Trade</Trans>
               </div>{" "}
               <AnimatedTitle />
-              <Trans>from your wallet</Trans>
+              <Trans>From Your Wallet</Trans>
             </div>
             {/* Stats and description */}
             <div className="flex flex-wrap items-end justify-between gap-0 sm:gap-56">
@@ -51,11 +51,11 @@ export function HeroSection() {
                   <div className="self-end rounded-full bg-white p-4">
                     <IcLinkArrow className="size-8 text-blue-400" />
                   </div>
-                  <Trans>Trade Now</Trans>
+                  <Trans>Trade now</Trans>
                 </button>
                 <div className="text-subheadline sm:w-[226px]">
                   <Trans>
-                    Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021
+                    Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021.
                   </Trans>
                 </div>
               </div>
