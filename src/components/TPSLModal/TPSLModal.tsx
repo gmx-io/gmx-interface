@@ -56,6 +56,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
   const [shouldReopenOnAddClose, setShouldReopenOnAddClose] = useState(false);
+  const [shouldReopenOnEditClose, setShouldReopenOnEditClose] = useState(false);
 
   const { isTablet } = useBreakpoints();
   const isMobile = isTablet;
@@ -205,6 +206,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   const handleEditOrder = useCallback(
     (orderKey: string) => {
       setIsVisible(false);
+      setShouldReopenOnEditClose(true);
       setEditingOrderState({ orderKey, source: "TPSLModal" });
     },
     [setEditingOrderState, setIsVisible]
@@ -218,11 +220,19 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
   }, [isAddFormVisible, shouldReopenOnAddClose, setIsVisible]);
 
   useEffect(() => {
-    if (editingOrderState?.source === "TPSLModal" && !editingOrderState.orderKey) {
+    if (shouldReopenOnEditClose && editingOrderState?.source === "TPSLModal" && !editingOrderState.orderKey) {
       setIsVisible(true);
       setEditingOrderState(undefined);
+      setShouldReopenOnEditClose(false);
     }
-  }, [editingOrderState, setEditingOrderState, setIsVisible]);
+  }, [editingOrderState, setEditingOrderState, setIsVisible, shouldReopenOnEditClose]);
+
+  useEffect(() => {
+    if (!shouldReopenOnEditClose) return;
+    if (!editingOrderState || editingOrderState.source !== "TPSLModal") {
+      setShouldReopenOnEditClose(false);
+    }
+  }, [editingOrderState, shouldReopenOnEditClose]);
 
   const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${getMarketIndexName({ indexToken: position.indexToken, isSpotOnly: false })} `;
 
