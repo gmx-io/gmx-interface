@@ -220,11 +220,11 @@ export function TradingSettings({
           description={
             <div>
               <Trans>
-                Slippage is the difference between your expected and actual execution price due to price volatility.
-                Orders won't execute if slippage exceeds your allowed maximum.
+                The difference between expected and actual execution price due to volatility. Orders won't execute if
+                slippage exceeds your maximum.
                 <br />
                 <br />
-                Note: slippage is different from price impact, which is based on open interest imbalances.
+                Note: Slippage differs from price impact, which is based on open interest imbalances.
               </Trans>{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">
                 <Trans>Read more</Trans>

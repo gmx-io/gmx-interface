@@ -45,7 +45,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<Error>();
 
-  const feedbackQuestion = t`Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements.`;
+  const feedbackQuestion = t`Your feedback helps us understand what we're doing well and where we can improve.`;
 
   const onChangeFeedback = useCallback((val: string) => {
     if (val.length > MAX_FEEDBACK_LENGTH) {
@@ -96,7 +96,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
 
     if (error) {
       return {
-        text: t`Error occurred. Please try again`,
+        text: t`Error occurred, please try again`,
         disabled: true,
       };
     }
@@ -119,7 +119,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`We Value Your Feedback`}>
       <div className="mb-15 max-w-xl">
         {feedbackQuestion}
-        <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here.`} />
+        <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here`} />
       </div>
       <div className="mb-15 flex flex-col">
         <TooltipWithPortal

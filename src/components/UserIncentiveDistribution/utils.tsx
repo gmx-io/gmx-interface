@@ -207,7 +207,7 @@ export async function signMessage({
     setIsStartedMultisig(true);
 
     helperToast.info(
-      t`Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed.`
+      t`Continue signing in your wallet. You can claim once all signers have signed`
     );
     return;
   }

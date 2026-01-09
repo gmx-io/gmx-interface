@@ -72,7 +72,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span>
-              <Trans>Start unrealized pnl</Trans>
+              <Trans>Start Unrealized PnL</Trans>
             </span>
           ),
           value: stats.startUnrealizedPnl,
@@ -80,7 +80,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span>
-              <Trans>Start unrealized fees</Trans>
+              <Trans>Start Unrealized Fees</Trans>
             </span>
           ),
           value: -stats.startUnrealizedFees,

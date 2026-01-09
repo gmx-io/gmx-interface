@@ -621,7 +621,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
       if (isGmxAccount && isNonEoaAccountOnAnyChain) {
-        helperToast.error(t`Smart wallets are not supported on Express or One-Click Trading.`);
+        helperToast.error(t`Smart wallets are not supported on Express or One-Click Trading`);
         return;
       }
 
@@ -1109,7 +1109,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     >
                       <Trans>Use a TWAP order</Trans>
                     </span>{" "}
-                    <Trans> for lower net price impact</Trans>
+                    <Trans>for lower net price impact</Trans>
                   </span>
                 </div>
               </ColorfulBanner>
@@ -1121,8 +1121,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
                   <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
                     <Trans>
-                      The execution price may vary from your set limit price due to fees and price impact, ensuring you
-                      receive the displayed minimum receive amount.{" "}
+                      Execution price may differ from limit price due to fees and price impact. You'll receive at least
+                      the minimum amount shown.{" "}
                       <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
                         Read more
                       </ExternalLink>
@@ -1156,7 +1156,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     )}
                     {showHighLeverageWarning && (
                       <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
-                        <Trans>Using high leverage increases the risk of liquidation</Trans>
+                        <Trans>High leverage increases liquidation risk</Trans>
                       </AlertInfoCard>
                     )}
                     {isTrigger && (

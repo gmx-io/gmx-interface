@@ -25,7 +25,7 @@ export async function prepareOrderTxn(
   additinalErrorContent?: React.ReactNode
 ) {
   if (!contract.runner?.provider) {
-    helperToast.error(t`Error preparing transaction. Provider is not defined`);
+    helperToast.error(t`Transaction failed: Provider unavailable`);
     throw new Error("Provider is not defined");
   }
 

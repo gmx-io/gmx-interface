@@ -155,7 +155,7 @@ function CollateralListItemMobile({
 }) {
   const handleSelect = useCallback(() => {
     if (disabled) {
-      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>, {
+      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral</Trans>, {
         toastId: `error-collateral-${tokenData.symbol}`,
       });
       return;

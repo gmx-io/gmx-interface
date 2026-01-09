@@ -81,7 +81,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             {traderTier !== undefined ? (
               <div className="tier">
                 <Tooltip
-                  handle={t`Tier ${getTierIdDisplay(traderTier)}: ${currentTierDiscount}% discount`}
+                  handle={t`Tier ${getTierIdDisplay(traderTier)}: ${currentTierDiscount}% Discount`}
                   position="bottom"
                   variant="icon"
                   handleClassName="text-body-small rounded-full bg-cold-blue-900 px-12 py-8 font-medium leading-[1.25] text-typography-primary"
@@ -94,8 +94,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                           <br />
                           <br />
                           <Trans>
-                            The owner of this referral code has set a custom discount of {currentTierDiscount}% instead
-                            of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
+                            Code owner set a custom {currentTierDiscount}% discount instead of the standard{" "}
+                            {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
                           </Trans>
                         </>
                       )) ||
@@ -216,7 +216,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
       {currentDiscountDistributions.length > 0 ? (
         <Card
           title={t`Rebates Distribution History`}
-          tooltipText={t`GMX V2 discounts are automatically applied on each trade and are not displayed on this table.`}
+          tooltipText={t`V2 discounts are applied automatically on each trade and not shown here.`}
           bodyPadding={false}
           divider={true}
         >
@@ -289,7 +289,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                               {tokensWithoutPrices.length > 0 && (
                                 <>
                                   <Trans>
-                                    USD Value may not be accurate since the data does not contain prices for{" "}
+                                    USD value may not be accurate because prices are missing for{" "}
                                     {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
                                   </Trans>
                                   <br />
@@ -341,8 +341,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </Card>
       ) : (
         <EmptyMessage
-          tooltipText={t`GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table.`}
-          message={t`No rebates distribution history yet.`}
+          tooltipText={t`V2 rebates are applied automatically as fee discounts on each trade and not shown here.`}
+          message={t`No rebates distribution history yet`}
         />
       )}
     </div>

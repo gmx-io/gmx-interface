@@ -236,15 +236,15 @@ export function useTradeboxButtonState({
           tooltipContent = (
             <>
               {isLeverageSliderEnabled ? (
-                <Trans>Decrease the leverage to match the max. allowed leverage.</Trans>
+                <Trans>Decrease the leverage to match the max allowed leverage.</Trans>
               ) : (
-                <Trans>Decrease the size to match the max. allowed leverage:</Trans>
+                <Trans>Decrease the size to match the max allowed leverage.</Trans>
               )}{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-                <Trans>Set Max Leverage</Trans>
+                <Trans>Set max leverage</Trans>
               </span>
             </>
           );
@@ -254,7 +254,7 @@ export function useTradeboxButtonState({
 
         case "liqPrice > markPrice":
           tooltipContent = (
-            <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
+            <Trans>Position would be liquidated immediately on execution. Try reducing the size.</Trans>
           );
           break;
 
@@ -461,7 +461,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`}{" "}
+            {t`Approve ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol}`}{" "}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -472,7 +472,7 @@ export function useTradeboxButtonState({
     if (isAllowanceLoaded && tokensToApprove.length) {
       return {
         ...commonState,
-        text: t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`,
+        text: t`Approve ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol}`,
         disabled: false,
       };
     }
@@ -480,7 +480,7 @@ export function useTradeboxButtonState({
     if (stage === "processing") {
       return {
         ...commonState,
-        text: t`Creating order`,
+        text: t`Creating order...`,
         disabled: true,
       };
     }
@@ -684,7 +684,7 @@ export function useDetectAndSetAvailableMaxLeverage({
         );
       }
     } else {
-      helperToast.error(t`No available leverage found`);
+      helperToast.error(t`No leverage available`);
     }
   }, [
     acceptablePriceImpactBuffer,
@@ -738,14 +738,14 @@ function NoSwapPathTooltipContent({
   );
 
   if (!fromToken) {
-    return <Trans>No swap path available.</Trans>;
+    return <Trans>No swap path available</Trans>;
   }
 
   if (chainId === BOTANIX) {
     if (collateralToken) {
       return (
         <Trans>
-          No swap path available.{" "}
+          No swap path found.{" "}
           <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
             Swap {fromToken.symbol} to STBTC
           </span>{" "}
@@ -757,7 +757,7 @@ function NoSwapPathTooltipContent({
     const swapToTokenSymbol = fromToken.symbol === "STBTC" ? "PBTC" : "STBTC";
     return (
       <Trans>
-        No swap path available.{" "}
+        No swap path found.{" "}
         <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
           Swap {fromToken.symbol} to {swapToTokenSymbol}
         </span>
@@ -772,12 +772,12 @@ function NoSwapPathTooltipContent({
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} is required for collateral.
         <br />
         <br />
-        There is no swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
+        No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
         <br />
         <br />
         <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
-          You can buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch.
+          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch
         </ExternalLink>
       </Trans>
       {getBridgingOptionsForToken(collateralToken?.symbol) && (

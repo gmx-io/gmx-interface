@@ -12,8 +12,8 @@ import {
 export const INCENTIVE_TYPE_MAP = {
   1001: t`GM Airdrop`,
   1002: t`GLP to GM Airdrop`,
-  1003: t`TRADING Airdrop`,
-  1004: t`STIP.b LP incentives`,
+  1003: t`Trading Airdrop`,
+  1004: t`STIP.b LP Incentives`,
   1005: t`STIP.b Trading Incentives`,
   1006: t`STIP.b Retroactive Bonus`,
   1100: t`Avalanche LP Incentives`,

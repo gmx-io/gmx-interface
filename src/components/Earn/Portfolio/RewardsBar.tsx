@@ -119,7 +119,7 @@ function TotalEarned({
       stakingRows.push(
         <StatsTooltipRow
           key="gmx"
-          label={<Trans>GMX rewards:</Trans>}
+          label={<Trans>GMX Rewards:</Trans>}
           showDollar={false}
           value={
             <AmountWithUsdBalance
@@ -137,7 +137,7 @@ function TotalEarned({
       stakingRows.push(
         <StatsTooltipRow
           key="esgmx"
-          label={<Trans>esGMX rewards:</Trans>}
+          label={<Trans>esGMX Rewards:</Trans>}
           showDollar={false}
           value={
             <AmountWithUsdBalance
@@ -155,7 +155,7 @@ function TotalEarned({
       stakingRows.push(
         <StatsTooltipRow
           key="native"
-          label={<Trans>{nativeTokenSymbol} rewards:</Trans>}
+          label={<Trans>{nativeTokenSymbol} Rewards:</Trans>}
           showDollar={false}
           value={
             <AmountWithUsdBalance
@@ -175,7 +175,7 @@ function TotalEarned({
       tooltipSections.push(
         <div key="staking" className="flex flex-col gap-8">
           <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Lifetime staking rewards:</Trans>
+            <Trans>Lifetime Staking Rewards:</Trans>
           </span>
           <div className="flex flex-col">{stakingRows}</div>
         </div>
@@ -186,7 +186,7 @@ function TotalEarned({
       tooltipSections.push(
         <div key="lp" className="flex flex-col gap-8">
           <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Lifetime LP rewards:</Trans>
+            <Trans>Lifetime LP Rewards:</Trans>
           </span>
           <div className="flex flex-col">
             <StatsTooltipRow
@@ -238,7 +238,7 @@ function TotalPendingRewards({
       content={
         <div className="flex flex-col">
           <StatsTooltipRow
-            label={<Trans>GMX Staked Rewards:</Trans>}
+            label={<Trans>Staked GMX Rewards:</Trans>}
             showDollar={false}
             value={
               <AmountWithUsdBalance

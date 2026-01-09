@@ -28,12 +28,12 @@ export function AllowedSlippageRow({
             return (
               <div className="text-typography-primary">
                 <Trans>
-                  Difference between expected and actual execution price. Orders fail if slippage exceeds your maximum.
-                  Adjust the default in Settings.
+                  The difference between expected and actual execution price due to volatility. Orders won't execute
+                  if slippage exceeds your maximum. Adjust the default in Settings.
                   <br />
-                  <br />
-                  Low values (below -{formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause
-                  failed orders during volatility.
+                  <br />A low value (e.g. less than -
+                  {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause failed orders
+                  during volatility.
                   <br />
                   <br />
                   Note: Slippage differs from price impact, which is based on open interest imbalances.{" "}

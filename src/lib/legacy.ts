@@ -1373,18 +1373,18 @@ export function getOrderError(account, order, positionsMap, position) {
   const positionForOrder = position ? position : getPositionForOrder(account, order, positionsMap);
 
   if (!positionForOrder) {
-    return t`No open position, order cannot be executed unless a position is opened`;
+    return t`No open position, order won't execute until position is opened`;
   }
   if (positionForOrder.size < order.sizeDelta) {
-    return t`Order size is bigger than position, will only be executable if position increases`;
+    return t`Order size exceeds position, will execute only if position increases`;
   }
 
   if (positionForOrder.size > order.sizeDelta) {
     if (positionForOrder.size - order.sizeDelta < positionForOrder.collateral - order.collateralDelta) {
-      return t`Order cannot be executed as it would reduce the position's leverage below 1`;
+      return t`Order would reduce leverage below 1x`;
     }
     if (positionForOrder.size - order.sizeDelta < expandDecimals(5, USD_DECIMALS)) {
-      return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
+      return t`Order would leave remaining position below $5.00 minimum`;
     }
   }
 }

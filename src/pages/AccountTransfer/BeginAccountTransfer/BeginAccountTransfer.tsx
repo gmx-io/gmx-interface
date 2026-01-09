@@ -156,20 +156,20 @@ export default function BeginAccountTransfer() {
       return t`Wallet is not connected`;
     }
     if (hasVestedGmx) {
-      return t`Vested GMX not withdrawn`;
+      return t`Vested GMX not yet withdrawn`;
     }
     if (hasVestedGlp) {
-      return t`Vested GLP not withdrawn`;
+      return t`Vested GLP not yet withdrawn`;
     }
     if (!receiver || receiver.length === 0) {
-      return t`Enter Receiver Address`;
+      return t`Enter receiver address`;
     }
     if (!ethers.isAddress(receiver)) {
-      return t`Invalid Receiver Address`;
+      return t`Invalid receiver address`;
     }
 
     if (hasVestedAffiliate && !isAffiliateVesterSkipValidation) {
-      return t`Vested GMX not withdrawn`;
+      return t`Vested GMX not yet withdrawn`;
     }
 
     if (hasStakedGmx || hasStakedGlp) {
@@ -184,7 +184,7 @@ export default function BeginAccountTransfer() {
       (parsedReceiver || "").length > 0 &&
       (parsedReceiver || "").toString().toLowerCase() === (pendingReceiver || "").toString().toLowerCase()
     ) {
-      return t`Transfer already initiated`;
+      return t`Transfer already initiated to this address`;
     }
   };
 
@@ -220,7 +220,7 @@ export default function BeginAccountTransfer() {
       return error;
     }
     if (needApproval) {
-      return t`Approve GMX`;
+      return t`Approve GMX transfer`;
     }
     if (isApproving) {
       return t`Approving...`;
@@ -230,10 +230,10 @@ export default function BeginAccountTransfer() {
     }
 
     if (needFeeGmxTrackerApproval) {
-      return t`Pending Transfer Approval`;
+      return t`Pending transfer approval`;
     }
 
-    return t`Begin Transfer`;
+    return t`Begin transfer`;
   };
 
   const onClickPrimary = () => {
@@ -254,8 +254,8 @@ export default function BeginAccountTransfer() {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
-      sentMsg: t`Transfer submitted.`,
-      failMsg: t`Transfer failed.`,
+      sentMsg: t`Transfer submitted`,
+      failMsg: t`Transfer failed`,
       setPendingTxns,
     })
       .then(() => {
@@ -300,7 +300,7 @@ export default function BeginAccountTransfer() {
         setIsVisible={setIsTransferSubmittedModalVisible}
         label={t`Transfer Submitted`}
       >
-        <Trans>Your transfer has been initiated.</Trans>
+        <Trans>Transfer initiated.</Trans>
         <br />
         <br />
         <Link className="App-cta" to={completeTransferLink}>
@@ -357,8 +357,7 @@ export default function BeginAccountTransfer() {
             <>
               <p className="soft-error">
                 <Trans>
-                  You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to
-                  transfer them to the new account
+                  You have esGMX tokens in the Affiliate Vault. Withdraw them to include in this transfer
                 </Trans>
               </p>
               <Checkbox
@@ -386,7 +385,7 @@ export default function BeginAccountTransfer() {
             <ApproveTokenButton
               tokenAddress={feeGmxTrackerAddress}
               tokenSymbol={"sbfGMX"}
-              customLabel={t`Allow all my tokens to be transferred to a new account`}
+              customLabel={t`Allow token transfer to new account`}
               spenderAddress={parsedReceiver}
               approveAmount={feeGmxTrackerBalance}
             />

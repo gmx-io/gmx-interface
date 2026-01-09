@@ -253,7 +253,7 @@ export function ActionFilter({ value, onChange }: Props) {
     <TableOptionsFilter<Props["value"][number]>
       multiple
       label={t`Action`}
-      placeholder={t`Search Action`}
+      placeholder={t`Search action`}
       value={value}
       options={localizedGroups}
       onChange={onChange}

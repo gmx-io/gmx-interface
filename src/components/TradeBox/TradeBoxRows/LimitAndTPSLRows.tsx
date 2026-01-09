@@ -215,7 +215,7 @@ export function LimitAndTPSLGroup() {
       hasError={hasError}
       disableCollapseOnError
       autoExpandOnError
-      errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
+      errorMessage={<Trans>TP/SL orders have issues</Trans>}
       onToggle={toggleLimitOrTPSL}
       withToggleSwitch
     >

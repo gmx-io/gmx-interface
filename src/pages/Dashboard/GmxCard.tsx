@@ -66,17 +66,17 @@ export function GmxCard({
   const gmxDistributionData = useMemo(() => {
     let arr = [
       {
-        name: t`staked`,
+        name: t`Staked`,
         value: stakedPercent,
         color: "#4353fa",
       },
       {
-        name: t`in liquidity`,
+        name: t`In Liquidity`,
         value: liquidityPercent,
         color: "#0598fa",
       },
       {
-        name: t`not staked`,
+        name: t`Not Staked`,
         value: notStakedPercent,
         color: "#5c0af5",
       },
