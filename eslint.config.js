@@ -97,7 +97,7 @@ export default tseslint.config(
 
   // Main config for source files
   {
-    files: ["src/**/*.{js,jsx,ts,tsx}"],
+    files: ["src/**/*.{js,jsx,ts,tsx}", "landing/**/*.{js,jsx,ts,tsx}"],
     plugins: {
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
@@ -210,6 +210,7 @@ export default tseslint.config(
         },
       ],
       "import/namespace": "off",
+      "import/no-unresolved": "error",
 
       // ES-X rules (restrict to ES2017)
       "es-x/no-bigint": "off",
