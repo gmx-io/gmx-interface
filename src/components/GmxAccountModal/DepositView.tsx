@@ -348,7 +348,6 @@ export const DepositView = () => {
   const quoteOft = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
-    fromChainProvider: sourceChainProvider,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
   });

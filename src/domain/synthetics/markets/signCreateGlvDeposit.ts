@@ -1,8 +1,9 @@
-import { AbstractSigner } from "ethers";
+import type { AbstractSigner } from "ethers";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { TransferRequests } from "domain/multichain/types";
+import type { TransferRequests } from "domain/multichain/types";
+import type { ISigner } from "lib/transactions/iSigner";
 import { signTypedData } from "lib/wallets/signing";
 
 import type { CreateGlvDepositParams } from ".";
@@ -19,7 +20,7 @@ export function signCreateGlvDeposit({
 }: {
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
-  signer: AbstractSigner;
+  signer: AbstractSigner | ISigner;
   relayParams: RelayParamsPayload;
   transferRequests: TransferRequests;
   params: CreateGlvDepositParams;

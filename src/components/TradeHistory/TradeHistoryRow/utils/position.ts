@@ -213,17 +213,19 @@ export const formatPositionMessage = (
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
     const customPrice = acceptablePriceInequality + formattedAcceptablePrice;
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+
     const priceComment = lines(
       t`Acceptable price for the order.`,
-      error?.args?.price && "",
-      error?.args?.price &&
-        infoRow(
-          t`Order Execution Price`,
-          formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-            displayDecimals: marketPriceDecimals,
-            visualMultiplier: tradeAction.indexToken.visualMultiplier,
-          })
-        )
+      error?.args?.price !== undefined ? "" : undefined,
+      error?.args?.price !== undefined
+        ? infoRow(
+            t`Order Execution Price`,
+            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+              displayDecimals: marketPriceDecimals,
+              visualMultiplier: tradeAction.indexToken.visualMultiplier,
+            })
+          )
+        : undefined
     );
 
     result = {
@@ -333,14 +335,15 @@ export const formatPositionMessage = (
         isAcceptablePriceUseful
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
-        error?.args?.price &&
-          infoRow(
-            t`Order Execution Price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
-          )
+        error?.args?.price !== undefined
+          ? infoRow(
+              t`Order Execution Price`,
+              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                displayDecimals: marketPriceDecimals,
+                visualMultiplier: tradeAction.indexToken.visualMultiplier,
+              })
+            )
+          : undefined
       ),
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
       isActionError: true,
@@ -367,15 +370,16 @@ export const formatPositionMessage = (
     const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
     const priceComment = lines(
       t`Acceptable price for the order.`,
-      error?.args?.price && "",
-      error?.args?.price &&
-        infoRow(
-          t`Order Execution Price`,
-          formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-            displayDecimals: marketPriceDecimals,
-            visualMultiplier: tradeAction.indexToken.visualMultiplier,
-          })
-        )
+      error?.args?.price !== undefined ? "" : undefined,
+      error?.args?.price !== undefined
+        ? infoRow(
+            t`Order Execution Price`,
+            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+              displayDecimals: marketPriceDecimals,
+              visualMultiplier: tradeAction.indexToken.visualMultiplier,
+            })
+          )
+        : undefined
     );
 
     result = {
@@ -458,14 +462,15 @@ export const formatPositionMessage = (
         "",
         infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
         infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
-        error?.args?.price &&
-          infoRow(
-            t`Order Execution Price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
-          )
+        error?.args?.price !== undefined
+          ? infoRow(
+              t`Order Execution Price`,
+              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                displayDecimals: marketPriceDecimals,
+                visualMultiplier: tradeAction.indexToken.visualMultiplier,
+              })
+            )
+          : undefined
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
       isActionError: true,
@@ -520,14 +525,15 @@ export const formatPositionMessage = (
         isAcceptablePriceUseful
           ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
-        error?.args?.price &&
-          infoRow(
-            t`Order Execution Price`,
-            formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
-              displayDecimals: marketPriceDecimals,
-              visualMultiplier: tradeAction.indexToken.visualMultiplier,
-            })
-          )
+        error?.args?.price !== undefined
+          ? infoRow(
+              t`Order Execution Price`,
+              formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
+                displayDecimals: marketPriceDecimals,
+                visualMultiplier: tradeAction.indexToken.visualMultiplier,
+              })
+            )
+          : undefined
       ),
       isActionError: true,
     };

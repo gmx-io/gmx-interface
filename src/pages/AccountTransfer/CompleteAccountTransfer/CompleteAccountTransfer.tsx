@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
+import { isAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -21,7 +22,8 @@ import PageTitle from "components/PageTitle/PageTitle";
 export default function CompleteAccountTransfer() {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams<{ sender: string | undefined; receiver: string | undefined }>();
-  const isSenderAndReceiverValid = ethers.isAddress(sender) && ethers.isAddress(receiver);
+  const isSenderAndReceiverValid =
+    sender && receiver && isAddress(sender, { strict: false }) && isAddress(receiver, { strict: false });
   const { setPendingTxns } = usePendingTxns();
   const { signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);

@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { parseUnits } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { formatAmount } from "lib/numbers";
@@ -9,37 +9,37 @@ describe("getLiquidationPrice", function () {
     {
       name: "New Position Long, to trigger 1% Buffer rule",
       isLong: true,
-      size: ethers.parseUnits("98712.87", 30),
-      collateral: ethers.parseUnits("9871.29", 30),
-      averagePrice: ethers.parseUnits("23091.42", 30),
-      fundingFee: ethers.parseUnits("0", 30),
+      size: parseUnits("98712.87", 30),
+      collateral: parseUnits("9871.29", 30),
+      averagePrice: parseUnits("23091.42", 30),
+      fundingFee: parseUnits("0", 30),
       expected: "21013.1915",
     },
     {
       name: "New Position Long, to trigger $5 Buffer rule",
       isLong: true,
-      size: ethers.parseUnits("162.50", 30),
-      collateral: ethers.parseUnits("16.25", 30),
-      averagePrice: ethers.parseUnits("23245.74", 30),
-      fundingFee: ethers.parseUnits("0", 30),
+      size: parseUnits("162.50", 30),
+      collateral: parseUnits("16.25", 30),
+      averagePrice: parseUnits("23245.74", 30),
+      fundingFee: parseUnits("0", 30),
       expected: "21659.6653",
     },
     {
       name: "New Position Short, to trigger 1% Buffer rule",
       isLong: false,
-      size: ethers.parseUnits("99009.90", 30),
-      collateral: ethers.parseUnits("9901.00", 30),
-      averagePrice: ethers.parseUnits("23118.40", 30),
-      fundingFee: ethers.parseUnits("0", 30),
+      size: parseUnits("99009.90", 30),
+      collateral: parseUnits("9901.00", 30),
+      averagePrice: parseUnits("23118.40", 30),
+      fundingFee: parseUnits("0", 30),
       expected: "25199.0583",
     },
     {
       name: "Long Position with Positive PnL",
       isLong: true,
-      size: ethers.parseUnits("7179585.19", 30),
-      collateral: ethers.parseUnits("145919.45", 30),
-      averagePrice: ethers.parseUnits("1301.50", 30),
-      fundingFee: ethers.parseUnits("55354.60", 30),
+      size: parseUnits("7179585.19", 30),
+      collateral: parseUnits("145919.45", 30),
+      averagePrice: parseUnits("1301.50", 30),
+      fundingFee: parseUnits("55354.60", 30),
       expected: "1288.0630",
     },
   ];

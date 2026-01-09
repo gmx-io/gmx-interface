@@ -34,8 +34,6 @@ yarn-error.log*
 # For publish
 .npmrc
 
-typechain-types
-
 package-lock.json
 
 .yarn/*

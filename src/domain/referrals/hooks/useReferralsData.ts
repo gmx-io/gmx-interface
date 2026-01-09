@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
-import { BigNumberish, ethers } from "ethers";
+import { BigNumberish } from "ethers";
 import { useEffect, useState } from "react";
+import { getAddress } from "viem";
 
-import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
+import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { getReferralsGraphClient, REFERRAL_SUPPORTED_CHAIN_IDS } from "lib/indexers";
 import { BN_ZERO } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -119,9 +120,9 @@ export function useReferralsData(account?: string | null) {
           res.data.distributions.forEach((d) => {
             const item = {
               typeId: d.typeId,
-              receiver: ethers.getAddress(d.receiver),
-              markets: d.markets.map((market) => ethers.getAddress(market)),
-              tokens: d.tokens.map((token) => ethers.getAddress(token)),
+              receiver: getAddress(d.receiver),
+              markets: d.markets.map((market) => getAddress(market)),
+              tokens: d.tokens.map((token) => getAddress(token)),
               amounts: d.amounts.map((a) => BigInt(a)),
               amountsInUsd: d.amountsInUsd.map((a) => BigInt(a)),
               timestamp: parseInt(d.timestamp),

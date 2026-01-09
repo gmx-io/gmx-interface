@@ -1,5 +1,4 @@
 import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
-import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
 import { address as ethPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolNative.json";
 import { address as usdcPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
 import { address as usdtPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDT.json";
@@ -20,12 +19,12 @@ import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-s
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
 import { address as usdtPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDT.json";
-import { Wallet } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
 import type { Abi, Hex } from "viem";
 import { zeroAddress } from "viem";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 import {
   AnyChainId,
@@ -46,6 +45,7 @@ import {
 import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
+import { ISigner } from "lib/transactions/iSigner";
 import { isSettlementChain, isSourceChain, SOURCE_CHAINS } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -57,7 +57,6 @@ export {
   ethPoolArbitrumSepolia,
   ethPoolOptimismSepolia,
   ethPoolSepolia,
-  IStargateAbi,
   usdcSgPoolArbitrumSepolia,
   usdcSgPoolOptimismSepolia,
   usdcSgPoolSepolia,
@@ -497,7 +496,8 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
 };
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
-export const RANDOM_WALLET = Wallet.createRandom();
+export const RANDOM_ACCOUNT = privateKeyToAccount(generatePrivateKey());
+export const RANDOM_WALLET: ISigner = ISigner.fromPrivateKeyAccount(RANDOM_ACCOUNT);
 
 export function getSourceChainDecimalsMapped(
   chainId: ContractsChainId,

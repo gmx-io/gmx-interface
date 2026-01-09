@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
 import { useMemo } from "react";
+import { zeroAddress } from "viem";
 
 import { MARKETS, isMarketEnabled } from "config/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
@@ -35,7 +35,7 @@ export function useMarkets(chainId: number): MarketsResult {
           const shortToken = getToken(chainId, market.shortTokenAddress);
 
           const isSameCollaterals = market.longTokenAddress === market.shortTokenAddress;
-          const isSpotOnly = market.indexTokenAddress === ethers.ZeroAddress;
+          const isSpotOnly = market.indexTokenAddress === zeroAddress;
 
           const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
 

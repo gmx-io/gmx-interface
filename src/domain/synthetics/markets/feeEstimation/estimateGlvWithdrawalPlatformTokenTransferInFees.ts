@@ -13,7 +13,7 @@ import { getWrappedToken } from "sdk/configs/tokens";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { signCreateWithdrawal } from "../signCreateWithdrawal";
+import { signCreateGlvWithdrawal } from "../signCreateGlvWithdrawal";
 import { CreateGlvWithdrawalParams } from "../types";
 import { stargateTransferFees } from "./stargateTransferFees";
 
@@ -72,7 +72,7 @@ export async function estimateGlvWithdrawalPlatformTokenTransferInFees({
     throw new Error("Transfer requests not found");
   }
 
-  const signature = await signCreateWithdrawal({
+  const signature = await signCreateGlvWithdrawal({
     chainId,
     srcChainId,
     signer: RANDOM_WALLET,

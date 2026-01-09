@@ -263,7 +263,6 @@ export const WithdrawalView = () => {
   const quoteOft = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainProvider: provider,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });

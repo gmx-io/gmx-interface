@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { zeroAddress } from "viem";
 
 import { BOTANIX, ContractsChainId, getExplorerUrl } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
@@ -18,8 +18,6 @@ import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo } from "sdk/types/tokens";
 
 export * from "sdk/utils/tokens";
-
-const { ZeroAddress } = ethers;
 
 export function getTokenUrl(chainId: number, address: string) {
   if (!address) {
@@ -115,7 +113,7 @@ export function getTokenInfo(
   nativeTokenAddress?: string
 ) {
   if (replaceNative && tokenAddress === nativeTokenAddress) {
-    return infoTokens[ZeroAddress];
+    return infoTokens[zeroAddress];
   }
 
   return infoTokens[tokenAddress];
@@ -216,7 +214,7 @@ export function shouldRaiseGasError(token: TokenInfo, amount?: bigint) {
   if (amount === undefined) {
     return false;
   }
-  if (token.address !== ZeroAddress) {
+  if (token.address !== zeroAddress) {
     return false;
   }
   if (token.balance === undefined) {
@@ -240,7 +238,7 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 
   for (let i = 0; i < path.length; i++) {
     let address = path[i];
-    if (address === ZeroAddress) {
+    if (address === zeroAddress) {
       address = nativeTokenAddress;
     }
     updatedPath.push(address);

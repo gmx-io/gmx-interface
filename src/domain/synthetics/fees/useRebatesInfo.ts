@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
-import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWR from "swr";
+import { getAddress } from "viem";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals, PRECISION } from "lib/numbers";

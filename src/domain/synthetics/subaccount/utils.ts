@@ -21,6 +21,7 @@ import type {
   SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
 import { WalletSigner } from "lib/wallets";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { SignatureTypes, signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -36,7 +37,6 @@ import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUN
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
 import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
-import type { SubaccountGelatoRelayRouter } from "typechain-types";
 
 import { getGelatoRelayRouterDomain } from "../express";
 import { SubaccountOnchainData } from "./useSubaccountOnchainData";
@@ -474,7 +474,7 @@ export async function createAndSignSubaccountApproval(
 ): Promise<SignedSubacсountApproval> {
   const srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
 
-  const nonce = await getSubaccountApprovalNonceForProvider(chainId, mainAccountSigner, provider, isGmxAccount);
+  const nonce = await getSubaccountApprovalNonceForProvider(chainId, mainAccountSigner, isGmxAccount);
 
   const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, isGmxAccount);
 
@@ -549,22 +549,18 @@ export function hashSubaccountApproval(subaccountApproval: SignedSubacсountAppr
 async function getSubaccountApprovalNonceForProvider(
   chainId: ContractsChainId,
   signer: WalletSigner,
-  provider: Provider,
   isGmxAccount: boolean
 ): Promise<bigint> {
-  if (provider === undefined) {
-    throw new Error("Provider is required for multicall");
-  }
-
   const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, isGmxAccount);
 
-  const contract = new ethers.Contract(
-    subaccountRouterAddress,
-    abis.AbstractSubaccountApprovalNonceable,
-    provider
-  ) as unknown as SubaccountGelatoRelayRouter;
+  const publicClient = getPublicClientWithRpc(chainId);
 
-  return await contract.subaccountApprovalNonces(signer.address);
+  return await publicClient.readContract({
+    address: subaccountRouterAddress,
+    abi: abis.AbstractSubaccountApprovalNonceable,
+    functionName: "subaccountApprovalNonces",
+    args: [signer.address],
+  });
 }
 
 export async function getSubaccountOnchainData({

@@ -1,10 +1,11 @@
-import { ethers } from "ethers";
+import { Abi, encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import type { SetPendingOrderUpdate } from "context/SyntheticsEvents";
 import { convertToContractPrice } from "domain/synthetics/tokens";
 import type { Token } from "domain/tokens";
+import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 export type UpdateOrderParams = {
@@ -26,7 +27,6 @@ export type UpdateOrderCallbacks = {
 
 export function createUpdateEncodedPayload({
   chainId,
-  router,
   orderKey,
   sizeDeltaUsd,
   executionFee,
@@ -37,7 +37,6 @@ export function createUpdateEncodedPayload({
   autoCancel,
 }: {
   chainId: ContractsChainId;
-  router: ethers.Contract;
   orderKey: string;
   sizeDeltaUsd: bigint;
   executionFee?: bigint;
@@ -67,5 +66,11 @@ export function createUpdateEncodedPayload({
     ],
   });
 
-  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+  return multicall.filter(Boolean).map((call) =>
+    encodeFunctionData({
+      abi: abis.ExchangeRouter as Abi,
+      functionName: call!.method,
+      args: call!.params,
+    })
+  );
 }

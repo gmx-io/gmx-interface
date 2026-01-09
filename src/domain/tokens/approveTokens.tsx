@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
+import { maxUint256 } from "viem";
 
 import { getChainName, getExplorerUrl } from "config/chains";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -57,7 +58,7 @@ export async function approveTokens({
   setIsApproving(true);
 
   if (approveAmount === undefined) {
-    approveAmount = ethers.MaxUint256;
+    approveAmount = maxUint256;
   }
 
   let shouldUsePermit = false;
@@ -116,7 +117,7 @@ export async function approveTokens({
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
   return await contract
-    .approve(spender, approveAmount ?? ethers.MaxUint256)
+    .approve(spender, approveAmount ?? maxUint256)
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(
