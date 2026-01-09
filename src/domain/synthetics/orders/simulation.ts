@@ -38,6 +38,40 @@ export function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 
+export async function getBlockTimestampAndNumber(
+  client: PublicClient,
+  multicallAddress: string
+): Promise<{ blockTimestamp: bigint; blockNumber: bigint }> {
+  const [blockTimestampResult, currentBlockNumberResult] = await client.multicall({
+    multicallAddress,
+    contracts: [
+      {
+        address: multicallAddress,
+        abi: abis.Multicall,
+        functionName: "getCurrentBlockTimestamp",
+      },
+      {
+        address: multicallAddress,
+        abi: abis.Multicall,
+        functionName: "getBlockNumber",
+      },
+    ],
+  });
+
+  if (blockTimestampResult.result === undefined) {
+    throw new Error("Failed to get block timestamp from multicall");
+  }
+
+  if (currentBlockNumberResult.result === undefined) {
+    throw new Error("Failed to get block number from multicall");
+  }
+
+  return {
+    blockTimestamp: blockTimestampResult.result,
+    blockNumber: currentBlockNumberResult.result,
+  };
+}
+
 export async function simulateExecution(chainId: ContractsChainId, p: SimulateExecuteParams) {
   let client: PublicClient;
   if (p.isExpress) {
@@ -62,24 +96,9 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
   if (p.blockTimestampData) {
     blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
   } else {
-    const [blockTimestampResult, currentBlockNumberResult] = await client.multicall({
-      multicallAddress,
-      contracts: [
-        {
-          address: multicallAddress,
-          abi: abis.Multicall,
-          functionName: "getCurrentBlockTimestamp",
-        },
-        {
-          address: multicallAddress,
-          abi: abis.Multicall,
-          functionName: "getBlockNumber",
-        },
-      ],
-    });
-
-    blockTimestamp = blockTimestampResult.result!;
-    blockNumber = currentBlockNumberResult.result!;
+    const result = await getBlockTimestampAndNumber(client, multicallAddress);
+    blockTimestamp = result.blockTimestamp;
+    blockNumber = result.blockNumber;
   }
 
   const priceTimestamp = blockTimestamp + 120n;

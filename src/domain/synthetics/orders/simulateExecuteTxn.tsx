@@ -20,6 +20,7 @@ import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isCo
 import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
+import { getBlockTimestampAndNumber } from "./simulation";
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {
@@ -69,24 +70,9 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   if (p.blockTimestampData) {
     blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
   } else {
-    const [blockTimestampResult, currentBlockNumberResult] = await client.multicall({
-      multicallAddress,
-      contracts: [
-        {
-          address: multicallAddress,
-          abi: abis.Multicall,
-          functionName: "getCurrentBlockTimestamp",
-        },
-        {
-          address: multicallAddress,
-          abi: abis.Multicall,
-          functionName: "getBlockNumber",
-        },
-      ],
-    });
-
-    blockTimestamp = blockTimestampResult.result!;
-    blockNumber = currentBlockNumberResult.result!;
+    const result = await getBlockTimestampAndNumber(client, multicallAddress);
+    blockTimestamp = result.blockTimestamp;
+    blockNumber = result.blockNumber;
   }
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);

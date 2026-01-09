@@ -67,6 +67,7 @@ export class ISigner implements ISignerInterface {
   private readonly signer: EthersSigner | ViemSigner | ViemPublicClient | PrivateKeyAccount;
 
   private _address: string;
+  private _initializationLock: Promise<void>;
 
   get address() {
     return this._address;
@@ -90,15 +91,25 @@ export class ISigner implements ISignerInterface {
     if (ethersSigner) {
       this.type = "ethers";
       this.signer = ethersSigner;
+
+      this._initializationLock = ethersSigner.getAddress().then((address) => {
+        this._address = address;
+      });
     } else if (viemSigner) {
       this.type = "viem";
       this.signer = viemSigner;
+      this._address = viemSigner.account.address;
+      this._initializationLock = Promise.resolve();
     } else if (viemPublicClient) {
       this.type = "viemPublicClient";
       this.signer = viemPublicClient;
+      this._address = zeroAddress;
+      this._initializationLock = Promise.resolve();
     } else if (privateKeyAccount) {
       this.type = "privateKeyAccount";
       this.signer = privateKeyAccount;
+      this._address = privateKeyAccount.address;
+      this._initializationLock = Promise.resolve();
     }
   }
 
@@ -106,32 +117,25 @@ export class ISigner implements ISignerInterface {
     ethersSigner,
     viemSigner,
     viemPublicClient,
+    privateKeyAccount,
   }: {
     ethersSigner?: EthersSigner;
     viemSigner?: ViemSigner;
     viemPublicClient?: ViemPublicClient;
+    privateKeyAccount?: PrivateKeyAccount;
   }) {
-    const gmxSigner = new ISigner({ ethersSigner, viemSigner, viemPublicClient });
-    await gmxSigner
-      .match<string>({
-        viem: (signer: ViemSigner) => signer.account.address,
-        ethers: (signer: EthersSigner) => signer.getAddress(),
-        viemPublicClient: () => zeroAddress,
-        privateKeyAccount: (signer: PrivateKeyAccount) => signer.address,
-      })
-      .then((address) => (gmxSigner._address = address));
+    const gmxSigner = new ISigner({ ethersSigner, viemSigner, viemPublicClient, privateKeyAccount });
+    await gmxSigner._initializationLock;
     return gmxSigner;
   }
 
   static fromPrivateKeyAccount(privateKeyAccount: PrivateKeyAccount): ISigner {
     const gmxSigner = new ISigner({ privateKeyAccount });
-    gmxSigner._address = privateKeyAccount.address;
     return gmxSigner;
   }
 
   static fromViemSigner(viemSigner: ViemSigner): ISigner {
     const gmxSigner = new ISigner({ viemSigner });
-    gmxSigner._address = viemSigner.account.address;
     return gmxSigner;
   }
 
