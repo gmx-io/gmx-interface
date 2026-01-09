@@ -485,6 +485,26 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf": {
       enabled: true,
     },
+    // AR/USD [WBTC-USDC]
+    "0xfa19f7d23a475575BD0270AE7de4FC6852442945": {
+      enabled: true,
+    },
+    // DASH/USD [WBTC-USDC]
+    "0x728Ff0679c89267434D6EF1824c8C8eED4aC3DBC": {
+      enabled: true,
+    },
+    // JTO/USD [WBTC-USDC]
+    "0x3B4689d69516b9D4b1aaf7545c6fC4d3ED70b70b": {
+      enabled: true,
+    },
+    // SYRUP/USD [WETH-USDC]
+    "0x8965e821c7C8c09c6eB3Cb9cCf7Eb6f386441EA2": {
+      enabled: true,
+    },
+    // CHZ/USD [WETH-USDC]
+    "0x3600592DdEd7e6E0B05029DfB637fFc5A85D6f6B": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
