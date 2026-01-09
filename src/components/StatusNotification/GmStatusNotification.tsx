@@ -250,7 +250,7 @@ export function GmStatusNotification({
     let createdTxnHash: string | undefined;
 
     if (operation === "deposit") {
-      text = t`Sending buy request.`;
+      text = t`Sending buy request...`;
 
       if (depositStatus?.createdTxnHash) {
         text = t`Buy request sent.`;
@@ -258,7 +258,7 @@ export function GmStatusNotification({
         createdTxnHash = depositStatus?.createdTxnHash;
       }
     } else if (operation === "withdrawal") {
-      text = t`Sending sell request.`;
+      text = t`Sending sell request...`;
 
       if (withdrawalStatus?.createdTxnHash) {
         text = t`Sell request sent.`;
@@ -266,7 +266,7 @@ export function GmStatusNotification({
         createdTxnHash = withdrawalStatus?.createdTxnHash;
       }
     } else {
-      text = t`Sending shift request.`;
+      text = t`Sending shift request...`;
 
       if (shiftStatus?.createdTxnHash) {
         text = t`Shift request sent.`;
@@ -284,7 +284,7 @@ export function GmStatusNotification({
     let txnHash: string | undefined;
 
     if (operation === "deposit") {
-      text = t`Fulfilling buy request.`;
+      text = t`Fulfilling buy request...`;
 
       if (depositStatus?.createdTxnHash) {
         status = "loading";
@@ -302,7 +302,7 @@ export function GmStatusNotification({
         txnHash = depositStatus?.cancelledTxnHash;
       }
     } else if (operation === "withdrawal") {
-      text = t`Fulfilling sell request.`;
+      text = t`Fulfilling sell request...`;
 
       if (withdrawalStatus?.createdTxnHash) {
         status = "loading";
@@ -320,7 +320,7 @@ export function GmStatusNotification({
         txnHash = withdrawalStatus?.cancelledTxnHash;
       }
     } else {
-      text = t`Fulfilling shift request.`;
+      text = t`Fulfilling shift request...`;
 
       if (shiftStatus?.createdTxnHash) {
         status = "loading";

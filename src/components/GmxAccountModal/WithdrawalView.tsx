@@ -630,6 +630,8 @@ export const WithdrawalView = () => {
 
         sendOrderTxnSubmittedMetric(metricData.metricId);
 
+        setIsVisibleOrView("main");
+
         const txResult = await receipt.wait();
 
         if (txResult.status === "success") {
@@ -637,7 +639,6 @@ export const WithdrawalView = () => {
           if (txResult.transactionHash && mockWithdrawalId) {
             setMultichainWithdrawalSentTxnHash(mockWithdrawalId, txResult.transactionHash);
           }
-          setIsVisibleOrView("main");
         } else if (txResult.status === "failed" && mockWithdrawalId) {
           setMultichainWithdrawalSentError(mockWithdrawalId);
         }
@@ -824,7 +825,7 @@ export const WithdrawalView = () => {
       buttonState = {
         text: (
           <>
-            <Trans>Loading</Trans>
+            <Trans>Loading...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

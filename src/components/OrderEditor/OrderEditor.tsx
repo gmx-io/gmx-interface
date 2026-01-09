@@ -413,7 +413,7 @@ export function OrderEditor(p: Props) {
 
   const error = useMemo(() => {
     if (isSubmitting) {
-      return t`Updating order`;
+      return t`Updating order...`;
     }
 
     if (isSwapOrderType(p.order.orderType)) {

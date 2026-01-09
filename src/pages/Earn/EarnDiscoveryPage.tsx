@@ -43,13 +43,12 @@ export default function EarnDiscoveryPage() {
             </h4>
             <p className="text-13 text-typography-secondary xl:max-w-[50%]">
               <Trans>
-                Welcome to GMX Earn! Learn how the GMX, GLV, and GM tokens work together to power a highly efficient,
-                decentralized trading experience. Explore the unique role of each token, and discover how you can stake
-                or provide liquidity to earn rewards — just like tens of thousands of other GMX users.
+                Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore
+                the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like
+                tens of thousands of other GMX users.
               </Trans>
             </p>
           </div>
-
           <div className="grid gap-8 xl:grid-cols-3">
             <EarnProductCard type="gmx" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
             <EarnProductCard type="glv" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
