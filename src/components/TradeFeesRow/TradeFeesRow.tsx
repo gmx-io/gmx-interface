@@ -447,7 +447,7 @@ export function TradeFeesRow(p: Props) {
     let text = t`Fees`;
 
     if (p.feesType !== "swap" && p.swapFees && p.swapFees.length > 0) {
-      text = t`Fees (Incl. Swap)`;
+      text = t`Fees (Including Swap)`;
     }
 
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {

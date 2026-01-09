@@ -331,7 +331,7 @@ function AffiliatesStats({
               <p className="title text-body-large">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-typography-secondary">
-                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% Rebate`}
                 </span>
               </p>
               <Button variant="secondary" onClick={open} size="small">
@@ -400,12 +400,12 @@ function AffiliatesStats({
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
-                                label={t`Volume on V1`}
+                                label={t`V1 Volume`}
                                 value={getUsdValue(stat?.v1Data.volume)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
-                                label={t`Volume on V2`}
+                                label={t`V2 Volume`}
                                 value={getUsdValue(stat?.v2Data.volume)}
                                 valueClassName="numbers"
                               />
@@ -425,12 +425,12 @@ function AffiliatesStats({
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
-                                label={t`Rebates on V1`}
+                                label={t`V1 Rebates`}
                                 value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
-                                label={t`Rebates on V2`}
+                                label={t`V2 Rebates`}
                                 value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
@@ -547,8 +547,8 @@ function AffiliatesStats({
                               {tokensWithoutPrices.length > 0 && (
                                 <>
                                   <Trans>
-                                    USD Value may not be accurate since the data does not contain prices for{" "}
-                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                    USD value may be inaccurate. Price data missing for{" "}
+                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}.
                                   </Trans>
                                   <br />
                                   <br />
@@ -606,7 +606,7 @@ function AffiliatesStats({
       ) : (
         <EmptyMessage
           tooltipText={t`Distribution history for claimed rebates and airdrops.`}
-          message={t`No rebates distribution history yet.`}
+          message={t`No rebates distribution history yet`}
         />
       )}
 

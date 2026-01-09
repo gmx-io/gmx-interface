@@ -110,7 +110,7 @@ export function PositionList(p: Props) {
                   <Trans>Mark Price</Trans>
                 </TableTh>
                 <TableTh className="w-[10%]">
-                  <Trans>Liq. Price</Trans>
+                  <Trans>Liquidation Price</Trans>
                 </TableTh>
                 {!isLoading && !p.hideActions && (
                   <>

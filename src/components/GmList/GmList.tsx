@@ -130,7 +130,7 @@ export function GmList({
       description={
         <div className="flex flex-col gap-16">
           <Trans>
-            Pools providing liquidity to specific GMX markets, supporting <br /> single-asset and native asset options.
+            Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options.
           </Trans>
           <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
@@ -208,7 +208,7 @@ export function GmList({
                         handle={t`SNAPSHOT`}
                         className="normal-case"
                         position="bottom-end"
-                        content={<Trans>Performance vs benchmark over selected period.</Trans>}
+                        content={<Trans>Performance vs benchmark over the selected period</Trans>}
                         variant="iconStroke"
                       />
                     </TableTh>

@@ -207,7 +207,7 @@ export function PoolSelector({
               value={searchKeyword}
               className={cx({ "mb-8": withFilters })}
               setValue={setSearchKeyword}
-              placeholder={t`Search Pool`}
+              placeholder={t`Search pool`}
               onKeyDown={_handleKeyDown}
             />
             {withFilters && (

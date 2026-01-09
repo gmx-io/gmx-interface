@@ -129,7 +129,7 @@ export function TradingSettings({
 
             <SettingButton
               title={<Trans>Express + One-Click</Trans>}
-              description={<Trans>CEX-like experience with Express reliability.</Trans>}
+              description={<Trans>Seamless trading with Express reliability.</Trans>}
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
               disabledTooltip={
@@ -139,9 +139,8 @@ export function TradingSettings({
               }
               info={
                 <Trans>
-                  GMX executes transactions for you without individual signing, providing a seamless, CEX-like
-                  experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas
-                  payments in {gasPaymentTokensText}.
+                  GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
+                  reliability, even during network congestion. Gas payments in {gasPaymentTokensText}.
                 </Trans>
               }
               chip={
@@ -180,9 +179,7 @@ export function TradingSettings({
               className="font-medium"
               variant="icon"
               content={
-                <Trans>
-                  Your GMX Account uses this network for trading. Balances and positions are network-specific.
-                </Trans>
+                <Trans>Network for your GMX Account and positions. Balances and positions don't transfer between networks.</Trans>
               }
               handle={<Trans>Settlement Chain</Trans>}
             />
@@ -242,7 +239,7 @@ export function TradingSettings({
           title={<Trans>TWAP Number of Parts</Trans>}
           description={
             <div>
-              <Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>
+              <Trans>Default parts for TWAP orders.</Trans>
             </div>
           }
           defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
@@ -258,15 +255,14 @@ export function TradingSettings({
             description={
               <div>
                 <Trans>
-                  The max network fee is set to a higher value to handle potential increases in gas price during order
-                  execution. Any excess network fee will be refunded to your account when the order is executed. Only
-                  applicable to GMX V2.
+                  Max network fee includes buffer for gas spikes. Unused fees refunded. Only applies to GMX V2.
                 </Trans>
                 <br />
                 <br />
                 <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee-buffer">
                   <Trans>Read more</Trans>
                 </ExternalLink>
+                .
               </div>
             }
             defaultValue={30}
@@ -282,7 +278,7 @@ export function TradingSettings({
             content={
               <div>
                 <Trans>
-                  Automatically cancel TP/SL orders when the position fully closes. Only applies to new orders created
+                  TP/SL orders are automatically cancelled when the position closes. Only applies to orders created
                   after enabling.
                 </Trans>
                 <br />

@@ -148,14 +148,14 @@ export function LeaderboardPositionsTable({
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PnL ($)`}
                 width={12}
-                tooltip={t`The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees.`}
+                tooltip={t`Total realized and unrealized profit and loss for the period, including price impact and fees but excluding swap fees.`}
                 tooltipPosition="bottom-end"
               />
               <TableHeaderCell title={t`Position`} width={12} tooltipPosition="bottom-end" />
               <TableHeaderCell {...getSorterProps("entryPrice")} title={t`Entry Price`} width={10} />
               <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`Size`} width={12} />
               <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={4} />
-              <TableHeaderCell title={t`Liq. Price`} width={10} />
+              <TableHeaderCell title={t`Liquidation Price`} width={10} />
             </TableTheadTr>
           </thead>
           <tbody>{content}</tbody>
@@ -333,7 +333,7 @@ const TableRow = memo(
           />
           {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
-              label={t`Price change to Liq.`}
+              label={t`Price Change to Liquidation`}
               value={
                 <span className="numbers">
                   {formatUsd(liquidationPrice - markPrice, {
@@ -442,7 +442,7 @@ const TableRow = memo(
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
-              handle={t`NA`}
+              handle={t`N/A`}
               handleClassName="numbers"
               variant="underline"
             />
@@ -474,7 +474,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
       msg = t`You have yet to reach the minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,
       })} to qualify for the rankings.`;
-    else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
+    else if (isCompetition) msg = t`No eligible trades during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
@@ -483,7 +483,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
     return (
       <TooltipWithPortal
         handleClassName="text-typography-secondary"
-        handle={t`NA`}
+        handle={t`N/A`}
         renderContent={tooltipContent}
         variant="underline"
       />

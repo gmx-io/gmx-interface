@@ -29,7 +29,7 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
         {sortedTokenBalancesDataArray.map((tokenBalancesData) => {
           const label =
             tokenBalancesData.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID
-              ? t`GMX account Balance`
+              ? t`GMX Account Balance`
               : t({
                   message: `${getChainName(tokenBalancesData.chainId)} Balance`,
                   comment: "chainname balance",

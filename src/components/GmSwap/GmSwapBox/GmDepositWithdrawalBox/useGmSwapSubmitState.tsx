@@ -246,7 +246,7 @@ export const useGmSwapSubmitState = ({
         const totalRequired = collateralAmount + (estimationError.params?.requiredAmount ?? 0n);
         const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
-        return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
+        return t`Insufficient ${symbol}: ${availableFormatted} available, ${requiredFormatted} required`;
       }
     } else if (estimationError) {
       return estimationError.name;
@@ -271,7 +271,7 @@ export const useGmSwapSubmitState = ({
   return useMemo((): SubmitButtonState => {
     if (!account) {
       return {
-        text: t`Connect Wallet`,
+        text: t`Connect wallet`,
         onSubmit: onConnectAccount,
       };
     }
@@ -304,7 +304,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: (
           <>
-            {t`Allow ${tokensToApproveSymbols[0]} to be spent`} <SpinnerIcon className="ml-4 animate-spin" />
+            {t`Approve ${tokensToApproveSymbols[0]}`} <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,
@@ -315,7 +315,7 @@ export const useGmSwapSubmitState = ({
       const onApprove = approve;
 
       return {
-        text: t`Allow ${tokensToApproveSymbols[0]} to be spent`,
+        text: t`Approve ${tokensToApproveSymbols[0]}`,
         onSubmit: onApprove,
       };
     }
@@ -431,7 +431,7 @@ function useExpressError({
       const availableFormatted = formatBalanceAmount(gmxAccountBalance, decimals);
       const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
-      return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
+      return t`Insufficient ${symbol}: ${availableFormatted} available, ${requiredFormatted} required`;
     }
 
     return undefined;

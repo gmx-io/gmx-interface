@@ -122,7 +122,7 @@ export function useShiftSubmitState({
 
     if (!account) {
       return {
-        text: t`Connect Wallet`,
+        text: t`Connect wallet`,
         onSubmit: () => openConnectModal?.(),
       };
     }
@@ -165,7 +165,7 @@ export function useShiftSubmitState({
       return {
         text: (
           <>
-            {t`Allow ${tokenSymbol} to be spent`} <SpinnerIcon className="ml-4 animate-spin" />
+            {t`Approve ${tokenSymbol}`} <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,
@@ -211,7 +211,7 @@ export function useShiftSubmitState({
       const tokenSymbol = getGmSwapBoxApproveTokenSymbol(address, tokensData, glvOrMarketInfoData);
 
       return {
-        text: t`Allow ${tokenSymbol} to be spent`,
+        text: t`Approve ${tokenSymbol}`,
         onSubmit: onApprove,
       };
     }

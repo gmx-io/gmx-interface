@@ -474,7 +474,7 @@ function TriggerPrice({
                     <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
                   </div>
                 )}
-                {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
+                {t`Receive at least ${toAmountText} if executed. Price updates in real time based on fees and price impact.`}
               </>
             )}
           />
@@ -513,7 +513,7 @@ function TriggerPrice({
             label={t`Acceptable Price`}
             value={
               isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
-                ? "NA"
+                ? "N/A"
                 : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                     displayDecimals: priceDecimals,
                     visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -678,7 +678,7 @@ function OrderItemLarge({
           <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="ghost" onClick={setEditingOrderKey}>
-                <EditIcon title={t`Edit order`} className="size-16" />
+                <EditIcon title={t`Edit Order`} className="size-16" />
               </Button>
             )}
             {onCancelOrder ? (

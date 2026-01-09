@@ -150,40 +150,35 @@ export default function EarnAdditionalOpportunitiesPage() {
   const emptyStateMessage = useMemo(() => {
     if (chainId === BOTANIX) {
       return (
-        <Trans>No additional opportunities at this time on Botanix. Change to Arbitrum or Avalanche to see more.</Trans>
+        <Trans>No additional opportunities on Botanix. Switch to Arbitrum or Avalanche to see more</Trans>
       );
     }
 
     if (allOpportunities.length === 0) {
-      return <Trans>No additional opportunities are available on this chain yet.</Trans>;
+      return <Trans>No additional opportunities on this chain yet</Trans>;
     }
 
     if (activeFilter === "for-me") {
       if (userAssets.size === 0) {
         return (
-          <Trans>
-            No eligible holdings detected. Acquire or stake GMX, GLV, or GM tokens to unlock personalized opportunities.
-          </Trans>
+          <Trans>No eligible holdings. Acquire or stake GMX, GLV, or GM tokens to see personalized opportunities</Trans>
         );
       }
 
-      return <Trans>No opportunities currently match your holdings. Try another filter or check back soon.</Trans>;
+      return <Trans>No opportunities match your holdings. Try another filter or check back later</Trans>;
     }
 
     if (searchQuery.trim().length > 0) {
-      return <Trans>No opportunities match your search.</Trans>;
+      return <Trans>No opportunities match your search</Trans>;
     }
 
-    return <Trans>No opportunities match the selected filters.</Trans>;
+    return <Trans>No opportunities match the selected filters</Trans>;
   }, [activeFilter, allOpportunities.length, chainId, searchQuery, userAssets.size]);
 
   return (
     <EarnPageLayout>
       <ColorfulBanner>
-        <Trans>
-          Maximize your earnings on your ecosystem tokens (GMX, GLV and GM) with the following integrated partner
-          protocols
-        </Trans>
+        <Trans>Earn more on your GMX, GLV, and GM tokens with integrated partner protocols</Trans>
       </ColorfulBanner>
 
       <div className="flex flex-col gap-8">

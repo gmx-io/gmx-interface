@@ -277,7 +277,7 @@ export function PositionItem(p: Props) {
                 <br />
                 <StatsTooltipRow
                   showDollar={false}
-                  label={t`Current Borrow Fee / Day`}
+                  label={t`Borrow Fee / Day`}
                   value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
                   valueClassName="numbers"
                   textClassName={cx({
@@ -286,7 +286,7 @@ export function PositionItem(p: Props) {
                 />
                 <StatsTooltipRow
                   showDollar={false}
-                  label={t`Current Funding Fee / Day`}
+                  label={t`Funding Fee / Day`}
                   value={formatDeltaUsd(fundingFeeRateUsd)}
                   valueClassName="numbers"
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
@@ -336,7 +336,7 @@ export function PositionItem(p: Props) {
       if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
         const symbol = p.position.collateralToken.symbol;
         const indexName = p.position.indexName;
-        liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} short position size, the collateral value will increase to cover any negative PnL, so there is no liquidation price.`;
+        liqPriceWarning = t`Your ${symbol} collateral exceeds the ${indexName} short position size. Collateral value rises with the index, covering any losses—no liquidation price.`;
       } else if (
         p.position.isLong &&
         p.position.collateralToken.isStable &&
@@ -344,7 +344,7 @@ export function PositionItem(p: Props) {
       ) {
         const symbol = p.position.collateralToken.symbol;
         const indexName = p.position.indexName;
-        liqPriceWarning = t`Since your position's collateral is in ${symbol}, with an initial value higher than the ${indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price.`;
+        liqPriceWarning = t`Your ${symbol} collateral exceeds the ${indexName} long position size. Stable collateral covers any losses—no liquidation price.`;
       }
     }
 
@@ -698,7 +698,7 @@ export function PositionItem(p: Props) {
           </div>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
-              <Trans>Liq. Price</Trans>
+              <Trans>Liquidation Price</Trans>
             </div>
             <div>{renderLiquidationPrice()}</div>
           </div>
@@ -719,7 +719,7 @@ export function PositionItem(p: Props) {
                   <Trans>Close</Trans>
                 </Button>
                 <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onEditCollateralClick}>
-                  <Trans>Edit Collateral</Trans>
+                  <Trans>Edit collateral</Trans>
                 </Button>
                 <Button
                   variant="secondary"

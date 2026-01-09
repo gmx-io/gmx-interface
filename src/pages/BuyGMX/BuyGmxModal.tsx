@@ -81,7 +81,7 @@ export function BuyGmxModal({
         </BuyGmxModalButton>
         <div className="flex flex-col gap-8">
           <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Buy on other platforms</Trans>
+            <Trans>Buy on Other Platforms</Trans>
           </span>
           <div className="grid grid-cols-2 gap-12">
             {BUY_GMX_MODAL_LINKS.map((button) => {

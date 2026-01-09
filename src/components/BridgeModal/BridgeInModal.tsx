@@ -204,7 +204,7 @@ export function BridgeInModal({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!account || !glvOrMarketAddress || bridgeInAmount === undefined || !bridgeInChain) {
-      helperToast.error(t`Error submitting deposit`);
+      helperToast.error(t`Deposit failed`);
       return;
     }
     try {
@@ -220,7 +220,7 @@ export function BridgeInModal({
         });
       });
     } catch (error) {
-      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Error submitting deposit` });
+      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Deposit failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
       });

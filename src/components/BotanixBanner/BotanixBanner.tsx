@@ -27,7 +27,7 @@ export function BotanixBanner() {
       <p>
         <BotanixIcon className="-ml-4 inline-block pb-4" />
         <Trans>
-          <span className="text-yellow-500">Botanix</span> currently only supports
+          <span className="text-yellow-500">Botanix</span> only supports
         </Trans>{" "}
         <Link to="/trade" className="underline">
           <Trans>V2 trading</Trans>
@@ -37,12 +37,12 @@ export function BotanixBanner() {
           <Trans>providing liquidity</Trans>
         </Link>{" "}
         <Trans>
-          using GLV and GM tokens. Buying or staking GMX, or using referrals, is not supported at this time.
+          using GLV and GM tokens. Buying or staking GMX and using referrals are not yet supported
         </Trans>
       </p>
       <p>
         <Trans>
-          Please switch to the{" "}
+          Switch to{" "}
           <span className="cursor-pointer" onClick={makeOnChainClickHandler(ARBITRUM)}>
             <ArbitrumIcon className="inline-block pb-4" />
             <span className="underline">Arbitrum</span>
@@ -52,7 +52,7 @@ export function BotanixBanner() {
             <AvalancheIcon className="inline-block pb-4" />
             <span className="underline">Avalanche</span>
           </span>{" "}
-          deployment for those features.
+          for those features
         </Trans>
       </p>
     </div>

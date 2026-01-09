@@ -112,7 +112,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
 
     const orderStatus = orderStatusByOrder.get(order);
 
-    let text = t`Sending settle request`;
+    let text = t`Sending settle request...`;
     let status: TransactionStatusType = "loading";
 
     if (orderStatus?.createdTxnHash) {
@@ -161,13 +161,13 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
           }
 
           if (orderStatus?.executedTxnHash) {
-            text = <Trans>{positionName} Fees settled.</Trans>;
+            text = <Trans>{positionName} Fees settled</Trans>;
             status = "success";
             txnHash = orderStatus?.executedTxnHash;
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = <Trans>{positionName} Failed to settle.</Trans>;
+            text = <Trans>{positionName} Failed to settle</Trans>;
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }

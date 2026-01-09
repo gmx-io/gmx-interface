@@ -182,8 +182,8 @@ export function StakeModal(props: {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, stakeMethodName, [stakeAmount], {
-      sentMsg: t`Stake submitted.`,
-      failMsg: t`Stake failed.`,
+      sentMsg: t`Stake submitted`,
+      failMsg: t`Stake failed`,
       setPendingTxns,
     })
       .then(() => {
@@ -210,9 +210,9 @@ export function StakeModal(props: {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, unstakeMethodName, [unstakeAmount], {
-      sentMsg: t`Unstake submitted.`,
-      failMsg: t`Unstake failed.`,
-      successMsg: t`Unstake completed.`,
+      sentMsg: t`Unstake submitted`,
+      failMsg: t`Unstake failed`,
+      successMsg: t`Unstake completed`,
       setPendingTxns,
     })
       .then(() => {
@@ -248,10 +248,10 @@ export function StakeModal(props: {
       }
       if (isApproving || needApproval) {
         if (isApproving) {
-          return <Trans>Pending {tokenSymbol} approval</Trans>;
+          return <Trans>Approving {tokenSymbol}...</Trans>;
         }
 
-        return <Trans>Approve {tokenSymbol} to be spent</Trans>;
+        return <Trans>Approve {tokenSymbol}</Trans>;
       }
       if (isStaking) {
         return <Trans>Staking</Trans>;
@@ -392,7 +392,7 @@ export function StakeModal(props: {
 
         {showStakeBonus && (
           <AlertInfo type="info">
-            <Trans>You will earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action.</Trans>
+            <Trans>Earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action</Trans>
           </AlertInfo>
         )}
 
@@ -409,7 +409,7 @@ export function StakeModal(props: {
 
         {activeTab === "unstake" && reservedAmount !== undefined && reservedAmount > 0 && (
           <AlertInfo type="info">
-            <Trans>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</Trans>
+            <Trans>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting</Trans>
           </AlertInfo>
         )}
 
@@ -420,7 +420,7 @@ export function StakeModal(props: {
                 <span>Unstaking will burn {formatAmount(unstakeAmount, 18, 2, true)} voting power.&nbsp;</span>
               ) : null}
               <span>
-                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards with this action.
+                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards with this action
               </span>
             </Trans>
           </AlertInfo>

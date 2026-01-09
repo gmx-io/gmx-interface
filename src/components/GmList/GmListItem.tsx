@@ -232,7 +232,7 @@ export function GmListItem({
         </div>
 
         <Button variant="secondary" className="mt-12" to={`/pools/details?market=${marketOrGlvTokenAddress}`}>
-          <Trans>View Details</Trans>
+          <Trans>View details</Trans>
         </Button>
       </div>
     );

@@ -110,7 +110,7 @@ export const TransferDetailsView = () => {
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error">
-          <Trans>Your deposit from {sourceChainName} was not executed due to an error</Trans>
+          <Trans>Deposit from {sourceChainName} failed</Trans>
         </AlertInfoCard>
       ) : null}
       <SyntheticsInfoRow
@@ -206,7 +206,7 @@ export const TransferDetailsView = () => {
 
       <div className="grow" />
       <Button variant="secondary" onClick={handleRepeatTransaction}>
-        <Trans>Repeat Transaction</Trans>
+        <Trans>Repeat transaction</Trans>
       </Button>
     </div>
   );

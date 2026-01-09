@@ -107,7 +107,7 @@ export async function createBridgeInTxn({
         args: [sendParams, sendQuoteFromNative(nativeFee), account],
       }),
       value,
-      msg: t`Sent transfer in transaction`,
+      msg: t`Bridge transfer sent`,
     });
 
     await txnResult.wait();

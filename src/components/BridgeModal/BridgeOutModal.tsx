@@ -155,15 +155,20 @@ export function BridgeOutModal({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!account || !bridgeOutChain || !bridgeOutParams) {
-      helperToast.error(t`Error submitting withdrawal`);
+    if (!account) {
+      helperToast.error(t`Wallet disconnected. Please reconnect and retry`);
+      return;
+    }
+
+    if (!bridgeOutChain || !bridgeOutParams) {
+      helperToast.error(t`Missing parameters. Please refresh and retry`);
       return;
     }
 
     const expressTxnParams = await expressTxnParamsAsyncResult.promise;
 
     if (expressTxnParams === undefined) {
-      helperToast.error(t`Missing required parameters`);
+      helperToast.error(t`Missing parameters. Please refresh and retry`);
       return;
     }
 
@@ -182,7 +187,7 @@ export function BridgeOutModal({
         });
       });
     } catch (error) {
-      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Error submitting withdrawal` });
+      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Withdrawal failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
       });
