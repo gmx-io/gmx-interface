@@ -122,8 +122,8 @@ export function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
             <Trans>
-              You have an existing position with {collateralWithPosition.symbol} as collateral. This Order will not be
-              valid for that Position.{" "}
+              You have an existing position with {collateralWithPosition.symbol} as collateral. This order will not be
+              valid for that position.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {

@@ -191,13 +191,14 @@ export function getWithdrawalAmounts(p: {
       if (isSameCollaterals) {
         const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
         values.longTokenAmount = positiveAmount / 2n;
+        values.longTokenBeforeSwapAmount = values.longTokenAmount;
         values.shortTokenAmount = positiveAmount - values.longTokenAmount;
+        values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
         values.longTokenUsd = convertToUsd(values.longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = convertToUsd(values.shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
-        values.longTokenBeforeSwapAmount = values.longTokenUsd;
-        values.shortTokenBeforeSwapAmount = values.shortTokenUsd;
       } else if (strategy === "byLongCollateral" && longPoolUsd > 0) {
         values.longTokenAmount = longTokenAmount;
+        values.longTokenBeforeSwapAmount = values.longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenUsd = bigMath.mulDiv(values.longTokenUsd, shortPoolUsd, longPoolUsd);
         values.shortTokenAmount = convertToTokenAmount(
@@ -205,8 +206,10 @@ export function getWithdrawalAmounts(p: {
           shortToken.decimals,
           shortToken.prices.maxPrice
         )!;
+        values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
       } else if (strategy === "byShortCollateral" && shortPoolUsd > 0) {
         values.shortTokenAmount = shortTokenAmount;
+        values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
         values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
         values.longTokenUsd = bigMath.mulDiv(values.shortTokenUsd, longPoolUsd, shortPoolUsd);
         values.longTokenAmount = convertToTokenAmount(
@@ -214,10 +217,13 @@ export function getWithdrawalAmounts(p: {
           longToken.decimals,
           longToken.prices.maxPrice
         )!;
+        values.longTokenBeforeSwapAmount = values.longTokenAmount;
       } else if (strategy === "byCollaterals") {
         values.longTokenAmount = longTokenAmount;
+        values.longTokenBeforeSwapAmount = values.longTokenAmount;
         values.longTokenUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.maxPrice)!;
         values.shortTokenAmount = shortTokenAmount;
+        values.shortTokenBeforeSwapAmount = values.shortTokenAmount;
         values.shortTokenUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.maxPrice)!;
 
         values.uiFeeUsd = applyFactor(values.longTokenUsd + values.shortTokenUsd, uiFeeFactor);

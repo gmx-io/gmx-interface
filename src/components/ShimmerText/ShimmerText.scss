@@ -1,0 +1,30 @@
+@property --offset {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+$white: var(--color-typography-primary);
+$gray: rgba(var(--color-typography-primary-raw) / 0.75);
+
+.shimmer-text {
+  --offset: 0px;
+  background: linear-gradient(
+    to right,
+    $gray calc(var(--offset) + 0px),
+    $white calc(var(--offset) + 26px),
+    $gray calc(var(--offset) + 52px)
+  );
+  background-clip: text;
+  color: transparent;
+  animation: scroll 1.5s linear infinite alternate;
+}
+
+@keyframes scroll {
+  from {
+    --offset: -52px;
+  }
+  to {
+    --offset: 100%;
+  }
+}

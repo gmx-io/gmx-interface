@@ -19,14 +19,12 @@ export const selectMultichainMarketTokenBalances = createSelector((q): Multichai
   for (const tokenAddress in progressiveMarketTokensData) {
     const token = progressiveMarketTokensData[tokenAddress];
 
+    const price = token.prices ? getMidPrice(token.prices) : 0n;
+
     const walletBalance = token.walletBalance ?? 0n;
-    const walletBalanceUsd = token.prices
-      ? convertToUsd(walletBalance, token.decimals, getMidPrice(token.prices))!
-      : 0n;
+    const walletBalanceUsd = convertToUsd(walletBalance, token.decimals, price)!;
     const gmxAccountBalance = token.gmxAccountBalance ?? 0n;
-    const gmxAccountBalanceUsd = token.prices
-      ? convertToUsd(gmxAccountBalance, token.decimals, getMidPrice(token.prices))!
-      : 0n;
+    const gmxAccountBalanceUsd = convertToUsd(gmxAccountBalance, token.decimals, price)!;
     const multichainBalances: MultichainMarketTokenBalances = {
       totalBalance: walletBalance + gmxAccountBalance,
       totalBalanceUsd: walletBalanceUsd + gmxAccountBalanceUsd,
@@ -48,7 +46,7 @@ export const selectMultichainMarketTokenBalances = createSelector((q): Multichai
       if (balance === undefined) {
         continue;
       }
-      const balanceUsd = token.prices ? convertToUsd(balance, token.decimals, getMidPrice(token.prices))! : 0n;
+      const balanceUsd = convertToUsd(balance, token.decimals, price)!;
       multichainBalances.balances[sourceChainId as unknown as AnyChainId] = {
         balance: balance,
         balanceUsd: balanceUsd,

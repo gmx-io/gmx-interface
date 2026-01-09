@@ -17,7 +17,7 @@ export function NpsModal() {
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
       return {
-        text: t`Submitting`,
+        text: t`Submitting...`,
         disabled: true,
       };
     }

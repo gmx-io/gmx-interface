@@ -449,7 +449,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Loading Express params`}
+            {t`Loading Express params...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

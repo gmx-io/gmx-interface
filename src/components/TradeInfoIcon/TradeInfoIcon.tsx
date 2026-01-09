@@ -61,7 +61,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
             <Trans>
-              {typeString} Long Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a short position when
+              {typeString} Long Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a long position when
               the price is below the trigger price.
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">

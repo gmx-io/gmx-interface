@@ -168,7 +168,7 @@ async function estimateArbitraryGasLimit({
                     multichainBalanceKey(account, gasPaymentParams.gasPaymentTokenAddress),
                     DATASTORE_SLOT_INDEXES.uintValues
                   ),
-                  value: toHex(maxUint256),
+                  value: toHex(maxUint256 / 100n, { size: 32 }),
                 },
               ],
             },

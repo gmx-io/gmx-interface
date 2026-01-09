@@ -93,6 +93,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
@@ -1086,8 +1087,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
               <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
                 <Trans>
-                  The actual execution price may differ from the set limit price due to fees and price impact. This
-                  ensures that you receive at least the minimum receive amount.
+                  The execution price may vary from your set limit price due to fees and price impact, ensuring you
+                  receive the displayed minimum receive amount.{" "}
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
+                    Read more
+                  </ExternalLink>
+                  .
                 </Trans>
               </AlertInfoCard>
             )}

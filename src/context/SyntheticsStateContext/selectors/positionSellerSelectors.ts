@@ -363,6 +363,7 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
     marketsInfoData,
     chainId,
     externalSwapQuoteParams: undefined,
+    allowSameTokenSwap: false,
   });
 });
 

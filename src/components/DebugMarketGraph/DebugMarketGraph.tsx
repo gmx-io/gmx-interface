@@ -40,7 +40,6 @@ function DebugMarketGraph() {
   const wrappedToken = getWrappedToken(chainId);
   const isWrap = fromToken?.address === NATIVE_TOKEN_ADDRESS && toTokenWrappedAddress === wrappedToken.address;
   const isUnwrap = fromToken?.address === wrappedToken.address && toTokenWrappedAddress === NATIVE_TOKEN_ADDRESS;
-  const isSameToken = fromToken?.address !== undefined && fromToken?.address === toToken?.address;
 
   const allRouteTypes = useMemo(() => {
     return fromTokenAddress && toTokenWrappedAddress
@@ -137,9 +136,6 @@ function DebugMarketGraph() {
   }
   if (isUnwrap) {
     return <div className="flex justify-center gap-8 overflow-auto p-16">Its just an unwrap</div>;
-  }
-  if (isSameToken) {
-    return <div className="flex justify-center gap-8 overflow-auto p-16">Its a same token</div>;
   }
 
   return (
