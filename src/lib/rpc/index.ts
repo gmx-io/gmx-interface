@@ -1,8 +1,7 @@
-import { ethers, JsonRpcProvider, Network, Signer, WebSocketProvider } from "ethers";
+import { ethers, JsonRpcProvider, Network, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
 import { AnyChainId, AVALANCHE_FUJI } from "config/chains";
-import { isDevelopment } from "config/env";
 import { getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { getCurrentExpressRpcUrl, getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/useRpcUrls";
@@ -38,26 +37,6 @@ export function getWsUrl(chainId: AnyChainId): string | undefined {
   }
 
   throw new Error(`Unsupported websocket URL for chain id: ${chainId}`);
-}
-
-export function getWsProvider(chainId: AnyChainId): WebSocketProvider | JsonRpcProvider {
-  const network = Network.from(chainId);
-
-  if (chainId === AVALANCHE_FUJI) {
-    const provider = new ethers.JsonRpcProvider(getCurrentRpcUrls(AVALANCHE_FUJI).primary, network, {
-      staticNetwork: network,
-    });
-    provider.pollingInterval = 2000;
-    return provider;
-  }
-
-  const wsUrl = getWsUrl(chainId);
-
-  if (!wsUrl) {
-    throw new Error(`Unsupported websocket URL for chain id: ${chainId}`);
-  }
-
-  return new ethers.WebSocketProvider(wsUrl, network, { staticNetwork: network });
 }
 
 export function getFallbackProvider(chainId: number) {
@@ -113,43 +92,4 @@ export function useJsonRpcProvider(chainId: number | undefined, { isExpress = fa
   }, [chainId, rpcUrl]);
 
   return { provider };
-}
-
-export function isWebsocketProvider(provider: any): provider is WebSocketProvider {
-  return Boolean(provider?.websocket);
-}
-
-export enum WSReadyState {
-  CONNECTING = 0,
-  OPEN = 1,
-  CLOSING = 2,
-  CLOSED = 3,
-}
-
-const readyStateByEnum = {
-  [WSReadyState.CONNECTING]: "connecting",
-  [WSReadyState.OPEN]: "open",
-  [WSReadyState.CLOSING]: "closing",
-  [WSReadyState.CLOSED]: "closed",
-};
-
-export function isProviderInClosedState(wsProvider: WebSocketProvider) {
-  return [WSReadyState.CLOSED, WSReadyState.CLOSING].includes(wsProvider.websocket.readyState);
-}
-
-export function closeWsConnection(wsProvider: WebSocketProvider) {
-  if (isDevelopment()) {
-    // eslint-disable-next-line no-console
-    console.log(
-      "closing ws connection, state =",
-      readyStateByEnum[wsProvider.websocket.readyState] ?? wsProvider.websocket.readyState
-    );
-  }
-
-  if (isProviderInClosedState(wsProvider)) {
-    return;
-  }
-
-  wsProvider.removeAllListeners();
-  wsProvider.websocket.close();
 }

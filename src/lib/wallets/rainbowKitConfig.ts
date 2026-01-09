@@ -13,12 +13,13 @@ import {
   walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 import once from "lodash/once";
-import { createPublicClient, fallback, http, PublicClient, Transport, webSocket } from "viem";
+import { createPublicClient, fallback, http, PublicClient, Transport, webSocket, WebSocketTransport } from "viem";
 
 import { getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getRpcProviders, RpcConfig } from "config/rpc";
 import { RpcPurpose } from "config/rpc";
+import { metrics, ViemWsClientConnected, ViemWsClientDisconnected, ViemWsClientError } from "lib/metrics";
 import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
@@ -104,13 +105,15 @@ export function getPublicClientWithRpc(
   chainId: number,
   options: { withWs?: boolean; withExpress?: boolean } = { withWs: false, withExpress: false }
 ): PublicClient {
-  const key = `chainId:${chainId}:ws:${options.withWs ? 1 : 0}:express:${options.withExpress ? 1 : 0}`;
+  const normalizedOptions = options.withWs ? { withWs: true, withExpress: false } : options;
+  const key = `chainId:${chainId}:ws:${normalizedOptions.withWs ? 1 : 0}:express:${normalizedOptions.withExpress ? 1 : 0}`;
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
   }
 
   let transport: Transport;
-  if (options.withWs) {
+  let isWsTransport = false;
+  if (normalizedOptions.withWs) {
     const wsUrl = getWsUrl(chainId as AnyChainId);
     if (!wsUrl) {
       // eslint-disable-next-line no-console
@@ -118,8 +121,10 @@ export function getPublicClientWithRpc(
       transport = getRpcTransport(chainId as AnyChainId, "default");
     } else {
       transport = webSocket(wsUrl);
+
+      isWsTransport = true;
     }
-  } else if (options.withExpress) {
+  } else if (normalizedOptions.withExpress) {
     transport = getRpcTransport(chainId as AnyChainId, "express");
   } else {
     transport = getRpcTransport(chainId as AnyChainId, "default");
@@ -129,6 +134,69 @@ export function getPublicClientWithRpc(
     transport,
     chain: getViemChain(chainId),
   });
+
   PUBLIC_CLIENTS_CACHE.set(key, publicClient);
+
+  if (isWsTransport) {
+    setupWebSocketClientMetrics(publicClient, chainId);
+  }
+
   return publicClient;
+}
+
+function setupWebSocketClientMetrics(publicClient: PublicClient, chainId: number) {
+  (
+    publicClient.transport as unknown as ReturnType<WebSocketTransport>["config"] &
+      ReturnType<WebSocketTransport>["value"]
+  )
+    .getRpcClient()
+    .then((client) => {
+      const rpcUrl = client.url;
+      const pushConnectedEvent = () => {
+        metrics.pushEvent<ViemWsClientConnected>({
+          event: "viemWsClient.connected",
+          isError: false,
+          data: {
+            chainId,
+            rpcUrl,
+          },
+        });
+      };
+
+      const pushDisconnectedEvent = () => {
+        metrics.pushEvent<ViemWsClientDisconnected>({
+          event: "viemWsClient.disconnected",
+          isError: false,
+          data: {
+            chainId,
+            rpcUrl,
+          },
+        });
+      };
+
+      const pushErrorEvent = () => {
+        metrics.pushEvent<ViemWsClientError>({
+          event: "viemWsClient.error",
+          isError: true,
+          data: {
+            chainId,
+            rpcUrl,
+          },
+        });
+      };
+
+      if (client.socket.OPEN) {
+        pushConnectedEvent();
+      } else {
+        client.socket.addEventListener("open", pushConnectedEvent, { once: true });
+      }
+
+      if (client.socket.CLOSED) {
+        pushDisconnectedEvent();
+      } else {
+        client.socket.addEventListener("close", pushDisconnectedEvent, { once: true });
+      }
+
+      client.socket.addEventListener("error", pushErrorEvent);
+    });
 }

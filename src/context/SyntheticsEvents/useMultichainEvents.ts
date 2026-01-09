@@ -22,7 +22,6 @@ import {
   subscribeToOftReceivedEvents,
   subscribeToOftSentEvents,
 } from "context/WebsocketContext/subscribeToEvents";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
@@ -92,8 +91,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
   const { chainId, srcChainId } = useChainId();
 
   const { address: currentAccount } = useAccount();
-
-  const { wsProvider } = useWebsocketProvider();
 
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
   const [multichainFundingPendingIds, setMultichainFundingPendingIds] = useState<Record<string, string>>(EMPTY_OBJECT);
@@ -289,12 +286,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   useEffect(
     function subscribeOftReceivedEvents() {
-      if (
-        hasPageLostFocus ||
-        !wsProvider ||
-        !isSettlementChain(chainId) ||
-        pendingReceiveDepositGuidsRef.current.length === 0
-      ) {
+      if (hasPageLostFocus || !isSettlementChain(chainId) || pendingReceiveDepositGuidsRef.current.length === 0) {
         return;
       }
 
@@ -351,17 +343,12 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         clearTimeout(timeoutId);
       };
     },
-    [chainId, hasPageLostFocus, pendingReceiveDepositGuidsKey, wsProvider]
+    [chainId, hasPageLostFocus, pendingReceiveDepositGuidsKey]
   );
 
   useEffect(
     function subscribeComposeDeliveredEvents() {
-      if (
-        hasPageLostFocus ||
-        !wsProvider ||
-        !isSettlementChain(chainId) ||
-        pendingExecuteDepositGuidsRef.current.length === 0
-      ) {
+      if (hasPageLostFocus || !isSettlementChain(chainId) || pendingExecuteDepositGuidsRef.current.length === 0) {
         return;
       }
 
@@ -417,7 +404,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         clearTimeout(timeoutId);
       };
     },
-    [chainId, hasPageLostFocus, pendingExecuteDepositGuidsKey, scheduleMultichainFundingItemClearing, wsProvider]
+    [chainId, hasPageLostFocus, pendingExecuteDepositGuidsKey, scheduleMultichainFundingItemClearing]
   );
 
   //#endregion Deposits
@@ -538,13 +525,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
   useEffect(
     function subscribeSettlementChainOftSentEvents() {
-      if (
-        hasPageLostFocus ||
-        !currentAccount ||
-        !wsProvider ||
-        !isSettlementChain(chainId) ||
-        srcChainId === undefined
-      ) {
+      if (hasPageLostFocus || !currentAccount || !isSettlementChain(chainId) || srcChainId === undefined) {
         return;
       }
 
@@ -579,7 +560,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         unsubscribeFromOftSentEvents();
       };
     },
-    [chainId, currentAccount, hasPageLostFocus, setSelectedTransferGuid, srcChainId, wsProvider]
+    [chainId, currentAccount, hasPageLostFocus, setSelectedTransferGuid, srcChainId]
   );
 
   useEffect(

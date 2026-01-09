@@ -92,22 +92,42 @@ export type AccountInitedEvent = {
 };
 
 // Websockets
-export type WsProviderConnected = {
-  event: "wsProvider.connected";
+export type ViemWsClientConnected = {
+  event: "viemWsClient.connected";
   isError: false;
-  data: {};
+  data: {
+    chainId: number;
+    rpcUrl: string;
+  };
 };
 
-export type WsProviderDisconnected = {
-  event: "wsProvider.disconnected";
+export type ViemWsClientDisconnected = {
+  event: "viemWsClient.disconnected";
   isError: false;
-  data: {};
+  data: {
+    chainId: number;
+    rpcUrl: string;
+  };
 };
 
-export type WsProviderHealthCheckFailed = {
-  event: "wsProvider.healthCheckFailed";
+export type ViemWsClientHealthCheckFailed = {
+  event: "viemWsClient.healthCheckFailed";
   isError: false;
-  data: {};
+  data: {
+    chainId: number;
+    rpcUrl: string;
+    actualSubscriptions: number;
+    intendedSubscriptions: number;
+  };
+};
+
+export type ViemWsClientError = {
+  event: "viemWsClient.error";
+  isError: true;
+  data: {
+    chainId: number;
+    rpcUrl: string;
+  };
 };
 
 // Loading measurements

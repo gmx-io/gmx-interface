@@ -14,7 +14,6 @@ import {
   subscribeToTransferEvents,
   subscribeToV2Events,
 } from "context/WebsocketContext/subscribeToEvents";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
@@ -106,7 +105,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { chainId, srcChainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const provider = getProvider(undefined, chainId);
-  const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
@@ -916,7 +914,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (hasV2LostFocus || !wsProvider || !currentAccount) {
+      if (hasV2LostFocus || !currentAccount) {
         return;
       }
 
@@ -930,12 +928,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         unsubscribe();
       };
     },
-    [chainId, currentAccount, hasV2LostFocus, wsProvider]
+    [chainId, currentAccount, hasV2LostFocus]
   );
 
   useEffect(
     function subscribeTokenTransferEvents() {
-      if (hasPageLostFocus || !wsProvider || !currentAccount || !marketTokensAddressesString) {
+      if (hasPageLostFocus || !currentAccount || !marketTokensAddressesString) {
         return;
       }
 
@@ -971,13 +969,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       marketTokensAddressesString,
       setOptimisticTokensBalancesUpdates,
       setWebsocketTokenBalancesUpdates,
-      wsProvider,
     ]
   );
 
   useEffect(
     function subscribeApproval() {
-      if (!wsProvider || !currentAccount) {
+      if (!currentAccount) {
         return;
       }
 
@@ -1005,7 +1002,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         unsubscribeApproval();
       };
     },
-    [chainId, currentAccount, wsProvider]
+    [chainId, currentAccount]
   );
 
   useEffect(() => {
