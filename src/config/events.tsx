@@ -30,6 +30,19 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "listing-01-09-26",
+    isActive: true,
+    startDate: "09 Jan 2026, 10:00",
+    endDate: "16 Jan 2026, 12:00",
+    title: "AR (Arweave), DASH, JTO (Jito), SYRUP (Maple Finance) and CHZ (Chiliz) markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span> or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+  },
+  {
     id: "mon-sky-zec-listing",
     isActive: true,
     startDate: "22 Dec 2025, 16:10",
