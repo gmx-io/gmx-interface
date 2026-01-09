@@ -9,7 +9,7 @@ import {
   useInteractions,
 } from "@floating-ui/react";
 import cx from "classnames";
-import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import NumberInput from "components/NumberInput/NumberInput";
 import Portal from "components/Portal/Portal";
@@ -84,6 +84,12 @@ export default function SuggestionInput({
     onBlur?.();
   }, [onBlur]);
 
+  const handleReferencePointerDown = useCallback((e: PointerEvent<Element>) => {
+    e.stopPropagation();
+    inputRef.current?.focus();
+    setIsPanelVisible(true);
+  }, []);
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       const target = e.target as HTMLInputElement;
@@ -113,9 +119,8 @@ export default function SuggestionInput({
     <div className="Suggestion-input-wrapper">
       <div
         className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !suffix })}
-        onClick={() => inputRef.current?.focus()}
         ref={refs.setReference}
-        {...getReferenceProps()}
+        {...getReferenceProps({ onPointerDown: handleReferencePointerDown })}
       >
         {label ? <span className="pl-7 pr-7 text-typography-secondary">{label}</span> : null}
         <NumberInput
@@ -137,10 +142,10 @@ export default function SuggestionInput({
       </div>
       {suggestionList && isPanelVisible && (
         <Portal>
-          <div className="z-[100]" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
+          <div className="z-[1000]" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
             <ul className="Suggestion-list">
               {suggestionList.map((suggestion) => (
-                <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>
+                <li key={suggestion} onPointerDown={() => handleSuggestionClick(suggestion)}>
                   {suggestion}
                   {suggestionWithSuffix ? suffix : "%"}
                 </li>
