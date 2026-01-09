@@ -34,7 +34,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "09 Jan 2026, 10:00",
     endDate: "16 Jan 2026, 12:00",
-    title: "AR (Arweave), DASH, JTO (Jito), SYRUP (Maple Finance) and CHZ (Chiliz) markets added on Arbitrum",
+    title: "AR, DASH, JTO, SYRUP and CHZ markets added on Arbitrum",
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
