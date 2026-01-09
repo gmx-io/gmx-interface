@@ -76,7 +76,7 @@ export function getGelatoRelayRouterDomain(
     name,
     version: "1",
     chainId,
-    verifyingContract: relayRouterAddress as Address,
+    verifyingContract: relayRouterAddress,
   };
 }
 

@@ -54,7 +54,6 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
-import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 
@@ -505,7 +504,7 @@ export function SyntheticsPage(p: Props) {
 }
 
 function useOrdersControl() {
-  const chainId = useSelector(selectChainId) as ContractsChainId;
+  const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);

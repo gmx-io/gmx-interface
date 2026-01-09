@@ -1,4 +1,3 @@
-import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { OrderType, SwapPricingType } from "domain/synthetics/orders";
@@ -43,8 +42,8 @@ import {
 } from "./globalSelectors";
 import {
   selectDebugSwapMarketsConfig,
-  selectSavedAcceptablePriceImpactBuffer,
   selectIsSetAcceptablePriceImpactEnabled,
+  selectSavedAcceptablePriceImpactBuffer,
 } from "./settingsSelectors";
 import { selectTradeboxTradeFlags } from "./shared/baseSelectors";
 import { selectChartToken } from "./shared/marketSelectors";
@@ -140,9 +139,7 @@ export const selectMarketAdjacencyGraph = isDevelopment()
       const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
 
       const strippedMarkets = Object.fromEntries(
-        Object.entries(MARKETS[chainId as ContractsChainId]).filter(
-          ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
-        )
+        Object.entries(MARKETS[chainId]).filter(([marketAddress]) => !disabledMarketAddresses.includes(marketAddress))
       );
 
       return buildMarketsAdjacencyGraph(strippedMarkets);

@@ -76,7 +76,7 @@ function flattenColorTree(tree: ColorTree, theme: "light" | "dark", prefix = "")
     if (isColorValue(value)) {
       flattened[path] = value[theme];
     } else {
-      Object.assign(flattened, flattenColorTree(value as ColorTree, theme, path));
+      Object.assign(flattened, flattenColorTree(value, theme, path));
     }
   });
 
@@ -102,7 +102,7 @@ function buildTailwindColors(tree: ColorTree, prefix = ""): TailwindColorMap {
         tailwindMap[key] = `rgb(var(--color-${varName}-raw) / <alpha-value>)`;
       }
     } else {
-      tailwindMap[key] = buildTailwindColors(value as ColorTree, prefix ? `${prefix}-${key}` : key);
+      tailwindMap[key] = buildTailwindColors(value, prefix ? `${prefix}-${key}` : key);
     }
   });
 

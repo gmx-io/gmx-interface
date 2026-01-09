@@ -72,7 +72,7 @@ function LeverageInfoRows() {
 
     if (decreaseAmounts?.isFullClose) {
       leverageValue = t`NA`;
-    } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
+    } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd ?? 0n)) {
       leverageValue = "-";
     } else {
       leverageValue = (
@@ -109,7 +109,7 @@ function ExistingPositionInfoRows() {
           label={t`Size`}
           value={
             <ValueTransition
-              from={formatUsd(selectedPosition.sizeInUsd)!}
+              from={formatUsd(selectedPosition.sizeInUsd)}
               to={formatUsd(nextPositionValues?.nextSizeUsd)}
             />
           }

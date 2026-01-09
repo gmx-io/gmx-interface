@@ -73,7 +73,7 @@ export async function callContract(
 
     const txnOpts: Overrides = {};
 
-    if (opts.value) {
+    if (opts.value !== undefined) {
       txnOpts.value = opts.value;
     }
 

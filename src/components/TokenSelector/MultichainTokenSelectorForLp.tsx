@@ -148,7 +148,7 @@ export function MultichainTokenSelectorForLp({
             />
 
             {getMarketIndexName({
-              indexToken: getMarketIndexToken(chainId, tokenAddress)!,
+              indexToken: getMarketIndexToken(chainId, tokenAddress),
               isSpotOnly: getIsSpotOnlyMarket(chainId, tokenAddress),
             })}
           </span>

@@ -76,7 +76,7 @@ export async function createWithdrawalTxn({
 
   const encodedPayload = multicall
     .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+    .map((call) => contract.interface.encodeFunctionData(call.method, call.params));
 
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {

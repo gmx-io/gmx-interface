@@ -36,6 +36,7 @@ export default function NestedTab<V extends string | number>({
 
   return (
     <Menu as="div" className="flex items-center justify-center gap-8">
+      {}
       <Menu.Button as="div" ref={refs.setReference} data-qa={qa ? `${qa}-tab-${option.label}` : undefined}>
         <Button variant="ghost" className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}>
           <span>{label}</span>

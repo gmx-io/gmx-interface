@@ -51,7 +51,7 @@ describe("applyImpactFactor", () => {
       expect(
         _expected == 0n
           ? result < expandDecimals(1, 20)
-          : _expected / bigMath.abs(_expected - result!) > expandDecimals(1, 10)
+          : _expected / bigMath.abs(_expected - result) > expandDecimals(1, 10)
       ).toBe(true);
     });
   }

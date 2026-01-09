@@ -86,7 +86,7 @@ export async function fetchSourceChainTokenBalances({
   for (const tokenAddress of tokenAddresses) {
     if (tokenAddress === zeroAddress) {
       requestConfig[tokenAddress] = {
-        contractAddress: MULTICALLS_MAP[sourceChainId as SourceChainId],
+        contractAddress: MULTICALLS_MAP[sourceChainId],
         abiId: "Multicall",
         calls: {
           balanceOf: {

@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
-import type { Address } from "viem";
 
 import { useLeaderboardTiming } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import {
@@ -176,7 +175,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
   let handle = winner ? (
     <Link
       target="_blank"
-      to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
+      to={buildAccountDashboardUrl(winner.account, undefined, 2)}
       className="flex items-center gap-6 rounded-full bg-slate-700 px-12 py-8 hover:bg-slate-600"
     >
       <div className="text-13 font-medium">{shortenAddress(winner.account, 8)}</div>
@@ -188,7 +187,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     handle = winner ? (
       <Link
         target="_blank"
-        to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
+        to={buildAccountDashboardUrl(winner.account, undefined, 2)}
         className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-typography-secondary
         hover:bg-slate-500 hover:text-typography-primary active:bg-slate-500 active:text-typography-primary`}
       >
@@ -201,7 +200,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     return winners.map((winner) => (
       <Link
         target="_blank"
-        to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
+        to={buildAccountDashboardUrl(winner.account, undefined, 2)}
         className="flex items-center gap-4 px-12 py-8 !text-typography-primary !no-underline hover:bg-fill-surfaceHover"
         key={winner.account}
       >

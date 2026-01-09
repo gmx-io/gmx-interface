@@ -27,7 +27,7 @@ const DEBUG = false;
 export const debugLog = DEBUG ? (...args: any[]) => console.log("[LongCrossChainTask]", ...args) : noop;
 
 export abstract class LongCrossChainTask<
-  Step extends string | "finished" = "finished",
+  Step extends string = "finished",
   Group extends string | undefined = undefined,
   ErrorType = unknown,
 > {

@@ -42,10 +42,7 @@ export function Sorter(
   );
 }
 
-export function useSorterHandlers<SortField extends string | "unspecified">(
-  key: SorterKey,
-  initialConfig?: SorterConfig<SortField>
-) {
+export function useSorterHandlers<SortField extends string>(key: SorterKey, initialConfig?: SorterConfig<SortField>) {
   const [config, setConfig] = useSorterConfig<SortField | "unspecified">(key, initialConfig);
   const onChangeCache = useRef<Partial<Record<SortField | "unspecified", (direction: SortDirection) => void>>>({});
 

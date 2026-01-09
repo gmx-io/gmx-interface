@@ -34,13 +34,13 @@ export function usePoolsDetailsPaySource() {
 export function usePoolsDetailsFirstTokenAddress() {
   const value = useSelector(selectPoolsDetailsFirstTokenAddress);
   const setter = useSelector(selectPoolsDetailsSetFirstTokenAddress);
-  return [value, (setter || noop) as Exclude<typeof setter, undefined>] as const;
+  return [value, setter || noop] as const;
 }
 
 export function usePoolsDetailsSecondTokenAddress() {
   const value = useSelector(selectPoolsDetailsSecondTokenAddress);
   const setter = useSelector(selectPoolsDetailsSetSecondTokenAddress);
-  return [value, (setter || noop) as Exclude<typeof setter, undefined>] as const;
+  return [value, setter || noop] as const;
 }
 
 export function usePoolsDetailsFirstTokenInputValue() {

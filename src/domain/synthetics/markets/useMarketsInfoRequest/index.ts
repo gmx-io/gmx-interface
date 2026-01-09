@@ -65,10 +65,10 @@ export function useMarketsInfoRequest(
     const data: MarketsInfoData = {};
     for (const marketAddress of marketsAddresses) {
       const market = marketsData?.[marketAddress];
-      const longToken = getByKey(tokensData!, market?.longTokenAddress);
-      const shortToken = getByKey(tokensData!, market?.shortTokenAddress);
+      const longToken = getByKey(tokensData, market?.longTokenAddress);
+      const shortToken = getByKey(tokensData, market?.shortTokenAddress);
       const indexToken = market
-        ? getByKey(tokensData!, convertTokenAddress(chainId, market.indexTokenAddress, "native"))
+        ? getByKey(tokensData, convertTokenAddress(chainId, market.indexTokenAddress, "native"))
         : undefined;
 
       if (!market || !longToken || !shortToken || !indexToken) {
@@ -101,7 +101,7 @@ export function useMarketsInfoRequest(
       data[marketAddress] = fullMarketInfo;
     }
 
-    return data as MarketsInfoData;
+    return data;
   }, [
     marketsAddresses,
     tokensData,

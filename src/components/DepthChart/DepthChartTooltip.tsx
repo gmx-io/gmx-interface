@@ -100,8 +100,8 @@ export const ChartTooltip = forwardRef<
     } else if (transparentSize !== null && opaqueSize === null) {
       size = transparentSizeBigInt!;
     } else if (transparentSize !== null && opaqueSize !== null) {
-      const transparentFloatY = viewBox.height - (transparentSize! / domainSpan) * viewBox.height + viewBox.y;
-      const opaqueFloatY = viewBox.height - (opaqueSize! / domainSpan) * viewBox.height + viewBox.y;
+      const transparentFloatY = viewBox.height - (transparentSize / domainSpan) * viewBox.height + viewBox.y;
+      const opaqueFloatY = viewBox.height - (opaqueSize / domainSpan) * viewBox.height + viewBox.y;
 
       const distanceToTransparent = Math.abs(coordinate.y - viewBox.y - transparentFloatY);
       const distanceToOpaque = Math.abs(coordinate.y - viewBox.y - opaqueFloatY);

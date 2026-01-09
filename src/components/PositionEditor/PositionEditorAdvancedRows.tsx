@@ -62,7 +62,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
         }
         value={
           <ValueTransition
-            from={formatUsd(position?.collateralUsd)!}
+            from={formatUsd(position?.collateralUsd)}
             to={collateralDeltaUsd !== undefined && collateralDeltaUsd > 0 ? formatUsd(nextCollateralUsd) : undefined}
           />
         }

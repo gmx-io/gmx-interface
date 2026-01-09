@@ -916,8 +916,8 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
               <div key={error.key}>
                 <span
                   className={cx({
-                    "text-red-500": error!.level === "error",
-                    "text-yellow-300": error!.level === "warning",
+                    "text-red-500": error.level === "error",
+                    "text-yellow-300": error.level === "warning",
                   })}
                 >
                   {error.msg}

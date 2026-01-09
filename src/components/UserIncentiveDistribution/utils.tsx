@@ -67,7 +67,7 @@ export async function checkValidity({
   const message = getMessage({ chainId, claimTerms, distributionId });
   const hash = hashMessage(message);
 
-  const [inMemorySignatureResponse, onchainSignatureResponse] = (await Promise.all([
+  const [inMemorySignatureResponse, onchainSignatureResponse] = await Promise.all([
     claimTermsAcceptedSignature
       ? publicClient
           .readContract({
@@ -86,7 +86,7 @@ export async function checkValidity({
         args: [CLAIM_TERMS_HASH, "0x"],
       })
       .catch(() => "0x"),
-  ])) as [string, string];
+  ]);
 
   return (
     inMemorySignatureResponse?.toLowerCase() === VALID_SIGNATURE_RESPONSE ||
@@ -123,14 +123,14 @@ export async function beginSignatureProcess({
     let signature: string | undefined;
     if (accountType === AccountType.SmartAccount) {
       if (walletClient && account) {
-        signature = (await walletClient.signMessage({ account: account as `0x${string}`, message })) as string;
+        signature = await walletClient.signMessage({ account: account as `0x${string}`, message });
       } else if (signer) {
         signature = await signer.signMessage(message);
       }
     }
 
     if (accountType === AccountType.Safe) {
-      signature = (await walletClient.signMessage({ account: account as `0x${string}`, message })) as string;
+      signature = await walletClient.signMessage({ account: account as `0x${string}`, message });
     }
 
     if (!signature || !signature.startsWith("0x")) {
@@ -139,7 +139,7 @@ export async function beginSignatureProcess({
 
     const isValid = await checkValidity({
       chainId,
-      account: account as Address,
+      account: account,
       publicClient,
       claimTerms,
       claimTermsAcceptedSignature: signature,

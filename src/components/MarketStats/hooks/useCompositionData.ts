@@ -202,7 +202,7 @@ export const getCompositionPercentage = <T extends bigint | number>(value: T, su
 
   let bps: number;
   if (typeof value === "bigint") {
-    bps = bigintToNumber(getBasisPoints(value as bigint, sum as bigint), BASIS_POINTS_DECIMALS);
+    bps = bigintToNumber(getBasisPoints(value, sum as bigint), BASIS_POINTS_DECIMALS);
   } else {
     bps = value / sum;
   }

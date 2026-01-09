@@ -363,7 +363,7 @@ export function getSellableMarketToken(marketInfo: MarketInfo, marketToken: Toke
 
 export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: TokenData, usdValue: bigint) {
   const supply = marketToken.totalSupply!;
-  const poolValue = marketInfo.poolValueMax!;
+  const poolValue = marketInfo.poolValueMax;
   // if the supply and poolValue is zero, use 1 USD as the token price
   if (supply == 0n && poolValue == 0n) {
     return convertToTokenAmount(usdValue, marketToken.decimals, expandDecimals(1, USD_DECIMALS))!;
@@ -385,7 +385,7 @@ export function usdToMarketTokenAmount(marketInfo: MarketInfo, marketToken: Toke
 
 export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: TokenData, amount: bigint) {
   const supply = marketToken.totalSupply!;
-  const poolValue = marketInfo.poolValueMax!;
+  const poolValue = marketInfo.poolValueMax;
 
   const price =
     supply == 0n

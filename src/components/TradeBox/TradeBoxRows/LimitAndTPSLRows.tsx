@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useMemo, useRef } from "react";
+import { ReactNode, useCallback, useMemo, useRef } from "react";
 
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
@@ -122,9 +122,9 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
 
                   return (
                     <div className="mb-5 flex justify-between whitespace-nowrap" key={index}>
-                      {(price && percentage && (
+                      {(price != null && percentage != null && (
                         <span className="mr-15 whitespace-nowrap">
-                          At {price}, {isStopLoss ? "SL" : "TP"} {percentage}%:
+                          At {price}, {isStopLoss ? "SL" : "TP"} {percentage as unknown as ReactNode}%:
                         </span>
                       )) ||
                         null}

@@ -204,7 +204,7 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
       attachedOnChain = false;
       userReferralCode = localStorageCode!;
-      userReferralCodeString = decodeReferralCode(localStorageCode! as Hash);
+      userReferralCodeString = decodeReferralCode(localStorageCode!);
       referralCodeForTxn = localStorageCode!;
     }
 
@@ -240,7 +240,7 @@ export function useLocalReferralCode() {
       return undefined;
     }
 
-    const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+    const userReferralCodeString = decodeReferralCode(userReferralCode);
 
     return {
       userReferralCode,
@@ -256,7 +256,7 @@ export function getRefCodeParamString() {
     return undefined;
   }
 
-  const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
+  const userReferralCodeString = decodeReferralCode(userReferralCode);
 
   return `ref=${userReferralCodeString}`;
 }

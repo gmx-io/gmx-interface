@@ -248,9 +248,9 @@ export function useSidecarOrders() {
     const [limitSummaryCollateralDeltaAmount, limitSummarySizeDeltaInTokens, limitSummarySizeDeltaUsd] =
       limit.entries.reduce(
         ([collateral, tokens, usd], entry) => [
-          collateral + (entry.increaseAmounts?.collateralDeltaAmount || 0n),
-          tokens + (entry.increaseAmounts?.sizeDeltaInTokens || 0n),
-          usd + (entry.increaseAmounts?.sizeDeltaUsd || 0n),
+          collateral + (entry.increaseAmounts?.collateralDeltaAmount ?? 0n),
+          tokens + (entry.increaseAmounts?.sizeDeltaInTokens ?? 0n),
+          usd + (entry.increaseAmounts?.sizeDeltaUsd ?? 0n),
         ],
         [0n, 0n, 0n]
       );
@@ -335,9 +335,9 @@ export function useSidecarOrders() {
 
     let totalPnL, totalPnLPercentage;
     if (canCalculatePnL) {
-      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl || 0n), 0n);
+      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl ?? 0n), 0n);
       totalPnLPercentage = displayableEntries.reduce(
-        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage || 0n),
+        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage ?? 0n),
         0n
       );
     }
@@ -366,9 +366,9 @@ export function useSidecarOrders() {
 
     let totalPnL, totalPnLPercentage;
     if (canCalculatePnL) {
-      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl || 0n), 0n);
+      totalPnL = displayableEntries.reduce((acc, entry) => acc + (entry.decreaseAmounts?.realizedPnl ?? 0n), 0n);
       totalPnLPercentage = displayableEntries.reduce(
-        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage || 0n),
+        (acc, entry) => acc + (entry.decreaseAmounts?.realizedPnlPercentage ?? 0n),
         0n
       );
     }

@@ -390,7 +390,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
           isError: false,
           time: metrics.getTime("candlesLoad", true),
           data: {
-            requestId: metricsRequestId!,
+            requestId: metricsRequestId,
             isFirstTimeLoad: isPrefetch,
           },
         });

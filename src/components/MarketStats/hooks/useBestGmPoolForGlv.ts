@@ -69,13 +69,13 @@ export const useBestGmPoolAddressForGlv = ({
     return [...marketsWithComposition].map((marketConfig) => {
       const marketInfo = marketConfig.market;
 
-      const adjustedLongTokenAmount = (marketInfo.isSameCollaterals ? halfOfLong : longTokenAmount) || 0n;
+      const adjustedLongTokenAmount = (marketInfo.isSameCollaterals ? halfOfLong : longTokenAmount) ?? 0n;
       const adjustedShortTokenAmount =
         (marketInfo.isSameCollaterals
           ? longTokenAmount !== undefined
             ? longTokenAmount - longTokenAmount
             : undefined
-          : shortTokenAmount) || 0n;
+          : shortTokenAmount) ?? 0n;
 
       const amounts = getDepositAmounts({
         marketInfo,

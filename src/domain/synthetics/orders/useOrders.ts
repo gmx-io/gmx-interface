@@ -62,7 +62,7 @@ export function useOrders(
     const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
       .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
       .map((filter) => ({
-        marketAddress: filter.marketAddress.toLowerCase() as Address,
+        marketAddress: filter.marketAddress.toLowerCase(),
         direction: filter.direction,
         collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
       }));
@@ -76,7 +76,7 @@ export function useOrders(
 
     const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
       .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-      .map((filter) => filter.marketAddress.toLowerCase() as Address);
+      .map((filter) => filter.marketAddress.toLowerCase());
 
     const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
@@ -182,11 +182,11 @@ function buildUseOrdersMulticall(chainId: ContractsChainId, key: CacheKey) {
       calls: {
         count: {
           methodName: "getBytes32Count",
-          params: [accountOrderListKey(account!)],
+          params: [accountOrderListKey(account)],
         },
         keys: {
           methodName: "getBytes32ValuesAt",
-          params: [accountOrderListKey(account!), 0, DEFAULT_COUNT],
+          params: [accountOrderListKey(account), 0, DEFAULT_COUNT],
         },
       },
     },
@@ -218,14 +218,14 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
 
       return {
         key,
-        account: orderData.addresses.account as Address,
-        receiver: orderData.addresses.receiver as Address,
+        account: orderData.addresses.account,
+        receiver: orderData.addresses.receiver,
         // cancellationReceiver: orderData.addresses.cancellationReceiver as Address,
-        callbackContract: orderData.addresses.callbackContract as Address,
-        uiFeeReceiver: orderData.addresses.uiFeeReceiver as Address,
-        marketAddress: orderData.addresses.market as Address,
-        initialCollateralTokenAddress: orderData.addresses.initialCollateralToken as Address,
-        swapPath: orderData.addresses.swapPath as Address[],
+        callbackContract: orderData.addresses.callbackContract,
+        uiFeeReceiver: orderData.addresses.uiFeeReceiver,
+        marketAddress: orderData.addresses.market,
+        initialCollateralTokenAddress: orderData.addresses.initialCollateralToken,
+        swapPath: orderData.addresses.swapPath,
         sizeDeltaUsd: BigInt(orderData.numbers.sizeDeltaUsd),
         initialCollateralDeltaAmount: BigInt(orderData.numbers.initialCollateralDeltaAmount),
         contractTriggerPrice: BigInt(orderData.numbers.triggerPrice),
@@ -235,12 +235,12 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         minOutputAmount: BigInt(orderData.numbers.minOutputAmount),
         updatedAtTime: orderData.numbers.updatedAtTime,
         validFromTime: orderData.numbers.validFromTime,
-        isLong: orderData.flags.isLong as boolean,
-        shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken as boolean,
-        isFrozen: orderData.flags.isFrozen as boolean,
+        isLong: orderData.flags.isLong,
+        shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken,
+        isFrozen: orderData.flags.isFrozen,
         orderType: orderData.numbers.orderType as unknown as OrderType,
         decreasePositionSwapType: orderData.numbers.decreasePositionSwapType as unknown as DecreasePositionSwapType,
-        autoCancel: orderData.flags.autoCancel as boolean,
+        autoCancel: orderData.flags.autoCancel,
         data: orderData._dataList,
       } satisfies Order;
     }),
@@ -289,12 +289,10 @@ function matchByMarket({
   }
 
   if (isSwapOrder) {
-    const sourceMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-      order.swapPath.at(0)!.toLowerCase() as Address
-    );
+    const sourceMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(order.swapPath.at(0)!.toLowerCase());
 
     const destinationMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-      order.swapPath.at(-1)!.toLowerCase() as Address
+      order.swapPath.at(-1)!.toLowerCase()
     );
 
     return sourceMarketInSwapPath || destinationMarketInSwapPath;
@@ -322,8 +320,7 @@ function matchByMarket({
             wrappedNativeTokenAddress: wrappedToken.address,
           });
 
-          collateralMatch =
-            outTokenAddress !== undefined && isAddressEqual(outTokenAddress as Address, filter.collateralAddress);
+          collateralMatch = outTokenAddress !== undefined && isAddressEqual(outTokenAddress, filter.collateralAddress);
         }
       } else if (isTriggerDecreaseOrderType(order.orderType)) {
         collateralMatch = isAddressEqual(order.initialCollateralTokenAddress, filter.collateralAddress);

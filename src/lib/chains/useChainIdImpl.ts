@@ -193,7 +193,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
 
   if (isCurrentChainSupported) {
     return {
-      chainId: connectedChainId as ContractsChainId,
+      chainId: connectedChainId,
       isConnectedToChainId: displayedChainId === connectedChainId,
       srcChainId,
     };
@@ -201,7 +201,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
 
   if (isCurrentChainSource) {
     return {
-      chainId: settlementChainId as SettlementChainId,
+      chainId: settlementChainId,
       isConnectedToChainId: true,
       srcChainId,
     };

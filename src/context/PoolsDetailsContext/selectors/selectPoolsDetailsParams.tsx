@@ -452,7 +452,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
 
     return {
       addresses: {
-        glv: glvTokenAddress!,
+        glv: glvTokenAddress,
         market: selectedMarketForGlv!,
         receiver: glvToken.totalSupply === 0n ? numberToHex(1, { size: 20 }) : account,
         callbackContract: zeroAddress,

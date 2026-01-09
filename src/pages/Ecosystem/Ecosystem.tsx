@@ -123,7 +123,7 @@ export default function Ecosystem() {
                               ))}
                             </div>
                           ) : (
-                            <ExternalLink href={item.creatorLink as string}>{item.creatorLabel as string}</ExternalLink>
+                            <ExternalLink href={item.creatorLink as string}>{item.creatorLabel}</ExternalLink>
                           )}
                         </div>
                       </div>

@@ -69,11 +69,11 @@ export function useNpsSurvey() {
               isGeneralFeedback: false,
               contact,
               monthVolume: formatAmountForMetrics(
-                lastMonthAccountStats?.volume || 0n,
+                lastMonthAccountStats?.volume ?? 0n,
                 USD_DECIMALS,
                 "toSecondOrderInt"
               )!,
-              totalVolume: formatAmountForMetrics(accountStats?.volume || 0n, USD_DECIMALS, "toSecondOrderInt")!,
+              totalVolume: formatAmountForMetrics(accountStats?.volume ?? 0n, USD_DECIMALS, "toSecondOrderInt")!,
               answers: formatAnswersByQuestionType(answers),
             },
           },

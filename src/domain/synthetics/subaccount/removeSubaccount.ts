@@ -114,7 +114,7 @@ async function signRemoveSubaccountPayload({
   chainId,
 }: {
   signer: WalletSigner;
-  relayParams: RelayParamsPayload | RelayParamsPayload;
+  relayParams: RelayParamsPayload;
   subaccountAddress: string;
   chainId: ContractsChainId;
 }) {

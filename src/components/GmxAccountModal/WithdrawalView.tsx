@@ -4,7 +4,7 @@ import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
-import { Address, encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
+import { encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -221,7 +221,7 @@ export const WithdrawalView = () => {
     }
 
     return (
-      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]
+      MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]
         ?.map((tokenAddress) => tokensData[tokenAddress] as TokenData | undefined)
         .filter((token): token is TokenData => {
           return token !== undefined && token.address !== zeroAddress;
@@ -282,7 +282,7 @@ export const WithdrawalView = () => {
 
     const { receipt } = quoteOft;
 
-    const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
+    const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD);
 
     const newSendParams: SendParam = {
       ...sendParamsWithoutSlippage,
@@ -368,7 +368,7 @@ export const WithdrawalView = () => {
     }
 
     return {
-      token: selectedTokenAddress as Address,
+      token: selectedTokenAddress,
       amount: inputAmount,
       minAmountOut: inputAmount,
       data: encodeAbiParameters(
@@ -608,7 +608,7 @@ export const WithdrawalView = () => {
           chainId: chainId as SettlementChainId,
           signer,
           account,
-          relayParamsPayload: relayParamsPayload as RawRelayParamsPayload,
+          relayParamsPayload: relayParamsPayload,
           params: bridgeOutParams,
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -1263,7 +1263,7 @@ async function simulateWithdraw({
       provider,
       gelatoRelayFeeAmount: feeAmount,
       gelatoRelayFeeToken: feeToken,
-      relayRouterAddress: to as Address,
+      relayRouterAddress: to,
     });
   }, "simulation");
 }

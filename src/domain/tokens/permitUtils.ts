@@ -149,21 +149,21 @@ export async function getTokenPermitParams(
     abi: ERC20PermitInterfaceAbi,
     functionName: "name",
     data: decodedMulticallResults[0] as `0x${string}`,
-  }) as string;
+  });
 
   const nonce = decodeFunctionResult({
     abi: ERC20PermitInterfaceAbi,
     functionName: "nonces",
     data: decodedMulticallResults[1],
-  }) as bigint;
+  });
 
   const version =
     token.contractVersion ??
-    (decodeFunctionResult({
+    decodeFunctionResult({
       abi: ERC20PermitInterfaceAbi,
       functionName: "version",
       data: decodedMulticallResults[2] as `0x${string}`,
-    }) as string);
+    });
 
   return {
     nonce,

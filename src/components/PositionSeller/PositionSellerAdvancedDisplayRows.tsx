@@ -77,7 +77,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   const sizeRow = (
     <SyntheticsInfoRow
       label={t`Size`}
-      value={<ValueTransition from={formatUsd(position?.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
+      value={<ValueTransition from={formatUsd(position?.sizeInUsd)} to={formatUsd(nextPositionValues?.nextSizeUsd)} />}
     />
   );
 
@@ -157,7 +157,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
             }
             value={
               <ValueTransition
-                from={formatUsd(position?.collateralUsd)!}
+                from={formatUsd(position?.collateralUsd)}
                 to={formatUsd(nextPositionValues?.nextCollateralUsd)}
               />
             }

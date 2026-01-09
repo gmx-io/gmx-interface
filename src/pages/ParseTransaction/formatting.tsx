@@ -105,7 +105,7 @@ export function formatByMarketLongOrShortToken(isLong: boolean) {
   return (t: bigint, { entries, tokensData, marketsInfoData, allEvents }: LogEntryComponentProps) => {
     let marketAddress = entries.find((entry) => entry.item === "market")?.value;
 
-    if (!marketAddress) {
+    if (marketAddress === undefined) {
       const event = allEvents.find((e) => e.name === "MarketPoolValueUpdated");
       marketAddress = event?.values.find((e) => e.item === "market")?.value;
     }
@@ -264,7 +264,7 @@ export const formatAmountByFieldWithDecimalsShift = (tokenField: string | TokenG
     const field =
       typeof tokenField === "function" ? tokenField(props) : entries.find((entry) => entry.item === tokenField)?.value;
 
-    if (!field) {
+    if (field === undefined) {
       throw new Error("Field not found");
     }
 

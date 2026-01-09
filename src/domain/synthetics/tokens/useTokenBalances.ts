@@ -33,7 +33,7 @@ function buildTokenBalancesRequest(chainId: ContractsChainId, key: CacheKey) {
 
     if (address === NATIVE_TOKEN_ADDRESS) {
       acc[address] = {
-        contractAddress: getContract(chainId as ContractsChainId, "Multicall"),
+        contractAddress: getContract(chainId, "Multicall"),
         abiId: "Multicall",
         calls: {
           balance: {

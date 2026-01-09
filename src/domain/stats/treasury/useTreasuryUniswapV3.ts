@@ -145,7 +145,7 @@ export function useTreasuryUniswapV3({
       return ids;
     }
 
-    const positionManagerResponse = tokenIdsResponse.positionManager!;
+    const positionManagerResponse = tokenIdsResponse.positionManager;
 
     ownerSlots.forEach((slot, ownerIndex) => {
       for (let positionIndex = 0; positionIndex < slot.count; positionIndex++) {
@@ -202,7 +202,7 @@ export function useTreasuryUniswapV3({
       return parsed;
     }
 
-    const positionManagerResponse = positionsResponse.positionManager!;
+    const positionManagerResponse = positionsResponse.positionManager;
 
     tokenIds.forEach((tokenId) => {
       const callResult = positionManagerResponse[`position_${tokenId.toString()}`];
@@ -314,7 +314,7 @@ export function useTreasuryUniswapV3({
     }
 
     const map = new Map<string, string>();
-    const factoryResponse = poolsResponse.factory!;
+    const factoryResponse = poolsResponse.factory;
 
     uniquePools.forEach((pool) => {
       const call = factoryResponse[`pool_${pool.key}`];

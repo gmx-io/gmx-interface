@@ -34,6 +34,9 @@ jobs:
       - name: Run linting
         run: yarn lint:ci
 
+      - name: Run package linting
+        run: yarn lint:package
+
       - name: Run type checking
         run: yarn tscheck:ci
 

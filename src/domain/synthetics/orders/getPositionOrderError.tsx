@@ -44,7 +44,7 @@ export function getPositionOrderError({
 
   if (
     sizeDeltaUsd === positionOrder.sizeDeltaUsd &&
-    triggerPrice === positionOrder.triggerPrice! &&
+    triggerPrice === positionOrder.triggerPrice &&
     acceptablePrice === positionOrder.acceptablePrice
   ) {
     return t`Enter new amount or price`;

@@ -793,7 +793,6 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             delete sourceChainApprovalCleanupTimersRef.current[someSourceChainId];
           }, SOURCE_CHAIN_APPROVAL_LISTENER_CLEANUP_DELAY_MS);
 
-          // eslint-disable-next-line react-hooks/exhaustive-deps
           sourceChainApprovalCleanupTimersRef.current[someSourceChainId] = timerId;
         }
       };

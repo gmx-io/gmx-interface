@@ -101,7 +101,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd)!}
+                  value={formatDeltaUsd(p.swapPriceImpact?.deltaUsd)}
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(
@@ -128,7 +128,7 @@ export function GmFees(p: Props) {
                         </div>
                       </div>
                     }
-                    value={formatDeltaUsd(p.swapFee.deltaUsd)!}
+                    value={formatDeltaUsd(p.swapFee.deltaUsd)}
                     valueClassName="numbers"
                     showDollar={false}
                     textClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
@@ -153,7 +153,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.uiFee?.deltaUsd)!}
+                  value={formatDeltaUsd(p.uiFee?.deltaUsd)}
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName="text-red-500"
@@ -177,7 +177,7 @@ export function GmFees(p: Props) {
                       </div>
                     </div>
                   }
-                  value={formatDeltaUsd(p.shiftFee.deltaUsd)!}
+                  value={formatDeltaUsd(p.shiftFee.deltaUsd)}
                   valueClassName="numbers"
                   showDollar={false}
                 />

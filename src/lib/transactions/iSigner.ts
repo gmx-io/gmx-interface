@@ -122,7 +122,7 @@ export class ISigner implements ISignerInterface {
         signer
           .sendTransaction({
             to: await toAddress(params.to),
-            data: (params.data ?? undefined) as string | undefined,
+            data: params.data ?? undefined,
             value: toBigInt(params.value),
             gas: toBigInt(params.gasLimit),
             gasPrice: toBigInt(params.gasPrice),
@@ -170,7 +170,7 @@ export class ISigner implements ISignerInterface {
       viem: async (signer: ViemSigner) =>
         signer.estimateGas({
           to: await toAddress(params.to),
-          data: (params.data ?? undefined) as string | undefined,
+          data: params.data ?? undefined,
           value: toBigInt(params.value),
           account: await toAddress(params.from),
           gas: toBigInt(params.gasLimit),
@@ -204,7 +204,7 @@ export class ISigner implements ISignerInterface {
         await signer
           .call({
             to: await toAddress(params.to),
-            data: (params.data ?? undefined) as string | undefined,
+            data: params.data ?? undefined,
             value: toBigInt(params.value),
             account: await toAddress(params.from),
             gas: toBigInt(params.gasLimit),

@@ -49,7 +49,7 @@ export function sortMarketsWithIndexToken<T extends GlvAndGmMarketsInfoData | Ma
     })
     .filter((markets) => markets.length > 0);
 
-  const sortedGroups = allMarkets!.sort((a, b) => {
+  const sortedGroups = allMarkets.sort((a, b) => {
     if (a[0].isGlv && !b[0].isGlv) {
       return -1;
     }

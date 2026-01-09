@@ -261,7 +261,7 @@ describe("getExternalSwapInputsByLeverageSize", () => {
     // check fees
     expect(result.internalSwapTotalFeeItem?.deltaUsd).toBe(mockSwapPathStats.totalFeesDeltaUsd);
     expectEqualWithPrecision(
-      result.internalSwapTotalFeeItem?.bps || 0n,
+      result.internalSwapTotalFeeItem?.bps ?? 0n,
       getBasisPoints(mockSwapPathStats.totalFeesDeltaUsd, expectedBaseCollateralUsd)
     );
 
@@ -283,8 +283,8 @@ describe("getExternalSwapInputsByLeverageSize", () => {
     expect(reverseResult.internalSwapTotalFeesDeltaUsd).toBe(result.internalSwapTotalFeesDeltaUsd);
     expect(reverseResult.internalSwapTotalFeeItem?.deltaUsd).toBe(result.internalSwapTotalFeeItem?.deltaUsd);
     expectEqualWithPrecision(
-      reverseResult.internalSwapTotalFeeItem?.bps || 0n,
-      result.internalSwapTotalFeeItem?.bps || 0n
+      reverseResult.internalSwapTotalFeeItem?.bps ?? 0n,
+      result.internalSwapTotalFeeItem?.bps ?? 0n
     );
   });
 

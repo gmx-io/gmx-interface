@@ -4,7 +4,6 @@ import {
   decodeFunctionResult,
   encodeAbiParameters,
   encodeFunctionData,
-  Hex,
   keccak256,
   maxUint256,
   zeroAddress,
@@ -656,7 +655,7 @@ export async function getSubaccountOnchainData({
 
   const [_, decodedMulticallResults] = decodeFunctionResult({
     abi: abis.Multicall,
-    data: result as Hex,
+    data: result,
     functionName: "aggregate",
   }) as [bigint, string[]];
 
@@ -668,7 +667,7 @@ export async function getSubaccountOnchainData({
     acc[key] = decodeFunctionResult({
       abi: call.abi,
       functionName: call.functionName,
-      data: decodedMulticallResults[index] as Hex,
+      data: decodedMulticallResults[index],
     });
 
     return acc;

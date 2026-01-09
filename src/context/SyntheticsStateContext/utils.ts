@@ -73,7 +73,7 @@ function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => 
   if (!value) {
     throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
   }
-  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
+  return useContextSelector(StateCtx as Context<SyntheticsState>, selector);
 }
 
 export const useSelector = useSyntheticsStateSelector;

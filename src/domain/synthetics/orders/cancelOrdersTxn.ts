@@ -19,7 +19,7 @@ export type CancelOrderParams = {
 export async function cancelOrdersTxn(chainId: ContractsChainId, signer: Signer, p: CancelOrderParams) {
   const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
 
-  const orderKeys = p.orders.flatMap((o) => (isTwapOrder(o) ? o.orders.map((o) => o.key as string) : o.key));
+  const orderKeys = p.orders.flatMap((o) => (isTwapOrder(o) ? o.orders.map((o) => o.key) : o.key));
 
   const multicall = createCancelEncodedPayload({ router, orderKeys });
 

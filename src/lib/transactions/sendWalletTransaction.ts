@@ -51,7 +51,7 @@ export async function sendWalletTransaction({
       await simulateCallDataWithTenderly({
         chainId,
         tenderlyConfig,
-        provider: signer.provider!,
+        provider: signer.provider,
         to,
         data: callData,
         from,
@@ -73,7 +73,7 @@ export async function sendWalletTransaction({
 
     const gasLimitPromise = gasLimit
       ? Promise.resolve(gasLimit)
-      : estimateGasLimit(signer.provider!, {
+      : estimateGasLimit(signer.provider, {
           to,
           from,
           data: callData,
@@ -104,7 +104,7 @@ export async function sendWalletTransaction({
     };
 
     const res = await signer.sendTransaction(txnData).catch((error) => {
-      additionalTxnErrorValidation(error, chainId, signer.provider!, txnData);
+      additionalTxnErrorValidation(error, chainId, signer.provider, txnData);
 
       throw extendError(error, {
         errorContext: "sending",

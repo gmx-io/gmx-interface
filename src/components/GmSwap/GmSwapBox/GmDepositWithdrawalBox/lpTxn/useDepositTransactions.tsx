@@ -170,9 +170,9 @@ export const useDepositTransactions = ({
         selectedMarketForGlv,
         isDeposit: true,
         executionFeeTokenAmount: params?.executionFee,
-        executionFeeTokenDecimals: getWrappedToken(chainId)!.decimals,
-        glvAddress: glvInfo!.glvTokenAddress,
-        glvToken: glvInfo!.glvToken,
+        executionFeeTokenDecimals: getWrappedToken(chainId).decimals,
+        glvAddress: glvInfo.glvTokenAddress,
+        glvToken: glvInfo.glvToken,
         longTokenAmount,
         shortTokenAmount,
         marketTokenAmount,
@@ -190,7 +190,7 @@ export const useDepositTransactions = ({
       marketToken,
       isDeposit: true,
       executionFeeTokenAmount: params?.executionFee,
-      executionFeeTokenDecimals: getWrappedToken(chainId)!.decimals,
+      executionFeeTokenDecimals: getWrappedToken(chainId).decimals,
       marketInfo,
       longTokenAmount,
       shortTokenAmount,
@@ -241,7 +241,7 @@ export const useDepositTransactions = ({
       let promise: Promise<void>;
 
       if (paySource === "sourceChain") {
-        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
+        if (longTokenAmount > 0n && shortTokenAmount > 0n) {
           throw new Error("Pay source sourceChain does not support both long and short token deposits");
         }
 
@@ -250,9 +250,9 @@ export const useDepositTransactions = ({
         }
 
         let tokenAddress: ERC20Address | NativeTokenSupportedAddress =
-          longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
+          longTokenAmount > 0n ? longTokenAddress! : shortTokenAddress!;
         tokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
-        const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
+        const tokenAmount = longTokenAmount > 0n ? longTokenAmount : shortTokenAmount;
 
         promise = createSourceChainDepositTxn({
           chainId: chainId as SettlementChainId,
@@ -271,7 +271,7 @@ export const useDepositTransactions = ({
                   sourceChainId: srcChainId!,
                   initialTxHash: res.transactionHash,
                   token: getGmToken(chainId, (rawParams as RawCreateDepositParams).addresses.market),
-                  amount: marketTokenAmount!,
+                  amount: marketTokenAmount,
                   settlementChainId: chainId,
                   estimatedFeeUsd: (technicalFees as SourceChainDepositFees).relayFeeUsd,
                 })
@@ -397,7 +397,7 @@ export const useDepositTransactions = ({
 
       let promise: Promise<void>;
       if (paySource === "sourceChain") {
-        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
+        if (longTokenAmount > 0n && shortTokenAmount > 0n) {
           throw new Error("Pay source sourceChain does not support both long and short token deposits");
         }
 
@@ -441,7 +441,7 @@ export const useDepositTransactions = ({
                   sourceChainId: srcChainId!,
                   initialTxHash: res.transactionHash,
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvDepositParams).addresses.glv),
-                  amount: glvTokenAmount!,
+                  amount: glvTokenAmount,
                   settlementChainId: chainId,
                   estimatedFeeUsd: (technicalFees as SourceChainGlvDepositFees).relayFeeUsd,
                 })
@@ -635,7 +635,7 @@ function useDepositTransferRequests({
       let tokenAddress =
         longTokenAmount !== undefined && longTokenAmount > 0n ? initialLongTokenAddress : initialShortTokenAddress;
 
-      let amount = longTokenAmount !== undefined && longTokenAmount > 0n ? longTokenAmount : shortTokenAmount!;
+      let amount = longTokenAmount !== undefined && longTokenAmount > 0n ? longTokenAmount : shortTokenAmount;
 
       const estimatedReceivedAmount = (technicalFees as SourceChainDepositFees | SourceChainGlvDepositFees | undefined)
         ?.txnEstimatedReceivedAmount;

@@ -1,5 +1,3 @@
-import type { Address } from "viem";
-
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import {
   isIncreaseOrderType,
@@ -57,7 +55,6 @@ export function processRawTradeActions({
     }
 
     if (!collateralFilterTree[filter.direction]) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       collateralFilterTree[filter.direction] = {} as any;
     }
 
@@ -96,8 +93,7 @@ export function processRawTradeActions({
             wrappedNativeTokenAddress: wrapped.address,
           });
 
-          collateralMatch =
-            outTokenAddress !== undefined && Boolean(desiredCollateralAddresses?.[outTokenAddress as Address]);
+          collateralMatch = outTokenAddress !== undefined && Boolean(desiredCollateralAddresses?.[outTokenAddress]);
         }
       } else if (isTriggerDecreaseOrderType(tradeAction.orderType)) {
         collateralMatch = Boolean(desiredCollateralAddresses?.[positionTradeAction.initialCollateralTokenAddress]);

@@ -98,7 +98,7 @@ export async function createBridgeInTxn({
 
   try {
     const txnResult = await sendWalletTransaction({
-      chainId: srcChainId!,
+      chainId: srcChainId,
       to: sourceChainTokenId.stargate,
       signer,
       callData: encodeFunctionData({

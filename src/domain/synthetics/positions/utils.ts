@@ -176,7 +176,7 @@ export function getEstimatedLiquidationTimeInHours(
   return parseFloat(formatAmount(hours, 4, 2));
 }
 
-export function formatEstimatedLiquidationTime(hours?: number | undefined) {
+export function formatEstimatedLiquidationTime(hours?: number) {
   if (!hours) return;
   const days = Math.floor(hours / 24);
 

@@ -112,7 +112,7 @@ export async function createSourceChainWithdrawalTxn({
   }
 
   const txnResult = await sendWalletTransaction({
-    chainId: srcChainId!,
+    chainId: srcChainId,
     to: sourceChainTokenId.stargate,
     signer,
     callData: encodeFunctionData({

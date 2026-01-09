@@ -34,7 +34,7 @@ export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePe
 
   return bigMath.max(
     onChainMaxPriorityFeePerGas ?? 0n,
-    getMaxPriorityFeePerGasConfig(chainId as ContractsChainId) || 0n
+    getMaxPriorityFeePerGasConfig(chainId as ContractsChainId) ?? 0n
   );
 }
 

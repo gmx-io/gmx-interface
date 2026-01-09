@@ -189,7 +189,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
             ? clampEntryPercentage(prevEntries, recalculatedEntry)
             : recalculatedEntry;
 
-          return errorHandler(clampedEntry as T);
+          return errorHandler(clampedEntry);
         });
       });
     },
@@ -223,7 +223,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
             return acc;
           }
 
-          acc.push(entry as T);
+          acc.push(entry);
           return acc;
         }, []);
       });

@@ -397,7 +397,7 @@ function useExpressError({
       return undefined;
     }
 
-    const executionFee = technicalFees as ExecutionFee;
+    const executionFee = technicalFees;
 
     if (gasPaymentToken.prices.minPrice === undefined) {
       return undefined;

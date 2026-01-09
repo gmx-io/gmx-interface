@@ -22,9 +22,9 @@ export interface LogEntryComponentProps extends LogEntry {
   marketsInfoData?: MarketsInfoData;
   chainId: number;
   glvData?: GlvInfoData;
-  entries: LogEntry[]; // eslint-disable-line react/no-unused-prop-types
-  marketTokensData?: TokensData; // eslint-disable-line react/no-unused-prop-types
-  name: string; // eslint-disable-line react/no-unused-prop-types
+  entries: LogEntry[];
+  marketTokensData?: TokensData;
+  name: string;
   copyToClipboard: (str: string) => void;
   allEvents: Event[];
 }

@@ -1,4 +1,4 @@
-import { Chain, createPublicClient, http } from "viem";
+import { createPublicClient, http } from "viem";
 
 import { getViemChain } from "config/chains";
 import { isWebWorker } from "config/env";
@@ -56,7 +56,7 @@ export class Multicall {
       }),
       pollingInterval: undefined,
       batch: BATCH_CONFIGS[chainId].client,
-      chain: getViemChain(chainId) as Chain,
+      chain: getViemChain(chainId),
     });
   }
 

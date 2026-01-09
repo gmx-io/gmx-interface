@@ -121,7 +121,7 @@ export function getVestingData(vestingInfo: bigint[]): RawVestingData | undefine
   const keys = ["gmxVester", "glpVester", "affiliateVester"] as const;
 
   for (let i = 0; i < keys.length; i++) {
-    const key = keys[i] as (typeof keys)[number];
+    const key = keys[i];
     data[key] = {
       pairAmount: vestingInfo[i * propsLength],
       vestedAmount: vestingInfo[i * propsLength + 1],

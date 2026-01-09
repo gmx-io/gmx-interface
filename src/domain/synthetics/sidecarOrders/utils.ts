@@ -26,15 +26,15 @@ export function getDefaultEntryField(
     if (nextValue !== null && visualMultiplier !== undefined) {
       nextValue = nextValue / BigInt(visualMultiplier);
     }
-  } else if (value) {
+  } else if (value !== undefined) {
     nextInput = "";
     if (decimals !== undefined) {
       nextInput = String(
         removeTrailingZeros(
           formatAmount(
-            value,
+            value ?? 0n,
             decimals,
-            calculateDisplayDecimals(value, decimals, visualMultiplier),
+            calculateDisplayDecimals(value ?? 0n, decimals, visualMultiplier),
             undefined,
             undefined,
             visualMultiplier

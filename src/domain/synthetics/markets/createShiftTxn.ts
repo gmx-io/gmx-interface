@@ -66,7 +66,7 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
     },
   ];
 
-  const encodedPayload = multicall.map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.map((call) => contract.interface.encodeFunctionData(call.method, call.params));
 
   const simulationPromise = !p.skipSimulation
     ? simulateExecuteTxn(chainId, {

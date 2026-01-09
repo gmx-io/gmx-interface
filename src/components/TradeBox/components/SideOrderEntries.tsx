@@ -62,10 +62,10 @@ function SideOrderEntry({
     )}.`;
 
   const sizeTooltipMsg =
-    sizeError || priceTooltipMsg ? (
+    sizeError !== undefined || priceTooltipMsg !== undefined ? (
       <>
         {sizeError}
-        {sizeError && priceTooltipMsg && (
+        {sizeError != null && priceTooltipMsg != null && (
           <>
             <br />
             <br />

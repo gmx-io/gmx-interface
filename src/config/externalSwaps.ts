@@ -65,7 +65,7 @@ export function getSwapPriceImpactForExternalSwapThresholdBps() {
   const swapDebugSettings = getSwapDebugSettings();
 
   return (
-    swapDebugSettings?.swapPriceImpactForExternalSwapThresholdBps || SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS
+    swapDebugSettings?.swapPriceImpactForExternalSwapThresholdBps ?? SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS
   );
 }
 

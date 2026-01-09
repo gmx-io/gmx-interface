@@ -12,7 +12,7 @@ export async function getGasLimit(
 ) {
   const defaultValue = 0n;
 
-  if (!value) {
+  if (value === undefined) {
     value = defaultValue;
   }
 

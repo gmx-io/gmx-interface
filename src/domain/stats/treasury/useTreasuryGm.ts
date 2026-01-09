@@ -41,7 +41,7 @@ export function useTreasuryGm({
   }, [addresses, chainId, marketsAddresses, marketsData, tokensData]);
 
   const { data: marketBalancesResponse } = useMulticall(chainId, "useTreasuryMarkets", {
-    key: requestConfig && marketsAddresses ? [chainId, "markets", addresses.length, marketsAddresses!.length] : null,
+    key: requestConfig && marketsAddresses ? [chainId, "markets", addresses.length, marketsAddresses.length] : null,
     request: requestConfig ?? {},
     parseResponse: (res) => res.data,
   });

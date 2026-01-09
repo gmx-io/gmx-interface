@@ -1,5 +1,5 @@
 import { Contract } from "ethers";
-import { Address, encodeFunctionData, zeroAddress } from "viem";
+import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SettlementChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -26,7 +26,7 @@ export async function sendSameChainDepositTxn({
   const multichainVaultAddress = getContract(chainId, "MultichainVault");
 
   const contract = new Contract(
-    getContract(chainId, "MultichainTransferRouter")!,
+    getContract(chainId, "MultichainTransferRouter"),
     abis.MultichainTransferRouter,
     signer
   );
@@ -53,7 +53,7 @@ export async function sendSameChainDepositTxn({
           encodeFunctionData({
             abi: abis.MultichainTransferRouter,
             functionName: "bridgeIn",
-            args: [account, wrappedAddress as Address],
+            args: [account, wrappedAddress],
           }),
         ],
       ]),
@@ -70,13 +70,13 @@ export async function sendSameChainDepositTxn({
           encodeFunctionData({
             abi: abis.MultichainTransferRouter,
             functionName: "sendTokens",
-            args: [tokenAddress as Address, multichainVaultAddress, amount],
+            args: [tokenAddress, multichainVaultAddress, amount],
           }),
 
           encodeFunctionData({
             abi: abis.MultichainTransferRouter,
             functionName: "bridgeIn",
-            args: [account, tokenAddress as Address],
+            args: [account, tokenAddress],
           }),
         ],
       ]),

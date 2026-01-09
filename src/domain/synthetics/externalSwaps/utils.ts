@@ -116,8 +116,8 @@ export function getExternalSwapInputsByLeverageSize({
     collateralPrice: prices.collateralPrice,
     uiFeeFactor,
     positionFeeUsd,
-    fundingFeeUsd: existingPosition?.pendingFundingFeesUsd || 0n,
-    borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd || 0n,
+    fundingFeeUsd: existingPosition?.pendingFundingFeesUsd ?? 0n,
+    borrowingFeeUsd: existingPosition?.pendingBorrowingFeesUsd ?? 0n,
     uiFeeUsd,
     swapUiFeeUsd: 0n,
   });
@@ -225,6 +225,6 @@ export function getIsInternalSwapBetter({
 
   return (
     internalSwapAmounts?.swapStrategy.swapPathStats?.usdOut !== undefined &&
-    internalSwapAmounts!.swapStrategy!.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
+    internalSwapAmounts.swapStrategy.swapPathStats.usdOut > (externalSwapQuote?.usdOut ?? 0n)
   );
 }

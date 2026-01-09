@@ -32,7 +32,7 @@ export function useGasPrice(chainId: number) {
             rawGasPrice: feeData.gasPrice ?? 0n,
             maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
             bufferBps: getExecutionFeeBufferBps(chainId, bufferBps),
-            premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
+            premium: getGasPricePremium(chainId as ContractsChainId) ?? 0n,
           });
 
           resolve(gasPrice);

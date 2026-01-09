@@ -41,8 +41,8 @@ export const formatSwapMessage = (
 ): RowDetails => {
   const tokenIn = tradeAction.initialCollateralToken;
 
-  const tokenOut = tradeAction.targetCollateralToken!;
-  let amountIn = tradeAction.initialCollateralDeltaAmount!;
+  const tokenOut = tradeAction.targetCollateralToken;
+  let amountIn = tradeAction.initialCollateralDeltaAmount;
 
   if (
     tradeAction.twapParams &&
@@ -93,7 +93,7 @@ export const formatSwapMessage = (
     adapt(tokensMinRatio?.largestToken)
   );
 
-  const pathTokenSymbols = getSwapPathTokenSymbols(marketsInfoData, tokenIn, tradeAction.swapPath!);
+  const pathTokenSymbols = getSwapPathTokenSymbols(marketsInfoData, tokenIn, tradeAction.swapPath);
 
   const market = !pathTokenSymbols ? ELLIPSIS : pathTokenSymbols.join(ARROW_SEPARATOR);
 

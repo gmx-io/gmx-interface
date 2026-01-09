@@ -36,7 +36,7 @@ describe("RpcTracker - checkRpc", () => {
         createMockBlockAndAggregateResponse(blockNumber, sampleFieldValue)
       );
 
-      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+      const result = await tracker.checkRpc(publicProvider.url, new AbortController().signal);
 
       expect(result.responseTime).toBeGreaterThanOrEqual(0);
       expect(result.blockNumber).toBe(blockNumber);
@@ -79,7 +79,7 @@ describe("RpcTracker - checkRpc", () => {
 
       vi.spyOn(fetchRpcModule, "fetchEthCall").mockResolvedValue(mockResponse);
 
-      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+      const result = await tracker.checkRpc(publicProvider.url, new AbortController().signal);
 
       expect(result.blockNumber).toBe(blockNumber);
     });
@@ -122,7 +122,7 @@ describe("RpcTracker - checkRpc", () => {
         result: realExampleResponse,
       });
 
-      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+      const result = await tracker.checkRpc(publicProvider.url, new AbortController().signal);
 
       expect(result.blockNumber).toBeGreaterThan(0);
       expect(result.responseTime).toBeGreaterThanOrEqual(0);
@@ -147,12 +147,12 @@ describe("RpcTracker - checkRpc", () => {
         blockNumber,
       });
 
-      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+      const result = await tracker.checkRpc(publicProvider.url, new AbortController().signal);
 
       expect(result.responseTime).toBeGreaterThanOrEqual(0);
       expect(result.blockNumber).toBe(blockNumber);
       expect(fetchRpcModule.fetchBlockNumber).toHaveBeenCalledWith({
-        url: publicProvider!.url,
+        url: publicProvider.url,
         signal: expect.any(AbortSignal),
         priority: "low",
       });
@@ -165,7 +165,7 @@ describe("RpcTracker - checkRpc", () => {
       const privateProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "fallback").filter((p) => !p?.isPublic);
       const privateProvider = privateProviders[0];
 
-      await expect(tracker.checkRpc(privateProvider!.url, new AbortController().signal)).rejects.toThrow(
+      await expect(tracker.checkRpc(privateProvider.url, new AbortController().signal)).rejects.toThrow(
         "Skip private provider"
       );
     });
@@ -217,7 +217,7 @@ describe("RpcTracker - checkRpc", () => {
 
       vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockRejectedValue(new Error("Network error"));
 
-      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
     it("should handle invalid response (no result) from fetchBlockNumber", async () => {
@@ -229,7 +229,7 @@ describe("RpcTracker - checkRpc", () => {
 
       vi.spyOn(fetchRpcModule, "fetchBlockNumber").mockRejectedValue(new Error("No result in JSON-RPC response"));
 
-      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
     it("should handle AbortSignal correctly for source chain", async () => {
@@ -251,7 +251,7 @@ describe("RpcTracker - checkRpc", () => {
         return { blockNumber: 5000000 };
       });
 
-      await expect(tracker.checkRpc(publicProvider!.url, abortController.signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, abortController.signal)).rejects.toThrow();
     });
 
     it("should correctly parse hex block number from eth_blockNumber response", async () => {
@@ -268,7 +268,7 @@ describe("RpcTracker - checkRpc", () => {
         blockNumber: expectedBlockNumber,
       });
 
-      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+      const result = await tracker.checkRpc(publicProvider.url, new AbortController().signal);
 
       expect(result.blockNumber).toBe(expectedBlockNumber);
     });
@@ -286,7 +286,7 @@ describe("RpcTracker - checkRpc", () => {
       });
 
       const startTime = Date.now();
-      const result = await tracker.checkRpc(publicProvider!.url, new AbortController().signal);
+      const result = await tracker.checkRpc(publicProvider.url, new AbortController().signal);
       const endTime = Date.now();
 
       expect(result.responseTime).toBeGreaterThanOrEqual(40);
@@ -368,7 +368,7 @@ describe("RpcTracker - checkRpc", () => {
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
 
-      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
     it("should handle missing probeFieldKey", async () => {
@@ -380,7 +380,7 @@ describe("RpcTracker - checkRpc", () => {
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];
 
-      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
     it("should handle network errors from fetchEthCall", async () => {
@@ -392,7 +392,7 @@ describe("RpcTracker - checkRpc", () => {
 
       vi.spyOn(fetchRpcModule, "fetchEthCall").mockRejectedValue(new Error("Network error"));
 
-      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
     it("should handle invalid sampleFieldValue (<= 0)", async () => {
@@ -409,7 +409,7 @@ describe("RpcTracker - checkRpc", () => {
         createMockBlockAndAggregateResponse(blockNumber, invalidSampleFieldValue)
       );
 
-      await expect(tracker.checkRpc(publicProvider!.url, new AbortController().signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, new AbortController().signal)).rejects.toThrow();
     });
 
     it("should handle AbortSignal correctly", async () => {
@@ -431,7 +431,7 @@ describe("RpcTracker - checkRpc", () => {
         return createMockBlockAndAggregateResponse(1000000, 1000000000000000000000n);
       });
 
-      await expect(tracker.checkRpc(publicProvider!.url, abortController.signal)).rejects.toThrow();
+      await expect(tracker.checkRpc(publicProvider.url, abortController.signal)).rejects.toThrow();
     });
   });
 });

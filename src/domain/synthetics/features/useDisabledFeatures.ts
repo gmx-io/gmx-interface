@@ -37,8 +37,8 @@ export function useEnabledFeaturesRequest(chainId: ContractsChainId): EnabledFea
     },
     parseResponse: (result) => {
       return {
-        relayRouterEnabled: !result.data.features.relayRouterDisabled.returnValues[0] as boolean,
-        subaccountRelayRouterEnabled: !result.data.features.subaccountRelayRouterDisabled.returnValues[0] as boolean,
+        relayRouterEnabled: !result.data.features.relayRouterDisabled.returnValues[0],
+        subaccountRelayRouterEnabled: !result.data.features.subaccountRelayRouterDisabled.returnValues[0],
       };
     },
   });

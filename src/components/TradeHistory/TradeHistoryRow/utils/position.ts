@@ -597,14 +597,14 @@ export const formatPositionMessage = (
         ? undefined
         : initialCollateralUsd + tradeAction.basePnlUsd! - borrowingFeeUsd! - fundingFeeUsd! - positionFeeUsd!;
 
-    const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd!);
+    const formattedLeftoverCollateral = formatUsd(leftoverCollateralUsd);
     const formattedMinCollateral = formatUsd(liquidationCollateralUsd)!;
 
     const liquidationFeeUsd =
       convertToUsd(
         tradeAction.liquidationFeeAmount,
         tradeAction.initialCollateralToken?.decimals,
-        tradeAction.collateralTokenPriceMin!
+        tradeAction.collateralTokenPriceMin
       ) ?? 0n;
 
     const formattedLiquidationFee = formatDeltaUsd(liquidationFeeUsd ? liquidationFeeUsd * -1n : 0n);
@@ -643,10 +643,10 @@ export const formatPositionMessage = (
         "",
         t`This position was liquidated as the max. leverage of ${formattedMaxLeverage} was exceeded when taking into account fees.`,
         "",
-        infoRow(t`Initial Collateral`, formattedInitialCollateral!),
+        infoRow(t`Initial Collateral`, formattedInitialCollateral),
         infoRow(t`PnL`, {
           text: formattedBasePnl,
-          state: numberToState(tradeAction.basePnlUsd!),
+          state: numberToState(tradeAction.basePnlUsd),
         }),
         infoRow(t`Borrow Fee`, {
           text: formattedBorrowFee,
@@ -709,7 +709,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       lines.push(
         infoRow(t`Net Price Impact`, {
           text: formattedNetPriceImpact!,
-          state: numberToState(tradeAction.totalImpactUsd!),
+          state: numberToState(tradeAction.totalImpactUsd),
         })
       );
     } else {
@@ -718,7 +718,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       lines.push(
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
+          state: numberToState(tradeAction.priceImpactUsd),
         })
       );
     }
@@ -736,7 +736,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
     lines.push(
       infoRow(t`Price Impact`, {
         text: formattedPriceImpact!,
-        state: numberToState(tradeAction.priceImpactUsd!),
+        state: numberToState(tradeAction.priceImpactUsd),
       })
     );
   }
@@ -748,7 +748,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       lines.push(
         infoRow(t`Net Price Impact`, {
           text: formattedNetPriceImpact!,
-          state: numberToState(tradeAction.totalImpactUsd!),
+          state: numberToState(tradeAction.totalImpactUsd),
         })
       );
     } else {
@@ -757,7 +757,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       lines.push(
         infoRow(t`Price Impact`, {
           text: formattedPriceImpact!,
-          state: numberToState(tradeAction.priceImpactUsd!),
+          state: numberToState(tradeAction.priceImpactUsd),
         })
       );
     }

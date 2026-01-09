@@ -1,5 +1,5 @@
 import { TaskState } from "@gelatonetwork/relay-sdk";
-import { Address, encodePacked } from "viem";
+import { encodePacked } from "viem";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, BOTANIX, ContractsChainId } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
@@ -27,7 +27,7 @@ export async function sendExpressTransaction(p: {
 }): Promise<ExpressTxnResult> {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
-    [p.txnData.callData as Address, p.txnData.to as Address, p.txnData.feeToken as Address, p.txnData.feeAmount]
+    [p.txnData.callData, p.txnData.to, p.txnData.feeToken, p.txnData.feeAmount]
   );
 
   let gelatoPromise: Promise<{ taskId: string }> | undefined;
@@ -62,13 +62,13 @@ function makeExpressTxnResultWaiter(res: { taskId: string }) {
         }
 
         switch (status?.taskState) {
-          case "ExecSuccess":
-          case "ExecReverted":
-          case "Cancelled": {
+          case TaskState.ExecSuccess:
+          case TaskState.ExecReverted:
+          case TaskState.Cancelled: {
             const result: TransactionWaiterResult = {
               transactionHash: status.transactionHash,
               blockNumber: status?.blockNumber,
-              status: status.taskState === "ExecSuccess" ? "success" : "failed",
+              status: status.taskState === TaskState.ExecSuccess ? "success" : "failed",
               relayStatus: {
                 taskId: res.taskId,
                 taskState: status.taskState,
@@ -77,9 +77,9 @@ function makeExpressTxnResultWaiter(res: { taskId: string }) {
             resolve(result);
             break;
           }
-          case "CheckPending":
-          case "ExecPending":
-          case "WaitingForConfirmation":
+          case TaskState.CheckPending:
+          case TaskState.ExecPending:
+          case TaskState.WaitingForConfirmation:
           default:
             break;
         }

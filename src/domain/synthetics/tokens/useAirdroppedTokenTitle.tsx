@@ -1,5 +1,5 @@
 import find from "lodash/find";
-import { Address, isAddressEqual } from "viem";
+import { isAddressEqual } from "viem";
 
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -18,11 +18,9 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
     return "";
   }
 
-  const airDropTokenAddress = incentivesData.token as Address;
+  const airDropTokenAddress = incentivesData.token;
 
-  const market = find(marketsInfoData, (market) =>
-    isAddressEqual(market.marketTokenAddress as Address, airDropTokenAddress)
-  );
+  const market = find(marketsInfoData, (market) => isAddressEqual(market.marketTokenAddress, airDropTokenAddress));
 
   if (market) {
     const indexName = getMarketIndexName(market);
@@ -38,7 +36,7 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
   }
 
   const tokens = getTokens(chainId);
-  const tokenInfo = tokens.find((token) => isAddressEqual(token.address as Address, airDropTokenAddress));
+  const tokenInfo = tokens.find((token) => isAddressEqual(token.address, airDropTokenAddress));
 
   if (tokenInfo) {
     return tokenInfo.symbol;

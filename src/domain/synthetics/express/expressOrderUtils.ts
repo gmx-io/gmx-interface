@@ -1,6 +1,5 @@
 import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
 import {
-  Address,
   encodeFunctionData,
   maxUint256,
   PublicClient,
@@ -571,7 +570,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
-  const messageSigner = subaccount ? subaccount!.signer : signer;
+  const messageSigner = subaccount ? subaccount.signer : signer;
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
@@ -704,7 +703,7 @@ export async function getBatchSignatureParams({
   account: string;
   subaccountApproval: SignedSubacсountApproval | undefined;
   signer: WalletSigner | Wallet;
-  relayParams: RelayParamsPayload | RelayParamsPayload;
+  relayParams: RelayParamsPayload;
   batchParams: BatchOrderTxnParams;
   chainId: ContractsChainId;
   relayRouterAddress: string;
@@ -770,7 +769,7 @@ export async function getBatchSignatureParams({
     createOrderParamsList: paramsLists.createOrderParamsList,
     updateOrderParamsList: paramsLists.updateOrderParamsList,
     cancelOrderKeys: paramsLists.cancelOrderKeys,
-    relayParams: hashRelayParams(relayParams as RelayParamsPayload),
+    relayParams: hashRelayParams(relayParams),
     subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : zeroHash,
   };
 
@@ -1078,7 +1077,7 @@ export async function validateSignature({
     const recoveredAddress = await recoverTypedDataAddress({
       domain: {
         ...signatureParams.domain,
-        verifyingContract: signatureParams.domain.verifyingContract as Address,
+        verifyingContract: signatureParams.domain.verifyingContract,
       },
       types: signatureParams.types,
       primaryType: "Batch",

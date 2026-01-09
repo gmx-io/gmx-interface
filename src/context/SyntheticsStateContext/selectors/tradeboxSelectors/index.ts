@@ -804,21 +804,21 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const selectedPosition = q(selectTradeboxSelectedPosition);
 
       return getTradeFees({
-        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
+        sizeInUsd: selectedPosition?.sizeInUsd ?? 0n,
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
         collateralDeltaUsd: increaseAmounts.initialCollateralUsd, // pay token amount in usd
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         swapSteps: increaseAmounts.swapStrategy.swapPathStats?.swapSteps || [],
         externalSwapQuote: increaseAmounts.swapStrategy.externalSwapQuote,
         positionFeeUsd: increaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: increaseAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
+        swapPriceImpactDeltaUsd: increaseAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n,
         increasePositionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
         decreasePositionPriceImpactDeltaUsd: 0n,
         priceImpactDiffUsd: increaseAmounts.potentialPriceImpactDiffUsd,
         totalPendingImpactDeltaUsd: 0n,
         proportionalPendingImpactDeltaUsd: 0n,
-        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
-        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
+        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd ?? 0n,
+        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd ?? 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
         uiFeeFactor,
@@ -841,8 +841,8 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
-        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
-        initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
+        sizeInUsd: selectedPosition?.sizeInUsd ?? 0n,
+        initialCollateralUsd: selectedPosition?.collateralUsd ?? 0n,
         collateralDeltaUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: [],

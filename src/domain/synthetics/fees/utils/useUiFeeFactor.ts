@@ -20,7 +20,7 @@ export default function useUiFeeFactorRequest(chainId: ContractsChainId) {
         calls: {
           keys: {
             methodName: "getUint",
-            params: [uiFeeFactorKey(account!)],
+            params: [uiFeeFactorKey(account)],
           },
         },
       },

@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { Hash } from "viem";
 
 import { getReferralsGraphClient } from "lib/indexers";
 import { decodeReferralCode } from "sdk/utils/referrals";
@@ -35,7 +34,7 @@ export async function getCodeOwnersData(
         const owner = codeOwners[code];
         return {
           code,
-          codeString: decodeReferralCode(code as Hash),
+          codeString: decodeReferralCode(code),
           owner,
           isTaken: Boolean(owner),
           isTakenByCurrentUser: owner && owner.toLowerCase() === account.toLowerCase(),

@@ -78,23 +78,23 @@ export function useSubaccountOnchainData(
           calls: {
             isSubaccountActive: {
               methodName: "containsAddress",
-              params: [subaccountListKey(account!), subaccountAddress],
+              params: [subaccountListKey(account), subaccountAddress],
             },
             maxAllowedActionsCount: {
               methodName: "getUint",
-              params: [maxAllowedSubaccountActionCountKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+              params: [maxAllowedSubaccountActionCountKey(account, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
             },
             currentActionsCount: {
               methodName: "getUint",
-              params: [subaccountActionCountKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+              params: [subaccountActionCountKey(account, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
             },
             expiresAt: {
               methodName: "getUint",
-              params: [subaccountExpiresAtKey(account!, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
+              params: [subaccountExpiresAtKey(account, subaccountAddress, SUBACCOUNT_ORDER_ACTION)],
             },
             integrationId: {
               methodName: "getBytes32",
-              params: [subaccountIntegrationIdKey(account!, subaccountAddress)],
+              params: [subaccountIntegrationIdKey(account, subaccountAddress)],
             },
           },
         },

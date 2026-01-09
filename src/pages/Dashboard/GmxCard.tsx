@@ -35,7 +35,7 @@ export function GmxCard({
   gmxMarketCap: bigint | undefined;
   totalGmxInLiquidity: bigint;
 }) {
-  const currentIcons = getIcons(chainId)!;
+  const currentIcons = getIcons(chainId);
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
 

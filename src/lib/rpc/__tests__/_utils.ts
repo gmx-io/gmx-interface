@@ -70,11 +70,9 @@ export const createMockRpcTrackerParams = (overrides?: {
   setEndpointsThrottle: DEFAULT_FALLBACK_TRACKER_CONFIG.setEndpointsThrottle,
   delay: DEFAULT_FALLBACK_TRACKER_CONFIG.delay,
   failuresBeforeBan: {
-    count: (overrides?.failuresBeforeBan?.count ?? DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.count) as number,
-    window: (overrides?.failuresBeforeBan?.window ??
-      DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.window) as number,
-    throttle: (overrides?.failuresBeforeBan?.throttle ??
-      DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.throttle) as number,
+    count: overrides?.failuresBeforeBan?.count ?? DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.count,
+    window: overrides?.failuresBeforeBan?.window ?? DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.window,
+    throttle: overrides?.failuresBeforeBan?.throttle ?? DEFAULT_FALLBACK_TRACKER_CONFIG.failuresBeforeBan.throttle,
   },
   networkStatusObserver: overrides?.networkStatusObserver ?? new NetworkStatusObserver(),
   ...(overrides

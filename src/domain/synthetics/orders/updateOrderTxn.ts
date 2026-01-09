@@ -67,5 +67,5 @@ export function createUpdateEncodedPayload({
     ],
   });
 
-  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call!.method, call!.params));
+  return multicall.filter(Boolean).map((call) => router.interface.encodeFunctionData(call.method, call.params));
 }

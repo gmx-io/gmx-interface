@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey } from "react-use";
-import { Address } from "viem";
 
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -89,7 +88,7 @@ export function PositionEditor() {
         toastEnableExpress(() => setIsSettingsVisible(true));
       }
 
-      setSelectedCollateralAddress(tokenAddress as Address);
+      setSelectedCollateralAddress(tokenAddress);
       if (isGmxAccount !== undefined) {
         setIsCollateralTokenFromGmxAccount(isGmxAccount);
       }
@@ -246,7 +245,7 @@ export function PositionEditor() {
       }
 
       if (!selectedCollateralAddress || !filteredTokensData[selectedCollateralAddress]) {
-        handleSetCollateralAddress(position.collateralTokenAddress as Address);
+        handleSetCollateralAddress(position.collateralTokenAddress);
       }
     },
     [filteredTokensData, handleSetCollateralAddress, position, selectedCollateralAddress, setSelectedCollateralAddress]
