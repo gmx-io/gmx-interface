@@ -54,7 +54,7 @@ export type GmxAccountContext = {
 
 export const context = createContext<GmxAccountContext | null>(null);
 
-const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = isDevelopment() ? ARBITRUM_SEPOLIA : ARBITRUM;
+export const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = isDevelopment() ? ARBITRUM_SEPOLIA : ARBITRUM;
 
 const getSettlementChainIdFromLocalStorage = () => {
   const settlementChainIdFromLocalStorage = localStorage.getItem(SELECTED_SETTLEMENT_CHAIN_ID_KEY);

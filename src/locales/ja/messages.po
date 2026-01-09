@@ -1311,6 +1311,12 @@ msgstr "最低注文: {0}"
 msgid "Wallet is not connected"
 msgstr "ウォレットが接続されていません"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Not supported"
+msgstr "サポートされていません"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "TWAP Swap"
 msgstr "TWAPスワップ"
@@ -2757,6 +2763,10 @@ msgstr "このスワップは最低の手数料と価格インパクトのため
 msgid "{0}"
 msgstr "{0}"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Depositing is not supported on Avalanche anymore."
+msgstr "Avalancheへの入金はサポートされなくなりました。"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show Debug Values"
 msgstr "デバッグ値を表示"
@@ -3540,6 +3550,10 @@ msgstr "{gmOrGlvLabel}の購入操作に失敗しました。"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of days before reauthorization is required."
 msgstr "再承認が必要になるまでの最大日数。"
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet."
+msgstr "Avalancheへの入金は無効になっています。Avalancheウォレットから直接取引してください。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
@@ -7332,6 +7346,11 @@ msgstr "手数料APY"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "GMXの上に構築したりDeFiアプリに統合できますか？"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a settlement network."
+msgstr "Avalanche上のGMXアカウントのサポートはまもなく終了します。Avalanche GMXアカウントからの新規ポジションの開設および追加資金の入金は利用できなくなりました。決済ネットワークとしてArbitrumへの切り替えをお勧めします。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."

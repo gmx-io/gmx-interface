@@ -1311,6 +1311,12 @@ msgstr "최소 주문: {0}"
 msgid "Wallet is not connected"
 msgstr "지갑이 연결되지 않았습니다"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Not supported"
+msgstr "지원되지 않음"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "TWAP Swap"
 msgstr "TWAP 스왑"
@@ -2757,6 +2763,10 @@ msgstr "이 스왑은 가능한 최저 수수료와 가격 영향을 위해 여�
 msgid "{0}"
 msgstr "{0}"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Depositing is not supported on Avalanche anymore."
+msgstr "Avalanche에 입금하는 기능은 더 이상 지원되지 않습니다."
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show Debug Values"
 msgstr "디버그 값 표시"
@@ -3540,6 +3550,10 @@ msgstr "{gmOrGlvLabel} 구매 작업 실패."
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of days before reauthorization is required."
 msgstr "재승인이 필요한 최대 일수."
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet."
+msgstr "Avalanche에 입금하는 기능이 비활성화되었습니다. Avalanche 지갑에서 직접 거래해 주세요."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
@@ -7332,6 +7346,11 @@ msgstr "수수료 APY"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "GMX 위에 빌드하거나 DeFi 앱에 통합할 수 있나요?"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a settlement network."
+msgstr "Avalanche의 GMX 계정 지원이 곧 중단됩니다. Avalanche GMX 계정에서 새 포지션을 열거나 추가 자금을 입금하는 것은 더 이상 사용할 수 없습니다. 정산 네트워크로 Arbitrum으로 전환하는 것을 권장합니다."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."

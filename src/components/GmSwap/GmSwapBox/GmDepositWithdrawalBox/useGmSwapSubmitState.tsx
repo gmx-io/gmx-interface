@@ -3,7 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { SettlementChainId } from "config/chains";
+import { AVALANCHE, SettlementChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import {
   selectPoolsDetailsFlags,
@@ -268,11 +268,21 @@ export const useGmSwapSubmitState = ({
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
 
+  const isAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
+
   return useMemo((): SubmitButtonState => {
     if (!account) {
       return {
         text: t`Connect Wallet`,
         onSubmit: onConnectAccount,
+      };
+    }
+
+    if (isAvalancheGmxAccountWarning) {
+      return {
+        text: t`Not supported`,
+        disabled: true,
+        onSubmit,
       };
     }
 
@@ -364,6 +374,7 @@ export const useGmSwapSubmitState = ({
     approve,
     operation,
     isLoading,
+    isAvalancheGmxAccountWarning,
   ]);
 };
 

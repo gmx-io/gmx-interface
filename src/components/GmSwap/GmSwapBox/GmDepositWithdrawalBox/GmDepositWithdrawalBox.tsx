@@ -3,6 +3,7 @@ import cx from "classnames";
 import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
+import { AVALANCHE } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import {
   usePoolsDetailsFirstTokenAddress,
@@ -200,6 +201,8 @@ export function GmSwapBoxDepositWithdrawal() {
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees,
   });
+
+  const shouldShowAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
 
   const submitState = useGmSwapSubmitState({
     logicalFees,
@@ -629,6 +632,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarningForPosition={shouldShowWarningForPosition}
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
                 insufficientGasWarningText={submitState.warningText}
+                shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
               />
             </div>
           </div>
