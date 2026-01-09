@@ -3,17 +3,17 @@ import useSWR from "swr";
 
 import { getCurrentEpochStartedTimestamp } from "domain/stats";
 import { getWeekAgoTimestamp } from "domain/stats/getWeekAgoTimestamp";
-import { getSyntheticsGraphClient } from "lib/indexers";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const totalFeeQuery = gql`
   query totalFeesInfo {
-    position: positionFeesInfoWithPeriod(id: "total") {
+    position: positionFeesInfoWithPeriodById(id: "total") {
       totalBorrowingFeeUsd
       totalPositionFeeUsd
       totalLiquidationFeeUsd
     }
-    swap: swapFeesInfoWithPeriod(id: "total") {
+    swap: swapFeesInfoWithPeriodById(id: "total") {
       totalFeeReceiverUsd
       totalFeeUsdForPool
     }
@@ -22,22 +22,14 @@ const totalFeeQuery = gql`
 
 const weeklyFeeQuery = gql`
   query weeklyFeesInfo($weekAgoTimestamp: Int!) {
-    position: positionFeesInfoWithPeriods(
-      where: { id_gte: $weekAgoTimestamp, period: "1d" }
-      orderBy: id
-      orderDirection: asc
-    ) {
+    position: positionFeesInfoWithPeriods(where: { id_gte: $weekAgoTimestamp, period_eq: "1d" }, orderBy: id_ASC) {
       id
       totalBorrowingFeeUsd
       totalPositionFeeUsd
       totalLiquidationFeeUsd
     }
 
-    swap: swapFeesInfoWithPeriods(
-      where: { id_gte: $weekAgoTimestamp, period: "1d" }
-      orderBy: id
-      orderDirection: asc
-    ) {
+    swap: swapFeesInfoWithPeriods(where: { id_gte: $weekAgoTimestamp, period_eq: "1d" }, orderBy: id_ASC) {
       id
       totalFeeReceiverUsd
       totalFeeUsdForPool
@@ -116,7 +108,7 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
 export default function useV2FeesInfo(chainId: number) {
   async function fetcher() {
     try {
-      const client = getSyntheticsGraphClient(chainId);
+      const client = getSubsquidGraphClient(chainId);
       const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
       const weekAgoTimestamp = getWeekAgoTimestamp();
 
