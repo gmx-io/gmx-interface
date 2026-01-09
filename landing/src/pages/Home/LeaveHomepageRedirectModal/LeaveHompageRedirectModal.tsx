@@ -54,7 +54,7 @@ export function LeaveHomepageRedirectModal({
       <ModalBody>
         <div className="flex flex-col gap-12">
           <p>
-            <Trans>You are leaving GMX.io and will be redirected to a third party, independent website.</Trans>
+            <Trans>You are leaving GMX.io and being redirected to a third-party, independent website.</Trans>
           </p>
           <p>
             <Trans>
@@ -65,8 +65,8 @@ export function LeaveHomepageRedirectModal({
           </p>
           <p>
             <Trans>
-              Alternative links can be found in the <a href="https://docs.gmx.io/docs/frontends">docs</a>. By
-              clicking Agree you accept the <a href="https://gmx.io/#/terms-and-conditions">T&Cs</a> and{" "}
+              Alternative links are in the <a href="https://docs.gmx.io/docs/frontends">docs</a>. By clicking Agree, you
+              accept the <a href="https://gmx.io/#/terms-and-conditions">T&Cs</a> and{" "}
               <a href="https://gmx.io/#/referral-terms">Referral T&Cs</a>.
             </Trans>
           </p>
@@ -86,7 +86,7 @@ export function LeaveHomepageRedirectModal({
                 "bg-white": !shouldHideRedirectModal,
               })}
             />
-            <Trans>Don't show this message again for 30 days.</Trans>
+            <Trans>Don't show this message again for 30 days</Trans>
           </label>
         </ModalBottom>
 

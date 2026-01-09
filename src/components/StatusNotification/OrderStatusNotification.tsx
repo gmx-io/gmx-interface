@@ -291,13 +291,13 @@ export function OrderStatusNotification({
     }
 
     if (orderStatus?.executedTxnHash) {
-      text = t`Order executed`;
+      text = t`Order filled`;
       status = "success";
       txnHash = orderStatus?.executedTxnHash;
     }
 
     if (orderStatus?.cancelledTxnHash) {
-      text = t`Order cancelled`;
+      text = t`Order canceled`;
       txnHash = orderStatus?.cancelledTxnHash;
 
       if (orderData?.txnType !== "cancel") {
@@ -550,7 +550,7 @@ export function OrdersStatusNotificiation({
                 onClick={onCancelOrdersClick}
                 className="StatusNotification-cancel-all"
               >
-                {t`Cancel newly created orders`}
+                {t`Cancel new orders`}
               </button>
             )}
           </div>

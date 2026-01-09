@@ -139,8 +139,8 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     if (!isExistingLimits && liqPrice !== undefined && liqPrice !== null) {
       if (type === "sl") {
         const nextError = isLong
-          ? inputPrice < liqPrice && t`Trigger price below liq. price`
-          : inputPrice > liqPrice && t`Trigger price above liq. price`;
+          ? inputPrice < liqPrice && t`Trigger price below liquidation price`
+          : inputPrice > liqPrice && t`Trigger price above liquidation price`;
 
         priceError = nextError || priceError;
       }
@@ -220,7 +220,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     }
   } else {
     if (entry.percentage?.value === undefined || entry.percentage?.value === 0n) {
-      percentageError = t`A size percentage is required`;
+      percentageError = t`Size percentage required`;
     }
   }
 

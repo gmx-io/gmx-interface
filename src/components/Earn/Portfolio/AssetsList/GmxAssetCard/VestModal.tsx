@@ -450,7 +450,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
             <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
               <div>
                 <Trans>
-                  Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults.
+                  Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults
                 </Trans>
 
                 <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards#vesting" newTab>

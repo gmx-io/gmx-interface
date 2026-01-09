@@ -54,8 +54,8 @@ export function useMaxAutoCancelOrdersState({
     warning = (
       <AlertInfoCard>
         <Trans>
-          Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation;
-          existing ones still close with their position.
+          Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual
+          cancellation; existing ones still close with their position
         </Trans>{" "}
         <ExternalLink href="https://docs.gmx.io/docs/trading/#auto-cancel-tp--sl">
           <Trans>Read more</Trans>

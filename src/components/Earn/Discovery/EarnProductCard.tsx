@@ -37,7 +37,7 @@ const getCardContent = (type: EarnProductType) => {
       readMoreUrl: "https://docs.gmx.io/docs/tokenomics/gmx-token",
       bullets: [
         t`Stake GMX to earn GMX rewards`,
-        t`Rewards are funded by protocol fees that fuel GMX buybacks`,
+        t`Rewards funded by protocol fees used for GMX buybacks`,
         t`Receive voting power and participate in governance`,
       ],
       cta: {
@@ -49,13 +49,13 @@ const getCardContent = (type: EarnProductType) => {
       tokenSymbol: "GLV",
       badge: t`Passive Management`,
       title: t`What is GLV?`,
-      description: t`GLV (GMX Liquidity Vault) contains various GM tokens, offering you diversified exposure to GMX's markets. The Vault automatically rebalances its liquidity to in-demand markets, unlocking higher potential yield compared to individual, isolated pools.`,
+      description: t`GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversified exposure to GMX's markets. The Vault auto-rebalances to high-demand markets, unlocking higher potential yield compared to isolated pools.`,
       readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity#glv-pools",
       bullets: [
         t`Get optimized exposure to the highest-utilized pools`,
         t`No active management required`,
         t`Earn fees from leverage trading, swaps, and spreads`,
-        t`All earnings are auto-compounded`,
+        t`Earnings auto-compounded`,
         t`Great for passive users`,
       ],
       cta: {
@@ -66,14 +66,14 @@ const getCardContent = (type: EarnProductType) => {
     gm: {
       tokenSymbol: "GM",
       badge: t`Active Management`,
-      title: t`What is GM?`,
-      description: t`GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded for you instantly.`,
+      title: t`What Is GM?`,
+      description: t`GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded.`,
       readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity#gm-pools",
       bullets: [
-        t`Support isolated liquidity per market`,
+        t`Provide isolated liquidity per market`,
         t`Become a market maker`,
-        t`More active management required compared to GLV`,
-        t`All earnings are auto-compounded`,
+        t`Requires more active management than GLV`,
+        t`Earnings auto-compounded`,
       ],
       cta: {
         label: t`Buy GM`,

@@ -56,7 +56,7 @@ function AllowedSwapSlippageInputRowImpl({
   if (notAvailable || recommendedValue === undefined || initialValue === undefined) {
     return (
       <SyntheticsInfoRow label={t`Allowed Slippage`}>
-        <span className="AllowedSwapSlippageInputRow-na">{t`NA`}</span>
+        <span className="AllowedSwapSlippageInputRow-na">{t`N/A`}</span>
       </SyntheticsInfoRow>
     );
   }
@@ -64,17 +64,16 @@ function AllowedSwapSlippageInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AllowedSwapSlippageInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
+        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
       </span>
-      .
     </Trans>
   );
 
   const lowValueWarningText = (
     <p>
       <Trans>
-        The current swap impact including fees is {formatPercentage(totalSwapImpactBps, { signed: true })}. Consider
-        adding a buffer of 1% to it so the order is more likely to be processed
+        Current swap impact: {formatPercentage(totalSwapImpactBps, { signed: true })}. Add 1% buffer for better
+        execution.
       </Trans>
       <br />
       <br />
@@ -84,10 +83,7 @@ function AllowedSwapSlippageInputRowImpl({
 
   const highValueWarningText = (
     <p>
-      <Trans>
-        You have set a high allowed slippage. The current swap impact including fees is{" "}
-        {formatPercentage(totalSwapImpactBps, { signed: true })}.
-      </Trans>
+      <Trans>High slippage set. Current swap impact: {formatPercentage(totalSwapImpactBps, { signed: true })}.</Trans>
       <br />
       <br />
       {recommendedHandle}

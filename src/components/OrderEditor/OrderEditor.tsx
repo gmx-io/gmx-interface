@@ -297,7 +297,7 @@ export function OrderEditor(p: Props) {
     if (newSizeDeltaUsd !== undefined) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     } else {
-      helperToast.error(t`No available leverage found`);
+      helperToast.error(t`No valid leverage available`);
     }
   }, [
     p.order,
@@ -426,11 +426,11 @@ export function OrderEditor(p: Props) {
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price above mark price`;
+        return t`Limit price is above mark price`;
       }
 
       if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price below mark price`;
+        return t`Limit price is below mark price`;
       }
 
       const expressError = getExpressError({
@@ -527,7 +527,7 @@ export function OrderEditor(p: Props) {
 
     if (isMaxLeverageError) {
       return {
-        text: t`Max. Leverage Exceeded`,
+        text: t`Max leverage exceeded`,
         tooltip: (
           <>
             <Trans>Order exceeds max leverage. Click to auto-adjust to maximum allowed.</Trans>{" "}
@@ -535,7 +535,7 @@ export function OrderEditor(p: Props) {
             <br />
             <br />
             <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-              <Trans>Set Max Leverage</Trans>
+              <Trans>Set max leverage</Trans>
             </span>
           </>
         ),
@@ -789,7 +789,7 @@ export function OrderEditor(p: Props) {
 
               {existingPosition && (
                 <SyntheticsInfoRow
-                  label={t`Liq. Price`}
+                  label={t`Liquidation Price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -824,7 +824,7 @@ export function OrderEditor(p: Props) {
                       />
                       <br />
                       <div className="text-typography-primary">
-                        <Trans>As network fees have increased, an additional network fee is needed.</Trans>
+                        <Trans>Network fees increased. Additional fee required.</Trans>
                       </div>
                     </>
                   )}

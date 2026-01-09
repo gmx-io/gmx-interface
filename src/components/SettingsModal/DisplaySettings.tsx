@@ -37,7 +37,7 @@ export function DisplaySettings() {
             setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
           >
             <TooltipWithPortal
-              handle={<Trans>Breakdown Net Price Impact</Trans>}
+              handle={<Trans>Break Down Net Price Impact</Trans>}
               position="top"
               variant="icon"
               renderContent={() => (

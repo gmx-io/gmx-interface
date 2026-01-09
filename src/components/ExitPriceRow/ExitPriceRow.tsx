@@ -36,7 +36,7 @@ export function ExitPriceRow({
         <TooltipWithPortal
           variant="icon"
           handle={t`Exit Price`}
-          content={t`Expected exit price including capped net price impact.`}
+          content={t`Price you'll receive when closing, adjusted for capped price impact.`}
         />
       }
       value={exitPrice !== undefined ? formatUsdPrice(exitPrice) : "-"}

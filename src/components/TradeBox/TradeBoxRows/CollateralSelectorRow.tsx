@@ -93,7 +93,7 @@ function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1">
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -109,7 +109,7 @@ function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -131,7 +131,7 @@ function useCollateralWarnings() {
       messages.push(
         <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
           <Trans>
-            Existing limit order uses {symbol} collateral.{" "}
+            Existing limit order uses {symbol} collateral{" "}
             <ColorfulButtonLink
               color="blue"
               onClick={() => {

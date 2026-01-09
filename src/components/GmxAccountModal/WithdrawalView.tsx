@@ -1006,7 +1006,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4">
               <div>
                 <Trans>
-                  Amount exceeds limit. Try less than <span className="numbers">{upperLimitFormatted}</span>.
+                  Amount exceeds limit. Try less than <span className="numbers">{upperLimitFormatted}</span>
                 </Trans>
               </div>
             </AlertInfoCard>
@@ -1015,7 +1015,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4">
               <div>
                 <Trans>
-                  Amount below limit. Try more than <span className="numbers">{lowerLimitFormatted}</span>.
+                  Amount below limit. Try more than <span className="numbers">{lowerLimitFormatted}</span>
                 </Trans>
               </div>
             </AlertInfoCard>
@@ -1039,7 +1039,6 @@ export const WithdrawalView = () => {
                   >
                     settings
                   </span>
-                  .
                 </Trans>
               </div>
             </AlertInfoCard>
@@ -1092,7 +1091,7 @@ export const WithdrawalView = () => {
                     >
                       deposit
                     </span>{" "}
-                    more {isOutOfTokenErrorToken?.symbol}.
+                    more {isOutOfTokenErrorToken?.symbol}
                   </Trans>
                 </div>
               </AlertInfoCard>

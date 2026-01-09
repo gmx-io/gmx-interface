@@ -29,7 +29,7 @@ export function Features({ goToTradeArbitrum }: Props) {
             <IconBox iconComponent={IcGears} />
             <div className="flex flex-col gap-4">
               <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
-                <Trans>Trade with confidence</Trans>
+                <Trans>Trade with Confidence</Trans>
               </p>
               <p className="text-heading-4">
                 <Trans>Guaranteed Liquidity</Trans>
@@ -39,7 +39,7 @@ export function Features({ goToTradeArbitrum }: Props) {
           <p className="text-description">
             <Trans>
               Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book
-              depth
+              depth.
             </Trans>
           </p>
         </div>
@@ -68,7 +68,7 @@ export function Features({ goToTradeArbitrum }: Props) {
               <Trans>Support for</Trans> <br className="hidden lg:block" /> <Trans>Numerous Assets</Trans>
             </p>
             <p className="text-description">
-              <Trans>Use your preferred token to pay and collateralize your positions</Trans>
+              <Trans>Use your preferred token to pay and collateralize your positions.</Trans>
             </p>
           </div>
           <div className="relative mt-20 w-full grow lg:mt-36">
@@ -83,10 +83,10 @@ export function Features({ goToTradeArbitrum }: Props) {
           <IconBox iconComponent={IcProtection} />
           <div className="flex flex-col gap-4">
             <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
-              <Trans>keep more of what you earn</Trans>
+              <Trans>Keep More of What You Earn</Trans>
             </p>
             <p className="text-heading-4">
-              <Trans>Save on Costs </Trans>
+              <Trans>Save on Costs</Trans>
             </p>
           </div>
         </div>
@@ -114,7 +114,7 @@ export function Features({ goToTradeArbitrum }: Props) {
               <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
-                  <Trans>No loss of fund ownership</Trans>
+                  <Trans>No Loss of Fund Ownership</Trans>
                 </p>
               </div>
             </div>

@@ -908,7 +908,7 @@ export const DepositView = () => {
           <div>
             <Trans>
               Amount exceeds the limit. Try an amount smaller than{" "}
-              <span className="numbers">{upperLimitFormatted}</span>.
+              <span className="numbers">{upperLimitFormatted}</span>
             </Trans>
           </div>
         </AlertInfoCard>
@@ -918,7 +918,7 @@ export const DepositView = () => {
           <div>
             <Trans>
               Amount is below the limit. Try an amount larger than{" "}
-              <span className="numbers">{lowerLimitFormatted}</span>.
+              <span className="numbers">{lowerLimitFormatted}</span>
             </Trans>
           </div>
         </AlertInfoCard>

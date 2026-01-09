@@ -182,7 +182,7 @@ export default function EarnAdditionalOpportunitiesPage() {
       <ColorfulBanner>
         <Trans>
           Maximize your earnings on your ecosystem tokens (GMX, GLV and GM) with the following integrated partner
-          protocols.
+          protocols
         </Trans>
       </ColorfulBanner>
 

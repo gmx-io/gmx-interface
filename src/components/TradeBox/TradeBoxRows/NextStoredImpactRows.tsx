@@ -55,7 +55,7 @@ export function NextStoredImpactRows() {
       {nextPositionValues?.potentialPriceImpactDiffUsd !== undefined &&
         nextPositionValues?.potentialPriceImpactDiffUsd > 0n && (
           <SyntheticsInfoRow
-            label={t`Est. Impact Rebate`}
+            label={t`Estimated Impact Rebate`}
             value={formatDeltaUsd(nextPositionValues?.potentialPriceImpactDiffUsd)}
             valueClassName="numbers text-green-500"
           />

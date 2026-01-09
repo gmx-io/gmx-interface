@@ -142,7 +142,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     throw new Error(`Unknown method: ${method}`);
   }
 
-  let errorTitle = p.errorTitle || t`Execute order simulation failed.`;
+  let errorTitle = p.errorTitle || t`Execute order simulation failed`;
 
   const tenderlyConfig = getTenderlyConfig();
   const router = isGlv ? glvRouter : exchangeRouter;
@@ -222,7 +222,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
             >
               <Trans>increasing the allowed slippage</Trans>
             </span>{" "}
-            under the advanced display section.
+            under the advanced display section
           </Trans>
         );
       }
@@ -249,10 +249,10 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     if (!msg) {
       msg = (
         <div>
-          <Trans>Execute order simulation failed.</Trans>
+          <Trans>Execute order simulation failed</Trans>
           <br />
           <br />
-          <ToastifyDebug error={t`Unknown Error`} />
+          <ToastifyDebug error={t`Unknown error`} />
         </div>
       );
     }

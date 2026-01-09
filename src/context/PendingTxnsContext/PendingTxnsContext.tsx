@@ -91,10 +91,10 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Txn failed.
+                    Transaction failed.
                     <br />
                     <br />
-                    <ExternalLink href={txUrl}>View</ExternalLink>
+                    <ExternalLink href={txUrl}>View status</ExternalLink>
                   </Trans>
                 </div>
               );

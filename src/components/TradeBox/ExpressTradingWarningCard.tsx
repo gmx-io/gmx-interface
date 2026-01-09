@@ -108,9 +108,7 @@ export function ExpressTradingWarningCard({
     onCloseClick = handleCloseWrapOrUnwrapWarningClick;
     const nativeToken = getNativeToken(chainId);
     icon = ExpressIcon;
-    content = (
-      <Trans>Express Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
-    );
+    content = <Trans>Express Trading unavailable for wrapping or unwrapping {nativeToken.symbol}</Trans>;
   } else if (shouldShowNativeTokenWarning) {
     const wrappedToken = getWrappedToken(chainId);
     const nativeToken = getNativeToken(chainId);
@@ -118,29 +116,28 @@ export function ExpressTradingWarningCard({
     icon = ExpressIcon;
     content = (
       <Trans>
-        Express Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
-        {wrappedToken.symbol} instead.
+        Express Trading unavailable for native token {nativeToken.symbol}. Use {wrappedToken.symbol} instead
       </Trans>
     );
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
+    content = <Trans>One-Click Trading disabled. Action limit exceeded</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
+    content = <Trans>One-Click Trading approval expired. Sign a new approval</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
+    content = <Trans>One-Click Trading disabled. Time limit expired</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     if (srcChainId) {
       icon = ExpressIcon;
-      content = <Trans>Insufficient gas balance, please deposit more {gasPaymentTokensText}.</Trans>;
+      content = <Trans>Insufficient gas balance, deposit more {gasPaymentTokensText}</Trans>;
       buttonText = <Trans>Deposit {gasPaymentTokensText}</Trans>;
 
       onClick = () => {
@@ -148,7 +145,7 @@ export function ExpressTradingWarningCard({
       };
     } else {
       icon = ExpressIcon;
-      content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
+      content = <Trans>Express and One-Click Trading unavailable due to insufficient gas balance</Trans>;
       buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
       onClick = () => {
         history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
@@ -158,8 +155,8 @@ export function ExpressTradingWarningCard({
     icon = OneClickIcon;
     content = (
       <Trans>
-        One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please
-        sign a new approval to continue.
+        One-Click Trading approval invalid. This may occur when switching chains or payment tokens. Sign a new approval
+        to continue
       </Trans>
     );
     buttonText = <Trans>Re-sign</Trans>;

@@ -227,7 +227,9 @@ export function AffiliateCodeForm({
       {error && <p className="AffiliateCode-error">{error}</p>}
       {srcChainId && (
         <AlertInfoCard className="mb-15 text-left">
-          <Trans>Switch to {getChainName(chainId)} to create your referral code. It will work across all networks.</Trans>
+          <Trans>
+            Switch to {getChainName(chainId)} to create your referral code. It will work across all networks
+          </Trans>
         </AlertInfoCard>
       )}
       <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>

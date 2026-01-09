@@ -43,9 +43,8 @@ export default function EarnDiscoveryPage() {
             </h4>
             <p className="text-13 text-typography-secondary xl:max-w-[50%]">
               <Trans>
-                Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore
-                the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like
-                tens of thousands of other GMX users.
+                Learn how GMX, GLV, and GM tokens power decentralized trading. Stake or provide liquidity to earn
+                rewards — like tens of thousands of other GMX users.
               </Trans>
             </p>
           </div>

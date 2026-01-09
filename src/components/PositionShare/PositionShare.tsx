@@ -204,7 +204,7 @@ function PositionShare({
           setUploadedImageInfo(imageInfo);
         } catch (error) {
           setUploadedImageInfo(null);
-          setUploadedImageError(t`Image generation error, please refresh and try again.`);
+          setUploadedImageError(t`Image generation error, please refresh and try again`);
         }
       }
     })();
@@ -260,7 +260,7 @@ function PositionShare({
 
     const url = getShareURL(uploadedImageInfo, shareAffiliateCode);
     copyToClipboard(url as string);
-    helperToast.success(t`Link copied to clipboard.`);
+    helperToast.success(t`Link copied to clipboard`);
   }
 
   const trackShareTwitter = useCallback(() => {
@@ -343,7 +343,7 @@ function PositionShare({
               <Trans>Are you sure you want to skip creating a referral code?</Trans>
             </span>
             <span className="text-blue-100">
-              <Trans>It allows you to earn rewards.</Trans>
+              <Trans>It allows you to earn rewards</Trans>
             </span>
           </ColorfulBanner>
         )}

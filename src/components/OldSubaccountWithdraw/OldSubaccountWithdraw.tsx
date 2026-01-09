@@ -69,7 +69,7 @@ export function OldSubaccountWithdraw() {
 
       helperToast.success(
         <StatusNotification title={t`Withdrawing from subaccount...`}>
-          {t`Withdrawn ${balanceFormatted} to main account.`}
+          {t`${balanceFormatted} withdrawn to main account`}
         </StatusNotification>
       );
 
@@ -78,7 +78,7 @@ export function OldSubaccountWithdraw() {
       metrics.pushError(error, "subaccount.withdrawOldBalance");
       helperToast.error(
         <StatusNotification title={t`Withdrawing from subaccount...`}>
-          {t`Failed to withdraw ${balanceFormatted} to main account.`}
+          {t`Failed to withdraw ${balanceFormatted} to main account`}
         </StatusNotification>
       );
     } finally {
@@ -96,7 +96,7 @@ export function OldSubaccountWithdraw() {
 
   return (
     <ColorfulBanner color="blue" icon={IconInfo}>
-      <Trans>You have {balanceFormatted} remaining in your old version 1CT subaccount.</Trans>
+      <Trans>{balanceFormatted} remaining in old 1CT subaccount</Trans>
       <ColorfulButtonLink color="blue" onClick={withdrawWeth} disabled={isWithdrawing}>
         {isWithdrawing ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
       </ColorfulButtonLink>

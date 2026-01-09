@@ -603,11 +603,11 @@ function getOperationMessage(
 
   const lastActionsMsg = isLastAction ? (
     <Trans>
-      Max Action Count Reached.{" "}
+      Max action count reached.{" "}
       <span onClick={() => setIsSettingsVisible(true)} className="link-underline">
         Click here
       </span>{" "}
-      to update.
+      to update
     </Trans>
   ) : undefined;
 
@@ -631,11 +631,11 @@ function getOperationMessage(
       }
 
       case "success": {
-        return t`${orderText} updated.`;
+        return t`${orderText} updated`;
       }
 
       case "failed": {
-        return t`${orderText} update failed.`;
+        return t`${orderText} update failed`;
       }
 
       default: {
@@ -655,11 +655,11 @@ function getOperationMessage(
       }
 
       case "success": {
-        return t`${orderText} cancelled.`;
+        return t`${orderText} cancelled`;
       }
 
       case "failed": {
-        return t`${orderText} cancel failed.`;
+        return t`${orderText} cancel failed`;
       }
 
       default: {

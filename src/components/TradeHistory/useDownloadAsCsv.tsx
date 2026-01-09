@@ -135,7 +135,7 @@ export function useDownloadAsCsv({
         action: t`Action`,
         size: t`Size`,
         market: t`Market`,
-        fullMarket: t`Full market`,
+        fullMarket: t`Full Market`,
         marketPrice: t`Mark Price`,
         acceptablePrice: t`Acceptable Price`,
         executionPrice: t`Execution Price`,
@@ -147,7 +147,7 @@ export function useDownloadAsCsv({
     } catch (error) {
       helperToast.error(
         <div>
-          <Trans>Failed to download trade history CSV.</Trans>
+          <Trans>Failed to download trade history CSV</Trans>
           <br />
           <br />
           <ToastifyDebug error={String(error)} />

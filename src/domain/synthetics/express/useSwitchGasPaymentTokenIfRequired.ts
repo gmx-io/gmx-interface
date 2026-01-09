@@ -13,12 +13,9 @@ import { getGasPaymentTokens } from "sdk/configs/express";
 import { ExpressTxnParams } from "./types";
 
 const notifyGasPaymentTokenSwitched = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
-  helperToast.info(
-    t`Gas payment token switched from ${fromSymbol} to ${toSymbol} due to insufficient ${fromSymbol} balance.`,
-    {
-      toastId: "gas-payment-token-switched",
-    }
-  );
+  helperToast.info(t`Gas token switched from ${fromSymbol} to ${toSymbol}. Insufficient ${fromSymbol} balance`, {
+    toastId: "gas-payment-token-switched",
+  });
 };
 
 export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({

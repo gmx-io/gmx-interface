@@ -1109,7 +1109,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     >
                       <Trans>Use a TWAP order</Trans>
                     </span>{" "}
-                    <Trans> for lower net price impact.</Trans>
+                    <Trans> for lower net price impact</Trans>
                   </span>
                 </div>
               </ColorfulBanner>
@@ -1156,7 +1156,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     )}
                     {showHighLeverageWarning && (
                       <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
-                        <Trans>Using high leverage increases the risk of liquidation.</Trans>
+                        <Trans>Using high leverage increases the risk of liquidation</Trans>
                       </AlertInfoCard>
                     )}
                     {isTrigger && (

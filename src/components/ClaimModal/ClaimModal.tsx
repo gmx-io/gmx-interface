@@ -199,7 +199,7 @@ export function ClaimModalMultichain(p: Props) {
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
-      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+      helperToast.error(t`Missing claim params. Retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimFundingFees");
     };
 
@@ -250,13 +250,13 @@ export function ClaimModalMultichain(p: Props) {
         request.wait().then((res) => {
           if (res.status === "success") {
             toast.update("funding-claimed", {
-              render: t`Success claiming funding fees`,
+              render: t`Funding fees claimed`,
               type: "success",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
           } else if (res.status === "failed") {
             toast.update("funding-claimed", {
-              render: t`Claiming funding fees failed`,
+              render: t`Claim funding fees failed`,
               type: "error",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });

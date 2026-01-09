@@ -200,7 +200,7 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`PnL ($)`}
                 width={12}
-                tooltip={t`Total PnL (realized + unrealized) after fees and price impact.`}
+                tooltip={t`Total realized and unrealized PnL including fees and price impact.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("totalQualifyingPnl")}
               />
@@ -214,21 +214,21 @@ export function LeaderboardAccountsTable({
               <TableHeaderCell
                 title={t`Avg. Size`}
                 width={12}
-                tooltip={t`Average position size across all trades.`}
+                tooltip={t`Average position size.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("averageSize")}
               />
               <TableHeaderCell
                 title={t`Avg. Lev.`}
                 width={1}
-                tooltip={t`Average leverage across all positions.`}
+                tooltip={t`Average leverage used.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("averageLeverage")}
               />
               <TableHeaderCell
                 title={t`Win/Loss`}
                 width={10}
-                tooltip={t`Win/loss record for closed positions only.`}
+                tooltip={t`Wins and losses for closed positions.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("wins")}
               />
@@ -434,12 +434,12 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const message = useMemo(() => {
     if (rank !== null) return null;
 
-    let msg = t`You have not traded during the selected period.`;
+    let msg = t`No trades during selected period.`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+      msg = t`Minimum ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,
-      })} to qualify for the rankings.`;
-    else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
+      })} capital required to qualify for rankings.`;
+    else if (isCompetition) msg = t`No eligible trades during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);

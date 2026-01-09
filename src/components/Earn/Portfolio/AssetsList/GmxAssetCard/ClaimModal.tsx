@@ -178,9 +178,9 @@ export function ClaimModal(props: {
         isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
-        sentMsg: t`Claim submitted.`,
-        failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed.`,
+        sentMsg: t`Claim submitted`,
+        failMsg: t`Claim failed`,
+        successMsg: t`Claim completed`,
         successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
         setPendingTxns,
       }
@@ -299,9 +299,9 @@ export function ClaimModal(props: {
         <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
           <Trans>
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
-              Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
-            </ExternalLink>
-            voting power before claiming.
+              Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power
+            </ExternalLink>{" "}
+            before claiming.
           </Trans>
         </AlertInfo>
       ) : null}
@@ -357,7 +357,7 @@ function ClaimRewardOption({
         <div className="flex items-center gap-4">
           <TokenIcon symbol={tokenSymbol} displaySize={20} className="!rounded-0" />
           <span className="text-14 font-medium text-typography-primary">
-            <Trans>Claim {tokenSymbol} Rewards</Trans>
+            <Trans>Claim {tokenSymbol} rewards</Trans>
           </span>
         </div>
         <span className={cx("ml-auto text-14 numbers", "text-typography-secondary")}>{amountText}</span>
@@ -375,7 +375,7 @@ function ClaimRewardOption({
               Convert {tokenSymbol} to {nativeTokenSymbol}
             </Trans>
           ) : (
-            <Trans>Stake {tokenSymbol} Rewards</Trans>
+            <Trans>Stake {tokenSymbol} rewards</Trans>
           )}
         </span>
       </Checkbox>

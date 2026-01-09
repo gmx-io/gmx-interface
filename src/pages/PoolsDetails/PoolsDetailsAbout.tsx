@@ -301,9 +301,9 @@ const BuyableTooltipContent = ({
         )}
       </p>
       <br />
-      <StatsTooltipRow label={`Max ${marketInfo?.longToken?.symbol}`} value={longTokenMaxValue} />
+      <StatsTooltipRow label={t`Max ${marketInfo?.longToken?.symbol}`} value={longTokenMaxValue} />
       {!marketInfo?.isSameCollaterals && (
-        <StatsTooltipRow label={`Max ${marketInfo?.shortToken?.symbol}`} value={shortTokenMaxValue} />
+        <StatsTooltipRow label={t`Max ${marketInfo?.shortToken?.symbol}`} value={shortTokenMaxValue} />
       )}
     </>
   );
