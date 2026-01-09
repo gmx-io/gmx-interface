@@ -162,7 +162,7 @@ function MarketsList() {
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
     const availableChartTokens = availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
-    const availableChartTokenAddresses = availableChartTokens?.map((token) => token.address as Address);
+    const availableChartTokenAddresses = availableChartTokens?.map((token) => token.address);
 
     return {
       availableChartTokens,
@@ -230,7 +230,7 @@ function MarketsList() {
   });
 
   const handleMarketSelect = useCallback(
-    (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => {
+    (tokenAddress: string, preferredTradeType?: PreferredTradeTypePickStrategy) => {
       setSearchKeyword("");
       close();
 
@@ -540,7 +540,7 @@ function MarketListItem({
   rowVerticalPadding: string;
   rowHorizontalPadding: string;
   tdClassName: string;
-  onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
+  onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy) => void;
 }) {
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
@@ -736,8 +736,8 @@ function tokenSortingComparatorBuilder({
     }
 
     if (orderBy === "24hVolume") {
-      const aVolume = dayVolumes?.[aAddress] || 0n;
-      const bVolume = dayVolumes?.[bAddress] || 0n;
+      const aVolume = dayVolumes?.[aAddress] ?? 0n;
+      const bVolume = dayVolumes?.[bAddress] ?? 0n;
       return aVolume > bVolume ? directionMultiplier : -directionMultiplier;
     }
 
@@ -771,11 +771,11 @@ function tokenSortingComparatorBuilder({
 
     if (orderBy === "combinedOpenInterest") {
       const aOI =
-        (indexTokenStatsMap?.[aAddress]?.totalOpenInterestLong || 0n) +
-        (indexTokenStatsMap?.[aAddress]?.totalOpenInterestShort || 0n);
+        (indexTokenStatsMap?.[aAddress]?.totalOpenInterestLong ?? 0n) +
+        (indexTokenStatsMap?.[aAddress]?.totalOpenInterestShort ?? 0n);
       const bOI =
-        (indexTokenStatsMap?.[bAddress]?.totalOpenInterestLong || 0n) +
-        (indexTokenStatsMap?.[bAddress]?.totalOpenInterestShort || 0n);
+        (indexTokenStatsMap?.[bAddress]?.totalOpenInterestLong ?? 0n) +
+        (indexTokenStatsMap?.[bAddress]?.totalOpenInterestShort ?? 0n);
       return aOI > bOI ? directionMultiplier : -directionMultiplier;
     }
 

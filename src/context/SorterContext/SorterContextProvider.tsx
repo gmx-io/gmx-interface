@@ -9,7 +9,7 @@ import { SorterConfig, SorterKey } from "./types";
 
 localStorage.removeItem(SORTER_CONFIG_KEY);
 
-type SorterState = Record<SorterKey, SorterConfig>;
+type SorterState = Record<SorterKey, SorterConfig<string>>;
 
 const DEFAULT_SORTER_STATE: SorterState = {
   "chart-token-selector-spot": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
@@ -61,7 +61,7 @@ export function SorterContextProvider({ children }: PropsWithChildren) {
   return <Provider value={stableValue}>{children}</Provider>;
 }
 
-export function useSorterConfig<SortField extends string | "unspecified">(
+export function useSorterConfig<SortField extends string>(
   key: SorterKey,
   initialConfig?: SorterConfig<SortField>
 ): [SorterConfig<SortField>, (config: React.SetStateAction<SorterConfig<SortField>>) => void] {

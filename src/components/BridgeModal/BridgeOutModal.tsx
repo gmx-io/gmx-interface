@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Address, encodeAbiParameters } from "viem";
+import { encodeAbiParameters } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -420,7 +420,7 @@ function useBridgeOutParams({
     }
 
     return {
-      token: glvOrMarketAddress as Address,
+      token: glvOrMarketAddress,
       amount: bridgeOutAmount,
       minAmountOut: 0n,
       data: encodeAbiParameters(

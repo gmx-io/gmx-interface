@@ -8,6 +8,8 @@ const SECONDS_IN_PERIOD = {
   "1y": 60 * 60 * 24 * 365,
 };
 
+export const SECONDS_PER_YEAR = BigInt(secondsFrom("1y"));
+
 export function secondsFrom(period: keyof typeof SECONDS_IN_PERIOD) {
   return SECONDS_IN_PERIOD[period];
 }

@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
-import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
 
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
+import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
 import { bigintToNumber } from "lib/numbers";
 import { ARBITRUM } from "sdk/configs/chainIds";
 

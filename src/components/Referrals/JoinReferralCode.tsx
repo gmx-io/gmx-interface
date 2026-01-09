@@ -23,7 +23,7 @@ import { getMultichainTransferSendParams } from "domain/multichain/getSendParams
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
-import { getRawRelayerParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express";
+import { getRawRelayerParams, RelayParamsPayload } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -308,7 +308,7 @@ function ReferralCodeFormMultichain({
         },
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
-      }) as RawRelayParamsPayload;
+      });
 
       const relayParams: RelayParamsPayload = {
         ...rawRelayParamsPayload,

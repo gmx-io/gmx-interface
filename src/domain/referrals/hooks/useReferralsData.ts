@@ -254,15 +254,15 @@ export function useReferralsData(account?: string | null) {
 
           const traderReferralTotalStats: TraderReferralTotalStats = res.data.referralTotalStats
             ? {
-                volume: BigInt(res.data.referralTotalStats.volume)!,
-                discountUsd: BigInt(res.data.referralTotalStats.discountUsd)!,
+                volume: BigInt(res.data.referralTotalStats.volume),
+                discountUsd: BigInt(res.data.referralTotalStats.discountUsd),
                 v1Data: {
-                  volume: BigInt(res.data.referralTotalStats.v1Data.volume)!,
-                  discountUsd: BigInt(res.data.referralTotalStats.v1Data.discountUsd)!,
+                  volume: BigInt(res.data.referralTotalStats.v1Data.volume),
+                  discountUsd: BigInt(res.data.referralTotalStats.v1Data.discountUsd),
                 },
                 v2Data: {
-                  volume: BigInt(res.data.referralTotalStats.v2Data.volume)!,
-                  discountUsd: BigInt(res.data.referralTotalStats.v2Data.discountUsd)!,
+                  volume: BigInt(res.data.referralTotalStats.v2Data.volume),
+                  discountUsd: BigInt(res.data.referralTotalStats.v2Data.discountUsd),
                 },
               }
             : {

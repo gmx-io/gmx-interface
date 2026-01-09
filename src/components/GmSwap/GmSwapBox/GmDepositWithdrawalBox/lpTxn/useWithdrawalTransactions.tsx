@@ -104,7 +104,7 @@ export const useWithdrawalTransactions = ({
   const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
-  const executionFeeTokenDecimals = getWrappedToken(chainId)!.decimals;
+  const executionFeeTokenDecimals = getWrappedToken(chainId).decimals;
 
   const transferRequests = useWithdrawalTransferRequests();
 
@@ -232,14 +232,14 @@ export const useWithdrawalTransactions = ({
           signer,
           transferRequests,
           params: rawParams as CreateGlvWithdrawalParams,
-          tokenAmount: glvTokenAmount!,
+          tokenAmount: glvTokenAmount,
           fees: technicalFees as SourceChainGlvWithdrawalFees,
         })
           .then((res) => {
             if (res.transactionHash) {
               setMultichainTransferProgress(
                 new GlvSellTask({
-                  sourceChainId: srcChainId!,
+                  sourceChainId: srcChainId,
                   initialTxHash: res.transactionHash,
                   token: getGlvToken(chainId, (rawParams as RawCreateGlvWithdrawalParams).addresses.glv),
                   amount: (amounts as WithdrawalAmounts).glvTokenAmount,
@@ -282,7 +282,7 @@ export const useWithdrawalTransactions = ({
             setPendingWithdrawal({
               account: glvWithdrawalParams.addresses.receiver,
               marketAddress: glvWithdrawalParams.addresses.glv,
-              marketTokenAmount: glvTokenAmount!,
+              marketTokenAmount: glvTokenAmount,
               minLongTokenAmount: glvWithdrawalParams.minLongTokenAmount,
               minShortTokenAmount: glvWithdrawalParams.minShortTokenAmount,
               shouldUnwrapNativeToken: glvWithdrawalParams.shouldUnwrapNativeToken,
@@ -299,7 +299,7 @@ export const useWithdrawalTransactions = ({
           setPendingTxns,
           setPendingWithdrawal,
           blockTimestampData,
-          glvTokenAmount: glvTokenAmount!,
+          glvTokenAmount: glvTokenAmount,
           skipSimulation: shouldDisableValidation,
         });
       } else {
@@ -377,7 +377,7 @@ export const useWithdrawalTransactions = ({
           fees: technicalFees as SourceChainWithdrawalFees,
           transferRequests,
           params: rawParams as RawCreateWithdrawalParams,
-          tokenAmount: marketTokenAmount!,
+          tokenAmount: marketTokenAmount,
         }).then((res) => {
           if (res.transactionHash) {
             setMultichainTransferProgress(
@@ -422,7 +422,7 @@ export const useWithdrawalTransactions = ({
             setPendingWithdrawal({
               account: withdrawalParams.addresses.receiver,
               marketAddress: withdrawalParams.addresses.market,
-              marketTokenAmount: marketTokenAmount!,
+              marketTokenAmount: marketTokenAmount,
               minLongTokenAmount: withdrawalParams.minLongTokenAmount,
               minShortTokenAmount: withdrawalParams.minShortTokenAmount,
               shouldUnwrapNativeToken: withdrawalParams.shouldUnwrapNativeToken,
@@ -433,7 +433,7 @@ export const useWithdrawalTransactions = ({
         promise = createWithdrawalTxn({
           chainId,
           signer,
-          marketTokenAmount: marketTokenAmount!,
+          marketTokenAmount: marketTokenAmount,
           executionGasLimit: (technicalFees as ExecutionFee).gasLimit,
           params: params as CreateWithdrawalParams,
           tokensData,

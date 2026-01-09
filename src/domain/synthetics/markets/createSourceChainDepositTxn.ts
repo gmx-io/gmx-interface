@@ -106,7 +106,7 @@ export async function createSourceChainDepositTxn({
   }
 
   const txnResult = await sendWalletTransaction({
-    chainId: srcChainId!,
+    chainId: srcChainId,
     to: sourceChainTokenId.stargate,
     signer,
     gasLimit: ensuredFees.txnEstimatedGasLimit,

@@ -115,7 +115,7 @@ export function useDownloadAsCsv({
 
           let rowDetails: RowDetails | null;
 
-          if (isSwapOrderType(tradeAction.orderType!)) {
+          if (isSwapOrderType(tradeAction.orderType)) {
             rowDetails = formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
           } else {
             rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);

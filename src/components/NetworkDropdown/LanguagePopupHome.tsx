@@ -3,7 +3,7 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useCallback, useState } from "react";
 
-import { isHomeSite } from "lib/legacy";
+import { isHomeSite } from "config/env";
 
 import LanguageIcon from "img/ic_language.svg?react";
 

@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 
-import { getPageTitle } from "lib/legacy";
+import { getPageTitle } from "lib/seo";
 
 import SEO from "components/Seo/SEO";
 

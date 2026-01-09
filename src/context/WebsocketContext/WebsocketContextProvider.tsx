@@ -45,7 +45,7 @@ export type WebsocketContextType = {
 export const WsContext = createContext({} as WebsocketContextType);
 
 export function useWebsocketProvider() {
-  return useContext(WsContext) as WebsocketContextType;
+  return useContext(WsContext);
 }
 
 export function WebsocketContextProvider({ children }: { children: ReactNode }) {
@@ -212,7 +212,6 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
             delete additionalSourceChainsCleanupTimersRef.current[additionalSourceChain];
           }, WS_ADDITIONAL_SOURCE_CHAIN_DISCONNECT_DELAY);
 
-          // eslint-disable-next-line react-hooks/exhaustive-deps
           additionalSourceChainsCleanupTimersRef.current[additionalSourceChain] = timer;
         }
       };

@@ -142,7 +142,7 @@ export const SelectAssetToDepositView = () => {
                 className={cx("whitespace-nowrap", {
                   "!text-typography-primary": selectedNetwork === network.id,
                 })}
-                onClick={() => setSelectedNetwork(network.id as number | "all")}
+                onClick={() => setSelectedNetwork(network.id)}
                 imgSrc={network.id !== "all" ? getChainIcon(network.id) : undefined}
                 imgClassName="size-16 !mr-4"
               >

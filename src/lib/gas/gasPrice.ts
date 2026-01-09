@@ -27,7 +27,7 @@ export type GasPriceData =
 export async function getGasPrice(provider: Provider, chainId: number): Promise<GasPriceData> {
   try {
     let maxFeePerGas = getMaxFeePerGas(chainId as ContractsChainId);
-    const premium: bigint = getGasPricePremium(chainId as ContractsChainId) || 0n;
+    const premium: bigint = getGasPricePremium(chainId as ContractsChainId) ?? 0n;
 
     const feeData = await withRetry(() => provider.getFeeData(), {
       delay: 200,
@@ -55,7 +55,7 @@ export async function getGasPrice(provider: Provider, chainId: number): Promise<
       if (feeData && feeData.maxPriorityFeePerGas !== undefined && feeData.maxPriorityFeePerGas !== null) {
         const maxPriorityFeePerGas = bigMath.max(
           feeData.maxPriorityFeePerGas,
-          getMaxPriorityFeePerGas(chainId as ContractsChainId) || 0n
+          getMaxPriorityFeePerGas(chainId as ContractsChainId) ?? 0n
         );
 
         return {
@@ -69,7 +69,7 @@ export async function getGasPrice(provider: Provider, chainId: number): Promise<
       throw new Error("Can't fetch gas price");
     }
 
-    const bufferBps: bigint = getGasPriceBuffer(chainId as ContractsChainId) || 0n;
+    const bufferBps: bigint = getGasPriceBuffer(chainId as ContractsChainId) ?? 0n;
     const buffer = bigMath.mulDiv(gasPrice, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
 
     return {

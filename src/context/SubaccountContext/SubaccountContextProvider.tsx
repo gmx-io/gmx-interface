@@ -243,7 +243,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         chainId,
         signer,
         provider,
-        subaccountAddress: config!.address,
+        subaccountAddress: config.address,
         isGmxAccount,
       });
 

@@ -89,7 +89,7 @@ function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light
     if (isColor(value)) {
       result.push({ name, light: value.light as string, dark: value.dark as string });
     } else if (value && typeof value === "object") {
-      result.push(...flattenColors(value as ColorTree, name));
+      result.push(...flattenColors(value, name));
     }
   });
 

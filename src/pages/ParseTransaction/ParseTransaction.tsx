@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
-import { Hash, PublicClient, isHash } from "viem";
+import { PublicClient, isHash } from "viem";
 import { usePublicClient } from "wagmi";
 
 import { ARBITRUM, getExplorerUrl } from "config/chains";
@@ -104,7 +104,7 @@ export function ParseTransactionPage() {
     chainId,
   });
 
-  const txHash = typeof tx === "string" && isHash(tx) ? (tx as Hash) : undefined;
+  const txHash = typeof tx === "string" && isHash(tx) ? tx : undefined;
 
   const {
     data: primaryEvents,
@@ -112,7 +112,7 @@ export function ParseTransactionPage() {
     error,
   } = useSWR(txHash ? ([chainId, "transaction", txHash] as const) : null, async ([, , hash]) => {
     try {
-      return await parseTxEvents(client as PublicClient, hash as Hash);
+      return await parseTxEvents(client as PublicClient, hash);
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error(e);
@@ -197,7 +197,7 @@ export function ParseTransactionPage() {
       const entries = await Promise.all(
         hashes.map(async (hash) => {
           try {
-            const events = await parseTxEvents(client as PublicClient, hash as Hash);
+            const events = await parseTxEvents(client as PublicClient, hash);
             return [hash, events] as const;
           } catch (e) {
             // eslint-disable-next-line no-console

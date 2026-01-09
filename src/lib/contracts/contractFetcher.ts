@@ -18,7 +18,6 @@ const CONTRACT_FETCHER_MAIN_THREAD_TIMEOUT = 5000;
 export const contractFetcher =
   <T>(signer: Provider | Signer | undefined, abiId: AbiId, additionalArgs?: any[]) =>
   (args: any): Promise<T> => {
-    // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = isProvider(signer) ? signer : getProvider(signer, chainId);
 
@@ -160,7 +159,7 @@ async function fetchContractData({
   additionalArgs: any;
   priority: "urgent" | "background";
   id: string;
-}): Promise<any | undefined> {
+}): Promise<any> {
   if (ethers.isAddress(arg0)) {
     const address = arg0;
     const contract = new ethers.Contract(address, abis[abiId], provider);

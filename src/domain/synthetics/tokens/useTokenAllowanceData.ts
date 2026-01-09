@@ -40,7 +40,7 @@ export function useTokensAllowanceData(
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     request: () =>
       validAddresses.reduce((contracts, address) => {
-        contracts[address!] = {
+        contracts[address] = {
           contractAddress: address,
           abiId: "ERC20",
           calls: {

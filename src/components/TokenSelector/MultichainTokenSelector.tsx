@@ -251,7 +251,7 @@ export function MultichainTokenSelector({
             />
 
             {getMarketIndexName({
-              indexToken: getMarketIndexToken(chainId, tokenAddress)!,
+              indexToken: getMarketIndexToken(chainId, tokenAddress),
               isSpotOnly: getIsSpotOnlyMarket(chainId, tokenAddress),
             })}
           </span>
@@ -458,7 +458,7 @@ export function AvailableToTradeTokenList({
                     <div className="text-body-large">
                       GM:{" "}
                       {getMarketIndexName({
-                        indexToken: getMarketIndexToken(chainId, token.address)!,
+                        indexToken: getMarketIndexToken(chainId, token.address),
                         isSpotOnly: false,
                       })}{" "}
                       <span className="text-accent">

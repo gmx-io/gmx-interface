@@ -55,5 +55,5 @@ export async function withFallback<TReturn, TEndpoint>({
     }
   }
 
-  throw new Error("All endpoints failed") as never;
+  throw new Error("All endpoints failed");
 }

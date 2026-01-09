@@ -3,9 +3,22 @@ import useSWR from "swr";
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { arrayURLFetcher } from "lib/fetcher";
-import { getTotalVolumeSum } from "lib/legacy";
 
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+
+export function getTotalVolumeSum(volumes: { data: { volume: string } }[] | undefined) {
+  if (!volumes || volumes.length === 0) {
+    return;
+  }
+
+  let volume = 0n;
+
+  for (let i = 0; i < volumes.length; i++) {
+    volume = volume + BigInt(volumes[i].data.volume);
+  }
+
+  return volume;
+}
 
 export function useTotalVolume() {
   const { data: totalVolume } = useSWR<any>(

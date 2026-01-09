@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { ContractsChainId, getChainName } from "config/chains";
+import { getChainName } from "config/chains";
 import { getIsV1Supported } from "config/features";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
@@ -20,7 +20,7 @@ export function AccountsRouter() {
   const isV1Supported = useMemo(() => chainId !== undefined && getIsV1Supported(chainId), [chainId]);
 
   if (version === 1 && !isV1Supported) {
-    const chainName = getChainName(chainId! as ContractsChainId);
+    const chainName = getChainName(chainId);
 
     return (
       <AppPageLayout>

@@ -8,7 +8,7 @@ import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords } from "domain/tokens/utils";
-import { importImage } from "lib/legacy";
+import { importImage } from "lib/images";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";

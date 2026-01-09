@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { ContractsChainId } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { PerformanceInfo, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
@@ -86,16 +87,15 @@ export function usePoolsData(): Partial<PoolsData> {
   const gmApy = useMemo(() => {
     if (sortedAggregatedMarketInfos && aggregatedPerformance && arbitrumApys && avalancheApys) {
       let gmApy = 0;
-      for (const marketIndex in sortedAggregatedMarketInfos) {
-        const market = sortedAggregatedMarketInfos[marketIndex];
+      sortedAggregatedMarketInfos.forEach((market, marketIndex) => {
         const marketApy =
           market.chainId === ARBITRUM
             ? aggregatedPerformance.arbitrum[market.id]?.performanceApy ?? 0
             : aggregatedPerformance.avalanche[market.id]?.performanceApy ?? 0;
-        if (Number(marketIndex) < 20 && marketApy > gmApy) {
+        if (marketIndex < 20 && marketApy > gmApy) {
           gmApy = marketApy;
         }
-      }
+      });
       // If the GM APY is less than 0.1, we need to calculate the GM APY based on the market APYs
       if (gmApy <= 0.1) {
         for (const market of sortedAggregatedMarketInfos) {
@@ -116,13 +116,13 @@ export function usePoolsData(): Partial<PoolsData> {
     ...gmApy,
     ...glvApy,
     totalLiquidity: totalLiquidity,
-    openInterest: positionStats && openInterest ? positionStats.openInterest + openInterest : undefined,
+    openInterest: positionStats != null && openInterest != null ? positionStats.openInterest + openInterest : undefined,
     totalDepositedUsers: marketInfos?.totalDepositedUsers,
   };
   return result;
 }
 
-function useApysByChainId(chainId: number) {
+function useApysByChainId(chainId: ContractsChainId) {
   const fetcher = useOracleKeeperFetcher(chainId);
   return useSWR(["apys", chainId], async () => {
     const res = await fetcher.fetchApys("90d");
@@ -190,7 +190,7 @@ function useMarketInfos() {
   });
 }
 
-function usePerformanceByChainId(chainId: number) {
+function usePerformanceByChainId(chainId: ContractsChainId) {
   const fetcher = useOracleKeeperFetcher(chainId);
   return useSWR(["performance", chainId], async () => {
     const res = await fetcher.fetchPerformanceAnnualized("90d");

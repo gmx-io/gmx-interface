@@ -67,11 +67,11 @@ export async function createGlvDepositTxn({
   let wntDeposit = 0n;
 
   if (isNativeLongDeposit) {
-    wntDeposit = wntDeposit + longTokenAmount!;
+    wntDeposit = wntDeposit + longTokenAmount;
   }
 
   if (isNativeShortDeposit) {
-    wntDeposit = wntDeposit + shortTokenAmount!;
+    wntDeposit = wntDeposit + shortTokenAmount;
   }
 
   const shouldUnwrapNativeToken = params.shouldUnwrapNativeToken;

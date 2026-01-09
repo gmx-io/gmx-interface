@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import React from "react";
 
-import { getPageTitle } from "lib/legacy";
+import { getPageTitle } from "lib/seo";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Card from "components/Card/Card";

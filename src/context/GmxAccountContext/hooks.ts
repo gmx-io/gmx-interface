@@ -23,7 +23,7 @@ import {
 } from "./selectors";
 
 export function useGmxAccountSelector<Selected>(selector: (s: GmxAccountContext) => Selected) {
-  return useContextSelector(context as Context<GmxAccountContext>, selector) as Selected;
+  return useContextSelector(context as Context<GmxAccountContext>, selector);
 }
 
 export function useGmxAccountModalOpen() {

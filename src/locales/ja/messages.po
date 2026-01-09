@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr "ストップロスの執行"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "同意する"
+#~ msgid "Agree"
+#~ msgstr "同意する"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -601,7 +601,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "転送を受け入れるにはこのページにいる必要があります。必要に応じて<0>ここをクリック</0>してページのリンクをコピーしてください。"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30日間このメッセージを表示しない"
 
@@ -1030,8 +1029,8 @@ msgid "TVL (Supply)"
 msgstr "TVL (供給)"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "他にもリンクが <0>文書ページ</0>にあります。<1/><2/>同意ボタンをクリックすることで、 <3>条項</3>および<4>紹介プログラムの条項</4>に合意したものとみなします。<5/><6/>"
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr "他にもリンクが <0>文書ページ</0>にあります。<1/><2/>同意ボタンをクリックすることで、 <3>条項</3>および<4>紹介プログラムの条項</4>に合意したものとみなします。<5/><6/>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "All Time"
@@ -1964,8 +1963,8 @@ msgid "Failed to deactivate"
 msgstr "無効化失敗"
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "オープンのポジションはありません。オープンのポジションがない場合、注文は執行できません"
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr "オープンのポジションはありません。オープンのポジションがない場合、注文は執行できません"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2423,7 +2422,6 @@ msgstr "最大パート数: {MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "アプリ起動"
 
@@ -3240,8 +3238,8 @@ msgid "Sending settle request"
 msgstr "決済リクエスト送信中"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "ポジション金額が$5未満になるため注文を執行できません"
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr "ポジション金額が$5未満になるため注文を執行できません"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3294,7 +3292,6 @@ msgid "Wallet Balance"
 msgstr "ウォレット残高"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "ウェブサイトはオープンソースの<0>GMXフロントエンド</0>を利用してコミュニティが設置し維持しているものであり、P2Pの<1>IPFSネットワーク</1>上にホストされ提供されています。"
 
@@ -4019,7 +4016,6 @@ msgid "Failed to claim funds"
 msgstr "資金の請求に失敗しました"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "あなたはGMX.ioを離れ、第三者の別のウェブサイトへ転送されます。"
 
@@ -4541,8 +4537,8 @@ msgid "Decrease"
 msgstr "減少"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません"
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -7281,8 +7277,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr "GMトークンを貸し出して借り入れ。"
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "注文サイズがポジションより大きいため、ポジションが増加した場合のみ執行可能です"
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr "注文サイズがポジションより大きいため、ポジションが増加した場合のみ執行可能です"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7303,7 +7299,7 @@ msgstr "NFT ID"
 msgid "Select network"
 msgstr "ネットワークを選択"
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "分散型永久取引所 | GMX"
 

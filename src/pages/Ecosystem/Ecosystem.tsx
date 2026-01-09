@@ -4,7 +4,7 @@ import { memo } from "react";
 
 import { AnyChainId, getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
-import { getPageTitle } from "lib/legacy";
+import { getPageTitle } from "lib/seo";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -123,7 +123,7 @@ export default function Ecosystem() {
                               ))}
                             </div>
                           ) : (
-                            <ExternalLink href={item.creatorLink as string}>{item.creatorLabel as string}</ExternalLink>
+                            <ExternalLink href={item.creatorLink as string}>{item.creatorLabel}</ExternalLink>
                           )}
                         </div>
                       </div>

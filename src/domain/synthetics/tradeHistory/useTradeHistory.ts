@@ -173,7 +173,7 @@ export async function fetchRawTradeActions({
   const nonSwapRelevantDefinedFilters: MarketFilterLongShortItemData[] = marketsDirectionsFilter
     .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
     .map((filter) => ({
-      marketAddress: filter.marketAddress as Address,
+      marketAddress: filter.marketAddress,
       direction: filter.direction,
       collateralAddress: filter.collateralAddress as Address,
     }));
@@ -190,7 +190,7 @@ export async function fetchRawTradeActions({
 
   const swapRelevantDefinedMarkets = marketsDirectionsFilter
     .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-    .map((filter) => filter.marketAddress as Address | "any");
+    .map((filter) => filter.marketAddress);
 
   const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarkets.length > 0;
 
@@ -372,7 +372,7 @@ export async function fetchRawTradeActions({
         }
       }`);
 
-  const result = await client!.query({ query, fetchPolicy: "no-cache" });
+  const result = await client.query({ query, fetchPolicy: "no-cache" });
 
   const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
 

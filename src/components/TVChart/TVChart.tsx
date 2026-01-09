@@ -1,13 +1,13 @@
 import { useEffect, useMemo } from "react";
 
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { CHART_PERIODS } from "config/tradingview";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChartLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines";
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
-import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";

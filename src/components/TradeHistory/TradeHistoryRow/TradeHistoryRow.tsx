@@ -1,8 +1,7 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import type { Address } from "viem";
 
 import { getChainSlug, getExplorerUrl } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -125,13 +124,13 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const marketsInfoData = useMarketsInfoData();
 
   const msg = useMemo(() => {
-    if (isSwapOrderType(tradeAction.orderType!)) {
+    if (isSwapOrderType(tradeAction.orderType)) {
       return formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData);
     }
 
     return formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSwapOrderType(tradeAction.orderType!) && marketsInfoData, minCollateralUsd.toString(), tradeAction.id]);
+  }, [isSwapOrderType(tradeAction.orderType) && marketsInfoData, minCollateralUsd.toString(), tradeAction.id]);
 
   const renderTimestamp = useCallback(() => msg.timestampISO, [msg.timestampISO]);
 
@@ -142,7 +141,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           label={t`Market`}
           value={
             <div className="flex items-center">
-              <span>{msg.indexName!}</span>
+              <span>{msg.indexName}</span>
               <span className="subtext leading-1">[{msg.poolName!}]</span>
             </div>
           }
@@ -177,7 +176,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const marketTooltipHandle = useMemo(
     () =>
       msg.swapFromTokenSymbol ? (
-        <SwapMarketLabel bordered fromSymbol={msg.swapFromTokenSymbol!} toSymbol={msg.swapToTokenSymbol!} />
+        <SwapMarketLabel bordered fromSymbol={msg.swapFromTokenSymbol} toSymbol={msg.swapToTokenSymbol} />
       ) : (
         <div className="cursor-help">
           <MarketWithDirectionLabel
@@ -263,7 +262,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           {shouldDisplayAccount && (
             <Link
               className="TradeHistoryRow-account muted underline"
-              to={buildAccountDashboardUrl(tradeAction.account as Address, undefined, 2)}
+              to={buildAccountDashboardUrl(tradeAction.account, undefined, 2)}
             >
               {tradeAction.account}
             </Link>
@@ -281,7 +280,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
           <span className="numbers">
             {msg.swapFromTokenSymbol ? (
               <Trans>
-                {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol!} displaySize={18} />
+                {msg.swapFromTokenAmount} <TokenIcon symbol={msg.swapFromTokenSymbol} displaySize={18} />
                 <span> to </span>
                 {msg.swapToTokenAmount} <TokenIcon symbol={msg.swapToTokenSymbol!} displaySize={18} />
               </Trans>

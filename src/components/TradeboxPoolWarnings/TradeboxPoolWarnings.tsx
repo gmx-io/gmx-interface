@@ -283,7 +283,7 @@ export const useTradeboxPoolWarnings = () => {
           Insufficient liquidity in the {marketInfo ? getMarketPoolName(marketInfo) : "..."} market pool. Select a
           different pool for this market.
           {hasEnoughLiquidity(minOpenFeesMarket) && (
-            <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
+            <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket.marketTokenAddress)}>
               Switch to {getMarketPoolName(minOpenFeesMarket)} market pool
             </ColorfulButtonLink>
           )}

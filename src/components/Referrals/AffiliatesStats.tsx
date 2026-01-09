@@ -11,10 +11,10 @@ import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referral
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
-import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount, formatBigUsd, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
+import { shortenAddress } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 

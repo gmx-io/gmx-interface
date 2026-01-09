@@ -1,6 +1,6 @@
 import { AbiCoder, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
 import { MutableRefObject } from "react";
-import { Abi, decodeEventLog, Hex } from "viem";
+import { Abi, decodeEventLog } from "viem";
 import type { ContractEventArgsFromTopics } from "viem/_types/types/contract";
 
 import { getContract, tryGetContract } from "config/contracts";
@@ -313,7 +313,7 @@ export function subscribeToOftSentEvents(
       abi: OFT_SENT_ABI,
       eventName: "OFTSent",
       topics: log.topics as any,
-      data: log.data as Hex,
+      data: log.data,
     }).args;
 
     onOftSent({
@@ -352,7 +352,7 @@ export function subscribeToOftReceivedEvents(
       abi: OFT_RECEIVED_ABI,
       eventName: "OFTReceived",
       topics: log.topics as any,
-      data: log.data as Hex,
+      data: log.data,
     }).args;
 
     onOftReceive({
@@ -394,7 +394,7 @@ export function subscribeToComposeDeliveredEvents(
       abi: COMPOSE_DELIVERED_ABI,
       eventName: "ComposeDelivered",
       topics: log.topics as any,
-      data: log.data as Hex,
+      data: log.data,
     }).args;
 
     // Manual filtering because event params are not indexed

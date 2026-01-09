@@ -3,18 +3,18 @@ import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
 import { getContract } from "config/contracts";
-import { useGmxPrice } from "domain/legacy";
-import useVestingData from "domain/vesting/useVestingData";
-import { contractFetcher } from "lib/contracts";
+import { useGmxPrice } from "domain/gmxToken";
 import {
-  PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getStakingProcessedData,
   getStakingData,
-} from "lib/legacy";
+} from "domain/stake/stakingData";
+import useVestingData from "domain/vesting/useVestingData";
+import { contractFetcher } from "lib/contracts";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { PLACEHOLDER_ACCOUNT } from "sdk/utils/account";
 
 export default function APRLabel({ chainId, label }) {
   const { active, account } = useWallet();

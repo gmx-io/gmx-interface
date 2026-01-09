@@ -496,11 +496,11 @@ export function useTradeboxButtonState({
           submitButtonText = t`Swap ${fromToken?.symbol}`;
         } else {
           if (!toToken?.symbol) {
-            submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ...`;
+            submitButtonText = `${localizedTradeTypeLabels[tradeType]} ...`;
           }
           const prefix = toToken ? getTokenVisualMultiplier(toToken) : "";
 
-          submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken?.symbol}`;
+          submitButtonText = `${localizedTradeTypeLabels[tradeType]} ${prefix}${toToken?.symbol}`;
         }
       } else if (isLimit) {
         submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType, false)} order`;

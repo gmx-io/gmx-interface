@@ -79,7 +79,7 @@ export async function getCallStaticError(
     // which is not allowed, so we need to delete gasPrice
 
     // EIP-1559
-    if (txnData.maxPriorityFeePerGas && txnData.maxFeePerGas) {
+    if (txnData.maxPriorityFeePerGas !== undefined && txnData.maxFeePerGas !== undefined) {
       delete txnData.gasPrice;
     } else {
       delete txnData.maxPriorityFeePerGas;

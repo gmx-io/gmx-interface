@@ -1,7 +1,7 @@
-import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
 import type { ComponentPropsWithoutRef } from "react";
 
 import type { ChainName } from "config/chains";
+import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
 
 import IcBase from "img/ic_base.svg?react";
 import IcBotanix from "img/ic_botanix_landing.svg?react";

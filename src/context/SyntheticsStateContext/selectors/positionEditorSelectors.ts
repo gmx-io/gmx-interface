@@ -1,5 +1,3 @@
-import type { Address } from "viem";
-
 import {
   getIsPositionInfoLoaded,
   getMinCollateralFactorForPosition,
@@ -54,7 +52,7 @@ export const selectPositionEditorSelectedCollateralAddress = createSelector((q) 
     return;
   }
 
-  const positionCollateralAddress = parsePositionKey(positionKey).collateralAddress as Address;
+  const positionCollateralAddress = parsePositionKey(positionKey).collateralAddress;
 
   const savedAddress = q((s) => selectPositionEditorSelectedCollateralAddressMap(s)?.[positionCollateralAddress]);
 

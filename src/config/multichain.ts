@@ -504,6 +504,6 @@ export function getSourceChainDecimalsMapped(
   srcChainId: SourceChainId,
   tokenAddress: string
 ): number | undefined {
-  const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId as SourceChainId);
+  const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId);
   return tokenId?.decimals;
 }

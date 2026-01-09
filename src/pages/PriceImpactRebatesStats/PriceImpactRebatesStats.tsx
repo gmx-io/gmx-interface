@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import type { Address } from "viem";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
 import { MarketInfo } from "domain/synthetics/markets";
@@ -190,7 +189,7 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
             <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>
             <div className="PriceImpactRebatesStatsPage-cell-time"></div>
             <div className="PriceImpactRebatesStatsPage-cell-market">
-              <Link to={buildAccountDashboardUrl(rebateItem.account as Address, undefined, 2)}>
+              <Link to={buildAccountDashboardUrl(rebateItem.account, undefined, 2)}>
                 {shortenAddressOrEns(rebateItem.account, 15)}
               </Link>
             </div>

@@ -5,8 +5,8 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getExplorerUrl, ContractsChainId }
 import { isDevelopment } from "config/env";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
-import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount, formatBigUsd } from "lib/numbers";
+import { shortenAddress } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 

@@ -67,10 +67,10 @@ export const useClaimExecutionFee = ({
         signatures,
       });
 
-      const gasLimit = await estimateGasLimit(signer!.provider!, {
+      const gasLimit = await estimateGasLimit(signer.provider, {
         to: getContract(chainId, "ClaimHandler"),
         data: callData,
-        from: account!,
+        from: account,
         value: undefined,
       });
 

@@ -4,11 +4,12 @@ import { zeroAddress } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
+import { getVestingData } from "domain/stake/stakingData";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
-import { PLACEHOLDER_ACCOUNT, getVestingData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractName } from "sdk/configs/contracts";
+import { PLACEHOLDER_ACCOUNT } from "sdk/utils/account";
 
 export default function useVestingData(account?: string, targetChainId?: ContractsChainId) {
   const { active } = useWallet();

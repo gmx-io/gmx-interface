@@ -3,16 +3,14 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import { Address } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { getAccountUrl, useENS } from "lib/legacy";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useNotifyModalState } from "lib/useNotifyModalState";
-import { shortenAddressOrEns } from "lib/wallets";
+import { getAccountUrl, shortenAddressOrEns, useENS } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import { Avatar } from "components/Avatar/Avatar";
@@ -73,7 +71,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               </div>
             </Menu.Item>
             <Menu.Item>
-              <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
+              <Link className="menu-item" to={buildAccountDashboardUrl(account, undefined, 2)}>
                 <PnlAnalysisIcon width={20} className="size-20" />
                 <p>
                   <Trans>PnL Analysis</Trans>

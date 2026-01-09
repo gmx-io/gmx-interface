@@ -64,8 +64,8 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
           account: "",
           rating: undefined,
           isGeneralFeedback: true,
-          monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume || 0n, USD_DECIMALS, "toSecondOrderInt")!,
-          totalVolume: formatAmountForMetrics(accountStats?.volume || 0n, USD_DECIMALS, "toSecondOrderInt")!,
+          monthVolume: formatAmountForMetrics(lastMonthAccountStats?.volume ?? 0n, USD_DECIMALS, "toSecondOrderInt")!,
+          totalVolume: formatAmountForMetrics(accountStats?.volume ?? 0n, USD_DECIMALS, "toSecondOrderInt")!,
           contact,
           answers: formatAnswersByQuestionType([
             {

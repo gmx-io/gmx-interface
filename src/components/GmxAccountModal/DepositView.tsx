@@ -367,7 +367,7 @@ export const DepositView = () => {
 
     const { receipt } = quoteOft;
 
-    const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
+    const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD);
 
     const newSendParams: SendParam = {
       ...sendParamsWithoutSlippage,
@@ -494,7 +494,7 @@ export const DepositView = () => {
 
             if (settlementChainDecimals !== undefined && sourceChainDecimals !== undefined) {
               const amount = adjustForDecimals(
-                params.sendParams.amountLD as bigint,
+                params.sendParams.amountLD,
                 sourceChainDecimals,
                 settlementChainDecimals
               );

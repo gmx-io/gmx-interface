@@ -122,7 +122,7 @@ describe("externalSwapSelectors", () => {
         },
       });
 
-      const result = selectExternalSwapQuote(state as SyntheticsState);
+      const result = selectExternalSwapQuote(state);
       expect(result).toBeUndefined();
     });
 
@@ -133,14 +133,14 @@ describe("externalSwapSelectors", () => {
           shouldFallbackToInternalSwap: true,
         },
       });
-      const result = selectExternalSwapQuote(state as SyntheticsState);
+      const result = selectExternalSwapQuote(state);
       expect(result).toEqual(undefined);
     });
 
     it("should return undefined when internal swap fees is better ", () => {
       const state = createMockState();
-      const inputs = selectExternalSwapInputs(state as SyntheticsState);
-      const result = selectExternalSwapQuote(state as SyntheticsState);
+      const inputs = selectExternalSwapInputs(state);
+      const result = selectExternalSwapQuote(state);
 
       expect(inputs?.internalSwapTotalFeesDeltaUsd).toBeLessThan(mockBaseSwapQuote.feesUsd);
       expect(inputs?.internalSwapTotalFeesDeltaUsd).toEqual(mockSwapPathStats.totalFeesDeltaUsd);
@@ -152,7 +152,7 @@ describe("externalSwapSelectors", () => {
 
       mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
 
-      const result = selectExternalSwapQuote(state as SyntheticsState);
+      const result = selectExternalSwapQuote(state);
       expect(result).toEqual(mockBaseSwapQuote);
     });
 
@@ -166,8 +166,8 @@ describe("externalSwapSelectors", () => {
 
       mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
 
-      const inputs = selectExternalSwapInputs(state as SyntheticsState);
-      const result = selectExternalSwapQuote(state as SyntheticsState);
+      const inputs = selectExternalSwapInputs(state);
+      const result = selectExternalSwapQuote(state);
 
       expect(inputs?.strategy).toBe("leverageBySize");
 

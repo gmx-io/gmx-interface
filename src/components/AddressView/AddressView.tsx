@@ -3,9 +3,8 @@ import cx from "classnames";
 import { useMemo } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { Link } from "react-router-dom";
-import type { Address } from "viem";
 
-import { shortenAddress } from "lib/legacy";
+import { shortenAddress } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -82,7 +81,7 @@ export default function AddressView({
   }
 
   return (
-    <Link target="_blank" className="AddressView" to={buildAccountDashboardUrl(address as Address, undefined, 2)}>
+    <Link target="_blank" className="AddressView" to={buildAccountDashboardUrl(address, undefined, 2)}>
       {avatarUrl ? (
         <span className="AddressView-ens-avatar" style={style} />
       ) : (

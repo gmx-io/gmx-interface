@@ -7,7 +7,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
-import { importImage } from "lib/legacy";
+import { importImage } from "lib/images";
 import { formatAmount, formatAmountHuman, formatRatePercentage, formatUsdPrice } from "lib/numbers";
 import { searchBy } from "lib/searchBy";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";

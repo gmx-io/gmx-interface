@@ -191,7 +191,7 @@ export function TradeFeesRow(p: Props) {
               <div className="text-typography-primary">{t`UI Fee`}:</div>
               <div>
                 (
-                {formatPercentage(bigMath.abs(p!.uiFee!.precisePercentage), {
+                {formatPercentage(bigMath.abs(p.uiFee!.precisePercentage), {
                   displayDecimals: 3,
                   bps: false,
                 })}{" "}

@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr "执行止损"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "同意"
+#~ msgid "Agree"
+#~ msgstr "同意"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -601,7 +601,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "您需要停留在本页面才能接受转账，如有需要<0>点击这里</0>复制本页面链接。"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "30 天内不再显示此消息。"
 
@@ -1030,8 +1029,8 @@ msgid "TVL (Supply)"
 msgstr "TVL (供应)"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "可在 <0>文档</0> 中找到替代链接。<1/><2/>点击同意即接受 <3>条款与条件</3> 和 <4>推荐条款与条件</4>。<5/><6/>"
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr "可在 <0>文档</0> 中找到替代链接。<1/><2/>点击同意即接受 <3>条款与条件</3> 和 <4>推荐条款与条件</4>。<5/><6/>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "All Time"
@@ -1964,8 +1963,8 @@ msgid "Failed to deactivate"
 msgstr "停用失败"
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "没有开仓，订单无法执行，除非开仓"
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr "没有开仓，订单无法执行，除非开仓"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2423,7 +2422,6 @@ msgstr "最大部分数量：{MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "启动应用程序"
 
@@ -3240,8 +3238,8 @@ msgid "Sending settle request"
 msgstr "发送结算请求"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "订单无法执行，因为剩余仓位将小于 5.00 美元"
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr "订单无法执行，因为剩余仓位将小于 5.00 美元"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3294,7 +3292,6 @@ msgid "Wallet Balance"
 msgstr "钱包余额"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "该网站是社区部署和维护的开源 <0>GMX 前端</0> 实例，在分布式点对点 <1>IPFS 网络</1> 上托管和服务。"
 
@@ -4019,7 +4016,6 @@ msgid "Failed to claim funds"
 msgstr "申领资金失败"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "您正在离开 GMX.io，并将被重定向到第三方独立网站。"
 
@@ -4541,8 +4537,8 @@ msgid "Decrease"
 msgstr "减少"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -7281,8 +7277,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr "借出您的 GM 代币并以此抵押借款。"
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7303,7 +7299,7 @@ msgstr "NFT ID"
 msgid "Select network"
 msgstr "选择网络"
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "去中心化永续交易所 | GMX"
 

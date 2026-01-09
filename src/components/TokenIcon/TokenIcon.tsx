@@ -1,7 +1,7 @@
 import cx from "classnames";
 
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
-import { importImage } from "lib/legacy";
+import { importImage } from "lib/images";
 
 import "./TokenIcon.scss";
 

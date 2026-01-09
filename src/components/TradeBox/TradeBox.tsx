@@ -593,7 +593,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     const swapPathStats = swapAmounts?.swapStrategy.swapPathStats || increaseAmounts?.swapStrategy.swapPathStats;
 
     if (swapPathStats) {
-      // eslint-disable-next-line no-console
       throttleLog("Swap Path", {
         steps: swapPathStats.swapSteps,
         path: swapPathStats.swapPath.map((marketAddress) => marketsInfoData?.[marketAddress]?.name).join(" -> "),
@@ -860,7 +859,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
         {isIncrease && (
           <BuyInputSection
-            topLeftLabel={localizedTradeTypeLabels[tradeType!]}
+            topLeftLabel={localizedTradeTypeLabels[tradeType]}
             bottomLeftValue={
               increaseAmounts?.sizeDeltaUsd !== undefined
                 ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
@@ -877,7 +876,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             {toTokenAddress && (
               <MarketSelector
                 chainId={chainId}
-                label={localizedTradeTypeLabels[tradeType!]}
+                label={localizedTradeTypeLabels[tradeType]}
                 selectedIndexName={toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined}
                 selectedMarketLabel={
                   toToken && (

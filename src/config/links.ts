@@ -68,3 +68,32 @@ export function getIncentivesV2Url(chainId: number): string {
 
 export const GLP_REIMBURSEMENT_TERMS_URL =
   "https://gateway.pinata.cloud/ipfs/bafkreiemqapoduhh2j5spg7ndmkqdx2l5s2uloqqcv4egu5qiy5oiv4kaq";
+
+export function getHomeUrl() {
+  // Avoid importing isLocal from config/env to prevent circular dependency
+  if (self.location.host?.includes("localhost")) {
+    return "http://localhost:3010";
+  }
+  return "https://gmx.io";
+}
+
+export function getAppBaseUrl() {
+  if (self.location.host?.includes("localhost")) {
+    return "http://localhost:3011/#";
+  }
+  return PRODUCTION_HOST;
+}
+
+export function getRootShareApiUrl() {
+  if (self.location.host?.includes("localhost")) {
+    return "https://gmxs.vercel.app";
+  }
+  return "https://share.gmx.io";
+}
+
+export function getTradePageUrl() {
+  if (self.location.host?.includes("localhost")) {
+    return "http://localhost:3011/#/trade";
+  }
+  return PRODUCTION_HOST + "/#/trade";
+}

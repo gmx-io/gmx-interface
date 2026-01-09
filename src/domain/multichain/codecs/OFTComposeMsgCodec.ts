@@ -16,7 +16,7 @@ export class OFTComposeMsgCodec {
    * @return _msg The encoded Composed message.
    */
   public static encode(_nonce: bigint, _srcEid: number, _amountLD: bigint, _composeMsg: string): Hex {
-    return encodePacked(["uint64", "uint32", "uint256", "bytes"], [_nonce, _srcEid, _amountLD, _composeMsg as Hex]);
+    return encodePacked(["uint64", "uint32", "uint256", "bytes"], [_nonce, _srcEid, _amountLD, _composeMsg]);
   }
 
   /**

@@ -76,7 +76,7 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
         return acc;
       }, {}) as KinkModelMarketRateMulticallRequestConfig,
     parseResponse: (res) => {
-      const result = marketsAddresses!.reduce(
+      const result = marketsAddresses.reduce(
         (acc, marketAddress) => {
           const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
 

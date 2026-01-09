@@ -33,9 +33,9 @@ import {
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
 import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { getExchangeRate, getExchangeRateDisplay } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
-import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 
@@ -916,8 +916,8 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
               <div key={error.key}>
                 <span
                   className={cx({
-                    "text-red-500": error!.level === "error",
-                    "text-yellow-300": error!.level === "warning",
+                    "text-red-500": error.level === "error",
+                    "text-yellow-300": error.level === "warning",
                   })}
                 >
                   {error.msg}

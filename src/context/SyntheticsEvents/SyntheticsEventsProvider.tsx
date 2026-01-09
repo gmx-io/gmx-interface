@@ -377,7 +377,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         }
 
         if (pendingPositionKey) {
-          setPendingPositionsUpdates((old) => setByKey(old, pendingPositionKey!, undefined));
+          setPendingPositionsUpdates((old) => setByKey(old, pendingPositionKey, undefined));
         }
       }
     },
@@ -743,7 +743,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           eventData.addressItems.items.market,
           eventData.addressItems.items.collateralToken,
           eventData.boolItems.items.isLong
-        )!,
+        ),
         contractPositionKey: eventData.bytes32Items.items.positionKey,
         account: eventData.addressItems.items.account,
         marketAddress: eventData.addressItems.items.market,
@@ -809,7 +809,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           eventData.addressItems.items.market,
           eventData.addressItems.items.collateralToken,
           eventData.boolItems.items.isLong
-        )!,
+        ),
         account: eventData.addressItems.items.account,
         marketAddress: eventData.addressItems.items.market,
         collateralTokenAddress: eventData.addressItems.items.collateralToken,
@@ -878,7 +878,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const amount = eventData.uintItems.items.amount;
 
       setWebsocketTokenBalancesUpdates((old) => {
-        const oldDiff = old[token]?.diff || 0n;
+        const oldDiff = old[token]?.diff ?? 0n;
         return setByKey(old, token, {
           balanceType: TokenBalanceType.GmxAccount,
           diff: oldDiff - amount,
@@ -897,7 +897,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const amount = eventData.uintItems.items.amount;
 
       setWebsocketTokenBalancesUpdates((old) => {
-        const oldDiff = old[token]?.diff || 0n;
+        const oldDiff = old[token]?.diff ?? 0n;
 
         return setByKey(old, token, {
           balanceType: TokenBalanceType.GmxAccount,
@@ -942,7 +942,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         marketTokensAddressesString.split("-"),
         (tokenAddress, amount) => {
           setWebsocketTokenBalancesUpdates((old) => {
-            const oldDiff = old[tokenAddress]?.diff || 0n;
+            const oldDiff = old[tokenAddress]?.diff ?? 0n;
 
             return setByKey(old, tokenAddress, {
               balanceType: TokenBalanceType.Wallet,

@@ -77,7 +77,7 @@ export function useNativeTokenMultichainUsd({
   const nativeUsd =
     sourceChainTokenAmount !== undefined && priceChainTokenPricesData?.[sourceNativeTokenAddress] !== undefined
       ? convertToUsd(
-          sourceChainTokenAmount as bigint,
+          sourceChainTokenAmount,
           getViemChain(sourceChainId).nativeCurrency.decimals,
           getMidPrice(priceChainTokenPricesData[sourceNativeTokenAddress])
         )

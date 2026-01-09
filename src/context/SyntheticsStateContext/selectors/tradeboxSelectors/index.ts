@@ -44,7 +44,6 @@ import {
   getSwapAmountsByToValue,
   getTradeFees,
 } from "domain/synthetics/trade";
-import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
@@ -53,6 +52,7 @@ import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { TokenBalanceType } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { getPositionKey } from "sdk/utils/positions";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { createTradeFlags } from "sdk/utils/trade";
 
@@ -804,21 +804,21 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const selectedPosition = q(selectTradeboxSelectedPosition);
 
       return getTradeFees({
-        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
+        sizeInUsd: selectedPosition?.sizeInUsd ?? 0n,
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
         collateralDeltaUsd: increaseAmounts.initialCollateralUsd, // pay token amount in usd
         sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
         swapSteps: increaseAmounts.swapStrategy.swapPathStats?.swapSteps || [],
         externalSwapQuote: increaseAmounts.swapStrategy.externalSwapQuote,
         positionFeeUsd: increaseAmounts.positionFeeUsd,
-        swapPriceImpactDeltaUsd: increaseAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd || 0n,
+        swapPriceImpactDeltaUsd: increaseAmounts.swapStrategy.swapPathStats?.totalSwapPriceImpactDeltaUsd ?? 0n,
         increasePositionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
         decreasePositionPriceImpactDeltaUsd: 0n,
         priceImpactDiffUsd: increaseAmounts.potentialPriceImpactDiffUsd,
         totalPendingImpactDeltaUsd: 0n,
         proportionalPendingImpactDeltaUsd: 0n,
-        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
-        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
+        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd ?? 0n,
+        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd ?? 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
         uiFeeFactor,
@@ -841,8 +841,8 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
-        sizeInUsd: selectedPosition?.sizeInUsd || 0n,
-        initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
+        sizeInUsd: selectedPosition?.sizeInUsd ?? 0n,
+        initialCollateralUsd: selectedPosition?.collateralUsd ?? 0n,
         collateralDeltaUsd,
         sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
         swapSteps: [],
@@ -1079,11 +1079,7 @@ export const selectTradeboxExistingOrder = createSelector((q) => {
         order.shouldUnwrapNativeToken
           ? convertTokenAddress(chainId, order.targetCollateralToken.address, "wrapped")
           : order.targetCollateralToken.address,
-        order.isLong,
-        order.shouldUnwrapNativeToken
-          ? // Noop: if order.shouldUnwrapNativeToken is true, then order.targetCollateralToken.address is already native
-            convertTokenAddress(chainId, order.targetCollateralToken.address, "native")
-          : undefined
+        order.isLong
       );
 
       return positionKey === selectedPositionKey;
@@ -1108,11 +1104,7 @@ export const selectTradeboxExistingLimitOrder = createSelector((q) => {
         order.shouldUnwrapNativeToken
           ? convertTokenAddress(chainId, order.targetCollateralToken.address, "wrapped")
           : order.targetCollateralToken.address,
-        order.isLong,
-        order.shouldUnwrapNativeToken
-          ? // Noop: if order.shouldUnwrapNativeToken is true, then order.targetCollateralToken.address is already native
-            convertTokenAddress(chainId, order.targetCollateralToken.address, "native")
-          : undefined
+        order.isLong
       );
 
       return positionKey === selectedPositionKey;

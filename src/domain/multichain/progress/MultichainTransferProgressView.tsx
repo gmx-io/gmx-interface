@@ -179,7 +179,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
   const indexName = task.isGlv
     ? "GLV"
     : getMarketIndexName({
-        indexToken: getMarketIndexToken(chainId, task.token.address)!,
+        indexToken: getMarketIndexToken(chainId, task.token.address),
         isSpotOnly: getIsSpotOnlyMarket(chainId, task.token.address),
       });
 

@@ -1,4 +1,4 @@
-import { BaseError, decodeErrorResult, Hex } from "viem";
+import { BaseError, decodeErrorResult } from "viem";
 
 import { CustomError, extendError, getCustomError, OrderErrorContext } from "lib/errors";
 import { abis } from "sdk/abis";
@@ -15,7 +15,7 @@ export async function fallbackCustomError<T = void>(f: () => Promise<T>, errorCo
 
         const decodedError = decodeErrorResult({
           abi: abis.CustomErrors,
-          data: data as Hex,
+          data: data,
         });
 
         const prettyError = new CustomError({

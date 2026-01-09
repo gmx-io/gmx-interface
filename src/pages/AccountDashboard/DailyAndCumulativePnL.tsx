@@ -231,7 +231,7 @@ function renderPnlBar(entry: AccountPnlHistoryPoint) {
 function yAxisTickFormatter(value: number) {
   if (!isFinite(value)) return "0";
 
-  return formatUsd(BigInt(value as number) * 10n ** 30n, { displayDecimals: 0 })!;
+  return formatUsd(BigInt(value) * 10n ** 30n, { displayDecimals: 0 })!;
 }
 
 function ChartTooltip({ active, payload }: TooltipProps<number | string, "pnl" | "cumulativePnl" | "date">) {

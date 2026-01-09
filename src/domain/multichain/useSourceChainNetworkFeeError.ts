@@ -21,7 +21,7 @@ export function useSourceChainNativeFeeError({
   paySourceChainNativeTokenAmount = 0n,
 }: {
   networkFeeUsd: bigint | undefined;
-  paySource?: "sourceChain" | string;
+  paySource?: string;
   chainId: ContractsChainId | undefined;
   srcChainId: SourceChainId | undefined;
   paySourceChainNativeTokenAmount: bigint | undefined;

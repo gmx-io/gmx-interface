@@ -87,7 +87,7 @@ export function useThrottledAsync<T, D extends object>(
       }
 
       try {
-        const estimatorPromise = latestFnRef.current({ params: args as D });
+        const estimatorPromise = latestFnRef.current({ params: args });
 
         if (withLoading) {
           const floatingPromise = estimatorPromise.then((result) => {

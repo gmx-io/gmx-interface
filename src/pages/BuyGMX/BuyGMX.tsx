@@ -14,7 +14,7 @@ import {
 } from "config/chains";
 import { getIcons } from "config/icons";
 import { useChainId } from "lib/chains";
-import { importImage } from "lib/legacy";
+import { importImage } from "lib/images";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 

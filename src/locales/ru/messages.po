@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr "Исполнить стоп-лосс"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "Согласен"
+#~ msgid "Agree"
+#~ msgstr "Согласен"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -601,7 +601,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "Чтобы принять перевод, вам нужно оставаться на этой странице. При необходимости <0>нажмите здесь</0>, чтобы скопировать ссылку на эту страницу."
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "Не показывайте это сообщение снова в течение 30 дней."
 
@@ -1030,8 +1029,8 @@ msgid "TVL (Supply)"
 msgstr "TVL (Поставка)"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "Альтернативные ссылки можно найти в <0>документах</0>.<1/><2/>Нажав кнопку Согласен, вы принимаете <3>T&Cs</3> и <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr "Альтернативные ссылки можно найти в <0>документах</0>.<1/><2/>Нажав кнопку Согласен, вы принимаете <3>T&Cs</3> и <4>Referral T&Cs</4>.<5/><6/>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "All Time"
@@ -1964,8 +1963,8 @@ msgid "Failed to deactivate"
 msgstr "Не удалось деактивировать"
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "Нет открытой позиции, ордер не может быть выполнен, пока не открыта позиция"
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr "Нет открытой позиции, ордер не может быть выполнен, пока не открыта позиция"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2423,7 +2422,6 @@ msgstr "Максимальное количество частей: {MAX_TWAP_NU
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "Запустить Приложение"
 
@@ -3240,8 +3238,8 @@ msgid "Sending settle request"
 msgstr "Отправка запроса на расчёт"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "Ордер не может быть выполнен, поскольку оставшаяся позиция будет меньше $5.00"
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr "Ордер не может быть выполнен, поскольку оставшаяся позиция будет меньше $5.00"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3294,7 +3292,6 @@ msgid "Wallet Balance"
 msgstr "Баланс кошелька"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "Сайт представляет собой развернутый и поддерживаемый сообществом экземпляр открытого источника <0>GMX фронт-энда</0>, размещенный и обслуживаемый в распределенной, peer-to-peer <1>IPFS сети</1>."
 
@@ -4019,7 +4016,6 @@ msgid "Failed to claim funds"
 msgstr "Не удалось клеймить средства"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "Вы покидаете GMX.io и будете перенаправлены на сторонний, независимый сайт."
 
@@ -4541,8 +4537,8 @@ msgid "Decrease"
 msgstr "Уменьшить"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "Ордер не может быть выполнен, так как это уменьшит кредитное плечо позиции ниже 1"
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr "Ордер не может быть выполнен, так как это уменьшит кредитное плечо позиции ниже 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -7281,8 +7277,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr "Сдавайте в долг свои токены GM и берите кредит под их залог."
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "Размер ордера больше позиции, будет исполнен только если позиция увеличится"
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr "Размер ордера больше позиции, будет исполнен только если позиция увеличится"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7303,7 +7299,7 @@ msgstr "ID NFT"
 msgid "Select network"
 msgstr "Выберите сеть"
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "Децентрализованная биржа перпетuals | GMX"
 

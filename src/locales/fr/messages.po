@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr "Exécuter le Stop Loss"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr "Accepter"
+#~ msgid "Agree"
+#~ msgstr "Accepter"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -601,7 +601,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr "Vous devrez rester sur cette page pour accepter le transfert, <0>cliquez ici</0> pour copier le lien vers cette page si nécessaire."
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr "Ne plus afficher ce message pendant 30 jours."
 
@@ -1030,8 +1029,8 @@ msgid "TVL (Supply)"
 msgstr "TVL (Supply)"
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr "Des liens alternatifs peuvent être trouvés dans la section <0>docs</0>.<1/><2/>En cliquant sur Accepter, vous acceptez les <3>Conditions générales</3> et <4> Conditions générales de parrainage</4>.<5/><6/>"
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr "Des liens alternatifs peuvent être trouvés dans la section <0>docs</0>.<1/><2/>En cliquant sur Accepter, vous acceptez les <3>Conditions générales</3> et <4> Conditions générales de parrainage</4>.<5/><6/>"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "All Time"
@@ -1964,8 +1963,8 @@ msgid "Failed to deactivate"
 msgstr "Échec de la désactivation"
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "Pas de position ouverte, l'ordre ne peut être exécuté que si une position est ouverte."
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr "Pas de position ouverte, l'ordre ne peut être exécuté que si une position est ouverte."
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2423,7 +2422,6 @@ msgstr "Nombre maximum de parties : {MAX_TWAP_NUMBER_OF_PARTS}"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "Lancer l'application"
 
@@ -3240,8 +3238,8 @@ msgid "Sending settle request"
 msgstr "Envoi de la demande de règlement"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "L'ordre ne peut être exécuté car la position restante serait inférieure à 5,00 $."
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr "L'ordre ne peut être exécuté car la position restante serait inférieure à 5,00 $."
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3294,7 +3292,6 @@ msgid "Wallet Balance"
 msgstr "Solde du Portefeuille"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr "Le site web est une instance déployée et maintenue par la communauté de l'open source <0>GMX front-end</0>, hébergée et servie sur le réseau distribué pair-à-pair <1>IPFS</1>."
 
@@ -4019,7 +4016,6 @@ msgid "Failed to claim funds"
 msgstr "Échec de la réclamation des fonds"
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "Vous quittez GMX.io et serez redirigé vers un site web tiers indépendant."
 
@@ -4541,8 +4537,8 @@ msgid "Decrease"
 msgstr "Diminuer"
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "L'ordre ne peut être exécuté car il réduirait l'effet de levier de la position en dessous de 1"
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr "L'ordre ne peut être exécuté car il réduirait l'effet de levier de la position en dessous de 1"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -7281,8 +7277,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr "Prêtez vos tokens GM et empruntez contre eux."
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "La taille de l'ordre est supérieure à la position, il sera exécutable seulement si la position augmente."
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr "La taille de l'ordre est supérieure à la position, il sera exécutable seulement si la position augmente."
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7303,7 +7299,7 @@ msgstr "ID NFT"
 msgid "Select network"
 msgstr "Sélectionner le réseau"
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr "Exchange perpétuel décentralisé | GMX"
 

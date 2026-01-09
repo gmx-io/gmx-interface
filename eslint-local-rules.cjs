@@ -1,6 +1,27 @@
-const { ESLintUtils } = require("@typescript-eslint/experimental-utils");
+const { ESLintUtils } = require("@typescript-eslint/utils");
+const ts = require("typescript");
 
 const createRule = ESLintUtils.RuleCreator((name) => `https://example.com/rule/${name}`);
+
+function isBigIntType(checker, type) {
+  const typeString = checker.typeToString(type);
+  if (
+    typeString === "bigint" ||
+    typeString === "bigint | undefined" ||
+    typeString === "bigint | null"
+  ) {
+    return true;
+  }
+  // Check for bigint literal types (e.g., 1n, 2n)
+  if (type.flags & ts.TypeFlags.BigIntLiteral) {
+    return true;
+  }
+  // Check union types containing bigint
+  if (type.isUnion && type.isUnion()) {
+    return type.types.some((t) => t.flags & ts.TypeFlags.BigInt || t.flags & ts.TypeFlags.BigIntLiteral);
+  }
+  return false;
+}
 
 module.exports = {
   "no-bigint-negation": createRule({
@@ -9,31 +30,25 @@ module.exports = {
       type: "problem",
       docs: {
         description: "Disallow negation of bigint or bigint | undefined variables",
-        category: "Possible Errors",
-        recommended: true,
+        requiresTypeChecking: true,
       },
       schema: [],
       messages: {
         bigintNegation: "Negation of bigint is not allowed.",
       },
       hasSuggestions: true,
-      fixable: true,
     },
     defaultOptions: [],
     create(context) {
-      const parserServices = ESLintUtils.getParserServices(context);
-      const checker = parserServices.program.getTypeChecker();
+      const services = ESLintUtils.getParserServices(context);
+      const checker = services.program.getTypeChecker();
 
       return {
         UnaryExpression(node) {
           if (node.operator === "!") {
-            const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node.argument);
+            const tsNode = services.esTreeNodeToTSNodeMap.get(node.argument);
             const type = checker.getTypeAtLocation(tsNode);
-            if (
-              checker.typeToString(type) === "bigint" ||
-              checker.typeToString(type) === "bigint | undefined" ||
-              checker.typeToString(type) === "bigint | null"
-            ) {
+            if (isBigIntType(checker, type)) {
               context.report({
                 node,
                 messageId: "bigintNegation",
@@ -74,20 +89,18 @@ module.exports = {
     },
   }),
   "no-logical-bigint": createRule({
-    name: "no-conditional-bigint",
+    name: "no-logical-bigint",
     meta: {
       type: "problem",
       docs: {
         description: "Disallow using bigint type in logical expressions",
-        category: "Possible Errors",
-        recommended: true,
+        requiresTypeChecking: true,
       },
       schema: [],
       messages: {
         logicalBigint: "Using bigint in logical expressions is not allowed.",
       },
       hasSuggestions: true,
-      fixable: true,
     },
     defaultOptions: [],
     create(context) {
@@ -115,16 +128,11 @@ module.exports = {
 
 function checkBigInt(context, node) {
   if (node.type === "Literal" || node.type === "Identifier" || node.type === "MemberExpression") {
-    const parserServices = ESLintUtils.getParserServices(context);
-    const checker = parserServices.program.getTypeChecker();
-    const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
+    const services = ESLintUtils.getParserServices(context);
+    const checker = services.program.getTypeChecker();
+    const tsNode = services.esTreeNodeToTSNodeMap.get(node);
     const type = checker.getTypeAtLocation(tsNode);
-
-    return (
-      checker.typeToString(type) === "bigint" ||
-      checker.typeToString(type) === "bigint | undefined" ||
-      checker.typeToString(type) === "bigint | null"
-    );
+    return isBigIntType(checker, type);
   }
 
   if (node.type === "LogicalExpression") {

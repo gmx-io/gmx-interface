@@ -12,7 +12,7 @@ import {
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
-import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "domain/synthetics/markets/utils";
+import { getGlvOrMarketAddress, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { isOrderForPosition } from "domain/synthetics/orders";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
@@ -25,7 +25,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {
-  marketAddress: Address | "any";
+  marketAddress: string;
   direction: MarketFilterLongShortDirection;
   collateralAddress?: Address;
 };
@@ -67,9 +67,9 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       strippedOpenPositions = positions.map((position) => ({
         text: (position.isLong ? "long" : "short") + " " + position.market.name + " " + position.collateralToken.symbol,
         data: {
-          marketAddress: position.market.marketTokenAddress as Address,
+          marketAddress: position.market.marketTokenAddress,
           direction: position.isLong ? "long" : "short",
-          collateralAddress: position.collateralTokenAddress as Address,
+          collateralAddress: position.collateralTokenAddress,
         },
       }));
     }
@@ -78,7 +78,7 @@ export function MarketFilterLongShort({ value, onChange, withPositions, asButton
       return {
         text: "any " + market.name,
         data: {
-          marketAddress: getGlvOrMarketAddress(market) as Address,
+          marketAddress: getGlvOrMarketAddress(market),
           direction: "any",
         },
       };

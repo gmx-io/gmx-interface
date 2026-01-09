@@ -113,42 +113,42 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
     {
       className: "bg-[#00ff00]",
       text: "Cumulative Realized PnL",
-      value: lastPoint!.cumulativeRealizedPnl,
+      value: lastPoint.cumulativeRealizedPnl,
     },
     {
       className: "bg-[#ff0000]",
       text: "Cumulative Realized Fees",
-      value: -lastPoint!.cumulativeRealizedFees,
+      value: -lastPoint.cumulativeRealizedFees,
     },
     {
       className: "bg-[#ff00ff]",
       text: "Cumulative Realized Price Impact",
-      value: lastPoint!.cumulativeRealizedPriceImpact,
+      value: lastPoint.cumulativeRealizedPriceImpact,
     },
     {
       className: "bg-[#ff00ff]",
       text: "Cumulative Realized Swap Impact",
-      value: lastPoint!.cumulativeRealizedSwapImpact,
+      value: lastPoint.cumulativeRealizedSwapImpact,
     },
     {
       className: "bg-[#00ffff]",
       text: "Last Unrealized PnL",
-      value: lastPoint!.unrealizedPnl,
+      value: lastPoint.unrealizedPnl,
     },
     {
       className: "bg-[#ff00ff]",
       text: "Last Unrealized Fees",
-      value: -lastPoint!.unrealizedFees,
+      value: -lastPoint.unrealizedFees,
     },
     {
       className: "bg-[#00ff00]",
       text: "Start Unrealized PnL",
-      value: lastPoint!.startUnrealizedPnl,
+      value: lastPoint.startUnrealizedPnl,
     },
     {
       className: "bg-[#ff0000]",
       text: "Start Unrealized Fees",
-      value: -lastPoint!.startUnrealizedFees,
+      value: -lastPoint.startUnrealizedFees,
     },
   ].map(({ className, text, value }) => (
     <div key={text}>

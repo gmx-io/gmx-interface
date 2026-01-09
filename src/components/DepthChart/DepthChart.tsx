@@ -575,7 +575,7 @@ function ActiveDotForZeroPriceImpact(
 
   const domainSpan = yAxis.niceTicks.at(-1)! - yAxis.niceTicks.at(0)!;
 
-  let stats: DataPoint = payload as DataPoint;
+  let stats: DataPoint = payload;
 
   let isOpaqueCloser = true;
   let isLogicallyLeft = false;
@@ -588,8 +588,8 @@ function ActiveDotForZeroPriceImpact(
     const opaqueSize: number | null = isLogicallyLeft ? stats.leftOpaqueSize : stats.rightOpaqueSize;
 
     if (transparentSize !== null && opaqueSize !== null) {
-      const transparentFloatY = viewBox.height - (transparentSize! / domainSpan) * viewBox.height + viewBox.y;
-      const opaqueFloatY = viewBox.height - (opaqueSize! / domainSpan) * viewBox.height + viewBox.y;
+      const transparentFloatY = viewBox.height - (transparentSize / domainSpan) * viewBox.height + viewBox.y;
+      const opaqueFloatY = viewBox.height - (opaqueSize / domainSpan) * viewBox.height + viewBox.y;
 
       const distanceToTransparent = Math.abs((mousePosition?.y ?? 0) - transparentFloatY);
       const distanceToOpaque = Math.abs((mousePosition?.y ?? 0) - opaqueFloatY);

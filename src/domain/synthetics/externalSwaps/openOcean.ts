@@ -111,8 +111,8 @@ export async function getOpenOceanTxnData({
     }
 
     return {
-      to: parsed.data.to as string,
-      data: parsed.data.data as string,
+      to: parsed.data.to,
+      data: parsed.data.data,
       value: BigInt(parsed.data.value),
       estimatedGas: BigInt(parsed.data.estimatedGas),
       usdIn: numberToBigint(parseFloat(parsed.data.inToken.volume), USD_DECIMALS),

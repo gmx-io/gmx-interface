@@ -200,7 +200,7 @@ export function PositionSeller() {
   const isTwap = orderOption === OrderOption.Twap;
   const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
-  const maxCloseSize = position?.sizeInUsd || 0n;
+  const maxCloseSize = position?.sizeInUsd ?? 0n;
 
   const setReceiveTokenManually = useCallback(
     (token: Token) => {
@@ -676,12 +676,10 @@ export function PositionSeller() {
       label={t`Liquidation Price`}
       value={
         <ValueTransition
-          from={
-            formatLiquidationPrice(position.liquidationPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: toToken?.visualMultiplier,
-            })!
-          }
+          from={formatLiquidationPrice(position.liquidationPrice, {
+            displayDecimals: marketDecimals,
+            visualMultiplier: toToken?.visualMultiplier,
+          })}
           to={
             decreaseAmounts?.isFullClose
               ? "-"

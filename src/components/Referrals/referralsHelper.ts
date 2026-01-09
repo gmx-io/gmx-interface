@@ -5,9 +5,11 @@ import { zeroAddress } from "viem";
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { CodeOwnershipInfo, getReferralCodeOwner, ReferralCodeStats } from "domain/referrals";
-import { getTwitterIntentURL, isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "domain/referrals";
 import { deserializeBigIntsInObject, formatAmount, removeTrailingZeros } from "lib/numbers";
+import { getTwitterIntentURL } from "lib/social";
 import { getRootUrl } from "lib/url";
+import { isAddressZero } from "lib/wallets";
 import { bigMath } from "sdk/utils/bigmath";
 import { encodeReferralCode } from "sdk/utils/referrals";
 

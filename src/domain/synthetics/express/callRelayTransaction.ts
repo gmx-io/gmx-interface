@@ -1,5 +1,5 @@
 import type { Provider } from "ethers";
-import { Hex, encodePacked, type Address } from "viem";
+import { encodePacked } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -26,12 +26,7 @@ export async function callRelayTransaction({
       from: GMX_SIMULATION_ORIGIN,
       data: encodePacked(
         ["bytes", "address", "address", "uint256"],
-        [
-          calldata as Hex,
-          getContract(chainId, "GelatoRelayAddress"),
-          gelatoRelayFeeToken as Address,
-          gelatoRelayFeeAmount,
-        ]
+        [calldata, getContract(chainId, "GelatoRelayAddress"), gelatoRelayFeeToken, gelatoRelayFeeAmount]
       ),
     });
   } catch (ex) {

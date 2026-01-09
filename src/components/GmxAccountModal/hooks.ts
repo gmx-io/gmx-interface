@@ -406,7 +406,7 @@ export function useSourceChainTokensDataRequest(
 
       return fetchSourceChainTokenBalances({
         sourceChainId: srcChainId,
-        account: account!,
+        account: account,
         sourceChainTokenIdMap,
       });
     }

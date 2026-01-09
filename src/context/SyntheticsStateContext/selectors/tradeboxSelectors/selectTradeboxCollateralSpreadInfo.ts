@@ -26,7 +26,7 @@ export const selectTradeboxCollateralSpreadInfo = createSelector((q) => {
     };
   }
 
-  totalSpread = totalSpread + getSpread(collateralToken!.prices!);
+  totalSpread = totalSpread + getSpread(collateralToken.prices);
 
   return {
     spread: totalSpread,

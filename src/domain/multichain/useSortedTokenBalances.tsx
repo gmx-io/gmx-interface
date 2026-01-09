@@ -30,8 +30,8 @@ export function useSortedTokenBalances({
       })
       .map(([chainId, data]) => ({
         chainId: parseInt(chainId) as AnyChainId | GmxAccountPseudoChainId,
-        balance: data!.balance,
-        balanceUsd: data!.balanceUsd,
+        balance: data.balance,
+        balanceUsd: data.balanceUsd,
       }));
   }, [multichainBalances?.balances]);
 }

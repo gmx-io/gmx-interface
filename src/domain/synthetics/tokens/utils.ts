@@ -1,6 +1,6 @@
 import { USD_DECIMALS } from "config/factors";
 import { InfoTokens, SignedTokenPermit, Token, TokenBalanceType, TokenInfo } from "domain/tokens";
-import { formatAmount } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, PRECISION } from "lib/numbers";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { getTokenData } from "sdk/utils/tokens";
@@ -127,4 +127,52 @@ export function getBalanceByBalanceType(tokenData: TokenData, tokenBalanceType: 
     case TokenBalanceType.SourceChain:
       return tokenData.sourceChainBalance;
   }
+}
+
+export function getExchangeRate(
+  tokenAInfo: TokenInfo | undefined,
+  tokenBInfo: TokenInfo | undefined,
+  inverted: boolean
+) {
+  if (
+    tokenAInfo === undefined ||
+    tokenAInfo.minPrice === undefined ||
+    tokenBInfo === undefined ||
+    tokenBInfo.maxPrice === undefined
+  ) {
+    return;
+  }
+  if (inverted) {
+    return (tokenAInfo.minPrice * PRECISION) / tokenBInfo.maxPrice;
+  }
+  return (tokenBInfo.maxPrice * PRECISION) / tokenAInfo.minPrice;
+}
+
+function shouldInvertTriggerRatio(tokenA: TokenInfo, tokenB: TokenInfo) {
+  if (tokenB.isStable && !tokenA.isStable) return true;
+  if (tokenB.maxPrice !== undefined && tokenA.maxPrice !== undefined && tokenB.maxPrice < tokenA.maxPrice) {
+    return true;
+  }
+  return false;
+}
+
+export function getExchangeRateDisplay(
+  rate: bigint | undefined,
+  tokenA: TokenInfo | undefined,
+  tokenB: TokenInfo | undefined,
+  opts: { omitSymbols?: boolean } = {}
+) {
+  if (rate === undefined || rate === 0n || tokenA === undefined || tokenB === undefined) {
+    return "...";
+  }
+  if (shouldInvertTriggerRatio(tokenA, tokenB)) {
+    [tokenA, tokenB] = [tokenB, tokenA];
+    rate = (PRECISION * PRECISION) / rate;
+  }
+  const rateDecimals = calculateDisplayDecimals(rate);
+  const rateValue = formatAmount(rate, USD_DECIMALS, rateDecimals, true);
+  if (opts.omitSymbols) {
+    return rateValue;
+  }
+  return `${rateValue} ${tokenA.symbol} per ${tokenB.symbol}`;
 }

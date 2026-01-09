@@ -176,7 +176,7 @@ export default function TVChartContainer({
 
     let didTriggerOnChartReady = { current: false };
 
-    tvWidgetRef.current!.onChartReady(function () {
+    tvWidgetRef.current.onChartReady(function () {
       didTriggerOnChartReady.current = true;
       setChartReady(true);
 

@@ -44,17 +44,16 @@ import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { helperToast } from "lib/helperToast";
-import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
 import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { getPageTitle } from "lib/seo";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
-import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 
@@ -505,7 +504,7 @@ export function SyntheticsPage(p: Props) {
 }
 
 function useOrdersControl() {
-  const chainId = useSelector(selectChainId) as ContractsChainId;
+  const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);

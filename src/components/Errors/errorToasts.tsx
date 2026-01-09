@@ -345,7 +345,7 @@ export function getInsufficientExecutionFeeToastContent({
     minExecutionFee: minExecutionFee,
     estimatedExecutionFee: executionFee,
     currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
-    premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
+    premium: getGasPricePremium(chainId as ContractsChainId) ?? 0n,
     gasLimit: estimatedExecutionGasLimit,
   });
 

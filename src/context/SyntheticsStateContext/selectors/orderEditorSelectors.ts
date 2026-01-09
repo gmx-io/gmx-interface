@@ -43,11 +43,11 @@ import {
   TradeMode,
   TradeType,
 } from "domain/synthetics/trade";
-import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
+import { getPositionKey } from "sdk/utils/positions";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";

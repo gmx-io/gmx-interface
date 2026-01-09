@@ -54,7 +54,7 @@ export function TestPermits() {
 
         try {
           const params = await withRetry(
-            () => getTokenPermitParams(chainId, account!, token.address, signer!.provider!),
+            () => getTokenPermitParams(chainId, account!, token.address, signer!.provider),
             {
               shouldRetry: ({ error }) => {
                 return Boolean(error.message && !error.message.includes("Cannot decode zero data "));

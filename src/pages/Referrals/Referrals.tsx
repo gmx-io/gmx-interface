@@ -18,10 +18,11 @@ import {
 } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { getPageTitle, isHashZero } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { serializeBigIntsInObject } from "lib/numbers";
+import { getPageTitle } from "lib/seo";
 import useRouteQuery from "lib/useRouteQuery";
+import { isHashZero } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";

@@ -23,7 +23,7 @@ import InteractivePieChart from "components/InteractivePieChart/InteractivePieCh
 
 export function GmCard() {
   const { chainId, srcChainId } = useChainId();
-  const currentIcons = getIcons(chainId)!;
+  const currentIcons = getIcons(chainId);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true, withGlv: false });
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });

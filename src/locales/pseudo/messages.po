@@ -90,8 +90,8 @@ msgid "Execute Stop Loss"
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Agree"
-msgstr ""
+#~ msgid "Agree"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "BonsaiDAO"
@@ -601,7 +601,6 @@ msgid "You will need to be on this page to accept the transfer, <0>click here</0
 msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show this message again for 30 days."
 msgstr ""
 
@@ -1030,8 +1029,8 @@ msgid "TVL (Supply)"
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
-msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
-msgstr ""
+#~ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
+#~ msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "All Time"
@@ -1964,8 +1963,8 @@ msgid "Failed to deactivate"
 msgstr ""
 
 #: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr ""
+#~ msgid "No open position, order cannot be executed unless a position is opened"
+#~ msgstr ""
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2423,7 +2422,6 @@ msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr ""
 
@@ -3240,8 +3238,8 @@ msgid "Sending settle request"
 msgstr ""
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr ""
+#~ msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+#~ msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3294,7 +3292,6 @@ msgid "Wallet Balance"
 msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr ""
 
@@ -4019,7 +4016,6 @@ msgid "Failed to claim funds"
 msgstr ""
 
 #: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: src/components/ModalViews/RedirectModal.tsx
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr ""
 
@@ -4541,8 +4537,8 @@ msgid "Decrease"
 msgstr ""
 
 #: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr ""
+#~ msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+#~ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -7281,8 +7277,8 @@ msgid "Lend out your GM tokens, and borrow against them."
 msgstr ""
 
 #: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr ""
+#~ msgid "Order size is bigger than position, will only be executable if position increases"
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
@@ -7303,7 +7299,7 @@ msgstr ""
 msgid "Select network"
 msgstr ""
 
-#: src/lib/legacy.ts
+#: src/lib/seo.ts
 msgid "Decentralized Perpetual Exchange | GMX"
 msgstr ""
 

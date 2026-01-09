@@ -21,7 +21,6 @@ export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
 export const TV_CHART_RELOAD_TIMESTAMP_KEY = "tv-chart-reload-timestamp";
-export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 export const LEVERAGE_OPTION_KEY = "leverage-option";
 export const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 export const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
@@ -102,6 +101,7 @@ export const TOKEN_PERMITS_KEY = "token-permits";
 export const CLAIM_TERMS_ACCEPTED_KEY = "claim-terms-accepted";
 
 export const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
+export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 
 export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 

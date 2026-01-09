@@ -1,4 +1,4 @@
-import { CHART_PERIODS } from "lib/legacy";
+import { CHART_PERIODS } from "config/tradingview";
 
 import type { Bar } from "./types";
 

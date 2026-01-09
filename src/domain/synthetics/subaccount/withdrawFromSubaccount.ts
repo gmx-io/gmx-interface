@@ -36,10 +36,10 @@ export async function getEstimatedWithdrawalAmount(provider: Provider, subaccoun
   };
 
   result.estimatedGas = bigMath.mulDiv(
-    (await provider.estimateGas({
+    await provider.estimateGas({
       to: subaccountAddress,
       value,
-    })) as bigint,
+    }),
     13n,
     10n
   );

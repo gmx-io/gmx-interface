@@ -52,12 +52,12 @@ export default function useV2Stats(chainId: ContractsChainId): DashboardOverview
         totalLongInterestUsd !== undefined && totalShortInterestUsd !== undefined
           ? totalLongInterestUsd + totalShortInterestUsd
           : 0n,
-      dailyVolume: BigInt(volumeInfo?.dailyVolume ?? 0) || 0n,
-      totalVolume: BigInt(volumeInfo?.totalVolume ?? 0) || 0n,
-      weeklyFees: BigInt(feesInfo?.weeklyFees ?? 0) || 0n,
-      epochFees: BigInt(feesInfo?.epochFees ?? 0) || 0n,
-      totalFees: BigInt(feesInfo?.totalFees ?? 0) || 0n,
-      totalUsers: BigInt(usersInfo?.totalUsers ?? 0) || 0n,
+      dailyVolume: BigInt(volumeInfo?.dailyVolume ?? 0) ?? 0n,
+      totalVolume: BigInt(volumeInfo?.totalVolume ?? 0) ?? 0n,
+      weeklyFees: BigInt(feesInfo?.weeklyFees ?? 0) ?? 0n,
+      epochFees: BigInt(feesInfo?.epochFees ?? 0) ?? 0n,
+      totalFees: BigInt(feesInfo?.totalFees ?? 0) ?? 0n,
+      totalUsers: BigInt(usersInfo?.totalUsers ?? 0) ?? 0n,
     };
   }, [marketsInfoData, volumeInfo, feesInfo, usersInfo]);
 
