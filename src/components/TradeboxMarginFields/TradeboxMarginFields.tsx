@@ -266,36 +266,13 @@ export function TradeboxMarginFields({
 
   const handlePriceDisplayModeChange = useCallback(
     (newMode: PriceDisplayMode) => {
-      if (newMode === priceDisplayMode || !toToken || markPrice === undefined || markPrice === 0n) {
-        setPriceDisplayMode(newMode);
+      if (newMode === priceDisplayMode) {
         return;
-      }
-
-      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-
-      if (newMode === "token") {
-        const parsedUsd = parseValue(triggerPriceInputValue || "0", USD_DECIMALS);
-        if (parsedUsd !== undefined && parsedUsd > 0n) {
-          const tokenValue = (parsedUsd * visualMultiplier * 10n ** BigInt(toToken.decimals)) / markPrice;
-          const newInputValue = formatAmountFree(tokenValue, toToken.decimals);
-          if (onTriggerPriceInputChange) {
-            onTriggerPriceInputChange({ target: { value: newInputValue } } as ChangeEvent<HTMLInputElement>);
-          }
-        }
-      } else {
-        const parsedTokens = parseValue(triggerPriceInputValue || "0", toToken.decimals);
-        if (parsedTokens !== undefined && parsedTokens > 0n) {
-          const usdValue = (parsedTokens * markPrice) / (10n ** BigInt(toToken.decimals) * visualMultiplier);
-          const newInputValue = formatAmountFree(usdValue, USD_DECIMALS);
-          if (onTriggerPriceInputChange) {
-            onTriggerPriceInputChange({ target: { value: newInputValue } } as ChangeEvent<HTMLInputElement>);
-          }
-        }
       }
 
       setPriceDisplayMode(newMode);
     },
-    [priceDisplayMode, toToken, markPrice, triggerPriceInputValue, onTriggerPriceInputChange]
+    [priceDisplayMode]
   );
 
   return (
