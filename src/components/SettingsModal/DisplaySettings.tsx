@@ -20,7 +20,7 @@ export function DisplaySettings() {
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
-          <Trans>Display PnL After Fees</Trans>
+          <Trans>Display PnL after Fees</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>

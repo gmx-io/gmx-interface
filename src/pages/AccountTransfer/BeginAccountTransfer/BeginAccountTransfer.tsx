@@ -300,7 +300,7 @@ export default function BeginAccountTransfer() {
         setIsVisible={setIsTransferSubmittedModalVisible}
         label={t`Transfer Submitted`}
       >
-        <Trans>Transfer initiated.</Trans>
+        <Trans>Transfer initiated</Trans>
         <br />
         <br />
         <Link className="App-cta" to={completeTransferLink}>
@@ -314,13 +314,13 @@ export default function BeginAccountTransfer() {
           title={t`Transfer Account`}
           subtitle={
             <Trans>
-              Only use this for full account transfers.
+              Use this only for full account transfers.
               <br />
-              This will transfer all your GMX, esGMX, GLP, Multiplier Points, and voting power to your new account.
+              This transfers all your GMX, esGMX, GLP, Multiplier Points, and voting power to your new account.
               <br />
               Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
               <br />
-              Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
+              Transfers are one-way. You cannot transfer staked tokens back to the sending account.
             </Trans>
           }
         />
@@ -345,13 +345,13 @@ export default function BeginAccountTransfer() {
         </div>
         <div className="flex flex-col gap-8 text-14 font-medium">
           <ValidationRow isValid={!hasVestedGmx}>
-            <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
+            <Trans>Sender Has Withdrawn All Tokens from GMX Vesting Vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedGlp}>
-            <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
+            <Trans>Sender Has Withdrawn All Tokens from GLP Vesting Vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedAffiliate}>
-            <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
+            <Trans>Sender Has Withdrawn All Tokens from Affiliate Vesting Vault</Trans>
           </ValidationRow>
           {hasVestedAffiliate && (
             <>
@@ -371,10 +371,10 @@ export default function BeginAccountTransfer() {
           )}
 
           <ValidationRow isValid={!hasStakedGmx}>
-            <Trans>Receiver has not staked GMX tokens before</Trans>
+            <Trans>Receiver Has Not Staked GMX Tokens Before</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasStakedGlp}>
-            <Trans>Receiver has not staked GLP tokens before</Trans>
+            <Trans>Receiver Has Not Staked GLP Tokens Before</Trans>
           </ValidationRow>
         </div>
 
