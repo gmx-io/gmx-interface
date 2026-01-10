@@ -18,7 +18,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         <br />
         <br />
         <ColorfulButtonLink color="blue" onClick={onButtonClick}>
-          <Trans>Share your feedback on GMX</Trans>
+          <Trans>Share feedback on GMX</Trans>
         </ColorfulButtonLink>
         <br />
         <Trans>
@@ -48,7 +48,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         <br />
         <br />
         <ColorfulButtonLink color="blue" onClick={onButtonClick}>
-          <Trans>Share your feedback on GMX</Trans>
+          <Trans>Share feedback on GMX</Trans>
         </ColorfulButtonLink>
       </div>
     );

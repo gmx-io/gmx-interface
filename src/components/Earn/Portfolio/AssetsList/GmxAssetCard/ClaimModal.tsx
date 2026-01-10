@@ -301,7 +301,7 @@ export function ClaimModal(props: {
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
               Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power
             </ExternalLink>{" "}
-            before claiming
+            before claiming.
           </Trans>
         </AlertInfo>
       ) : null}

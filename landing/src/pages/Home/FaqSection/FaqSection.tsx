@@ -59,7 +59,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`Can I Build on Top of GMX or Integrate It Into My DeFi App?`}>
+          <FaqItem title={t`Can I Build on Top of GMX or Integrate It into My DeFi App?`}>
             <Trans>
               <p>
                 Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable

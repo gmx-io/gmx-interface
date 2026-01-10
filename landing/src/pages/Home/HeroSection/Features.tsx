@@ -135,7 +135,7 @@ export function Features({ goToTradeArbitrum }: Props) {
             </p>
           </div>
           <button className="btn-landing rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>
-            <Trans>Trade Now</Trans>
+            <Trans>Trade now</Trans>
           </button>
         </div>
       </div>

@@ -85,7 +85,7 @@ export default function CompleteAccountTransfer() {
         <PageTitle title={t`Complete Account Transfer`} />
 
         <ColorfulBanner color="red">
-          <Trans>Invalid transfer addresses, check the URL</Trans>
+          <Trans>Invalid transfer addresses. Check the URL.</Trans>
         </ColorfulBanner>
       </AppPageLayout>
     );

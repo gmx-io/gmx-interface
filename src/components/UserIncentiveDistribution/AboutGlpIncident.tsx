@@ -22,7 +22,7 @@ export function AboutGlpIncident() {
     <div>
       <div className="flex flex-col rounded-8 bg-slate-900 p-20">
         <div className="text-body-large mt-4 font-medium text-typography-primary">
-          <Trans>About GLP Incident</Trans>
+          <Trans>About the GLP Incident</Trans>
         </div>
 
         <ExpandableRow
@@ -95,7 +95,7 @@ export function AboutGlpIncident() {
 
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
-          title={t`Can I Sell My GLV if I Want, and Where?`}
+          title={t`Can I Sell My GLV, and Where?`}
           open={rowStates[3]}
           onToggle={toggleRow(3)}
           handleClassName="text-left"

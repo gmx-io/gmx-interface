@@ -204,7 +204,7 @@ function PositionShare({
           setUploadedImageInfo(imageInfo);
         } catch (error) {
           setUploadedImageInfo(null);
-          setUploadedImageError(t`Image generation error, please refresh and try again`);
+          setUploadedImageError(t`Image generation error. Please refresh and try again`);
         }
       }
     })();

@@ -50,7 +50,7 @@ export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boo
       <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
       <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
       <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
-        <Trans>Simulate TXs</Trans>
+        <Trans>Simulate txs</Trans>
       </ToggleSwitch>
       <div className="text-typography-secondary">
         <Trans>

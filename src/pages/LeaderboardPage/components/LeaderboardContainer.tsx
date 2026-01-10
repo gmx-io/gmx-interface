@@ -59,7 +59,7 @@ export function LeaderboardContainer() {
 
   const competitionLabels = useMemo(() => [t`Top PnL ($)`, t`Top PnL (%)`], []);
   const leaderboardTimeframeLabels = useMemo(() => [t`Total`, t`Last 30d`, t`Last 7d`], []);
-  const leaderboardDataTypeLabels = useMemo(() => [t`Top Addresses`, t`Top Positions`], []);
+  const leaderboardDataTypeLabels = useMemo(() => [t`Top addresses`, t`Top positions`], []);
 
   const activeCompetition: CompetitionType | undefined = isCompetition
     ? activeCompetitionIndex === 0
@@ -220,7 +220,7 @@ export function LeaderboardContainer() {
 
           <div className="flex gap-8 max-md:w-full max-md:justify-between">
             <SearchInput
-              placeholder={isMobile ? t`Search` : t`Search Address`}
+              placeholder={isMobile ? t`Search` : t`Search address`}
               className="w-full max-w-[260px] max-md:min-w-[120px]"
               value={searchAddress}
               setValue={setSearchAddress}

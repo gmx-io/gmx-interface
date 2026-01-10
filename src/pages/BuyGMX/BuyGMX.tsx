@@ -270,7 +270,7 @@ function DecentralisedExchanges({
         ) : (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX on Traderjoe.</Trans>
+              <Trans>Buy GMX from TraderJoe.</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button

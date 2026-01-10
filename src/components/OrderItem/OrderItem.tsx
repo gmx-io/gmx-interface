@@ -218,7 +218,7 @@ function OrderSize({
                     ],
                     { isStable: positionOrder.initialCollateralToken.isStable }
                   )}{" "}
-                  will be swapped to{" "}
+                  swapped to{" "}
                   {positionOrder.targetCollateralToken.isNative
                     ? wrappedToken.symbol
                     : positionOrder.targetCollateralToken.symbol}{" "}
@@ -474,7 +474,7 @@ function TriggerPrice({
                     <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
                   </div>
                 )}
-                {t`Receive at least ${toAmountText} if executed. Price updates in real time based on fees and price impact.`}
+                {t`Receive at least ${toAmountText} if executed. Price updates based on fees and price impact.`}
               </>
             )}
           />

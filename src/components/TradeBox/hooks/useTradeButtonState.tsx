@@ -244,7 +244,7 @@ export function useTradeboxButtonState({
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-                <Trans>Set Max Leverage</Trans>
+                <Trans>Set max leverage</Trans>
               </span>
             </>
           );

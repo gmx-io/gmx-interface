@@ -64,7 +64,7 @@ function AllowedSwapSlippageInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AllowedSwapSlippageInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
+        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
       </span>
     </Trans>
   );

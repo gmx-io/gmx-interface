@@ -73,7 +73,7 @@ function AcceptablePriceImpactInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
+        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
       </span>
       .
     </Trans>
@@ -105,7 +105,7 @@ function AcceptablePriceImpactInputRowImpl({
   const highValueWarningText = (
     <p>
       <Trans>
-        High acceptable impact set. Current impact: {formatPercentage(priceImpactFeeBps, { signed: true })}.
+        High acceptable price impact set. Current impact: {formatPercentage(priceImpactFeeBps, { signed: true })}.
       </Trans>
       <br />
       <br />

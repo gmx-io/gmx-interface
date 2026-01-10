@@ -138,7 +138,7 @@ export function GmList({
               className="w-full *:!text-body-medium md:max-w-[260px]"
               value={searchText}
               setValue={setSearchText}
-              placeholder={t`Search Pools`}
+              placeholder={t`Search pools`}
               autoFocus={false}
             />
             <div className="max-w-full">

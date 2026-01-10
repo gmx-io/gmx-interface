@@ -54,7 +54,7 @@ export function OpportunityFilters({
         value: "for-me" as const,
         label: (
           <div className="flex items-center gap-4">
-            <StarGradientIcon className="size-16" /> <Trans>For Me</Trans>
+            <StarGradientIcon className="size-16" /> <Trans>For me</Trans>
           </div>
         ),
       },

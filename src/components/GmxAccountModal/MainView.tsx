@@ -166,14 +166,14 @@ const Toolbar = ({ account }: { account: string }) => {
         <CopyIcon className="size-20 max-[500px]:hidden" />
       </Button>
       <div className="flex items-center gap-8">
-        <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+        <TooltipWithPortal content={t`PnL analysis.`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" size="small" className={buttonClassName} onClick={handlePnlAnalysisClick}>
             <PnlAnalysisIcon width={20} height={20} />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal
           shouldPreventDefault={false}
-          content={t`View in Explorer`}
+          content={t`View in explorer.`}
           position="bottom"
           tooltipClassName="!min-w-max"
           variant="none"

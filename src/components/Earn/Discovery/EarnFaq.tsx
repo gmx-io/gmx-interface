@@ -11,7 +11,7 @@ export default function EarnFaq() {
       </h4>
       <div className="flex flex-col">
         <EarnFaqItem
-          question={<Trans>Where do GMX staking rewards come from?</Trans>}
+          question={<Trans>Where Do GMX Staking Rewards Come From?</Trans>}
           answer={
             <Trans>
               GMX staking rewards come from a buyback-and-distribute model: protocol revenue purchases GMX on the open
@@ -20,7 +20,7 @@ export default function EarnFaq() {
           }
         />
         <EarnFaqItem
-          question={<Trans>What's the difference between providing liquidity in GLV or GM?</Trans>}
+          question={<Trans>What's the Difference Between Providing Liquidity in GLV or GM?</Trans>}
           answer={
             <Trans>
               Both GLV and GM let you earn auto-compounding fees from three revenue sources. GM tokens provide liquidity
@@ -31,7 +31,7 @@ export default function EarnFaq() {
           }
         />
         <EarnFaqItem
-          question={<Trans>Can I unstake anytime?</Trans>}
+          question={<Trans>Can I Unstake Anytime?</Trans>}
           answer={
             <Trans>
               Yes, staking and liquidity provision are fully permissionless. GMX, GLV, and GM tokens can be unstaked and
@@ -41,7 +41,7 @@ export default function EarnFaq() {
           }
         />
         <EarnFaqItem
-          question={<Trans>What networks are supported?</Trans>}
+          question={<Trans>What Networks Are Supported?</Trans>}
           answer={
             <Trans>
               GMX staking is available on Avalanche and Arbitrum. Different GLV vaults and GM tokens are available on

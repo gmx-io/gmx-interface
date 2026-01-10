@@ -230,7 +230,7 @@ export default function BeginAccountTransfer() {
     }
 
     if (needFeeGmxTrackerApproval) {
-      return t`Pending transfer approval`;
+      return t`Pending transfer approval...`;
     }
 
     return t`Begin transfer`;
@@ -298,7 +298,7 @@ export default function BeginAccountTransfer() {
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
-        label={t`Transfer submitted`}
+        label={t`Transfer Submitted`}
       >
         <Trans>Transfer initiated.</Trans>
         <br />
@@ -314,9 +314,9 @@ export default function BeginAccountTransfer() {
           title={t`Transfer Account`}
           subtitle={
             <Trans>
-              Please only use this for full account transfers.
+              Only use this for full account transfers.
               <br />
-              This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.
+              This will transfer all your GMX, esGMX, GLP, Multiplier Points, and voting power to your new account.
               <br />
               Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
               <br />
@@ -356,7 +356,7 @@ export default function BeginAccountTransfer() {
           {hasVestedAffiliate && (
             <>
               <p className="soft-error">
-                <Trans>You have esGMX tokens in the Affiliate Vault, withdraw them to include in this transfer</Trans>
+                <Trans>You have esGMX tokens in the Affiliate Vault. Withdraw them to include in this transfer.</Trans>
               </p>
               <Checkbox
                 className="VestedAffiliate-checkbox"
@@ -364,7 +364,7 @@ export default function BeginAccountTransfer() {
                 setIsChecked={setIsAffiliateVesterSkipValidation}
               >
                 <span className="text-body-small text-yellow-300">
-                  <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
+                  <Trans>I Do Not Want to Transfer the Affiliate esGMX Tokens</Trans>
                 </span>
               </Checkbox>
             </>

@@ -242,7 +242,7 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingPositionWarning">
         <Trans>
-          Existing position in {getMarketPoolName(marketWithPosition)} pool
+          Existing position in {getMarketPoolName(marketWithPosition)} pool.
           <ColorfulButtonLink
             color="blue"
             onClick={() => {
@@ -261,7 +261,7 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingPositionButNotEnoughLiquidityWarning">
         <Trans>
-          Existing position in {getMarketPoolName(marketWithPosition)} pool but lacks liquidity for this order
+          Existing position in {getMarketPoolName(marketWithPosition)} pool but lacks liquidity for this order.
         </Trans>
       </AlertInfoCard>
     );
@@ -270,7 +270,7 @@ export const useTradeboxPoolWarnings = () => {
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
       <AlertInfoCard key="showHasNoSufficientLiquidityInAnyMarketWarning">
-        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD pool for your order</Trans>
+        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD pool for your order.</Trans>
       </AlertInfoCard>
     );
   }
@@ -279,7 +279,7 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasInsufficientLiquidityAndNoPositionWarning">
         <Trans>
-          Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool
+          Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool.
         </Trans>
         {hasEnoughLiquidity(minOpenFeesMarket) && (
           <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
@@ -295,7 +295,7 @@ export const useTradeboxPoolWarnings = () => {
       <AlertInfoCard key="showHasInsufficientLiquidityAndPositionWarning">
         <Trans>
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Choosing a different pool
-          creates a new position
+          creates a new position.
         </Trans>
         <ColorfulButtonLink
           color="blue"
@@ -313,7 +313,7 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingOrderWarning">
         <Trans>
-          Existing limit order in {getMarketPoolName(marketWithOrder)} pool
+          Existing limit order in {getMarketPoolName(marketWithOrder)} pool.
           <ColorfulButtonLink
             onClick={() => {
               setMarketAddress(marketWithOrder.marketTokenAddress);
@@ -331,7 +331,7 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingOrderWarning">
         <Trans>
-          Existing limit order in {getMarketPoolName(marketWithOrder)} pool but lacks liquidity for this order
+          Existing limit order in {getMarketPoolName(marketWithOrder)} pool but lacks liquidity for this order.
         </Trans>
       </AlertInfoCard>
     );
@@ -358,7 +358,7 @@ export const useTradeboxPoolWarnings = () => {
           <span className="cursor-pointer font-medium text-blue-300 underline" onClick={onSwitchPoolClick}>
             <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
           </span>{" "}
-          <Trans>for potentially lower price impact</Trans>
+          <Trans>for potentially lower price impact.</Trans>
         </div>
       </AlertInfoCard>
     );

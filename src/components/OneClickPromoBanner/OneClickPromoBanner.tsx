@@ -52,7 +52,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
       onClick={onClickEnable}
       className="min-w-[180px] cursor-pointer"
     >
-      <div>{isShort ? <Trans>Try Express</Trans> : <Trans>Try Express Trading</Trans>}</div>
+      <div>{isShort ? <Trans>Try Express.</Trans> : <Trans>Try Express Trading.</Trans>}</div>
     </ColorfulBanner>
   );
 }

@@ -530,7 +530,7 @@ export function OrderEditor(p: Props) {
         text: t`Max leverage exceeded`,
         tooltip: (
           <>
-            <Trans>Order exceeds max leverage. Click to auto-adjust to maximum allowed.</Trans>{" "}
+            <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
             <br />
             <br />
@@ -553,7 +553,7 @@ export function OrderEditor(p: Props) {
     const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
-      text: t`Update ${orderTypeName} order`,
+      text: t`Update ${orderTypeName}`,
       disabled: false,
       onClick: onSubmit,
     };

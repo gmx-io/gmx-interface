@@ -195,7 +195,7 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) 
     return t`Insufficient liquidity.`;
   }
 
-  return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+  return t`Reason: ${words(errorName).join(" ").toLowerCase()}.`;
 }
 
 const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);

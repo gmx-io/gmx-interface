@@ -176,7 +176,7 @@ export const GmTokensTotalBalanceInfo = ({
                   <>
                     <br />
                     <div className="text-typography-primary">
-                      <Trans>Excludes incentives</Trans>
+                      <Trans>Excludes incentives.</Trans>
                     </div>
                   </>
                 )}

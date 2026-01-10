@@ -161,13 +161,13 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
           }
 
           if (orderStatus?.executedTxnHash) {
-            text = <Trans>{positionName} Fees settled</Trans>;
+            text = <Trans>{positionName} fees settled</Trans>;
             status = "success";
             txnHash = orderStatus?.executedTxnHash;
           }
 
           if (orderStatus?.cancelledTxnHash) {
-            text = <Trans>{positionName} Failed to settle</Trans>;
+            text = <Trans>{positionName} failed to settle</Trans>;
             status = "error";
             txnHash = orderStatus?.cancelledTxnHash;
           }

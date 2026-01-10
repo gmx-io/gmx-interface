@@ -33,7 +33,7 @@ const TAB_LABELS = {
   ),
   MARKET_GRAPH: (
     <div className="flex items-center gap-8">
-      <Trans>Market Graph</Trans>
+      <Trans>Market graph</Trans>
     </div>
   ),
 };

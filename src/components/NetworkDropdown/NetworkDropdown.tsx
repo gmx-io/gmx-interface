@@ -100,7 +100,9 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
               variant="none"
               className="flex"
               content={
-                <Trans>Trade via GMX Account using Arbitrum liquidity. On Arbitrum, wallet trading also available.</Trans>
+                <Trans>
+                  Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum.
+                </Trans>
               }
             />
           </div>

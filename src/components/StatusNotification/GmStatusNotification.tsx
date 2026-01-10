@@ -124,7 +124,7 @@ export function GmStatusNotification({
   const title = useMemo(() => {
     if (operation === "deposit") {
       if (!pendingDepositData) {
-        return t`Unknown buy GM order`;
+        return t`Unknown Buy GM Order`;
       }
 
       let longToken: TokenData | undefined;
@@ -198,7 +198,7 @@ export function GmStatusNotification({
         );
     } else if (operation === "withdrawal") {
       if (!pendingWithdrawalData) {
-        return t`Unknown sell GM order`;
+        return t`Unknown Sell GM Order`;
       }
       const marketInfo = getByKey(marketsInfoData, pendingWithdrawalData.marketAddress);
       const isGlv = marketInfo && isGlvInfo(marketInfo);
@@ -216,7 +216,7 @@ export function GmStatusNotification({
       );
     } else {
       if (!pendingShiftData) {
-        return t`Unknown shift GM order`;
+        return t`Unknown Shift GM Order`;
       }
 
       const fromMarketInfo = getByKey(marketsInfoData, pendingShiftData.fromMarket);

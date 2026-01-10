@@ -225,7 +225,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <AlertInfo type="warning" compact>
-            <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
+            <Trans>
+              Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle.
+            </Trans>
           </AlertInfo>
 
           <div className="App-card-divider" />

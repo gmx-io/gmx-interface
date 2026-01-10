@@ -86,7 +86,7 @@ export function LeaveHomepageRedirectModal({
                 "bg-white": !shouldHideRedirectModal,
               })}
             />
-            <Trans>Don't show this message again for 30 days</Trans>
+            <Trans>Don't Show This Message Again for 30 Days</Trans>
           </label>
         </ModalBottom>
 

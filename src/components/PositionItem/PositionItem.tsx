@@ -292,7 +292,7 @@ export function PositionItem(p: Props) {
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
                 />
                 <br />
-                <Trans>Click the edit icon to deposit or withdraw collateral.</Trans>
+                <Trans>Click the edit icon to adjust collateral.</Trans>
                 <br />
                 <br />
                 <Trans>

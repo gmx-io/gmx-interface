@@ -149,9 +149,7 @@ export default function EarnAdditionalOpportunitiesPage() {
 
   const emptyStateMessage = useMemo(() => {
     if (chainId === BOTANIX) {
-      return (
-        <Trans>No additional opportunities on Botanix. Switch to Arbitrum or Avalanche to see more</Trans>
-      );
+      return <Trans>No additional opportunities on Botanix. Switch to Arbitrum or Avalanche to see more</Trans>;
     }
 
     if (allOpportunities.length === 0) {
@@ -178,7 +176,7 @@ export default function EarnAdditionalOpportunitiesPage() {
   return (
     <EarnPageLayout>
       <ColorfulBanner>
-        <Trans>Earn more on your GMX, GLV, and GM tokens with integrated partner protocols</Trans>
+        <Trans>Earn more on your GMX, GLV, and GM tokens with integrated partner protocols.</Trans>
       </ColorfulBanner>
 
       <div className="flex flex-col gap-8">

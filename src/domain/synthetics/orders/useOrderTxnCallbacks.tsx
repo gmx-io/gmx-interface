@@ -659,7 +659,7 @@ function getOperationMessage(
       }
 
       case "failed": {
-        return t`${orderText} cancel failed`;
+        return t`${orderText} cancellation failed`;
       }
 
       default: {

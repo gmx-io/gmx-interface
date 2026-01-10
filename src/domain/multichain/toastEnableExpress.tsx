@@ -7,7 +7,7 @@ import Button from "components/Button/Button";
 export function toastEnableExpress(openSettings: () => void) {
   helperToast.success(
     <Trans>
-      Express Trading enabled to use GMX Account balance as collateral. Disable in{" "}
+      Express Trading enabled. Disable in{" "}
       <Button variant="link" onClick={openSettings}>
         Settings
       </Button>

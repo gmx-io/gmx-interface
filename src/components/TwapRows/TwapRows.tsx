@@ -108,7 +108,7 @@ const TwapRows = ({
           <Trans>
             This TWAP order will execute {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
             {formatUsd(numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)} each over the next{" "}
-            {getTwapDurationText(duration, locale)} for the {marketInfo.name} market
+            {getTwapDurationText(duration, locale)} for the {marketInfo.name} market.
           </Trans>
         </AlertInfoCard>
       )}

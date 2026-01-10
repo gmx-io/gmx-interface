@@ -498,7 +498,7 @@ export function getDecreaseError(p: {
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
-    return [t`${receiveToken?.symbol} cannot be sent to smart contract addresses. Select another token`];
+    return [t`${receiveToken?.symbol} can't be sent to smart contracts. Select another token`];
   }
 
   if (!marketInfo) {
@@ -869,8 +869,8 @@ export function getGmSwapError(p: {
         return [
           t`Max pool amount reached`,
           longToken?.symbol === "GM"
-            ? t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Reduce size, pick different GM, or shift to another pool`
-            : t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Choose a different pool or reduce size`,
+            ? t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Reduce size, pick different GM, or shift to another pool.`
+            : t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Choose a different pool or reduce size.`,
         ];
       }
     }
@@ -892,7 +892,7 @@ export function getGmSwapError(p: {
       if ((glvTokenAmount ?? 0n) > (sellableGlvInMarket.sellableAmount ?? 0n)) {
         return [
           t`Insufficient GLV liquidity`,
-          t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce size, or split withdrawal`,
+          t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce size, or split withdrawal.`,
         ];
       }
 
@@ -901,7 +901,7 @@ export function getGmSwapError(p: {
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return [
           t`Insufficient GM pool liquidity`,
-          t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal`,
+          t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal.`,
         ];
       }
     }

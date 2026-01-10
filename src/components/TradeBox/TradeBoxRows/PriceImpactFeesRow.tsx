@@ -100,7 +100,7 @@ export function PriceImpactFeesRow() {
             handle={t`Net Price Impact / Fees`}
             content={
               <Trans>
-                Net price impact from your trade.{" "}
+                Net price impact and fees from your trade.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>
@@ -167,7 +167,7 @@ export function PriceImpactFeesRow() {
             handle={t`Price Impact`}
             content={
               <Trans>
-                No price impact on increases - orders execute at mark price.{" "}
+                No price impact on increases — orders execute at mark price.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>

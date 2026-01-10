@@ -126,7 +126,7 @@ export function getTxnErrorToast(
           <br />
           <br />
           <Link className="underline" to="/buy_gmx#bridge">
-            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
+            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>
       );
@@ -146,19 +146,19 @@ export function getTxnErrorToast(
       toastParams.errorContent = (
         <div>
           <Trans>
-            RPC error.
+            RPC error
             <br />
             <br />
             Enable{" "}
             <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible?.(true)}>
               Express Trading
             </Button>{" "}
-            in Settings for better reliability.
+            in Settings for better reliability
           </Trans>
           <br />
           <br />
           <Trans>
-            Or update your wallet's RPC via <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
+            Or update your wallet's RPC via <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>
           </Trans>
           <br />
           <br />
@@ -213,7 +213,7 @@ export function getErrorMessage(
           <br />
           <br />
           <Link className="underline" to="/buy_gmx#bridge">
-            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
+            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>
       );
@@ -239,7 +239,7 @@ export function getErrorMessage(
             <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
             <br />
             <br />
-            <ExternalLink href="https://docs.gmx.io/docs/trading#rpc-urls">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading#rpc-urls">Read more</ExternalLink>
           </Trans>
           <br />
           <br />
@@ -357,7 +357,7 @@ export function getInsufficientExecutionFeeToastContent({
       <span className="inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         Express Trading
       </span>{" "}
-      in Settings for better reliability.
+      in Settings for better reliability
       <br />
       <br />
       Or increase the max network fee buffer {bufferText} in {settingsLink}

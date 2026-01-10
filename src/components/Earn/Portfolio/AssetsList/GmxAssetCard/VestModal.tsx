@@ -292,8 +292,8 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
   const vaultTabs = useMemo(
     () => [
-      { value: "gmx", label: <Trans>GMX Vault</Trans> },
-      { value: "affiliate", label: <Trans>Affiliate Vault</Trans> },
+      { value: "gmx", label: <Trans>GMX vault</Trans> },
+      { value: "affiliate", label: <Trans>Affiliate vault</Trans> },
     ],
     []
   );
@@ -336,7 +336,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       if (vestedAmount === undefined || vestedAmount === 0n) {
         return <Trans>No funds to withdraw</Trans>;
       }
-      return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Confirm withdraw</Trans>;
+      return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Confirm withdrawal</Trans>;
     }
 
     if (claimableAmount === undefined || claimableAmount === 0n) {
@@ -449,7 +449,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
           {!isReadVestingDetailsBannerClosed && (
             <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
               <div>
-                <Trans>Convert esGMX to GMX. Read the vesting details before using the vaults</Trans>
+                <Trans>Convert esGMX to GMX. Read the vesting details before using the vaults.</Trans>
 
                 <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards#vesting" newTab>
                   Read details

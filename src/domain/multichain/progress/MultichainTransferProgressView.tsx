@@ -263,12 +263,12 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
               <div className="flex items-center gap-4 group-gmx-hover:text-blue-300">
                 {isOpen ? (
                   <>
-                    <Trans>Less Details</Trans>
+                    <Trans>Less details</Trans>
                     <ChevronUpIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
                   </>
                 ) : (
                   <>
-                    <Trans>More Details</Trans>
+                    <Trans>More details</Trans>
                     <ChevronDownIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
                   </>
                 )}
@@ -338,7 +338,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                   </>
                 )}
                 <SyntheticsInfoRow
-                  label={<Trans>Bridge TX Hash</Trans>}
+                  label={<Trans>Bridge Tx Hash</Trans>}
                   valueClassName="flex items-center"
                   value={
                     <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](task.initialTxHash)} variant="icon">
@@ -385,7 +385,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                     {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed && (
                       <>
                         <SyntheticsInfoRow
-                          label={<Trans>Failed to create conversion</Trans>}
+                          label={<Trans>Conversion Creation Failed</Trans>}
                           valueClassName="flex items-center"
                           value={
                             finishedError.creationTx ? (
@@ -401,7 +401,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           }
                         />
                         <SyntheticsInfoRow
-                          label={<Trans>Failed to execute conversion</Trans>}
+                          label={<Trans>Conversion Execution Failed</Trans>}
                           valueClassName="flex items-center"
                           value={
                             finishedError.executionTx ? (
@@ -422,27 +422,29 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed && (
                         <>
                           {task.operation === Operation.Deposit ? (
-                            <Trans>Buy {gmOrGlvLabel} failed</Trans>
+                            <Trans>Buy {gmOrGlvLabel} failed.</Trans>
                           ) : (
-                            <Trans>Sell {gmOrGlvLabel} failed</Trans>
+                            <Trans>Sell {gmOrGlvLabel} failed.</Trans>
                           )}
                           {finishedError.fundsLeftIn === "source" && (
-                            <Trans>. Your funds are safe and remain in your wallet</Trans>
+                            <Trans> Your funds are safe and remain in your wallet.</Trans>
                           )}
                           {finishedError.fundsLeftIn === "lz" && (
                             <Trans>
-                              . Your funds are safe and remain in LayerZero on the destination chain. Retry the receive
-                              tx in LayerZero Scan or contact support
+                              {" "}
+                              Your funds are safe in LayerZero on the destination chain. Retry the receive tx in
+                              LayerZero Scan or contact support.
                             </Trans>
                           )}
                           {finishedError.fundsLeftIn === "gmx-lz" && (
                             <Trans>
-                              . Your funds are safe in GMX contracts on the destination chain. Retry the compose tx in
-                              LayerZero Scan or contact support
+                              {" "}
+                              Your funds are safe in GMX contracts on the destination chain. Retry the compose tx in
+                              LayerZero Scan or contact support.
                             </Trans>
                           )}
                           {finishedError.fundsLeftIn === "unknown" && (
-                            <Trans>. Your funds are safe. Contact support for help</Trans>
+                            <Trans> Your funds are safe. Contact support for help.</Trans>
                           )}
                         </>
                       )}
@@ -451,12 +453,12 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         (task.operation === Operation.Deposit ? (
                           <Trans>
                             {gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your
-                            GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens
+                            GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens.
                           </Trans>
                         ) : (
                           <Trans>
                             {gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX
-                            Account. Retry the bridge or open GMX Account to withdraw your tokens
+                            Account. Retry the bridge or open GMX Account to withdraw your tokens.
                           </Trans>
                         ))}
 
@@ -464,12 +466,12 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         (task.operation === Operation.Deposit ? (
                           <Trans>
                             Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
-                            chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens
+                            chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
                             Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
-                            chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens
+                            chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens.
                           </Trans>
                         ))}
                     </ColorfulBanner>

@@ -61,7 +61,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>Markets Monitoring</Trans>
+          <Trans>Markets monitoring</Trans>
         </Link>
         <Link
           to="/rpc-debug"
@@ -70,7 +70,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>RPC Monitoring</Trans>
+          <Trans>RPC monitoring</Trans>
         </Link>
         <Link
           to="/oracle-keeper-debug"
@@ -79,7 +79,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>Oracle Keeper Monitoring</Trans>
+          <Trans>Oracle Keeper monitoring</Trans>
         </Link>
         <Link
           to="/permits"
@@ -88,7 +88,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>Permits Testing</Trans>
+          <Trans>Permits testing</Trans>
         </Link>
       </SettingsSection>
     </div>

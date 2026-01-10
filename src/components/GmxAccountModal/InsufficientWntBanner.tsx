@@ -69,23 +69,23 @@ export function InsufficientWntBanner({
     firstLine = (
       <Trans>
         <span className="numbers">{formattedAmount}</span> (<span className="numbers">{formattedUsd}</span>){" "}
-        {wrappedNativeTokenSymbol} required in your account to withdraw
+        {wrappedNativeTokenSymbol} required in your account to withdraw.
       </Trans>
     );
   } else {
-    firstLine = <Trans>{wrappedNativeTokenSymbol} required in your account to withdraw</Trans>;
+    firstLine = <Trans>{wrappedNativeTokenSymbol} required in your account to withdraw.</Trans>;
   }
 
   if (hasWeth) {
     secondLine = (
       <Trans>
-        <DepositButton>Deposit</DepositButton> or <SwapButton>Swap</SwapButton> to get {wrappedNativeTokenSymbol}
+        <DepositButton>Deposit</DepositButton> or <SwapButton>swap</SwapButton> to get {wrappedNativeTokenSymbol}.
       </Trans>
     );
   } else {
     secondLine = (
       <Trans>
-        <SwapButton>Swap</SwapButton> to get {wrappedNativeTokenSymbol}
+        <SwapButton>Swap</SwapButton> to get {wrappedNativeTokenSymbol}.
       </Trans>
     );
   }

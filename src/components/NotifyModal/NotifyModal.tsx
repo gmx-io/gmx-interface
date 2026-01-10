@@ -33,7 +33,7 @@ export function NotifyModal() {
           className="NotifyModal-button w-full"
           type="submit"
         >
-          <Trans>Discover GMX Alerts</Trans>
+          <Trans>Discover GMX alerts</Trans>
           <ExternalLinkIcon />
         </Button>
         <div className="NotifyModal-terms text-caption">

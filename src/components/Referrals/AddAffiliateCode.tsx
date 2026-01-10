@@ -228,7 +228,7 @@ export function AffiliateCodeForm({
       {srcChainId && (
         <AlertInfoCard className="mb-15 text-left">
           <Trans>
-            Switch to {getChainName(chainId)} to create your referral code. It will work across all networks
+            Switch to {getChainName(chainId)} to create your referral code. It will work across all networks.
           </Trans>
         </AlertInfoCard>
       )}

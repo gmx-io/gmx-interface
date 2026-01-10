@@ -36,7 +36,7 @@ export function BotanixBanner() {
         <Link to="/pools" className="underline">
           <Trans>providing liquidity</Trans>
         </Link>{" "}
-        <Trans>using GLV and GM tokens. Staking GMX and referrals are not yet supported</Trans>
+        <Trans>using GLV and GM tokens. Staking GMX and referrals are not yet supported.</Trans>
       </p>
       <p>
         <Trans>
@@ -50,7 +50,7 @@ export function BotanixBanner() {
             <AvalancheIcon className="inline-block pb-4" />
             <span className="underline">Avalanche</span>
           </span>{" "}
-          for those features
+          for those features.
         </Trans>
       </p>
     </div>

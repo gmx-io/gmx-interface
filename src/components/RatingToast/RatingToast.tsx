@@ -12,7 +12,7 @@ export function RatingToast({ onRatingClick }: Props) {
   return (
     <div>
       <div>
-        <Trans>How likely are you to recommend our service to a friend or colleague?</Trans>
+        <Trans>How Likely Are You to Recommend Our Service to a Friend or Colleague?</Trans>
       </div>
       <div className="flex w-full flex-row gap-2 pb-8 pt-16">
         {ratingArr.map((rating) => (

@@ -63,7 +63,7 @@ export function RedirectPopupModal({
       </Trans>
       <div className="mb-15">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
-          <Trans>Don't show for 30 days</Trans>
+          <Trans>Don't Show for 30 Days</Trans>
         </Checkbox>
       </div>
       <Button variant="primary-action" className="w-full" to={appRedirectUrl} onClick={onClickAgree}>

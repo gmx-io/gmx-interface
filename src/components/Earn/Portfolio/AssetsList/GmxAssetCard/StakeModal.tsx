@@ -392,7 +392,7 @@ export function StakeModal(props: {
 
         {showStakeBonus && (
           <AlertInfo type="info">
-            <Trans>Earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action</Trans>
+            <Trans>Earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action.</Trans>
           </AlertInfo>
         )}
 
@@ -402,14 +402,14 @@ export function StakeModal(props: {
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
               </ExternalLink>{" "}
-              voting power before staking
+              voting power before staking.
             </Trans>
           </AlertInfo>
         ) : null}
 
         {activeTab === "unstake" && reservedAmount !== undefined && reservedAmount > 0 && (
           <AlertInfo type="info">
-            <Trans>{formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting</Trans>
+            <Trans>{formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</Trans>
           </AlertInfo>
         )}
 
@@ -419,7 +419,7 @@ export function StakeModal(props: {
               {chainId === ARBITRUM ? (
                 <span>Unstaking will burn {formatAmount(unstakeAmount, 18, 2, true)} voting power.&nbsp;</span>
               ) : null}
-              <span>You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards</span>
+              <span>You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards.</span>
             </Trans>
           </AlertInfo>
         )}

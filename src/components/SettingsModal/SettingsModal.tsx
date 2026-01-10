@@ -30,9 +30,9 @@ if (isDevelopment()) {
 type SettingsTab = (typeof SETTINGS_TABS)[number];
 
 const TAB_LABELS = {
-  trading: msg`Trading Settings`,
-  display: msg`Display Settings`,
-  debug: msg`Debug Settings`,
+  trading: msg`Trading settings`,
+  display: msg`Display settings`,
+  debug: msg`Debug settings`,
 };
 
 export function SettingsModal({

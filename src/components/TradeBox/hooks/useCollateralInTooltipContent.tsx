@@ -42,7 +42,7 @@ export function getCollateralInHintText(tradeType: TradeType, collateralToken: T
     } else {
       return (
         <Trans>
-          Double {indexSymbol} exposure from position + collateral. Note: Higher liquidation price than stablecoin
+          Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin
           collateral.
         </Trans>
       );

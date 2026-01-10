@@ -97,12 +97,12 @@ export function AssetsList({
           <span className="text-body-small text-center font-medium text-typography-secondary">
             {account ? (
               <>
-                <Trans>You don't own any assets yet.</Trans>
+                <Trans>You don't own any assets yet</Trans>
                 <br />
-                <Trans>Check the recommended section above to start earning.</Trans>
+                <Trans>Check the recommended section above to start earning</Trans>
               </>
             ) : (
-              <Trans>Connect your wallet to see your assets.</Trans>
+              <Trans>Connect your wallet to see your assets</Trans>
             )}
           </span>
         </div>

@@ -14,28 +14,28 @@ export default function EarnDocumentation() {
           variant="icon"
           className="text-12 font-medium text-typography-secondary"
         >
-          <Trans>GMX Token</Trans>
+          <Trans>GMX token</Trans>
         </ExternalLink>
         <ExternalLink
           href="https://docs.gmx.io/docs/tokenomics/rewards"
           variant="icon"
           className="text-12 font-medium text-typography-secondary"
         >
-          <Trans>GMX Rewards</Trans>
+          <Trans>GMX rewards</Trans>
         </ExternalLink>
         <ExternalLink
           href="https://docs.gmx.io/docs/providing-liquidity#glv-pools"
           variant="icon"
           className="text-12 font-medium text-typography-secondary"
         >
-          <Trans>GLV Vaults</Trans>
+          <Trans>GLV vaults</Trans>
         </ExternalLink>
         <ExternalLink
           href="https://docs.gmx.io/docs/providing-liquidity#gm-pools"
           variant="icon"
           className="text-12 font-medium text-typography-secondary"
         >
-          <Trans>GM Pools</Trans>
+          <Trans>GM pools</Trans>
         </ExternalLink>
       </div>
     </div>

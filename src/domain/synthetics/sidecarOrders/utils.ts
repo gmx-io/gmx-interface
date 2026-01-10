@@ -212,7 +212,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
 
   if (type === "limit") {
     if (entry.sizeUsd?.value === undefined || entry.sizeUsd.value === 0n) {
-      sizeError = t`Limit size is required`;
+      sizeError = t`Limit size required`;
     }
 
     if (entry?.increaseAmounts?.estimatedLeverage && entry?.increaseAmounts?.estimatedLeverage > MAX_ALLOWED_LEVERAGE) {
