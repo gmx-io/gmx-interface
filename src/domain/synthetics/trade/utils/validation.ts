@@ -747,7 +747,7 @@ export function getGmSwapError(p: {
   const glvTooltipMessage = t`GM: ${marketInfo.name} buyable cap reached. Choose a different pool, reduce size, or select different tokens`;
 
   if (isPair && isDeposit && paySource === "sourceChain") {
-    return [t`Deposits from source chain support single token only`];
+    return [t`Source chain deposits support single token only`];
   }
 
   if (isDeposit) {
@@ -900,7 +900,7 @@ export function getGmSwapError(p: {
 
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return [
-          t`Insufficient liquidity in GM Pool`,
+          t`Insufficient GM pool liquidity`,
           t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal`,
         ];
       }

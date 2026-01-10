@@ -362,10 +362,12 @@ export function PositionItem(p: Props) {
             <br />
             {liqPriceWarning ? (
               <Trans>
-                Position may still liquidate from fees alone (funding + borrowing) reducing collateral over time.
+                Position may still liquidate from fees alone (funding + borrowing), reducing collateral over time.
               </Trans>
             ) : (
-              <Trans>Position may liquidate from fees alone (funding + borrowing) reducing collateral over time.</Trans>
+              <Trans>
+                Position may liquidate from fees alone (funding + borrowing), reducing collateral over time.
+              </Trans>
             )}
             <br />
             <br />
@@ -459,7 +461,7 @@ export function PositionItem(p: Props) {
                     <br />
 
                     <div>
-                      <Trans>Click to select, then use trade box to increase size.</Trans>
+                      <Trans>Click to select, then use the trade box to increase size.</Trans>
                       <br />
                       <br />
                       <Trans>Use "Close" for market, TP/SL, or TWAP close orders.</Trans>

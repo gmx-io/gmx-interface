@@ -29,7 +29,7 @@ export function Features({ goToTradeArbitrum }: Props) {
             <IconBox iconComponent={IcGears} />
             <div className="flex flex-col gap-4">
               <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
-                <Trans>Trade with Confidence</Trans>
+                <Trans>Trade With Confidence</Trans>
               </p>
               <p className="text-heading-4">
                 <Trans>Guaranteed Liquidity</Trans>
@@ -68,7 +68,7 @@ export function Features({ goToTradeArbitrum }: Props) {
               <Trans>Support for</Trans> <br className="hidden lg:block" /> <Trans>Numerous Assets</Trans>
             </p>
             <p className="text-description">
-              <Trans>Use your preferred token to pay and collateralize your positions.</Trans>
+              <Trans>Use your preferred token to pay and collateralize positions.</Trans>
             </p>
           </div>
           <div className="relative mt-20 w-full grow lg:mt-36">
@@ -102,13 +102,13 @@ export function Features({ goToTradeArbitrum }: Props) {
               <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
-                  <Trans>No deposits required</Trans>
+                  <Trans>No Deposits Required</Trans>
                 </p>
               </div>
               <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
-                  <Trans>Trade from your wallet</Trans>
+                  <Trans>Trade from Your Wallet</Trans>
                 </p>
               </div>
               <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">

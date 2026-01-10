@@ -33,10 +33,10 @@ export const useDisabledCancelMarketOrderMessage = (
     const seconds = Math.floor(diff % 60);
 
     const minutesText = minutes > 0 ? `${minutes}m ` : "";
-    return t`Market order will be cancellable in ${minutesText}${seconds}s.`;
+    return t`Cancellable in ${minutesText}${seconds}s`;
   }
 
-  if (diff === null) return t`Market order will be cancellable in ...`;
+  if (diff === null) return t`Cancellable in ...`;
 
   return undefined;
 };

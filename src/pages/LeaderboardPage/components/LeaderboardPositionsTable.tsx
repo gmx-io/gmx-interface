@@ -148,7 +148,7 @@ export function LeaderboardPositionsTable({
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PnL ($)`}
                 width={12}
-                tooltip={t`Total realized and unrealized profit and loss for the period, including price impact and fees but excluding swap fees.`}
+                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees, excludes swap fees.`}
                 tooltipPosition="bottom-end"
               />
               <TableHeaderCell title={t`Position`} width={12} tooltipPosition="bottom-end" />
@@ -309,10 +309,7 @@ const TableRow = memo(
       );
     }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
-    const renderNaLiquidationTooltip = useCallback(
-      () => t`No liquidation price. Collateral covers any losses.`,
-      []
-    );
+    const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Collateral covers any losses.`, []);
 
     const renderLiquidationTooltip = useCallback(() => {
       const markPrice = indexToken?.prices.maxPrice;
@@ -471,9 +468,9 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
 
     let msg = t`You have not traded during the selected period.`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+      msg = t`Minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,
-      })} to qualify for the rankings.`;
+      })} required to qualify for rankings.`;
     else if (isCompetition) msg = t`No eligible trades during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);

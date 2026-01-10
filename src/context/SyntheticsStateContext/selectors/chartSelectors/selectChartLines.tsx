@@ -62,7 +62,7 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
 
     if (liquidationPrice && liquidationPrice !== "NA") {
       lines.push({
-        title: t`Liq. ${longOrShortText} - ${marketIndexName}`,
+        title: t`Liquidation ${longOrShortText} - ${marketIndexName}`,
         price: parseFloat(liquidationPrice),
       });
     }

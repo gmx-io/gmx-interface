@@ -65,7 +65,7 @@ function AcceptablePriceImpactInputRowImpl({
   if (notAvailable || recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
     return (
       <SyntheticsInfoRow label={t`Acceptable Price Impact`}>
-        <Trans>NA</Trans>
+        <Trans>N/A</Trans>
       </SyntheticsInfoRow>
     );
   }

@@ -866,7 +866,7 @@ export function PositionSeller() {
       text:
         error ||
         (isTrigger || isTwap
-          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
+          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} order`
           : t`Close`),
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };

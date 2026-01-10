@@ -199,7 +199,7 @@ export function ClaimModalMultichain(p: Props) {
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
-      helperToast.error(t`Missing claim params. Retry in a few seconds`);
+      helperToast.error(t`Missing claim params, retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimFundingFees");
     };
 
@@ -241,7 +241,7 @@ export function ClaimModalMultichain(p: Props) {
         helperToast.success(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
-              <Trans>Claiming funding fees...</Trans>
+              <Trans>Claiming...</Trans>
             </div>
             <SpinnerIcon className="spin size-15 text-white" />
           </div>,
@@ -256,7 +256,7 @@ export function ClaimModalMultichain(p: Props) {
             });
           } else if (res.status === "failed") {
             toast.update("funding-claimed", {
-              render: t`Claim funding fees failed`,
+              render: t`Claiming funding fees failed`,
               type: "error",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
@@ -418,7 +418,7 @@ function ClaimModalComponent(p: {
             handle={t`FUNDING FEE`}
             renderContent={() => (
               <Trans>
-                <span className="text-typography-primary">Claimable funding fees from your positions.</span>
+                <span className="text-typography-primary">Positive funding fees accrued from your positions.</span>
               </Trans>
             )}
           />

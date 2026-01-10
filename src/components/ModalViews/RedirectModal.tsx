@@ -39,7 +39,7 @@ export function RedirectPopupModal({
       setIsVisible={setRedirectModalVisible}
       label={t`Launch App`}
     >
-      <Trans>You are leaving GMX.io and will be redirected to a third party, independent website.</Trans>
+      <Trans>You are leaving GMX.io for a third-party website.</Trans>
       <br />
       <br />
       <Trans>
@@ -63,7 +63,7 @@ export function RedirectPopupModal({
       </Trans>
       <div className="mb-15">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
-          <Trans>Don't show this message again for 30 days</Trans>
+          <Trans>Don't show for 30 days</Trans>
         </Checkbox>
       </div>
       <Button variant="primary-action" className="w-full" to={appRedirectUrl} onClick={onClickAgree}>

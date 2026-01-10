@@ -275,7 +275,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
               </div>
             }
             valueClassName="text-typography-secondary group-gmx-hover:text-blue-300"
-            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Est. Time: ~5 min</Trans>}
+            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Est. time: ~5 min</Trans>}
           />
           <AnimatePresence>
             {isOpen && (
@@ -289,9 +289,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={
                     task.operation === Operation.Deposit ? (
-                      <Trans>Funds Bridging to</Trans>
+                      <Trans>Funds Bridging To</Trans>
                     ) : (
-                      <Trans>{gmOrGlvLabel} bridging to</Trans>
+                      <Trans>{gmOrGlvLabel} Bridging To</Trans>
                     )
                   }
                   valueClassName="flex items-center gap-4"
@@ -305,9 +305,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={
                     task.operation === Operation.Deposit ? (
-                      <Trans>GM Bridging to</Trans>
+                      <Trans>GM Bridging To</Trans>
                     ) : (
-                      <Trans>Funds Bridging to</Trans>
+                      <Trans>Funds Bridging To</Trans>
                     )
                   }
                   valueClassName="flex items-center gap-4"
@@ -326,9 +326,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 {finishedState !== "completed" && (
                   <>
                     <SyntheticsInfoRow
-                      label={<Trans>Est. Time</Trans>}
+                      label={<Trans>Estimated time</Trans>}
                       valueClassName="flex items-center"
-                      value={<Trans>~5 min</Trans>}
+                      value={<Trans>~5 minutes</Trans>}
                     />
                     <SyntheticsInfoRow
                       label={<Trans>Time Elapsed</Trans>}
@@ -338,7 +338,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                   </>
                 )}
                 <SyntheticsInfoRow
-                  label={<Trans>Bridge TX hash</Trans>}
+                  label={<Trans>Bridge TX Hash</Trans>}
                   valueClassName="flex items-center"
                   value={
                     <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](task.initialTxHash)} variant="icon">
@@ -385,7 +385,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                     {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed && (
                       <>
                         <SyntheticsInfoRow
-                          label={<Trans>Conversion Creation Failed</Trans>}
+                          label={<Trans>Failed to create conversion</Trans>}
                           valueClassName="flex items-center"
                           value={
                             finishedError.creationTx ? (
@@ -401,7 +401,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           }
                         />
                         <SyntheticsInfoRow
-                          label={<Trans>Conversion Execution Failed</Trans>}
+                          label={<Trans>Failed to execute conversion</Trans>}
                           valueClassName="flex items-center"
                           value={
                             finishedError.executionTx ? (
@@ -431,14 +431,14 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           )}
                           {finishedError.fundsLeftIn === "lz" && (
                             <Trans>
-                              . Your funds are safe in LayerZero on the destination chain. Retry the receive tx in
-                              LayerZero Scan or contact support
+                              . Your funds are safe and remain in LayerZero on the destination chain. Retry the receive
+                              tx in LayerZero Scan or contact support
                             </Trans>
                           )}
                           {finishedError.fundsLeftIn === "gmx-lz" && (
                             <Trans>
-                              . Your funds are safe and remain in GMX contracts on the destination chain. You can try
-                              retrying the compose tx in LayerZero Scan or ask support for help
+                              . Your funds are safe in GMX contracts on the destination chain. Retry the compose tx in
+                              LayerZero Scan or contact support
                             </Trans>
                           )}
                           {finishedError.fundsLeftIn === "unknown" && (
@@ -450,30 +450,26 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            {gmOrGlvLabel} tokens were bought successfully, but the bridge to Base failed. Your funds
-                            are safe and currently stored in your GMX account. You can retry the bridge or go to the
-                            {indexName} pool to manually withdraw your GM tokens
+                            {gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your
+                            GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens
                           </Trans>
                         ) : (
                           <Trans>
-                            {gmOrGlvLabel} tokens were sold successfully, but the bridge to Base failed. Your funds are
-                            safe and currently stored in your GMX account. You can retry the bridge or open GMX account
-                            modal to manually withdraw your tokens
+                            {gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX
+                            Account. Retry the bridge or open GMX Account to withdraw your tokens
                           </Trans>
                         ))}
 
                       {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            Buy {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX
-                            account. You can switch to settlement chain and go to the {indexName} pool to manually buy
-                            your {gmOrGlvLabel} tokens
+                            Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
+                            chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens
                           </Trans>
                         ) : (
                           <Trans>
-                            Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX
-                            account. You can switch to settlement chain and go to the {indexName} pool to manually sell
-                            your {gmOrGlvLabel} tokens
+                            Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
+                            chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens
                           </Trans>
                         ))}
                     </ColorfulBanner>

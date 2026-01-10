@@ -222,7 +222,7 @@ function OrderSize({
                   {positionOrder.targetCollateralToken.isNative
                     ? wrappedToken.symbol
                     : positionOrder.targetCollateralToken.symbol}{" "}
-                  on order execution.
+                  when executed.
                 </Trans>
               </div>
             )}
@@ -352,8 +352,8 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
         position="bottom-end"
         content={
           <Trans>
-            Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and
-            no oracle reports are produced or if there is not enough available liquidity.
+            In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if there is
+            insufficient liquidity.
           </Trans>
         }
       />
@@ -376,7 +376,7 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
           return (
             <Trans>
               <p>
-                The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
+                Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
                 {formatUsd(positionOrder.triggerPrice, {
                   displayDecimals: priceDecimals,
                   visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -385,8 +385,8 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
               </p>
               <br />
               <p>
-                Note that there may be rare cases where the order cannot be executed, for example, if the chain is down
-                and no oracle reports are produced or if the price impact exceeds your acceptable price.
+                In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if price
+                impact exceeds your acceptable price.
               </p>
             </Trans>
           );
@@ -678,7 +678,7 @@ function OrderItemLarge({
           <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="ghost" onClick={setEditingOrderKey}>
-                <EditIcon title={t`Edit Order`} className="size-16" />
+                <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
             )}
             {onCancelOrder ? (

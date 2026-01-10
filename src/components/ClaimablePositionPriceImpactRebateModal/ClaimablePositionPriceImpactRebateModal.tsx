@@ -167,7 +167,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
   const handleSubmit = useCallback(async () => {
     const onMissingParams = () => {
-      helperToast.error(t`Missing claim parameters. Please retry in a few seconds`);
+      helperToast.error(t`Missing claim parameters, please retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimPositionPriceImpactFees");
     };
 
@@ -225,7 +225,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
             });
           } else if (res.status === "failed") {
             toast.update("position-price-impact-fees", {
-              render: t`Price impact rebates claim failed`,
+              render: t`Failed to claim price impact rebates`,
               type: "error",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });

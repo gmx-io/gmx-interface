@@ -244,7 +244,7 @@ export function useTradeboxButtonState({
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-                <Trans>Set max leverage</Trans>
+                <Trans>Set Max Leverage</Trans>
               </span>
             </>
           );
@@ -253,9 +253,7 @@ export function useTradeboxButtonState({
         }
 
         case "liqPrice > markPrice":
-          tooltipContent = (
-            <Trans>Position would be liquidated immediately on execution. Try reducing the size.</Trans>
-          );
+          tooltipContent = <Trans>Position would be liquidated immediately on execution. Try reducing the size.</Trans>;
           break;
 
         case "noSwapPath":
@@ -738,7 +736,7 @@ function NoSwapPathTooltipContent({
   );
 
   if (!fromToken) {
-    return <Trans>No swap path available</Trans>;
+    return <Trans>No swap path available.</Trans>;
   }
 
   if (chainId === BOTANIX) {

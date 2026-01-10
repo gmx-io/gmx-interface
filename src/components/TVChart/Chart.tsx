@@ -98,6 +98,7 @@ function DepthChartContainer() {
             <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
               Read more
             </ExternalLink>
+            .
           </Trans>
         </span>
       </ColorfulBanner>

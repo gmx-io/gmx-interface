@@ -301,7 +301,7 @@ export function ClaimModal(props: {
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
               Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO voting power
             </ExternalLink>{" "}
-            before claiming.
+            before claiming
           </Trans>
         </AlertInfo>
       ) : null}
@@ -357,7 +357,7 @@ function ClaimRewardOption({
         <div className="flex items-center gap-4">
           <TokenIcon symbol={tokenSymbol} displaySize={20} className="!rounded-0" />
           <span className="text-14 font-medium text-typography-primary">
-            <Trans>Claim {tokenSymbol} rewards</Trans>
+            <Trans>Claim {tokenSymbol} Rewards</Trans>
           </span>
         </div>
         <span className={cx("ml-auto text-14 numbers", "text-typography-secondary")}>{amountText}</span>
@@ -375,7 +375,7 @@ function ClaimRewardOption({
               Convert {tokenSymbol} to {nativeTokenSymbol}
             </Trans>
           ) : (
-            <Trans>Stake {tokenSymbol} rewards</Trans>
+            <Trans>Stake {tokenSymbol} Rewards</Trans>
           )}
         </span>
       </Checkbox>

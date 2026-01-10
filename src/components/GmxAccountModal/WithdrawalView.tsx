@@ -902,7 +902,7 @@ export const WithdrawalView = () => {
           <DropdownSelector
             value={selectedTokenAddress}
             onChange={handlePickToken}
-            placeholder={t`Select Token`}
+            placeholder={t`Select token`}
             button={
               selectedTokenAddress && selectedToken ? (
                 <div className="flex items-center gap-8">
@@ -926,7 +926,7 @@ export const WithdrawalView = () => {
             onChange={(value) => {
               setWithdrawalViewChain(Number(value) as SourceChainId);
             }}
-            placeholder={t`Select Network`}
+            placeholder={t`Select network`}
             button={
               <div className="flex items-center gap-8">
                 {withdrawalViewChain !== undefined ? (
@@ -1037,7 +1037,7 @@ export const WithdrawalView = () => {
                       }, 200);
                     }}
                   >
-                    settings
+                    Settings
                   </span>
                 </Trans>
               </div>
@@ -1089,7 +1089,7 @@ export const WithdrawalView = () => {
                         setIsVisibleOrView("deposit");
                       }}
                     >
-                      deposit
+                      Deposit
                     </span>{" "}
                     more {isOutOfTokenErrorToken?.symbol}
                   </Trans>

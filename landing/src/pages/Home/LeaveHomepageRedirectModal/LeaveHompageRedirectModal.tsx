@@ -94,7 +94,7 @@ export function LeaveHomepageRedirectModal({
           className="btn-landing w-full rounded-8 py-18 text-center text-16 tracking-[-0.192px]"
           onClick={onClickAgree}
         >
-          <Trans>Launch App</Trans>
+          <Trans>Launch app</Trans>
         </button>
       </ModalBody>
     </Modal>

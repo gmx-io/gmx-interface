@@ -410,7 +410,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     return (
       <Trans>
-        Decrease withdrawal size to match the maximum.{" "}
+        Reduce withdrawal to match the max.{" "}
         <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
         <br />
         <br />
@@ -465,7 +465,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     sendOrderSubmittedMetric(metricData.metricId);
 
     if (!batchParams || !tokensData || !signer || !provider) {
-      helperToast.error(t`Order submission failed`);
+      helperToast.error(t`Order failed`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -528,7 +528,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     return {
       text: (
         <>
-          {t`Loading Express params...`}
+          {t`Loading Express Trading params...`}
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

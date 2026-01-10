@@ -182,7 +182,7 @@ export default function ClaimableAmounts() {
     let buttonTooltipText: React.ReactNode | null = null;
 
     if (selectedDistributionIds.length === 0) {
-      buttonTooltipText = <Trans>Select at least one distribution to claim</Trans>;
+      buttonTooltipText = <Trans>Select at least one distribution to claim.</Trans>;
       isButtonDisabled = true;
     }
 

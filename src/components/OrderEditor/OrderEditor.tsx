@@ -426,11 +426,11 @@ export function OrderEditor(p: Props) {
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price is above mark price`;
+        return t`Limit price above mark price`;
       }
 
       if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price is below mark price`;
+        return t`Limit price below mark price`;
       }
 
       const expressError = getExpressError({
@@ -553,7 +553,7 @@ export function OrderEditor(p: Props) {
     const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
-      text: t`Update ${orderTypeName} Order`,
+      text: t`Update ${orderTypeName} order`,
       disabled: false,
       onClick: onSubmit,
     };

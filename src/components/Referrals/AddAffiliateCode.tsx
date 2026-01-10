@@ -41,7 +41,7 @@ function AddAffiliateCode({
       </h2>
       <p className="sub-title">
         <Trans>
-          You don't have a referral code to share. <br /> Create one now and start earning rebates!
+          You don't have a referral code to share. <br /> Create one now and start earning rebates.
         </Trans>
       </p>
       <div className="card-action">
@@ -54,7 +54,7 @@ function AddAffiliateCode({
           />
         ) : (
           <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
-            <Trans>Connect Wallet</Trans>
+            <Trans>Connect wallet</Trans>
           </Button>
         )}
       </div>

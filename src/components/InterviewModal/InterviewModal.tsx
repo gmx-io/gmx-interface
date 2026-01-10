@@ -16,7 +16,7 @@ type Props = {
 export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
   if (type === "trader") {
     return (
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat With GMX`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat with GMX`}>
         <div className="max-w-xl">
           <Trans>
             Help us improve GMX. For security, we won't contact you first. Send "I have feedback" to our official
@@ -26,7 +26,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             <div className="flex items-center gap-12 text-14">
               <ArrowBulletIcon />
               <ExternalLink href="https://t.me/GMXPartners">
-                <Trans>Telegram account</Trans>
+                <Trans>Telegram Account</Trans>
               </ExternalLink>
             </div>
           </div>
@@ -37,17 +37,17 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
 
   if (type === "lp") {
     return (
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat With GMX Team`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat with GMX Team`}>
         <div className="max-w-xl">
           <Trans>
-            Help us improve GMX for Liquidity Providers. For security, we won't contact you first. Send "I'm a
-            Liquidity Provider" to our official Telegram account:
+            Help us improve GMX for Liquidity Providers. For security, we won't contact you first. Send "I'm a Liquidity
+            Provider" to our official Telegram account:
           </Trans>
           <div className="mb-20 mt-20 flex flex-col gap-8">
             <div className="flex items-center gap-12 text-14">
               <ArrowBulletIcon />
               <ExternalLink href="https://t.me/GMXPartners">
-                <Trans>Telegram account</Trans>
+                <Trans>Telegram Account</Trans>
               </ExternalLink>
             </div>
           </div>

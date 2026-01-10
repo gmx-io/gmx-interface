@@ -621,7 +621,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
       if (isGmxAccount && isNonEoaAccountOnAnyChain) {
-        helperToast.error(t`Smart wallets are not supported on Express or One-Click Trading`);
+        helperToast.error(t`Smart wallets are not supported on Express Trading or One-Click Trading`);
         return;
       }
 

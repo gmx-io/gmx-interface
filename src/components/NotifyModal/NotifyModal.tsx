@@ -22,7 +22,7 @@ export function NotifyModal() {
       <div className="NotifyModal">
         <p className="text-body-medium">
           <Trans>
-            Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and&nbsp;more.
+            Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more.
           </Trans>
         </p>
         <NotifyBulletList />

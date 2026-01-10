@@ -20,7 +20,7 @@ export function CompetitionCountdown({ className, size }: { className?: string; 
   } else {
     return (
       <div className="CompetitionCountdown__end">
-        <Trans>This competition has ended.</Trans>
+        <Trans>This competition has ended</Trans>
       </div>
     );
   }

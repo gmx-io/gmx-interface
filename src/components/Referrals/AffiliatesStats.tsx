@@ -547,8 +547,9 @@ function AffiliatesStats({
                               {tokensWithoutPrices.length > 0 && (
                                 <>
                                   <Trans>
-                                    USD value may be inaccurate. Price data missing for{" "}
-                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}.
+                                    USD value may be inaccurate. Price data unavailable for{" "}
+                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                    .
                                   </Trans>
                                   <br />
                                   <br />

@@ -236,7 +236,7 @@ export function PoolSelector({
           })}
           {filteredOptions.length === 0 && (
             <div className="text-body-medium text-typography-secondary">
-              <Trans>No pools matched</Trans>
+              <Trans>No pools found</Trans>
             </div>
           )}
         </VerticalScrollFadeContainer>

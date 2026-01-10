@@ -31,41 +31,39 @@ export function SwitchToSettlementChainWarning({
   if (topic === "liquidity") {
     message = multipleChains ? (
       <Trans>
-        Liquidity for this market is only available on {chainNames} or {lastChainName}. Switch networks to continue
+        Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue
       </Trans>
     ) : (
-      <Trans>Liquidity for this market is only available on {chainNames}. Switch networks to continue</Trans>
+      <Trans>Liquidity only available on {chainNames}. Switch networks to continue</Trans>
     );
   } else if (topic === "shift") {
     message = multipleChains ? (
       <Trans>
-        Shifting is only available on {chainNames} or {lastChainName}. Switch networks to continue
+        Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue
       </Trans>
     ) : (
-      <Trans>Shifting is only available on {chainNames}. Switch networks to continue</Trans>
+      <Trans>Shifting only available on {chainNames}. Switch networks to continue</Trans>
     );
   } else if (topic === "staking") {
     message = multipleChains ? (
       <Trans>
-        Staking is only available on {chainNames} or {lastChainName}. Switch networks to continue
+        Staking only available on {chainNames} or {lastChainName}. Switch networks to continue
       </Trans>
     ) : (
-      <Trans>Staking is only available on {chainNames}. Switch networks to continue</Trans>
+      <Trans>Staking only available on {chainNames}. Switch networks to continue</Trans>
     );
   } else if (topic === "vesting") {
     message = multipleChains ? (
       <Trans>
-        Vesting is only available on {chainNames} or {lastChainName}. Switch networks to continue
+        Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue
       </Trans>
     ) : (
-      <Trans>Vesting is only available on {chainNames}. Switch networks to continue</Trans>
+      <Trans>Vesting only available on {chainNames}. Switch networks to continue</Trans>
     );
   } else if (topic === "claimRewards" && settlementChainId && isSettlementChain(settlementChainId)) {
     const settlementChainName = getChainName(settlementChainId);
     message = (
-      <Trans>
-        Claiming rewards is only available on {settlementChainName}. Switch networks to claim your referral rewards
-      </Trans>
+      <Trans>Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards</Trans>
     );
   }
 

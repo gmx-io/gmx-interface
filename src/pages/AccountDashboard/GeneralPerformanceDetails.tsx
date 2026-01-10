@@ -71,7 +71,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                 </TooltipWithPortal>
               </TableTh>
               <TableTh className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right">
-                <Trans>Win / Loss</Trans>
+                <Trans>Win/Loss</Trans>
               </TableTh>
             </TableTheadTr>
           </thead>

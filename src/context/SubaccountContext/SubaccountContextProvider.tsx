@@ -179,7 +179,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         toast.dismiss();
         helperToast.error(
           <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT Settings`}>
-            <TransactionStatus status="error" text={t`Failed to update settings`} />
+            <TransactionStatus status="error" text={t`Settings update failed`} />
           </StatusNotification>
         );
         return false;

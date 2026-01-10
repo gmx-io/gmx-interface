@@ -45,7 +45,7 @@ import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
 const getYAxisLabel = (): LabelProps => ({
-  value: t`Size ($)`,
+  value: t`SIZE, $`,
   position: "top",
   offset: 0,
   fill: "var(--color-typography-primary)",
@@ -61,7 +61,7 @@ const Y_AXIS_PADDING: YAxisProps["padding"] = { top: 10 };
 const getOraclePriceLabel = (): ImplicitLabelType => ({
   position: "bottom",
   offset: 28,
-  value: t`Oracle Price`,
+  value: t`ORACLE PRICE`,
   fill: "var(--color-typography-primary)",
   opacity: 0.7,
   fontSize: 10,

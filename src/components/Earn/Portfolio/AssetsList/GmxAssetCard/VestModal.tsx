@@ -229,7 +229,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     callContract(chainId, contract, "deposit", [depositAmount], {
       sentMsg: t`Deposit submitted`,
       failMsg: t`Deposit failed`,
-      successMsg: t`Deposited.`,
+      successMsg: t`Deposited`,
       setPendingTxns,
     })
       .then(() => {
@@ -252,9 +252,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
     setIsWithdrawing(true);
     callContract(chainId, contract, "withdraw", [], {
-      sentMsg: t`Withdraw submitted`,
-      failMsg: t`Withdraw failed`,
-      successMsg: t`Withdrawn.`,
+      sentMsg: t`Withdrawal submitted`,
+      failMsg: t`Withdrawal failed`,
+      successMsg: t`Withdrawn`,
       setPendingTxns,
     })
       .then(() => {
@@ -549,7 +549,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
             />
             {selectedVault === "gmx" && gmxDepositConfig.reserveAmount !== undefined && (
               <ProgressRow
-                label={<Trans>Staked Tokens Reserved for Vesting</Trans>}
+                label={<Trans>Reserved for Vesting</Trans>}
                 value={
                   <TooltipWithPortal
                     handle={`${formatGmxAmount(gmxReservePreview.nextReserveAmount)} / ${formatGmxAmount(
@@ -560,12 +560,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     content={
                       <div>
                         <StatsTooltipRow
-                          label={<Trans>Current reserved:</Trans>}
+                          label={<Trans>Current Reserved:</Trans>}
                           value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
                           showDollar={false}
                         />
                         <StatsTooltipRow
-                          label={<Trans>Additional reserve required:</Trans>}
+                          label={<Trans>Additional Reserve Required:</Trans>}
                           value={formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
                           showDollar={false}
                         />

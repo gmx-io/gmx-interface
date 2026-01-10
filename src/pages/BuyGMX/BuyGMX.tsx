@@ -133,7 +133,7 @@ export default function BuyGMX() {
                   <div className="BuyGMXGLP-description">
                     <Trans>
                       Buy {nativeTokenSymbol} directly on{" "}
-                      <ExternalLink href={externalLinks.networkWebsite}>{chainName}</ExternalLink> using these options.
+                      <ExternalLink href={externalLinks.networkWebsite}>{chainName}</ExternalLink>.
                     </Trans>
                   </div>
                   <div className="buttons-group">
@@ -229,7 +229,7 @@ function DecentralisedExchanges({
     return (
       <Card title={t`Buy GMX from Decentralized Exchanges`}>
         <div className="App-card-content tracking-normal text-slate-100">
-          <Trans>No decentralized exchanges available for this network</Trans>
+          <Trans>No decentralized exchanges available</Trans>
         </div>
       </Card>
     );
@@ -270,7 +270,7 @@ function DecentralisedExchanges({
         ) : (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Traderjoe.</Trans>
+              <Trans>Buy GMX on Traderjoe.</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button
@@ -365,7 +365,7 @@ function CentralisedExchanges({ chainId }) {
     return (
       <Card title={t`Buy GMX from Centralized Services`}>
         <div className="App-card-content tracking-normal text-slate-100">
-          <Trans>No centralized exchanges available for this network</Trans>
+          <Trans>No centralized exchanges available</Trans>
         </div>
       </Card>
     );
@@ -376,7 +376,7 @@ function CentralisedExchanges({ chainId }) {
       <div className="App-card-content">
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX from centralized exchanges.</Trans>
+            <Trans>Buy GMX on centralized exchanges.</Trans>
           </div>
           <div className="buttons-group">
             {CENTRALISED_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {

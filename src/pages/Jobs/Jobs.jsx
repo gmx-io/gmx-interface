@@ -37,7 +37,7 @@ function Jobs() {
 
 function NoJob() {
   return (
-    <Card title={t`No Open Positions at GMX`}>
+    <Card title={t`No Open Positions`}>
       <div className="body-para">
         <p className="subheading">
           <Trans>

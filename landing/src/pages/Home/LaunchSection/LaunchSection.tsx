@@ -13,7 +13,7 @@ export function LaunchSection() {
       <div className="flex max-w-[1200px] flex-col items-stretch justify-center gap-24 sm:items-center lg:flex-row">
         <div className="flex flex-1 flex-col items-stretch sm:items-start">
           <h2 className="text-heading-2 mb-20 sm:mb-24">
-            <Trans>Runs entirely on public chains</Trans>
+            <Trans>Runs Entirely on Public Chains</Trans>
           </h2>
           <p className="leading-body-md text-18 mb-36 font-normal -tracking-[0.036px] sm:mb-24">
             <Trans>

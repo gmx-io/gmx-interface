@@ -298,7 +298,7 @@ function PositionShare({
       contentClassName="md:!max-w-[500px]"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label={t`Share your successful GMX trade on X`}
+      label={t`Share Your Successful GMX Trade on X`}
       contentPadding={false}
       withMobileBottomPosition
     >
@@ -343,7 +343,7 @@ function PositionShare({
               <Trans>Are you sure you want to skip creating a referral code?</Trans>
             </span>
             <span className="text-blue-100">
-              <Trans>It allows you to earn rewards</Trans>
+              <Trans>It allows you to earn rewards.</Trans>
             </span>
           </ColorfulBanner>
         )}
@@ -387,7 +387,7 @@ function PositionShare({
           <div className="flex justify-center">
             <Checkbox isChecked={doNotShowAgain} setIsChecked={handleDoNotShowAgainToggle}>
               <span className="text-14 font-medium text-typography-secondary">
-                <Trans>Don't show this again</Trans>
+                <Trans>Don't Show This Again</Trans>
               </span>
             </Checkbox>
           </div>

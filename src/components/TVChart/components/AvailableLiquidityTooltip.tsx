@@ -52,14 +52,11 @@ export function AvailableLiquidityTooltip({ isLong }) {
       <br />
       {isLong && (
         <>
-          <Trans>Long reserve includes position PnL; open interest does not.</Trans>{" "}
-          <br />
+          <Trans>Long reserve includes position PnL. Open interest does not.</Trans> <br />
           <br />
         </>
       )}
-      <Trans>
-        Available liquidity is the smaller of (max - current) for reserve and open interest.
-      </Trans>
+      <Trans>Available liquidity is the smaller of (max - current) for reserve and open interest.</Trans>
     </div>
   );
 }

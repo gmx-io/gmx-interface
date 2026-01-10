@@ -76,7 +76,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
                 <PnlAnalysisIcon width={20} className="size-20" />
                 <p>
-                  <Trans>PnL analysis</Trans>
+                  <Trans>PnL Analysis</Trans>
                 </p>
               </Link>
             </Menu.Item>

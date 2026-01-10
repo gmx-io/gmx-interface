@@ -216,7 +216,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
       {currentDiscountDistributions.length > 0 ? (
         <Card
           title={t`Rebates Distribution History`}
-          tooltipText={t`V2 discounts are applied automatically on each trade and not shown here.`}
+          tooltipText={t`V2 discounts apply automatically and aren't shown here.`}
           bodyPadding={false}
           divider={true}
         >
@@ -291,6 +291,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                                   <Trans>
                                     USD value may not be accurate because prices are missing for{" "}
                                     {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                    .
                                   </Trans>
                                   <br />
                                   <br />
@@ -341,7 +342,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </Card>
       ) : (
         <EmptyMessage
-          tooltipText={t`V2 rebates are applied automatically as fee discounts on each trade and not shown here.`}
+          tooltipText={t`V2 rebates apply automatically as fee discounts and aren't shown here.`}
           message={t`No rebates distribution history yet`}
         />
       )}

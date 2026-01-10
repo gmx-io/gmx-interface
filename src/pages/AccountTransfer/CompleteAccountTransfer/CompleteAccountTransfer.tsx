@@ -35,7 +35,7 @@ export default function CompleteAccountTransfer() {
 
   const getError = () => {
     if (!account) {
-      return t`Wallet is not connected`;
+      return t`Wallet not connected`;
     }
     if (!isCorrectAccount) {
       return t`Incorrect account`;
@@ -85,7 +85,7 @@ export default function CompleteAccountTransfer() {
         <PageTitle title={t`Complete Account Transfer`} />
 
         <ColorfulBanner color="red">
-          <Trans>Invalid transfer addresses. Check the URL</Trans>
+          <Trans>Invalid transfer addresses, check the URL</Trans>
         </ColorfulBanner>
       </AppPageLayout>
     );
@@ -98,7 +98,7 @@ export default function CompleteAccountTransfer() {
         setIsVisible={setIsTransferSubmittedModalVisible}
         label="Transfer Completed"
       >
-        <Trans>Your transfer has been completed.</Trans>
+        <Trans>Your transfer is complete.</Trans>
         <br />
         <br />
         <Link className="App-cta" to="/earn">
@@ -110,12 +110,12 @@ export default function CompleteAccountTransfer() {
         subtitle={
           isCorrectAccount ? (
             <div className="hyphens-auto">
-              <Trans>You have a pending transfer from {sender}.</Trans>
+              <Trans>Pending transfer from {sender}.</Trans>
               <br />
             </div>
           ) : (
             <div>
-              <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
+              <Trans>Switch to account {receiver} to complete this transfer.</Trans>
               <br />
               <br />
               <Trans>
@@ -123,7 +123,7 @@ export default function CompleteAccountTransfer() {
                 <span
                   onClick={() => {
                     copyToClipboard(window.location.href);
-                    helperToast.success("Link copied to clipboard");
+                    helperToast.success(t`Link copied to clipboard`);
                   }}
                 >
                   Click here

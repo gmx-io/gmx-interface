@@ -76,17 +76,14 @@ export function NpsModal() {
             <Textarea
               value={question.answer}
               onChange={(val) => onChangeAnswer(index, val)}
-              placeholder={t`Enter your answer here`}
+              placeholder={t`Enter your answer`}
             />
           </div>
         ))}
 
         <div className="mb-15 flex flex-col">
-          <TooltipWithPortal
-            position="top-start"
-            content={<Trans>Optional: Share for follow-up questions.</Trans>}
-          >
-            <Trans>Telegram contact (optional)</Trans>
+          <TooltipWithPortal position="top-start" content={<Trans>Optional: Share for follow-up questions.</Trans>}>
+            <Trans>Telegram Contact (Optional)</Trans>
           </TooltipWithPortal>
           <input
             className="mt-15 text-input-bg"

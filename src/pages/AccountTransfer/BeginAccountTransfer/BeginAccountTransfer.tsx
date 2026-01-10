@@ -153,13 +153,13 @@ export default function BeginAccountTransfer() {
 
   const getError = () => {
     if (!account) {
-      return t`Wallet is not connected`;
+      return t`Wallet not connected`;
     }
     if (hasVestedGmx) {
-      return t`Vested GMX not yet withdrawn`;
+      return t`Vested GMX not withdrawn`;
     }
     if (hasVestedGlp) {
-      return t`Vested GLP not yet withdrawn`;
+      return t`Vested GLP not withdrawn`;
     }
     if (!receiver || receiver.length === 0) {
       return t`Enter receiver address`;
@@ -169,11 +169,11 @@ export default function BeginAccountTransfer() {
     }
 
     if (hasVestedAffiliate && !isAffiliateVesterSkipValidation) {
-      return t`Vested GMX not yet withdrawn`;
+      return t`Vested GMX not withdrawn`;
     }
 
     if (hasStakedGmx || hasStakedGlp) {
-      return t`Receiver has staked GMX/GLP before`;
+      return t`Receiver previously staked GMX/GLP`;
     }
 
     if ((parsedReceiver || "").toString().toLowerCase() === (account || "").toString().toLowerCase()) {
@@ -184,7 +184,7 @@ export default function BeginAccountTransfer() {
       (parsedReceiver || "").length > 0 &&
       (parsedReceiver || "").toString().toLowerCase() === (pendingReceiver || "").toString().toLowerCase()
     ) {
-      return t`Transfer already initiated to this address`;
+      return t`Transfer already initiated`;
     }
   };
 
@@ -220,7 +220,7 @@ export default function BeginAccountTransfer() {
       return error;
     }
     if (needApproval) {
-      return t`Approve GMX transfer`;
+      return t`Approve GMX`;
     }
     if (isApproving) {
       return t`Approving...`;
@@ -298,7 +298,7 @@ export default function BeginAccountTransfer() {
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
-        label={t`Transfer Submitted`}
+        label={t`Transfer submitted`}
       >
         <Trans>Transfer initiated.</Trans>
         <br />
@@ -356,9 +356,7 @@ export default function BeginAccountTransfer() {
           {hasVestedAffiliate && (
             <>
               <p className="soft-error">
-                <Trans>
-                  You have esGMX tokens in the Affiliate Vault. Withdraw them to include in this transfer
-                </Trans>
+                <Trans>You have esGMX tokens in the Affiliate Vault, withdraw them to include in this transfer</Trans>
               </p>
               <Checkbox
                 className="VestedAffiliate-checkbox"
@@ -385,7 +383,7 @@ export default function BeginAccountTransfer() {
             <ApproveTokenButton
               tokenAddress={feeGmxTrackerAddress}
               tokenSymbol={"sbfGMX"}
-              customLabel={t`Allow token transfer to new account`}
+              customLabel={t`Allow all tokens to transfer to new account`}
               spenderAddress={parsedReceiver}
               approveAmount={feeGmxTrackerBalance}
             />

@@ -39,7 +39,7 @@ export function HeroSection() {
                 <Trans>Trade</Trans>
               </div>{" "}
               <AnimatedTitle />
-              <Trans>From Your Wallet</Trans>
+              <Trans>from Your Wallet</Trans>
             </div>
             {/* Stats and description */}
             <div className="flex flex-wrap items-end justify-between gap-0 sm:gap-56">

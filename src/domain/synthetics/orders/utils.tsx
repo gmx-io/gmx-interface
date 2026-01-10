@@ -138,13 +138,13 @@ export function getOrderErrors(p: {
       if (currentLiquidity < order.sizeDeltaUsd) {
         if (orderWithValidFromTimeExceeded) {
           errors.push({
-            msg: t`Parts of this order will execute once liquidity is available`,
+            msg: t`Parts of this order will be executed once there is sufficient liquidity`,
             level: "error",
             key: "twap-liquidity1",
           });
         } else {
           errors.push({
-            msg: t`Parts of this order may not execute due to insufficient liquidity`,
+            msg: t`May lack liquidity for parts of this order when triggered`,
             level: "error",
             key: "twap-liquidity2",
           });
@@ -167,7 +167,7 @@ export function getOrderErrors(p: {
 
       if (swapPathLiquidity < minOutputUsd && !isTwapOrder(order)) {
         errors.push({
-          msg: t`Insufficient liquidity to execute swap when min. receive conditions are met`,
+          msg: t`Insufficient liquidity for swap at min. receive amount`,
           level: "error",
           key: "liquidity0",
         });
@@ -184,7 +184,7 @@ export function getOrderErrors(p: {
 
       if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
         errors.push({
-          msg: t`High swap price impact`,
+          msg: t`Swap price impact is high`,
           level: "warning",
           key: "highPriceImpact",
         });
@@ -227,7 +227,7 @@ export function getOrderErrors(p: {
         });
 
         errors.push({
-          msg: t`Order may not execute at desired ${priceText}: acceptable price impact (${formattedOrderAcceptablePriceImpact}) is below current market impact (${formattedCurrentAcceptablePriceImpact}). Click "Edit" to adjust`,
+          msg: t`Order may not execute at ${priceText}: acceptable impact (${formattedOrderAcceptablePriceImpact}) below market (${formattedCurrentAcceptablePriceImpact}). Click "Edit"`,
           level: "warning",
           key: "acceptablePrice",
         });
@@ -239,7 +239,7 @@ export function getOrderErrors(p: {
 
       if (currentLiquidity < positionOrder.sizeDeltaUsd) {
         errors.push({
-          msg: t`Insufficient liquidity to execute order when price conditions are met`,
+          msg: t`Insufficient liquidity to execute order at trigger price`,
           level: "error",
           key: "liquidity1",
         });
@@ -260,7 +260,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < collateralSwapUsd) {
           errors.push({
-            msg: t`Insufficient liquidity to swap pay token to collateral when price conditions are met`,
+            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price`,
             level: "error",
             key: "liquidity2",
           });
@@ -279,7 +279,7 @@ export function getOrderErrors(p: {
 
       if (sameMarketPosition) {
         errors.push({
-          msg: t`This order (${collateralSymbol} collateral) won't apply to your existing ${longText} position (${symbol} collateral)`,
+          msg: t`Order uses ${collateralSymbol}, but existing ${longText} position uses ${symbol} as collateral`,
           level: "warning",
           key: "collateralToken",
         });
@@ -299,7 +299,7 @@ export function getOrderErrors(p: {
 
       if (isInvalidTriggerPrice && !isMarketOrderType(order.orderType)) {
         errors.push({
-          msg: t`Order will not execute: trigger price is beyond liquidation price`,
+          msg: t`Order won't execute: trigger price beyond liquidation price`,
           level: "error",
           key: "triggerPrice",
         });
@@ -320,7 +320,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < minOutputUsd) {
           errors.push({
-            msg: t`Insufficient liquidity to swap to receive token when price conditions are met`,
+            msg: t`Swap liquidity may be insufficient when order triggers`,
             level: "error",
             key: "swapPath",
           });

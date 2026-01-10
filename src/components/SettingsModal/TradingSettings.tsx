@@ -107,8 +107,8 @@ export function TradingSettings({
               description={<Trans>High execution reliability using premium RPCs.</Trans>}
               info={
                 <Trans>
-                  You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even
-                  during network congestion. Gas payments in {gasPaymentTokensText}.
+                  Sign transactions off-chain. Premium RPCs ensure reliability during network congestion. Gas payments
+                  in {gasPaymentTokensText}.
                 </Trans>
               }
               icon={<ExpressIcon className="size-28" />}
@@ -179,7 +179,9 @@ export function TradingSettings({
               className="font-medium"
               variant="icon"
               content={
-                <Trans>Network for your GMX Account and positions. Balances and positions don't transfer between networks.</Trans>
+                <Trans>
+                  Network for your GMX Account and positions. Balances and positions don't transfer between networks.
+                </Trans>
               }
               handle={<Trans>Settlement Chain</Trans>}
             />
@@ -278,8 +280,7 @@ export function TradingSettings({
             content={
               <div>
                 <Trans>
-                  TP/SL orders are automatically cancelled when the position closes. Only applies to orders created
-                  after enabling.
+                  TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
                 </Trans>
                 <br />
                 <br />

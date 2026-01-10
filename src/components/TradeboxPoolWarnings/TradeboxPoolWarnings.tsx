@@ -261,7 +261,7 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingPositionButNotEnoughLiquidityWarning">
         <Trans>
-          Existing position in {getMarketPoolName(marketWithPosition)} pool, but it lacks liquidity for this order
+          Existing position in {getMarketPoolName(marketWithPosition)} pool but lacks liquidity for this order
         </Trans>
       </AlertInfoCard>
     );
@@ -270,7 +270,7 @@ export const useTradeboxPoolWarnings = () => {
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
       <AlertInfoCard key="showHasNoSufficientLiquidityInAnyMarketWarning">
-        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD pool for this order</Trans>
+        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD pool for your order</Trans>
       </AlertInfoCard>
     );
   }
@@ -280,12 +280,12 @@ export const useTradeboxPoolWarnings = () => {
       <AlertInfoCard key="showHasInsufficientLiquidityAndNoPositionWarning">
         <Trans>
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool
-          {hasEnoughLiquidity(minOpenFeesMarket) && (
-            <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
-              Switch to {getMarketPoolName(minOpenFeesMarket)} pool
-            </ColorfulButtonLink>
-          )}
         </Trans>
+        {hasEnoughLiquidity(minOpenFeesMarket) && (
+          <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
+            <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
+          </ColorfulButtonLink>
+        )}
       </AlertInfoCard>
     );
   }
@@ -294,15 +294,15 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasInsufficientLiquidityAndPositionWarning">
         <Trans>
-          Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Switching pools opens a
-          new position separate from the existing one
-          <ColorfulButtonLink
-            color="blue"
-            onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
-          >
-            Switch to {getMarketPoolName(minOpenFeesMarket)} pool
-          </ColorfulButtonLink>
+          Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Choosing a different pool
+          creates a new position
         </Trans>
+        <ColorfulButtonLink
+          color="blue"
+          onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
+        >
+          <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
+        </ColorfulButtonLink>
       </AlertInfoCard>
     );
   }
@@ -331,7 +331,7 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingOrderWarning">
         <Trans>
-          Existing limit order in {getMarketPoolName(marketWithOrder)} pool, but it lacks liquidity for this order
+          Existing limit order in {getMarketPoolName(marketWithOrder)} pool but lacks liquidity for this order
         </Trans>
       </AlertInfoCard>
     );
@@ -355,12 +355,10 @@ export const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <div>
-          <Trans>
-            <span className="cursor-pointer font-medium text-blue-300 underline" onClick={onSwitchPoolClick}>
-              Switch to {getMarketPoolName(minOpenFeesMarket)} pool
-            </span>{" "}
-            for lower price impact
-          </Trans>
+          <span className="cursor-pointer font-medium text-blue-300 underline" onClick={onSwitchPoolClick}>
+            <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
+          </span>{" "}
+          <Trans>for potentially lower price impact</Trans>
         </div>
       </AlertInfoCard>
     );

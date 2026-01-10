@@ -31,7 +31,7 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
       )}
       <div className="text-body-medium text-center text-typography-secondary">
         <Trans>
-          Connect your wallet to view
+          Connect wallet to view
           <br />
           all available payment options
         </Trans>

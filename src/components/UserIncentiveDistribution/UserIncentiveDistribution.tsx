@@ -330,7 +330,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                     "h-28 items-center": !isMobile,
                   })}
                 >
-                  <Trans>{tokenInfo.symbol} amount</Trans>
+                  <Trans>{tokenInfo.symbol} Amount</Trans>
 
                   {isMobile && (
                     <span className="text-14 text-typography-primary">
@@ -346,7 +346,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                   "h-28 items-center": !isMobile,
                 })}
               >
-                <Trans>Transaction Hash</Trans>
+                <Trans>Transaction</Trans>
                 {isMobile && <span className="text-14 text-typography-primary">{txnLink}</span>}
               </div>
               <div

@@ -155,7 +155,7 @@ function ReferralCodeForm({
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
@@ -568,7 +568,7 @@ function ReferralCodeFormMultichain({
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   } else if (!referralCodeExists) {

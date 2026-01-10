@@ -69,7 +69,7 @@ export function OldSubaccountWithdraw() {
 
       helperToast.success(
         <StatusNotification title={t`Withdrawing from subaccount...`}>
-          {t`${balanceFormatted} withdrawn to main account`}
+          {t`Withdrawn ${balanceFormatted} to main account`}
         </StatusNotification>
       );
 
@@ -78,7 +78,7 @@ export function OldSubaccountWithdraw() {
       metrics.pushError(error, "subaccount.withdrawOldBalance");
       helperToast.error(
         <StatusNotification title={t`Withdrawing from subaccount...`}>
-          {t`Failed to withdraw ${balanceFormatted} to main account`}
+          {t`Withdrawal of ${balanceFormatted} failed`}
         </StatusNotification>
       );
     } finally {

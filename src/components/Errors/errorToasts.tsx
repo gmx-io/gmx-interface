@@ -111,8 +111,7 @@ export function getTxnErrorToast(
           className={slippageInputId ? "cursor-pointer underline" : undefined}
         >
           <Trans>increasing the allowed slippage</Trans>
-        </span>{" "}
-        in execution details.
+        </span>
       </Trans>
     );
 
@@ -123,11 +122,11 @@ export function getTxnErrorToast(
     case TxErrorType.NotEnoughFunds:
       toastParams.errorContent = (
         <Trans>
-          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}.
+          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
           <Link className="underline" to="/buy_gmx#bridge">
-            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
+            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>
       );
@@ -136,10 +135,10 @@ export function getTxnErrorToast(
       toastParams.errorContent = getInvalidNetworkToastContent(chainId);
       break;
     case TxErrorType.UserDenied:
-      toastParams.errorContent = t`Transaction cancelled`;
+      toastParams.errorContent = t`Transaction canceled`;
       break;
     case TxErrorType.Slippage:
-      toastParams.errorContent = t`Mark price changed. Increase allowed slippage via the "..." icon next to your address`;
+      toastParams.errorContent = t`Mark price changed. Increase allowed slippage`;
       break;
     case TxErrorType.RpcError: {
       toastParams.autoCloseToast = false;
@@ -152,7 +151,7 @@ export function getTxnErrorToast(
             <br />
             Enable{" "}
             <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible?.(true)}>
-              Express trading
+              Express Trading
             </Button>{" "}
             in Settings for better reliability.
           </Trans>
@@ -210,11 +209,11 @@ export function getErrorMessage(
     case TxErrorType.NotEnoughFunds:
       failMsg = (
         <Trans>
-          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}.
+          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
           <Link className="underline" to="/buy_gmx#bridge">
-            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
+            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>
       );
@@ -223,10 +222,10 @@ export function getErrorMessage(
       failMsg = getInvalidNetworkToastContent(chainId);
       break;
     case TxErrorType.UserDenied:
-      failMsg = t`Transaction cancelled`;
+      failMsg = t`Transaction canceled`;
       break;
     case TxErrorType.Slippage:
-      failMsg = t`Mark price changed, consider increasing allowed slippage`;
+      failMsg = t`Mark price changed. Increase allowed slippage`;
       break;
     case TxErrorType.RpcError: {
       autoCloseToast = false;
@@ -272,7 +271,7 @@ export const NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID = "non-eoa-account-chain-war
 export function getInvalidNetworkToastContent(chainId: number) {
   return (
     <Trans>
-      <div>Wallet not connected to {getChainName(chainId)}.</div>
+      <div>Wallet not connected to {getChainName(chainId)}</div>
       <br />
       <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
         Switch to {getChainName(chainId)}
@@ -284,9 +283,9 @@ export function getInvalidNetworkToastContent(chainId: number) {
 export function getNonEoaAccountChainWarningToastContent(chainId: number) {
   return (
     <Trans>
-      <div>Smart wallets are not supported on {getChainName(chainId)}.</div>
+      <div>Smart wallets are not supported on {getChainName(chainId)}</div>
       <br />
-      <div>Please switch to a different network or use an EOA wallet.</div>
+      <div>Switch to a different network or use an EOA wallet</div>
     </Trans>
   );
 }
@@ -297,10 +296,10 @@ export function InvalidSignatureToastContent() {
   return (
     <div>
       <Trans>
-        Invalid signature.
+        Invalid signature
         <br />
         <br />
-        Try a different wallet provider, or switch to Classic or One-Click Trading mode in{" "}
+        Try a different wallet provider, or switch to Classic or One-Click Trading in{" "}
         <span className="clickable underline" onClick={() => setIsSettingsVisible(true)}>
           Settings
         </span>
@@ -356,9 +355,9 @@ export function getInsufficientExecutionFeeToastContent({
     <Trans>
       Enable{" "}
       <span className="inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
-        Express trading
+        Express Trading
       </span>{" "}
-      in Settings for a better experience.
+      in Settings for better reliability.
       <br />
       <br />
       Or increase the max network fee buffer {bufferText} in {settingsLink}
@@ -373,13 +372,13 @@ export function getInsufficientExecutionFeeToastContent({
   return (
     <div>
       <Trans>
-        Execution fee validation failed.
+        Execution fee validation failed
         <br />
         <br />
         {suggestText}
         <br />
         <br />
-        <ExternalLink href={txUrl}>View transaction details</ExternalLink>
+        <ExternalLink href={txUrl}>View status</ExternalLink>
       </Trans>
       <br />
       <br />

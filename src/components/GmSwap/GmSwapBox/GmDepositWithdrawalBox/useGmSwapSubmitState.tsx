@@ -246,7 +246,7 @@ export const useGmSwapSubmitState = ({
         const totalRequired = collateralAmount + (estimationError.params?.requiredAmount ?? 0n);
         const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
-        return t`Insufficient ${symbol}: ${availableFormatted} available, ${requiredFormatted} required`;
+        return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
       }
     } else if (estimationError) {
       return estimationError.name;
@@ -431,7 +431,7 @@ function useExpressError({
       const availableFormatted = formatBalanceAmount(gmxAccountBalance, decimals);
       const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
-      return t`Insufficient ${symbol}: ${availableFormatted} available, ${requiredFormatted} required`;
+      return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
     }
 
     return undefined;

@@ -57,7 +57,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
               </span>
             }
             position="left-start"
-            content={<Trans>Initial collateral before borrow and funding fees.</Trans>}
+            content={<Trans>Initial collateral, excluding borrow and funding fees.</Trans>}
           />
         }
         value={

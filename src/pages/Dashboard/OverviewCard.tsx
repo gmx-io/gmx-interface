@@ -346,7 +346,7 @@ export function OverviewCard({
           <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row !mt-16">
-          <Trans>Annualized based on the past 7 days.</Trans>
+          <Trans>Annualized data based on the past 7 days.</Trans>
         </p>
       </>
     );
@@ -434,7 +434,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total GLP Pool value across networks.</Trans>
+                      <Trans>Total value of tokens in the GLP Pool.</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
@@ -454,7 +454,7 @@ export function OverviewCard({
                         value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
                       />
                       <br />
-                      <Trans>May differ from other sites that include position collateral.</Trans>
+                      <Trans>May be higher on other sites that include position collateral.</Trans>
                     </>
                   }
                 />
@@ -471,7 +471,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total GM Pool value across networks.</Trans>
+                      <Trans>Total value of tokens in GM Pools.</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow

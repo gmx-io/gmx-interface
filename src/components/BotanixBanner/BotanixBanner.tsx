@@ -27,7 +27,7 @@ export function BotanixBanner() {
       <p>
         <BotanixIcon className="-ml-4 inline-block pb-4" />
         <Trans>
-          <span className="text-yellow-500">Botanix</span> only supports
+          <span className="text-yellow-500">Botanix</span> supports
         </Trans>{" "}
         <Link to="/trade" className="underline">
           <Trans>V2 trading</Trans>
@@ -36,9 +36,7 @@ export function BotanixBanner() {
         <Link to="/pools" className="underline">
           <Trans>providing liquidity</Trans>
         </Link>{" "}
-        <Trans>
-          using GLV and GM tokens. Buying or staking GMX and using referrals are not yet supported
-        </Trans>
+        <Trans>using GLV and GM tokens. Staking GMX and referrals are not yet supported</Trans>
       </p>
       <p>
         <Trans>

@@ -56,14 +56,13 @@ export function PoolsDetailsAbout({
       <div className="text-body-medium text-typography-secondary">
         {isGlv ? (
           <Trans>
-            This token is a vault of automatically rebalanced GM tokens that accrue fees from leverage trading and swaps
-            from the included markets. Backed by {glvOrMarketInfo?.longToken?.symbol} and{" "}
-            {glvOrMarketInfo?.shortToken?.symbol}.
+            Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by{" "}
+            {glvOrMarketInfo?.longToken?.symbol} and {glvOrMarketInfo?.shortToken?.symbol}.
           </Trans>
         ) : (
           <Trans>
-            This token automatically accrues fees from leverage trading and swaps for the {marketName} market. It is
-            also exposed to {exposedToLabel} as per the composition displayed.
+            Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} per
+            the composition shown.
           </Trans>
         )}
       </div>
@@ -145,13 +144,13 @@ const SellableTooltipContent = ({
     <div>
       {marketInfo?.isSameCollaterals ? (
         <Trans>
-          GM can be sold for {marketInfo?.longToken?.symbol} for this market up to the specified selling caps. The
-          remaining tokens in the pool are reserved for currently open positions.
+          Sell GM for {marketInfo?.longToken?.symbol} up to the caps below. Remaining tokens are reserved for open
+          positions.
         </Trans>
       ) : (
         <Trans>
-          GM can be sold for {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} for this market up to
-          the specified selling caps. The remaining tokens in the pool are reserved for currently open positions.
+          Sell GM for {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} up to the caps below.
+          Remaining tokens are reserved for open positions.
         </Trans>
       )}
       <br />
@@ -290,13 +289,10 @@ const BuyableTooltipContent = ({
     <>
       <p className="text-typography-primary">
         {marketInfo?.isSameCollaterals ? (
-          <Trans>
-            {marketInfo?.longToken?.symbol} can be used to buy GM for this market up to the specified buying caps.
-          </Trans>
+          <Trans>Buy GM with {marketInfo?.longToken?.symbol} up to the caps below.</Trans>
         ) : (
           <Trans>
-            {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} can be used to buy GM for this market
-            up to the specified buying caps.
+            Buy GM with {marketInfo?.longToken?.symbol} and {marketInfo?.shortToken?.symbol} up to the caps below.
           </Trans>
         )}
       </p>
