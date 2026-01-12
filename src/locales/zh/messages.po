@@ -174,6 +174,10 @@ msgstr "终身 LP 奖励："
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Shows the total open interest in tokens and its notional value in USD."
+msgstr ""
+
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -433,6 +437,10 @@ msgstr "超过池最大 USD"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
 msgstr "限价低于标记价格"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Long OI"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
@@ -4256,6 +4264,10 @@ msgstr "衍生品投资组合跟踪器"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying error"
 msgstr "购买错误"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Short OI"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"

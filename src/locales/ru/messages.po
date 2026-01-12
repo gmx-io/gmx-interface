@@ -174,6 +174,10 @@ msgstr "Награды LP за всё время:"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Shows the total open interest in tokens and its notional value in USD."
+msgstr ""
+
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -433,6 +437,10 @@ msgstr "Максимальный USD пула превышен"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
 msgstr "Лимитная цена ниже рыночной цены"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Long OI"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
@@ -4256,6 +4264,10 @@ msgstr "Трекер Портфеля Деривативов"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying error"
 msgstr "Ошибка покупки"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Short OI"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
