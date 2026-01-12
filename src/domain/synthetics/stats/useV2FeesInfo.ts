@@ -5,6 +5,7 @@ import { getCurrentEpochStartedTimestamp } from "domain/stats";
 import { getWeekAgoTimestamp } from "domain/stats/getWeekAgoTimestamp";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { PositionFeesInfoWithPeriod, SwapFeesInfoWithPeriod } from "sdk/types/subsquid";
 
 const totalFeeQuery = gql`
   query totalFeesInfo {
@@ -22,37 +23,35 @@ const totalFeeQuery = gql`
 
 const weeklyFeeQuery = gql`
   query weeklyFeesInfo($weekAgoTimestamp: Int!) {
-    position: positionFeesInfoWithPeriods(where: { id_gte: $weekAgoTimestamp, period_eq: "1d" }, orderBy: id_ASC) {
-      id
+    position: positionFeesInfoWithPeriods(
+      where: { timestamp_gte: $weekAgoTimestamp, period_eq: "1d" }
+      orderBy: timestamp_ASC
+      limit: 1000
+    ) {
+      timestamp
       totalBorrowingFeeUsd
       totalPositionFeeUsd
       totalLiquidationFeeUsd
     }
 
-    swap: swapFeesInfoWithPeriods(where: { id_gte: $weekAgoTimestamp, period_eq: "1d" }, orderBy: id_ASC) {
-      id
+    swap: swapFeesInfoWithPeriods(
+      where: { timestamp_gte: $weekAgoTimestamp, period_eq: "1d" }
+      orderBy: timestamp_ASC
+      limit: 1000
+    ) {
+      timestamp
       totalFeeReceiverUsd
       totalFeeUsdForPool
     }
   }
 `;
 
-type PositionFeesItem = {
-  id: string;
-  totalBorrowingFeeUsd: string;
-  totalPositionFeeUsd: string;
-  totalLiquidationFeeUsd: string;
-};
-
-type SwapFeesItem = {
-  id: string;
-  totalFeeReceiverUsd: string;
-  totalFeeUsdForPool: string;
-};
-
 type WeeklyFeesInfo = {
-  position: PositionFeesItem[];
-  swap: SwapFeesItem[];
+  position: Pick<
+    PositionFeesInfoWithPeriod,
+    "timestamp" | "totalBorrowingFeeUsd" | "totalPositionFeeUsd" | "totalLiquidationFeeUsd"
+  >[];
+  swap: Pick<SwapFeesInfoWithPeriod, "timestamp" | "totalFeeReceiverUsd" | "totalFeeUsdForPool">[];
 };
 
 function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
@@ -61,7 +60,12 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
   let epochLiquidationFees = 0n;
 
   const weeklyPositionFees = fees.position.reduce((acc, fee) => {
-    const timestamp = Number(fee.id);
+    const timestamp = fee.timestamp;
+
+    if (!timestamp) {
+      console.warn("No timestamp found for PositionFeesInfoWithPeriod");
+      return acc;
+    }
 
     const increment = BigInt(fee.totalBorrowingFeeUsd) + BigInt(fee.totalPositionFeeUsd);
 
@@ -73,7 +77,12 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
   }, 0n);
 
   const weeklySwapFees = fees.swap.reduce((acc, fee) => {
-    const timestamp = Number(fee.id);
+    const timestamp = fee.timestamp;
+
+    if (!timestamp) {
+      console.warn("No timestamp found for SwapFeesInfoWithPeriod");
+      return acc;
+    }
 
     const increment = BigInt(fee.totalFeeReceiverUsd) + BigInt(fee.totalFeeUsdForPool);
 
@@ -85,7 +94,12 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
   }, 0n);
 
   const weeklyLiquidationFees = fees.position.reduce((acc, fee) => {
-    const timestamp = Number(fee.id);
+    const timestamp = fee.timestamp;
+
+    if (!timestamp) {
+      console.warn("No timestamp found for PositionFeesInfoWithPeriod");
+      return acc;
+    }
 
     const increment = BigInt(fee.totalLiquidationFeeUsd);
 
