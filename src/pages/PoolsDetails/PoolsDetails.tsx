@@ -19,6 +19,7 @@ import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { GmSwapBox } from "components/GmSwap/GmSwapBox/GmSwapBox";
 import { GmSwapBoxHeader } from "components/GmSwap/GmSwapBox/GmSwapBoxHeader";
 import Loader from "components/Loader/Loader";
@@ -78,23 +79,27 @@ export function PoolsDetails() {
 
               <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
                 <div className="flex grow flex-col gap-8">
-                  {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
+                  <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+                    {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
+                  </ErrorBoundary>
 
-                  <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
-                    <MarketComposition
-                      type="backing"
-                      label={<Trans>Backing Composition</Trans>}
-                      title={<Trans>Exposure to Backing Tokens</Trans>}
-                      composition={backingComposition}
-                    />
+                  <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+                    <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
+                      <MarketComposition
+                        type="backing"
+                        label={<Trans>Backing Composition</Trans>}
+                        title={<Trans>Exposure to Backing Tokens</Trans>}
+                        composition={backingComposition}
+                      />
 
-                    <MarketComposition
-                      type="market"
-                      label={<Trans>Market Composition</Trans>}
-                      title={<Trans>Exposure to Market Traders’ PnL</Trans>}
-                      composition={marketComposition}
-                    />
-                  </div>
+                      <MarketComposition
+                        type="market"
+                        label={<Trans>Market Composition</Trans>}
+                        title={<Trans>Exposure to Market Traders’ PnL</Trans>}
+                        composition={marketComposition}
+                      />
+                    </div>
+                  </ErrorBoundary>
                   <PoolsDetailsCard title={<Trans>About</Trans>}>
                     <PoolsDetailsAbout
                       glvOrMarketInfo={glvOrMarketInfo}
@@ -127,14 +132,18 @@ const PoolsDetailsGmSwapBox = ({ isInCurtain }: { isInCurtain: boolean }) => {
         })}
       >
         <GmSwapBoxHeader isInCurtain={isInCurtain} />
-        <GmSwapBox />
+        <ErrorBoundary variant="block">
+          <GmSwapBox />
+        </ErrorBoundary>
       </div>
     );
   }
 
   return (
     <Curtain header={<GmSwapBoxHeader isInCurtain={isInCurtain} />}>
-      <GmSwapBox />
+      <ErrorBoundary variant="block">
+        <GmSwapBox />
+      </ErrorBoundary>
     </Curtain>
   );
 };

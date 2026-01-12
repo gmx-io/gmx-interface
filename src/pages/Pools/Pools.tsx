@@ -11,6 +11,7 @@ import { formatUsd } from "lib/numbers";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { GlvList } from "components/GmList/GlvList";
 import { GmList } from "components/GmList/GmList";
 
@@ -67,30 +68,34 @@ export default function Pools() {
 
       <div className="flex grow flex-col gap-16 lg:overflow-hidden">
         {!isBotanix && (
-          <GlvList
+          <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+            <GlvList
+              marketsTokensApyData={marketsTokensApyData}
+              marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+              glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+              marketsTokensLidoAprData={marketsTokensLidoAprData}
+              glvTokensApyData={glvApyInfoData}
+              apyLoading={apyLoading}
+              performance={performance}
+              performanceLoading={performanceLoading}
+              performanceSnapshots={performanceSnapshots}
+            />
+          </ErrorBoundary>
+        )}
+
+        <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+          <GmList
+            glvTokensApyData={glvApyInfoData}
+            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensApyData={marketsTokensApyData}
             marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
             marketsTokensLidoAprData={marketsTokensLidoAprData}
-            glvTokensApyData={glvApyInfoData}
             apyLoading={apyLoading}
             performance={performance}
             performanceLoading={performanceLoading}
             performanceSnapshots={performanceSnapshots}
           />
-        )}
-
-        <GmList
-          glvTokensApyData={glvApyInfoData}
-          glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-          marketsTokensApyData={marketsTokensApyData}
-          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-          marketsTokensLidoAprData={marketsTokensLidoAprData}
-          apyLoading={apyLoading}
-          performance={performance}
-          performanceLoading={performanceLoading}
-          performanceSnapshots={performanceSnapshots}
-        />
+        </ErrorBoundary>
       </div>
     </AppPageLayout>
   );
