@@ -1,7 +1,8 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useMemo } from "react";
 
+import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/chains";
 import { isDevelopment } from "config/env";
-import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP, isSourceChain } from "config/multichain";
+import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainIdImpl } from "lib/chains/useChainIdImpl";

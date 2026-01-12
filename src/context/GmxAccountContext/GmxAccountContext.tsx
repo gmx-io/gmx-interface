@@ -2,8 +2,9 @@ import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { createContext } from "use-context-selector";
 import { useAccount } from "wagmi";
 
+import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/chains";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY, SELECTED_SETTLEMENT_CHAIN_ID_KEY } from "config/localStorage";
-import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP, isSettlementChain } from "config/multichain";
+import { isSettlementChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { SettlementChainId, SourceChainId } from "sdk/configs/chains";
 
