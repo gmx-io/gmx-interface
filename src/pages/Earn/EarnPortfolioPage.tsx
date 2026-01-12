@@ -18,6 +18,7 @@ import EarnPageLayout from "pages/Earn/EarnPageLayout";
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
 import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";
 import RewardsBar from "components/Earn/Portfolio/RewardsBar";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
@@ -89,44 +90,50 @@ export default function EarnPortfolioPage() {
       {processedData ? (
         <>
           {hasAnyAssets && (
-            <AssetsList
-              processedData={processedData}
-              chainId={chainId}
-              hasAnyAssets={hasAnyAssets}
-              hasGmx={hasGmxAssets}
-              hasEsGmx={hasEsGmxAssets}
-              gmGlvAssets={gmGlvAssets}
-              glvTotalApyData={glvTotalApyData}
-              marketsTotalApyData={marketsTotalApyData}
-              glv30dApyData={glv30dApyData}
-              markets30dApyData={markets30dApyData}
-              multichainMarketTokensBalances={multichainMarketTokensBalances}
-            />
+            <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <AssetsList
+                processedData={processedData}
+                chainId={chainId}
+                hasAnyAssets={hasAnyAssets}
+                hasGmx={hasGmxAssets}
+                hasEsGmx={hasEsGmxAssets}
+                gmGlvAssets={gmGlvAssets}
+                glvTotalApyData={glvTotalApyData}
+                marketsTotalApyData={marketsTotalApyData}
+                glv30dApyData={glv30dApyData}
+                markets30dApyData={markets30dApyData}
+                multichainMarketTokensBalances={multichainMarketTokensBalances}
+              />
+            </ErrorBoundary>
           )}
           {glv90dApyData && markets90dApyData && performance90d && marketTokensData && (
-            <RecommendedAssets
-              hasGmxAssets={hasGmxAssets}
-              marketsInfoData={marketsInfoData}
-              marketTokensData={marketTokensData}
-              marketsApyInfo={markets90dApyData}
-              glvsApyInfo={glv90dApyData}
-              performance={performance90d}
-            />
+            <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <RecommendedAssets
+                hasGmxAssets={hasGmxAssets}
+                marketsInfoData={marketsInfoData}
+                marketTokensData={marketTokensData}
+                marketsApyInfo={markets90dApyData}
+                glvsApyInfo={glv90dApyData}
+                performance={performance90d}
+              />
+            </ErrorBoundary>
           )}
           {!hasAnyAssets && (
-            <AssetsList
-              processedData={processedData}
-              chainId={chainId}
-              hasAnyAssets={hasAnyAssets}
-              hasGmx={hasGmxAssets}
-              hasEsGmx={hasEsGmxAssets}
-              gmGlvAssets={gmGlvAssets}
-              glvTotalApyData={glvTotalApyData}
-              marketsTotalApyData={marketsTotalApyData}
-              glv30dApyData={glv30dApyData}
-              markets30dApyData={markets30dApyData}
-              multichainMarketTokensBalances={multichainMarketTokensBalances}
-            />
+            <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <AssetsList
+                processedData={processedData}
+                chainId={chainId}
+                hasAnyAssets={hasAnyAssets}
+                hasGmx={hasGmxAssets}
+                hasEsGmx={hasEsGmxAssets}
+                gmGlvAssets={gmGlvAssets}
+                glvTotalApyData={glvTotalApyData}
+                marketsTotalApyData={marketsTotalApyData}
+                glv30dApyData={glv30dApyData}
+                markets30dApyData={markets30dApyData}
+                multichainMarketTokensBalances={multichainMarketTokensBalances}
+              />
+            </ErrorBoundary>
           )}
         </>
       ) : (

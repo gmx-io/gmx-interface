@@ -10,6 +10,7 @@ import EarnDocumentation from "components/Earn/Discovery/EarnDocumentation";
 import EarnFaq from "components/Earn/Discovery/EarnFaq";
 import EarnProductCard from "components/Earn/Discovery/EarnProductCard";
 import EarnYieldOverview from "components/Earn/Discovery/EarnYieldOverview";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 
 import discoverBgDesktopDark from "img/discover_bg_desktop_dark.png";
 import discoverBgDesktopLight from "img/discover_bg_desktop_light.png";
@@ -54,7 +55,9 @@ export default function EarnDiscoveryPage() {
             <EarnProductCard type="glv" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
             <EarnProductCard type="gm" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
           </div>
-          <EarnYieldOverview />
+          <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+            <EarnYieldOverview />
+          </ErrorBoundary>
         </div>
 
         <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">

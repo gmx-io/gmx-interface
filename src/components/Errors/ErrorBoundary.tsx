@@ -37,9 +37,9 @@ function ErrorFallback({
   wrapperClassName: wrapperClassNameProp,
 }: ErrorFallbackProps) {
   const wrapperClassName = cx("flex w-full flex-col items-center justify-center text-center", wrapperClassNameProp, {
-    "min-h-screen bg-slate-950 px-24 py-64 max-md:px-16": variant === "app",
-    "min-h-[360px] grow px-24 py-48 max-md:px-16": variant === "page",
-    "h-full rounded-b-8 bg-slate-900 px-24 py-64 max-md:px-16": variant === "block",
+    "min-h-screen bg-slate-950 px-24 py-24 max-md:px-16": variant === "app",
+    "min-h-[360px] grow px-24 py-24 max-md:px-16": variant === "page",
+    "h-full rounded-b-8 bg-slate-900 px-24 py-24 max-md:px-16": variant === "block",
   });
 
   const reportIssueButton = onReportIssue ? (

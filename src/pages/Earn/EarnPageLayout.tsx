@@ -9,6 +9,7 @@ import { sendEarnPageTabViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/ea
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import PageTitle from "components/PageTitle/PageTitle";
 
 export enum EarnTab {
@@ -96,7 +97,11 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
           </div>
         </div>
 
-        {children ? <div className="flex grow flex-col gap-8">{children}</div> : null}
+        {children ? (
+          <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+            <div className="flex grow flex-col gap-8">{children}</div>
+          </ErrorBoundary>
+        ) : null}
       </div>
     </AppPageLayout>
   );
