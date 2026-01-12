@@ -553,7 +553,7 @@ export function PositionItem(p: Props) {
                   onClick={p.onShareClick}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                  {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14" />}
+                  {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14 shrink-0" />}
                 </div>
               )}
             </div>
@@ -589,36 +589,40 @@ export function PositionItem(p: Props) {
           {/* liqPrice */}
           {renderLiquidationPrice()}
         </TableTd>
-        <TableTd>
-          <PositionItemTPSLCell
-            positionKey={p.position.key}
-            markPrice={p.position.markPrice}
-            marketDecimals={marketDecimals}
-            visualMultiplier={p.position.indexToken.visualMultiplier}
-            isLarge={true}
-            onOpenTPSLModal={handleOpenTPSLModal}
-            isDisabled={isActionsDisabled}
-          />
-        </TableTd>
+        {!p.hideActions && (
+          <TableTd className="w-[9%]">
+            <PositionItemTPSLCell
+              positionKey={p.position.key}
+              markPrice={p.position.markPrice}
+              marketDecimals={marketDecimals}
+              visualMultiplier={p.position.indexToken.visualMultiplier}
+              isLarge={true}
+              onOpenTPSLModal={handleOpenTPSLModal}
+              isDisabled={isActionsDisabled}
+            />
+          </TableTd>
+        )}
         {!p.hideActions && (
           <TableTd>
-            <div className="flex items-center justify-end gap-4">
-              <Button
-                variant="ghost"
-                onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
-                disabled={isCloseDisabled}
-                data-qa="position-close-market-button"
-              >
-                <Trans>Market</Trans>
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                disabled={isCloseDisabled}
-                data-qa="position-close-twap-button"
-              >
-                <Trans>TWAP</Trans>
-              </Button>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
+                  disabled={isCloseDisabled}
+                  data-qa="position-close-market-button"
+                >
+                  <Trans>Market</Trans>
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
+                  disabled={isCloseDisabled}
+                  data-qa="position-close-twap-button"
+                >
+                  <Trans>TWAP</Trans>
+                </Button>
+              </div>
 
               <PositionDropdown
                 handleEditCollateral={p.onEditCollateralClick}
@@ -721,7 +725,7 @@ export function PositionItem(p: Props) {
                 onClick={p.onShareClick}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16" />}
+                {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16 shrink-0" />}
               </span>
             </div>
           </div>
@@ -761,22 +765,24 @@ export function PositionItem(p: Props) {
             </div>
             <div>{renderLiquidationPrice()}</div>
           </div>
-          <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
-              <Trans>TP/SL</Trans>
+          {!p.hideActions && (
+            <div className="App-card-row">
+              <div className="font-medium text-typography-secondary">
+                <Trans>TP/SL</Trans>
+              </div>
+              <div>
+                <PositionItemTPSLCell
+                  positionKey={p.position.key}
+                  markPrice={p.position.markPrice}
+                  marketDecimals={marketDecimals}
+                  visualMultiplier={p.position.indexToken.visualMultiplier}
+                  isLarge={false}
+                  onOpenTPSLModal={handleOpenTPSLModal}
+                  isDisabled={isActionsDisabled}
+                />
+              </div>
             </div>
-            <div>
-              <PositionItemTPSLCell
-                positionKey={p.position.key}
-                markPrice={p.position.markPrice}
-                marketDecimals={marketDecimals}
-                visualMultiplier={p.position.indexToken.visualMultiplier}
-                isLarge={false}
-                onOpenTPSLModal={handleOpenTPSLModal}
-                isDisabled={isActionsDisabled}
-              />
-            </div>
-          </div>
+          )}
         </AppCardSection>
         <AppCardSection>
           <div className="font-medium text-typography-secondary">
