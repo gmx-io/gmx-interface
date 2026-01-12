@@ -1,6 +1,9 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { Component, ErrorInfo, ReactNode } from "react";
+import { Component, ErrorInfo, ReactNode, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import Button from "components/Button/Button";
 
@@ -8,6 +11,7 @@ import FeedbackIcon from "img/ic_feedback.svg?react";
 import RepeatIcon from "img/ic_repeat.svg?react";
 
 const DEFAULT_REPORT_ISSUE_URL = "https://github.com/gmx-io/gmx-interface/issues/new";
+const CONTENTS_STYLE = { display: "contents" };
 
 type ErrorBoundaryProps = {
   children: ReactNode;
@@ -28,6 +32,100 @@ type ErrorFallbackProps = {
   onReload: () => void;
   wrapperClassName?: string;
 };
+
+function ErrorBoundaryDebugWrapper({ children }: { children: ReactNode }) {
+  const anchorRef = useRef<HTMLSpanElement | null>(null);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+  const [shouldThrow, setShouldThrow] = useState(false);
+
+  const getTargetEl = useCallback(() => {
+    const anchorEl = anchorRef.current;
+    if (!anchorEl) return null;
+    return (anchorEl.firstElementChild as HTMLElement | null) ?? anchorEl.parentElement;
+  }, []);
+
+  const updateRect = useCallback(() => {
+    const targetEl = getTargetEl();
+    if (!targetEl) return;
+    const rect = targetEl.getBoundingClientRect();
+    if (rect.width || rect.height) {
+      setAnchorRect(rect);
+    }
+  }, [getTargetEl]);
+
+  useLayoutEffect(() => {
+    const targetEl = getTargetEl();
+    if (!targetEl) return undefined;
+
+    updateRect();
+
+    let resizeObserver: ResizeObserver | undefined;
+    if ("ResizeObserver" in window) {
+      resizeObserver = new ResizeObserver(updateRect);
+      resizeObserver.observe(targetEl);
+    }
+
+    const handlePositionUpdate = () => {
+      requestAnimationFrame(updateRect);
+    };
+
+    window.addEventListener("resize", handlePositionUpdate);
+    window.addEventListener("scroll", handlePositionUpdate, true);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", handlePositionUpdate);
+      window.removeEventListener("scroll", handlePositionUpdate, true);
+    };
+  }, [getTargetEl, updateRect]);
+
+  const debugButtonStyle = useMemo(() => {
+    if (!anchorRect || typeof window === "undefined") return null;
+    return {
+      top: Math.max(8, anchorRect.top + 8 + window.scrollY),
+      left: Math.max(8, anchorRect.right - 8 + window.scrollX),
+      transform: "translate(-100%, 0)",
+    };
+  }, [anchorRect]);
+
+  const debugButton = useMemo(() => {
+    if (!debugButtonStyle || typeof document === "undefined") return null;
+
+    return createPortal(
+      <button
+        type="button"
+        aria-label="Trigger error boundary"
+        className="absolute z-[11000] size-8 rounded-full bg-red-700 hover:bg-red-500"
+        style={debugButtonStyle}
+        onClick={() => setShouldThrow(true)}
+      />,
+      document.body
+    );
+  }, [debugButtonStyle]);
+
+  if (shouldThrow) {
+    throw new Error("ErrorBoundary debug trigger");
+  }
+
+  return (
+    <>
+      <span ref={anchorRef} style={CONTENTS_STYLE}>
+        {children}
+      </span>
+      {debugButton}
+    </>
+  );
+}
+
+function ErrorBoundaryDebugGate({ children }: { children: ReactNode }) {
+  const { isErrorBoundaryDebugEnabled } = useSettings();
+
+  if (!isErrorBoundaryDebugEnabled) {
+    return <>{children}</>;
+  }
+
+  return <ErrorBoundaryDebugWrapper>{children}</ErrorBoundaryDebugWrapper>;
+}
 
 function ErrorFallback({
   variant = "page",
@@ -117,6 +215,6 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
       );
     }
 
-    return children;
+    return <ErrorBoundaryDebugGate>{children}</ErrorBoundaryDebugGate>;
   }
 }

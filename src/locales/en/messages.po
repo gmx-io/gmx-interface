@@ -1816,6 +1816,10 @@ msgstr "V1 Interface"
 msgid "GLP Reimbursement (test)"
 msgstr "GLP Reimbursement (test)"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show Error Boundary Debug Trigger"
+msgstr "Show Error Boundary Debug Trigger"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
