@@ -1,7 +1,11 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
 
-import { isSettlementChain } from "config/multichain";
+import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import {
   getMarketIndexName,
   getMarketPoolName,
@@ -9,20 +13,30 @@ import {
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffiliateRewardsTxn";
+import {
+  buildAndSignMultichainClaimAffiliateRewardsTxn,
+  createMultichainClaimAffiliateRewardsTxn,
+} from "domain/synthetics/referrals/createMultichainClaimAffiliateRewardsTxn";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
+import { getTokenAddressByMarket } from "sdk/configs/markets";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { Amount } from "components/Amount/Amount";
+import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
-import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
-import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
 
@@ -35,13 +49,14 @@ export function ClaimAffiliatesModal(p: Props) {
   const { onClose, setPendingTxns = () => null } = p;
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
+  const history = useHistory();
 
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const rewards = Object.values(affiliateRewardsData || {});
+  const rewards = useMemo(() => Object.values(affiliateRewardsData || {}), [affiliateRewardsData]);
 
   const [selectedMarketAddresses, setSelectedMarketAddresses] = useState<string[]>([]);
 
@@ -59,56 +74,169 @@ export function ClaimAffiliatesModal(p: Props) {
       ? getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData)
       : 0n;
 
-  const selectedRewards = rewards.filter((reward) => selectedMarketAddresses.includes(reward.marketAddress));
-
-  function onSubmit() {
-    if (!account || !signer || !affiliateRewardsData || !marketsInfoData || srcChainId !== undefined) return;
-
+  const rewardsParams = useMemo(() => {
+    const selectedRewards = rewards.filter((reward) => selectedMarketAddresses.includes(reward.marketAddress));
     const marketAddresses: string[] = [];
     const tokenAddresses: string[] = [];
 
     for (const reward of selectedRewards) {
-      const market = getByKey(marketsInfoData, reward.marketAddress);
-
-      if (!market) {
-        continue;
-      }
-
       if (reward.longTokenAmount > 0) {
-        marketAddresses.push(market.marketTokenAddress);
-        tokenAddresses.push(market.longTokenAddress);
+        marketAddresses.push(reward.marketAddress);
+        tokenAddresses.push(getTokenAddressByMarket(chainId, reward.marketAddress, "long"));
       }
 
       if (reward.shortTokenAmount > 0) {
-        marketAddresses.push(market.marketTokenAddress);
-        tokenAddresses.push(market.shortTokenAddress);
+        marketAddresses.push(reward.marketAddress);
+        tokenAddresses.push(getTokenAddressByMarket(chainId, reward.marketAddress, "short"));
       }
     }
+
+    return {
+      marketAddresses,
+      tokenAddresses,
+    };
+  }, [rewards, selectedMarketAddresses, chainId]);
+
+  const handleSubmitSettlementChain = () => {
+    if (!account || !signer || !affiliateRewardsData || !marketsInfoData || srcChainId !== undefined || !rewardsParams)
+      return;
 
     setIsSubmitting(true);
 
     claimAffiliateRewardsTxn(chainId, signer, {
       account,
-      rewardsParams: {
-        marketAddresses: marketAddresses,
-        tokenAddresses: tokenAddresses,
-      },
+      rewardsParams,
       setPendingTxns,
     })
       .then(onClose)
       .finally(() => setIsSubmitting(false));
-  }
+  };
 
-  const isButtonDisabled = isSubmitting || selectedMarketAddresses.length === 0;
-  const buttonText = useMemo(() => {
-    if (isSubmitting) {
-      return t`Claiming...`;
+  const expressTransactionBuilder = useMemo((): ExpressTransactionBuilder | undefined => {
+    if (
+      !account ||
+      !rewardsParams ||
+      rewardsParams.marketAddresses.length === 0 ||
+      rewardsParams.tokenAddresses.length === 0 ||
+      !signer
+    ) {
+      return undefined;
     }
-    if (selectedMarketAddresses.length === 0) {
-      return t`No rewards selected`;
+
+    const expressTransactionBuilder: ExpressTransactionBuilder = async ({ gasPaymentParams, relayParams }) => ({
+      txnData: await buildAndSignMultichainClaimAffiliateRewardsTxn({
+        account,
+        marketAddresses: rewardsParams.marketAddresses,
+        tokenAddresses: rewardsParams.tokenAddresses,
+        chainId,
+        srcChainId,
+        relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+        relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+        relayParams,
+        signer: undefined,
+        emptySignature: true,
+      }),
+    });
+
+    return expressTransactionBuilder;
+  }, [account, chainId, rewardsParams, signer, srcChainId]);
+
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
+
+  const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
+    isGmxAccount: true,
+    enabled: srcChainId !== undefined,
+    expressTransactionBuilder,
+  });
+
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+
+  const isOutOfTokenErrorToken = useMemo(() => {
+    if (errors?.isOutOfTokenError?.tokenAddress) {
+      return getByKey(tokensData, errors.isOutOfTokenError.tokenAddress);
     }
-    return t`Claim`;
-  }, [isSubmitting, selectedMarketAddresses.length]);
+  }, [errors, tokensData]);
+
+  const networkFeeFormatted = useMemo(() => {
+    if (srcChainId === undefined) {
+      return undefined;
+    }
+
+    let gasPaymentTokenAmount: bigint | undefined;
+
+    if (errors?.isOutOfTokenError?.isGasPaymentToken && errors.isOutOfTokenError.requiredAmount !== undefined) {
+      gasPaymentTokenAmount = errors.isOutOfTokenError.requiredAmount;
+    } else if (expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
+      gasPaymentTokenAmount = expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentTokenAmount;
+    }
+
+    if (gasPaymentTokenAmount === undefined || !gasPaymentToken) {
+      return "-";
+    }
+
+    const networkFeeUsd = convertToUsd(
+      gasPaymentTokenAmount,
+      gasPaymentToken.decimals,
+      gasPaymentToken.prices.minPrice
+    );
+
+    return (
+      <AmountWithUsdBalance
+        amount={gasPaymentTokenAmount}
+        decimals={gasPaymentToken.decimals}
+        usd={networkFeeUsd}
+        symbol={gasPaymentToken.symbol}
+        isStable={gasPaymentToken.isStable}
+      />
+    );
+  }, [
+    srcChainId,
+    errors?.isOutOfTokenError?.isGasPaymentToken,
+    errors?.isOutOfTokenError?.requiredAmount,
+    expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount,
+    gasPaymentToken,
+  ]);
+
+  const handleSubmitMultichain = async () => {
+    setIsSubmitting(true);
+
+    const expressTxnParams = await expressTxnParamsAsyncResult.promise;
+    if (!expressTxnParams || !account || !signer) {
+      setIsSubmitting(false);
+      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+      metrics.pushError(new Error("No necessary params to claim"), "expressClaimAffiliateRewards");
+      return;
+    }
+
+    try {
+      const result = await createMultichainClaimAffiliateRewardsTxn({
+        account,
+        marketAddresses: rewardsParams.marketAddresses,
+        tokenAddresses: rewardsParams.tokenAddresses,
+        chainId,
+        srcChainId,
+        signer,
+        expressTxnParams,
+      });
+
+      await result.wait();
+
+      onClose();
+    } catch (error) {
+      helperToast.error(t`Claiming affiliate rewards failed`);
+      metrics.pushError(error, "expressClaimAffiliateRewards");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (srcChainId === undefined) {
+      handleSubmitSettlementChain();
+    } else {
+      handleSubmitMultichain();
+    }
+  };
 
   const isAllChecked = selectedMarketAddresses.length === rewards.length;
 
@@ -119,6 +247,31 @@ export function ClaimAffiliatesModal(p: Props) {
       setSelectedMarketAddresses(rewards.map((reward) => reward.marketAddress));
     }
   }, [isAllChecked, rewards, setSelectedMarketAddresses]);
+
+  const submitButtonState = useMemo(() => {
+    if (isSubmitting) {
+      return {
+        text: t`Claiming...`,
+        disabled: true,
+      };
+    } else if (selectedMarketAddresses.length === 0) {
+      return {
+        text: t`No rewards selected`,
+        disabled: true,
+      };
+    } else if (errors?.isOutOfTokenError) {
+      const token = getToken(chainId, errors.isOutOfTokenError.tokenAddress);
+      return {
+        text: t`Insufficient ${token?.symbol} balance`,
+        disabled: true,
+      };
+    } else {
+      return {
+        text: t`Claim`,
+        disabled: false,
+      };
+    }
+  }, [chainId, errors?.isOutOfTokenError, isSubmitting, selectedMarketAddresses.length]);
 
   return (
     <Modal
@@ -158,14 +311,64 @@ export function ClaimAffiliatesModal(p: Props) {
           ))}
         </Table>
 
-        {isSettlementChain(chainId) && (
-          <SwitchToSettlementChainWarning topic="claimRewards" settlementChainId={chainId} />
+        {errors?.isOutOfTokenError && isOutOfTokenErrorToken !== undefined && (
+          <AlertInfoCard type="warning" hideClose>
+            <div>
+              <Trans>
+                Claiming requires{" "}
+                <Amount
+                  amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
+                  decimals={isOutOfTokenErrorToken.decimals}
+                  isStable={isOutOfTokenErrorToken.isStable}
+                  symbol={isOutOfTokenErrorToken.symbol}
+                  showZero
+                />{" "}
+                while you have{" "}
+                <Amount
+                  amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
+                  decimals={isOutOfTokenErrorToken.decimals}
+                  isStable={isOutOfTokenErrorToken.isStable}
+                  symbol={isOutOfTokenErrorToken.symbol}
+                  showZero
+                />
+                . Please{" "}
+                <span
+                  className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+                  onClick={() => {
+                    onClose();
+                    history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
+                  }}
+                >
+                  swap
+                </span>{" "}
+                or{" "}
+                <span
+                  className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+                  onClick={() => {
+                    onClose();
+                    history.push(
+                      `/account?action=deposit&token=${convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native")}`
+                    );
+                  }}
+                >
+                  deposit
+                </span>{" "}
+                more {isOutOfTokenErrorToken.symbol} to your GMX account.
+              </Trans>
+            </div>
+          </AlertInfoCard>
         )}
-        <SwitchToSettlementChainButtons settlementChainId={isSettlementChain(chainId) ? chainId : undefined}>
-          <Button className="w-full" variant="primary-action" onClick={onSubmit} disabled={isButtonDisabled}>
-            {buttonText}
-          </Button>
-        </SwitchToSettlementChainButtons>
+
+        <Button
+          className="w-full"
+          variant="primary-action"
+          onClick={handleSubmit}
+          disabled={submitButtonState.disabled}
+        >
+          {submitButtonState.text}
+        </Button>
+
+        {srcChainId !== undefined && <SyntheticsInfoRow label={t`Network Fee`} value={networkFeeFormatted} />}
       </div>
     </Modal>
   );

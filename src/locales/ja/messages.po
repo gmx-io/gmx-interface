@@ -361,6 +361,7 @@ msgstr "<0>マルチチェーン</0><1>ジャストインタイム流動性</1>"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
 msgstr "請求に必要なパラメータがありません。数秒後にもう一度お試しください。"
 
@@ -2427,6 +2428,10 @@ msgstr "最大パート数: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "アプリ起動"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming affiliate rewards failed"
+msgstr "アフィリエイトリワードの請求に失敗しました"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "支払い可能"
@@ -2938,6 +2943,7 @@ msgstr "GMX、GLV、GMトークンがどのように連携して分散型取引�
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Network Fee"
 msgstr "ネットワーク手数料"
 
@@ -6619,6 +6625,7 @@ msgstr "部分ごとのサイズ"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7918,6 +7925,10 @@ msgstr "アドレスがクリップボードにコピーされました。"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "残余担保が{0} USD未満"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr "請求には <0/> が必要ですが、現在 <1/> を持っています。GMXアカウントに {0} を<2>交換</2>または<3>入金</3>してください。"
 
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
