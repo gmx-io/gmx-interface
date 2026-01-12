@@ -11,9 +11,10 @@ const DEFAULT_REPORT_ISSUE_URL = "https://github.com/gmx-io/gmx-interface/issues
 
 type ErrorBoundaryProps = {
   children: ReactNode;
-  variant?: "app" | "page";
+  variant?: "app" | "page" | "block";
   reportIssueHref?: string;
   onReportIssue?: () => void;
+  wrapperClassName?: string;
 };
 
 type ErrorBoundaryState = {
@@ -21,16 +22,24 @@ type ErrorBoundaryState = {
 };
 
 type ErrorFallbackProps = {
-  variant?: "app" | "page";
+  variant?: "app" | "page" | "block";
   reportIssueHref?: string;
   onReportIssue?: () => void;
   onReload: () => void;
+  wrapperClassName?: string;
 };
 
-function ErrorFallback({ variant = "page", reportIssueHref, onReportIssue, onReload }: ErrorFallbackProps) {
-  const wrapperClassName = cx("flex w-full flex-col items-center justify-center text-center", {
+function ErrorFallback({
+  variant = "page",
+  reportIssueHref,
+  onReportIssue,
+  onReload,
+  wrapperClassName: wrapperClassNameProp,
+}: ErrorFallbackProps) {
+  const wrapperClassName = cx("flex w-full flex-col items-center justify-center text-center", wrapperClassNameProp, {
     "min-h-screen bg-slate-950 px-24 py-64 max-md:px-16": variant === "app",
     "min-h-[360px] grow px-24 py-48 max-md:px-16": variant === "page",
+    "h-full rounded-b-8 bg-slate-900 px-24 py-64 max-md:px-16": variant === "block",
   });
 
   const reportIssueButton = onReportIssue ? (
@@ -94,7 +103,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   };
 
   render() {
-    const { children, variant, reportIssueHref, onReportIssue } = this.props;
+    const { children, variant, reportIssueHref, onReportIssue, wrapperClassName } = this.props;
 
     if (this.state.hasError) {
       return (
@@ -103,6 +112,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
           reportIssueHref={reportIssueHref}
           onReportIssue={onReportIssue}
           onReload={this.handleReload}
+          wrapperClassName={wrapperClassName}
         />
       );
     }

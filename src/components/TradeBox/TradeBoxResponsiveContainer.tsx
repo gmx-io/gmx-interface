@@ -1,5 +1,7 @@
 import { useBreakpoints } from "lib/useBreakpoints";
 
+import ErrorBoundary from "components/Errors/ErrorBoundary";
+
 import { Curtain } from "./Curtain";
 import { TradeBox } from "./TradeBox";
 import { TradeBoxHeaderTabs } from "./TradeBoxHeaderTabs";
@@ -11,14 +13,18 @@ export function TradeBoxResponsiveContainer() {
     return (
       <div className="text-body-medium flex flex-col rounded-8" data-qa="tradebox">
         <TradeBoxHeaderTabs />
-        <TradeBox isMobile={isTablet} />
+        <ErrorBoundary variant="block">
+          <TradeBox isMobile={isTablet} />
+        </ErrorBoundary>
       </div>
     );
   }
 
   return (
     <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox">
-      <TradeBox isMobile={isTablet} />
+      <ErrorBoundary variant="block">
+        <TradeBox isMobile={isTablet} />
+      </ErrorBoundary>
     </Curtain>
   );
 }
