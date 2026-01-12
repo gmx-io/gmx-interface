@@ -18,7 +18,6 @@ import "./App.scss";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
-import { AvalancheFallbackProvider } from "context/GmxAccountContext/AvalancheFallbackProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
@@ -75,7 +74,6 @@ function App() {
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
-  app = <AvalancheFallbackProvider>{app}</AvalancheFallbackProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <ThemeProvider>{app}</ThemeProvider>;
