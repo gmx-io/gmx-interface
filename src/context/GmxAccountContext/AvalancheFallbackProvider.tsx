@@ -1,11 +1,10 @@
 import { PropsWithChildren, useEffect } from "react";
 
-import { DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/multichain";
+import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "config/multichain";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainId } from "lib/chains";
 import { AVALANCHE } from "sdk/configs/chains";
 
-import { DEFAULT_SETTLEMENT_CHAIN_ID } from "./GmxAccountContext";
 import { useGmxAccountSettlementChainId } from "./hooks";
 
 export function AvalancheFallbackProvider({ children }: PropsWithChildren) {

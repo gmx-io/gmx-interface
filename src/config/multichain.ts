@@ -398,6 +398,8 @@ for (const tokenSymbol in TOKEN_GROUPS) {
   }
 }
 
+export const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = isDevelopment() ? ARBITRUM_SEPOLIA : ARBITRUM;
+
 export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChainId> = {
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
   [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
