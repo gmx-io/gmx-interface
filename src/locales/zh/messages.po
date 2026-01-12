@@ -6322,6 +6322,11 @@ msgstr "更多机会"
 msgid "Vested GMX not withdrawn"
 msgstr "已归属 GMX 未提取"
 
+#: src/components/Errors/ErrorBoundary.tsx
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Report issue"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
 msgstr "最大容量："
@@ -6824,6 +6829,10 @@ msgstr "正在创建推荐码"
 msgid "Swap failed."
 msgstr "交换失败。"
 
+#: src/components/Errors/ErrorBoundary.tsx
+#~ msgid "Please try reloading or report the issue if the problem persists."
+#~ msgstr ""
+
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6885,6 +6894,10 @@ msgstr "通过 GMX 推荐程序获得费用折扣并赚取返利。<0/>更多信
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel} 卖出操作失败。您的资金是安全的，目前存储在您的 GMX 账户中。您可以切换到结算链，前往 {indexName} 资金池手动卖出 {gmOrGlvLabel} 代币。"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something went wrong"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7579,6 +7592,10 @@ msgstr "止损盈亏"
 msgid "Market - Long Dec."
 msgstr "市场 - 多头减少"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload page"
+msgstr ""
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
@@ -7628,6 +7645,10 @@ msgstr "资金已申领。"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "保持杠杆不可用，因为仓位超过最大允许杠杆。<0>阅读更多</0>。"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Please try reloading or report the issue if the <0/> problem persists."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8181,6 +8202,10 @@ msgstr "市价订单将在 ... 可取消"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Botanix 当前不支持质押 GMX。如需使用这些功能，请访问 Arbitrum 和 Avalanche 部署。"
+
+#: src/components/Errors/ErrorBoundary.tsx
+#~ msgid "ERROR CODE: {errorCode}"
+#~ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

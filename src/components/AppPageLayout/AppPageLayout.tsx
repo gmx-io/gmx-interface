@@ -1,6 +1,7 @@
 import cx from "classnames";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Footer from "components/Footer/Footer";
 import SideNav from "components/SideNav/SideNav";
 
@@ -30,7 +31,7 @@ export default function AppPageLayout({
         <div className="flex h-full grow flex-col items-center">
           <div className="w-full md:pb-8">{header ? header : <AppHeader />}</div>
           <div className={cx("flex w-full max-w-[1512px] grow flex-col gap-8 py-8 max-md:px-8", contentClassName)}>
-            {children}
+            <ErrorBoundary variant="page">{children}</ErrorBoundary>
           </div>
           <div className="mt-auto hidden w-full pt-8 lg:block">{footer ? footer : <Footer />}</div>
         </div>
