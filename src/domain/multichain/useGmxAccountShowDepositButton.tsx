@@ -9,14 +9,14 @@ export function useGmxAccountShowDepositButton() {
   const { srcChainId } = useChainId();
   const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
-  const { isEmptyAvalancheGmxAccount } = useEmptyAvalancheGmxAccount();
+  const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const shouldShowDepositButton =
     !isGmxAccountLoading &&
     gmxAccountUsd === 0n &&
     srcChainId !== undefined &&
     !isNonEoaAccountOnAnyChain &&
-    !isEmptyAvalancheGmxAccount;
+    !isEmptyAvalancheGmxAccountOrNotConnected;
 
   return { shouldShowDepositButton };
 }

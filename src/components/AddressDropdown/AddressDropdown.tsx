@@ -18,7 +18,7 @@ export function AddressDropdown({ account }: Props) {
   const { chainId } = useChainId();
 
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
-  const { isEmptyAvalancheGmxAccount } = useEmptyAvalancheGmxAccount();
+  const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const hasRelatedSourceChains = useMemo(
     () =>
@@ -32,7 +32,7 @@ export function AddressDropdown({ account }: Props) {
     !isSettlementChain(chainId) ||
     !hasRelatedSourceChains ||
     isNonEoaAccountOnAnyChain ||
-    isEmptyAvalancheGmxAccount
+    isEmptyAvalancheGmxAccountOrNotConnected
   ) {
     return <AddressDropdownWithoutMultichain account={account} />;
   }

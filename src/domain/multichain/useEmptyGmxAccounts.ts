@@ -87,7 +87,7 @@ export function useEmptyGmxAccounts(chainIds: SettlementChainId[] | undefined): 
 }
 
 export function useEmptyAvalancheGmxAccount(): {
-  isEmptyAvalancheGmxAccount: boolean;
+  isEmptyAvalancheGmxAccountOrNotConnected: boolean;
 } {
   const { chainId: settlementChainId } = useChainId();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
@@ -95,7 +95,10 @@ export function useEmptyAvalancheGmxAccount(): {
 
   const isAvalancheSettlement = settlementChainId === AVALANCHE;
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
-  const isEmptyAvalancheGmxAccount = (isAvalancheSettlement && isAvalancheEmpty) || !isConnected;
+  const isEmptyAvalancheGmxAccount = isAvalancheSettlement && isAvalancheEmpty;
+  const isEmptyAvalancheGmxAccountOrNotConnected = isEmptyAvalancheGmxAccount || !isConnected;
 
-  return { isEmptyAvalancheGmxAccount };
+  return {
+    isEmptyAvalancheGmxAccountOrNotConnected,
+  };
 }
