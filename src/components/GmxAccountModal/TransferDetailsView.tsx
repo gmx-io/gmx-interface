@@ -18,7 +18,7 @@ import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatAmountFree } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -84,7 +84,7 @@ export const TransferDetailsView = () => {
 
     if (selectedTransfer.operation === "withdrawal") {
       setGmxAccountWithdrawalViewChain(selectedTransfer.sourceChainId as SourceChainId);
-      setGmxAccountWithdrawalViewTokenAddress(selectedTransfer.token);
+      setGmxAccountWithdrawalViewTokenAddress(convertTokenAddress(chainId, selectedTransfer.token, "wrapped"));
       setGmxAccountWithdrawalViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
       setGmxAccountModalOpen("withdraw");
     }

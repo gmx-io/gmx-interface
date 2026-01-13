@@ -833,10 +833,11 @@ export const WithdrawalView = () => {
     }
   }
 
-  const hasSelectedToken = selectedTokenAddress !== undefined;
+  const hasValidSelectedToken =
+    selectedTokenAddress !== undefined && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
   useEffect(
     function fallbackWithdrawTokens() {
-      if (hasSelectedToken || !withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
+      if (hasValidSelectedToken || !withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
         return;
       }
 
@@ -886,7 +887,7 @@ export const WithdrawalView = () => {
         setSelectedTokenAddress(maxBalanceSettlementChainTokenAddress);
       }
     },
-    [chainId, hasSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
+    [chainId, hasValidSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
   );
 
   const isTestnet = isTestnetChain(chainId);
