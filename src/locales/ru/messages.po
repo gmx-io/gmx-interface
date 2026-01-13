@@ -3379,10 +3379,6 @@ msgstr "{typeString} Шорт TP/SL: {0} шорт позицию, когда д�
 msgid "Community-led Telegram groups."
 msgstr "Группы Telegram под руководством сообщества."
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr "{longShortText} {0} Открытый Интерес"
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled Funding Fees"
@@ -3905,7 +3901,6 @@ msgstr "Триггерная цена для ордера."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4680,10 +4675,6 @@ msgstr "Не удалось отменить {ordersText}."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
 msgstr "Вестинг"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
-msgstr "{longShortText} {0} Резерв"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
@@ -6956,10 +6947,6 @@ msgstr "{ordersText} отменено."
 msgid "Select a Pay token"
 msgstr "Выберите токен для оплаты"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr "Доступная ликвидность будет меньшей из разниц между максимальным значением и текущим значением как для резерва, так и для открытого интереса."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Покупка"
@@ -7040,7 +7027,6 @@ msgstr "Ошибка сдвига."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7157,10 +7143,6 @@ msgstr "Цена ликвидации"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
 msgstr "Активное управление не требуется"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
-msgstr "Резерв лонгов учитывает PnL открытых позиций, в то время как открытый интерес нет."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take Profit"

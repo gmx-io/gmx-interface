@@ -3379,10 +3379,6 @@ msgstr "{typeString} Short TP/SL : {0} une position short lorsque le prix de dé
 msgid "Community-led Telegram groups."
 msgstr "Groupes Telegram gérés par la communauté."
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr "Intérêt ouvert {longShortText} {0}"
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled Funding Fees"
@@ -3905,7 +3901,6 @@ msgstr "Prix de déclenchement pour l'ordre."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4680,10 +4675,6 @@ msgstr "Échec de l'annulation de {ordersText}."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
 msgstr "Vesting"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
-msgstr "Réserve {longShortText} {0}"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
@@ -6956,10 +6947,6 @@ msgstr "{ordersText} annulé."
 msgid "Select a Pay token"
 msgstr "Sélectionner un token de paiement"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr "La liquidité disponible sera la moindre de la différence entre la valeur maximale et la valeur actuelle pour la réserve et l'intérêt ouvert."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Achat en cours"
@@ -7040,7 +7027,6 @@ msgstr "Erreur de décalage."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7157,10 +7143,6 @@ msgstr "Prix de liquidation"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
 msgstr "Aucune gestion active requise"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
-msgstr "La réserve longue tient compte du PnL des positions ouvertes, tandis que l'intérêt ouvert ne le fait pas."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take Profit"

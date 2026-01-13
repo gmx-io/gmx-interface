@@ -3379,10 +3379,6 @@ msgstr "{typeString} Short TP/SL: {0} eine Short-Position, wenn der Trigger-Prei
 msgid "Community-led Telegram groups."
 msgstr "Von der Community geführte Telegram-Gruppen."
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr "{longShortText} {0} Offenes Interest"
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled Funding Fees"
@@ -3905,7 +3901,6 @@ msgstr "Trigger-Preis für die Order."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4680,10 +4675,6 @@ msgstr "Stornieren von {ordersText} fehlgeschlagen."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
 msgstr "Vesting"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
-msgstr "{longShortText} {0} Reserve"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
@@ -6956,10 +6947,6 @@ msgstr "{ordersText} storniert."
 msgid "Select a Pay token"
 msgstr "Wähle einen Zahlungstoken"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr "Die verfügbare Liquidität ist der geringere Wert der Differenz zwischen dem Maximalwert und dem aktuellen Wert sowohl für die Reserve als auch für das offene Interesse."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Kaufen"
@@ -7040,7 +7027,6 @@ msgstr "Verschiebungsfehler."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7157,10 +7143,6 @@ msgstr "Liquidationspreis"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
 msgstr "Kein aktives Management erforderlich"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
-msgstr "Die Long-Reserve berücksichtigt den Gewinn/Verlust offener Positionen, während das offene Interesse das nicht tut."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take Profit"
