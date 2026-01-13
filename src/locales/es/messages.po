@@ -89,6 +89,10 @@ msgstr "¿Qué habría hecho que tu calificación fuera un 9 o 10?"
 msgid "Execute Stop Loss"
 msgstr "Ejecutar Stop Loss"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Hide Support Chat"
+msgstr "Ocultar chat de soporte"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "Aceptar"

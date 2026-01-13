@@ -89,6 +89,10 @@ msgstr "Что сделало бы вашу оценку 9 или 10?"
 msgid "Execute Stop Loss"
 msgstr "Исполнить стоп-лосс"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Hide Support Chat"
+msgstr "Скрыть чат поддержки"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "Согласен"

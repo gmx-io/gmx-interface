@@ -6,7 +6,7 @@ import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountMo
 export function useGmxAccountShowDepositButton() {
   const { srcChainId } = useChainId();
   const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const shouldShowDepositButton =
     !isGmxAccountLoading && gmxAccountUsd === 0n && srcChainId !== undefined && !isNonEoaAccountOnAnyChain;

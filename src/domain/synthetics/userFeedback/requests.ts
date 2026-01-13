@@ -6,6 +6,9 @@ import { formatAmountForMetrics, metrics, MissedCoinEvent } from "lib/metrics";
 import { MissedCoinsPlace } from "./types";
 import { COIN_REGEXP } from "./utils";
 
+/**
+ * TODO remove as its not used anywhere
+ */
 export function sendMissedCoinsFeedback({
   totalVolume,
   monthVolume,

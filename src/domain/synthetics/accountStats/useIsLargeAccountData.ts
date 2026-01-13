@@ -37,7 +37,7 @@ export function useIsLargeAccountData(account?: string) {
   return isLargeAccount;
 }
 
-function useIsLargeAccountVolumeStats(params: { account?: string }) {
+export function useIsLargeAccountVolumeStats(params: { account?: string }) {
   const { account } = params;
 
   const now = new Date();

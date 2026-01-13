@@ -71,7 +71,7 @@ export default function NetworkDropdown({
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const [selectedSettlementChainId] = useGmxAccountSettlementChainId();
 
   const [disabledNetworks, enabledNetworks] = partition(

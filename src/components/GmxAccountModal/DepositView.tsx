@@ -400,7 +400,7 @@ export const DepositView = () => {
   const subaccountState = useSubaccountContext();
 
   const isGeminiWallet = useIsGeminiWallet();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
   const hasOutdatedUi = useHasOutdatedUi();
 

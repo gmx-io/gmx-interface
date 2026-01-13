@@ -6,6 +6,7 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
+  CRISP_CHAT_HIDDEN_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   DISABLE_SHARE_MODAL_PNL_CHECK_KEY,
@@ -102,6 +103,9 @@ export type SettingsContextType = {
 
   isSetAcceptablePriceImpactEnabled: boolean;
   setIsSetAcceptablePriceImpactEnabled: (val: boolean) => void;
+
+  crispChatHidden: boolean;
+  setCrispChatHidden: (val: boolean) => void;
 };
 
 export const SettingsContext = createContext({});
@@ -230,6 +234,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_TWAP_NUMBER_OF_PARTS
   );
 
+  const [crispChatHidden, setCrispChatHidden] = useLocalStorageSerializeKey(CRISP_CHAT_HIDDEN_KEY, false);
+
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
 
   useEffect(() => {
@@ -321,6 +327,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
 
+      crispChatHidden: crispChatHidden!,
+      setCrispChatHidden,
+
       feedbackModalVisible,
       setFeedbackModalVisible,
     };
@@ -374,6 +383,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
+    crispChatHidden,
+    setCrispChatHidden,
     feedbackModalVisible,
   ]);
 

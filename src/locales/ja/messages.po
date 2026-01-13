@@ -89,6 +89,10 @@ msgstr "評価を9または10にするためには何が必要でしたか？"
 msgid "Execute Stop Loss"
 msgstr "ストップロスの執行"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Hide Support Chat"
+msgstr "サポートチャットを非表示"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "同意する"

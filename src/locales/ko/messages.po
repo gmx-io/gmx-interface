@@ -89,6 +89,10 @@ msgstr "평점을 9 또는 10으로 만들기 위해 무엇이 필요했을까�
 msgid "Execute Stop Loss"
 msgstr "손절 주문 실행"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Hide Support Chat"
+msgstr "지원 채팅 숨기기"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "동의하기"

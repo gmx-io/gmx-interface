@@ -89,6 +89,10 @@ msgstr ""
 msgid "Execute Stop Loss"
 msgstr ""
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Hide Support Chat"
+msgstr ""
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr ""

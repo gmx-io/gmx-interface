@@ -12,6 +12,7 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
+import { useCrisp } from "lib/crisp";
 import { dynamicActivate, locales } from "lib/i18n";
 import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
@@ -54,6 +55,7 @@ export function AppRoutes() {
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
+  useCrisp();
 
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();

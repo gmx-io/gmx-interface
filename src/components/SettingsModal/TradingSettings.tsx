@@ -64,7 +64,7 @@ export function TradingSettings({
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
   const isGeminiWallet = useIsGeminiWallet();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const isExpressTradingDisabled =
     (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain || isGeminiWallet;
   const nativeTokenSymbol = getNativeToken(chainId).symbol;

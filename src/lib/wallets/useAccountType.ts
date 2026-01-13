@@ -1,13 +1,13 @@
-import { getPublicClient } from "@wagmi/core";
 import useSWR from "swr";
 import { Hex, PublicClient } from "viem";
-import { useAccount, useChainId, usePublicClient } from "wagmi";
+import { useAccount, useChainId as useWagmiChainId, usePublicClient } from "wagmi";
 
-import { AnyChainId, CONTRACTS_CHAIN_IDS, ContractsChainId, getChainSlug } from "config/chains";
+import { AnyChainId, CONTRACTS_CHAIN_IDS, ContractsChainId, getChainSlug, isTestnetChain } from "config/chains";
 import { SOURCE_CHAINS } from "config/multichain";
+import { useChainId } from "lib/chains";
 import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
 
-import { getRainbowKitConfig } from "./rainbowKitConfig";
+import { getPublicClientWithRpc } from "./rainbowKitConfig";
 
 export enum AccountType {
   Safe,
@@ -75,9 +75,12 @@ async function getAccountType(
   return AccountType.SmartAccount;
 }
 
+/**
+ * TODO remove as its not used anywhere
+ */
 export function useAccountType() {
   const { address } = useAccount();
-  const chainId = useChainId();
+  const chainId = useWagmiChainId();
   const publicClient = usePublicClient();
 
   const { data: safeSingletonAddresses = new Set<Hex>() } = useSWR<Set<string>>([chainId, "safeSingletons"], {
@@ -117,10 +120,11 @@ export function useAccountType() {
   };
 }
 
-export function useIsNonEoaAccountOnAnyChain(): boolean {
+export function useIsNonEoaAccountOnAnyChain(): { isNonEoaAccountOnAnyChain: boolean; isLoading: boolean } {
   const { address } = useAccount();
+  const { chainId: currentChainId } = useChainId();
 
-  const { data: isNonEoaAccountOnAnyChain = false } = useSWR<boolean | undefined>(
+  const { data: isNonEoaAccountOnAnyChain = false, isLoading } = useSWR<boolean | undefined>(
     address && [address, "detectIsNonEoaAccountOnAnyChain"],
     {
       fetcher: async (): Promise<boolean | undefined> => {
@@ -128,9 +132,15 @@ export function useIsNonEoaAccountOnAnyChain(): boolean {
           return undefined;
         }
 
+        const isCurrentChainTestnet = isTestnetChain(currentChainId);
+
+        const chainIds = ([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAINS] as AnyChainId[]).filter(
+          (chainId) => isTestnetChain(chainId) === isCurrentChainTestnet
+        );
+
         return Promise.all(
-          (CONTRACTS_CHAIN_IDS as unknown as AnyChainId[]).concat(SOURCE_CHAINS).map(async (chainId) => {
-            const publicClient = getPublicClient(getRainbowKitConfig(), { chainId });
+          chainIds.map(async (chainId) => {
+            const publicClient = getPublicClientWithRpc(chainId);
 
             if (!publicClient) {
               return undefined;
@@ -163,5 +173,5 @@ export function useIsNonEoaAccountOnAnyChain(): boolean {
     }
   );
 
-  return isNonEoaAccountOnAnyChain;
+  return { isNonEoaAccountOnAnyChain, isLoading };
 }

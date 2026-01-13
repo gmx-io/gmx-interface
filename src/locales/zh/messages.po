@@ -89,6 +89,10 @@ msgstr "什么能让您的评分达到 9 或 10？"
 msgid "Execute Stop Loss"
 msgstr "执行止损"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Hide Support Chat"
+msgstr "隐藏支持聊天"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "同意"

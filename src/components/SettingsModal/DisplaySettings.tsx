@@ -56,6 +56,10 @@ export function DisplaySettings() {
             />
           </ToggleSwitch>
         </div>
+
+        <ToggleSwitch isChecked={settings.crispChatHidden} setIsChecked={settings.setCrispChatHidden}>
+          <Trans>Hide Support Chat</Trans>
+        </ToggleSwitch>
       </SettingsSection>
       <SettingsSection>
         <ThemeSelector />

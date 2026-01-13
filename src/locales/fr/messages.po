@@ -89,6 +89,10 @@ msgstr "Qu'est-ce qui aurait rendu votre note un 9 ou 10 ?"
 msgid "Execute Stop Loss"
 msgstr "Exécuter le Stop Loss"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Hide Support Chat"
+msgstr "Masquer le chat de support"
+
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Agree"
 msgstr "Accepter"
