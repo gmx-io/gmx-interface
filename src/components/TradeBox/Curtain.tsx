@@ -255,7 +255,8 @@ export function Curtain({
         >
           <div
             className={cx(
-              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
+              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600",
+              "translate-y-2 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
               {
                 "border-b-1/2 border-t-1/2 bg-slate-900": isOpen,
                 "pr-8": !hideChevron,
