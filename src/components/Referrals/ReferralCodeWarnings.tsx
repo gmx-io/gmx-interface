@@ -44,9 +44,6 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
               <div>
                 <Trans>
                   This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.
-                  <br />
-                  <br />
-                  Switch your network to create this code on {nonTakenNetworkNames}.
                 </Trans>
               </div>
             )}

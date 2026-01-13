@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Contract } from "ethers";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
@@ -25,11 +25,13 @@ import { SendParam } from "domain/multichain/types";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { getRawRelayerParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
-import { convertToUsd, getMidPrice } from "domain/tokens";
+import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { approveTokens, convertToUsd, getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { formatUsd, numberToBigint } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -246,6 +248,7 @@ function ReferralCodeFormMultichain({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const settlementChainPublicClient = usePublicClient({ chainId });
@@ -423,6 +426,39 @@ function ReferralCodeFormMultichain({
     return convertToUsd(result.data.nativeFee, 18, getMidPrice(globalExpressParams?.tokensData[zeroAddress].prices));
   }, [globalExpressParams?.tokensData, result.data]);
 
+  const stargateSpenderAddress = sourceChainTokenId?.stargate;
+  const sourceChainTokenAddress = sourceChainTokenId?.address;
+  const amountToApprove = result.data?.amount;
+
+  const { tokensAllowanceData, isLoaded: isAllowanceLoaded } = useTokensAllowanceData(srcChainId, {
+    spenderAddress: stargateSpenderAddress,
+    tokenAddresses: sourceChainTokenAddress ? [sourceChainTokenAddress] : [],
+    skip: srcChainId === undefined || sourceChainTokenAddress === undefined || sourceChainTokenAddress === zeroAddress,
+  });
+
+  const needsApproval = useMemo(() => {
+    if (sourceChainTokenAddress === zeroAddress) {
+      return false;
+    }
+    return getNeedTokenApprove(tokensAllowanceData, sourceChainTokenAddress, amountToApprove, EMPTY_ARRAY);
+  }, [tokensAllowanceData, sourceChainTokenAddress, amountToApprove]);
+
+  const handleApprove = useCallback(async () => {
+    if (!sourceChainTokenAddress || !stargateSpenderAddress || !srcChainId || !signer) {
+      return;
+    }
+
+    await approveTokens({
+      setIsApproving,
+      signer,
+      tokenAddress: sourceChainTokenAddress,
+      spender: stargateSpenderAddress,
+      chainId: srcChainId,
+      permitParams: undefined,
+      approveAmount: undefined,
+    });
+  }, [sourceChainTokenAddress, stargateSpenderAddress, srcChainId, signer]);
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
@@ -546,6 +582,11 @@ function ReferralCodeFormMultichain({
       text: t`Page outdated, please refresh`,
       disabled: true,
     };
+  } else if (isApproving) {
+    buttonState = {
+      text: t`Approving...`,
+      disabled: true,
+    };
   } else if (isEdit && debouncedReferralCode === userReferralCodeString) {
     buttonState = {
       text: t`Same as current active code`,
@@ -576,7 +617,7 @@ function ReferralCodeFormMultichain({
       text: t`Referral code does not exist`,
       disabled: true,
     };
-  } else if (result.isLoading || !result.data) {
+  } else if (result.isLoading || !result.data || !isAllowanceLoaded) {
     buttonState = {
       text: (
         <>
@@ -585,6 +626,15 @@ function ReferralCodeFormMultichain({
         </>
       ),
       disabled: true,
+    };
+  } else if (needsApproval) {
+    buttonState = {
+      text: t`Approve ${sourceChainTokenId?.symbol}`,
+      disabled: false,
+      onSubmit: (event: React.FormEvent) => {
+        event.preventDefault();
+        handleApprove();
+      },
     };
   } else if (isEdit) {
     buttonState = {
