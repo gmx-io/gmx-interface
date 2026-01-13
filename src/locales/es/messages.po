@@ -3777,6 +3777,10 @@ msgstr "Estarás corto en {indexSymbol} desde tu posición corta, mientras está
 msgid "Open GMX Solana"
 msgstr "Abrir GMX Solana"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Reembolsos ganados por esta cuenta como trader."
@@ -4112,8 +4116,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr "Haz clic aquí para darnos tus comentarios sobre GMX"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "Exposición a GyP de Traders de Mercado"
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr "Exposición a GyP de Traders de Mercado"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"

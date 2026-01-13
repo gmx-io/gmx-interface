@@ -68,7 +68,7 @@ export default function Pools() {
 
       <div className="flex grow flex-col gap-16 lg:overflow-hidden">
         {!isBotanix && (
-          <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+          <ErrorBoundary id="Pools-GlvList" variant="block" wrapperClassName="rounded-t-8">
             <GlvList
               marketsTokensApyData={marketsTokensApyData}
               marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
@@ -83,7 +83,7 @@ export default function Pools() {
           </ErrorBoundary>
         )}
 
-        <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+        <ErrorBoundary id="Pools-GmList" variant="block" wrapperClassName="rounded-t-8">
           <GmList
             glvTokensApyData={glvApyInfoData}
             glvTokensIncentiveAprData={glvTokensIncentiveAprData}

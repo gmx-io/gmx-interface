@@ -3777,6 +3777,10 @@ msgstr ""
 msgid "Open GMX Solana"
 msgstr ""
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr ""
@@ -4112,8 +4116,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr ""
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"

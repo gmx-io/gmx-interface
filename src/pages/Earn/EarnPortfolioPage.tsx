@@ -90,7 +90,7 @@ export default function EarnPortfolioPage() {
       {processedData ? (
         <>
           {hasAnyAssets && (
-            <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+            <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">
               <AssetsList
                 processedData={processedData}
                 chainId={chainId}
@@ -107,7 +107,7 @@ export default function EarnPortfolioPage() {
             </ErrorBoundary>
           )}
           {glv90dApyData && markets90dApyData && performance90d && marketTokensData && (
-            <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+            <ErrorBoundary id="EarnPortfolio-RecommendedAssets" variant="block" wrapperClassName="rounded-t-8">
               <RecommendedAssets
                 hasGmxAssets={hasGmxAssets}
                 marketsInfoData={marketsInfoData}
@@ -119,7 +119,7 @@ export default function EarnPortfolioPage() {
             </ErrorBoundary>
           )}
           {!hasAnyAssets && (
-            <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+            <ErrorBoundary id="EarnPortfolio-AssetsListEmpty" variant="block" wrapperClassName="rounded-t-8">
               <AssetsList
                 processedData={processedData}
                 chainId={chainId}

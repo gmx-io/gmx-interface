@@ -13,7 +13,7 @@ export function TradeBoxResponsiveContainer() {
     return (
       <div className="text-body-medium flex flex-col rounded-8" data-qa="tradebox">
         <TradeBoxHeaderTabs />
-        <ErrorBoundary variant="block">
+        <ErrorBoundary id="TradeBox" variant="block">
           <TradeBox isMobile={isTablet} />
         </ErrorBoundary>
       </div>
@@ -22,7 +22,7 @@ export function TradeBoxResponsiveContainer() {
 
   return (
     <Curtain header={<TradeBoxHeaderTabs isInCurtain />} dataQa="tradebox">
-      <ErrorBoundary variant="block">
+      <ErrorBoundary id="TradeBox" variant="block">
         <TradeBox isMobile={isTablet} />
       </ErrorBoundary>
     </Curtain>

@@ -139,7 +139,7 @@ export default function Modal({
                 </div>
                 {headerContent}
               </div>
-              <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <ErrorBoundary id="Modal" variant="block" wrapperClassName="rounded-t-8">
                 {disableOverflowHandling ? (
                   children
                 ) : (

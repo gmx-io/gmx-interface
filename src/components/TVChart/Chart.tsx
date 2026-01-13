@@ -41,18 +41,18 @@ const TAB_LABELS = {
 
 const TAB_CONTENTS = {
   PRICE: (
-    <ErrorBoundary variant="block">
+    <ErrorBoundary id="Chart-TVChart" variant="block">
       <TVChart />
     </ErrorBoundary>
   ),
   DEPTH: (
-    <ErrorBoundary variant="block">
+    <ErrorBoundary id="Chart-DepthChart" variant="block">
       <DepthChartContainer />
     </ErrorBoundary>
   ),
   MARKET_GRAPH: (
     <Suspense fallback={<div>...</div>}>
-      <ErrorBoundary variant="block">
+      <ErrorBoundary id="Chart-MarketGraph" variant="block">
         <LazyMarketGraph />
       </ErrorBoundary>
     </Suspense>

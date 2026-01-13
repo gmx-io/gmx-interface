@@ -3777,6 +3777,10 @@ msgstr "ショートポジションから{indexSymbol}をショートし、{coll
 msgid "Open GMX Solana"
 msgstr "GMX Solanaを開く"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "トレーダーとしてこのアカウントが獲得したリベート"
@@ -4112,8 +4116,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr "ここをクリックしてGMXへのフィードバックをお寄せください"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "マーケットトレーダーの損益へのエクスポージャー"
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr "マーケットトレーダーの損益へのエクスポージャー"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"

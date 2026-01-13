@@ -371,7 +371,7 @@ export function SyntheticsPage(p: Props) {
               />
 
               {listSection === ListSection.Positions && (
-                <ErrorBoundary variant="block">
+                <ErrorBoundary id="SyntheticsPage-PositionList" variant="block">
                   <PositionList
                     onOrdersClick={handlePositionListOrdersClick}
                     onSelectPositionClick={onSelectPositionClick}
@@ -382,7 +382,7 @@ export function SyntheticsPage(p: Props) {
                 </ErrorBoundary>
               )}
               {listSection === ListSection.Orders && (
-                <ErrorBoundary variant="block">
+                <ErrorBoundary id="SyntheticsPage-OrderList" variant="block">
                   <OrderList
                     selectedOrdersKeys={selectedOrderKeys}
                     setSelectedOrderKeys={setSelectedOrderKeys}
@@ -398,12 +398,12 @@ export function SyntheticsPage(p: Props) {
                 </ErrorBoundary>
               )}
               {listSection === ListSection.Trades && (
-                <ErrorBoundary variant="block">
+                <ErrorBoundary id="SyntheticsPage-TradeHistory" variant="block">
                   <TradeHistory account={account} />
                 </ErrorBoundary>
               )}
               {listSection === ListSection.Claims && (
-                <ErrorBoundary variant="block">
+                <ErrorBoundary id="SyntheticsPage-Claims" variant="block">
                   <Claims
                     setIsSettling={setIsSettling}
                     isSettling={isSettling}
@@ -462,7 +462,7 @@ export function SyntheticsPage(p: Props) {
             </div>
 
             {listSection === ListSection.Positions && (
-              <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <ErrorBoundary id="SyntheticsPage-PositionList-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <PositionList
                   onOrdersClick={handlePositionListOrdersClick}
                   onSelectPositionClick={onSelectPositionClick}
@@ -473,7 +473,7 @@ export function SyntheticsPage(p: Props) {
               </ErrorBoundary>
             )}
             {listSection === ListSection.Orders && (
-              <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <ErrorBoundary id="SyntheticsPage-OrderList-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <OrderList
                   selectedOrdersKeys={selectedOrderKeys}
                   setSelectedOrderKeys={setSelectedOrderKeys}
@@ -489,12 +489,12 @@ export function SyntheticsPage(p: Props) {
               </ErrorBoundary>
             )}
             {listSection === ListSection.Trades && (
-              <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <ErrorBoundary id="SyntheticsPage-TradeHistory-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <TradeHistory account={account} />
               </ErrorBoundary>
             )}
             {listSection === ListSection.Claims && (
-              <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+              <ErrorBoundary id="SyntheticsPage-Claims-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <Claims
                   setIsSettling={setIsSettling}
                   isSettling={isSettling}

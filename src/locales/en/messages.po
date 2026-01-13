@@ -3777,6 +3777,10 @@ msgstr "You will be short {indexSymbol} from your short position, while being lo
 msgid "Open GMX Solana"
 msgstr "Open GMX Solana"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr "Exposure to Market Traders' PnL"
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
@@ -4112,8 +4116,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr "Click here to give us your feedback on GMX"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "Exposure to Market Traders’ PnL"
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr "Exposure to Market Traders’ PnL"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"

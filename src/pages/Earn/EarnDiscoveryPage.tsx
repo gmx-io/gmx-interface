@@ -55,7 +55,7 @@ export default function EarnDiscoveryPage() {
             <EarnProductCard type="glv" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
             <EarnProductCard type="gm" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
           </div>
-          <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+          <ErrorBoundary id="EarnDiscovery-YieldOverview" variant="block" wrapperClassName="rounded-t-8">
             <EarnYieldOverview />
           </ErrorBoundary>
         </div>

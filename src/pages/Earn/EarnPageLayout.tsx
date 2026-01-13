@@ -98,7 +98,7 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
         </div>
 
         {children ? (
-          <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+          <ErrorBoundary id="EarnPageLayout" variant="block" wrapperClassName="rounded-t-8">
             <div className="flex grow flex-col gap-8">{children}</div>
           </ErrorBoundary>
         ) : null}

@@ -79,11 +79,11 @@ export function PoolsDetails() {
 
               <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
                 <div className="flex grow flex-col gap-8">
-                  <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+                  <ErrorBoundary id="PoolsDetails-MarketGraphs" variant="block" wrapperClassName="rounded-t-8">
                     {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
                   </ErrorBoundary>
 
-                  <ErrorBoundary variant="block" wrapperClassName="rounded-t-8">
+                  <ErrorBoundary id="PoolsDetails-MarketComposition" variant="block" wrapperClassName="rounded-t-8">
                     <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
                       <MarketComposition
                         type="backing"
@@ -95,7 +95,7 @@ export function PoolsDetails() {
                       <MarketComposition
                         type="market"
                         label={<Trans>Market Composition</Trans>}
-                        title={<Trans>Exposure to Market Traders’ PnL</Trans>}
+                        title={<Trans>Exposure to Market Traders' PnL</Trans>}
                         composition={marketComposition}
                       />
                     </div>
@@ -132,7 +132,7 @@ const PoolsDetailsGmSwapBox = ({ isInCurtain }: { isInCurtain: boolean }) => {
         })}
       >
         <GmSwapBoxHeader isInCurtain={isInCurtain} />
-        <ErrorBoundary variant="block">
+        <ErrorBoundary id="PoolsDetails-GmSwapBox" variant="block">
           <GmSwapBox />
         </ErrorBoundary>
       </div>
@@ -141,7 +141,7 @@ const PoolsDetailsGmSwapBox = ({ isInCurtain }: { isInCurtain: boolean }) => {
 
   return (
     <Curtain header={<GmSwapBoxHeader isInCurtain={isInCurtain} />}>
-      <ErrorBoundary variant="block">
+      <ErrorBoundary id="PoolsDetails-GmSwapBox" variant="block">
         <GmSwapBox />
       </ErrorBoundary>
     </Curtain>

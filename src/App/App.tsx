@@ -61,7 +61,11 @@ function App() {
   }, []);
 
   let app = <AppRoutes />;
-  app = <ErrorBoundary variant="app">{app}</ErrorBoundary>;
+  app = (
+    <ErrorBoundary id="App" variant="app">
+      {app}
+    </ErrorBoundary>
+  );
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;

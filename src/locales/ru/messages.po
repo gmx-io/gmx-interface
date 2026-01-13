@@ -3777,6 +3777,10 @@ msgstr "Вы будете в шорте {indexSymbol} от вашей шорт �
 msgid "Open GMX Solana"
 msgstr "Открыть GMX Solana"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Рибейты, заработанные этим аккаунтом в качестве трейдера."
@@ -4112,8 +4116,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr "Нажмите здесь, чтобы оставить отзыв о GMX"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "Экспозиция к PnL Трейдеров Рынка"
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr "Экспозиция к PnL Трейдеров Рынка"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"

@@ -3777,6 +3777,10 @@ msgstr "숏 포지션에서 {indexSymbol}을 숏하면서 {collateralSymbol} 담
 msgid "Open GMX Solana"
 msgstr "GMX Solana 열기"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "트레이더로서 이 계정이 획득한 소개 보수."
@@ -4112,8 +4116,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr "GMX에 대한 피드백을 제공하려면 여기를 클릭하세요"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "시장 거래자 PnL 노출"
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr "시장 거래자 PnL 노출"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"

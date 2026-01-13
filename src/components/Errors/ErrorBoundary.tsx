@@ -4,6 +4,7 @@ import { Component, ErrorInfo, ReactNode, useCallback, useLayoutEffect, useMemo,
 import { createPortal } from "react-dom";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { metrics } from "lib/metrics";
 
 import Button from "components/Button/Button";
 
@@ -12,6 +13,7 @@ import RepeatIcon from "img/ic_repeat.svg?react";
 const CONTENTS_STYLE = { display: "contents" };
 
 type ErrorBoundaryProps = {
+  id: string;
   children: ReactNode;
   variant?: "app" | "page" | "block";
   wrapperClassName?: string;
@@ -160,6 +162,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   componentDidCatch(error: Error, info: ErrorInfo) {
     // eslint-disable-next-line no-console
     console.error("ErrorBoundary caught error", error, info);
+    metrics.pushError(error, `ErrorBoundary.${this.props.id}`);
   }
 
   handleReload = () => {

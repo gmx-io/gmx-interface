@@ -3777,6 +3777,10 @@ msgstr "您将从您的做空仓位做空 {indexSymbol}，同时从您的 {colla
 msgid "Open GMX Solana"
 msgstr "打开 GMX Solana"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易者赚取的回扣。"
@@ -4112,8 +4116,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr "点击这里给我们关于 GMX 的反馈"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "对市场交易者 PnL 的敞口"
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr "对市场交易者 PnL 的敞口"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
