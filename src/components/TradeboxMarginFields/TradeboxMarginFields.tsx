@@ -14,7 +14,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
-import { calculateDisplayDecimals, formatAmount, formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
@@ -23,6 +23,7 @@ import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { MarginToPayField } from "./MarginToPayField";
 import { PriceField } from "./PriceField";
 import { SizeField, SizeDisplayMode } from "./SizeField";
+import { useSizeConversion } from "./useSizeConversion";
 
 type Props = {
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
@@ -73,7 +74,6 @@ export function TradeboxMarginFields({
 
   const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("token");
   const [sizeInputValue, setSizeInputValue] = useState<string>(toTokenInputValue);
-  const [marginPercentage, setMarginPercentage] = useState<number>(0);
 
   const { isLimit } = tradeFlags;
   const showPriceField = isLimit && triggerPriceInputValue !== undefined;
@@ -84,85 +84,46 @@ export function TradeboxMarginFields({
     [markPrice, toToken?.visualMultiplier]
   );
 
+  const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
+    toToken,
+    markPrice,
+    sizeUsdDisplayDecimals,
+  });
+
+  const marginPercentage = useMemo(() => {
+    if (fromToken?.balance === undefined || fromToken.balance === 0n) return 0;
+
+    const inputAmount = parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n;
+    if (inputAmount === 0n) return 0;
+
+    const percentage = Number(bigMath.divRound(inputAmount * 100n, fromToken.balance));
+    return Math.min(100, Math.max(0, percentage));
+  }, [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]);
+
   useEffect(() => {
-    if (sizeDisplayMode !== "usd" || !toToken || markPrice === undefined || markPrice === 0n) {
-      return;
-    }
+    if (sizeDisplayMode !== "usd" || !canConvert) return;
 
-    if (focusedInput !== "to") {
-      return;
-    }
-
-    const parsedUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
-
-    if (parsedUsd === undefined) {
-      if (toTokenInputValue !== "") {
-        setToTokenInputValue("", false);
+    if (focusedInput === "to") {
+      const tokensValue = usdToTokens(sizeInputValue);
+      if (tokensValue !== toTokenInputValue) {
+        setToTokenInputValue(tokensValue, false);
       }
-      return;
-    }
-
-    const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-    const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
-    const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
-
-    if (tokensValue !== toTokenInputValue) {
-      setToTokenInputValue(tokensValue, false);
+    } else {
+      const usdValue = tokensToUsd(toTokenInputValue);
+      if (usdValue !== sizeInputValue) {
+        setSizeInputValue(usdValue);
+      }
     }
   }, [
-    markPrice,
     focusedInput,
     sizeDisplayMode,
     sizeInputValue,
-    toToken,
-    toToken?.decimals,
-    toToken?.visualMultiplier,
     toTokenInputValue,
+    canConvert,
+    tokensToUsd,
+    usdToTokens,
     setToTokenInputValue,
   ]);
-
-  useEffect(() => {
-    if (sizeDisplayMode !== "usd" || !toToken || markPrice === undefined || markPrice === 0n) {
-      return;
-    }
-
-    if (focusedInput === "to") {
-      return;
-    }
-
-    const parsedTokens = parseValue(toTokenInputValue, toToken.decimals);
-
-    if (parsedTokens === undefined) {
-      if (sizeInputValue !== "") {
-        setSizeInputValue("");
-      }
-      return;
-    }
-
-    const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-    const sizeInUsd = (parsedTokens * visualMultiplier * markPrice) / 10n ** BigInt(toToken.decimals);
-    const nextSizeValue = formatAmount(sizeInUsd, USD_DECIMALS, sizeUsdDisplayDecimals);
-
-    if (nextSizeValue !== sizeInputValue) {
-      setSizeInputValue(nextSizeValue);
-    }
-  }, [focusedInput, markPrice, sizeDisplayMode, sizeInputValue, sizeUsdDisplayDecimals, toToken, toTokenInputValue]);
-
-  useEffect(() => {
-    if (fromToken?.balance === undefined || fromToken.balance === 0n) {
-      setMarginPercentage(0);
-      return;
-    }
-
-    const inputAmount = parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n;
-    if (inputAmount === 0n) {
-      setMarginPercentage(0);
-      return;
-    }
-
-    const percentage = Number(bigMath.divRound(inputAmount * 100n, fromToken.balance));
-    setMarginPercentage(Math.min(100, Math.max(0, percentage)));
-  }, [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]);
 
   const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken,
@@ -198,8 +159,6 @@ export function TradeboxMarginFields({
     (percentage: number) => {
       if (fromToken?.balance === undefined || fromToken.balance === 0n) return;
 
-      setMarginPercentage(percentage);
-
       const amount = (fromToken.balance * BigInt(percentage)) / 100n;
       const formatted = formatAmountFree(amount, fromToken.decimals);
       setFocusedInput("from");
@@ -215,86 +174,31 @@ export function TradeboxMarginFields({
 
       if (sizeDisplayMode === "token") {
         setToTokenInputValue(nextValue, true);
-        return;
-      }
-
-      setSizeInputValue(nextValue);
-
-      if (!toToken) {
-        setToTokenInputValue(nextValue, true);
-        return;
-      }
-
-      if (sizeDisplayMode === "usd") {
-        if (markPrice === undefined || markPrice === 0n) {
-          setToTokenInputValue("", true);
-          return;
-        }
-
-        const parsedUsd = parseValue(nextValue || "0", USD_DECIMALS);
-
-        if (parsedUsd === undefined) {
-          setToTokenInputValue("", true);
-          return;
-        }
-
-        const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-        const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
-        const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
-
-        setToTokenInputValue(tokensValue, true);
+      } else {
+        setSizeInputValue(nextValue);
       }
     },
-    [markPrice, setFocusedInput, setToTokenInputValue, sizeDisplayMode, toToken]
+    [sizeDisplayMode, setFocusedInput, setToTokenInputValue]
   );
 
   const handleSizeDisplayModeChange = useCallback(
     (newMode: SizeDisplayMode) => {
-      if (newMode === sizeDisplayMode) {
-        return;
-      }
-
-      if (!toToken || markPrice === undefined || markPrice === 0n) {
-        setSizeDisplayMode(newMode);
-        if (newMode === "token") {
-          setSizeInputValue(toTokenInputValue);
-        }
-        return;
-      }
-
-      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+      if (newMode === sizeDisplayMode) return;
 
       if (newMode === "token") {
-        const parsedUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
-        if (parsedUsd !== undefined) {
-          const sizeInTokens = (parsedUsd * 10n ** BigInt(toToken.decimals)) / markPrice;
-          const tokensValue = formatAmountFree(sizeInTokens / visualMultiplier, toToken.decimals);
+        const tokensValue = canConvert ? usdToTokens(sizeInputValue) : toTokenInputValue;
+        if (tokensValue !== toTokenInputValue) {
           setToTokenInputValue(tokensValue, false);
-          setSizeInputValue(tokensValue);
-        } else {
-          setSizeInputValue(toTokenInputValue);
         }
+        setSizeInputValue(tokensValue);
       } else {
-        const parsedTokens = parseValue(toTokenInputValue || "0", toToken.decimals);
-        if (parsedTokens !== undefined) {
-          const sizeInUsd = (parsedTokens * visualMultiplier * markPrice) / 10n ** BigInt(toToken.decimals);
-          setSizeInputValue(formatAmount(sizeInUsd, USD_DECIMALS, sizeUsdDisplayDecimals));
-        } else {
-          setSizeInputValue("");
-        }
+        const usdValue = canConvert ? tokensToUsd(toTokenInputValue) : "";
+        setSizeInputValue(usdValue);
       }
 
       setSizeDisplayMode(newMode);
     },
-    [
-      sizeDisplayMode,
-      toToken,
-      markPrice,
-      sizeInputValue,
-      toTokenInputValue,
-      sizeUsdDisplayDecimals,
-      setToTokenInputValue,
-    ]
+    [sizeDisplayMode, canConvert, sizeInputValue, toTokenInputValue, tokensToUsd, usdToTokens, setToTokenInputValue]
   );
 
   return (
