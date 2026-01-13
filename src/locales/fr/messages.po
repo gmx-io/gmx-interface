@@ -5238,6 +5238,10 @@ msgstr "Erreur lors de la soumission du retrait"
 msgid "No open positions"
 msgstr "Aucune position ouverte"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
+msgstr ""
+
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "Taille, $"
@@ -6328,8 +6332,8 @@ msgstr "GMX en vesting non retiré"
 
 #: src/components/Errors/ErrorBoundary.tsx
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Report issue"
-msgstr ""
+#~ msgid "Report issue"
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6900,8 +6904,8 @@ msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently s
 msgstr "L'opération de vente de {gmOrGlvLabel} a échoué. Vos fonds sont en sécurité et actuellement stockés dans votre compte GMX. Vous pouvez passer à la chaîne de règlement et aller au pool {indexName} pour vendre manuellement vos tokens {gmOrGlvLabel}."
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Something went wrong"
-msgstr ""
+#~ msgid "Something went wrong"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7651,8 +7655,8 @@ msgid "Keep leverage is not available as Position exceeds max. allowed leverage.
 msgstr "Maintenir le levier n'est pas disponible car la position dépasse le levier max. autorisé. <0>En savoir plus</0>."
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Please try reloading or report the issue if the <0/> problem persists."
-msgstr ""
+#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
+#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8133,6 +8137,10 @@ msgstr "Demander une diminution de marché"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr "Levier max. dépassé"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with smart account"

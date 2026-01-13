@@ -7,17 +7,13 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import Button from "components/Button/Button";
 
-import FeedbackIcon from "img/ic_feedback.svg?react";
 import RepeatIcon from "img/ic_repeat.svg?react";
 
-const DEFAULT_REPORT_ISSUE_URL = "https://github.com/gmx-io/gmx-interface/issues/new";
 const CONTENTS_STYLE = { display: "contents" };
 
 type ErrorBoundaryProps = {
   children: ReactNode;
   variant?: "app" | "page" | "block";
-  reportIssueHref?: string;
-  onReportIssue?: () => void;
   wrapperClassName?: string;
 };
 
@@ -27,8 +23,6 @@ type ErrorBoundaryState = {
 
 type ErrorFallbackProps = {
   variant?: "app" | "page" | "block";
-  reportIssueHref?: string;
-  onReportIssue?: () => void;
   onReload: () => void;
   wrapperClassName?: string;
 };
@@ -127,49 +121,22 @@ function ErrorBoundaryDebugGate({ children }: { children: ReactNode }) {
   return <ErrorBoundaryDebugWrapper>{children}</ErrorBoundaryDebugWrapper>;
 }
 
-function ErrorFallback({
-  variant = "page",
-  reportIssueHref,
-  onReportIssue,
-  onReload,
-  wrapperClassName: wrapperClassNameProp,
-}: ErrorFallbackProps) {
+function ErrorFallback({ variant = "page", onReload, wrapperClassName: wrapperClassNameProp }: ErrorFallbackProps) {
   const wrapperClassName = cx("flex w-full flex-col items-center justify-center text-center", wrapperClassNameProp, {
     "min-h-screen bg-slate-950 px-24 py-24 max-md:px-16": variant === "app",
     "min-h-[360px] grow px-24 py-24 max-md:px-16": variant === "page",
     "h-full rounded-b-8 bg-slate-900 px-24 py-24 max-md:px-16": variant === "block",
   });
 
-  const reportIssueButton = onReportIssue ? (
-    <Button
-      variant="ghost"
-      onClick={onReportIssue}
-      className="!text-typography-secondary hover:!text-typography-primary"
-    >
-      <FeedbackIcon className="size-16" />
-      <Trans>Report issue</Trans>
-    </Button>
-  ) : (
-    <Button
-      variant="ghost"
-      to={reportIssueHref || DEFAULT_REPORT_ISSUE_URL}
-      newTab
-      className="!text-typography-secondary hover:!text-typography-primary"
-    >
-      <FeedbackIcon className="size-16" />
-      <Trans>Report issue</Trans>
-    </Button>
-  );
-
   return (
     <div className={wrapperClassName}>
       <div className="flex max-w-[420px] flex-col items-center gap-12">
         <div className="text-20 font-medium text-typography-primary">
-          <Trans>Something went wrong</Trans>
+          <Trans>Something Went Wrong</Trans>
         </div>
         <div className="text-body-medium text-typography-secondary">
           <Trans>
-            Please try reloading or report the issue if the <br /> problem persists.
+            Reload the page or report the issue if the <br /> problem persists.
           </Trans>
         </div>
         <div className="mt-8 flex flex-col items-center gap-8">
@@ -177,7 +144,6 @@ function ErrorFallback({
             <RepeatIcon className="size-16" />
             <Trans>Reload page</Trans>
           </Button>
-          {reportIssueButton}
         </div>
       </div>
     </div>
@@ -201,18 +167,10 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
   };
 
   render() {
-    const { children, variant, reportIssueHref, onReportIssue, wrapperClassName } = this.props;
+    const { children, variant, wrapperClassName } = this.props;
 
     if (this.state.hasError) {
-      return (
-        <ErrorFallback
-          variant={variant}
-          reportIssueHref={reportIssueHref}
-          onReportIssue={onReportIssue}
-          onReload={this.handleReload}
-          wrapperClassName={wrapperClassName}
-        />
-      );
+      return <ErrorFallback variant={variant} onReload={this.handleReload} wrapperClassName={wrapperClassName} />;
     }
 
     return <ErrorBoundaryDebugGate>{children}</ErrorBoundaryDebugGate>;

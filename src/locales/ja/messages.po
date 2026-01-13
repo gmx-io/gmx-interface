@@ -5238,6 +5238,10 @@ msgstr "出金の送信エラー"
 msgid "No open positions"
 msgstr "オープンのポジションはありません"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
+msgstr ""
+
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "サイズ, $"
@@ -6328,8 +6332,8 @@ msgstr "ベスティング済みGMX未引き出し"
 
 #: src/components/Errors/ErrorBoundary.tsx
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Report issue"
-msgstr ""
+#~ msgid "Report issue"
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6900,8 +6904,8 @@ msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently s
 msgstr "{gmOrGlvLabel}の売却操作に失敗しました。お客様の資金は安全で、現在GMXアカウントに保管されています。決済チェーンに切り替えて{indexName}プールで{gmOrGlvLabel}トークンを手動で売却できます。"
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Something went wrong"
-msgstr ""
+#~ msgid "Something went wrong"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7651,8 +7655,8 @@ msgid "Keep leverage is not available as Position exceeds max. allowed leverage.
 msgstr "ポジションが最大許容レバレッジを超えるため、レバレッジ維持が利用できません。<0>詳細を読む</0>。"
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Please try reloading or report the issue if the <0/> problem persists."
-msgstr ""
+#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
+#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8133,6 +8137,10 @@ msgstr "マーケット減少リクエスト"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr "最大レバレッジを超えました"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with smart account"

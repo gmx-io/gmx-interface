@@ -5238,6 +5238,10 @@ msgstr "Error submitting withdrawal"
 msgid "No open positions"
 msgstr "No open positions"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
+msgstr "Reload the page or report the issue if the <0/> problem persists."
+
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "Size, $"
@@ -6328,8 +6332,8 @@ msgstr "Vested GMX not withdrawn"
 
 #: src/components/Errors/ErrorBoundary.tsx
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Report issue"
-msgstr "Report issue"
+#~ msgid "Report issue"
+#~ msgstr "Report issue"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6900,8 +6904,8 @@ msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently s
 msgstr "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Something went wrong"
-msgstr "Something went wrong"
+#~ msgid "Something went wrong"
+#~ msgstr "Something went wrong"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7651,8 +7655,8 @@ msgid "Keep leverage is not available as Position exceeds max. allowed leverage.
 msgstr "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Please try reloading or report the issue if the <0/> problem persists."
-msgstr "Please try reloading or report the issue if the <0/> problem persists."
+#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
+#~ msgstr "Please try reloading or report the issue if the <0/> problem persists."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8133,6 +8137,10 @@ msgstr "Request Market Decrease"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
+msgstr "Something Went Wrong"
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with smart account"

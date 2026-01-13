@@ -5238,6 +5238,10 @@ msgstr "提交提款时出错"
 msgid "No open positions"
 msgstr "无开放头寸"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
+msgstr ""
+
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "大小，$"
@@ -6328,8 +6332,8 @@ msgstr "已归属 GMX 未提取"
 
 #: src/components/Errors/ErrorBoundary.tsx
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Report issue"
-msgstr ""
+#~ msgid "Report issue"
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6900,8 +6904,8 @@ msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently s
 msgstr "{gmOrGlvLabel} 卖出操作失败。您的资金是安全的，目前存储在您的 GMX 账户中。您可以切换到结算链，前往 {indexName} 资金池手动卖出 {gmOrGlvLabel} 代币。"
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Something went wrong"
-msgstr ""
+#~ msgid "Something went wrong"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7651,8 +7655,8 @@ msgid "Keep leverage is not available as Position exceeds max. allowed leverage.
 msgstr "保持杠杆不可用，因为仓位超过最大允许杠杆。<0>阅读更多</0>。"
 
 #: src/components/Errors/ErrorBoundary.tsx
-msgid "Please try reloading or report the issue if the <0/> problem persists."
-msgstr ""
+#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
+#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8133,6 +8137,10 @@ msgstr "请求市场减少"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
 msgstr "超过最大杠杆"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with smart account"
