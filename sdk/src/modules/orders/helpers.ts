@@ -344,6 +344,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       marketsInfoData,
       chainId: sdk.chainId,
       externalSwapQuoteParams: undefined,
+      allowSameTokenSwap: true,
     });
   } else {
     swapAmounts = getSwapAmountsByToValue({
@@ -359,6 +360,7 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       marketsInfoData,
       chainId: sdk.chainId,
       externalSwapQuoteParams: undefined,
+      allowSameTokenSwap: true,
     });
   }
 

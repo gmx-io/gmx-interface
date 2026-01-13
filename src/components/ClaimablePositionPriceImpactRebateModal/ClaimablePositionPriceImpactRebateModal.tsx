@@ -99,7 +99,7 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
       return { text: t`Page outdated, please refresh`, disabled: true };
     }
     if (isSubmitting) {
-      return { text: t`Claiming`, disabled: true };
+      return { text: t`Claiming...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
   }, [handleSubmit, hasOutdatedUi, isSubmitting]);
@@ -207,7 +207,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
         helperToast.success(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
-              <Trans>Claiming position price impact fees</Trans>
+              <Trans>Claiming position price impact fees...</Trans>
             </div>
             <SpinnerIcon className="spin size-15 text-white" />
           </div>,
@@ -256,7 +256,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
       return { text: t`Page outdated, please refresh`, disabled: true };
     }
     if (isSubmitting) {
-      return { text: t`Claiming`, disabled: true };
+      return { text: t`Claiming...`, disabled: true };
     }
     return { text: t`Claim`, disabled: false, onSubmit: handleSubmit };
   }, [handleSubmit, hasOutdatedUi, isSubmitting]);

@@ -10,6 +10,7 @@ import {
   selectPoolsDetailsCanBridgeOutMarket,
 } from "context/PoolsDetailsContext/selectors";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
+import { selectMultichainMarketTokensBalancesIsLoading } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -26,6 +27,7 @@ import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
 import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import { ShimmerText } from "components/ShimmerText/ShimmerText";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import BuyIcon from "img/ic_buy.svg?react";
@@ -68,6 +70,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const multichainMarketTokenBalances = marketToken?.address
     ? multichainMarketTokensBalances[marketToken.address]
     : undefined;
+  const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
 
   const totalBalance = multichainMarketTokenBalances?.totalBalance;
   const marketBalanceUsd = multichainMarketTokenBalances?.totalBalanceUsd;
@@ -134,7 +137,13 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                 {typeof totalBalance === "bigint" && typeof marketToken?.decimals === "number" && (
                   <PoolsDetailsMarketAmount
                     label={<Trans>Balance</Trans>}
-                    value={formatUsd(marketBalanceUsd)}
+                    value={
+                      isMultichainBalancesLoading ? (
+                        <ShimmerText>{formatUsd(marketBalanceUsd)}</ShimmerText>
+                      ) : (
+                        formatUsd(marketBalanceUsd)
+                      )
+                    }
                     secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
                       showZero: true,
                     })} ${isGlv ? "GLV" : "GM"}`}

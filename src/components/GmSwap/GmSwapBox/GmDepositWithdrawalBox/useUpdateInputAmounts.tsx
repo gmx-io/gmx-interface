@@ -201,12 +201,10 @@ export function useUpdateInputAmounts() {
         });
       }
     } else if (["first", "second"].includes(focusedInput)) {
-      // User entered collateral amount → calculate market token input
       const isLongFocused = focusedInput === "first";
       const focusedAmount = isLongFocused ? amounts.longTokenAmount : amounts.shortTokenAmount;
 
       if (focusedAmount <= 0n) {
-        // Clear the opposite token and market token
         if (isLongFocused) {
           setSecondTokenInputValue("");
         } else {
@@ -216,32 +214,28 @@ export function useUpdateInputAmounts() {
         return;
       }
 
-      // Update market token input
       setMarketOrGlvTokenInputValue(formatTokenAmount(amounts.marketTokenAmount, PLATFORM_TOKEN_DECIMALS));
 
-      if (isSameCollaterals) {
-        if (firstToken) {
-          const combinedAmount = amounts.longTokenAmount + amounts.shortTokenAmount;
-          setFirstTokenInputValue(formatAmountFree(combinedAmount, firstToken.decimals));
+      if (!isSameCollaterals) {
+        if (isLongFocused) {
+          updateTokenInputForMatch({
+            token: secondToken,
+            tokenWrappedAddress: secondTokenWrappedAddress,
+            longTokenAddress,
+            shortTokenAddress,
+            amounts,
+            setInputValue: setSecondTokenInputValue,
+          });
+        } else {
+          updateTokenInputForMatch({
+            token: firstToken,
+            tokenWrappedAddress: firstTokenWrappedAddress,
+            longTokenAddress,
+            shortTokenAddress,
+            amounts,
+            setInputValue: setFirstTokenInputValue,
+          });
         }
-      } else {
-        updateTokenInputForMatch({
-          token: firstToken,
-          tokenWrappedAddress: firstTokenWrappedAddress,
-          longTokenAddress,
-          shortTokenAddress,
-          amounts,
-          setInputValue: setFirstTokenInputValue,
-        });
-
-        updateTokenInputForMatch({
-          token: secondToken,
-          tokenWrappedAddress: secondTokenWrappedAddress,
-          longTokenAddress,
-          shortTokenAddress,
-          amounts,
-          setInputValue: setSecondTokenInputValue,
-        });
       }
     }
   }, [

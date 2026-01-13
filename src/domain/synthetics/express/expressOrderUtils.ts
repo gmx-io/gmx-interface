@@ -386,7 +386,7 @@ export async function estimateExpressParams({
                           multichainBalanceKey(account, gasPaymentToken.address),
                           DATASTORE_SLOT_INDEXES.uintValues
                         ),
-                        value: toHex(maxUint256),
+                        value: toHex(maxUint256 / 100n, { size: 32 }),
                       },
                     ],
                   },

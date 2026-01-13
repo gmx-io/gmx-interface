@@ -24,7 +24,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
       isV1Available: true,
     },
     {
@@ -35,7 +34,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isWrapped: true,
       baseSymbol: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
       isV1Available: true,
       isPermitSupported: true,
       contractVersion: "1",
@@ -50,7 +48,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       isV1Available: true,
       isPermitSupported: true,
@@ -64,7 +61,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       categories: ["layer2", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/arbitrum",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
       isPermitSupported: true,
       contractVersion: "1",
@@ -78,8 +74,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x2bcC6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/solana",
-      coingeckoSymbol: "SOL",
       explorerUrl: "https://arbiscan.io/token/0x2bCc6D6CdBbDC0a4071e48bb3B969b06B3330c07",
       explorerSymbol: "SOL",
       isPermitSupported: true,
@@ -96,7 +90,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
       explorerUrl: "https://arbiscan.io/token/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
       isV1Available: true,
       isPermitSupported: true,
@@ -112,7 +105,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer2", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
       explorerUrl: "https://arbiscan.io/token/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
       isV1Available: true,
       isPermitSupported: true,
@@ -125,7 +117,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bridged-usdc-arbitrum",
       explorerUrl: "https://arbiscan.io/token/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
       isV1Available: true,
       isPermitSupported: true,
@@ -139,7 +130,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       isPermitSupported: true,
     },
@@ -151,7 +141,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707",
       explorerUrl: "https://arbiscan.io/address/0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       isV1Available: true,
       isPermitSupported: true,
       contractVersion: "1",
@@ -163,7 +152,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       explorerUrl: "https://arbiscan.io/token/0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
       isV1Available: true,
       isPermitSupported: true,
@@ -175,7 +163,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/13422/small/frax_logo.png?1608476506",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/frax",
       explorerUrl: "https://arbiscan.io/token/0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
       isV1Available: true,
       isPermitSupported: true,
@@ -200,7 +187,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 8,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       isPermitSupported: false,
       isPermitDisabled: true,
     },
@@ -213,7 +199,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/5/small/dogecoin.png?1547792256",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
     },
     {
       name: "Litecoin",
@@ -224,7 +209,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/2/small/litecoin.png?1547033580",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/litecoin",
     },
     {
       name: "XRP",
@@ -234,7 +218,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
       isSynthetic: true,
     },
     {
@@ -246,7 +229,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformTradingToken: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/gmx",
       explorerUrl: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
     },
     {
@@ -264,8 +246,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/825/standard/bnb-icon2_2x.png?1696501970",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bnb",
-      coingeckoSymbol: "BNB",
       metamaskSymbol: "WBNB",
       explorerUrl: "https://arbiscan.io/token/0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
       explorerSymbol: "WBNB",
@@ -279,8 +259,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1481/standard/cosmos_hub.png?1696502525",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/cosmos-hub",
-      coingeckoSymbol: "ATOM",
       isSynthetic: true,
     },
     {
@@ -292,8 +270,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 24,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/10365/standard/near.jpg?1696510367",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/near",
-      coingeckoSymbol: "NEAR",
       isSynthetic: true,
     },
     {
@@ -305,8 +281,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/12645/standard/AAVE.png?1696512452",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/aave",
-      coingeckoSymbol: "AAVE",
       isPermitSupported: true,
       contractVersion: "1",
     },
@@ -319,8 +293,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
-      coingeckoSymbol: "AVAX",
       explorerSymbol: "WAVAX",
       isPermitSupported: true,
       isPermitDisabled: true,
@@ -334,7 +306,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/25244/standard/Optimism.png?1696524385",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/optimism",
     },
     {
       name: "Pepe",
@@ -344,7 +315,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 8,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/29850/standard/pepe-token.jpeg?1696528776",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/pepe",
       visualMultiplier: 1000,
       visualPrefix: "k",
     },
@@ -355,7 +325,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/33566/standard/dogwifhat.jpg?1702499428",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dogwifhat",
       isPermitSupported: true,
       isPermitDisabled: true,
       contractVersion: "1",
@@ -367,7 +336,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/30162/standard/ordi.png?1696529082",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ordi",
       isSynthetic: true,
     },
     {
@@ -377,7 +345,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/2069/standard/Stacks_Logo_png.png?1709979332",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/stacks",
       isSynthetic: true,
     },
     {
@@ -386,7 +353,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/33613/standard/USDE.png?1716355685",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethena-usde",
       isStable: true,
     },
     {
@@ -395,7 +361,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x5979D7b546E38E414F7E9822514be443A4800529",
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18834/standard/wstETH.png?1696518295",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-steth",
     },
     {
       name: "Shiba Inu",
@@ -406,7 +371,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 9,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/11939/standard/shiba.png?1696511800",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/shiba-inu",
       isSynthetic: true,
       visualMultiplier: 1000,
       visualPrefix: "k",
@@ -418,7 +382,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       imageUrl:
         "https://assets.coingecko.com/coins/images/11224/standard/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tbtc",
       isPermitSupported: false,
       contractVersion: "1",
     },
@@ -429,7 +392,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/37441/standard/eigen.jpg?1728023974",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/eigenlayer",
       isPermitSupported: false,
       contractVersion: "1",
     },
@@ -441,7 +403,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 11,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/30666/standard/_dD8qr3M_400x400.png?1702913020",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/sats-ordinals",
       isSynthetic: true,
       visualMultiplier: 1000_000,
       visualPrefix: "m",
@@ -454,7 +415,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x9c74772b713a1B032aEB173E28683D937E51921c",
       categories: ["layer1", "layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/32440/standard/polygon.png?1698233684",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/polygon",
       isSynthetic: true,
     },
     {
@@ -464,7 +424,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 4,
       imageUrl: "https://assets.coingecko.com/coins/images/24383/standard/apecoin.jpg?1696523566",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/apecoin",
     },
     {
       name: "SUI",
@@ -474,7 +433,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/26375/standard/sui-ocean-square.png?1727791290",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/sui",
       isSynthetic: true,
     },
     {
@@ -485,7 +443,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/28205/standard/Sei_Logo_-_Transparent.png?1696527207",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/sei",
       isSynthetic: true,
     },
     {
@@ -496,7 +453,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/26455/standard/aptos_round.png?1696525528",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/aptos",
       isSynthetic: true,
     },
     {
@@ -507,7 +463,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/31967/standard/tia.jpg?1696530772",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/celestia",
       isSynthetic: true,
     },
     {
@@ -518,7 +473,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1094/standard/tron-logo.png?1696502193",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tron",
       isSynthetic: true,
     },
     {
@@ -529,7 +483,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/17980/standard/photo_2024-09-10_17.09.00.jpeg?1725963446",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/toncoin",
       isSynthetic: true,
     },
     {
@@ -539,7 +492,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 4,
       imageUrl: "https://assets.coingecko.com/coins/images/31069/standard/worldcoin.jpeg?1696529903",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/worldcoin",
       isSynthetic: true,
     },
     {
@@ -550,7 +502,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 9,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/28600/standard/bonk.jpg?1696527587",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bonk",
       isSynthetic: true,
       visualMultiplier: 1000,
       visualPrefix: "k",
@@ -562,7 +513,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 9,
       priceDecimals: 3,
       imageUrl: "https://assets.coingecko.com/coins/images/28452/standard/ARUsPeNQ_400x400.jpeg?1696527447",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bittensor",
       isSynthetic: true,
     },
     {
@@ -573,7 +523,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 6,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/36071/standard/bome.png?1710407255",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/book-of-meme",
       isSynthetic: true,
     },
     {
@@ -584,7 +533,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 8,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/16746/standard/PNG_image.png?1696516318",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/floki",
       isSynthetic: true,
       visualMultiplier: 1000,
       visualPrefix: "k",
@@ -596,7 +544,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/32528/standard/memecoin_%282%29.png?1698912168",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/meme",
       isSynthetic: true,
     },
     {
@@ -607,7 +554,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 7,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/36440/standard/MEW.png?1711442286",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/mew",
       isSynthetic: true,
     },
     {
@@ -618,7 +564,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/15069/standard/Pendle_Logo_Normal-03.png?1696514728",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/pendle",
       isPermitSupported: true,
       isPermitDisabled: true,
       contractVersion: "1",
@@ -631,7 +576,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/975/standard/cardano.png?1696502090",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/cardano",
       isSynthetic: true,
     },
     {
@@ -642,7 +586,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 3,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/780/standard/bitcoin-cash-circle.png?1696501932",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin-cash",
       isSynthetic: true,
     },
     {
@@ -654,7 +597,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       imageUrl:
         "https://static.coingecko.com/s/polkadot-73b0c058cae10a2f076a82dcade5cbe38601fad05d5e6211188f09eb96fa4617.gif",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/polkadot",
       isSynthetic: true,
     },
     {
@@ -665,7 +607,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/14495/standard/Internet_Computer_logo.png?1696514180",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/internet-computer",
       isSynthetic: true,
     },
     {
@@ -675,7 +616,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 7,
       priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/100/standard/Stellar_symbol_black_RGB.png?1696501482",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/stellar",
       isSynthetic: true,
     },
     {
@@ -685,7 +625,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 4,
       imageUrl: "https://assets.coingecko.com/coins/images/11636/standard/rndr.png?1696511529",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/render",
       isSynthetic: true,
     },
     {
@@ -696,7 +635,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       priceDecimals: 4,
       imageUrl: "https://assets.coingecko.com/coins/images/12817/standard/filecoin.png?1696512609",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/filecoin",
       isSynthetic: true,
     },
     {
@@ -707,7 +645,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/32594/standard/dydx.png?1698673495",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dydx-chain",
       isSynthetic: true,
     },
     {
@@ -718,7 +655,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/12882/standard/Secondary_Symbol.png?1696512670",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/injective",
       isSynthetic: true,
     },
     {
@@ -729,7 +665,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/53746/standard/trump.png?1737171561",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/official-trump",
       isSynthetic: true,
     },
     {
@@ -740,7 +675,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/53775/standard/melania-meme.png?1737329885",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/melania-meme",
       isSynthetic: true,
     },
     {
@@ -751,7 +685,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/36530/standard/ethena.png?1711701436",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethena",
       isSynthetic: true,
     },
     {
@@ -762,7 +695,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/51090/standard/AI16Z.jpg?1730027175",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ai16z",
       isSynthetic: true,
     },
     {
@@ -773,7 +705,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 6,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/53575/standard/anime.jpg?1736748703",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/anime",
       isSynthetic: false,
     },
     {
@@ -784,7 +715,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/50891/standard/fart.jpg?1729503972",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/fartcoin",
       isSynthetic: true,
     },
     {
@@ -795,7 +725,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/25235/standard/BERA.png?1738822008",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/berachain",
       isSynthetic: true,
     },
     {
@@ -806,7 +735,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/13573/standard/Lido_DAO.png?1696513326",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/lido-dao",
       isSynthetic: true,
     },
     {
@@ -816,7 +744,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 4,
       imageUrl: "https://assets.coingecko.com/coins/images/34057/standard/LOGOMARK.png?1708356054",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/virtual-protocol",
       isSynthetic: true,
     },
     {
@@ -827,7 +754,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 7,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/52622/standard/PUDGY_PENGUINS_PENGU_PFP.png?1733809110",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/pudgy-penguins",
       isSynthetic: true,
     },
     {
@@ -837,7 +763,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/5681/standard/ASI.png?1719827289",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/artificial-superintelligence-alliance",
       isSynthetic: true,
     },
     {
@@ -848,7 +773,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/26580/standard/ONDO.png?1696525656",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ondo",
       isSynthetic: true,
     },
     {
@@ -859,7 +783,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/51784/standard/3.png?1731981138",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ondo",
       isSynthetic: true,
     },
     {
@@ -870,7 +793,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/38108/standard/200x200_Sonic_Logo.png?1734679256",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/sonic",
       isSynthetic: true,
     },
     {
@@ -881,7 +803,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/12632/standard/pancakeswap-cake-logo_%281%29.png?1696512440",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/pancakeswap",
       isSynthetic: true,
     },
     {
@@ -892,7 +813,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/50882/standard/hyperliquid.jpg?1729431300",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/hyperliquid",
       isSynthetic: true,
     },
     {
@@ -903,7 +823,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/34188/standard/jup.png?1704266489",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/jupiter",
       isSynthetic: true,
     },
     {
@@ -914,7 +833,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 2,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/1364/standard/Mark_Maker.png?1696502423",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/maker",
       isSynthetic: true,
     },
     {
@@ -925,7 +843,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/12151/standard/OM_Token.png?1696511991",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/mantra",
       isSynthetic: true,
     },
     {
@@ -936,7 +853,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 6,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/54710/standard/DOLO-small.png?1745398535",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dolomite",
       isSynthetic: true,
     },
     {
@@ -947,7 +863,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/28206/standard/ftxG9_TJ_400x400.jpeg?1696527208",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/layerzero",
       isSynthetic: true,
     },
     {
@@ -956,7 +871,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xd3898c6570974AEca38a8ACf22fd60739e528A99",
       decimals: 6,
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/moo-deng",
       imageUrl: "https://assets.coingecko.com/coins/images/50264/standard/MOODENG.jpg?1726726975",
       categories: ["meme"],
     },
@@ -966,7 +880,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x13674172E6E44D31d4bE489d5184f3457c40153A",
       decimals: 12,
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/monero",
       imageUrl: "https://assets.coingecko.com/coins/images/69/standard/monero_logo.png?1696501460",
       categories: ["layer1", "defi"],
     },
@@ -976,7 +889,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xd1738d37401a0A71f7E382d2cFeCD3ab69687017",
       decimals: 18,
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/pi-network",
       imageUrl: "https://assets.coingecko.com/coins/images/54342/standard/pi_network.jpg?1739347576",
       categories: ["layer1"],
     },
@@ -986,7 +898,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xe5f01aeAcc8288E9838A60016AB00d7b6675900b",
       decimals: 18,
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/curve-dao-token",
       imageUrl: "https://assets.coingecko.com/coins/images/12124/standard/Curve.png?1696511967",
       categories: ["defi"],
     },
@@ -997,7 +908,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/67164/standard/pump.jpg?1751949376",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/pump-fun",
       isSynthetic: true,
       categories: ["meme"],
     },
@@ -1008,7 +918,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 8,
       priceDecimals: 4,
       imageUrl: "https://assets.coingecko.com/coins/images/31401/standard/centeredcoin_%281%29.png?1737048493",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/spx6900",
       isSynthetic: true,
       categories: ["meme"],
     },
@@ -1019,7 +928,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/30980/standard/token-logo.png?1696529819",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/mantle",
       isSynthetic: true,
       categories: ["layer2", "defi"],
     },
@@ -1058,7 +966,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/4380/standard/download.png?1696504978",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/algorand",
     },
     {
       name: "Cronos",
@@ -1069,7 +976,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/7310/standard/cro_token_logo.png?1696507599",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/cronos",
     },
     {
       name: "Hedera",
@@ -1080,7 +986,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/3688/standard/hbar.png?1696504364",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/hedera-hashgraph",
     },
     {
       name: "Convex Finance",
@@ -1091,7 +996,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/15585/standard/convex.png?1696515221",
-      coingeckoUrl: "https://www.coingecko.com/nl/coins/convex-finance",
     },
     {
       name: "Kaspa",
@@ -1102,7 +1006,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/25751/standard/kaspa-icon-exchanges.png?1696524837",
-      coingeckoUrl: "https://www.coingecko.com/nl/coins/kaspa",
     },
     {
       name: "Aero",
@@ -1112,7 +1015,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       isSynthetic: true,
       categories: ["defi"],
-      coingeckoUrl: "https://www.coingecko.com/en/coins/aerodrome-finance",
       imageUrl: "https://assets.coingecko.com/coins/images/31745/standard/token.png?1696530564",
     },
     {
@@ -1124,7 +1026,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/54317/standard/AERO.png?1728309870",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/brett-2",
     },
     {
       name: "World Liberty Financial",
@@ -1135,7 +1036,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/50767/standard/wlfi.png?1756438915",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/world-liberty-financial",
     },
     {
       name: "OKB",
@@ -1146,7 +1046,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/4463/standard/WeChat_Image_20220118095654.png?1696505053",
-      coingeckoUrl: "https://www.coingecko.com/nl/coins/okb",
     },
     {
       name: "Morpho",
@@ -1157,7 +1056,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/29837/standard/Morpho-token-icon.png?1726771230",
-      coingeckoUrl: "https://www.coingecko.com/nl/coins/morpho",
     },
     {
       name: "Venice Token",
@@ -1168,7 +1066,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/54023/standard/VVV_Token_Transparent.png?1741856877",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/venice-token",
     },
     {
       name: "Moonwell",
@@ -1179,7 +1076,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/26133/standard/WELL.png?1696525221",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/moonwell",
     },
     {
       name: "KTA",
@@ -1190,7 +1086,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/54693/standard/zora.jpg?1741094751",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/zora",
     },
     {
       name: "Zora",
@@ -1201,7 +1096,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 6,
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/54723/standard/2025-03-05_22.53.06.jpg?1741234207",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/keeta",
     },
     {
       name: "Plasma",
@@ -1211,7 +1105,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/66489/standard/Plasma-symbol-green-1.png?1755142558",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/plasma",
       isSynthetic: true,
     },
     {
@@ -1222,7 +1115,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/69040/standard/_ASTER.png?1757326782",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/aster-2",
       isSynthetic: true,
     },
     {
@@ -1234,7 +1126,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       imageUrl:
         "https://assets.coingecko.com/coins/images/69096/standard/0G_1024x1024_Circular_Outlined.png?1758637574",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/0g",
       isSynthetic: true,
     },
     {
@@ -1245,7 +1136,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/68972/standard/avnt-token.png?1757134448",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/avantis",
       isSynthetic: true,
     },
     {
@@ -1256,7 +1146,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 6,
       categories: ["layer2"],
       imageUrl: "https://assets.coingecko.com/coins/images/68507/standard/linea-logo.jpeg?1756025484",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/linea",
       isSynthetic: true,
     },
     {
@@ -1267,7 +1156,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 6,
       categories: ["layer1", "defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/38927/standard/mon.png?1766029057",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/monad",
       isSynthetic: true,
     },
     {
@@ -1278,7 +1166,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 6,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/39925/standard/sky.jpg?1724827980",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/sky",
       isSynthetic: true,
     },
     {
@@ -1289,8 +1176,55 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 3,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/486/standard/circle-zcash-color.png?1696501740",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/zcash",
       isSynthetic: true,
+    },
+    {
+      name: "Arweave",
+      symbol: "AR",
+      address: "0x4b9a2b862E1a30e6E844c991D31Dc6387c9d65D5",
+      isSynthetic: true,
+      decimals: 12,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/4343/standard/oRt6SiEN_400x400.jpg?1696504946",
+    },
+    {
+      name: "Dash",
+      symbol: "DASH",
+      address: "0x426FE015a5F4E6Ad4E6497ad79265D07EA9F121e",
+      isSynthetic: true,
+      decimals: 8,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/19/standard/dash-logo.png?1696501423",
+    },
+    {
+      name: "Syrup",
+      symbol: "SYRUP",
+      address: "0x9759C297fb6C91e252c7292cECa30a509558E5De",
+      isSynthetic: true,
+      decimals: 18,
+      priceDecimals: 4,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/51232/standard/_syrup_token_logo.png?1747292046",
+    },
+    {
+      name: "Jito",
+      symbol: "JTO",
+      address: "0xF01D2AA2f3f903A93D57c4Bf672C8096DE485FA7",
+      isSynthetic: true,
+      decimals: 9,
+      priceDecimals: 4,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/33228/standard/jto.png?1701137022",
+    },
+    {
+      name: "Chiliz",
+      symbol: "CHZ",
+      address: "0x5dB4692926C8ceebF6Da0995358Bbc438F3fd80C",
+      isSynthetic: true,
+      decimals: 18,
+      priceDecimals: 4,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/8834/standard/CHZ_Token_updated.png?1696508986",
     },
   ],
   [AVALANCHE]: [
@@ -1303,7 +1237,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       isV1Available: true,
     },
     {
@@ -1315,7 +1248,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       baseSymbol: "AVAX",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       explorerUrl: "https://snowtrace.io/address/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       isV1Available: true,
     },
@@ -1328,8 +1260,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/weth",
-      coingeckoSymbol: "WETH",
       explorerUrl: "https://snowtrace.io/address/0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
       isV1Available: true,
     },
@@ -1342,7 +1272,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin-avalanche-bridged-btc-b",
       explorerUrl: "https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50",
       isV1Available: true,
     },
@@ -1355,8 +1284,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      coingeckoSymbol: "WBTC",
       explorerUrl: "https://snowtrace.io/address/0x50b7545627a5162F82A992c33b87aDc75187B218",
       isV1Available: true,
     },
@@ -1367,7 +1294,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://snowtrace.io/address/0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
       isV1Available: true,
       isPermitSupported: true,
@@ -1379,7 +1305,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bridged-usdc-avalanche-bridge",
       explorerUrl: "https://snowtrace.io/address/0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       isV1Available: true,
     },
@@ -1390,7 +1315,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       explorerUrl: "https://snowtrace.io/address/0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
       isPermitSupported: true,
       contractVersion: "1",
@@ -1402,7 +1326,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
       explorerUrl: "https://snowtrace.io/address/0xc7198437980c041c805A1EDcbA50c1Ce5db95118",
     },
     {
@@ -1412,7 +1335,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       explorerUrl: "https://snowtrace.io/address/0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
     },
     {
@@ -1423,7 +1345,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       isTempHidden: true,
       imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/magic-internet-money",
       explorerUrl: "https://snowtrace.io/address/0x130966628846BFd36ff31a822705796e8cb8C18D",
       isV1Available: true,
       isPermitSupported: true,
@@ -1438,7 +1359,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
       explorerUrl: "https://snowtrace.io/address/0x5947BB275c521040051D82396192181b413227A3",
     },
     {
@@ -1450,7 +1370,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/5/small/dogecoin.png?1547792256",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
     },
     {
       name: "Litecoin",
@@ -1461,7 +1380,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/2/small/litecoin.png?1547033580",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/litecoin",
     },
     {
       name: "Wrapped SOL (Wormhole)",
@@ -1472,8 +1390,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/solana",
-      coingeckoSymbol: "SOL",
       explorerUrl: "https://snowtrace.io/address/0xFE6B19286885a4F7F55AdAD09C3Cd1f906D2478F",
       isPermitSupported: true,
       isPermitDisabled: true,
@@ -1487,7 +1403,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x34B2885D617cE2ddeD4F60cCB49809fc17bb58Af",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
       isSynthetic: true,
     },
     {
@@ -1497,7 +1412,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       priceDecimals: 2,
       imageUrl: "https://assets.coingecko.com/coins/images/10481/standard/Tether_Gold.png?1696510471",
-      coingeckoUrl: "https://www.coingecko.com/nl/coins/tether-gold",
       explorerUrl: "https://snowtrace.io/address/0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
       isPermitSupported: true,
       isPermitDisabled: true,
@@ -1511,7 +1425,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       isPlatformToken: true,
       categories: ["defi"],
-      coingeckoUrl: "https://www.coingecko.com/en/coins/gmx",
       explorerUrl: "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661",
     },
     {
@@ -1522,7 +1435,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/53746/standard/trump.png?1737171561",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/official-trump",
       isSynthetic: true,
     },
     {
@@ -1533,7 +1445,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/53775/standard/melania-meme.png?1737329885",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/melania-meme",
       isSynthetic: true,
     },
     {
@@ -1543,7 +1454,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       priceDecimals: 6,
       imageUrl: "https://assets.coingecko.com/coins/images/67164/standard/pump.jpg?1751949376",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/pump-fun",
       isSynthetic: true,
       categories: ["meme"],
     },
@@ -1556,7 +1466,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["defi"],
       imageUrl: "https://assets.coingecko.com/coins/images/50767/standard/wlfi.png?1756438915",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/world-liberty-financial",
     },
     {
       name: "Escrowed GMX",
@@ -1615,7 +1524,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       baseSymbol: "AVAX",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       isPermitSupported: true,
     },
@@ -1628,8 +1536,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/weth",
-      coingeckoSymbol: "WETH",
       explorerUrl: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     },
     {
@@ -1639,7 +1545,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     },
     {
@@ -1649,7 +1554,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       explorerUrl: "https://testnet.snowtrace.io/address/0x50df4892Bd13f01E4e1Cd077ff394A8fa1A3fD7c",
     },
     {
@@ -1659,7 +1563,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     },
     {
@@ -1669,7 +1572,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       explorerUrl: "https://testnet.snowtrace.io/address/0x3Bd8e00c25B12E6E60fc8B6f1E1E2236102073Ca",
     },
     {
@@ -1681,7 +1583,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/solana",
     },
     {
       name: "Test token",
@@ -1689,7 +1590,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       address: "0x42DD131E1086FFCc59bAE9498D71E20E0C889B14",
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
     },
     {
       name: "BNB",
@@ -1698,7 +1598,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 3,
       address: "0x110892Dd5fa73bE430c0ade694febD9a4CAc68Be",
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/binancecoin",
     },
     {
       name: "Cardano",
@@ -1708,7 +1607,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xE64dfFF37Fa6Fe969b792B4146cEe2774Ef6e1a1",
       categories: ["layer1"],
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/cardano",
     },
     {
       name: "TRON",
@@ -1717,7 +1615,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       address: "0x0D1495527C255068F2f6feE31C85d326D0A76FE8",
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tron",
     },
     {
       name: "Polygon",
@@ -1727,7 +1624,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xadc4698B257F78187Fd675FBf591a09f4c975240",
       categories: ["layer1"],
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/polygon",
     },
     {
       name: "Polkadot",
@@ -1737,7 +1633,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 4,
       isSynthetic: true,
       categories: ["layer1"],
-      coingeckoUrl: "https://www.coingecko.com/en/coins/polkadot",
     },
     {
       name: "Uniswap",
@@ -1747,7 +1642,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xF62dC1d2452d0893735D22945Af53C290b158eAF",
       isSynthetic: true,
       categories: ["layer2", "defi"],
-      coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
     },
     {
       name: "Dogecoin",
@@ -1758,7 +1652,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       isShortable: true,
       categories: ["meme"],
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
     },
     {
       name: "Chainlink",
@@ -1769,7 +1662,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       isShortable: true,
       categories: ["defi"],
-      coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
     },
     {
       name: "XRP",
@@ -1780,7 +1672,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isSynthetic: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
     },
     {
       name: "GMX",
@@ -1834,7 +1725,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     },
     {
       name: "Wrapped ETH",
@@ -1845,7 +1735,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       baseSymbol: "ETH",
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     },
     {
       name: "Bitcoin",
@@ -1853,7 +1742,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0xF79cE1Cf38A09D572b021B4C5548b75A14082F12",
       decimals: 8,
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1746042828",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     },
     {
       name: "USD Coin GMX",
@@ -1862,7 +1750,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     },
     {
       name: "USD Coin Stargate",
@@ -1871,7 +1758,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     },
     {
       name: "CRV",
@@ -1881,7 +1767,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       priceDecimals: 5,
       imageUrl: "https://assets.coingecko.com/coins/images/12134/small/curve.png?1596358786",
       isSynthetic: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/curve-dao-token",
     },
     {
       name: "USDT",
@@ -1890,7 +1775,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/tether",
     },
     /** Placeholder tokens */
     {
@@ -1944,7 +1828,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       baseSymbol: "BTC",
     },
     {
@@ -1956,7 +1839,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       baseSymbol: "BTC",
       isWrapped: true,
     },
@@ -1969,7 +1851,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       baseSymbol: "BTC",
       isStaking: true,
     },
@@ -1981,7 +1862,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       isSynthetic: true,
     },
     {
@@ -1992,7 +1872,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bridged-usdc-arbitrum",
       isPermitSupported: true,
     },
     {

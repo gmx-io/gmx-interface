@@ -43,11 +43,25 @@ describe("findSwapPathsBetweenTokens", () => {
 
     expect(result).toEqual({
       BTC: {
+        BTC: [
+          ["ETH", "USDC"],
+          ["USDC", "ETH"],
+        ],
         ETH: [[], ["USDC"]],
         USDC: [[], ["ETH"]],
       },
       ETH: {
+        ETH: [
+          ["USDC", "BTC"],
+          ["BTC", "USDC"],
+        ],
         USDC: [[], ["BTC"]],
+      },
+      USDC: {
+        USDC: [
+          ["ETH", "BTC"],
+          ["BTC", "ETH"],
+        ],
       },
     });
   });
@@ -66,7 +80,11 @@ describe("findSwapPathsBetweenTokens", () => {
 
     expect(result).toEqual({
       ETH: {
+        ETH: [["USDC"]],
         USDC: [[], ["USDC", "ETH"]],
+      },
+      USDC: {
+        USDC: [["ETH"]],
       },
     });
   });
@@ -161,11 +179,15 @@ describe("findSwapPathsBetweenTokens", () => {
 
     expect(result).toEqual({
       A: {
+        A: [["USDC"]],
         B: [["USDC"]],
         USDC: [[], ["USDC", "A"]],
       },
       B: {
         USDC: [[], ["USDC", "A"]],
+      },
+      USDC: {
+        USDC: [["A"]],
       },
     });
   });
