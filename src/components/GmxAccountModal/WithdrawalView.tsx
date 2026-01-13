@@ -805,7 +805,7 @@ export const WithdrawalView = () => {
         text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
         disabled: true,
       };
-    } else if (showWntWarning) {
+    } else if (showWntWarning && !expressTxnParamsAsyncResult.isLoading) {
       buttonState = {
         text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
         disabled: true,
