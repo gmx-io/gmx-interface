@@ -5,6 +5,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectTradeboxFromToken,
+  selectTradeboxFocusedInput,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarkPrice,
   selectTradeboxState,
@@ -61,6 +62,7 @@ export function TradeboxMarginFields({
   const gasPaymentTokenData = useSelector(selectGasPaymentToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const markPrice = useSelector(selectTradeboxMarkPrice);
+  const focusedInput = useSelector(selectTradeboxFocusedInput);
 
   const { fromTokenAddress, toTokenAddress } = useSelector(selectTradeboxState);
 
@@ -87,6 +89,10 @@ export function TradeboxMarginFields({
       return;
     }
 
+    if (focusedInput !== "to") {
+      return;
+    }
+
     const parsedUsd = parseValue(sizeInputValue || "0", USD_DECIMALS);
 
     if (parsedUsd === undefined) {
@@ -105,6 +111,7 @@ export function TradeboxMarginFields({
     }
   }, [
     markPrice,
+    focusedInput,
     sizeDisplayMode,
     sizeInputValue,
     toToken,
@@ -113,6 +120,33 @@ export function TradeboxMarginFields({
     toTokenInputValue,
     setToTokenInputValue,
   ]);
+
+  useEffect(() => {
+    if (sizeDisplayMode !== "usd" || !toToken || markPrice === undefined || markPrice === 0n) {
+      return;
+    }
+
+    if (focusedInput === "to") {
+      return;
+    }
+
+    const parsedTokens = parseValue(toTokenInputValue, toToken.decimals);
+
+    if (parsedTokens === undefined) {
+      if (sizeInputValue !== "") {
+        setSizeInputValue("");
+      }
+      return;
+    }
+
+    const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+    const sizeInUsd = (parsedTokens * visualMultiplier * markPrice) / 10n ** BigInt(toToken.decimals);
+    const nextSizeValue = formatAmount(sizeInUsd, USD_DECIMALS, sizeUsdDisplayDecimals);
+
+    if (nextSizeValue !== sizeInputValue) {
+      setSizeInputValue(nextSizeValue);
+    }
+  }, [focusedInput, markPrice, sizeDisplayMode, sizeInputValue, sizeUsdDisplayDecimals, toToken, toTokenInputValue]);
 
   useEffect(() => {
     if (fromToken?.balance === undefined || fromToken.balance === 0n) {
