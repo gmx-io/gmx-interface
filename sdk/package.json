@@ -2,6 +2,7 @@
   "name": "@gmx-io/sdk",
   "version": "1.4.1",
   "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
     "url": "https://github.com/gmx-io/gmx-interface",
@@ -60,13 +61,14 @@
     "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c subsquid-codegen.ts && npx prettier --write src/types/subsquid.ts",
     "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
     "tscheck:ci": "tsc -p tsconfig.json --noEmit",
-    "lint": "cd .. && node node_modules/.bin/eslint sdk --fix --cache --cache-location .eslintcache",
-    "lint:ci": "cd .. && node node_modules/.bin/eslint sdk --max-warnings=0",
+    "lint": "eslint . --fix --cache",
+    "lint:ci": "eslint . --max-warnings=0",
     "clean": "rm -rf build/**/*.tsbuildinfo",
-    "clean:cache": "rm -rf ../.eslintcache ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
-    "clean:lint": "rm -rf ../.eslintcache",
+    "clean:cache": "rm -rf .eslintcache ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
+    "clean:lint": "rm -rf .eslintcache",
     "clean:ts": "rm -rf ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
-    "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
+    "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
+    "dev": "tspc -p tsconfig.esm.json --watch & tspc -p tsconfig.json --emitDeclarationOnly --watch"
   },
   "publishConfig": {
     "access": "public"
@@ -84,27 +86,30 @@
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "^2.37.1"
+    "viem": "2.37.1"
   },
   "devDependencies": {
-    "@babel/plugin-transform-private-property-in-object": "^7.25.9",
+    "@babel/plugin-transform-private-property-in-object": "7.25.9",
+    "@eslint/js": "9.18.0",
     "@graphql-codegen/cli": "5.0.6",
     "@graphql-codegen/client-preset": "4.8.1",
     "@graphql-codegen/typescript": "4.1.6",
     "@graphql-codegen/typescript-operations": "4.6.1",
     "@types/lodash": "4.14.198",
     "@types/node": "18.7.13",
+    "eslint": "9.18.0",
+    "eslint-plugin-import": "2.31.0",
     "lint-staged": "12.3.4",
     "ts-patch": "3.2.1",
     "tsx": "4.19.0",
+    "typescript-eslint": "8.20.0",
     "typescript-transform-paths": "3.5.1",
-    "viem": "2.39.0",
-    "vitest": "^3.0.5"
+    "vitest": "3.0.5"
   },
   "files": [
     "build"
   ],
-  "packageManager": "yarn@3.1.0",
+  "packageManager": "yarn@4.12.0",
   "resolutions": {
     "viem@2.39.0": "patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd"
   }

@@ -1,15 +1,15 @@
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
-import { Hash, padHex, stringToHex, zeroHash } from "viem";
+import { padHex, stringToHex, zeroHash } from "viem";
 import { bytesToString, hexToBytes } from "viem/utils";
 
-export function decodeReferralCode(hexCode?: Hash) {
+export function decodeReferralCode(hexCode?: string) {
   if (!hexCode || hexCode === zeroHash) {
     return "";
   }
 
   try {
-    const bytes = hexToBytes(hexCode);
+    const bytes = hexToBytes(hexCode as `0x${string}`);
     if (bytes.length !== 32) throw new Error();
     return bytesToString(bytes).replace(/\0+$/, "");
   } catch (ex) {
@@ -23,7 +23,7 @@ export function decodeReferralCode(hexCode?: Hash) {
 }
 
 export function encodeReferralCode(code: string) {
-  let final = code.replace(/[^\w_]/g, ""); // replace everything other than numbers, string  and underscor to ''
+  const final = code.replace(/[^\w_]/g, ""); // replace everything other than numbers, string  and underscor to ''
   if (final.length > MAX_REFERRAL_CODE_LENGTH) {
     return zeroHash;
   }

@@ -1,3 +1,4 @@
+import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import reactPlugin from "eslint-plugin-react";
@@ -9,14 +10,13 @@ import packageJson from "eslint-plugin-package-json";
 import localRules from "eslint-plugin-local-rules";
 import globals from "globals";
 
-export default tseslint.config(
+export default defineConfig([
   // Global ignores
   {
     ignores: [
       "**/node_modules/**",
       "**/dist/**",
       "**/build/**",
-      "sdk/**",
       "autotests/**",
       "postcss.config.js",
       "**/postcss.config.js",
@@ -30,6 +30,8 @@ export default tseslint.config(
       "eslint-local-rules.cjs",
       // Ignore JSON files from typescript linting (except package.json)
       "src/**/*.json",
+      // SDK has its own eslint config
+      "sdk/**",
     ],
   },
 
@@ -39,64 +41,23 @@ export default tseslint.config(
     ...packageJson.configs.recommended,
     rules: {
       ...packageJson.configs.recommended.rules,
-      // Disable all type-checked rules
-      "@typescript-eslint/await-thenable": "off",
-      "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-array-constructor": "off",
-      "@typescript-eslint/no-array-delete": "off",
-      "@typescript-eslint/no-base-to-string": "off",
-      "@typescript-eslint/no-duplicate-enum-values": "off",
-      "@typescript-eslint/no-duplicate-type-constituents": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-extra-non-null-assertion": "off",
-      "@typescript-eslint/no-floating-promises": "off",
-      "@typescript-eslint/no-for-in-array": "off",
-      "@typescript-eslint/no-implied-eval": "off",
-      "@typescript-eslint/no-misused-new": "off",
-      "@typescript-eslint/no-misused-promises": "off",
-      "@typescript-eslint/no-namespace": "off",
-      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
-      "@typescript-eslint/no-redundant-type-constituents": "off",
-      "@typescript-eslint/no-require-imports": "off",
-      "@typescript-eslint/no-this-alias": "off",
-      "@typescript-eslint/no-unnecessary-type-assertion": "off",
-      "@typescript-eslint/no-unnecessary-type-constraint": "off",
-      "@typescript-eslint/no-unsafe-argument": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-call": "off",
-      "@typescript-eslint/no-unsafe-declaration-merging": "off",
-      "@typescript-eslint/no-unsafe-enum-comparison": "off",
-      "@typescript-eslint/no-unsafe-function-type": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-return": "off",
-      "@typescript-eslint/no-unsafe-unary-minus": "off",
-      "@typescript-eslint/no-unused-expressions": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-wrapper-object-types": "off",
-      "@typescript-eslint/only-throw-error": "off",
-      "@typescript-eslint/prefer-as-const": "off",
-      "@typescript-eslint/prefer-namespace-keyword": "off",
-      "@typescript-eslint/prefer-promise-reject-errors": "off",
-      "@typescript-eslint/require-await": "off",
-      "@typescript-eslint/restrict-plus-operands": "off",
-      "@typescript-eslint/restrict-template-expressions": "off",
-      "@typescript-eslint/triple-slash-reference": "off",
-      "@typescript-eslint/unbound-method": "off",
       "package-json/sort-collections": "off", // requires Node 20+
       "package-json/require-description": "off",
       "package-json/restrict-dependency-ranges": ["error", { rangeType: "pin" }],
     },
   },
 
-  // Base config for all JS/TS files (exclude JSON)
-  js.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked.map((config) => {
-    if (config.files) {
-      return { ...config, files: config.files.filter((pattern) => !pattern.includes("json")) };
-    }
-    return { ...config, files: ["**/*.{js,jsx,ts,tsx}"] };
-  }),
+  // TypeScript type-checked config for JS/TS files
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
 
   // Disable no-undef for TypeScript files (TypeScript compiler already checks this)
   {
@@ -125,8 +86,6 @@ export default tseslint.config(
       },
       parserOptions: {
         ecmaFeatures: { jsx: true },
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
       },
     },
     settings: {
@@ -272,23 +231,6 @@ export default tseslint.config(
     files: ["scripts/**/*.{js,ts}"],
     rules: {
       "no-restricted-globals": "off",
-    },
-  },
-
-  // SDK folder - check extraneous dependencies
-  {
-    files: ["./sdk/**/*.{ts,tsx}"],
-    rules: {
-      "import/no-extraneous-dependencies": [
-        "error",
-        {
-          packageDir: "./sdk",
-          devDependencies: true,
-          optionalDependencies: false,
-          peerDependencies: false,
-          includeTypes: true,
-        },
-      ],
     },
   },
 
