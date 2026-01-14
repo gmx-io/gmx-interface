@@ -10,7 +10,7 @@ export function FaqSection() {
           <Trans>FAQ</Trans>
         </h2>
         <div className="flex w-full flex-col gap-12 sm:w-[800px]">
-          <FaqItem title="What Makes GMX One of the Best Places to Earn Yield on My Crypto?">
+          <FaqItem title={t`What Makes GMX One of the Best Places to Earn Yield on My Crypto?`}>
             <Trans>
               <p>
                 Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or

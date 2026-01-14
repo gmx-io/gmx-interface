@@ -53,7 +53,7 @@ export function Features({ goToTradeArbitrum }: Props) {
               </Trans>
             </p>
             <p className="text-description text-white">
-              Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX{" "}
+              <Trans>Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX</Trans>
             </p>
           </div>
         </div>
@@ -90,7 +90,9 @@ export function Features({ goToTradeArbitrum }: Props) {
             </p>
           </div>
         </div>
-        <p className="text-description">Trade at scale without worrying about thin order books or slippage</p>
+        <p className="text-description">
+          <Trans>Trade at scale without worrying about thin order books or slippage</Trans>
+        </p>
       </div>
       <div className="h-full rounded-20 bg-slate-800 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 lg:min-h-[180px]">
         <div className="flex h-full w-full flex-col justify-between">
@@ -130,8 +132,10 @@ export function Features({ goToTradeArbitrum }: Props) {
               <Trans>Seamless Trading</Trans>
             </p>
             <p className="text-description">
-              Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and GMX
-              Express
+              <Trans>
+                Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and
+                GMX Express
+              </Trans>
             </p>
           </div>
           <button className="btn-landing rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>

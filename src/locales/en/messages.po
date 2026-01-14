@@ -56,6 +56,10 @@ msgstr "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} col
 msgid "Request deposit"
 msgstr "Request deposit"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Sign each transaction on-chain using your own RPC, typically provided by your wallet.<0/><1/>Gas payments in {nativeTokenSymbol}."
+msgstr "Sign each transaction on-chain using your own RPC, typically provided by your wallet.<0/><1/>Gas payments in {nativeTokenSymbol}."
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
@@ -125,6 +129,10 @@ msgstr "Daily Loss"
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
 msgstr "Create TWAP Swap"
+
+#: src/config/events.tsx
+msgid "Lending and borrowing is now available for GLV assets: <0/> <1>[BTC-USDC]</1> and <2/> <3>[ETH-USDC]</3> on <4>Morpho</4>."
+msgstr "Lending and borrowing is now available for GLV assets: <0/> <1>[BTC-USDC]</1> and <2/> <3>[ETH-USDC]</3> on <4>Morpho</4>."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -301,8 +309,6 @@ msgid "Network fees increased. Additional fee required."
 msgstr "Network fees increased. Additional fee required."
 
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
@@ -1147,6 +1153,7 @@ msgstr "Trigger Orders"
 msgid "Reason: {0}."
 msgstr "Reason: {0}."
 
+#: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
 msgstr "Charts by TradingView"
@@ -1599,6 +1606,10 @@ msgstr "Your trading volume with referral discount."
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
 msgstr "Price on Avalanche"
+
+#: src/config/events.tsx
+msgid "From 22nd December, the open interest will now be tracked in token amounts instead of USD values for improved balance accuracy. <0>Read more</0>."
+msgstr "From 22nd December, the open interest will now be tracked in token amounts instead of USD values for improved balance accuracy. <0>Read more</0>."
 
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Chart positions"
@@ -2871,6 +2882,10 @@ msgstr "URL"
 msgid "Smart wallets not supported on this network."
 msgstr "Smart wallets not supported on this network."
 
+#: landing/src/pages/Home/HeroSection/Features.tsx
+msgid "Trade at scale without worrying about thin order books or slippage"
+msgstr "Trade at scale without worrying about thin order books or slippage"
+
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle"
@@ -3097,6 +3112,10 @@ msgstr "Market composition"
 msgid "Self-transfer not supported"
 msgstr "Self-transfer not supported"
 
+#: src/config/events.tsx
+msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2> for AERO and BRETT, or GM <3>[PBTC]</3> for BTC."
+msgstr "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2> for AERO and BRETT, or GM <3>[PBTC]</3> for BTC."
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Generating session..."
 msgstr "Generating session..."
@@ -3244,6 +3263,10 @@ msgstr "No funds to withdraw"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr "Submitting..."
+
+#: src/components/GmList/GlvList.tsx
+msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets."
+msgstr "Yield-optimized vaults supplying liquidity across multiple GMX markets."
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Driven by <0/> Our Community"
@@ -3768,6 +3791,10 @@ msgstr "Approval failed"
 msgid "Updating settings..."
 msgstr "Updating settings..."
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
+msgstr "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "Last rebalance"
@@ -4137,6 +4164,10 @@ msgstr "<0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymb
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop-Loss"
 msgstr "Failed Stop-Loss"
+
+#: landing/src/pages/Home/HeroSection/Features.tsx
+msgid "Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and GMX Express"
+msgstr "Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and GMX Express"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "tBTC LP incentives"
@@ -5308,6 +5339,10 @@ msgstr "Switch to account {receiver} to complete this transfer."
 msgid "Disable validation for testing"
 msgstr "Disable validation for testing"
 
+#: src/config/events.tsx
+msgid "Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is recommended.<0/><1/>The listing committee will evaluate the listing of ELIZAOS/USD."
+msgstr "Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is recommended.<0/><1/>The listing committee will evaluate the listing of ELIZAOS/USD."
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -5348,6 +5383,10 @@ msgstr "GMX community discussion."
 #: src/pages/PageNotFound/PageNotFound.jsx
 msgid "Page Not Found"
 msgstr "Page Not Found"
+
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "What Makes GMX One of the Best Places to Earn Yield on My Crypto?"
+msgstr "What Makes GMX One of the Best Places to Earn Yield on My Crypto?"
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
@@ -5487,10 +5526,6 @@ msgstr "Swap profit fee"
 msgid "Solv Finance"
 msgstr "Solv Finance"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
-msgstr "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas payments in {gasPaymentTokensText}."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted"
@@ -5537,10 +5572,6 @@ msgstr "Minimum capital used of {0} required to qualify for rankings."
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
 msgstr "For me"
-
-#: src/components/GmList/GlvList.tsx
-msgid "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
-msgstr "Yield-optimized vaults supplying liquidity across multiple GMX<0/> markets."
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take profits at 100%. Reduce existing orders to add more."
@@ -6015,6 +6046,11 @@ msgstr "TP/SL orders auto-cancel when the position closes. Applies only to order
 msgid "Trade with confidence."
 msgstr "Trade with confidence."
 
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "fees"
+msgstr "fees"
+
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "What could we improve?"
 msgstr "What could we improve?"
@@ -6026,10 +6062,6 @@ msgstr "Referral code update failed"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "of open fee"
 msgstr "of open fee"
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
-msgstr "Sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments in {nativeTokenSymbol}."
 
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -6448,6 +6480,10 @@ msgstr "Referral Codes"
 msgid "Vested GMX not withdrawn"
 msgstr "Vested GMX not withdrawn"
 
+#: src/config/events.tsx
+msgid "The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on position close. <0>Read more</0>."
+msgstr "The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on position close. <0>Read more</0>."
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short positions"
 msgstr "Short positions"
@@ -6616,10 +6652,6 @@ msgstr "Less details"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using decentralized exchange aggregators."
 msgstr "Buy GMX using decentralized exchange aggregators."
-
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion. Gas payments in {gasPaymentTokensText}."
-msgstr "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion. Gas payments in {gasPaymentTokensText}."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display settings"
@@ -6956,6 +6988,10 @@ msgstr "What did you like most?"
 msgid "Sell {operationTokenSymbol}"
 msgstr "Sell {operationTokenSymbol}"
 
+#: src/config/events.tsx
+msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM <2>[XAUt0-XAUt0]</2> or GM <3>[XAUt0-USDT]</3>."
+msgstr "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM <2>[XAUt0-XAUt0]</2> or GM <3>[XAUt0-USDT]</3>."
+
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -7069,6 +7105,10 @@ msgstr "Incentives, airdrops, and prizes will appear here."
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading unavailable for native token {0}. Use {1} instead."
 msgstr "Express Trading unavailable for native token {0}. Use {1} instead."
+
+#: src/config/events.tsx
+msgid "<0>Trade</0> this market, or <1>provide liquidity</1> using GM or GLV <2>[WAVAX-USDC]</2> for WLFI on Avalanche, and GM or GLV <3>[WETH-USDC]</3> on Arbitrum."
+msgstr "<0>Trade</0> this market, or <1>provide liquidity</1> using GM or GLV <2>[WAVAX-USDC]</2> for WLFI on Avalanche, and GM or GLV <3>[WETH-USDC]</3> on Arbitrum."
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
@@ -7447,6 +7487,10 @@ msgstr "Trading simulations on GMX using DOJO."
 msgid "Fee APY"
 msgstr "Fee APY"
 
+#: landing/src/pages/Home/HeroSection/Features.tsx
+msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
+msgstr "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "Your funds are safe and remain in your wallet."
@@ -7603,10 +7647,6 @@ msgstr "Vested GLP not withdrawn"
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr "<0>every</0> {minutes} minutes{0}"
 
-#: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
-msgid "Entry Price"
-msgstr "Entry Price"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. By staking GMX, you earn 27% of the revenue generated by the trading platform."
 msgstr "The GMX token serves as the governance token of the GMX protocol. By staking GMX, you earn 27% of the revenue generated by the trading platform."
@@ -7658,6 +7698,10 @@ msgstr "Earn fees from leverage trading, swaps, and spreads"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Time elapsed"
 msgstr "Time elapsed"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
+msgstr "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Stop Loss PnL"
@@ -7720,6 +7764,10 @@ msgstr "One-Click Trading approval invalid. This may occur when switching chains
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim funding fees"
 msgstr "Claim funding fees"
+
+#: src/config/events.tsx
+msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2>, or GLV <3>[WETH-USDC]</3>."
+msgstr "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2>, or GLV <3>[WETH-USDC]</3>."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO voting power</0> before claiming."
@@ -8014,6 +8062,7 @@ msgid "Unknown order"
 msgstr "Unknown order"
 
 #: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
 msgid "Entry price"
 msgstr "Entry price"
 
@@ -8358,6 +8407,10 @@ msgstr "Limit"
 msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
 msgstr "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
 
+#: src/config/events.tsx
+msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2> or GLV <3>[WETH-USDC]</3>."
+msgstr "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2> or GLV <3>[WETH-USDC]</3>."
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (limit)"
 msgstr "Increase size (limit)"
@@ -8439,6 +8492,10 @@ msgstr "Close"
 msgid "Link"
 msgstr "Link"
 
+#: src/config/events.tsx
+msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WBTC-USDC]</2>."
+msgstr "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WBTC-USDC]</2>."
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to deposit"
 msgstr "Available to deposit"
@@ -8463,6 +8520,10 @@ msgstr "Swap liquidity may be insufficient when order triggers."
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "Take-Profit"
+
+#: src/config/events.tsx
+msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WETH-USDC]</2>, or GLV <3>[WBTC-USDC]</3>."
+msgstr "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WETH-USDC]</2>, or GLV <3>[WBTC-USDC]</3>."
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour."
@@ -8504,6 +8565,11 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "No decentralized exchanges available"
+
+#: src/config/events.tsx
+#: src/config/events.tsx
+msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2>."
+msgstr "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2>."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
