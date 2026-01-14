@@ -438,7 +438,6 @@ msgstr "지정가 가격이 마크 가격 미만"
 msgid "sell"
 msgstr "판매"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "{0}으로 전환"
@@ -883,6 +882,8 @@ msgid "Disable Share Modal PnL Check"
 msgstr "공유 모달 PnL 확인 비활성화"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "이미 사용된 코드입니다"
@@ -1926,6 +1927,8 @@ msgstr "수수료의 USD 가치는 적립 시 계산되며 인센티브를 포�
 msgid "Max"
 msgstr "최대"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "코드 확인 중…"
@@ -2585,6 +2588,8 @@ msgstr "트랜잭션 전송됨."
 msgid "Exposure to Backing Tokens"
 msgstr "기반 토큰 노출"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "생성 중…"
@@ -2938,6 +2943,7 @@ msgstr "GMX, GLV 및 GM 토큰이 어떻게 협력하여 탈중앙화 거래 경
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Network Fee"
 msgstr "네트워크 수수료"
 
@@ -3481,6 +3487,10 @@ msgstr "네트워크의 네이티브 토큰 {0}을 사용한 익스프레스 거
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total Earned"
 msgstr "총 수익"
+
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -4186,6 +4196,11 @@ msgstr "구인"
 msgid "Decentralized Options Strategies"
 msgstr "탈중앙화 옵션 전략"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Creating referral code"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "{0}을 담보로 한 기존 포지션이 있습니다. 이 작업은 해당 포지션에 적용되지 않습니다. <0>{1} 담보로 전환</0>"
@@ -4279,6 +4294,9 @@ msgid "Net Price Impact"
 msgstr "순 가격 영향"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4371,6 +4389,7 @@ msgid "Create Stop Loss"
 msgstr "손절 생성"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4784,6 +4803,9 @@ msgid "Yield Farming"
 msgstr "수익 농사"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "승인 중..."
@@ -4878,6 +4900,8 @@ msgstr "{0} 스왑"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -5713,6 +5737,12 @@ msgstr "입금 금액 입력"
 msgid "Update Stop Loss"
 msgstr "손절 업데이트"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Approve {0}"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "{0} 롱 최대치 초과"
@@ -5967,6 +5997,8 @@ msgstr "다음"
 msgid "More info"
 msgstr "더 많은 정보"
 
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -6547,6 +6579,7 @@ msgstr "Meme"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Create code"
 msgstr "코드 생성"
 
@@ -6718,6 +6751,11 @@ msgstr "승인 실패."
 msgid "GMX rewards:"
 msgstr "GMX 보상:"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Referral code created!"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -6837,6 +6875,8 @@ msgstr "스왑 실패."
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderList/OrderList.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7806,10 +7846,6 @@ msgstr "롱"
 msgid "24h High"
 msgstr "24시간 고점"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
-msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
-msgstr "이 코드는 {nonTakenNetworkNames}에 등록되지 않았습니다. 리베이트 수령 불가.<0/><1/>{nonTakenNetworkNames}에서 코드 생성을 위해 네트워크 전환."
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr "분배"
@@ -7889,6 +7925,8 @@ msgstr "GMX 스테이킹 보상:"
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "롱 증가 및<0/>숏 감소 실행 가격."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "It will take a couple of minutes to be reflected. Please check back later."
 msgstr "반영되는 데 몇 분 걸립니다. 나중에 확인하세요."
@@ -8313,10 +8351,6 @@ msgstr "TWAP 파트 업데이트"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "GLV는 어떻게 수익을 벌며, 내 수익은 어디서 볼 수 있나요?"
-
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "Please switch to {0} to create your referral code. It will work across all other networks."
-msgstr "추천 코드를 생성하려면 {0}으로 전환하세요. 다른 모든 네트워크에서 작동합니다."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx

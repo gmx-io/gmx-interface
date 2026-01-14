@@ -438,7 +438,6 @@ msgstr "Лимитная цена ниже рыночной цены"
 msgid "sell"
 msgstr "продать"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "Переключиться на {0}"
@@ -883,6 +882,8 @@ msgid "Disable Share Modal PnL Check"
 msgstr "Отключить проверку PnL в модальном окне публикации"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "Код уже занят"
@@ -1926,6 +1927,8 @@ msgstr "Стоимость комиссий в USD рассчитывается 
 msgid "Max"
 msgstr "Макс"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "Проверка кода…"
@@ -2585,6 +2588,8 @@ msgstr "Транзакция отправлена."
 msgid "Exposure to Backing Tokens"
 msgstr "Экспозиция к Токенам Поддержки"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "Создание…"
@@ -2938,6 +2943,7 @@ msgstr "Узнайте, как токены GMX, GLV и GM работают вм
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Network Fee"
 msgstr "Комиссия Сети"
 
@@ -3481,6 +3487,10 @@ msgstr "Экспресс-Торговля недоступна с использ
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total Earned"
 msgstr "Всего заработано"
+
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -4186,6 +4196,11 @@ msgstr "Вакансии"
 msgid "Decentralized Options Strategies"
 msgstr "Децентрализованные Опционные Стратегии"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Creating referral code"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "У вас есть существующая позиция с {0} как коллатералем. Это действие не применится к этой позиции. <0>Переключиться на коллатераль {1}</0>"
@@ -4279,6 +4294,9 @@ msgid "Net Price Impact"
 msgstr "Чистое влияние цены"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4371,6 +4389,7 @@ msgid "Create Stop Loss"
 msgstr "Создать Stop Loss"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4784,6 +4803,9 @@ msgid "Yield Farming"
 msgstr "Доходное фермерство"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Одобрение…"
@@ -4878,6 +4900,8 @@ msgstr "Обмен {0}"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -5713,6 +5737,12 @@ msgstr "Введите сумму внесения"
 msgid "Update Stop Loss"
 msgstr "Обновить стоп-лосс"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Approve {0}"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "Максимальный {0} лонг превышен"
@@ -5967,6 +5997,8 @@ msgstr "Далее"
 msgid "More info"
 msgstr "Больше информации"
 
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -6547,6 +6579,7 @@ msgstr "Мем"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Create code"
 msgstr "Создать код"
 
@@ -6718,6 +6751,11 @@ msgstr "Одобрение не удалось."
 msgid "GMX rewards:"
 msgstr "Награды GMX:"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Referral code created!"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -6837,6 +6875,8 @@ msgstr "Обмен не удался."
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderList/OrderList.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7806,10 +7846,6 @@ msgstr "лонг"
 msgid "24h High"
 msgstr "Макс. за 24ч"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
-msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
-msgstr "Этот код еще не зарегистрирован на {nonTakenNetworkNames}, вы не будете получать рибейты там.<0/><1/>Переключите сеть, чтобы создать этот код на {nonTakenNetworkNames}."
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr "Распределение"
@@ -7889,6 +7925,8 @@ msgstr "Награды за стейкинг GMX:"
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Цены исполнения для увеличения лонгов и<0/>уменьшения шортов."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "It will take a couple of minutes to be reflected. Please check back later."
 msgstr "Это займет пару минут, чтобы отразиться. Пожалуйста, проверьте позже."
@@ -8313,10 +8351,6 @@ msgstr "Обновить часть TWAP"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "Как GLV зарабатывает доходность, и где я вижу свои заработки?"
-
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "Please switch to {0} to create your referral code. It will work across all other networks."
-msgstr "Пожалуйста, переключитесь на {0}, чтобы создать реферальный код. Он будет работать во всех других сетях."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx

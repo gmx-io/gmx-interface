@@ -438,7 +438,6 @@ msgstr "Prix limite en dessous du prix mark"
 msgid "sell"
 msgstr "vendre"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "Passer à {0}"
@@ -883,6 +882,8 @@ msgid "Disable Share Modal PnL Check"
 msgstr "Désactiver la vérification PnL dans la fenêtre de partage"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "Code déjà pris"
@@ -1926,6 +1927,8 @@ msgstr "La valeur USD des frais est calculée au moment où ils sont gagnés et 
 msgid "Max"
 msgstr "Max"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "Vérification du code…"
@@ -2585,6 +2588,8 @@ msgstr "Transaction envoyée."
 msgid "Exposure to Backing Tokens"
 msgstr "Exposition aux tokens de soutien"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "Création en cours…"
@@ -2938,6 +2943,7 @@ msgstr "Découvrez comment les tokens GMX, GLV et GM fonctionnent ensemble pour 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Network Fee"
 msgstr "Frais de réseau"
 
@@ -3481,6 +3487,10 @@ msgstr "Le trading express n'est pas disponible en utilisant le token natif du r
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total Earned"
 msgstr "Total gagné"
+
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -4186,6 +4196,11 @@ msgstr "Emplois"
 msgid "Decentralized Options Strategies"
 msgstr "Stratégies d'options décentralisées"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Creating referral code"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "Vous avez une position existante avec {0} comme garantie. Cette action ne s'appliquera pas à cette position. <0>Passer à la garantie {1}</0>"
@@ -4279,6 +4294,9 @@ msgid "Net Price Impact"
 msgstr "Impact de Prix Net"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4371,6 +4389,7 @@ msgid "Create Stop Loss"
 msgstr "Créer Stop Loss"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4784,6 +4803,9 @@ msgid "Yield Farming"
 msgstr "Yield Farming"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Approbation en cours…"
@@ -4878,6 +4900,8 @@ msgstr "Échanger {0}"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -5713,6 +5737,12 @@ msgstr "Entrez le montant de dépôt"
 msgid "Update Stop Loss"
 msgstr "Mettre à jour le Stop Loss"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Approve {0}"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "Long {0} maximal dépassé"
@@ -5967,6 +5997,8 @@ msgstr "Suivant"
 msgid "More info"
 msgstr "Plus d’infos"
 
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -6547,6 +6579,7 @@ msgstr "Meme"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Create code"
 msgstr "Créer un code"
 
@@ -6718,6 +6751,11 @@ msgstr "Approbation échouée."
 msgid "GMX rewards:"
 msgstr "Récompenses GMX :"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Referral code created!"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -6837,6 +6875,8 @@ msgstr "Échange échoué."
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderList/OrderList.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7806,10 +7846,6 @@ msgstr "long"
 msgid "24h High"
 msgstr "Haut sur 24h"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
-msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
-msgstr "Ce code n'est pas encore enregistré sur {nonTakenNetworkNames}, vous ne recevrez pas de rabais là-bas.<0/><1/>Changez de réseau pour créer ce code sur {nonTakenNetworkNames}."
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr "Distribution"
@@ -7889,6 +7925,8 @@ msgstr "Récompenses GMX stakées :"
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Prix d'exécution pour augmenter les longs et<0/>diminuer les shorts."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "It will take a couple of minutes to be reflected. Please check back later."
 msgstr "Cela prendra quelques minutes pour être reflété. Veuillez vérifier plus tard."
@@ -8313,10 +8351,6 @@ msgstr "Mettre à jour la partie TWAP"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "Comment GLV gagne-t-il du rendement, et où voir mes gains ?"
-
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "Please switch to {0} to create your referral code. It will work across all other networks."
-msgstr "Veuillez passer à {0} pour créer votre code de parrainage. Il fonctionnera sur tous les autres réseaux."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
