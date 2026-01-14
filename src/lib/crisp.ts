@@ -50,8 +50,10 @@ export function useCrisp() {
     );
   }, [isLargeAccountVolumeStats.data, totalVolume]);
 
-  const eligibleToShowCrisp =
-    isConnected && !isAccountTypeLoading && !isLargeAccountVolumeStats.isLoading && isLargeAccountForCrisp;
+  // const eligibleToShowCrisp =
+  //   isConnected && !isAccountTypeLoading && !isLargeAccountVolumeStats.isLoading && isLargeAccountForCrisp;
+
+  const eligibleToShowCrisp = true;
 
   useEffect(() => {
     if (!eligibleToShowCrisp || crispChatHidden) {
