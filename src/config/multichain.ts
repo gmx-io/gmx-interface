@@ -31,8 +31,6 @@ import {
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
   ContractsChainId,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
@@ -396,21 +394,6 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     }
   }
 }
-
-export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChainId> = {
-  [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [SOURCE_ETHEREUM_MAINNET]: ARBITRUM,
-  [SOURCE_BASE_MAINNET]: ARBITRUM,
-  [SOURCE_BSC_MAINNET]: ARBITRUM,
-  [BOTANIX]: ARBITRUM,
-
-  // Stubs
-  [ARBITRUM]: ARBITRUM, // ARBITRUM,
-  [AVALANCHE]: ARBITRUM, // AVALANCHE,
-  [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA,
-};
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {
   return CHAIN_ID_TO_TOKEN_ID_MAP[chainId]?.[tokenAddress];
