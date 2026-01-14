@@ -2942,6 +2942,7 @@ msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentrali
 msgstr "GMX, GLV 및 GM 토큰이 어떻게 협력하여 탈중앙화 거래 경험을 제공하는지 알아보세요. 각 토큰의 역할을 탐색하고, 수만 명의 다른 GMX 사용자처럼 스테이킹하거나 유동성을 제공하여 보상을 받는 방법을 발견하세요."
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
