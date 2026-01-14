@@ -179,3 +179,5 @@ export type ClaimableFunding = {
 export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
 };
+
+export type { MarketConfig, MarketValues } from "modules/markets/types";

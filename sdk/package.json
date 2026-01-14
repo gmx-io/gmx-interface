@@ -66,7 +66,9 @@
     "clean:cache": "rm -rf ../.eslintcache ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
     "clean:lint": "rm -rf ../.eslintcache",
     "clean:ts": "rm -rf ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
-    "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
+    "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
+    "dev": "tspc -p tsconfig.esm.json --watch & tspc -p tsconfig.json --emitDeclarationOnly --watch",
+    "dev:cjs": "mkdir -p build/cjs/src && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json && tsc -p tsconfig.cjs.json --watch"
   },
   "publishConfig": {
     "access": "public"
@@ -104,7 +106,7 @@
   "files": [
     "build"
   ],
-  "packageManager": "yarn@3.1.0",
+  "packageManager": "yarn@4.12.0",
   "resolutions": {
     "viem@2.39.0": "patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd"
   }
