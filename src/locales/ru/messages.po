@@ -355,10 +355,6 @@ msgstr "Тейк-профит не удался"
 msgid "Swapped {0} for {1}."
 msgstr "Обменено {0} на {1}."
 
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1>"
-msgstr "<0>Мультичейн</0><1>Ликвидность Just in Time</1>"
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
@@ -535,10 +531,6 @@ msgstr "Аналитика данных GMX V2 в Telegram"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High external swap impact"
 msgstr "Высокое влияние внешнего свопа"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "90+ crypto tokens"
-msgstr "Более 90 криптотокенов"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
@@ -1310,6 +1302,10 @@ msgstr "Мин. ордер: {0}"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
 msgstr "Кошелёк не подключён"
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "100+ crypto tokens"
+msgstr "Более 100 криптотокенов"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "TWAP Swap"
@@ -2520,6 +2516,10 @@ msgstr "Testnet LayerZero Scan"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1> по праву заработал титул гиганта перпетуальной торговли, и причины этого признания многообразны.</0><2><3>@GMX_IO</3> выделяется как проект, который прошел свой путь без опоры на VC-финансирование. Замечательно, что он поднялся на вершину, заняв №1 по TVL на цепи Arbitrum на $488.34M и впечатляющий общий ранг №23 на DeFiLlama... <4>см. больше</4></2>"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+msgstr "<0>Мультичейн</0><1>Ликвидность Just in Time</1><2>Поддержка MegaETH</2>"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
