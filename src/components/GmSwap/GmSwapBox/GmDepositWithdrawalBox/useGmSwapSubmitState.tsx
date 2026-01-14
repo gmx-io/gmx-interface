@@ -1,7 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
+import { zeroAddress } from "viem";
 
+import { AVALANCHE, SettlementChainId } from "config/chains";
+import { getMappedTokenId } from "config/multichain";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
@@ -28,6 +31,7 @@ import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technic
 import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
+import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { GmSwapFees } from "sdk/types/trade";
@@ -62,6 +66,7 @@ type SubmitButtonState = {
   isAllowanceLoaded?: boolean;
   isAllowanceLoading?: boolean;
   errorDescription?: string;
+  warningText?: string;
 };
 
 export const useGmSwapSubmitState = ({
@@ -166,6 +171,39 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   });
 
+  const paySourceChainNativeTokenAmount = useMemo(() => {
+    if (srcChainId === undefined || !isDeposit) {
+      return 0n;
+    }
+
+    let paySourceChainNativeTokenAmount = 0n;
+
+    if (payLongToken !== undefined) {
+      const sourceChainToken = getMappedTokenId(chainId as SettlementChainId, payLongToken.address, srcChainId);
+
+      if (sourceChainToken !== undefined && sourceChainToken.address === zeroAddress) {
+        paySourceChainNativeTokenAmount += adjustForDecimals(
+          longTokenAmount,
+          payLongToken.decimals,
+          sourceChainToken.decimals
+        );
+      }
+    }
+    if (payShortToken !== undefined) {
+      const sourceChainToken = getMappedTokenId(chainId as SettlementChainId, payShortToken.address, srcChainId);
+
+      if (sourceChainToken !== undefined && sourceChainToken.address === zeroAddress) {
+        paySourceChainNativeTokenAmount += adjustForDecimals(
+          shortTokenAmount,
+          payShortToken.decimals,
+          sourceChainToken.decimals
+        );
+      }
+    }
+
+    return paySourceChainNativeTokenAmount;
+  }, [isDeposit, payLongToken, longTokenAmount, payShortToken, shortTokenAmount, srcChainId, chainId]);
+
   const sourceChainNativeFeeError = useSourceChainNativeFeeError({
     networkFeeUsd:
       logicalFees?.logicalNetworkFee?.deltaUsd !== undefined
@@ -174,29 +212,66 @@ export const useGmSwapSubmitState = ({
     paySource,
     chainId,
     srcChainId,
+    paySourceChainNativeTokenAmount,
   });
 
   const formattedEstimationError = useMemo(() => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
-        return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
+        const { symbol, decimals } = gasPaymentToken;
+
+        const availableFormatted = formatBalanceAmount(gasPaymentToken.gmxAccountBalance ?? 0n, decimals);
+
+        let collateralAmount = 0n;
+        if (isDeposit) {
+          if (longTokenAddress === gasPaymentToken.address) {
+            collateralAmount += longTokenAmount;
+          }
+          if (shortTokenAddress === gasPaymentToken.address) {
+            collateralAmount += shortTokenAmount;
+          }
+        }
+
+        const totalRequired = collateralAmount + (estimationError.params?.requiredAmount ?? 0n);
+        const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
+
+        return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
       }
     } else if (estimationError) {
       return estimationError.name;
     }
 
     return undefined;
-  }, [estimationError, gasPaymentToken]);
+  }, [
+    estimationError,
+    gasPaymentToken,
+    longTokenAddress,
+    shortTokenAddress,
+    longTokenAmount,
+    shortTokenAmount,
+    isDeposit,
+  ]);
 
-  const error = commonError || swapError || expressError || sourceChainNativeFeeError || formattedEstimationError;
+  const error =
+    commonError || swapError || expressError || sourceChainNativeFeeError?.buttonText || formattedEstimationError;
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
+
+  const isAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
 
   return useMemo((): SubmitButtonState => {
     if (!account) {
       return {
         text: t`Connect Wallet`,
         onSubmit: onConnectAccount,
+      };
+    }
+
+    if (isAvalancheGmxAccountWarning) {
+      return {
+        text: t`Not supported`,
+        disabled: true,
+        onSubmit,
       };
     }
 
@@ -220,6 +295,7 @@ export const useGmSwapSubmitState = ({
         isAllowanceLoaded,
         isAllowanceLoading,
         errorDescription: swapErrorDescription,
+        warningText: sourceChainNativeFeeError?.warningText,
       };
     }
 
@@ -283,9 +359,11 @@ export const useGmSwapSubmitState = ({
     onConnectAccount,
     shouldDisableValidation,
     swapErrorDescription,
+    sourceChainNativeFeeError?.warningText,
     approve,
     operation,
     isLoading,
+    isAvalancheGmxAccountWarning,
   ]);
 };
 
@@ -346,12 +424,13 @@ function useExpressError({
     const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
     const totalRequired = collateralAmount + gasPaymentTokenAmount;
 
-    if (gasPaymentTokenAmount > gmxAccountBalance) {
-      return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees`;
-    }
-
     if (totalRequired > gmxAccountBalance) {
-      return t`${gasPaymentToken.symbol} balance in GMX account is insufficient to cover gas fees and input amount`;
+      const { symbol, decimals } = gasPaymentToken;
+
+      const availableFormatted = formatBalanceAmount(gmxAccountBalance, decimals);
+      const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
+
+      return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
     }
 
     return undefined;

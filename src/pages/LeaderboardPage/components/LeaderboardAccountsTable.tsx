@@ -184,9 +184,11 @@ export function LeaderboardAccountsTable({
                 width={6}
                 tooltip={
                   <Trans>
-                    Only addresses with over {formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+                    Only addresses with over{" "}
+                    {formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
                       displayDecimals: 0,
-                    })} in capital used are ranked.
+                    })}{" "}
+                    in capital used are ranked.
                     <br />
                     <br />
                     The capital used is calculated as the highest value of [
