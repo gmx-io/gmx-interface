@@ -3,7 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { getBridgingOptionsForToken } from "config/bridging";
-import { BOTANIX, SettlementChainId } from "config/chains";
+import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
@@ -419,6 +419,16 @@ export function useTradeboxButtonState({
       };
     }
 
+    const isAvalancheGmxAccountWarning = isFromTokenGmxAccount && chainId === AVALANCHE;
+
+    if (isAvalancheGmxAccountWarning) {
+      return {
+        ...commonState,
+        text: t`Not supported`,
+        disabled: true,
+      };
+    }
+
     if (shouldShowDepositButton) {
       return {
         ...commonState,
@@ -560,6 +570,7 @@ export function useTradeboxButtonState({
     tradeType,
     increaseAmounts?.limitOrderType,
     decreaseAmounts?.triggerOrderType,
+    isFromTokenGmxAccount,
   ]);
 }
 

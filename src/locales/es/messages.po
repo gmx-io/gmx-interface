@@ -1307,6 +1307,12 @@ msgstr "Wallet no conectada"
 msgid "100+ crypto tokens"
 msgstr "Más de 100 tokens cripto"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Not supported"
+msgstr "No compatible"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "TWAP Swap"
 msgstr "Intercambio TWAP"
@@ -2757,6 +2763,10 @@ msgstr "Este intercambio se enruta a través de varias reservas GM para las comi
 msgid "{0}"
 msgstr "{0}"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Depositing is not supported on Avalanche anymore."
+msgstr "El depósito en Avalanche ya no está soportado."
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show Debug Values"
 msgstr "Mostrar Valores de Depuración"
@@ -3540,6 +3550,10 @@ msgstr "La operación de compra de {gmOrGlvLabel} falló."
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of days before reauthorization is required."
 msgstr "Número máximo de días antes de requerir reautorización."
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet."
+msgstr "El depósito en Avalanche está deshabilitado. Por favor, opere directamente desde su Wallet de Avalanche."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
@@ -7332,6 +7346,11 @@ msgstr "APY de Comisión"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "¿Puedo construir sobre GMX o integrarlo en mi app DeFi?"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a settlement network."
+msgstr "El soporte para cuentas GMX en Avalanche se discontinuará pronto. Abrir nuevas posiciones desde y depositar fondos adicionales en cuentas GMX de Avalanche ya no está disponible. Recomendamos cambiar a Arbitrum como red de liquidación."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
