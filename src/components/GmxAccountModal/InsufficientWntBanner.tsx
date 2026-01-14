@@ -4,7 +4,7 @@ import { zeroAddress } from "viem";
 
 import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -63,7 +63,7 @@ export function InsufficientWntBanner({
   let secondLine: React.ReactNode | undefined;
 
   if (neededAmount !== undefined && neededAmountUsd !== undefined) {
-    const formattedAmount = formatAmount(neededAmount, wrappedNativeTokenDecimals);
+    const formattedAmount = formatBalanceAmount(neededAmount, wrappedNativeTokenDecimals);
     const formattedUsd = formatUsd(neededAmountUsd);
 
     firstLine = (
