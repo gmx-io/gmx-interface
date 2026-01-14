@@ -63,6 +63,7 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
     const timestamp = fee.timestamp;
 
     if (!timestamp) {
+      // eslint-disable-next-line no-console
       console.warn("No timestamp found for PositionFeesInfoWithPeriod");
       return acc;
     }
@@ -80,6 +81,7 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
     const timestamp = fee.timestamp;
 
     if (!timestamp) {
+      // eslint-disable-next-line no-console
       console.warn("No timestamp found for SwapFeesInfoWithPeriod");
       return acc;
     }
@@ -97,6 +99,7 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
     const timestamp = fee.timestamp;
 
     if (!timestamp) {
+      // eslint-disable-next-line no-console
       console.warn("No timestamp found for PositionFeesInfoWithPeriod");
       return acc;
     }
