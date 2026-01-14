@@ -30,6 +30,13 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "service-disruption",
+    isActive: false,
+    endDate: "31 Dec 2099, 23:59",
+    title: "Service Disruption",
+    bodyText: "Trading may be temporarily unavailable. Our team is working to resolve the issue.",
+  },
+  {
     id: "listing-01-09-26",
     isActive: true,
     startDate: "09 Jan 2026, 10:00",
