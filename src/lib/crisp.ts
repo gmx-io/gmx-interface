@@ -1,20 +1,22 @@
 import { useLingui } from "@lingui/react";
 import { Crisp } from "crisp-sdk-web";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAccount, useAccountEffect } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import {
-  useIsLargeAccountData,
-  useIsLargeAccountVolumeStats,
-} from "domain/synthetics/accountStats/useIsLargeAccountData";
+import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
 import { useChainId } from "lib/chains";
-import { formatAmountHuman } from "lib/numbers";
+import { expandDecimals, formatAmountHuman } from "lib/numbers";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { bigMath } from "sdk/utils/bigmath";
 
 const CRISP_WEBSITE_ID = "65f73ff1-ea6e-40f4-8b03-fbdae7785384";
+
+const CRISP_MIN_DAILY_VOLUME = expandDecimals(1n, USD_DECIMALS);
+const CRISP_MIN_AGG_14_DAYS_VOLUME = expandDecimals(1n, USD_DECIMALS);
+const CRISP_MIN_AGG_ALL_TIME_VOLUME = expandDecimals(1n, USD_DECIMALS);
 
 export function useCrisp() {
   const { i18n } = useLingui();
@@ -22,13 +24,34 @@ export function useCrisp() {
   const { chainId, srcChainId } = useChainId();
   const { isNonEoaAccountOnAnyChain, isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
   const { isConnected, address: account } = useAccount();
-  const isLargeAccount = useIsLargeAccountData(account);
   const isLargeAccountVolumeStats = useIsLargeAccountVolumeStats({ account });
-  const totalVolume = isLargeAccountVolumeStats.data?.totalVolume;
   const { crispChatHidden } = useSettings();
 
+  const totalVolume = isLargeAccountVolumeStats.data?.totalVolume;
+
+  const isLargeAccountForCrisp = useMemo(() => {
+    if (!isLargeAccountVolumeStats.data || totalVolume === undefined) {
+      return false;
+    }
+
+    const maxDailyVolume = isLargeAccountVolumeStats.data.dailyVolume.reduce(
+      (max, day) => bigMath.max(max, day.volume),
+      0n
+    );
+
+    const last14DaysVolume = isLargeAccountVolumeStats.data.dailyVolume
+      ?.slice(-14)
+      .reduce((acc, day) => acc + day.volume, 0n);
+
+    return (
+      maxDailyVolume >= CRISP_MIN_DAILY_VOLUME ||
+      last14DaysVolume >= CRISP_MIN_AGG_14_DAYS_VOLUME ||
+      totalVolume >= CRISP_MIN_AGG_ALL_TIME_VOLUME
+    );
+  }, [isLargeAccountVolumeStats.data, totalVolume]);
+
   const eligibleToShowCrisp =
-    isConnected && !isAccountTypeLoading && !isLargeAccountVolumeStats.isLoading && isLargeAccount;
+    isConnected && !isAccountTypeLoading && !isLargeAccountVolumeStats.isLoading && isLargeAccountForCrisp;
 
   useEffect(() => {
     if (!eligibleToShowCrisp || crispChatHidden) {
