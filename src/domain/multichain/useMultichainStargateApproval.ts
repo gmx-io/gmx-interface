@@ -6,8 +6,6 @@ import type { MultichainTokenId } from "config/multichain";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { EMPTY_ARRAY } from "lib/objects";
-import { userAnalytics } from "lib/userAnalytics";
-import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
 export type MultichainStargateApprovalResult = {
@@ -50,13 +48,6 @@ export function useMultichainStargateApproval({
       return;
     }
 
-    userAnalytics.pushEvent<TokenApproveClickEvent>({
-      event: "TokenApproveAction",
-      data: {
-        action: "ApproveClick",
-      },
-    });
-
     await approveTokens({
       setIsApproving,
       signer,
@@ -65,14 +56,6 @@ export function useMultichainStargateApproval({
       chainId: srcChainId,
       permitParams: undefined,
       approveAmount: undefined,
-      onApproveFail: () => {
-        userAnalytics.pushEvent<TokenApproveResultEvent>({
-          event: "TokenApproveAction",
-          data: {
-            action: "ApproveFail",
-          },
-        });
-      },
     });
   }, [sourceChainTokenAddress, stargateSpenderAddress, srcChainId, signer]);
 
