@@ -174,6 +174,7 @@ export const WithdrawalView = () => {
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
   const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
 
   const { provider } = useJsonRpcProvider(chainId);
 
@@ -421,41 +422,86 @@ export const WithdrawalView = () => {
   }, [errors, tokensData]);
 
   const relayFeeAmount = expressTxnParamsAsyncResult?.data?.gasPaymentParams.relayerFeeAmount;
+  const gasPaymentTokenAmount = expressTxnParamsAsyncResult?.data?.gasPaymentParams.gasPaymentTokenAmount;
   const gasPaymentParams = expressTxnParamsAsyncResult?.data?.gasPaymentParams;
 
-  const { networkFeeUsd, networkFee } = useMemo(() => {
-    if (relayFeeAmount === undefined || relayerFeeToken === undefined) {
-      return { networkFeeUsd: undefined, networkFee: undefined };
+  const { networkFeeUsd, wntFee, wntFeeUsd, networkFeeInGasPaymentToken } = useMemo(() => {
+    if (
+      gasPaymentTokenAmount === undefined ||
+      gasPaymentToken === undefined ||
+      relayFeeAmount === undefined ||
+      relayerFeeToken === undefined
+    ) {
+      return {
+        networkFeeUsd: undefined,
+        wntFee: undefined,
+        wntFeeUsd: undefined,
+        networkFeeInGasPaymentToken: undefined,
+      };
     }
 
     const relayFeeUsd = convertToUsd(relayFeeAmount, relayerFeeToken.decimals, getMidPrice(relayerFeeToken.prices));
 
-    if (relayFeeUsd === undefined || bridgeNetworkFeeUsd === undefined || bridgeNetworkFee === undefined) {
-      return { networkFeeUsd: undefined, networkFee: undefined };
+    const gasPaymentTokenUsd = convertToUsd(
+      gasPaymentTokenAmount,
+      gasPaymentToken?.decimals,
+      getMidPrice(gasPaymentToken.prices)
+    );
+
+    if (
+      relayFeeUsd === undefined ||
+      gasPaymentTokenUsd === undefined ||
+      bridgeNetworkFeeUsd === undefined ||
+      bridgeNetworkFee === undefined
+    ) {
+      return {
+        networkFeeUsd: undefined,
+        wntFee: undefined,
+        wntFeeUsd: undefined,
+        networkFeeInGasPaymentToken: undefined,
+      };
     }
 
+    const bridgeNetworkFeeInGasPaymentToken = convertToTokenAmount(
+      bridgeNetworkFeeUsd,
+      gasPaymentToken.decimals,
+      getMidPrice(gasPaymentToken.prices)
+    )!;
+
+    const wntFee = bridgeNetworkFee + (gasPaymentToken.isWrapped ? relayFeeAmount : 0n);
+    const wntFeeUsd = bridgeNetworkFeeUsd + (gasPaymentToken.isWrapped ? relayFeeUsd : 0n);
+
     return {
-      networkFeeUsd: relayFeeUsd + bridgeNetworkFeeUsd,
-      networkFee:
-        // We assume it is all in WNT
-        relayFeeAmount + bridgeNetworkFee,
+      networkFeeUsd: gasPaymentTokenUsd + bridgeNetworkFeeUsd,
+      wntFee,
+      wntFeeUsd,
+      networkFeeInGasPaymentToken: gasPaymentTokenAmount + bridgeNetworkFeeInGasPaymentToken,
     };
-  }, [bridgeNetworkFee, bridgeNetworkFeeUsd, relayFeeAmount, relayerFeeToken]);
+  }, [bridgeNetworkFee, bridgeNetworkFeeUsd, gasPaymentToken, gasPaymentTokenAmount, relayFeeAmount, relayerFeeToken]);
 
   const [showWntWarning, setShowWntWarning] = useState(false);
   const [lastValidNetworkFees, setLastValidNetworkFees] = useState({
-    networkFee: networkFee,
-    networkFeeUsd: networkFeeUsd,
+    wntFee,
+    networkFeeUsd,
+    networkFeeInGasPaymentToken,
+    wntFeeUsd,
   });
 
   useEffect(() => {
-    if (networkFee !== undefined && networkFeeUsd !== undefined) {
+    if (
+      wntFee !== undefined &&
+      networkFeeUsd !== undefined &&
+      wntFeeUsd !== undefined &&
+      networkFeeInGasPaymentToken !== undefined
+    ) {
       setLastValidNetworkFees({
-        networkFee,
+        wntFee,
         networkFeeUsd,
+        networkFeeInGasPaymentToken,
+        wntFeeUsd,
       });
     }
-  }, [networkFee, networkFeeUsd]);
+  }, [wntFee, networkFeeUsd, networkFeeInGasPaymentToken, wntFeeUsd]);
 
   useEffect(() => {
     if (wrappedNativeTokenAddress === zeroAddress) {
@@ -472,20 +518,21 @@ export const WithdrawalView = () => {
       return;
     }
 
-    const someNetworkFee = networkFee ?? lastValidNetworkFees.networkFee;
-    if (someNetworkFee === undefined) {
+    const someWntFee = wntFee ?? lastValidNetworkFees.wntFee;
+
+    if (someWntFee === undefined) {
       return;
     }
 
     const value = (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount : 0n) ?? 0n;
 
-    setShowWntWarning(wrappedNativeToken.gmxAccountBalance - value < someNetworkFee);
+    setShowWntWarning(wrappedNativeToken.gmxAccountBalance - value < someWntFee);
   }, [
     wrappedNativeToken,
-    networkFee,
+    wntFee,
     unwrappedSelectedTokenAddress,
     inputAmount,
-    lastValidNetworkFees.networkFee,
+    lastValidNetworkFees.wntFee,
     wrappedNativeTokenAddress,
   ]);
 
@@ -651,8 +698,6 @@ export const WithdrawalView = () => {
     }
   };
 
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
-
   const handleMaxButtonClick = useCallback(async () => {
     if (
       selectedToken === undefined ||
@@ -683,7 +728,7 @@ export const WithdrawalView = () => {
       }
     }
 
-    const nativeFee = bridgeNetworkFee ?? baseNativeFee;
+    const nativeFee = wntFee ?? lastValidNetworkFees.wntFee ?? bridgeNetworkFee ?? baseNativeFee;
 
     if (unwrappedSelectedTokenAddress === zeroAddress && nativeFee !== undefined) {
       amount = amount - (nativeFee * 11n) / 10n;
@@ -701,10 +746,12 @@ export const WithdrawalView = () => {
     gasPaymentToken?.decimals,
     gasPaymentToken?.prices,
     gasTokenBuffer,
+    lastValidNetworkFees.wntFee,
     selectedToken,
     setInputValue,
     unwrappedSelectedTokenAddress,
     withdrawalViewChain,
+    wntFee,
   ]);
 
   const shouldShowMinRecommendedAmount = useMemo(() => {
@@ -1103,8 +1150,8 @@ export const WithdrawalView = () => {
 
           {showWntWarning && !(errors?.isOutOfTokenError?.tokenAddress === wrappedNativeTokenAddress) && (
             <InsufficientWntBanner
-              neededAmount={networkFee ?? lastValidNetworkFees.networkFee}
-              neededAmountUsd={networkFeeUsd ?? lastValidNetworkFees.networkFeeUsd}
+              neededAmount={wntFee ?? lastValidNetworkFees.wntFee}
+              neededAmountUsd={wntFeeUsd ?? lastValidNetworkFees.wntFeeUsd}
             />
           )}
         </>
@@ -1130,13 +1177,13 @@ export const WithdrawalView = () => {
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
             value={
-              networkFeeUsd !== undefined && relayerFeeToken ? (
+              networkFeeUsd !== undefined && gasPaymentToken ? (
                 <AmountWithUsdBalance
                   className="leading-1"
-                  amount={networkFee}
-                  decimals={relayerFeeToken.decimals}
+                  amount={networkFeeInGasPaymentToken}
+                  decimals={gasPaymentToken.decimals}
                   usd={networkFeeUsd}
-                  symbol={relayerFeeToken.symbol}
+                  symbol={gasPaymentToken.symbol}
                 />
               ) : (
                 "..."

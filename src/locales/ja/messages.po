@@ -355,10 +355,6 @@ msgstr "テイクプロフィット失敗"
 msgid "Swapped {0} for {1}."
 msgstr "{0} を {1} にスワップしました。"
 
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1>"
-msgstr "<0>マルチチェーン</0><1>ジャストインタイム流動性</1>"
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
@@ -535,10 +531,6 @@ msgstr "Telegram内のGMX V2データ分析"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High external swap impact"
 msgstr "高い外部スワップ影響"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "90+ crypto tokens"
-msgstr "90種類以上の暗号資産"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
@@ -1310,6 +1302,10 @@ msgstr "最低注文: {0}"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
 msgstr "ウォレットが接続されていません"
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "100+ crypto tokens"
+msgstr "100種類以上の暗号資産"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -2526,6 +2522,10 @@ msgstr "テストネット LayerZero Scan"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1> はパーペチュアル取引の巨頭としての称号を正当にも獲得し、その認識の理由は多岐にわたります。</0><2><3>@GMX_IO</3> はVC支援に頼らず道を切り開いたプロジェクトとして際立っています。驚くべきことにトップに上り詰め、ArbitrumチェーンでTVLによるNo.1スポットを488.34Mドルで確保し、DeFiLlama全体で印象的なRank #23... <4>もっと見る</4></2>"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+msgstr "<0>マルチチェーン</0><1>ジャストインタイム流動性</1><2>MegaETH サポート</2>"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
