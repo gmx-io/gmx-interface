@@ -132,7 +132,7 @@ export const formatSwapMessage = (
       );
       result = {
         price: executionRate,
-        priceComment: lines(t`Execution price for the order.`, "", infoRow(t`Order Acceptable Price`, t`N/A`)),
+        priceComment: lines(t`Execution price for the order.`, "", infoRow(t`Order acceptable price`, t`N/A`)),
         size: t`${fromText} to ${toExecutionText}`,
         swapToTokenAmount: toExecutionAmountText,
       };
@@ -187,7 +187,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
+        infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
       swapToTokenAmount: toExecutionAmountText,
@@ -223,7 +223,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
+        infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
       swapToTokenAmount: toExecutionAmountText,
@@ -255,7 +255,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
+        infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
       swapToTokenAmount: toExecutionAmountText,
@@ -291,7 +291,7 @@ export const formatSwapMessage = (
       priceComment: lines(
         t`Execution price for the order.`,
         "",
-        infoRow(t`Order Acceptable Price`, `${acceptablePriceInequality}${acceptableRate}`)
+        infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
       size: t`${fromText} to ${toExecutionText}`,
       swapToTokenAmount: toExecutionAmountText,

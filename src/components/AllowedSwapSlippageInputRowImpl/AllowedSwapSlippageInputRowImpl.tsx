@@ -55,7 +55,7 @@ function AllowedSwapSlippageInputRowImpl({
 
   if (notAvailable || recommendedValue === undefined || initialValue === undefined) {
     return (
-      <SyntheticsInfoRow label={t`Allowed Slippage`}>
+      <SyntheticsInfoRow label={t`Allowed slippage`}>
         <span className="AllowedSwapSlippageInputRow-na">{t`N/A`}</span>
       </SyntheticsInfoRow>
     );
@@ -64,7 +64,7 @@ function AllowedSwapSlippageInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AllowedSwapSlippageInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
+        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}.
       </span>
     </Trans>
   );
@@ -91,7 +91,7 @@ function AllowedSwapSlippageInputRowImpl({
   );
 
   return (
-    <SyntheticsInfoRow label={t`Allowed Slippage`} valueClassName="-my-5">
+    <SyntheticsInfoRow label={t`Allowed slippage`} valueClassName="-my-5">
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}

@@ -29,7 +29,7 @@ export function Features({ goToTradeArbitrum }: Props) {
             <IconBox iconComponent={IcGears} />
             <div className="flex flex-col gap-4">
               <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
-                <Trans>Trade With Confidence</Trans>
+                <Trans>Trade with confidence.</Trans>
               </p>
               <p className="text-heading-4">
                 <Trans>Guaranteed Liquidity</Trans>
@@ -83,7 +83,7 @@ export function Features({ goToTradeArbitrum }: Props) {
           <IconBox iconComponent={IcProtection} />
           <div className="flex flex-col gap-4">
             <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
-              <Trans>Keep More of What You Earn</Trans>
+              <Trans>Keep more of what you earn.</Trans>
             </p>
             <p className="text-heading-4">
               <Trans>Save on Costs</Trans>

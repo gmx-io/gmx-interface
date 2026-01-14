@@ -27,19 +27,19 @@ const GROUPS: Groups = [
     items: [
       {
         data: ClaimType.SettleFundingFeeExecuted,
-        text: msg`Settled Funding Fees`,
+        text: msg`Settled funding fees`,
       },
       {
         data: ClaimType.ClaimFunding,
-        text: msg`Claim Funding Fees`,
+        text: msg`Claim funding fees`,
       },
       {
         data: ClaimType.SettleFundingFeeCancelled,
-        text: msg`Failed Settlement of Funding Fees`,
+        text: msg`Failed settlement of funding fees`,
       },
       {
         data: ClaimType.SettleFundingFeeCreated,
-        text: msg`Request Settlement of Funding Fees`,
+        text: msg`Request settlement of funding fees`,
         debug: true,
       },
     ],
@@ -50,7 +50,7 @@ const GROUPS: Groups = [
     items: [
       {
         data: ClaimType.ClaimPriceImpact,
-        text: msg`Claim Price Impact Rebates`,
+        text: msg`Claim price impact rebates`,
       },
     ],
   },

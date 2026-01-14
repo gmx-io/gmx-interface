@@ -71,12 +71,12 @@ export function GmxCard({
         color: "#4353fa",
       },
       {
-        name: t`In Liquidity`,
+        name: t`In liquidity`,
         value: liquidityPercent,
         color: "#0598fa",
       },
       {
-        name: t`Not Staked`,
+        name: t`Not staked`,
         value: notStakedPercent,
         color: "#5c0af5",
       },
@@ -151,7 +151,7 @@ export function GmxCard({
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Total Supply</Trans>
+                  <Trans>Total supply</Trans>
                 </div>
                 <div>
                   <TooltipComponent
@@ -164,7 +164,7 @@ export function GmxCard({
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Total Staked</Trans>
+                  <Trans>Total staked</Trans>
                 </div>
                 <div>
                   <TooltipComponent

@@ -65,7 +65,7 @@ const getCardContent = (type: EarnProductType) => {
     },
     gm: {
       tokenSymbol: "GM",
-      badge: t`Active Management`,
+      badge: t`Active management`,
       title: t`What Is GM?`,
       description: t`GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded.`,
       readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity#gm-pools",

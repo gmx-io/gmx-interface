@@ -156,19 +156,19 @@ export function BridgeOutModal({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!account) {
-      helperToast.error(t`Wallet disconnected. Please reconnect and retry`);
+      helperToast.error(t`Wallet disconnected. Reconnect and retry`);
       return;
     }
 
     if (!bridgeOutChain || !bridgeOutParams) {
-      helperToast.error(t`Missing parameters. Please refresh and retry`);
+      helperToast.error(t`Missing parameters. Refresh and retry`);
       return;
     }
 
     const expressTxnParams = await expressTxnParamsAsyncResult.promise;
 
     if (expressTxnParams === undefined) {
-      helperToast.error(t`Missing parameters. Please refresh and retry`);
+      helperToast.error(t`Missing parameters. Refresh and retry`);
       return;
     }
 
@@ -209,7 +209,7 @@ export function BridgeOutModal({
   const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated. Refresh to continue`,
         disabled: true,
       };
     }
@@ -360,7 +360,7 @@ export function BridgeOutModal({
           {buttonState.text}
         </Button>
         <SyntheticsInfoRow
-          label={t`GMX Account Balance`}
+          label={t`GMX Account balance`}
           value={
             <ValueTransition
               from={

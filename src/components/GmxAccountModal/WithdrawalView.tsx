@@ -919,7 +919,7 @@ export const WithdrawalView = () => {
 
         <div className="flex flex-col gap-6">
           <div className="text-body-medium text-typography-secondary">
-            <Trans>To Network</Trans>
+            <Trans>To network</Trans>
           </div>
           <DropdownSelector
             value={withdrawalViewChain}
@@ -1072,7 +1072,7 @@ export const WithdrawalView = () => {
                         history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
                       }}
                     >
-                      Swap
+                      swap
                     </span>{" "}
                     or{" "}
                     <span
@@ -1089,9 +1089,9 @@ export const WithdrawalView = () => {
                         setIsVisibleOrView("deposit");
                       }}
                     >
-                      Deposit
+                      deposit
                     </span>{" "}
-                    more {isOutOfTokenErrorToken?.symbol}
+                    more {isOutOfTokenErrorToken?.symbol}.
                   </Trans>
                 </div>
               </AlertInfoCard>
@@ -1111,7 +1111,7 @@ export const WithdrawalView = () => {
       {selectedTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow
-            label={<Trans>Estimated Time</Trans>}
+            label={<Trans>Estimated time</Trans>}
             valueClassName="numbers"
             value={
               inputAmount === undefined || inputAmount === 0n ? (
@@ -1124,7 +1124,7 @@ export const WithdrawalView = () => {
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Network Fee</Trans>}
+            label={<Trans>Network fee</Trans>}
             value={
               networkFeeUsd !== undefined && relayerFeeToken ? (
                 <AmountWithUsdBalance
@@ -1140,7 +1140,7 @@ export const WithdrawalView = () => {
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Withdraw Fee</Trans>}
+            label={<Trans>Withdraw fee</Trans>}
             value={
               protocolFeeUsd !== undefined && selectedTokenSettlementChainTokenId ? (
                 <AmountWithUsdBalance
@@ -1156,7 +1156,7 @@ export const WithdrawalView = () => {
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>GMX Balance</Trans>}
+            label={<Trans>GMX balance</Trans>}
             value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
           />
         </div>

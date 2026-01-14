@@ -26,7 +26,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             <div className="flex items-center gap-12 text-14">
               <ArrowBulletIcon />
               <ExternalLink href="https://t.me/GMXPartners">
-                <Trans>Telegram Account</Trans>
+                <Trans>Telegram account</Trans>
               </ExternalLink>
             </div>
           </div>
@@ -47,7 +47,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             <div className="flex items-center gap-12 text-14">
               <ArrowBulletIcon />
               <ExternalLink href="https://t.me/GMXPartners">
-                <Trans>Telegram Account</Trans>
+                <Trans>Telegram account</Trans>
               </ExternalLink>
             </div>
           </div>

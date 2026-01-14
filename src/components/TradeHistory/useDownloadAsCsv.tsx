@@ -132,17 +132,17 @@ export function useDownloadAsCsv({
 
       downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], {
         timestamp: t`Date` + ` (${timezone})`,
-        action: t`Action`,
-        size: t`Size`,
-        market: t`Market`,
-        fullMarket: t`Full Market`,
-        marketPrice: t`Mark Price`,
-        acceptablePrice: t`Acceptable Price`,
-        executionPrice: t`Execution Price`,
-        triggerPrice: t`Trigger Price`,
-        priceImpact: t`Price Impact`,
-        explorerUrl: t`Transaction ID`,
-        pnl: t`PnL ($)`,
+        action: t`ACTION`,
+        size: t`SIZE`,
+        market: t`MARKET`,
+        fullMarket: t`FULL MARKET`,
+        marketPrice: t`MARK PRICE`,
+        acceptablePrice: t`ACCEPTABLE PRICE`,
+        executionPrice: t`EXECUTION PRICE`,
+        triggerPrice: t`TRIGGER PRICE`,
+        priceImpact: t`PRICE IMPACT`,
+        explorerUrl: t`TRANSACTION ID`,
+        pnl: t`PNL ($)`,
       });
     } catch (error) {
       helperToast.error(

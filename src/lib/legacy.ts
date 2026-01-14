@@ -1373,10 +1373,10 @@ export function getOrderError(account, order, positionsMap, position) {
   const positionForOrder = position ? position : getPositionForOrder(account, order, positionsMap);
 
   if (!positionForOrder) {
-    return t`No open position, order won't execute until position is opened.`;
+    return t`No open position. Order won't execute until position is opened.`;
   }
   if (positionForOrder.size < order.sizeDelta) {
-    return t`Order size exceeds position, will execute only if position increases.`;
+    return t`Order size exceeds position. Executes only if position increases.`;
   }
 
   if (positionForOrder.size > order.sizeDelta) {

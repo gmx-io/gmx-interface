@@ -146,16 +146,16 @@ export function LeaderboardPositionsTable({
               <TableHeaderCell title={t`Address`} width={14} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
-                title={t`PnL ($)`}
+                title={t`PNL ($)`}
                 width={12}
                 tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees, excludes swap fees.`}
                 tooltipPosition="bottom-end"
               />
               <TableHeaderCell title={t`Position`} width={12} tooltipPosition="bottom-end" />
-              <TableHeaderCell {...getSorterProps("entryPrice")} title={t`Entry Price`} width={10} />
-              <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`Size`} width={12} />
-              <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={4} />
-              <TableHeaderCell title={t`Liquidation Price`} width={10} />
+              <TableHeaderCell {...getSorterProps("entryPrice")} title={t`ENTRY PRICE`} width={10} />
+              <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`SIZE`} width={12} />
+              <TableHeaderCell {...getSorterProps("leverage")} title={t`LEV.`} width={4} />
+              <TableHeaderCell title={t`LIQUIDATION PRICE`} width={10} />
             </TableTheadTr>
           </thead>
           <tbody>{content}</tbody>
@@ -317,7 +317,7 @@ const TableRow = memo(
       return (
         <>
           <StatsTooltipRow
-            label={t`Mark Price`}
+            label={t`Mark price`}
             value={
               <span className="numbers">
                 {formatUsd(markPrice, {
@@ -330,7 +330,7 @@ const TableRow = memo(
           />
           {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
-              label={t`Price Change to Liquidation`}
+              label={t`Price change to liquidation`}
               value={
                 <span className="numbers">
                   {formatUsd(liquidationPrice - markPrice, {
@@ -528,7 +528,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
         <>
           <br />
           <StatsTooltipRow
-            label={t`Realized Fees`}
+            label={t`Realized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
@@ -537,7 +537,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             }
           />
           <StatsTooltipRow
-            label={t`Unrealized Fees`}
+            label={t`Unrealized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>

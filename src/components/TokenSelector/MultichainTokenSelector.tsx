@@ -174,8 +174,8 @@ export function MultichainTokenSelector({
 
   const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
     return [
-      { value: "pay", label: <Trans>Available to Pay</Trans> },
-      { value: "deposit", label: <Trans>Available to Deposit</Trans> },
+      { value: "pay", label: <Trans>Available to pay</Trans> },
+      { value: "deposit", label: <Trans>Available to deposit</Trans> },
     ];
   }, []);
 

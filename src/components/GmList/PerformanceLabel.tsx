@@ -13,7 +13,7 @@ export function PerformanceLabel({
   short?: boolean;
   variant?: ComponentProps<typeof TooltipWithPortal>["variant"];
 }) {
-  const label = short ? t`Ann. Performance` : t`Annualized Performance`;
+  const label = short ? t`Ann. performance` : t`Annualized performance`;
   return (
     <TooltipWithPortal
       handle={upperCase ? label.toUpperCase() : label}

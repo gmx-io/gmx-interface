@@ -42,7 +42,7 @@ export default function Ecosystem() {
       <SEO title={getPageTitle(t`Ecosystem Projects`)}>
         <div className="default-container page-layout">
           <div className="flex flex-col gap-20">
-            <PageTitle isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages.`} qa="ecosystem-page" />
+            <PageTitle isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages`} qa="ecosystem-page" />
             <div className="Ecosystem-projects">
               {gmxPages.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -132,7 +132,7 @@ export default function Ecosystem() {
                 );
               })}
             </div>
-            <PageTitle title={t`Dashboards`} subtitle={t`GMX dashboards and analytics.`} />
+            <PageTitle title={t`Dashboards`} subtitle={t`GMX dashboards and analytics`} />
             <div className="Ecosystem-projects">
               {dashboardProjects.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;

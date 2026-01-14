@@ -232,7 +232,7 @@ export function BridgeInModal({
   const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated, refresh`,
         disabled: true,
       };
     }
@@ -351,7 +351,7 @@ export function BridgeInModal({
         </Button>
         <SyntheticsInfoRow label={t`Network Fee`} value={formatUsd(nativeFeeUsd)} />
         <SyntheticsInfoRow
-          label={t`GMX Account Balance`}
+          label={t`GMX Account balance`}
           value={
             <ValueTransition
               from={

@@ -173,7 +173,7 @@ export default function ClaimableAmounts() {
     let buttonText: React.ReactNode = <Trans>Claim funds</Trans>;
 
     if (hasOutdatedUi) {
-      buttonText = t`Page outdated, please refresh`;
+      buttonText = t`Refresh page`;
       isButtonDisabled = true;
     } else if (isClaiming) {
       buttonText = <Trans>Claiming...</Trans>;
@@ -279,7 +279,7 @@ export default function ClaimableAmounts() {
 
       {displayInsufficientGasAlert ? (
         <AlertInfoCard type="warning" hideClose>
-          <Trans>Insufficient gas for network fees.</Trans>
+          <Trans>Insufficient gas for network fees</Trans>
         </AlertInfoCard>
       ) : null}
 

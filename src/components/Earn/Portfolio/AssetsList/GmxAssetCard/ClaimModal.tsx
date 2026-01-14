@@ -139,7 +139,7 @@ export function ClaimModal(props: {
       return <Trans>Select rewards to claim</Trans>;
     }
     if (needApproval || isApproving) {
-      return <Trans>Pending GMX approval</Trans>;
+      return <Trans>Pending GMX approval...</Trans>;
     }
     if (isClaiming) {
       return <Trans>Claiming...</Trans>;
@@ -357,7 +357,7 @@ function ClaimRewardOption({
         <div className="flex items-center gap-4">
           <TokenIcon symbol={tokenSymbol} displaySize={20} className="!rounded-0" />
           <span className="text-14 font-medium text-typography-primary">
-            <Trans>Claim {tokenSymbol} Rewards</Trans>
+            <Trans>Claim {tokenSymbol} rewards</Trans>
           </span>
         </div>
         <span className={cx("ml-auto text-14 numbers", "text-typography-secondary")}>{amountText}</span>
@@ -375,7 +375,7 @@ function ClaimRewardOption({
               Convert {tokenSymbol} to {nativeTokenSymbol}
             </Trans>
           ) : (
-            <Trans>Stake {tokenSymbol} Rewards</Trans>
+            <Trans>Stake {tokenSymbol} rewards</Trans>
           )}
         </span>
       </Checkbox>

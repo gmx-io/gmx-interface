@@ -68,7 +68,7 @@ export function getTxnErrorToast(
       <Trans>
         <div>Order failed: wallet address mismatch.</div>
         <br />
-        <div>Please refresh and retry</div>
+        <div>Refresh and retry</div>
       </Trans>
     );
 
@@ -81,7 +81,7 @@ export function getTxnErrorToast(
         {defaultMessage}
         <br />
         <br />
-        <Trans>External swap temporarily disabled. Please try again</Trans>
+        <Trans>External swap temporarily disabled. Try again</Trans>
         <br />
         <br />
         {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
@@ -236,7 +236,7 @@ export function getErrorMessage(
         <div>
           <Trans>
             RPC error. Try updating your wallet's RPC via{" "}
-            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
+            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>
             <br />
             <br />
             <ExternalLink href="https://docs.gmx.io/docs/trading#rpc-urls">Read more</ExternalLink>
@@ -283,7 +283,7 @@ export function getInvalidNetworkToastContent(chainId: number) {
 export function getNonEoaAccountChainWarningToastContent(chainId: number) {
   return (
     <Trans>
-      <div>Smart wallets are not supported on {getChainName(chainId)}</div>
+      <div>Smart wallets not supported on {getChainName(chainId)}</div>
       <br />
       <div>Switch to a different network or use an EOA wallet</div>
     </Trans>
@@ -392,7 +392,7 @@ export const signerAddressError = "Signer address does not match account address
 export function getInvalidPermitSignatureToastContent() {
   return (
     <Trans>
-      <div>Invalid permit signature. Please try again</div>
+      <div>Invalid permit signature. Try again</div>
     </Trans>
   );
 }
@@ -409,7 +409,7 @@ export async function validateSignerAddress(signer: Signer, receiverAddress: str
         <Trans>
           <div>Order failed: wallet address mismatch.</div>
           <br />
-          <div>Please refresh and retry</div>
+          <div>Refresh and retry</div>
         </Trans>
       );
     }

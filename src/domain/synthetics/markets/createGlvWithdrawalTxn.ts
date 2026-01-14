@@ -90,7 +90,7 @@ export async function createGlvWithdrawalTxn({
         tokensData: tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvWithdrawal",
-        errorTitle: t`Withdrawal Error`,
+        errorTitle: t`Withdrawal error`,
         value: wntAmount,
         swapPricingType: SwapPricingType.Swap,
         metricId: metricId,

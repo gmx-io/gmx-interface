@@ -21,7 +21,7 @@ export function AllowedSlippageRow({
     <SyntheticsInfoRow
       label={
         <TooltipWithPortal
-          handle={t`Allowed Slippage`}
+          handle={t`Allowed slippage`}
           position="top-start"
           variant="icon"
           renderContent={() => {

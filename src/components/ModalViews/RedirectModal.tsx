@@ -54,7 +54,7 @@ export function RedirectPopupModal({
         <ExternalLink href="https://docs.gmx.io/docs/frontends">docs</ExternalLink>.
         <br />
         <br />
-        By clicking Agree you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">
+        By clicking Agree, you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">
           T&Cs
         </ExternalLink>{" "}
         and <ExternalLink href="https://gmx.io/#/referral-terms">Referral T&Cs</ExternalLink>.
@@ -63,7 +63,7 @@ export function RedirectPopupModal({
       </Trans>
       <div className="mb-15">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
-          <Trans>Don't Show for 30 Days</Trans>
+          <Trans>Don't show for 30 days</Trans>
         </Checkbox>
       </div>
       <Button variant="primary-action" className="w-full" to={appRedirectUrl} onClick={onClickAgree}>

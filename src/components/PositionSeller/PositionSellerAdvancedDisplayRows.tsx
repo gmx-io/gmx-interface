@@ -129,7 +129,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
         <>
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
-              label={t`Stored Price Impact`}
+              label={t`Stored price impact`}
               value={
                 nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
@@ -151,7 +151,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
               <Tooltip
                 handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
                 position="top-start"
-                content={<Trans>Initial collateral, excluding borrow and funding fees.</Trans>}
+                content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
                 variant="icon"
               />
             }

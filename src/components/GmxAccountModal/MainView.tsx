@@ -166,7 +166,7 @@ const Toolbar = ({ account }: { account: string }) => {
         <CopyIcon className="size-20 max-[500px]:hidden" />
       </Button>
       <div className="flex items-center gap-8">
-        <TooltipWithPortal content={t`PnL analysis.`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+        <TooltipWithPortal content={t`PnL analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" size="small" className={buttonClassName} onClick={handlePnlAnalysisClick}>
             <PnlAnalysisIcon width={20} height={20} />
           </Button>
@@ -216,7 +216,7 @@ function GmxAccountBalanceTooltipContent() {
   return (
     <Trans>
       Your GMX Account balance, usable for trading from any supported chain.{" "}
-      <ExternalLink href="https://docs.gmx.io/docs/trading#multichain-trading">Read more</ExternalLink>.
+      <ExternalLink href="https://docs.gmx.io/docs/trading#multichain-trading">Read more</ExternalLink>
     </Trans>
   );
 }
@@ -243,7 +243,7 @@ function SettlementChainBalance() {
         <SyntheticsInfoRow
           label={
             <TooltipWithPortal content={<GmxAccountBalanceTooltipContent />} variant="iconStroke">
-              <Trans>GMX Account Balance</Trans>
+              <Trans>GMX Account balance</Trans>
             </TooltipWithPortal>
           }
           className="py-4"

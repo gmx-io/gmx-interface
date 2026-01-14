@@ -253,7 +253,7 @@ export function useTradeboxButtonState({
         }
 
         case "liqPrice > markPrice":
-          tooltipContent = <Trans>Position would be liquidated immediately on execution. Try reducing the size.</Trans>;
+          tooltipContent = <Trans>Position would be liquidated immediately. Try reducing size.</Trans>;
           break;
 
         case "noSwapPath":
@@ -459,7 +459,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Approve ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol}`}{" "}
+            {t`Approving ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol}...`}{" "}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

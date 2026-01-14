@@ -92,9 +92,8 @@ function DepthChartContainer() {
       <ColorfulBanner color="blue">
         <span>
           <Trans>
-            This simulated depth chart shows a hypothetical orderbook-style view of GMX liquidity. Opens execute at mark
-            price with zero impact—displayed opening prices are virtual. Net price impact applies only on closes,
-            summing open and close impacts (capped, usually at 0.5%).{" "}
+            Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact
+            applies only on closes (capped, usually at 0.5%).{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
               Read more
             </ExternalLink>

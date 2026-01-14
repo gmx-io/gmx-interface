@@ -54,7 +54,7 @@ export function PositionSellerPriceImpactFeesRow() {
       label={
         <>
           <Tooltip
-            handle={t`Net Price Impact`}
+            handle={t`Net price impact`}
             content={
               <Trans>
                 Price impact from closing. Positive values benefit you.{" "}

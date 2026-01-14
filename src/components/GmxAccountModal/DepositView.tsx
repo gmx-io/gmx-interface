@@ -852,7 +852,7 @@ export const DepositView = () => {
         {depositViewChain !== undefined && (
           <div className="flex flex-col gap-6">
             <div className="text-body-medium text-typography-secondary">
-              <Trans>From Network</Trans>
+              <Trans>From network</Trans>
             </div>
             <div className="flex items-center gap-8 rounded-8 border border-slate-600 px-14 py-13">
               <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
@@ -940,7 +940,7 @@ export const DepositView = () => {
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Network Fee</Trans>}
+            label={<Trans>Network fee</Trans>}
             value={
               networkFee !== undefined && depositViewViemChain ? (
                 <AmountWithUsdBalance
@@ -956,7 +956,7 @@ export const DepositView = () => {
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>Deposit Fee</Trans>}
+            label={<Trans>Deposit fee</Trans>}
             value={
               protocolFeeAmount !== undefined && selectedTokenSourceChainDecimals !== undefined ? (
                 <AmountWithUsdBalance
@@ -972,7 +972,7 @@ export const DepositView = () => {
             }
           />
           <SyntheticsInfoRow
-            label={<Trans>GMX Balance</Trans>}
+            label={<Trans>GMX balance</Trans>}
             value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
           />
         </div>

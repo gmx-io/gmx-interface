@@ -98,19 +98,19 @@ export function PositionList(p: Props) {
                   <Trans>Size</Trans>
                 </TableTh>
                 <TableTh className="w-[14%]">
-                  <Trans>Net Value</Trans>
+                  <Trans>NET VALUE</Trans>
                 </TableTh>
                 <TableTh className="w-[14%]">
-                  <Trans>Collateral</Trans>
+                  <Trans>COLLATERAL</Trans>
                 </TableTh>
                 <TableTh className="w-[10%]">
-                  <Trans>Entry Price</Trans>
+                  <Trans>ENTRY PRICE</Trans>
                 </TableTh>
                 <TableTh className="w-[10%]">
-                  <Trans>Mark Price</Trans>
+                  <Trans>MARK PRICE</Trans>
                 </TableTh>
                 <TableTh className="w-[10%]">
-                  <Trans>Liquidation Price</Trans>
+                  <Trans>LIQUIDATION PRICE</Trans>
                 </TableTh>
                 {!isLoading && !p.hideActions && (
                   <>

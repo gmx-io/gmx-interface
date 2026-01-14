@@ -179,7 +179,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         content={
           <>
             <StatsTooltipRow
-              label={t`Max Network Fee`}
+              label={t`Max network fee`}
               showDollar={false}
               value={maxNetworkFeeText}
               valueClassName="numbers"
@@ -196,7 +196,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             </p>
             <br />
             <StatsTooltipRow
-              label={t`Estimated Fee Refund`}
+              label={t`Estimated fee refund`}
               showDollar={false}
               value={estimatedRefundText}
               valueClassName="numbers"
@@ -229,7 +229,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             variant="icon"
             content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your collateral.</Trans>}
           >
-            <Trans>Network Fee</Trans>
+            <Trans>Network fee</Trans>
           </TooltipWithPortal>
         }
         value={value}
@@ -245,7 +245,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           variant="icon"
           content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your collateral.</Trans>}
         >
-          <Trans>Network Fee</Trans>
+          <Trans>Network fee</Trans>
         </TooltipWithPortal>
       }
       value={value}

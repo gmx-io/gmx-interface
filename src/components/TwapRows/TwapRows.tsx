@@ -84,7 +84,7 @@ const TwapRows = ({
       <SyntheticsInfoRow label={t`Duration`} className="h-20">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Number of Parts`}>
+      <SyntheticsInfoRow label={t`Number of parts`}>
         <div className="flex">
           <ValueInput
             value={numberOfParts}

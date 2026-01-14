@@ -85,7 +85,7 @@ export async function createWithdrawalTxn({
         tokensData: tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestWithdrawal",
-        errorTitle: t`Withdrawal Error`,
+        errorTitle: t`Withdrawal error`,
         value: params.executionFee,
         swapPricingType: SwapPricingType.Swap,
         metricId: metricId,

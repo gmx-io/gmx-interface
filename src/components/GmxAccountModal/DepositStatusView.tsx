@@ -81,7 +81,7 @@ export const DepositStatusView = () => {
   ) : (
     <Trans>Funds will appear in your GMX Account soon.</Trans>
   );
-  const statusLabel = isCompleted ? <Trans>Deposit completed</Trans> : <Trans>Deposit in progress</Trans>;
+  const statusLabel = isCompleted ? <Trans>Deposit completed</Trans> : <Trans>Deposit in progress...</Trans>;
 
   return (
     <div className="flex grow flex-col gap-12 !py-12 px-adaptive pb-adaptive">

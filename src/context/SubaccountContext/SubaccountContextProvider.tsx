@@ -147,7 +147,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       }
 
       helperToast.success(
-        <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT Settings`}>
+        <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT settings`}>
           <TransactionStatus status="loading" text={t`Updating settings...`} />
         </StatusNotification>
       );
@@ -166,7 +166,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         });
 
         helperToast.success(
-          <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT Settings`}>
+          <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT settings`}>
             <TransactionStatus status="success" text={t`Settings updated`} />
           </StatusNotification>
         );
@@ -178,7 +178,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         metrics.pushError(error, "subaccount.updateSubaccountSettings");
         toast.dismiss();
         helperToast.error(
-          <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT Settings`}>
+          <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT settings`}>
             <TransactionStatus status="error" text={t`Settings update failed`} />
           </StatusNotification>
         );

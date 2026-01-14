@@ -90,7 +90,7 @@ export function PositionItem(p: Props) {
             <br />
             <br />
             <StatsTooltipRow
-              label={t`Initial Collateral`}
+              label={t`Initial collateral`}
               value={formatUsd(p.position.collateralUsd) || "..."}
               valueClassName="numbers"
               showDollar={false}
@@ -112,7 +112,7 @@ export function PositionItem(p: Props) {
               })}
             />
             <StatsTooltipRow
-              label={t`Negative Funding Fee`}
+              label={t`Negative funding fee`}
               value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
               valueClassName="numbers"
               showDollar={false}
@@ -123,7 +123,7 @@ export function PositionItem(p: Props) {
             {breakdownNetPriceImpactEnabled ? (
               <>
                 <StatsTooltipRow
-                  label={t`Stored Price Impact`}
+                  label={t`Stored price impact`}
                   value={formatDeltaUsd(p.position.pendingImpactUsd) || "..."}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(p.position.pendingImpactUsd)}
@@ -152,7 +152,7 @@ export function PositionItem(p: Props) {
 
             {p.position.priceImpactDiffUsd !== 0n && (
               <StatsTooltipRow
-                label={t`Price Impact Rebates`}
+                label={t`Price impact rebates`}
                 value={formatDeltaUsd(p.position.priceImpactDiffUsd) || "..."}
                 showDollar={false}
                 textClassName={cx({
@@ -170,7 +170,7 @@ export function PositionItem(p: Props) {
             />
             {p.position.uiFeeUsd > 0 && (
               <StatsTooltipRow
-                label={t`UI Fee`}
+                label={t`UI fee`}
                 showDollar={false}
                 value={formatUsd(-p.position.uiFeeUsd)}
                 valueClassName="numbers"
@@ -228,13 +228,13 @@ export function PositionItem(p: Props) {
               <>
                 {p.position.hasLowCollateral && (
                   <div>
-                    <Trans>Warning: Low collateral after fees. Deposit more to reduce liquidation risk.</Trans>
+                    <Trans>Low collateral after fees. Deposit more to reduce liquidation risk.</Trans>
                     <br />
                     <br />
                   </div>
                 )}
                 <StatsTooltipRow
-                  label={t`Initial Collateral`}
+                  label={t`Initial collateral`}
                   value={
                     <AmountWithUsdBalance
                       amount={p.position.collateralAmount}
@@ -257,7 +257,7 @@ export function PositionItem(p: Props) {
                   })}
                 />
                 <StatsTooltipRow
-                  label={t`Negative Funding Fee`}
+                  label={t`Negative funding fee`}
                   showDollar={false}
                   value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
                   valueClassName="numbers"
@@ -266,7 +266,7 @@ export function PositionItem(p: Props) {
                   })}
                 />
                 <StatsTooltipRow
-                  label={t`Positive Funding Fee`}
+                  label={t`Positive funding fee`}
                   showDollar={false}
                   value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
                   valueClassName="numbers"
@@ -678,7 +678,7 @@ export function PositionItem(p: Props) {
         <AppCardSection>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
-              <Trans>Entry Price</Trans>
+              <Trans>Entry price</Trans>
             </div>
             <div className="numbers">
               {formatUsd(p.position.entryPrice, {
@@ -689,7 +689,7 @@ export function PositionItem(p: Props) {
           </div>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
-              <Trans>Mark Price</Trans>
+              <Trans>Mark price</Trans>
             </div>
             <div className="numbers">
               {formatUsd(p.position.markPrice, {
@@ -700,7 +700,7 @@ export function PositionItem(p: Props) {
           </div>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
-              <Trans>Liquidation Price</Trans>
+              <Trans>Liquidation price</Trans>
             </div>
             <div>{renderLiquidationPrice()}</div>
           </div>
@@ -821,7 +821,7 @@ function PositionItemOrdersLarge({
         content={
           <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
             <div className="font-medium">
-              <Trans>Active Orders</Trans>
+              <Trans>Active orders</Trans>
             </div>
             {ordersWithErrors.map((params) => (
               <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />

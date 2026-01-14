@@ -123,12 +123,11 @@ export default function CompleteAccountTransfer() {
                 <span
                   onClick={() => {
                     copyToClipboard(window.location.href);
-                    helperToast.success(t`Link copied to clipboard`);
+                    helperToast.success(t`Link copied`);
                   }}
                 >
-                  Click here
-                </span>{" "}
-                to copy the link.
+                  Copy link
+                </span>
               </Trans>
               <br />
               <br />

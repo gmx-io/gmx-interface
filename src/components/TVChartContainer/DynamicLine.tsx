@@ -50,7 +50,7 @@ export function DynamicLine({
 
   const title = useMemo(() => {
     const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
-    const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
+    const title = predefinedKey ? _(predefinedKey) : t`Unknown order`;
     return `${title} - ${marketName}`;
   }, [_, isLong, orderType, marketName]);
 

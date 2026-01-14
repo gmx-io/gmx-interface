@@ -239,7 +239,7 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
       action: t`Action`,
       market: t`Market`,
       size: t`Size`,
-      explorerUrl: t`Transaction ID`,
+      explorerUrl: t`TRANSACTION ID`,
     });
   }, [chainId, claimActions, _]);
 

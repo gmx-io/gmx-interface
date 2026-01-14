@@ -60,7 +60,7 @@ export default function DashboardV2() {
             qa="dashboard-page"
             subtitle={
               <div className="flex items-center gap-6 font-medium text-typography-secondary">
-                <Trans>For detailed stats.</Trans>{" "}
+                <Trans>For detailed stats</Trans>{" "}
                 <ExternalLink
                   className="flex items-center gap-4 !no-underline hover:text-typography-primary"
                   href="https://dune.com/gmx-io/gmx-analytics"

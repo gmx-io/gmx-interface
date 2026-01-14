@@ -428,7 +428,7 @@ export function PositionEditor() {
               )}
 
               <SyntheticsInfoRow
-                label={t`Liquidation Price`}
+                label={t`Liquidation price`}
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, {

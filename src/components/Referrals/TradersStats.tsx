@@ -66,7 +66,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-3 max-lg:grid-cols-1">
         <ReferralInfoCard
-          label={t`Active Referral Code`}
+          label={t`Active referral code`}
           value={
             <div className="flex items-center gap-4">
               <span>{userReferralCodeString}</span>
@@ -81,7 +81,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
             {traderTier !== undefined ? (
               <div className="tier">
                 <Tooltip
-                  handle={t`Tier ${getTierIdDisplay(traderTier)}: ${currentTierDiscount}% Discount`}
+                  handle={t`Tier ${getTierIdDisplay(traderTier)}: ${currentTierDiscount}% discount`}
                   position="bottom"
                   variant="icon"
                   handleClassName="text-body-small rounded-full bg-cold-blue-900 px-12 py-8 font-medium leading-[1.25] text-typography-primary"
@@ -109,7 +109,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </ReferralInfoCard>
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.traderReferralTotalStats?.volume)}
-          label={t`Trading Volume`}
+          label={t`Trading volume`}
           labelTooltipText={t`Your trading volume with referral discount.`}
           tooltipContent={
             <>

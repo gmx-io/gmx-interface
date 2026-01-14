@@ -32,7 +32,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span className="text-[#ff0000]">
-              <Trans>Realized Fees</Trans>
+              <Trans>Realized fees</Trans>
             </span>
           ),
           value: -stats.realizedFees,
@@ -40,7 +40,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span className="text-[#ff00ff]">
-              <Trans>Realized Price Impact</Trans>
+              <Trans>Realized price impact</Trans>
             </span>
           ),
           value: stats.realizedPriceImpact,
@@ -48,7 +48,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span className="text-[#ff00ff]">
-              <Trans>Realized Swap Impact</Trans>
+              <Trans>Realized swap impact</Trans>
             </span>
           ),
           value: stats.realizedSwapImpact,
@@ -64,7 +64,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span className="text-[#ff00ff]">
-              <Trans>Unrealized Fees</Trans>
+              <Trans>Unrealized fees</Trans>
             </span>
           ),
           value: -stats.unrealizedFees,
@@ -72,7 +72,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span>
-              <Trans>Start Unrealized PnL</Trans>
+              <Trans>Start unrealized PnL</Trans>
             </span>
           ),
           value: stats.startUnrealizedPnl,
@@ -80,7 +80,7 @@ export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
         {
           label: (
             <span>
-              <Trans>Start Unrealized Fees</Trans>
+              <Trans>Start unrealized fees</Trans>
             </span>
           ),
           value: -stats.startUnrealizedFees,

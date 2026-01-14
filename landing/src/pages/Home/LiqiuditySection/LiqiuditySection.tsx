@@ -18,7 +18,7 @@ export function LiqiuditySection() {
         </h2>
         <div className="mb-44 flex w-full flex-col items-stretch justify-between gap-24 lg:flex-row lg:items-center">
           <h3 className="leading-heading-md text-18 font-medium -tracking-[0.896px] sm:text-[28px]">
-            <Trans>Join {poolsData.totalDepositedUsers} users earning real yield.</Trans>
+            <Trans>Join {poolsData.totalDepositedUsers} Users Earning Real Yield</Trans>
           </h3>
           <button onClick={onClickEarn} className="btn-landing rounded-8 px-16 py-12 text-16 text-white">
             <Trans>Start earning</Trans>

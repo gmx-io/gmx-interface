@@ -104,7 +104,7 @@ export function PoolsDetailsAbout({
 
         {isGlv && (
           <PoolsDetailsMarketAmount
-            label={<Trans>Last Rebalance</Trans>}
+            label={<Trans>Last rebalance</Trans>}
             value={
               glvOrMarketInfo?.shiftLastExecutedAt
                 ? glvOrMarketInfo?.shiftLastExecutedAt === 0n

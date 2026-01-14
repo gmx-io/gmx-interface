@@ -30,11 +30,11 @@ const GROUPS: Groups = [
       },
       {
         data: "trigger-take-profit",
-        text: msg`Take Profit`,
+        text: msg`Take profit`,
       },
       {
         data: "trigger-stop-loss",
-        text: msg`Stop Loss`,
+        text: msg`Stop loss`,
       },
     ],
   },

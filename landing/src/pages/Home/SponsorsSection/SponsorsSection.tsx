@@ -11,10 +11,10 @@ export function SponsorsSection() {
       <div className="mx-auto flex w-full flex-col justify-between gap-28 sm:w-[1200px] md:flex-row md:items-center">
         <div className="flex flex-col gap-16 sm:w-[380px]">
           <h3 className="leading-heading-md text-[40px] font-medium -tracking-[1.28]">
-            <Trans>Supported by</Trans>
+            <Trans>Supported By</Trans>
           </h3>
           <h4 className="leading-body-sm text-18 font-medium -tracking-[0.576px]">
-            <Trans>Over 100 protocols.</Trans>
+            <Trans>Over 100 protocols</Trans>
           </h4>
         </div>
         <div className="grid w-full flex-1 grid-cols-2 grid-rows-2 flex-row flex-wrap items-center gap-16 sm:flex">

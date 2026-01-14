@@ -1279,7 +1279,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         )}
         {!(isTrigger && !selectedPosition) && !isSwap && !isTwap && (
           <SyntheticsInfoRow
-            label={t`Liquidation Price`}
+            label={t`Liquidation price`}
             value={
               <ValueTransition
                 from={

@@ -41,7 +41,7 @@ function NoJob() {
       <div className="body-para">
         <p className="subheading">
           <Trans>
-            GMX is not actively hiring. If you think you can contribute, please email{" "}
+            GMX is not actively hiring. If you think you can contribute, email{" "}
             <ExternalLink href="mailto:jobs@gmx.io">jobs@gmx.io</ExternalLink>.
           </Trans>
         </p>

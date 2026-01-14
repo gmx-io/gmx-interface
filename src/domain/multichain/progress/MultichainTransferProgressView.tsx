@@ -234,7 +234,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
             <div className="flex items-center gap-4">
               <img src={SpinnerBlueSrc} alt="spinner" className="size-16 shrink-0 animate-spin" />
               <div className="text-typography-secondary">
-                <Trans>In progress</Trans>
+                <Trans>In progress...</Trans>
               </div>
             </div>
           )}
@@ -289,9 +289,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={
                     task.operation === Operation.Deposit ? (
-                      <Trans>Funds Bridging To</Trans>
+                      <Trans>Funds bridging to</Trans>
                     ) : (
-                      <Trans>{gmOrGlvLabel} Bridging To</Trans>
+                      <Trans>{gmOrGlvLabel} bridging to</Trans>
                     )
                   }
                   valueClassName="flex items-center gap-4"
@@ -305,9 +305,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={
                     task.operation === Operation.Deposit ? (
-                      <Trans>GM Bridging To</Trans>
+                      <Trans>GM bridging to</Trans>
                     ) : (
-                      <Trans>Funds Bridging To</Trans>
+                      <Trans>Funds bridging to</Trans>
                     )
                   }
                   valueClassName="flex items-center gap-4"
@@ -328,17 +328,17 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                     <SyntheticsInfoRow
                       label={<Trans>Estimated time</Trans>}
                       valueClassName="flex items-center"
-                      value={<Trans>~5 minutes</Trans>}
+                      value={<Trans>~5 min</Trans>}
                     />
                     <SyntheticsInfoRow
-                      label={<Trans>Time Elapsed</Trans>}
+                      label={<Trans>Time elapsed</Trans>}
                       valueClassName="flex items-center"
                       value={elapsedTime}
                     />
                   </>
                 )}
                 <SyntheticsInfoRow
-                  label={<Trans>Bridge Tx Hash</Trans>}
+                  label={<Trans>Bridge tx hash</Trans>}
                   valueClassName="flex items-center"
                   value={
                     <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](task.initialTxHash)} variant="icon">
@@ -350,7 +350,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                   <>
                     {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed && (
                       <SyntheticsInfoRow
-                        label={<Trans>Bridge In Failed</Trans>}
+                        label={<Trans>Bridge in failed</Trans>}
                         valueClassName="flex items-center"
                         value={
                           finishedError.creationTx ? (
@@ -367,7 +367,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                     )}
                     {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed && (
                       <SyntheticsInfoRow
-                        label={<Trans>Bridge Out Failed</Trans>}
+                        label={<Trans>Bridge out failed</Trans>}
                         valueClassName="flex items-center"
                         value={
                           finishedError.executionTx ? (
@@ -385,7 +385,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                     {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed && (
                       <>
                         <SyntheticsInfoRow
-                          label={<Trans>Conversion Creation Failed</Trans>}
+                          label={<Trans>Conversion creation failed</Trans>}
                           valueClassName="flex items-center"
                           value={
                             finishedError.creationTx ? (
@@ -401,7 +401,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           }
                         />
                         <SyntheticsInfoRow
-                          label={<Trans>Conversion Execution Failed</Trans>}
+                          label={<Trans>Conversion execution failed</Trans>}
                           valueClassName="flex items-center"
                           value={
                             finishedError.executionTx ? (
@@ -432,15 +432,15 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           {finishedError.fundsLeftIn === "lz" && (
                             <Trans>
                               {" "}
-                              Your funds are safe in LayerZero on the destination chain. Retry the receive tx in
-                              LayerZero Scan or contact support.
+                              Your funds are safe in LayerZero on the destination chain. Retry the receive transaction
+                              in LayerZero Scan or contact support.
                             </Trans>
                           )}
                           {finishedError.fundsLeftIn === "gmx-lz" && (
                             <Trans>
                               {" "}
-                              Your funds are safe in GMX contracts on the destination chain. Retry the compose tx in
-                              LayerZero Scan or contact support.
+                              Your funds are safe in GMX contracts on the destination chain. Retry the compose
+                              transaction in LayerZero Scan or contact support.
                             </Trans>
                           )}
                           {finishedError.fundsLeftIn === "unknown" && (

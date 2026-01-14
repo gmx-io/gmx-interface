@@ -41,7 +41,7 @@ export function AvailableLiquidityRow() {
   }
 
   return (
-    <SyntheticsInfoRow label={t`Available Liquidity`}>
+    <SyntheticsInfoRow label={t`Available liquidity`}>
       <Tooltip
         position="bottom-end"
         handleClassName={isLiquidityRisk ? "negative numbers" : "numbers"}

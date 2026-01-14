@@ -531,7 +531,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               totalValue={vestedAmount}
             />
             <ProgressRow
-              label={<Trans>Vesting Status</Trans>}
+              label={<Trans>Vesting status</Trans>}
               value={
                 <TooltipWithPortal
                   handle={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
@@ -549,7 +549,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
             />
             {selectedVault === "gmx" && gmxDepositConfig.reserveAmount !== undefined && (
               <ProgressRow
-                label={<Trans>Reserved for Vesting</Trans>}
+                label={<Trans>Reserved for vesting</Trans>}
                 value={
                   <TooltipWithPortal
                     handle={`${formatGmxAmount(gmxReservePreview.nextReserveAmount)} / ${formatGmxAmount(
@@ -560,12 +560,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     content={
                       <div>
                         <StatsTooltipRow
-                          label={<Trans>Current Reserved:</Trans>}
+                          label={<Trans>Current reserved:</Trans>}
                           value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
                           showDollar={false}
                         />
                         <StatsTooltipRow
-                          label={<Trans>Additional Reserve Required:</Trans>}
+                          label={<Trans>Additional reserve required:</Trans>}
                           value={formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
                           showDollar={false}
                         />
@@ -578,7 +578,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               />
             )}
             <ProgressRow
-              label={<Trans>Vault Capacity</Trans>}
+              label={<Trans>Vault capacity:</Trans>}
               value={
                 <TooltipWithPortal
                   handle={`${formatGmxAmount(
@@ -593,7 +593,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                         showDollar={false}
                       />
                       <StatsTooltipRow
-                        label={<Trans>Max Capacity:</Trans>}
+                        label={<Trans>Max capacity:</Trans>}
                         value={formatGmxAmount(depositConfig.maxVestableAmount)}
                         showDollar={false}
                       />

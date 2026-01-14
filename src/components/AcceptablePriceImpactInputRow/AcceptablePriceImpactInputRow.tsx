@@ -64,7 +64,7 @@ function AcceptablePriceImpactInputRowImpl({
 
   if (notAvailable || recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
     return (
-      <SyntheticsInfoRow label={t`Acceptable Price Impact`}>
+      <SyntheticsInfoRow label={t`Acceptable price impact`}>
         <Trans>N/A</Trans>
       </SyntheticsInfoRow>
     );
@@ -114,7 +114,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   return (
-    <SyntheticsInfoRow className={className} label={t`Acceptable Price Impact`} valueClassName="-my-5">
+    <SyntheticsInfoRow className={className} label={t`Acceptable price impact`} valueClassName="-my-5">
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}

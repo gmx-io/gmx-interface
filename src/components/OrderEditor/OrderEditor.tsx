@@ -651,10 +651,10 @@ export function OrderEditor(p: Props) {
   );
 
   const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
-    ? t`Trigger Price`
+    ? t`Trigger price`
     : isStopIncreaseOrderType(p.order.orderType)
-      ? t`Stop Price`
-      : t`Limit Price`;
+      ? t`Stop price`
+      : t`Limit price`;
 
   const positionSize = existingPosition?.sizeInUsd;
 
@@ -724,7 +724,7 @@ export function OrderEditor(p: Props) {
             <>
               {triggerRatio && (
                 <BuyInputSection
-                  topLeftLabel={t`Limit Price`}
+                  topLeftLabel={t`Limit price`}
                   topRightLabel={t`Mark`}
                   topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                   onClickTopRightLabel={() => {
@@ -780,7 +780,7 @@ export function OrderEditor(p: Props) {
             <>
               {isSetAcceptablePriceImpactEnabled && (
                 <SyntheticsInfoRow
-                  label={t`Acceptable Price`}
+                  label={t`Acceptable price`}
                   value={formatAcceptablePrice(acceptablePrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -789,7 +789,7 @@ export function OrderEditor(p: Props) {
 
               {existingPosition && (
                 <SyntheticsInfoRow
-                  label={t`Liquidation Price`}
+                  label={t`Liquidation price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -809,7 +809,7 @@ export function OrderEditor(p: Props) {
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
-                        label={<div className="text-typography-primary">{t`Network Fee`}:</div>}
+                        label={<div className="text-typography-primary">{t`Network fee`}:</div>}
                         value={formatTokenAmountWithUsd(
                           networkFee.feeTokenAmount * -1n,
                           networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
@@ -844,7 +844,7 @@ export function OrderEditor(p: Props) {
               />
               <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
-                label={t`Min. Receive`}
+                label={t`Min. receive`}
                 value={formatBalanceAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,

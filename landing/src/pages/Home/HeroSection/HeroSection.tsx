@@ -68,13 +68,13 @@ export function HeroSection() {
                 </div>
                 <div className="flex flex-col gap-4">
                   <span className="text-nowrap text-12 text-slate-400 sm:text-14">
-                    <Trans>Open Interest</Trans>
+                    <Trans>Open interest</Trans>
                   </span>
                   <div className="text-[30px] font-medium tracking-tight sm:text-[40px]">{openInterest}</div>
                 </div>
                 <div className="group flex cursor-pointer flex-col gap-4" onClick={onTotalVolumeClick}>
                   <span className="duration-180 inline-flex items-center text-nowrap text-12 text-slate-400 transition-colors group-hover:text-blue-300 sm:text-14">
-                    <Trans>Total Volume</Trans>{" "}
+                    <Trans>Total volume</Trans>{" "}
                     <IcMidChevron className="duration-180 size-16 transition-transform group-hover:translate-x-4" />
                   </span>
                   <div className="duration-180 text-[30px] font-medium tracking-tight transition-colors group-active:text-white/80 sm:text-[40px]">

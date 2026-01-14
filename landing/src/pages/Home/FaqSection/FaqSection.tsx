@@ -27,9 +27,7 @@ export function FaqSection() {
           </FaqItem>
           <FaqItem title={t`How Do I Get Started on GMX?`}>
             <Trans>
-              <p>
-                No KYC, no lengthy onboarding, and no depositing is required. All you need is a self-custody wallet:
-              </p>
+              <p>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</p>
               <ul className="list-decimal pl-14">
                 <li>
                   Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger,
@@ -59,7 +57,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`Can I Build on Top of GMX or Integrate It into My DeFi App?`}>
+          <FaqItem title={t`Can I Build on Top of GMX or Integrate it into My DeFi App?`}>
             <Trans>
               <p>
                 Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable

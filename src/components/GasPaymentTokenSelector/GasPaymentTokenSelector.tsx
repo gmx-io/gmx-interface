@@ -38,7 +38,7 @@ export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: 
       label={
         <div className="flex w-full justify-between">
           <div className="font-medium">
-            <Trans>Gas Payment Token</Trans>
+            <Trans>Gas payment token</Trans>
           </div>
           {currentToken && (
             <div className="flex items-center">

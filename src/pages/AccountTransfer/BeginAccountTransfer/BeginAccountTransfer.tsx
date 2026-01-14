@@ -300,7 +300,7 @@ export default function BeginAccountTransfer() {
         setIsVisible={setIsTransferSubmittedModalVisible}
         label={t`Transfer Submitted`}
       >
-        <Trans>Transfer initiated</Trans>
+        <Trans>Transfer initiated.</Trans>
         <br />
         <br />
         <Link className="App-cta" to={completeTransferLink}>
@@ -337,7 +337,7 @@ export default function BeginAccountTransfer() {
       <div className="mx-auto flex max-w-[700px] flex-col gap-20 rounded-8 bg-slate-900 p-20 md:w-[620px]">
         <div className="flex flex-col gap-8">
           <label className="text-16 font-medium">
-            <Trans>Receiver Address</Trans>
+            <Trans>Receiver address</Trans>
           </label>
           <div>
             <input type="text" value={receiver} onChange={(e) => setReceiver(e.target.value)} className="text-input" />
@@ -345,13 +345,13 @@ export default function BeginAccountTransfer() {
         </div>
         <div className="flex flex-col gap-8 text-14 font-medium">
           <ValidationRow isValid={!hasVestedGmx}>
-            <Trans>Sender Has Withdrawn All Tokens from GMX Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedGlp}>
-            <Trans>Sender Has Withdrawn All Tokens from GLP Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedAffiliate}>
-            <Trans>Sender Has Withdrawn All Tokens from Affiliate Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
           </ValidationRow>
           {hasVestedAffiliate && (
             <>
@@ -364,17 +364,17 @@ export default function BeginAccountTransfer() {
                 setIsChecked={setIsAffiliateVesterSkipValidation}
               >
                 <span className="text-body-small text-yellow-300">
-                  <Trans>I Do Not Want to Transfer the Affiliate esGMX Tokens</Trans>
+                  <Trans>I do not want to transfer the affiliate esGMX tokens</Trans>
                 </span>
               </Checkbox>
             </>
           )}
 
           <ValidationRow isValid={!hasStakedGmx}>
-            <Trans>Receiver Has Not Staked GMX Tokens Before</Trans>
+            <Trans>Receiver has not staked GMX tokens before</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasStakedGlp}>
-            <Trans>Receiver Has Not Staked GLP Tokens Before</Trans>
+            <Trans>Receiver has not staked GLP tokens before</Trans>
           </ValidationRow>
         </div>
 

@@ -143,7 +143,7 @@ function CollateralListItemDesktop({
                   className="size-16"
                 />
                 {tokenData.balanceType === TokenBalanceType.GmxAccount ? (
-                  <Trans>GMX Balance</Trans>
+                  <Trans>GMX balance</Trans>
                 ) : (
                   getChainName(chainId)
                 )}

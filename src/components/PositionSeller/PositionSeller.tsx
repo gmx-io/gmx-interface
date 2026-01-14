@@ -673,7 +673,7 @@ export function PositionSeller() {
 
   const liqPriceRow = position && (
     <SyntheticsInfoRow
-      label={t`Liquidation Price`}
+      label={t`Liquidation price`}
       value={
         <ValueTransition
           from={
@@ -762,7 +762,7 @@ export function PositionSeller() {
     keepLeverageAtValue = formatLeverage(position.leverage);
   }
 
-  const keepLeverageText = <Trans>Keep Leverage at {keepLeverageAtValue}</Trans>;
+  const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
 
   const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
     <TooltipWithPortal
@@ -770,7 +770,7 @@ export function PositionSeller() {
       content={
         <Trans>
           Position exceeds max allowed leverage.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+          <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>
         </Trans>
       }
     />
@@ -932,7 +932,7 @@ export function PositionSeller() {
                         >
                           <Trans>Use a TWAP order</Trans>
                         </span>{" "}
-                        <Trans>for lower net price impact.</Trans>
+                        <Trans>for lower net price impact</Trans>
                       </span>
                     </div>
                   </ColorfulBanner>
@@ -965,7 +965,7 @@ export function PositionSeller() {
                   </BuyInputSection>
                   {isTrigger && (
                     <BuyInputSection
-                      topLeftLabel={t`Trigger Price`}
+                      topLeftLabel={t`Trigger price`}
                       topRightLabel={t`Mark`}
                       topRightValue={formatUsd(markPrice, {
                         displayDecimals: marketDecimals,

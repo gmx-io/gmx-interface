@@ -103,7 +103,7 @@ export function ClaimModalSettlementChain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated. Refresh to continue`,
         disabled: true,
       };
     }
@@ -199,7 +199,7 @@ export function ClaimModalMultichain(p: Props) {
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
-      helperToast.error(t`Missing claim params, retry in a few seconds`);
+      helperToast.error(t`Missing claim params. Retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimFundingFees");
     };
 
@@ -282,7 +282,7 @@ export function ClaimModalMultichain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated. Refresh to continue`,
         disabled: true,
       };
     }
@@ -415,7 +415,7 @@ function ClaimModalComponent(p: {
           <Tooltip
             className="ClaimSettleModal-tooltip-text-gray"
             position="top-end"
-            handle={t`FUNDING FEE`}
+            handle={t`Funding fee`}
             renderContent={() => (
               <Trans>
                 <span className="text-typography-primary">Positive funding fees accrued from your positions.</span>

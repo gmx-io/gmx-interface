@@ -24,7 +24,7 @@ export function NpsModal() {
 
     if (error) {
       return {
-        text: t`Error occurred, please try again`,
+        text: t`Error occurred. Try again`,
         disabled: true,
       };
     }
@@ -83,7 +83,7 @@ export function NpsModal() {
 
         <div className="mb-15 flex flex-col">
           <TooltipWithPortal position="top-start" content={<Trans>Optional: Share for follow-up questions.</Trans>}>
-            <Trans>Telegram Contact (Optional)</Trans>
+            <Trans>Telegram contact (optional)</Trans>
           </TooltipWithPortal>
           <input
             className="mt-15 text-input-bg"

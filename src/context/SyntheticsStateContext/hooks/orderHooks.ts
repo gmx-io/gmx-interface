@@ -53,7 +53,7 @@ export function useCancelOrder(order: OrderInfo) {
   const onCancelOrder = useCallback(
     async function cancelOrder() {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(t`Page outdated. Refresh to continue`);
         return;
       }
       if (!signer || !provider) return;

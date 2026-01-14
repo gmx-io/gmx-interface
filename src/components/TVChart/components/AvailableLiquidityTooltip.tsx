@@ -35,14 +35,14 @@ export function AvailableLiquidityTooltip({ isLong }) {
   return (
     <div>
       <StatsTooltipRow
-        label={t`${longShortText} ${indexToken?.symbol} Reserve`}
+        label={t`${longShortText} ${indexToken?.symbol} reserve`}
         value={`${formatUsd(reservedUsd, { displayDecimals: 0 })} / ${formatUsd(maxReservedUsd, {
           displayDecimals: 0,
         })}`}
         showDollar={false}
       />
       <StatsTooltipRow
-        label={t`${longShortText} ${indexToken?.symbol} Open Interest`}
+        label={t`${longShortText} ${indexToken?.symbol} open interest`}
         value={`${formatUsd(currentOpenInterest, { displayDecimals: 0 })} / ${formatUsd(maxOpenInterest, {
           displayDecimals: 0,
         })}`}

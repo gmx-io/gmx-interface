@@ -96,7 +96,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
 
     if (error) {
       return {
-        text: t`Error occurred, please try again`,
+        text: t`Error, please try again`,
         disabled: true,
       };
     }
@@ -123,7 +123,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
       </div>
       <div className="mb-15 flex flex-col">
         <TooltipWithPortal position="top-start" content={<Trans>Optional: Share for follow-up questions.</Trans>}>
-          <Trans>Telegram Contact (Optional)</Trans>
+          <Trans>Telegram contact (optional)</Trans>
         </TooltipWithPortal>
         <input
           className="mt-15 text-input-bg"

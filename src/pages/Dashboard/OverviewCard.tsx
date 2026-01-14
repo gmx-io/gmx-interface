@@ -341,7 +341,7 @@ export function OverviewCard({
         </p>
         <p className="Tooltip-row">
           <span className="label">
-            <Trans>Annualized Buy Pressure (BB&D):</Trans>
+            <Trans>Annualized buy pressure (BB&D):</Trans>
           </span>
           <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>
@@ -394,7 +394,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>TVL includes GMX staked, GLP Pool, GM Pools, and position collateral.</Trans>
+                      <Trans>TVL includes GMX staked, GLP pool, GM pools, and position collateral.</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
@@ -506,7 +506,7 @@ export function OverviewCard({
           <AppCardSection className="pb-24">
             <div className="App-card-row">
               <div className="label">
-                <Trans>24h Volume</Trans>
+                <Trans>24h volume</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -520,7 +520,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>Open Interest</Trans>
+                <Trans>Open interest</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -534,7 +534,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>Long Positions</Trans>
+                <Trans>Long positions</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -548,7 +548,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>Short Positions</Trans>
+                <Trans>Short positions</Trans>
               </div>
               <div>
                 <TooltipComponent

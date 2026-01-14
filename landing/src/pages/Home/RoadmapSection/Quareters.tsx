@@ -15,7 +15,7 @@ export function Quareters() {
       <Quarter>
         <Trans>
           <p>Multichain</p>
-          <p>Just in Time Liquidity</p>
+          <p>Just-in-Time Liquidity</p>
         </Trans>
       </Quarter>
       <Quarter>

@@ -169,14 +169,14 @@ export function OrderStatusNotification({
             initialCollateralToken?.decimals,
             symbol,
             { isStable: initialCollateralToken?.isStable }
-          )} to ${positionText}`;
+          )} to ${positionText}...`;
         } else {
           return t`Withdrawing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
             symbol,
             { isStable: initialCollateralToken?.isStable }
-          )} from ${positionText}`;
+          )} from ${positionText}...`;
         }
       } else {
         let orderTypeText = "";

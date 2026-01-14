@@ -57,7 +57,7 @@ export function useSourceChainNativeFeeError({
 
       return {
         buttonText: t`Insufficient ${symbol} balance`,
-        warningText: t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required.`,
+        warningText: t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`,
       };
     }
 

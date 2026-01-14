@@ -49,19 +49,19 @@ export function SwapCard(p: Props) {
 
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow
-          label={t`${fromToken?.symbol} Price`}
+          label={t`${fromToken?.symbol} price`}
           value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
           valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
-          label={t`${toToken?.symbol} Price`}
+          label={t`${toToken?.symbol} price`}
           value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
           valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
-          label={t`Available Liquidity`}
+          label={t`Available liquidity`}
           value={
             <Tooltip
               handle={formatUsd(maxLiquidityUsd) || "..."}
@@ -70,7 +70,7 @@ export function SwapCard(p: Props) {
               content={
                 <StatsTooltipRow
                   textClassName="al-swap"
-                  label={t`Max ${toToken?.symbol} Out`}
+                  label={t`Max ${toToken?.symbol} out`}
                   value={
                     <AmountWithUsdBalance
                       multiline

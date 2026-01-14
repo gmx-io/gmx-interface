@@ -110,8 +110,8 @@ export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, mu
       }
     >
       <div className="flex flex-col gap-12">
-        <SyntheticsInfoRow label={<Trans>Total Fee APY</Trans>} value={formatPercentage(totalFeeApy, { bps: false })} />
-        <SyntheticsInfoRow label={<Trans>30d Fee APY</Trans>} value={formatPercentage(feeApy30d, { bps: false })} />
+        <SyntheticsInfoRow label={<Trans>Total fee APY</Trans>} value={formatPercentage(totalFeeApy, { bps: false })} />
+        <SyntheticsInfoRow label={<Trans>30d fee APY</Trans>} value={formatPercentage(feeApy30d, { bps: false })} />
         <SyntheticsInfoRow
           label={<Trans>Balance</Trans>}
           value={

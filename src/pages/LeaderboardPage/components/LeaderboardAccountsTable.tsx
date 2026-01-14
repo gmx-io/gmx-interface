@@ -198,28 +198,28 @@ export function LeaderboardAccountsTable({
               />
               <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" />
               <TableHeaderCell
-                title={t`PnL ($)`}
+                title={t`PNL ($)`}
                 width={12}
                 tooltip={t`Total realized and unrealized PnL including fees and price impact.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("totalQualifyingPnl")}
               />
               <TableHeaderCell
-                title={t`PnL (%)`}
+                title={t`PNL (%)`}
                 width={10}
                 tooltip={<Trans>PnL relative to capital used (return on capital).</Trans>}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("pnlPercentage")}
               />
               <TableHeaderCell
-                title={t`Avg. Size`}
+                title={t`AVG. SIZE`}
                 width={12}
                 tooltip={t`Average position size.`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("averageSize")}
               />
               <TableHeaderCell
-                title={t`Avg. Lev.`}
+                title={t`AVG. LEV.`}
                 width={1}
                 tooltip={t`Average leverage used.`}
                 tooltipPosition="bottom-end"
@@ -326,13 +326,13 @@ const TableRow = memo(
       return (
         <div>
           <StatsTooltipRow
-            label={t`Total Trades`}
+            label={t`Total trades`}
             showDollar={false}
             value={account.wins + account.losses}
             valueClassName="numbers"
           />
           {account.wins + account.losses > 0 ? (
-            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} valueClassName="numbers" />
+            <StatsTooltipRow label={t`Win rate`} showDollar={false} value={winRate} valueClassName="numbers" />
           ) : null}
         </div>
       );
@@ -371,7 +371,7 @@ const TableRow = memo(
             handleClassName={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}
             renderContent={() => (
               <StatsTooltipRow
-                label={t`Capital Used`}
+                label={t`Capital used`}
                 showDollar={false}
                 value={formatUsd(account.maxCapital)}
                 valueClassName="numbers"
@@ -503,7 +503,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
       />
       {shouldShowStartValues && (
         <StatsTooltipRow
-          label={t`Start Unrealized PnL`}
+          label={t`Start unrealized PnL`}
           showDollar={false}
           value={
             <span className={cx("numbers", getSignedValueClassName(startUnrealizedPnl))}>
@@ -516,7 +516,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         <>
           <br />
           <StatsTooltipRow
-            label={t`Realized Fees`}
+            label={t`Realized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
@@ -525,7 +525,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             }
           />
           <StatsTooltipRow
-            label={t`Unrealized Fees`}
+            label={t`Unrealized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
@@ -535,7 +535,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           />
           {shouldShowStartValues && (
             <StatsTooltipRow
-              label={t`Start Unrealized Fees`}
+              label={t`Start unrealized fees`}
               showDollar={false}
               value={
                 <span className={cx("numbers", getSignedValueClassName(startUnrealizedFees))}>

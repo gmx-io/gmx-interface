@@ -213,5 +213,5 @@ export function GmFees(p: Props) {
     totalFeesUsd,
   ]);
 
-  return <SyntheticsInfoRow label={<Trans>Price Impact / Fees</Trans>} value={value} />;
+  return <SyntheticsInfoRow label={<Trans>Price impact / fees</Trans>} value={value} />;
 }

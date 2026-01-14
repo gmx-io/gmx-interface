@@ -61,15 +61,15 @@ export function AboutGlpIncident() {
             </p>
             <ul className="list-disc pl-12">
               <li>
-                <Trans>Earns fees from liquidity provision across GMX V2 markets</Trans>
+                <Trans>Earns fees from liquidity provision across GMX V2 markets.</Trans>
               </li>
               <li>
                 <Trans>
-                  Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield
+                  Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield.
                 </Trans>
               </li>
               <li>
-                <Trans>Auto-compounds yield (no manual claiming needed unlike GLP)</Trans>
+                <Trans>Auto-compounds yield (no manual claiming needed unlike GLP).</Trans>
               </li>
             </ul>
           </div>

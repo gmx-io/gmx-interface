@@ -16,19 +16,19 @@ export function DisplaySettings() {
     <div className="flex flex-col gap-16 font-medium">
       <SettingsSection>
         <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
-          <Trans>Show Leverage Slider</Trans>
+          <Trans>Show leverage slider</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
-          <Trans>Display PnL after Fees</Trans>
+          <Trans>Display PnL after fees</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>
-          <Trans>Include PnL in Leverage Display</Trans>
+          <Trans>Include PnL in leverage display</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.shouldShowPositionLines} setIsChecked={settings.setShouldShowPositionLines}>
-          <Trans>Show Positions on Chart</Trans>
+          <Trans>Show positions on chart</Trans>
         </ToggleSwitch>
 
         <div className="flex items-center gap-8">
@@ -37,7 +37,7 @@ export function DisplaySettings() {
             setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
           >
             <TooltipWithPortal
-              handle={<Trans>Break Down Net Price Impact</Trans>}
+              handle={<Trans>Break down net price impact</Trans>}
               position="top"
               variant="icon"
               renderContent={() => (

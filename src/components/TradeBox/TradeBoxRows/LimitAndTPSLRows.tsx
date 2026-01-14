@@ -72,7 +72,7 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                 content={
                   isStopLoss
                     ? t`Stop losses at 100%. Reduce existing orders to add more.`
-                    : t`Take profit at 100%. Reduce existing orders to add more.`
+                    : t`Take profits at 100%. Reduce existing orders to add more.`
                 }
               >
                 <EntryButton

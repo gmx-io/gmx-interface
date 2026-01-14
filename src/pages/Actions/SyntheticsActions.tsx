@@ -26,7 +26,7 @@ export default function SyntheticsActions() {
             subtitle={
               <>
                 <Trans>
-                  GMX {VERSION_NAME} {networkName} Actions for all accounts.
+                  GMX {VERSION_NAME} {networkName} actions for all accounts
                 </Trans>
                 <VersionNetworkSwitcherRow chainId={chainId} version={2} />
               </>

@@ -155,8 +155,7 @@ export function ExpressTradingWarningCard({
     icon = OneClickIcon;
     content = (
       <Trans>
-        One-Click Trading approval invalid. This may occur when switching chains or payment tokens. Sign a new approval
-        to continue.
+        One-Click Trading approval invalid. This may occur when switching chains or payment tokens. Sign a new approval.
       </Trans>
     );
     buttonText = <Trans>Re-sign</Trans>;

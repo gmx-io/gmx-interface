@@ -78,7 +78,7 @@ export default function NftWallet() {
         <div className="NftWallet-content">
           <div className="NftWallet-row">
             <label>
-              <Trans>Receiver Address</Trans>
+              <Trans>Receiver address</Trans>
             </label>
             <div>
               <input type="text" value={receiver} onChange={(e) => setReceiver(e.target.value)} />

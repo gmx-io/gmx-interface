@@ -227,7 +227,7 @@ export function getOrderErrors(p: {
         });
 
         errors.push({
-          msg: t`Order may not execute at ${priceText}: acceptable impact (${formattedOrderAcceptablePriceImpact}) below market (${formattedCurrentAcceptablePriceImpact}). Click "Edit."`,
+          msg: t`Order may not execute at ${priceText}: acceptable impact (${formattedOrderAcceptablePriceImpact}) below market (${formattedCurrentAcceptablePriceImpact}). Click "Edit".`,
           level: "warning",
           key: "acceptablePrice",
         });
@@ -260,7 +260,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < collateralSwapUsd) {
           errors.push({
-            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price.`,
+            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price`,
             level: "error",
             key: "liquidity2",
           });

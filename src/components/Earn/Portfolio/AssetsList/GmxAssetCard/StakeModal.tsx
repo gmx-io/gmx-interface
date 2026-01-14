@@ -239,7 +239,7 @@ export function StakeModal(props: {
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated, please refresh`;
+      return t`Page outdated. Refresh`;
     }
 
     if (activeTab === "stake") {

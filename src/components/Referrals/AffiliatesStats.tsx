@@ -171,7 +171,7 @@ function AffiliatesStats({
       <div className="grid grid-cols-4 max-lg:grid-cols-1">
         <ReferralInfoCard
           value={String(currentReferralsData?.affiliateTotalStats.registeredReferralsCount || 0)}
-          label={t`Traders Referred`}
+          label={t`Traders referred`}
           labelTooltipText={t`Number of traders using your referral code.`}
           tooltipContent={
             <>
@@ -181,13 +181,13 @@ function AffiliatesStats({
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={t`Traders Referred on Avalanche`}
+                label={t`Traders referred on Avalanche`}
                 value={avalancheData.affiliateTotalStats.registeredReferralsCount}
                 showDollar={false}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Traders Referred on Avalanche Fuji`}
+                  label={t`Traders referred on Avalanche Fuji`}
                   value={fujiData.affiliateTotalStats.registeredReferralsCount}
                   showDollar={false}
                 />
@@ -292,7 +292,7 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          label={t`Claimable Rebates`}
+          label={t`Claimable rebates`}
           value={<span className="numbers">{formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}</span>}
           labelTooltipText={t`Available to claim now.`}
           className="AffiliateStats-claimable-rewards-card"
@@ -331,7 +331,7 @@ function AffiliatesStats({
               <p className="title text-body-large">
                 <Trans>Referral Codes</Trans>{" "}
                 <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-typography-secondary">
-                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% Rebate`}
+                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                 </span>
               </p>
               <Button variant="secondary" onClick={open} size="small">
@@ -348,16 +348,16 @@ function AffiliatesStats({
               <thead>
                 <TableTheadTr>
                   <TableTh scope="col">
-                    <Trans>Referral Code</Trans>
+                    <Trans>REFERRAL CODE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Total Volume</Trans>
+                    <Trans>TOTAL VOLUME</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Traders Referred</Trans>
+                    <Trans>TRADERS REFERRED</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Total Rebates</Trans>
+                    <Trans>TOTAL REBATES</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>
@@ -425,12 +425,12 @@ function AffiliatesStats({
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
-                                label={t`V1 Rebates`}
+                                label={t`V1 rebates`}
                                 value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
-                                label={t`V2 Rebates`}
+                                label={t`V2 rebates`}
                                 value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
@@ -495,7 +495,7 @@ function AffiliatesStats({
                       rebateType = t`V1 Airdrop`;
                     }
                   } else if (rebate.typeId === RebateDistributionType.Claim) {
-                    rebateType = t`V2 Claim`;
+                    rebateType = t`V2 claim`;
                   }
 
                   const amountsByTokens = rebate.tokens.reduce(

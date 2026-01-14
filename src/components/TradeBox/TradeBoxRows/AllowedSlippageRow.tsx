@@ -34,7 +34,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
     <SyntheticsInfoRow
       label={
         <TooltipWithPortal
-          handle={t`Allowed Slippage`}
+          handle={t`Allowed slippage`}
           position="left-start"
           variant="icon"
           content={

@@ -23,21 +23,21 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
     <div className="font-medium">
       <SettingsSection className="gap-16">
         <ToggleSwitch isChecked={settings.showDebugValues} setIsChecked={settings.setShowDebugValues}>
-          <Trans>Show Debug Values</Trans>
+          <Trans>Show debug values</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.shouldDisableValidationForTesting}
           setIsChecked={settings.setShouldDisableValidationForTesting}
         >
-          <Trans>Disable Validation for Testing</Trans>
+          <Trans>Disable validation for testing</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.shouldDisableShareModalPnlCheck}
           setIsChecked={settings.setShouldDisableShareModalPnlCheck}
         >
-          <Trans>Disable Share Modal PnL Check</Trans>
+          <Trans>Disable share modal PnL check</Trans>
         </ToggleSwitch>
 
         <AbFlagSettings />

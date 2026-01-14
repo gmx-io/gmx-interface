@@ -92,8 +92,8 @@ export function TradingSettings({
                 description={<Trans>On-chain signing for every transaction.</Trans>}
                 info={
                   <Trans>
-                    You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas
-                    payments in {nativeTokenSymbol}.
+                    Sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas payments
+                    in {nativeTokenSymbol}.
                   </Trans>
                 }
                 icon={<HourGlassIcon className="size-28" />}
@@ -183,7 +183,7 @@ export function TradingSettings({
                   Network for your GMX Account and positions. Balances and positions don't transfer between networks.
                 </Trans>
               }
-              handle={<Trans>Settlement Chain</Trans>}
+              handle={<Trans>Settlement chain</Trans>}
             />
             <DropdownSelector
               slim
@@ -215,7 +215,7 @@ export function TradingSettings({
 
       <SettingsSection className="mt-2">
         <InputSetting
-          title={<Trans>Default Allowed Slippage</Trans>}
+          title={<Trans>Default allowed slippage</Trans>}
           description={
             <div>
               <Trans>
@@ -238,7 +238,7 @@ export function TradingSettings({
         />
 
         <InputSetting
-          title={<Trans>TWAP Number of Parts</Trans>}
+          title={<Trans>TWAP number of parts</Trans>}
           description={
             <div>
               <Trans>Default parts for TWAP orders.</Trans>
@@ -253,7 +253,7 @@ export function TradingSettings({
 
         {settings.shouldUseExecutionFeeBuffer && (
           <InputSetting
-            title={<Trans>Max Network Fee Buffer</Trans>}
+            title={<Trans>Max network fee buffer</Trans>}
             description={
               <div>
                 <Trans>
@@ -290,7 +290,7 @@ export function TradingSettings({
                 .
               </div>
             }
-            handle={<Trans>Auto-Cancel TP/SL</Trans>}
+            handle={<Trans>Auto-cancel TP/SL</Trans>}
             variant="icon"
             className="font-medium"
           />
@@ -303,7 +303,7 @@ export function TradingSettings({
             setIsChecked={settings.setExternalSwapsEnabled}
             className="font-medium"
           >
-            <Trans>Enable External Swaps</Trans>
+            <Trans>Enable external swaps</Trans>
           </ToggleSwitch>
         )}
 
@@ -312,7 +312,7 @@ export function TradingSettings({
           setIsChecked={settings.setIsSetAcceptablePriceImpactEnabled}
           className="font-medium"
         >
-          <Trans>Set Acceptable Price Impact</Trans>
+          <Trans>Set acceptable price impact</Trans>
         </ToggleSwitch>
       </SettingsSection>
     </div>

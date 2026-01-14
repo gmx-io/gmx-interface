@@ -27,7 +27,7 @@ export function NextStoredImpactRows() {
       <SyntheticsInfoRow
         label={
           <TooltipWithPortal
-            handle={t`Stored Price Impact`}
+            handle={t`Stored price impact`}
             content={
               <Trans>
                 Price impact is stored when you increase a position and applied when you decrease.{" "}
@@ -55,7 +55,7 @@ export function NextStoredImpactRows() {
       {nextPositionValues?.potentialPriceImpactDiffUsd !== undefined &&
         nextPositionValues?.potentialPriceImpactDiffUsd > 0n && (
           <SyntheticsInfoRow
-            label={t`Estimated Impact Rebate`}
+            label={t`Estimated impact rebate`}
             value={formatDeltaUsd(nextPositionValues?.potentialPriceImpactDiffUsd)}
             valueClassName="numbers text-green-500"
           />

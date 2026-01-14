@@ -39,7 +39,7 @@ export function DebugSwapsSettings() {
                 updateDebugSettings();
               }}
             >
-              <Trans>Force External Swaps</Trans>
+              <Trans>Force external swaps</Trans>
             </ToggleSwitch>
             <br />
             <ToggleSwitch
@@ -49,12 +49,12 @@ export function DebugSwapsSettings() {
                 updateDebugSettings();
               }}
             >
-              <Trans>Fail External Swaps</Trans>
+              <Trans>Fail external swaps</Trans>
             </ToggleSwitch>
             <br />
             <div className="mb-8">
               <div>
-                <Trans>Swap Price Impact for External Swap Threshold</Trans>
+                <Trans>Swap price impact for external swap threshold</Trans>
               </div>
               <div className="relative">
                 <div className="absolute left-11 top-1/2 -translate-y-1/2 text-typography-secondary">-</div>

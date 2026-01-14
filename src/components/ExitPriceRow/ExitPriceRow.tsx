@@ -35,7 +35,7 @@ export function ExitPriceRow({
       label={
         <TooltipWithPortal
           variant="icon"
-          handle={t`Exit Price`}
+          handle={t`Exit price`}
           content={t`Price you'll receive when closing, adjusted for capped price impact.`}
         />
       }

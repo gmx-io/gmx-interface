@@ -678,7 +678,7 @@ function OrderItemLarge({
           <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="ghost" onClick={setEditingOrderKey}>
-                <EditIcon title={t`Edit order`} className="size-16" />
+                <EditIcon title={t`Edit order.`} className="size-16" />
               </Button>
             )}
             {onCancelOrder ? (

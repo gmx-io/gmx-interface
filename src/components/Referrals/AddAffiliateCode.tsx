@@ -169,7 +169,7 @@ export function AffiliateCodeForm({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: t`Page outdated. Refresh`,
       disabled: true,
     };
   } else if (srcChainId !== undefined) {

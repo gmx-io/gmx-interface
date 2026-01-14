@@ -57,7 +57,7 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
   }
 
   if (hasOutdatedUi) {
-    return [t`Page outdated, please refresh`];
+    return [t`Page outdated. Refresh`];
   }
 
   if (!isConnected) {
@@ -85,7 +85,7 @@ export function getExpressError(p: {
 
   if (expressParams.gasPaymentValidations.isOutGasTokenBalance && isInsufficientNativeTokenBalance) {
     return [
-      t`Insufficient ${getToken(chainId, expressParams?.gasPaymentParams.gasPaymentTokenAddress)?.symbol} balance to pay for gas`,
+      t`Insufficient ${getToken(chainId, expressParams?.gasPaymentParams.gasPaymentTokenAddress)?.symbol} for gas`,
     ];
   }
 
@@ -200,11 +200,11 @@ export function getSwapError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+    return [t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
+    return [t`Max parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
   }
 
   return [undefined];
@@ -423,11 +423,11 @@ export function getIncreaseError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+    return [t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
+    return [t`Max parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
   }
 
   return [undefined];
@@ -498,7 +498,7 @@ export function getDecreaseError(p: {
   } = p;
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
-    return [t`${receiveToken?.symbol} can't be sent to smart contracts. Select another token`];
+    return [t`${receiveToken?.symbol} unavailable for smart contracts`];
   }
 
   if (!marketInfo) {
@@ -559,11 +559,11 @@ export function getDecreaseError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return [t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
+    return [t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}`];
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return [t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
+    return [t`Max parts: ${MAX_TWAP_NUMBER_OF_PARTS}`];
   }
 
   return [undefined];
@@ -744,7 +744,7 @@ export function getGmSwapError(p: {
     return [t`Loading...`];
   }
 
-  const glvTooltipMessage = t`GM: ${marketInfo.name} buyable cap reached. Choose a different pool, reduce size, or select different tokens`;
+  const glvTooltipMessage = t`GM: ${marketInfo.name} buyable cap reached. Choose a different pool, reduce size, or select different tokens.`;
 
   if (isPair && isDeposit && paySource === "sourceChain") {
     return [t`Source chain deposits support single token only`];
@@ -817,7 +817,7 @@ export function getGmSwapError(p: {
   }
 
   if ((longTokenAmount ?? 0n) < 0 || (shortTokenAmount ?? 0n) < 0 || (marketTokenAmount ?? 0n) < 0) {
-    return [t`Amount must be greater than zero`];
+    return [t`Enter a valid amount`];
   }
 
   if (
@@ -869,7 +869,7 @@ export function getGmSwapError(p: {
         return [
           t`Max pool amount reached`,
           longToken?.symbol === "GM"
-            ? t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Reduce size, pick different GM, or shift to another pool.`
+            ? t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Reduce size, choose different GM, or shift to another pool`
             : t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Choose a different pool or reduce size.`,
         ];
       }
@@ -901,7 +901,7 @@ export function getGmSwapError(p: {
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return [
           t`Insufficient GM pool liquidity`,
-          t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal.`,
+          t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal`,
         ];
       }
     }
@@ -987,7 +987,7 @@ export function getGmShiftError({
   }
 
   if ((fromTokenAmount ?? 0n) < 0 || (toTokenAmount ?? 0n) < 0) {
-    return [t`Amount must be greater than zero`];
+    return [t`Enter a valid amount`];
   }
 
   if (fromTokenAmount === undefined || fromTokenAmount <= 0n || toTokenAmount === undefined || toTokenAmount <= 0n) {
