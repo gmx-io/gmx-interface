@@ -166,7 +166,7 @@ export function formatTradeActionTimestampISO(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-type ParsedCustomError = {
+export type ParsedCustomError = {
   name: string;
   args?: {
     [key in ExtractAbiItem<

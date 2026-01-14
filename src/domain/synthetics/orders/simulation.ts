@@ -1,4 +1,15 @@
-import { PublicClient, encodeFunctionData, withRetry } from "viem";
+import {
+  ContractFunctionRevertedError,
+  HttpRequestError,
+  InsufficientFundsError,
+  PublicClient,
+  RpcRequestError,
+  TimeoutError,
+  BaseError as ViemBaseError,
+  WebSocketRequestError,
+  encodeFunctionData,
+  withRetry,
+} from "viem";
 
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
@@ -9,10 +20,12 @@ import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
-import type { ContractsChainId } from "sdk/configs/chains";
+import { type ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
+import { CustomErrorName, extendError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+
+import { ParsedCustomError, tryGetError } from "components/TradeHistory/TradeHistoryRow/utils/shared";
 
 import { isGlvEnabled } from "../markets/glv";
 
@@ -34,8 +47,93 @@ export type SimulateExecuteParams = {
   blockTimestampData: BlockTimestampData | undefined;
 };
 
-export function isSimulationPassed(errorData: ErrorData) {
-  return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
+export function decodeErrorFromViemError(error: any): ParsedCustomError | undefined {
+  if ("walk" in error && typeof error.walk === "function") {
+    const errorWithData = (error as ViemBaseError).walk(
+      (e: any) => "raw" in e && e.raw
+    ) as ContractFunctionRevertedError;
+    if (errorWithData?.raw) {
+      return tryGetError(errorWithData.raw);
+    }
+  }
+  return undefined;
+}
+
+function isInsufficientFundsError(error: any): boolean {
+  return Boolean(
+    "walk" in error &&
+      typeof error.walk === "function" &&
+      (error as ViemBaseError).walk(
+        (e: any) => e instanceof InsufficientFundsError || ("name" in e && e.name === "InsufficientFundsError")
+      )
+  );
+}
+
+const TEMPORARY_ERROR_PATTERNS = [
+  "header not found",
+  "unfinalized data",
+  "networkerror when attempting to fetch resource",
+  "the request timed out",
+  "unsupported block number",
+  "failed to fetch",
+  "load failed",
+  "an error has occurred",
+];
+
+export function isTemporaryError(error: any): boolean {
+  if (!("walk" in error && typeof error.walk === "function")) {
+    return false;
+  }
+
+  const errorChain = error as ViemBaseError;
+  let isTemporary: boolean | undefined;
+
+  errorChain.walk((e: any) => {
+    const errorName = e?.name;
+
+    if (errorName === "ContractFunctionRevertedError" || e instanceof ContractFunctionRevertedError) {
+      isTemporary = false;
+      return true;
+    }
+
+    if (
+      e instanceof HttpRequestError ||
+      e instanceof WebSocketRequestError ||
+      e instanceof TimeoutError ||
+      errorName === "HttpRequestError" ||
+      errorName === "WebSocketRequestError" ||
+      errorName === "TimeoutError"
+    ) {
+      isTemporary = true;
+      return true;
+    }
+
+    if (e instanceof RpcRequestError || errorName === "RpcRequestError" || errorName === "RpcError") {
+      const code = (e as RpcRequestError)?.code;
+      if (code === -32001 || code === -32002 || code === -32603) {
+        isTemporary = true;
+        return true;
+      }
+    }
+
+    const errorText = [
+      typeof e?.details === "string" ? e.details : undefined,
+      typeof e?.shortMessage === "string" ? e.shortMessage : undefined,
+      typeof e?.message === "string" ? e.message : undefined,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    if (errorText && TEMPORARY_ERROR_PATTERNS.some((pattern) => errorText.includes(pattern))) {
+      isTemporary = true;
+      return true;
+    }
+
+    return false;
+  });
+
+  return isTemporary === true;
 }
 
 export async function getBlockTimestampAndNumber(
@@ -245,22 +343,17 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
         retryCount: 2,
         delay: 200,
         shouldRetry: ({ error }) => {
-          const errorData = parseError(error);
-          return (
-            errorData?.errorMessage?.includes("unsupported block number") ||
-            errorData?.errorMessage?.toLowerCase().includes("failed to fetch") ||
-            errorData?.errorMessage?.toLowerCase().includes("load failed") ||
-            errorData?.errorMessage?.toLowerCase().includes("an error has occurred") ||
-            false
-          );
+          return isTemporaryError(error);
         },
       }
     );
   } catch (txnError) {
-    const errorData = parseError(txnError);
+    const decodedError = decodeErrorFromViemError(txnError);
 
-    const isPassed = errorData && isSimulationPassed(errorData);
-    const shouldIgnoreExpressNativeTokenBalance = errorData?.txErrorType === TxErrorType.NotEnoughFunds && p.isExpress;
+    const isPassed = decodedError?.name === CustomErrorName.EndOfOracleSimulation;
+
+    const isInsufficientFunds = isInsufficientFundsError(txnError);
+    const shouldIgnoreExpressNativeTokenBalance = isInsufficientFunds && p.isExpress;
 
     if (isPassed || shouldIgnoreExpressNativeTokenBalance) {
       return;

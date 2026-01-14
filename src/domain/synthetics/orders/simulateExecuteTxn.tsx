@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode } from "react";
-import { ContractFunctionParameters, decodeErrorResult, encodeFunctionData, withRetry } from "viem";
+import { ContractFunctionParameters, encodeFunctionData, withRetry } from "viem";
 
 import { getContract } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
@@ -15,12 +15,12 @@ import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
-import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
+import { CustomErrorName } from "sdk/utils/errors";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-import { getBlockTimestampAndNumber } from "./simulation";
+import { decodeErrorFromViemError, getBlockTimestampAndNumber, isTemporaryError } from "./simulation";
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {
@@ -50,10 +50,6 @@ export type SimulateExecuteParams = {
   };
   externalSwapQuote?: ExternalSwapQuote;
 };
-
-export function isSimulationPassed(errorData: ErrorData) {
-  return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
-}
 
 /**
  * @deprecated use simulateExecution instead
@@ -189,8 +185,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         retryCount: 2,
         delay: 200,
         shouldRetry: ({ error }) => {
-          const [message] = extractTxnError(error);
-          return message?.includes("unsupported block number") ?? false;
+          return isTemporaryError(error);
         },
       }
     );
@@ -198,17 +193,14 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     let msg: React.ReactNode = undefined;
 
     try {
-      const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-      const error = new Error("No data found in error.");
-      error.cause = txnError;
-      if (!errorData) throw error;
+      const parsedError = decodeErrorFromViemError(txnError);
+      if (!parsedError) {
+        const error = new Error("No data found in error.");
+        error.cause = txnError;
+        throw error;
+      }
 
-      const parsedError = decodeErrorResult({
-        abi: abis.CustomErrors,
-        data: errorData,
-      });
-
-      const isSimulationPassed = parsedError.errorName === "EndOfOracleSimulation";
+      const isSimulationPassed = parsedError.name === CustomErrorName.EndOfOracleSimulation;
 
       if (isSimulationPassed) {
         if (p.metricId) {
@@ -221,18 +213,12 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         sendTxnErrorMetric(p.metricId, txnError, "simulation");
       }
 
-      const parsedArgs = Object.keys(parsedError?.args ?? []).reduce((acc, k) => {
-        if (!Number.isNaN(Number(k))) {
-          return acc;
-        }
-        acc[k] = parsedError?.args[k].toString();
-        return acc;
-      }, {});
+      const parsedArgs = parsedError.args;
 
       let errorContent: ReactNode = errorTitle;
       if (
-        parsedError.errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
-        parsedError.errorName === CustomErrorName.InsufficientSwapOutputAmount
+        parsedError.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
+        parsedError.name === CustomErrorName.InsufficientSwapOutputAmount
       ) {
         errorContent = (
           <Trans>
@@ -258,9 +244,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
           {p.additionalErrorParams?.content}
           <br />
           <br />
-          <ToastifyDebug
-            error={`${txnError?.info?.error?.message ?? parsedError.errorName ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
-          />
+          <ToastifyDebug error={`${parsedError.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`} />
         </div>
       );
     } catch (parsingError) {
