@@ -25,7 +25,7 @@ import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
 import type { Abi, Hex } from "viem";
-import { zeroAddress } from "viem";
+import { maxUint256, zeroAddress } from "viem";
 
 import {
   AnyChainId,
@@ -481,6 +481,11 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
 export const RANDOM_WALLET = Wallet.createRandom();
+
+/**
+ * Uses maxUint256 / 100n to avoid number overflows in EVM operations.
+ */
+export const SIMULATED_MULTICHAIN_BALANCE = maxUint256 / 100n;
 
 export function getSourceChainDecimalsMapped(
   chainId: ContractsChainId,
