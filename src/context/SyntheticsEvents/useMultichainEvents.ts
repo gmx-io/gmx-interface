@@ -33,7 +33,7 @@ import {
   MultichainWithdrawalMetricData,
   sendOrderExecutedMetric,
 } from "lib/metrics";
-import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { sendMultichainDepositSuccessEvent, sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
 import { getToken } from "sdk/configs/tokens";
 import { adjustForDecimals } from "sdk/utils/numbers";
@@ -171,7 +171,11 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         return;
       }
       const stargatePoolAddress = info.sender;
-      const sourceChainTokenId = tokenIdByStargate[stargatePoolAddress];
+      const sourceChainTokenId = getByKey(tokenIdByStargate, stargatePoolAddress);
+      if (!sourceChainTokenId) {
+        continue;
+      }
+
       const settlementChainTokenId = getMappedTokenId(sourceChainTokenId.chainId, sourceChainTokenId.address, chainId);
       const tokenAddress = settlementChainTokenId?.address;
       if (!tokenAddress) {
@@ -452,7 +456,10 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       debugLog("withdrawal got OFTSent event for", srcChainId, info.txnHash);
 
       const stargatePoolAddress = info.sender;
-      const tokenId = tokenIdByStargate[stargatePoolAddress];
+      const tokenId = getByKey(tokenIdByStargate, stargatePoolAddress);
+      if (!tokenId) {
+        continue;
+      }
 
       const tokenAddress = tokenId.address;
 
@@ -607,14 +614,18 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
             pendingSentWithdrawal.step = "received";
 
-            const sourceChainTokenId = tokenIdByStargate[info.sender];
+            const sourceChainTokenId = getByKey(tokenIdByStargate, info.sender);
+            if (!sourceChainTokenId) {
+              return newPendingMultichainFunding;
+            }
+
             const settlementChainTokenId = getMappedTokenId(
               sourceChainTokenId.chainId,
               sourceChainTokenId.address,
               chainId
             );
 
-            if (!sourceChainTokenId || !settlementChainTokenId) {
+            if (!settlementChainTokenId) {
               // eslint-disable-next-line no-console
               console.warn("No settlement chain token address for OFTReceive event", info);
               return newPendingMultichainFunding;
