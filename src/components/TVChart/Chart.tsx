@@ -11,6 +11,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { DepthChart } from "components/DepthChart/DepthChart";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tabs from "components/Tabs/Tabs";
 
@@ -39,11 +40,21 @@ const TAB_LABELS = {
 };
 
 const TAB_CONTENTS = {
-  PRICE: <TVChart />,
-  DEPTH: <DepthChartContainer />,
+  PRICE: (
+    <ErrorBoundary id="Chart-TVChart" variant="block">
+      <TVChart />
+    </ErrorBoundary>
+  ),
+  DEPTH: (
+    <ErrorBoundary id="Chart-DepthChart" variant="block">
+      <DepthChartContainer />
+    </ErrorBoundary>
+  ),
   MARKET_GRAPH: (
     <Suspense fallback={<div>...</div>}>
-      <LazyMarketGraph />
+      <ErrorBoundary id="Chart-MarketGraph" variant="block">
+        <LazyMarketGraph />
+      </ErrorBoundary>
     </Suspense>
   ),
 };
