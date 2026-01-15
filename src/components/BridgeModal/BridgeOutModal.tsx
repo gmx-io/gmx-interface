@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Address, encodeAbiParameters } from "viem";
+import { Address, encodeAbiParameters, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -15,10 +15,15 @@ import { getChainIcon } from "config/icons";
 import { getLayerZeroEndpointId, getStargatePoolAddress } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
-import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectDepositMarketTokensData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import type { BridgeOutParams } from "domain/multichain/types";
+import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
@@ -61,6 +66,7 @@ export function BridgeOutModal({
   const [bridgeOutInputValue, setBridgeOutInputValue] = useState("");
   const [isCreatingTxn, setIsCreatingTxn] = useState(false);
 
+  const tokensData = useSelector(selectTokensData);
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const glvOrMarketAddress = glvOrMarketInfo ? getGlvOrMarketAddress(glvOrMarketInfo) : undefined;
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
@@ -149,6 +155,53 @@ export function BridgeOutModal({
     isGmxAccount: true,
     enabled: isVisible,
   });
+
+  const sendParams = useMemo(() => {
+    if (!bridgeOutChain || !account || bridgeOutAmount === undefined || bridgeOutAmount <= 0n) {
+      return;
+    }
+
+    return getMultichainTransferSendParams({
+      dstChainId: bridgeOutChain,
+      account,
+      amountLD: bridgeOutAmount,
+      isToGmx: false,
+      isManualGas: true,
+      srcChainId: chainId,
+    });
+  }, [bridgeOutChain, account, bridgeOutAmount, chainId]);
+
+  const transferNativeFee = useQuoteSendNativeFee({
+    fromChainId: chainId,
+    toChainId: bridgeOutChain,
+    sendParams,
+    fromStargateAddress: bridgeOutParams?.provider,
+  });
+
+  const networkFeeUsd = useMemo(() => {
+    if (
+      transferNativeFee === undefined ||
+      tokensData === undefined ||
+      tokensData[zeroAddress] === undefined ||
+      expressTxnParamsAsyncResult.data === undefined
+    ) {
+      return;
+    }
+
+    const relayFeeUsd = convertToUsd(
+      expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentTokenAmount,
+      expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentToken.decimals,
+      getMidPrice(expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentToken.prices)
+    )!;
+
+    const transferNativeFeeUsd = convertToUsd(
+      transferNativeFee,
+      tokensData[zeroAddress].decimals,
+      tokensData[zeroAddress].prices.minPrice
+    )!;
+
+    return relayFeeUsd + transferNativeFeeUsd;
+  }, [transferNativeFee, tokensData, expressTxnParamsAsyncResult.data]);
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -354,6 +407,9 @@ export function BridgeOutModal({
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}
         </Button>
+
+        <SyntheticsInfoRow label={t`Network Fee`} value={formatUsd(networkFeeUsd)} />
+
         <SyntheticsInfoRow
           label={t`GMX Account Balance`}
           value={
