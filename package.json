@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
+    "@date-fns/tz": "1.4.1",
     "@davatar/react": "1.8.1",
     "@floating-ui/dom": "1.6.7",
     "@floating-ui/react": "0.26.19",
@@ -67,7 +68,7 @@
     "classnames": "2.3.1",
     "core-js": "3.39.0",
     "crypto-js": "4.2.0",
-    "date-fns": "2.27.0",
+    "date-fns": "4.1.0",
     "env-cmd": "^10.1.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-recommended": "4.1.0",
@@ -112,7 +113,8 @@
     "@coinbase/wallet-sdk": "4.3.0",
     "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
     "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8",
-    "viem@2.39.0": "patch:viem@npm:2.39.0#.yarn/patches/viem-npm-2.39.0-c113f391fd"
+    "viem@2.39.0": "patch:viem@npm:2.39.0#.yarn/patches/viem-npm-2.39.0-c113f391fd",
+    "date-fns": "4.1.0"
   },
   "eslintConfig": {
     "extends": [

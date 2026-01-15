@@ -6,6 +6,7 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
+  DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   DISABLE_SHARE_MODAL_PNL_CHECK_KEY,
@@ -37,6 +38,8 @@ import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 export type SettingsContextType = {
   showDebugValues: boolean;
   setShowDebugValues: (val: boolean) => void;
+  isErrorBoundaryDebugEnabled: boolean;
+  setIsErrorBoundaryDebugEnabled: (val: boolean) => void;
   savedAllowedSlippage: number;
   setSavedAllowedSlippage: (val: number) => void;
   setExecutionFeeBufferBps: (val: number) => void;
@@ -116,6 +119,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
+  const [isErrorBoundaryDebugEnabled, setIsErrorBoundaryDebugEnabled] = useLocalStorageSerializeKey(
+    DEBUG_ERROR_BOUNDARY_KEY,
+    false
+  );
   const [savedAllowedSlippage, setSavedAllowedSlippage] = useLocalStorageSerializeKey(
     getAllowedSlippageKey(chainId),
     DEFAULT_SLIPPAGE_AMOUNT
@@ -263,6 +270,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     return {
       showDebugValues: isDevelopment() ? showDebugValues! : false,
       setShowDebugValues,
+      isErrorBoundaryDebugEnabled: isDevelopment() ? isErrorBoundaryDebugEnabled! : false,
+      setIsErrorBoundaryDebugEnabled,
       savedAllowedSlippage: savedAllowedSlippage!,
       setSavedAllowedSlippage,
       executionFeeBufferBps,
@@ -327,6 +336,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   }, [
     showDebugValues,
     setShowDebugValues,
+    isErrorBoundaryDebugEnabled,
+    setIsErrorBoundaryDebugEnabled,
     savedAllowedSlippage,
     setSavedAllowedSlippage,
     executionFeeBufferBps,

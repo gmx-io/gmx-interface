@@ -17,7 +17,7 @@ import {
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
-  formatTradeActionTimestampISO,
+  formatTradeActionTimestampUTC,
   getErrorTooltipTitle,
   infoRow,
   lines,
@@ -111,7 +111,7 @@ export const formatSwapMessage = (
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
 
-  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO">;
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
@@ -304,7 +304,7 @@ export const formatSwapMessage = (
     market: market,
     fullMarket: fullMarket,
     timestamp: formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp),
-    timestampISO: formatTradeActionTimestampISO(tradeAction.timestamp),
+    timestampUTC: formatTradeActionTimestampUTC(tradeAction.timestamp),
     acceptablePrice: `${acceptablePriceInequality}${acceptableRate}`,
     executionPrice: executionRate,
     fullMarketNames,

@@ -1818,6 +1818,10 @@ msgstr "V1 Interface"
 msgid "GLP Reimbursement (test)"
 msgstr "GLP Reimbursement (test)"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show Error Boundary Debug Trigger"
+msgstr "Show Error Boundary Debug Trigger"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -3787,6 +3791,10 @@ msgstr "You will be short {indexSymbol} from your short position, while being lo
 msgid "Open GMX Solana"
 msgstr "Open GMX Solana"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr "Exposure to Market Traders' PnL"
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "Rebates earned by this account as a trader."
@@ -4122,8 +4130,8 @@ msgid "Click here to give us your feedback on GMX"
 msgstr "Click here to give us your feedback on GMX"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "Exposure to Market Traders’ PnL"
+#~ msgid "Exposure to Market Traders’ PnL"
+#~ msgstr "Exposure to Market Traders’ PnL"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
@@ -5248,6 +5256,10 @@ msgstr "Error submitting withdrawal"
 msgid "No open positions"
 msgstr "No open positions"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
+msgstr "Reload the page or report the issue if the <0/> problem persists."
+
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "Size, $"
@@ -5965,6 +5977,10 @@ msgstr "Submit"
 msgid "Permit signed!"
 msgstr "Permit signed!"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Performance and chart data are based on UTC times."
+msgstr "Performance and chart data are based on UTC times."
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "less than a minute"
@@ -6335,6 +6351,11 @@ msgstr "Additional Opportunities"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "Vested GMX not withdrawn"
+
+#: src/components/Errors/ErrorBoundary.tsx
+#: src/components/Errors/ErrorBoundary.tsx
+#~ msgid "Report issue"
+#~ msgstr "Report issue"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6838,6 +6859,10 @@ msgstr "Creating code"
 msgid "Swap failed."
 msgstr "Swap failed."
 
+#: src/components/Errors/ErrorBoundary.tsx
+#~ msgid "Please try reloading or report the issue if the problem persists."
+#~ msgstr "Please try reloading or report the issue if the problem persists."
+
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6899,6 +6924,10 @@ msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 msgstr "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
+
+#: src/components/Errors/ErrorBoundary.tsx
+#~ msgid "Something went wrong"
+#~ msgstr "Something went wrong"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7598,6 +7627,10 @@ msgstr "Stop Loss PnL"
 msgid "Market - Long Dec."
 msgstr "Market - Long Dec."
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload page"
+msgstr "Reload page"
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
@@ -7647,6 +7680,10 @@ msgstr "Funding claimed."
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
+
+#: src/components/Errors/ErrorBoundary.tsx
+#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
+#~ msgstr "Please try reloading or report the issue if the <0/> problem persists."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8128,6 +8165,10 @@ msgstr "Request Market Decrease"
 msgid "Max. Leverage exceeded"
 msgstr "Max. Leverage exceeded"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
+msgstr "Something Went Wrong"
+
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "Unable to sign message with smart account"
 msgstr "Unable to sign message with smart account"
@@ -8200,6 +8241,10 @@ msgstr "Market order will be cancellable in ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
+
+#: src/components/Errors/ErrorBoundary.tsx
+#~ msgid "ERROR CODE: {errorCode}"
+#~ msgstr "ERROR CODE: {errorCode}"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

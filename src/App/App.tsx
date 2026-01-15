@@ -32,6 +32,7 @@ import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";
 
 import { AppRoutes } from "./AppRoutes";
@@ -59,6 +60,11 @@ function App() {
   }, []);
 
   let app = <AppRoutes />;
+  app = (
+    <ErrorBoundary id="App" variant="app">
+      {app}
+    </ErrorBoundary>
+  );
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
