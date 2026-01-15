@@ -313,7 +313,7 @@ function useWithdrawViewTransactions({
                   amount: bridgeOutParams.amount,
                   settlementChainId: chainId,
                   sourceChainId: 0,
-                  tokenAddress: unwrappedSelectedTokenAddress ?? selectedToken.address,
+                  tokenAddress: selectedToken.address,
                   sentTxn: txnHash,
                 });
 
@@ -371,7 +371,6 @@ function useWithdrawViewTransactions({
     setMultichainFundingPendingId,
     setMultichainSubmittedWithdrawal,
     setSettlementChainId,
-    unwrappedSelectedTokenAddress,
     withdrawalViewChain,
   ]);
 

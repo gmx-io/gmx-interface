@@ -486,7 +486,7 @@ export const DepositView = () => {
             amount: inputAmount,
             settlementChainId,
             sourceChainId: 0,
-            tokenAddress: depositViewTokenAddress,
+            tokenAddress: convertTokenAddress(settlementChainId, depositViewTokenAddress, "wrapped"),
             sentTxn: txnHash,
           });
 
