@@ -16,7 +16,6 @@ type Props = {
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   placeholder?: string;
-  size?: "s" | "m";
   /**
    * If not provided, will be set to false on small screens
    */
@@ -32,7 +31,6 @@ export default function SearchInput({
   className,
   placeholder,
   autoFocus,
-  size = "m",
   qa = "token-search-input",
   noBorder,
 }: Props) {
@@ -89,13 +87,11 @@ export default function SearchInput({
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
         className={cx(
-          "block h-full w-full rounded-8 bg-slate-800 leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
+          "block h-full w-full rounded-8 bg-slate-800 p-[6.5px] pl-32 text-[13px] leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
           {
             border: !noBorder,
             "border-blue-300": isFocused && !noBorder,
             "border-slate-800": !isFocused && !noBorder,
-            "p-[6.5px] pl-32 text-[13px]": size === "m",
-            "py-[8.5px] pl-34 pr-30 text-14 ": size === "s",
           }
         )}
       />
