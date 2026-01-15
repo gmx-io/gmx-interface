@@ -5965,6 +5965,10 @@ msgstr "Übermitteln"
 msgid "Permit signed!"
 msgstr "Erlaubnis signiert!"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Performance and chart data are based on UTC times."
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "weniger als eine Minute"

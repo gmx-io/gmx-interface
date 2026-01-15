@@ -5965,6 +5965,10 @@ msgstr "Soumettre"
 msgid "Permit signed!"
 msgstr "Permis signé !"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Performance and chart data are based on UTC times."
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "moins d'une minute"
