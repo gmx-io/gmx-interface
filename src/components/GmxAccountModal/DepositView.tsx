@@ -10,6 +10,7 @@ import { useAccount, useChains } from "wagmi";
 
 import {
   AnyChainId,
+  AVALANCHE,
   SettlementChainId,
   SourceChainId,
   getChainName,
@@ -651,6 +652,8 @@ export const DepositView = () => {
             setSelectedTransferGuid(submittedDepositGuid);
             if (!subaccountState.subaccount && !isExpressTradingDisabled) {
               setIsVisibleOrView("depositStatus");
+            } else {
+              setIsVisibleOrView("main");
             }
           }
         } else if (txnEvent.event === TxnEventName.Simulated) {
@@ -850,6 +853,8 @@ export const DepositView = () => {
 
   const tokenSelectorDisabled = !isBalanceDataLoading && multichainTokens.length === 0;
 
+  const isAvalancheSettlement = settlementChainId === AVALANCHE;
+
   let buttonState: {
     text: React.ReactNode;
     disabled?: boolean;
@@ -859,7 +864,12 @@ export const DepositView = () => {
     onClick: handleDeposit,
   };
 
-  if (hasOutdatedUi) {
+  if (isAvalancheSettlement) {
+    buttonState = {
+      text: t`Not supported`,
+      disabled: true,
+    };
+  } else if (hasOutdatedUi) {
     buttonState = {
       text: t`Page outdated, please refresh`,
       disabled: true,
@@ -868,7 +878,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Approving</Trans>
+          <Trans>Approving...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -891,7 +901,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Depositing</Trans>
+          <Trans>Depositing...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -1114,6 +1124,13 @@ export const DepositView = () => {
         </div>
       </div>
 
+      {isAvalancheSettlement && (
+        <AlertInfoCard type="error" className="mt-8" hideClose>
+          <div>
+            <Trans>Depositing is not supported on Avalanche anymore.</Trans>
+          </div>
+        </AlertInfoCard>
+      )}
       {isAboveLimit && (
         <AlertInfoCard type="warning" className="mt-8">
           <div>

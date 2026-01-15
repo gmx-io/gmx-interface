@@ -38,6 +38,7 @@ import {
   getTokenVisualMultiplier,
   getWrappedToken,
 } from "sdk/configs/tokens";
+import { TokenBalanceType } from "sdk/types/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -123,6 +124,7 @@ export function PositionEditor() {
               ...tokenData,
               isGmxAccount: false,
               balance: tokenData.walletBalance,
+              balanceType: TokenBalanceType.Wallet,
             },
           ];
         }
@@ -132,11 +134,13 @@ export function PositionEditor() {
             ...tokenData,
             isGmxAccount: true,
             balance: tokenData.gmxAccountBalance,
+            balanceType: TokenBalanceType.GmxAccount,
           },
           {
             ...tokenData,
             isGmxAccount: false,
-            balance: tokenData.balance,
+            balance: tokenData.walletBalance,
+            balanceType: TokenBalanceType.Wallet,
           },
         ];
       })

@@ -68,9 +68,9 @@ export function useMultichainFundingToast() {
 
     let content: ToastContent = (
       <div className="flex flex-col gap-8">
-        {hasDeposits && !hasWithdrawals && <Trans>Depositing funds to GMX Account</Trans>}
-        {hasWithdrawals && !hasDeposits && <Trans>Withdrawing funds from GMX Account</Trans>}
-        {hasDeposits && hasWithdrawals && <Trans>Depositing and withdrawing funds to/from GMX Account</Trans>}
+        {hasDeposits && !hasWithdrawals && <Trans>Depositing funds to GMX Account...</Trans>}
+        {hasWithdrawals && !hasDeposits && <Trans>Withdrawing funds from GMX Account...</Trans>}
+        {hasDeposits && hasWithdrawals && <Trans>Depositing and withdrawing funds to/from GMX Account...</Trans>}
         {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
           const guid = multichainFundingPendingIds[staticId];
           const item = pendingItems[guid];

@@ -10,6 +10,7 @@ import EarnDocumentation from "components/Earn/Discovery/EarnDocumentation";
 import EarnFaq from "components/Earn/Discovery/EarnFaq";
 import EarnProductCard from "components/Earn/Discovery/EarnProductCard";
 import EarnYieldOverview from "components/Earn/Discovery/EarnYieldOverview";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 
 import discoverBgDesktopDark from "img/discover_bg_desktop_dark.png";
 import discoverBgDesktopLight from "img/discover_bg_desktop_light.png";
@@ -43,19 +44,20 @@ export default function EarnDiscoveryPage() {
             </h4>
             <p className="text-13 text-typography-secondary xl:max-w-[50%]">
               <Trans>
-                Welcome to GMX Earn! Learn how the GMX, GLV, and GM tokens work together to power a highly efficient,
-                decentralized trading experience. Explore the unique role of each token, and discover how you can stake
-                or provide liquidity to earn rewards — just like tens of thousands of other GMX users.
+                Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore
+                the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like
+                tens of thousands of other GMX users.
               </Trans>
             </p>
           </div>
-
           <div className="grid gap-8 xl:grid-cols-3">
             <EarnProductCard type="gmx" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
             <EarnProductCard type="glv" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
             <EarnProductCard type="gm" openBuyGmxModal={() => setIsBuyGmxModalVisible(true)} />
           </div>
-          <EarnYieldOverview />
+          <ErrorBoundary id="EarnDiscovery-YieldOverview" variant="block" wrapperClassName="rounded-t-8">
+            <EarnYieldOverview />
+          </ErrorBoundary>
         </div>
 
         <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
