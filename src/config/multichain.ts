@@ -96,7 +96,7 @@ export type MultichainTokenId = {
 };
 
 export const SETTLEMENT_CHAINS: SettlementChainId[] = isDevelopment()
-  ? (SETTLEMENT_CHAIN_IDS as unknown as SettlementChainId[]).concat(SETTLEMENT_CHAIN_IDS_DEV)
+  ? (SETTLEMENT_CHAIN_IDS_DEV as unknown as SettlementChainId[])
   : (SETTLEMENT_CHAIN_IDS as unknown as SettlementChainId[]);
 
 const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>> = {

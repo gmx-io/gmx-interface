@@ -20,7 +20,7 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-referrals/master-240415215829-f6877d6/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-avalanche-stats/master-250410222549-4486206/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@045a75/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@045a75/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {

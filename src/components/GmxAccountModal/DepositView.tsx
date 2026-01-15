@@ -94,6 +94,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
+import { calculateNetworkFeeDetails } from "./calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useMultichainTradeTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
@@ -450,30 +451,15 @@ export const DepositView = () => {
     }
   );
 
-  const sameChainNetworkFee = useMemo(():
-    | { amount: bigint; usd: bigint; decimals: number; symbol: string }
-    | undefined => {
-    if (sameChainNetworkFeeAsyncResult.data === undefined || gasPrice === undefined) {
-      return undefined;
-    }
-
-    const nativeTokenAmount = sameChainNetworkFeeAsyncResult.data * gasPrice;
-    const nativeTokenData = getByKey(settlementChainTokensData, zeroAddress);
-
-    if (nativeTokenData === undefined) {
-      return undefined;
-    }
-
-    const usd: bigint =
-      convertToUsd(nativeTokenAmount, nativeTokenData.decimals, getMidPrice(nativeTokenData.prices)) ?? 0n;
-
-    return {
-      amount: nativeTokenAmount,
-      usd,
-      decimals: nativeTokenData.decimals,
-      symbol: nativeTokenData.symbol,
-    };
-  }, [sameChainNetworkFeeAsyncResult.data, gasPrice, settlementChainTokensData]);
+  const sameChainNetworkFeeDetails = useMemo(
+    () =>
+      calculateNetworkFeeDetails({
+        gasLimit: sameChainNetworkFeeAsyncResult.data,
+        gasPrice,
+        tokensData: settlementChainTokensData,
+      }),
+    [sameChainNetworkFeeAsyncResult.data, gasPrice, settlementChainTokensData]
+  );
 
   const isFirstDeposit = useIsFirstDeposit();
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
@@ -987,17 +973,17 @@ export const DepositView = () => {
     }
 
     if (depositViewChain === settlementChainId) {
-      if (!sameChainNetworkFee) {
+      if (!sameChainNetworkFeeDetails) {
         return "...";
       }
 
       return (
         <AmountWithUsdBalance
           className="leading-1"
-          amount={sameChainNetworkFee.amount}
-          decimals={sameChainNetworkFee.decimals}
-          usd={sameChainNetworkFee?.usd}
-          symbol={sameChainNetworkFee?.symbol}
+          amount={sameChainNetworkFeeDetails.amount}
+          decimals={sameChainNetworkFeeDetails.decimals}
+          usd={sameChainNetworkFeeDetails?.usd}
+          symbol={sameChainNetworkFeeDetails?.symbol}
         />
       );
     }
@@ -1015,7 +1001,14 @@ export const DepositView = () => {
         symbol={depositViewViemChain.nativeCurrency.symbol}
       />
     );
-  }, [networkFee, depositViewViemChain, depositViewChain, settlementChainId, networkFeeUsd, sameChainNetworkFee]);
+  }, [
+    networkFee,
+    depositViewViemChain,
+    depositViewChain,
+    settlementChainId,
+    networkFeeUsd,
+    sameChainNetworkFeeDetails,
+  ]);
 
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
