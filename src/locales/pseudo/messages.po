@@ -174,6 +174,10 @@ msgstr ""
 msgid "RabbitHole"
 msgstr ""
 
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Shows the total open interest in tokens and its notional value in USD."
+msgstr ""
+
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -428,6 +432,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
+msgstr ""
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Long OI"
 msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -3386,10 +3394,6 @@ msgstr ""
 msgid "Community-led Telegram groups."
 msgstr ""
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr ""
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled Funding Fees"
@@ -3920,7 +3924,6 @@ msgstr ""
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4278,6 +4281,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying error"
+msgstr ""
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Short OI"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -4690,10 +4697,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
-msgstr ""
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -7000,10 +7003,6 @@ msgstr ""
 msgid "Select a Pay token"
 msgstr ""
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr ""
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr ""
@@ -7084,7 +7083,6 @@ msgstr ""
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7200,10 +7198,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
-msgstr ""
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
