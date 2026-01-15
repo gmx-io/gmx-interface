@@ -1282,6 +1282,11 @@ msgstr "Лимитный обмен не удался"
 msgid "Failed"
 msgstr "Ошибка"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "Без комиссии"
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Ликв. {longOrShortText} - {marketIndexName}"
@@ -2061,6 +2066,11 @@ msgstr "Система"
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr "Зарабатывайте награды, делясь своим кодом!"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
+msgstr "Мгновенно"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -2944,6 +2954,11 @@ msgstr "Как начать на GMX?"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr "Вывод с субаккаунта…"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "Вывод не удался"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
@@ -3876,6 +3891,10 @@ msgstr "Почему я получаю два разных токена GLV?"
 msgid "Set TP/SL"
 msgstr "Установить TP/SL"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "Все сети"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -4132,10 +4151,6 @@ msgstr "Выбрать токен"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Click here to give us your feedback on GMX"
 msgstr "Нажмите здесь, чтобы оставить отзыв о GMX"
-
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Exposure to Market Traders’ PnL"
-#~ msgstr "Экспозиция к PnL Трейдеров Рынка"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
@@ -4775,6 +4790,10 @@ msgstr "Залог ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "У вас есть существующая позиция с {0} в качестве обеспечения. Этот ордер не будет действителен для этой позиции. <0>Переключиться на обеспечение {1}</0>"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Вы выводите {0}, ваш газовый токен. Газ требуется для экспресс-трейдинга, поэтому пожалуйста, оставьте как минимум <0>{1}</0> в {2} или переключите газовый токен в <1>настройках</1>."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
@@ -5856,6 +5875,10 @@ msgstr "<0>Переключитесь на пул {0}</0> — возможно, 
 msgid "market"
 msgstr "рынок"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "Вывод {0} на {1} в настоящее время не поддерживается"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -6355,11 +6378,6 @@ msgstr "Дополнительные возможности"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "Вестинговый GMX не выведен"
-
-#: src/components/Errors/ErrorBoundary.tsx
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Report issue"
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6875,10 +6893,6 @@ msgstr "Создание кода"
 msgid "Swap failed."
 msgstr "Обмен не удался."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the problem persists."
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6940,10 +6954,6 @@ msgstr "Получайте скидки на комиссии и зарабат�
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 msgstr "Операция продажи {gmOrGlvLabel} не удалась. Ваши средства в безопасности и сейчас хранятся на вашем аккаунте GMX. Вы можете переключиться на расчётную сеть и перейти в пул {indexName}, чтобы вручную продать токены {gmOrGlvLabel}."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Something went wrong"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7688,10 +7698,6 @@ msgstr "Финансирование клеймлено."
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Сохранение плеча недоступно, поскольку позиция превышает макс. допустимое плечо. <0>Подробнее</0>."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
-#~ msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "Неудачный стоп-лосс"
@@ -8248,10 +8254,6 @@ msgstr "Рыночный ордер можно будет отменить че�
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Стейкинг GMX на Botanix пока не поддерживается. Для доступа к этим функциям перейдите на развертывания Arbitrum или Avalanche."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "ERROR CODE: {errorCode}"
-#~ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

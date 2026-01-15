@@ -1282,6 +1282,11 @@ msgstr "Limit Swap fehlgeschlagen"
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "Keine Gebühr"
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
@@ -2061,6 +2066,11 @@ msgstr "System"
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr "Verdiene Belohnungen, indem du deinen Code teilst!"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
+msgstr "Sofort"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -2944,6 +2954,11 @@ msgstr "Wie starte ich auf GMX?"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr "Wird vom Unterkonto abgehoben…"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "Abhebung fehlgeschlagen"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
@@ -3876,6 +3891,10 @@ msgstr "Warum erhalte ich zwei verschiedene GLV-Tokens?"
 msgid "Set TP/SL"
 msgstr "TP/SL setzen"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "Alle Netzwerke"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -4132,10 +4151,6 @@ msgstr "Token auswählen"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Click here to give us your feedback on GMX"
 msgstr "Klicken Sie hier, um uns Ihr Feedback zu GMX zu geben"
-
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Exposure to Market Traders’ PnL"
-#~ msgstr "Exposition gegenüber PnL der Markthändler"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
@@ -4775,6 +4790,10 @@ msgstr "Kollateral ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "Du hast eine bestehende Position mit {0} als Collateral. Diese Order ist für diese Position nicht gültig. <0>Wechsle zu {1}-Collateral</0>"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Sie heben {0} ab, Ihr Gas-Token. Gas ist für Express-Trading erforderlich, bitte behalten Sie mindestens <0>{1}</0> in {2} oder wechseln Sie Ihr Gas-Token in <1>den Einstellungen</1>."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
@@ -5856,6 +5875,10 @@ msgstr "<0>Wechsle zum {0}-Pool</0> für potenziell niedrigeren Netto-Preis-Impa
 msgid "market"
 msgstr "markt"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "Die Auszahlung von {0} an {1} wird derzeit nicht unterstützt"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -6355,11 +6378,6 @@ msgstr "Weitere Möglichkeiten"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "Vestetes GMX nicht abgezogen"
-
-#: src/components/Errors/ErrorBoundary.tsx
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Report issue"
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6875,10 +6893,6 @@ msgstr "Code wird erstellt"
 msgid "Swap failed."
 msgstr "Tausch fehlgeschlagen."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the problem persists."
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6940,10 +6954,6 @@ msgstr "Erhalte Gebührenrabatte und verdiene Rebates über das GMX-Referral-Pro
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel}-Verkaufsvorgang fehlgeschlagen. Deine Mittel sind sicher und befinden sich derzeit auf deinem GMX-Konto. Du kannst zur Settlement-Chain wechseln und zum {indexName}-Pool gehen, um deine {gmOrGlvLabel}-Token manuell zu verkaufen."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Something went wrong"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7688,10 +7698,6 @@ msgstr "Funding eingelöst."
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Hebel halten ist nicht verfügbar, da Position max. erlaubten Hebel überschreitet. <0>Mehr lesen</0>."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
-#~ msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "Stop-Loss fehlgeschlagen"
@@ -8248,10 +8254,6 @@ msgstr "Marktorder wird abbrechbar in ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Das Staken von GMX wird derzeit auf Botanix nicht unterstützt. Für Zugriff auf diese Funktionen besuche bitte die Arbitrum- und Avalanche-Deployments."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "ERROR CODE: {errorCode}"
-#~ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

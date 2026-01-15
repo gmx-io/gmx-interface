@@ -5,7 +5,7 @@ import partition from "lodash/partition";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
-import { isSettlementChain, isSourceChain } from "config/multichain";
+import { isSettlementChain, isSourceChainForAnySettlementChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
 import { switchNetwork } from "lib/wallets";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
@@ -78,14 +78,14 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,
-    (network) => isSourceChain(network.value) && isNonEoaAccountOnAnyChain
+    (network) => isSourceChainForAnySettlementChain(network.value) && isNonEoaAccountOnAnyChain
   );
 
   const walletAndGmxAccountNetworks = enabledNetworks.filter(
-    (network) => isSourceChain(network.value) || isValidVisualSettlementChain(network.value)
+    (network) => isSourceChainForAnySettlementChain(network.value) || isValidVisualSettlementChain(network.value)
   );
   const walletOnlyNetworks = enabledNetworks.filter(
-    (network) => !(isSourceChain(network.value) || isValidVisualSettlementChain(network.value))
+    (network) => !(isSourceChainForAnySettlementChain(network.value) || isValidVisualSettlementChain(network.value))
   );
 
   return (

@@ -1,10 +1,10 @@
 import { getPublicClient } from "@wagmi/core";
+import uniq from "lodash/uniq";
 import useSWR from "swr";
 import { Hex, PublicClient } from "viem";
 import { useAccount, useChainId, usePublicClient } from "wagmi";
 
-import { AnyChainId, CONTRACTS_CHAIN_IDS, ContractsChainId, getChainSlug } from "config/chains";
-import { SOURCE_CHAINS } from "config/multichain";
+import { AnyChainId, CONTRACTS_CHAIN_IDS, ContractsChainId, getChainSlug, SOURCE_CHAIN_IDS } from "config/chains";
 import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
 
 import { getRainbowKitConfig } from "./rainbowKitConfig";
@@ -128,8 +128,10 @@ export function useIsNonEoaAccountOnAnyChain(): boolean {
           return undefined;
         }
 
+        const chainIds = uniq((CONTRACTS_CHAIN_IDS as AnyChainId[]).concat(SOURCE_CHAIN_IDS));
+
         return Promise.all(
-          (CONTRACTS_CHAIN_IDS as unknown as AnyChainId[]).concat(SOURCE_CHAINS).map(async (chainId) => {
+          chainIds.map(async (chainId) => {
             const publicClient = getPublicClient(getRainbowKitConfig(), { chainId });
 
             if (!publicClient) {

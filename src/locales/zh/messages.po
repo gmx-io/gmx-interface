@@ -1282,6 +1282,11 @@ msgstr "限价交换失败"
 msgid "Failed"
 msgstr "失败"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "无费用"
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
@@ -2061,6 +2066,11 @@ msgstr "系统"
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr "分享您的推荐码赚取奖励！"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
+msgstr "立即"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -2944,6 +2954,11 @@ msgstr "如何在 GMX 上入门？"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr "正在从子账户提取…"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "提取失败"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
@@ -3876,6 +3891,10 @@ msgstr "为什么我会收到两种不同的 GLV 代币？"
 msgid "Set TP/SL"
 msgstr "设置 TP/SL"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "所有网络"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -4132,10 +4151,6 @@ msgstr "选择代币"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Click here to give us your feedback on GMX"
 msgstr "点击这里给我们关于 GMX 的反馈"
-
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Exposure to Market Traders’ PnL"
-#~ msgstr "对市场交易者 PnL 的敞口"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
@@ -4775,6 +4790,10 @@ msgstr "抵押品 ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "您有一个以 {0} 作为抵押品的现有仓位。此订单对该仓位无效。<0>切换到 {1} 抵押品</0>"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "您正在提取 {0}，您的 gas 代币。快速交易需要 gas，因此请至少保留 <0>{1}</0> 在 {2} 中，或在<1>设置</1>中切换您的 gas 代币。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
@@ -5856,6 +5875,10 @@ msgstr "<0>切换至 {0} 资金池</0>以可能获得更低的净价格冲击"
 msgid "market"
 msgstr "市场"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "目前不支持将 {0} 提取到 {1}"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -6355,11 +6378,6 @@ msgstr "更多机会"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "已归属 GMX 未提取"
-
-#: src/components/Errors/ErrorBoundary.tsx
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Report issue"
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6875,10 +6893,6 @@ msgstr "正在创建推荐码"
 msgid "Swap failed."
 msgstr "交换失败。"
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the problem persists."
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6940,10 +6954,6 @@ msgstr "通过 GMX 推荐程序获得费用折扣并赚取返利。<0/>更多信
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel} 卖出操作失败。您的资金是安全的，目前存储在您的 GMX 账户中。您可以切换到结算链，前往 {indexName} 资金池手动卖出 {gmOrGlvLabel} 代币。"
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Something went wrong"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7688,10 +7698,6 @@ msgstr "资金已申领。"
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "保持杠杆不可用，因为仓位超过最大允许杠杆。<0>阅读更多</0>。"
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
-#~ msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "止损失败"
@@ -8248,10 +8254,6 @@ msgstr "市价订单将在 ... 可取消"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Botanix 当前不支持质押 GMX。如需使用这些功能，请访问 Arbitrum 和 Avalanche 部署。"
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "ERROR CODE: {errorCode}"
-#~ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"
