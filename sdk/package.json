@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.4.2",
+  "version": "2.0.0-alpha-1",
   "type": "module",
   "repository": {
     "type": "git",
