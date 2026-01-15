@@ -5,6 +5,7 @@ import { ContractFunctionParameters, encodeFunctionData, withRetry } from "viem"
 import { getContract } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
+import { decodeErrorFromViemError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
@@ -20,7 +21,7 @@ import { CustomErrorName } from "sdk/utils/errors";
 import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-import { decodeErrorFromViemError, getBlockTimestampAndNumber, isTemporaryError } from "./simulation";
+import { getBlockTimestampAndNumber, isTemporaryError } from "./simulation";
 import { isGlvEnabled } from "../markets/glv";
 
 export type PriceOverrides = {

@@ -16,16 +16,15 @@ import { isDevelopment } from "config/env";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
+import { decodeErrorFromViemError } from "lib/errors";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { type ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName, extendError } from "sdk/utils/errors";
+import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
-
-import { ParsedCustomError, tryGetError } from "components/TradeHistory/TradeHistoryRow/utils/shared";
 
 import { isGlvEnabled } from "../markets/glv";
 
@@ -47,19 +46,7 @@ export type SimulateExecuteParams = {
   blockTimestampData: BlockTimestampData | undefined;
 };
 
-export function decodeErrorFromViemError(error: any): ParsedCustomError | undefined {
-  if ("walk" in error && typeof error.walk === "function") {
-    const errorWithData = (error as ViemBaseError).walk(
-      (e: any) => "raw" in e && e.raw
-    ) as ContractFunctionRevertedError;
-    if (errorWithData?.raw) {
-      return tryGetError(errorWithData.raw);
-    }
-  }
-  return undefined;
-}
-
-function isInsufficientFundsError(error: any): boolean {
+export function isInsufficientFundsError(error: any): boolean {
   return Boolean(
     "walk" in error &&
       typeof error.walk === "function" &&
@@ -358,9 +345,18 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     if (isPassed || shouldIgnoreExpressNativeTokenBalance) {
       return;
     } else {
-      throw extendError(txnError, {
-        errorContext: "simulation",
-      });
+      throw extendError(
+        decodedError
+          ? new CustomError({
+              name: decodedError.name,
+              message: JSON.stringify(decodedError, null, 2),
+              args: decodedError.args,
+            })
+          : txnError,
+        {
+          errorContext: "simulation",
+        }
+      );
     }
   }
 }
