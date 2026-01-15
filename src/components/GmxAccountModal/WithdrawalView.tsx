@@ -296,7 +296,6 @@ export const WithdrawalView = () => {
   const nativeFee = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainProvider: provider,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
@@ -332,7 +331,6 @@ export const WithdrawalView = () => {
   const baseNativeFee = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainProvider: provider,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
