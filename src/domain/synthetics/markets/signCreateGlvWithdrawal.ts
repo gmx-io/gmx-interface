@@ -1,4 +1,4 @@
-import type { Wallet } from "ethers";
+import type { AbstractSigner, Wallet } from "ethers";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -20,7 +20,7 @@ export async function signCreateGlvWithdrawal({
   params,
   shouldUseSignerMethod,
 }: {
-  signer: WalletSigner | Wallet | ISigner;
+  signer: WalletSigner | Wallet | ISigner | AbstractSigner;
   relayParams: RelayParamsPayload;
   transferRequests: TransferRequests;
   params: CreateGlvWithdrawalParams;

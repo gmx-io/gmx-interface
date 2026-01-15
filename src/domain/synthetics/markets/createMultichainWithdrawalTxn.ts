@@ -16,15 +16,22 @@ import { signCreateWithdrawal } from "./signCreateWithdrawal";
 type TxnParams = {
   chainId: ContractsChainId;
   srcChainId: SourceChainId | undefined;
-  signer: WalletSigner;
   relayParams: RelayParamsPayload;
-  emptySignature?: boolean;
   account: string;
   transferRequests: TransferRequests;
   params: CreateWithdrawalParams;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
-};
+} & (
+  | {
+      signer?: undefined;
+      emptySignature: true;
+    }
+  | {
+      signer: WalletSigner;
+      emptySignature?: false;
+    }
+);
 
 export async function buildAndSignMultichainWithdrawalTxn({
   chainId,
@@ -43,6 +50,9 @@ export async function buildAndSignMultichainWithdrawalTxn({
   if (emptySignature) {
     signature = "0x";
   } else {
+    if (!signer) {
+      throw new Error("Signer is required when emptySignature is false");
+    }
     signature = await signCreateWithdrawal({
       chainId,
       srcChainId,

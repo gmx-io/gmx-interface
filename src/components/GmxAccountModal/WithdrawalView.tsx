@@ -295,7 +295,6 @@ export const WithdrawalView = () => {
   const nativeFee = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainProvider: provider,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
@@ -331,7 +330,6 @@ export const WithdrawalView = () => {
   const baseNativeFee = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainProvider: provider,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
@@ -852,7 +850,7 @@ export const WithdrawalView = () => {
         text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
         disabled: true,
       };
-    } else if (showWntWarning) {
+    } else if (showWntWarning && !expressTxnParamsAsyncResult.isLoading) {
       buttonState = {
         text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
         disabled: true,
@@ -864,9 +862,13 @@ export const WithdrawalView = () => {
       };
     } else if (
       // We do not show loading state if we have valid params
-      // But show loafing periodically if the params are not valid to show the user some action
+      // But show loading periodically if the params are not valid to show the user some action
       !expressTxnParamsAsyncResult.data ||
-      (expressTxnParamsAsyncResult.isLoading && !expressTxnParamsAsyncResult.data.gasPaymentValidations.isValid)
+      (expressTxnParamsAsyncResult.isLoading &&
+        (!expressTxnParamsAsyncResult.data.gasPaymentValidations.isValid ||
+          showWntWarning ||
+          errors?.isOutOfTokenError ||
+          expressTxnParamsAsyncResult.error))
     ) {
       buttonState = {
         text: (
@@ -880,10 +882,11 @@ export const WithdrawalView = () => {
     }
   }
 
-  const hasSelectedToken = selectedTokenAddress !== undefined;
+  const hasValidSelectedToken =
+    selectedTokenAddress !== undefined && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
   useEffect(
     function fallbackWithdrawTokens() {
-      if (hasSelectedToken || !withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
+      if (hasValidSelectedToken || !withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
         return;
       }
 
@@ -933,7 +936,7 @@ export const WithdrawalView = () => {
         setSelectedTokenAddress(maxBalanceSettlementChainTokenAddress);
       }
     },
-    [chainId, hasSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
+    [chainId, hasValidSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
   );
 
   const isTestnet = isTestnetChain(chainId);

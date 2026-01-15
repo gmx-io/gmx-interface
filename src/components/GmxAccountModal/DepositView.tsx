@@ -8,8 +8,8 @@ import { Hex, decodeErrorResult, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
 import {
-  AnyChainId,
   AVALANCHE,
+  AnyChainId,
   SettlementChainId,
   SourceChainId,
   getChainName,
@@ -31,8 +31,8 @@ import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
-  useGmxAccountSelector,
   useGmxAccountSelectedTransferGuid,
+  useGmxAccountSelector,
   useGmxAccountSettlementChainId,
 } from "context/GmxAccountContext/hooks";
 import { selectGmxAccountDepositViewTokenInputAmount } from "context/GmxAccountContext/selectors";
@@ -66,7 +66,6 @@ import {
 } from "lib/metrics";
 import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
-import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
@@ -124,7 +123,6 @@ export const DepositView = () => {
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
   const walletSigner = useEthersSigner({ chainId: srcChainId });
-  const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
 
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
@@ -380,7 +378,6 @@ export const DepositView = () => {
   const quoteSendNativeFee = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
-    fromChainProvider: sourceChainProvider,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
     composeGas,
