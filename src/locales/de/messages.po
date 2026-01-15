@@ -4129,10 +4129,6 @@ msgstr "Token auswählen"
 msgid "Click here to give us your feedback on GMX"
 msgstr "Klicken Sie hier, um uns Ihr Feedback zu GMX zu geben"
 
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Exposure to Market Traders’ PnL"
-#~ msgstr "Exposition gegenüber PnL der Markthändler"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "Optimal"
@@ -6352,11 +6348,6 @@ msgstr "Weitere Möglichkeiten"
 msgid "Vested GMX not withdrawn"
 msgstr "Vestetes GMX nicht abgezogen"
 
-#: src/components/Errors/ErrorBoundary.tsx
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Report issue"
-#~ msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
 msgstr "Maximale Kapazität:"
@@ -6859,10 +6850,6 @@ msgstr "Code wird erstellt"
 msgid "Swap failed."
 msgstr "Tausch fehlgeschlagen."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the problem persists."
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6924,10 +6911,6 @@ msgstr "Erhalte Gebührenrabatte und verdiene Rebates über das GMX-Referral-Pro
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel}-Verkaufsvorgang fehlgeschlagen. Deine Mittel sind sicher und befinden sich derzeit auf deinem GMX-Konto. Du kannst zur Settlement-Chain wechseln und zum {indexName}-Pool gehen, um deine {gmOrGlvLabel}-Token manuell zu verkaufen."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Something went wrong"
-#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
@@ -7681,10 +7664,6 @@ msgstr "Funding eingelöst."
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Hebel halten ist nicht verfügbar, da Position max. erlaubten Hebel überschreitet. <0>Mehr lesen</0>."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
-#~ msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
 msgstr "Stop-Loss fehlgeschlagen"
@@ -8241,10 +8220,6 @@ msgstr "Marktorder wird abbrechbar in ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Das Staken von GMX wird derzeit auf Botanix nicht unterstützt. Für Zugriff auf diese Funktionen besuche bitte die Arbitrum- und Avalanche-Deployments."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "ERROR CODE: {errorCode}"
-#~ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"
