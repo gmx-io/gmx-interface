@@ -627,6 +627,14 @@ export function getAppBaseUrl() {
   return PRODUCTION_HOST;
 }
 
+export function getTradePageUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#/trade";
+  }
+
+  return PRODUCTION_HOST + "/#/trade";
+}
+
 export function getRootShareApiUrl() {
   if (isLocal()) {
     return "https://gmxs.vercel.app";
