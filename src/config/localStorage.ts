@@ -46,8 +46,7 @@ const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
 export const LAST_EARN_TAB_KEY = "last-earn-tab";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
-const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY =
-  "synthetics-collateral-edit-token-is-from-gmx-account";
+const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY = "synthetics-collateral-edit-token-is-from-gmx-account";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
 export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
@@ -74,11 +73,6 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
-
-/**
- * @deprecated
- */
-export const SORTER_CONFIG_KEY = "sorter-config";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
