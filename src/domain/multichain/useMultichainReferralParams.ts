@@ -15,9 +15,13 @@ import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hook
 export type MultichainReferralParams = {
   depositTokenAddress: string | undefined;
   sourceChainTokenId: MultichainTokenId | undefined;
+  // REVIEW: Just AbstractSigner
   simulationSigner: ReturnType<typeof RANDOM_WALLET.connect> | undefined;
 };
 
+// REVIEW: this hook clusters seemingly unrelated data lets remove simulationSigner
+// as for sourceChainTokenId, lets try removing it also and only pass depositTokenAddress,
+// and map it to source chain idonly where needed
 export function useMultichainReferralParams({
   chainId,
   srcChainId,
@@ -26,6 +30,8 @@ export function useMultichainReferralParams({
   srcChainId: SourceChainId | undefined;
 }): MultichainReferralParams {
   const { account, signer } = useWallet();
+  // REVIEW: lets use selector here
+  // which one?
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
   const simulationSigner = useMemo(() => {

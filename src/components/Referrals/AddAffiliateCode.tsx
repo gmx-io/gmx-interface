@@ -7,16 +7,21 @@ import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { IStargateAbi } from "config/multichain";
+import { abis } from "sdk/abis";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
+import { MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralParams } from "domain/multichain/useMultichainReferralParams";
-import { createRelayParamsPayload, useMultichainReferralQuote } from "domain/multichain/useMultichainReferralQuote";
+import {
+  createRelayEmptyParamsPayload,
+  useMultichainReferralQuote,
+  type CreateActionFn,
+} from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import type { ReferralCodeStats } from "domain/referrals/types";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
@@ -61,6 +66,7 @@ function AddAffiliateCode({
   const { srcChainId } = useChainId();
   const isMultichain = srcChainId !== undefined;
 
+  // REVIEW: extract to component, lets not do inline component declarations
   const renderForm = () => {
     if (isMultichain) {
       return (
@@ -133,18 +139,11 @@ function AffiliateCodeFormMultichain({
 
   const { depositTokenAddress, sourceChainTokenId, simulationSigner } = useMultichainReferralParams({
     chainId: chainId as SettlementChainId,
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
   });
 
-  const signAction = useCallback(signRegisterCode, []);
-  const createAction = useCallback(
-    ({
-      relayParams,
-      signature,
-      referralCode: code,
-    }: Parameters<typeof useMultichainReferralQuote>[0]["createAction"] extends (p: infer P) => any
-      ? P
-      : never): MultichainAction => ({
+  const createAction = useCallback<CreateActionFn>(
+    ({ relayParams, signature, referralCode: code }) => ({
       actionType: MultichainActionType.RegisterCode,
       actionData: { relayParams, signature, referralCode: code },
     }),
@@ -152,18 +151,25 @@ function AffiliateCodeFormMultichain({
   );
 
   const quoteResult = useMultichainReferralQuote({
+    // Type
+    // 42161 | 43114 | 3637 | 43113 | 421614
+    // is not assignable to type
+    // 42161 | 43114 | 421614
+    // . Type 3637 is not assignable to type
+    // 42161 | 43114 | 421614
+    // . (ts 2322)
     chainId: chainId as SettlementChainId,
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
     referralCodeHex,
     depositTokenAddress,
     sourceChainTokenId,
     simulationSigner,
-    signAction,
+    signAction: signRegisterCode,
     createAction,
   });
 
   const { needsApproval, isApproving, isAllowanceLoaded, handleApprove } = useMultichainStargateApproval({
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
     sourceChainTokenId,
     amountToApprove: quoteResult.data?.amount,
   });
@@ -177,16 +183,14 @@ function AffiliateCodeFormMultichain({
 
     setIsSubmitting(true);
 
-    const trimmedCode = referralCode.trim();
-    const { takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
-
-    if (takenStatus === "all" || takenStatus === "current") {
-      setReferralCodeCheckStatus("taken");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
+      const trimmedCode = referralCode.trim();
+      const { takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+
+      if (takenStatus === "all" || takenStatus === "current") {
+        setReferralCodeCheckStatus("taken");
+        return;
+      }
       if (
         sourceChainTokenId === undefined ||
         globalExpressParams === undefined ||
@@ -196,24 +200,21 @@ function AffiliateCodeFormMultichain({
         throw new Error("Missing required parameters");
       }
 
-      const relayParamsPayload = createRelayParamsPayload(chainId as SettlementChainId, globalExpressParams);
+      const relayParamsPayload = createRelayEmptyParamsPayload(chainId as SettlementChainId, globalExpressParams);
 
       const signature = await signRegisterCode({
         chainId: chainId as SettlementChainId,
-        srcChainId: srcChainId as SourceChainId,
+        srcChainId,
         signer,
         relayParams: relayParamsPayload,
         referralCode: referralCodeHex,
       });
 
-      const action: MultichainAction = {
-        actionType: MultichainActionType.RegisterCode,
-        actionData: {
-          relayParams: relayParamsPayload,
-          signature,
-          referralCode: referralCodeHex,
-        },
-      };
+      const action = createAction({
+        relayParams: relayParamsPayload,
+        signature,
+        referralCode: referralCodeHex,
+      });
 
       const sendParams: SendParam = getMultichainTransferSendParams({
         dstChainId: chainId,
@@ -235,11 +236,11 @@ function AffiliateCodeFormMultichain({
       const txnResult = await sendWalletTransaction({
         chainId: srcChainId,
         to: sourceChainStargateAddress,
-        signer: signer,
+        signer,
         callData: encodeFunctionData({
-          abi: IStargateAbi,
+          abi: abis.IStargate,
           functionName: "sendToken",
-          args: [sendParams, { nativeFee: quoteResult.data.nativeFee, lzTokenFee: 0n }, account],
+          args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
         }),
         value,
         msg: t`Creating referral code`,
@@ -253,20 +254,20 @@ function AffiliateCodeFormMultichain({
           setRecentlyAddedCodes(recentlyAddedCodes);
         }
         setReferralCode("");
-      }
 
-      if (callAfterSuccess) {
-        callAfterSuccess();
-      }
+        if (callAfterSuccess) {
+          callAfterSuccess();
+        }
 
-      helperToast.success(
-        <>
-          <Trans>Referral code created!</Trans>
-          <br />
-          <br />
-          <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
-        </>
-      );
+        helperToast.success(
+          <>
+            <Trans>Referral code created!</Trans>
+            <br />
+            <br />
+            <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+          </>
+        );
+      }
     } catch (err) {
       toastCustomOrStargateError(chainId, err);
     } finally {
@@ -320,12 +321,7 @@ function AffiliateCodeFormMultichain({
     };
   } else if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
     buttonState = {
-      text: (
-        <>
-          <Trans>Loading...</Trans>
-          <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
+      text: t`Loading...`,
       disabled: true,
     };
   } else if (needsApproval) {
@@ -383,7 +379,13 @@ function AffiliateCodeFormMultichain({
   }, [initialReferralCode]);
 
   return (
-    <form onSubmit={buttonState.onSubmit} className="flex flex-col gap-15">
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        buttonState.onSubmit?.(event);
+      }}
+      className="flex flex-col gap-15"
+    >
       <input
         ref={inputRef}
         disabled={isSubmitting}
@@ -551,7 +553,12 @@ export function AffiliateCodeForm({
   }
 
   return (
-    <form onSubmit={buttonState.onSubmit}>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        buttonState.onSubmit?.(event);
+      }}
+    >
       <input
         type="text"
         ref={inputRef}

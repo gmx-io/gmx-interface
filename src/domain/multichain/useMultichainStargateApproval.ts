@@ -15,6 +15,7 @@ export type MultichainStargateApprovalResult = {
   handleApprove: () => Promise<void>;
 };
 
+// REVIEW: maybe lets just acceppt settlement chsain address?
 export function useMultichainStargateApproval({
   srcChainId,
   sourceChainTokenId,
@@ -55,7 +56,7 @@ export function useMultichainStargateApproval({
       spender: stargateSpenderAddress,
       chainId: srcChainId,
       permitParams: undefined,
-      approveAmount: undefined,
+      approveAmount: amountToApprove,
     });
   }, [sourceChainTokenAddress, stargateSpenderAddress, srcChainId, signer]);
 

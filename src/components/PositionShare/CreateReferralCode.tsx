@@ -6,8 +6,8 @@ import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "re
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import type { SettlementChainId, SourceChainId } from "config/chains";
-import { IStargateAbi } from "config/multichain";
+import type { SettlementChainId } from "config/chains";
+import { abis } from "sdk/abis";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -15,9 +15,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralParams } from "domain/multichain/useMultichainReferralParams";
-import { createRelayParamsPayload, useMultichainReferralQuote } from "domain/multichain/useMultichainReferralQuote";
+import {
+  createRelayEmptyParamsPayload,
+  useMultichainReferralQuote,
+  type CreateActionFn,
+} from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { registerReferralCode } from "domain/referrals";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
@@ -68,7 +73,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
 
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | undefined>();
   const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -108,7 +113,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
           setReferralCode("");
         }
       } catch (err) {
-        setError("Referral code creation failed.");
+        setError(t`Referral code creation failed.`);
         metrics.pushError(err, "createReferralCode");
       } finally {
         setIsProcessing(false);
@@ -173,7 +178,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
   const { openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
   const [referralCode, setReferralCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | undefined>();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -186,18 +191,14 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
 
   const { depositTokenAddress, sourceChainTokenId, simulationSigner } = useMultichainReferralParams({
     chainId: chainId as SettlementChainId,
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId: srcChainId,
   });
 
-  const signAction = useCallback(signRegisterCode, []);
-  const createAction = useCallback(
-    ({
-      relayParams,
-      signature,
-      referralCode: code,
-    }: Parameters<typeof useMultichainReferralQuote>[0]["createAction"] extends (p: infer P) => any
-      ? P
-      : never): MultichainAction => ({
+  // REVIEW: lets just pass action itself, no need to pass builders
+  // нужна подпись которую мы получаем внутри useMultichainReferralQuote, придется выносить наружу эту логику
+  //
+  const createAction = useCallback<CreateActionFn>(
+    ({ relayParams, signature, referralCode: code }) => ({
       actionType: MultichainActionType.RegisterCode,
       actionData: { relayParams, signature, referralCode: code },
     }),
@@ -206,17 +207,17 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
 
   const quoteResult = useMultichainReferralQuote({
     chainId: chainId as SettlementChainId,
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
     referralCodeHex,
     depositTokenAddress,
     sourceChainTokenId,
     simulationSigner,
-    signAction,
+    signAction: signRegisterCode,
     createAction,
   });
 
   const { needsApproval, isApproving, isAllowanceLoaded, handleApprove } = useMultichainStargateApproval({
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
     sourceChainTokenId,
     amountToApprove: quoteResult.data?.amount,
   });
@@ -231,16 +232,14 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
 
       setIsSubmitting(true);
 
-      const trimmedCode = referralCode.trim();
-      const { takenStatus } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
-
-      if (takenStatus === "all" || takenStatus === "current") {
-        setReferralCodeCheckStatus("taken");
-        setIsSubmitting(false);
-        return;
-      }
-
       try {
+        const trimmedCode = referralCode.trim();
+        const { takenStatus } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+
+        if (takenStatus === "all" || takenStatus === "current") {
+          setReferralCodeCheckStatus("taken");
+          return;
+        }
         if (
           sourceChainTokenId === undefined ||
           globalExpressParams === undefined ||
@@ -250,24 +249,24 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
           throw new Error("Missing required parameters");
         }
 
-        const relayParamsPayload = createRelayParamsPayload(chainId as SettlementChainId, globalExpressParams);
+        const relayParamsPayload = createRelayEmptyParamsPayload(chainId as SettlementChainId, globalExpressParams);
 
+        // REVIEW: lets not call it here at all
+        // lets move to tx logic
+        // REVIEW: why not reuse signAction?
         const signature = await signRegisterCode({
           chainId: chainId as SettlementChainId,
-          srcChainId: srcChainId as SourceChainId,
+          srcChainId,
           signer,
           relayParams: relayParamsPayload,
           referralCode: referralCodeHex,
         });
 
-        const action: MultichainAction = {
-          actionType: MultichainActionType.RegisterCode,
-          actionData: {
-            relayParams: relayParamsPayload,
-            signature,
-            referralCode: referralCodeHex,
-          },
-        };
+        const action: MultichainAction = createAction({
+          relayParams: relayParamsPayload,
+          signature,
+          referralCode: referralCodeHex,
+        });
 
         const sendParams: SendParam = getMultichainTransferSendParams({
           dstChainId: chainId,
@@ -289,11 +288,11 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
         const txnResult = await sendWalletTransaction({
           chainId: srcChainId,
           to: sourceChainStargateAddress,
-          signer: signer,
+          signer,
           callData: encodeFunctionData({
-            abi: IStargateAbi,
+            abi: abis.IStargate,
             functionName: "sendToken",
-            args: [sendParams, { nativeFee: quoteResult.data.nativeFee, lzTokenFee: 0n }, account],
+            args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
           }),
           value,
           msg: t`Creating referral code`,
@@ -304,16 +303,15 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
         if (receipt.status === "success") {
           setReferralCode("");
           onSuccess(trimmedCode);
+          helperToast.success(
+            <>
+              <Trans>Referral code created!</Trans>
+              <br />
+              <br />
+              <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+            </>
+          );
         }
-
-        helperToast.success(
-          <>
-            <Trans>Referral code created!</Trans>
-            <br />
-            <br />
-            <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
-          </>
-        );
       } catch (err) {
         toastCustomOrStargateError(chainId, err);
         metrics.pushError(err, "createReferralCodeMultichain");
@@ -374,12 +372,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     }
     if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
       return {
-        text: (
-          <>
-            <Trans>Loading...</Trans>
-            <SpinnerIcon className="ml-4 inline-block size-14 animate-spin" />
-          </>
-        ),
+        text: t`Loading...`,
         disabled: true,
       };
     }
@@ -476,7 +469,7 @@ function CreateReferralCodeLayout({
 }: {
   referralCode: string;
   setReferralCode: (code: string) => void;
-  error: string | null;
+  error: string | undefined;
   isAlreadyTaken: boolean;
   isProcessing: boolean;
   isConnected: boolean;
@@ -504,7 +497,13 @@ function CreateReferralCodeLayout({
           </Trans>
         </p>
       </div>
-      <form onSubmit={buttonState.onSubmit} className="flex flex-col gap-8">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          buttonState.onSubmit?.(event);
+        }}
+        className="flex flex-col gap-8"
+      >
         <div className="flex gap-8">
           <label
             className={cx(

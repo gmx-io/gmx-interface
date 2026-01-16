@@ -1,10 +1,8 @@
-import { Contract } from "ethers";
 import { useMemo } from "react";
-import { zeroAddress } from "viem";
-import { usePublicClient } from "wagmi";
+import { zeroAddress, LocalAccount } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { FAKE_INPUT_AMOUNT_MAP, IStargateAbi, type MultichainTokenId } from "config/multichain";
+import { FAKE_INPUT_AMOUNT_MAP, type MultichainTokenId } from "config/multichain";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -15,13 +13,14 @@ import {
 } from "domain/synthetics/express";
 import { convertToUsd, getMidPrice } from "domain/tokens";
 import { numberToBigint } from "lib/numbers";
-import { useJsonRpcProvider } from "lib/rpc";
+import { ISigner } from "lib/transactions/iSigner";
 import { type AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
-import type { IStargate } from "typechain-types-stargate";
 
 import { type MultichainAction } from "./codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "./estimateMultichainDepositNetworkComposeGas";
@@ -37,7 +36,7 @@ export type MultichainReferralQuoteResult = {
 export type SignActionFn = (params: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
-  signer: ReturnType<typeof import("config/multichain").RANDOM_WALLET.connect>;
+  signer: any; // LocalAccount;
   relayParams: RelayParamsPayload;
   referralCode: string;
   shouldUseSignerMethod?: boolean;
@@ -65,16 +64,14 @@ export function useMultichainReferralQuote({
   referralCodeHex: string | undefined;
   depositTokenAddress: string | undefined;
   sourceChainTokenId: MultichainTokenId | undefined;
-  simulationSigner: ReturnType<typeof import("config/multichain").RANDOM_WALLET.connect> | undefined;
+  simulationSigner: any; // ISigner | undefined;
   signAction: SignActionFn;
   createAction: CreateActionFn;
   enabled?: boolean;
 }): AsyncResult<MultichainReferralQuoteResult> & {
   networkFeeUsd: bigint | undefined;
 } {
-  const { account, signer } = useWallet();
-  const { provider } = useJsonRpcProvider(chainId);
-  const settlementChainPublicClient = usePublicClient({ chainId });
+  const { account } = useWallet();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const result = useThrottledAsync(
@@ -122,16 +119,11 @@ export function useMultichainReferralQuote({
         account: p.simulationSigner.address,
         srcChainId: p.srcChainId,
         tokenAddress: p.depositTokenAddress,
-        settlementChainPublicClient: p.settlementChainPublicClient,
+        settlementChainPublicClient: getPublicClientWithRpc(p.chainId),
       });
 
       const sourceChainStargateAddress = p.sourceChainTokenId.stargate;
-
-      const iStargateInstance = new Contract(
-        sourceChainStargateAddress,
-        IStargateAbi,
-        p.signer
-      ) as unknown as IStargate;
+      const sourceChainClient = getPublicClientWithRpc(p.srcChainId);
 
       const tokenAmount =
         FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
@@ -146,11 +138,17 @@ export function useMultichainReferralQuote({
         action,
       });
 
-      const [limit, oftFeeDetails] = await iStargateInstance.quoteOFT(sendParamsWithRoughAmount);
+      const [limit, oftFeeDetails] = await sourceChainClient.readContract({
+        address: sourceChainStargateAddress,
+        abi: abis.IStargate,
+        functionName: "quoteOFT",
+        args: [sendParamsWithRoughAmount],
+      });
 
       let negativeFee = 0n;
+      // REVIEW: see function stargateTransferFees
       for (const oftFeeDetail of oftFeeDetails) {
-        negativeFee += oftFeeDetail[0];
+        negativeFee += oftFeeDetail.feeAmountLD;
       }
 
       const minAmount = limit.minAmountLD === 0n ? 1n : limit.minAmountLD;
@@ -164,7 +162,12 @@ export function useMultichainReferralQuote({
         minAmountLD: 0n,
       };
 
-      const quoteSend = await iStargateInstance.quoteSend(sendParamsWithMinimumAmount, false);
+      const quoteSend = await sourceChainClient.readContract({
+        address: sourceChainStargateAddress,
+        abi: abis.IStargate,
+        functionName: "quoteSend",
+        args: [sendParamsWithMinimumAmount, false],
+      });
 
       return {
         nativeFee: quoteSend.nativeFee,
@@ -176,21 +179,16 @@ export function useMultichainReferralQuote({
       throttleMs: 1000,
       params:
         enabled &&
-        provider !== undefined &&
         srcChainId !== undefined &&
-        settlementChainPublicClient !== undefined &&
         globalExpressParams !== undefined &&
         simulationSigner !== undefined &&
         referralCodeHex !== undefined &&
         account !== undefined &&
         sourceChainTokenId !== undefined &&
-        depositTokenAddress !== undefined &&
-        signer !== undefined
+        depositTokenAddress !== undefined
           ? {
-              provider,
               chainId,
               srcChainId,
-              settlementChainPublicClient,
               globalExpressParams,
               simulationSigner,
               referralCodeHex,
@@ -199,7 +197,6 @@ export function useMultichainReferralQuote({
               depositTokenAddress,
               signAction,
               createAction,
-              signer,
             }
           : undefined,
     }
@@ -219,7 +216,7 @@ export function useMultichainReferralQuote({
   };
 }
 
-export function createRelayParamsPayload(
+export function createRelayEmptyParamsPayload(
   chainId: SettlementChainId,
   globalExpressParams: GlobalExpressParams
 ): RelayParamsPayload {

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { IStargateAbi } from "config/multichain";
+import { abis } from "sdk/abis";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -12,9 +12,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralParams } from "domain/multichain/useMultichainReferralParams";
-import { createRelayParamsPayload, useMultichainReferralQuote } from "domain/multichain/useMultichainReferralQuote";
+import {
+  createRelayEmptyParamsPayload,
+  useMultichainReferralQuote,
+  type CreateActionFn,
+} from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
@@ -239,18 +244,11 @@ function ReferralCodeFormMultichain({
 
   const { depositTokenAddress, sourceChainTokenId, simulationSigner } = useMultichainReferralParams({
     chainId: chainId as SettlementChainId,
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
   });
 
-  const signAction = useCallback(signSetTraderReferralCode, []);
-  const createAction = useCallback(
-    ({
-      relayParams,
-      signature,
-      referralCode: code,
-    }: Parameters<typeof useMultichainReferralQuote>[0]["createAction"] extends (p: infer P) => any
-      ? P
-      : never): MultichainAction => ({
+  const createAction = useCallback<CreateActionFn>(
+    ({ relayParams, signature, referralCode: code }) => ({
       actionType: MultichainActionType.SetTraderReferralCode,
       actionData: { relayParams, signature, referralCode: code },
     }),
@@ -259,17 +257,17 @@ function ReferralCodeFormMultichain({
 
   const quoteResult = useMultichainReferralQuote({
     chainId: chainId as SettlementChainId,
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
     referralCodeHex,
     depositTokenAddress,
     sourceChainTokenId,
     simulationSigner,
-    signAction,
+    signAction: signSetTraderReferralCode,
     createAction,
   });
 
   const { needsApproval, isApproving, isAllowanceLoaded, handleApprove } = useMultichainStargateApproval({
-    srcChainId: srcChainId as SourceChainId | undefined,
+    srcChainId,
     sourceChainTokenId,
     amountToApprove: quoteResult.data?.amount,
   });
@@ -293,11 +291,11 @@ function ReferralCodeFormMultichain({
         throw new Error("Missing required parameters");
       }
 
-      const relayParamsPayload = createRelayParamsPayload(chainId as SettlementChainId, globalExpressParams);
+      const relayParamsPayload = createRelayEmptyParamsPayload(chainId as SettlementChainId, globalExpressParams);
 
       const signature = await signSetTraderReferralCode({
         chainId: chainId as SettlementChainId,
-        srcChainId: srcChainId as SourceChainId,
+        srcChainId,
         signer,
         relayParams: relayParamsPayload,
         referralCode: referralCodeHex,
@@ -332,11 +330,11 @@ function ReferralCodeFormMultichain({
       const txnResult = await sendWalletTransaction({
         chainId: srcChainId,
         to: sourceChainStargateAddress,
-        signer: signer,
+        signer,
         callData: encodeFunctionData({
-          abi: IStargateAbi,
+          abi: abis.IStargate,
           functionName: "sendToken",
-          args: [sendParams, { nativeFee: quoteResult.data.nativeFee, lzTokenFee: 0n }, account],
+          args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
         }),
         value,
         msg: t`Sent referral code transaction`,
@@ -419,12 +417,7 @@ function ReferralCodeFormMultichain({
     };
   } else if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
     buttonState = {
-      text: (
-        <>
-          <Trans>Loading...</Trans>
-          <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
+      text: t`Loading...`,
       disabled: true,
     };
   } else if (needsApproval) {
