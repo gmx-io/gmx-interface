@@ -29,7 +29,7 @@ type Props = {
 
 const REFERRAL_DOCS_LINK = "https://docs.gmx.io/docs/referrals";
 
-export function CreateReferralCode({ onSuccess }: Props) {
+function CreateReferralCode({ onSuccess }: Props) {
   const { signer } = useWallet();
   const { pendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();

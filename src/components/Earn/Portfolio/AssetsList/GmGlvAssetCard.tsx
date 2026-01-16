@@ -147,4 +147,3 @@ export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, mu
   );
 }
 
-export default GmGlvAssetCard;

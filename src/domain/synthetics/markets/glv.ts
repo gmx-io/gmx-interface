@@ -39,7 +39,7 @@ export function getMaxUsdBuyableAmountInMarketWithGm(
   return bigMath.min(mintableInGmMarket?.mintableUsd, maxUsdInGmGlv);
 }
 
-export function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvInfo, gmToken: TokenData) {
+function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvInfo, gmToken: TokenData) {
   const gmBalanceUsd = convertToUsd(market.gmBalance, gmToken.decimals, gmToken.prices.maxPrice) ?? 0n;
 
   return (

@@ -382,7 +382,7 @@ export function useOrderTxnCallbacks() {
   );
 }
 
-export function getBatchPendingOrders(
+function getBatchPendingOrders(
   txnParams: BatchOrderTxnParams,
   ordersInfoData: OrdersInfoData | undefined,
   createdAt: number
@@ -422,7 +422,7 @@ export function getBatchPendingOrders(
     ...cancelPendingOrders,
   ] as PendingOrderData[];
 }
-export function getPendingCancelOrder(
+function getPendingCancelOrder(
   params: CancelOrderTxnParams,
   order: OrderInfo,
   createdAt: number
@@ -449,7 +449,7 @@ export function getPendingCancelOrder(
   };
 }
 
-export function getPendingPositionFromParams({
+function getPendingPositionFromParams({
   createOrderParams: createOrderPayload,
   blockNumber,
   timestamp,
@@ -482,7 +482,7 @@ export function getPendingPositionFromParams({
   };
 }
 
-export function getPendingUpdateOrder(
+function getPendingUpdateOrder(
   updateOrderParams: UpdateOrderTxnParams,
   order: OrderInfo,
   createdAt: number
@@ -509,7 +509,7 @@ export function getPendingUpdateOrder(
   };
 }
 
-export function getOptimisticBatchPayAmounts({
+function getOptimisticBatchPayAmounts({
   expressParams,
   batchParams,
 }: {
@@ -530,7 +530,7 @@ export function getOptimisticBatchPayAmounts({
   return batchPayAmounts;
 }
 
-export function getPendingCreateOrder(
+function getPendingCreateOrder(
   createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>,
   isTwap = false,
   createdAt = Date.now()
@@ -561,7 +561,7 @@ export function getPendingCreateOrder(
   };
 }
 
-export function getPendingCreateTwapOrders(
+function getPendingCreateTwapOrders(
   createOrderPayloads: CreateOrderTxnParams<
     IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams
   >[],

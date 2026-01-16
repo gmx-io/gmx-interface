@@ -74,7 +74,7 @@ const STEP_ORDER: Record<MultichainFundingHistoryItem["step"], number> = {
   executed: 4,
 };
 
-export function isStepGreaterOrEqual(
+function isStepGreaterOrEqual(
   step: MultichainFundingHistoryItem["step"],
   than: MultichainFundingHistoryItem["step"]
 ): boolean {

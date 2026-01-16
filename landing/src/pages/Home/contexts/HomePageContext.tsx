@@ -19,7 +19,7 @@ type HomePageContextType = {
   poolsData: Partial<PoolsData>;
 };
 
-export const HomePageContext = createContext<HomePageContextType>({
+const HomePageContext = createContext<HomePageContextType>({
   redirectWithWarning: noop,
   redirectModalTo: null,
   redirectChainId: null,

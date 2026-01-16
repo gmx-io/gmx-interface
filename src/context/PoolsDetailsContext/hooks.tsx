@@ -5,24 +5,16 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenInputValue,
-  selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsMarketOrGlvTokenInputValue,
-  selectPoolsDetailsMode,
-  selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSecondTokenInputValue,
-  selectPoolsDetailsSelectedMarketAddressForGlv,
   selectPoolsDetailsSetFirstTokenInputValue,
   selectPoolsDetailsSetMarketOrGlvTokenInputValue,
   selectPoolsDetailsSetSecondTokenInputValue,
   selectPoolsDetailsSetFirstTokenAddress,
-  selectPoolsDetailsSetGlvOrMarketAddress,
-  selectPoolsDetailsSetMode,
-  selectPoolsDetailsSetOperation,
   selectPoolsDetailsSetPaySource,
   selectPoolsDetailsSetSecondTokenAddress,
-  selectPoolsDetailsSetSelectedMarketAddressForGlv,
 } from "./selectors";
 
 export function usePoolsDetailsPaySource() {
@@ -61,26 +53,3 @@ export function usePoolsDetailsMarketOrGlvTokenInputValue() {
   return [value, setter] as const;
 }
 
-export function usePoolsDetailsOperation() {
-  const value = useSelector(selectPoolsDetailsOperation);
-  const setter = useSelector(selectPoolsDetailsSetOperation);
-  return [value, setter] as const;
-}
-
-export function usePoolsDetailsMode() {
-  const value = useSelector(selectPoolsDetailsMode);
-  const setter = useSelector(selectPoolsDetailsSetMode);
-  return [value, setter] as const;
-}
-
-export function usePoolsDetailsGlvOrMarketAddress() {
-  const value = useSelector(selectPoolsDetailsGlvOrMarketAddress);
-  const setter = useSelector(selectPoolsDetailsSetGlvOrMarketAddress);
-  return [value, setter] as const;
-}
-
-export function usePoolsDetailsSelectedMarketForGlv() {
-  const value = useSelector(selectPoolsDetailsSelectedMarketAddressForGlv);
-  const setter = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
-  return [value, setter] as const;
-}

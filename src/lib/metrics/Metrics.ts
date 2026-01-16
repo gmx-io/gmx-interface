@@ -43,7 +43,7 @@ type CachedMetricData = { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
 type Timers = { [key: string]: number };
 
-export class Metrics {
+class Metrics {
   fetcher?: OracleFetcher;
   debug = false;
   globalMetricData: GlobalMetricData = {} as GlobalMetricData;

@@ -42,7 +42,7 @@ export type WebsocketContextType = {
   removeAdditionalSourceChain: (chainId: SourceChainId, name: string) => void;
 };
 
-export const WsContext = createContext({} as WebsocketContextType);
+const WsContext = createContext({} as WebsocketContextType);
 
 export function useWebsocketProvider() {
   return useContext(WsContext) as WebsocketContextType;

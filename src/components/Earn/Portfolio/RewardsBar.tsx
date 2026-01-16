@@ -19,7 +19,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { ClaimRewardsButton } from "./ClaimRewardsButton";
 
-export function RewardsBar({
+function RewardsBar({
   processedData,
   mutateProcessedData,
 }: {

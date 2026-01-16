@@ -8,7 +8,7 @@ type PaginateParams = {
   size: number;
 };
 
-export const paginate = ({ total, current, size }: PaginateParams) => {
+const paginate = ({ total, current, size }: PaginateParams) => {
   const pages = Math.ceil(total / size);
   let currentPage = current;
 

@@ -70,11 +70,7 @@ export function getMarketBadge(
   return market.isSpotOnly ? undefined : ([market.longToken.symbol, market.shortToken.symbol] as const);
 }
 
-export function getGlvMarketSubtitle(chainId: number, address: string) {
-  return GLV_MARKETS[chainId]?.[address]?.subtitle || "";
-}
-
-export function getGlvMarketShortening(chainId: number, address: string) {
+function getGlvMarketShortening(chainId: number, address: string) {
   return GLV_MARKETS[chainId]?.[address]?.shortening || "";
 }
 
@@ -260,7 +256,7 @@ function getDepositCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
   return bigMath.max(0n, capacityAmount);
 }
 
-export function getStrictestMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
+function getStrictestMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const maxPoolUsdForDeposit = isLong ? marketInfo.maxLongPoolUsdForDeposit : marketInfo.maxShortPoolUsdForDeposit;
   const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
@@ -285,7 +281,7 @@ export function getMaxPoolUsdForSwap(marketInfo: MarketInfo, isLong: boolean) {
   return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
 }
 
-export function getDepositCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+function getDepositCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
   const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(marketInfo, isLong);
 
@@ -413,10 +409,6 @@ export function getTotalGlvInfo({
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
   return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
-}
-
-export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {
-  return marketInfo.positionImpactFactorNegative === 0n;
 }
 
 export function getTradeboxLeverageSliderMarks(maxLeverage: number) {

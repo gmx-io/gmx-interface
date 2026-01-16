@@ -20,7 +20,7 @@ export type PnlSummaryPoint = {
   usedCapitalUsd: bigint;
 } & PnlSummaryPointDebugFields;
 
-export type PnlSummaryPointDebugFields = {
+type PnlSummaryPointDebugFields = {
   // #region Debug fields
   // Present only when showDebugValues is true
   realizedBasePnlUsd: bigint;
@@ -54,7 +54,7 @@ const PROD_QUERY = gql`
   }
 `;
 
-export const DEBUG_QUERY = gql`
+const DEBUG_QUERY = gql`
   query AccountHistoricalPnlResolver($account: String!) {
     accountPnlSummaryStats(account: $account) {
       bucketLabel
