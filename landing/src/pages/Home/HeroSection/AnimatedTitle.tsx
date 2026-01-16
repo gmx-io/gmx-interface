@@ -24,11 +24,11 @@ export function AnimatedTitle() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const titles = useMemo(() => {
     return [
-      t`With 100x leverage`,
+      t`with 100x leverage`,
       t`100+ crypto tokens`,
-      t`Multiple asset classes`,
-      t`Deep liquid markets`,
-      t`From ${BLOCKCHAIN_COUNT} blockchains`,
+      t`multiple asset classes`,
+      t`deep liquid markets`,
+      t`from ${BLOCKCHAIN_COUNT} blockchains`,
     ];
   }, []);
   const intervalRef = useRef<number | null>(null);

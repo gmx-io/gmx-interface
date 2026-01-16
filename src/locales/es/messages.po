@@ -2730,10 +2730,6 @@ msgstr "El slippage es demasiado alto."
 msgid "Collapse"
 msgstr "Contraer"
 
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "Multiple asset classes"
-msgstr ""
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (including swap)"
 msgstr ""
@@ -5385,6 +5381,10 @@ msgstr ""
 msgid "Sell GLV"
 msgstr "Vender GLV"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from {BLOCKCHAIN_COUNT} blockchains"
+msgstr ""
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "30d"
 msgstr "30d"
@@ -6497,12 +6497,12 @@ msgstr "Precio Límite"
 msgid "You"
 msgstr "Tú"
 
-#: src/components/DepthChart/DepthChartTooltip.tsx
-msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "with 100x leverage"
 msgstr ""
 
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "From {BLOCKCHAIN_COUNT} blockchains"
+#: src/components/DepthChart/DepthChartTooltip.tsx
+msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
@@ -6592,6 +6592,10 @@ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming affiliate rewards..."
+msgstr ""
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "deep liquid markets"
 msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -7011,10 +7015,6 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
-msgstr ""
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "With 100x leverage"
 msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
@@ -8052,10 +8052,6 @@ msgstr "Cantidad máxima de reserva excedida"
 msgid "Unknown order"
 msgstr "Orden desconocida"
 
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "Deep liquid markets"
-msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
 msgid "Entry price"
@@ -8463,6 +8459,10 @@ msgstr "LayerZero Scan"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Selling..."
+msgstr ""
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "multiple asset classes"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx

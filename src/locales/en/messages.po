@@ -2730,10 +2730,6 @@ msgstr "Slippage is too high."
 msgid "Collapse"
 msgstr "Collapse"
 
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "Multiple asset classes"
-msgstr "Multiple asset classes"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (including swap)"
 msgstr "Fees (including swap)"
@@ -5385,6 +5381,10 @@ msgstr "V1 rebates"
 msgid "Sell GLV"
 msgstr "Sell GLV"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "from {BLOCKCHAIN_COUNT} blockchains"
+msgstr "from {BLOCKCHAIN_COUNT} blockchains"
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "30d"
 msgstr "30d"
@@ -6497,13 +6497,13 @@ msgstr "Limit Price"
 msgid "You"
 msgstr "You"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "with 100x leverage"
+msgstr "with 100x leverage"
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "From {BLOCKCHAIN_COUNT} blockchains"
-msgstr "From {BLOCKCHAIN_COUNT} blockchains"
 
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -6593,6 +6593,10 @@ msgstr "Create Take-Profit"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming affiliate rewards..."
 msgstr "Claiming affiliate rewards..."
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "deep liquid markets"
+msgstr "deep liquid markets"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claim <0>{0}</0>"
@@ -7012,10 +7016,6 @@ msgstr "Search market"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "Negative funding fee"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "With 100x leverage"
-msgstr "With 100x leverage"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
@@ -8052,10 +8052,6 @@ msgstr "Max pool amount exceeded"
 msgid "Unknown order"
 msgstr "Unknown order"
 
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "Deep liquid markets"
-msgstr "Deep liquid markets"
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
 msgid "Entry price"
@@ -8464,6 +8460,10 @@ msgstr "LayerZero Scan"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Selling..."
 msgstr "Selling..."
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "multiple asset classes"
+msgstr "multiple asset classes"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionItem/PositionItem.tsx
