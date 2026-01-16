@@ -3,7 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { SettlementChainId } from "config/chains";
+import { AVALANCHE, SettlementChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import {
   selectPoolsDetailsFlags,
@@ -26,12 +26,9 @@ import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/sel
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
-import type { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
-import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
-import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
-import { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
-import { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
+import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
+import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
@@ -42,22 +39,14 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { Operation } from "../types";
 import { useLpTransactions } from "./lpTxn/useLpTransactions";
-import { TechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useTokensToApprove } from "./useTokensToApprove";
 
 interface Props {
   longTokenLiquidityUsd?: bigint | undefined;
   shortTokenLiquidityUsd?: bigint | undefined;
   shouldDisableValidation?: boolean;
-  technicalFees:
-    | ExecutionFee
-    | SourceChainGlvDepositFees
-    | SourceChainDepositFees
-    | SourceChainWithdrawalFees
-    | SourceChainGlvWithdrawalFees
-    | undefined;
+  technicalFees: TechnicalGmFees | undefined;
   logicalFees: GmSwapFees | undefined;
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
@@ -268,11 +257,21 @@ export const useGmSwapSubmitState = ({
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
 
+  const isAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
+
   return useMemo((): SubmitButtonState => {
     if (!account) {
       return {
         text: t`Connect Wallet`,
         onSubmit: onConnectAccount,
+      };
+    }
+
+    if (isAvalancheGmxAccountWarning) {
+      return {
+        text: t`Not supported`,
+        disabled: true,
+        onSubmit,
       };
     }
 
@@ -364,6 +363,7 @@ export const useGmSwapSubmitState = ({
     approve,
     operation,
     isLoading,
+    isAvalancheGmxAccountWarning,
   ]);
 };
 
@@ -379,7 +379,7 @@ function useExpressError({
   isDeposit,
 }: {
   paySource: GmPaySource | undefined;
-  technicalFees: TechnicalFees | undefined;
+  technicalFees: TechnicalGmFees | undefined;
   gasPaymentToken: TokenData | undefined;
   gasPaymentTokenAddress: string | undefined;
   longTokenAddress: string | undefined;
@@ -393,18 +393,17 @@ function useExpressError({
       return undefined;
     }
 
-    if (!("feeUsd" in technicalFees)) {
+    const fees = technicalFees.kind === "gmxAccount" ? technicalFees.fees : undefined;
+    if (!fees) {
       return undefined;
     }
-
-    const executionFee = technicalFees as ExecutionFee;
 
     if (gasPaymentToken.prices.minPrice === undefined) {
       return undefined;
     }
 
     const gasPaymentTokenAmount = convertToTokenAmount(
-      executionFee.feeUsd,
+      fees.executionFee.feeUsd + fees.relayFeeUsd,
       gasPaymentToken.decimals,
       gasPaymentToken.prices.minPrice
     );

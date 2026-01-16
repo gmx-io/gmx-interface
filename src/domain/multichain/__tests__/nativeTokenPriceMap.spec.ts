@@ -1,10 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { SETTLEMENT_CHAINS, SOURCE_CHAINS } from "config/multichain";
+import { SETTLEMENT_CHAINS } from "config/multichain";
 import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
   getChainName,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
+  SOURCE_CHAIN_IDS,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
@@ -21,11 +26,15 @@ const SOURCE_CHAIN_NATIVE_SYMBOL_MAP: Record<SourceChainId, string> = {
   [SOURCE_BASE_MAINNET]: "ETH",
   [SOURCE_BSC_MAINNET]: "BNB",
   [SOURCE_ETHEREUM_MAINNET]: "ETH",
+  [ARBITRUM]: "ETH",
+  [AVALANCHE]: "AVAX",
+  [ARBITRUM_SEPOLIA]: "ETH",
+  [AVALANCHE_FUJI]: "AVAX",
 };
 
 describe("NATIVE_TOKEN_PRICE_MAP", () => {
   it("should be defined", () => {
-    for (const srcChainId of SOURCE_CHAINS) {
+    for (const srcChainId of SOURCE_CHAIN_IDS) {
       for (const settlementChainId of SETTLEMENT_CHAINS) {
         if (!areChainsRelated(settlementChainId, srcChainId)) {
           continue;

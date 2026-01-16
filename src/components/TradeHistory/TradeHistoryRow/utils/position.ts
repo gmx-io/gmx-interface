@@ -27,7 +27,7 @@ import {
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
-  formatTradeActionTimestampISO,
+  formatTradeActionTimestampUTC,
   getErrorTooltipTitle,
   infoRow,
   lines,
@@ -143,7 +143,7 @@ export const formatPositionMessage = (
 
   const action = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
   const timestamp = formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp);
-  const timestampISO = formatTradeActionTimestampISO(tradeAction.timestamp);
+  const timestampUTC = formatTradeActionTimestampUTC(tradeAction.timestamp);
 
   const market = `${longShortText} ${indexName}`;
 
@@ -177,7 +177,7 @@ export const formatPositionMessage = (
     displayedPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
   }
 
-  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO" | "price" | "size">;
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC" | "price" | "size">;
 
   //#region MarketIncrease
   if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCreated) {
@@ -686,7 +686,7 @@ export const formatPositionMessage = (
     indexTokenSymbol,
     fullMarket,
     timestamp,
-    timestampISO,
+    timestampUTC,
     price: formattedMarketPrice || "",
     size: sizeDeltaText,
     marketPrice: formattedMarketPrice,

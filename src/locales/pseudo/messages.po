@@ -174,6 +174,10 @@ msgstr ""
 msgid "RabbitHole"
 msgstr ""
 
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Shows the total open interest in tokens and its notional value in USD."
+msgstr ""
+
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -355,10 +359,6 @@ msgstr ""
 msgid "Swapped {0} for {1}."
 msgstr ""
 
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1>"
-msgstr ""
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
@@ -432,6 +432,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
+msgstr ""
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Long OI"
 msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -534,10 +538,6 @@ msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High external swap impact"
-msgstr ""
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "90+ crypto tokens"
 msgstr ""
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -1282,6 +1282,11 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr ""
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr ""
@@ -1309,6 +1314,16 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
+msgstr ""
+
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "100+ crypto tokens"
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Not supported"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -1816,6 +1831,10 @@ msgstr ""
 msgid "GLP Reimbursement (test)"
 msgstr ""
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show Error Boundary Debug Trigger"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -2046,6 +2065,11 @@ msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
+msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
 msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -2521,6 +2545,10 @@ msgstr ""
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr ""
 
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
 msgstr ""
@@ -2757,6 +2785,10 @@ msgstr ""
 msgid "{0}"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Depositing is not supported on Avalanche anymore."
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show Debug Values"
 msgstr ""
@@ -2923,6 +2955,11 @@ msgstr ""
 msgid "Withdrawing from subaccount..."
 msgstr ""
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr ""
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr ""
@@ -2932,6 +2969,7 @@ msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentrali
 msgstr ""
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3371,10 +3409,6 @@ msgstr ""
 msgid "Community-led Telegram groups."
 msgstr ""
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr ""
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled Funding Fees"
@@ -3539,6 +3573,10 @@ msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of days before reauthorization is required."
+msgstr ""
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -3773,6 +3811,10 @@ msgstr ""
 msgid "Open GMX Solana"
 msgstr ""
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr ""
@@ -3849,6 +3891,10 @@ msgstr ""
 msgid "Set TP/SL"
 msgstr ""
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr ""
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -3897,7 +3943,6 @@ msgstr ""
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4107,10 +4152,6 @@ msgstr ""
 msgid "Click here to give us your feedback on GMX"
 msgstr ""
 
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr ""
@@ -4255,6 +4296,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying error"
+msgstr ""
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Short OI"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -4669,10 +4714,6 @@ msgstr ""
 msgid "Vesting"
 msgstr ""
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
-msgstr ""
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr ""
@@ -4748,6 +4789,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
+msgstr ""
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -5232,6 +5277,10 @@ msgstr ""
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
+msgstr ""
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
 msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx
@@ -5826,6 +5875,10 @@ msgstr ""
 msgid "market"
 msgstr ""
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -5949,6 +6002,10 @@ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
+msgstr ""
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Performance and chart data are based on UTC times."
 msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
@@ -6552,6 +6609,18 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
@@ -6944,10 +7013,6 @@ msgstr ""
 msgid "Select a Pay token"
 msgstr ""
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr ""
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr ""
@@ -7028,7 +7093,6 @@ msgstr ""
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7144,10 +7208,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
-msgstr ""
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -7331,6 +7391,11 @@ msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a settlement network."
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -7577,6 +7642,10 @@ msgstr ""
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
+msgstr ""
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload page"
 msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
@@ -8107,6 +8176,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max. Leverage exceeded"
+msgstr ""
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx

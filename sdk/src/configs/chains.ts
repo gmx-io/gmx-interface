@@ -43,13 +43,17 @@ export {
 export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, BOTANIX] as const;
 export const CONTRACTS_CHAIN_IDS_DEV = [...CONTRACTS_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA] as const;
 export const SETTLEMENT_CHAIN_IDS = [ARBITRUM, AVALANCHE] as const;
-export const SETTLEMENT_CHAIN_IDS_DEV = [...SETTLEMENT_CHAIN_IDS, ARBITRUM_SEPOLIA] as const;
+export const SETTLEMENT_CHAIN_IDS_DEV = [...SETTLEMENT_CHAIN_IDS, ARBITRUM_SEPOLIA, AVALANCHE_FUJI] as const;
 export const SOURCE_CHAIN_IDS = [
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_ETHEREUM_MAINNET,
+  ARBITRUM_SEPOLIA,
+  ARBITRUM,
+  AVALANCHE,
+  AVALANCHE_FUJI,
 ] as const;
 
 export type ContractsChainId = (typeof CONTRACTS_CHAIN_IDS_DEV)[number];
@@ -194,6 +198,30 @@ const SOURCE_CHAIN_CONFIGS = {
     name: "Ethereum",
     slug: "ethereum-mainnet",
     explorerUrl: "https://etherscan.io/",
+  },
+  [ARBITRUM]: {
+    chainId: ARBITRUM,
+    name: "Arbitrum",
+    slug: "arbitrum",
+    explorerUrl: "https://arbiscan.io/",
+  },
+  [AVALANCHE]: {
+    chainId: AVALANCHE,
+    name: "Avalanche",
+    slug: "avalanche",
+    explorerUrl: "https://snowtrace.io/",
+  },
+  [ARBITRUM_SEPOLIA]: {
+    chainId: ARBITRUM_SEPOLIA,
+    name: "Arbitrum Sepolia",
+    slug: "arbitrum-sepolia",
+    explorerUrl: "https://sepolia.arbiscan.io/",
+  },
+  [AVALANCHE_FUJI]: {
+    chainId: AVALANCHE_FUJI,
+    name: "Avalanche Fuji",
+    slug: "avalanche-fuji",
+    explorerUrl: "https://testnet.snowtrace.io/",
   },
   // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<SourceChainId, SourceChainConfig>;

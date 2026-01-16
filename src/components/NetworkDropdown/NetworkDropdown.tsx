@@ -5,12 +5,11 @@ import partition from "lodash/partition";
 import { useAccount } from "wagmi";
 
 import { getChainIcon } from "config/icons";
-import { isSourceChain } from "config/multichain";
+import { isSettlementChain, isSourceChainForAnySettlementChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { switchNetwork } from "lib/wallets";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { getChainName } from "sdk/configs/chains";
+import { AVALANCHE, getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
@@ -70,20 +69,31 @@ export default function NetworkDropdown({
   );
 }
 
+function isValidVisualSettlementChain(chainId: number) {
+  return isSettlementChain(chainId) && chainId !== AVALANCHE;
+}
+
+function isValidVisualSourceChain(chainId: number) {
+  return isSourceChainForAnySettlementChain(chainId) && chainId !== AVALANCHE;
+}
+
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
-  const [selectedSettlementChainId] = useGmxAccountSettlementChainId();
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,
-    (network) => isSourceChain(network.value) && isNonEoaAccountOnAnyChain
+    (network) =>
+      // True is passed to filter both dev and prod contracts chains
+      !isContractsChain(network.value, true) &&
+      isSourceChainForAnySettlementChain(network.value) &&
+      isNonEoaAccountOnAnyChain
   );
 
   const walletAndGmxAccountNetworks = enabledNetworks.filter(
-    (network) => isSourceChain(network.value) || network.value === selectedSettlementChainId
+    (network) => isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value)
   );
   const walletOnlyNetworks = enabledNetworks.filter(
-    (network) => !isSourceChain(network.value) && network.value !== selectedSettlementChainId
+    (network) => !(isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value))
   );
 
   return (
@@ -152,9 +162,7 @@ function NetworkMenuItem({
   disabled?: boolean;
 }) {
   const { isConnected } = useAccount();
-  const [selectedSettlementChainId] = useGmxAccountSettlementChainId();
   const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
-  const isSelectedSettlementChain = network.value === selectedSettlementChainId;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
@@ -185,7 +193,7 @@ function NetworkMenuItem({
               >
                 {network.label}
               </span>
-              {isSelectedSettlementChain && (
+              {isValidVisualSettlementChain(network.value) && chainId === network.value && (
                 <TooltipWithPortal
                   handle={<WalletIcon className="size-16 text-typography-secondary" />}
                   position="top"

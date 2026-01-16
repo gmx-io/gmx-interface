@@ -165,8 +165,8 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
       }
 
       const distinctChains = Object.keys(additionalSourceChains)
-        .map((chainId) => parseInt(chainId) as SourceChainId)
-        .filter((chainId) => chainId !== srcChainId && isSourceChain(chainId));
+        .map((chainIdStr) => parseInt(chainIdStr) as SourceChainId)
+        .filter((additionalChainId) => additionalChainId !== srcChainId && isSourceChain(additionalChainId, chainId));
 
       if (distinctChains.length === 0) {
         return;
@@ -217,7 +217,7 @@ export function WebsocketContextProvider({ children }: { children: ReactNode }) 
         }
       };
     },
-    [additionalSourceChains, hasPageLostFocus, isConnected, srcChainId]
+    [additionalSourceChains, chainId, hasPageLostFocus, isConnected, srcChainId]
   );
 
   useEffect(

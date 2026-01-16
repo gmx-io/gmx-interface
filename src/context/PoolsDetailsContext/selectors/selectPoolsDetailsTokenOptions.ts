@@ -2,7 +2,13 @@ import uniq from "lodash/uniq";
 import uniqBy from "lodash/uniqBy";
 import { zeroAddress } from "viem";
 
-import { AnyChainId, GMX_ACCOUNT_PSEUDO_CHAIN_ID, GmxAccountPseudoChainId, SettlementChainId } from "config/chains";
+import {
+  AnyChainId,
+  AVALANCHE,
+  GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+  GmxAccountPseudoChainId,
+  SettlementChainId,
+} from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import {
   selectChainId,
@@ -150,8 +156,10 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
     if (token.walletBalance !== undefined && token.walletBalance !== 0n) {
       result.push(createDisplayToken(token, chainId, token.walletBalance));
     }
-    if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance !== 0n) {
-      result.push(createDisplayToken(token, GMX_ACCOUNT_PSEUDO_CHAIN_ID, token.gmxAccountBalance));
+    if (chainId !== AVALANCHE) {
+      if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance !== 0n) {
+        result.push(createDisplayToken(token, GMX_ACCOUNT_PSEUDO_CHAIN_ID, token.gmxAccountBalance));
+      }
     }
   }
 

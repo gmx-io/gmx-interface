@@ -2,7 +2,6 @@ import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
 import {
   Address,
   encodeFunctionData,
-  maxUint256,
   PublicClient,
   recoverTypedDataAddress,
   size,
@@ -15,6 +14,7 @@ import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
 import { isSourceChain } from "config/multichain";
 import { calculateMappingSlot, DATASTORE_SLOT_INDEXES } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
@@ -386,7 +386,7 @@ export async function estimateExpressParams({
                           multichainBalanceKey(account, gasPaymentToken.address),
                           DATASTORE_SLOT_INDEXES.uintValues
                         ),
-                        value: toHex(maxUint256 / 100n, { size: 32 }),
+                        value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
                       },
                     ],
                   },
@@ -816,7 +816,7 @@ export async function getMultichainInfoFromSigner(
 ): Promise<SourceChainId | undefined> {
   const srcChainId = await signer.provider!.getNetwork().then((n) => Number(n.chainId) as AnyChainId);
 
-  if (!isSourceChain(srcChainId)) {
+  if (!isSourceChain(srcChainId, chainId)) {
     return undefined;
   }
 
