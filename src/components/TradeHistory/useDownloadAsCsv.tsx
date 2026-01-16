@@ -8,8 +8,8 @@ import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContex
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
-import { OrderType } from "domain/synthetics/orders/types";
-import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import type { OrderType } from "domain/synthetics/orders/types";
+import type { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { downloadAsCsv } from "lib/csv";

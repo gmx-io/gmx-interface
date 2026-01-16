@@ -5,7 +5,7 @@ import { Config, useAccount, useConnectorClient } from "wagmi";
 
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
-import { WalletSigner } from ".";
+import type { WalletSigner } from ".";
 
 export function clientToSigner(client: Client<Transport, Chain, Account>, account: string): WalletSigner {
   const { chain, transport } = client;

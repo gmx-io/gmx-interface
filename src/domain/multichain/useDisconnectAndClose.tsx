@@ -5,7 +5,7 @@ import { SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, CURRENT_PROVIDER_LOCALSTORAGE_KE
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { userAnalytics } from "lib/userAnalytics";
-import { DisconnectWalletEvent } from "lib/userAnalytics/types";
+import type { DisconnectWalletEvent } from "lib/userAnalytics/types";
 
 export function useDisconnectAndClose() {
   const { setIsSettingsVisible } = useSettings();

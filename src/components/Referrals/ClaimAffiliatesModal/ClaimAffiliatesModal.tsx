@@ -9,7 +9,7 @@ import {
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
 import { claimAffiliateRewardsTxn } from "domain/synthetics/referrals/claimAffiliateRewardsTxn";
-import { AffiliateReward } from "domain/synthetics/referrals/types";
+import type { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";

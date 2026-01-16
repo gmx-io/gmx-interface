@@ -1,17 +1,17 @@
-import { Provider } from "ethers";
+import type { Provider } from "ethers";
 import { withRetry } from "viem";
 
-import { ContractsChainId } from "config/chains";
-import { ExpressTxnParams } from "domain/synthetics/express";
+import type { ContractsChainId } from "config/chains";
+import type { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
 import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
-import { TokensData } from "domain/tokens";
+import type { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { WalletSigner } from "lib/wallets";
+import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import type { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
 import {
   BatchOrderTxnParams,

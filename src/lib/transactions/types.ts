@@ -1,6 +1,6 @@
-import { TaskState } from "@gelatonetwork/relay-sdk";
+import type { TaskState } from "@gelatonetwork/relay-sdk";
 
-import { ErrorLike } from "lib/errors";
+import type { ErrorLike } from "lib/errors";
 
 export type TransactionWaiterResult = {
   relayStatus?:

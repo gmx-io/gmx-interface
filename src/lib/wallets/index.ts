@@ -1,7 +1,7 @@
 import { switchChain } from "@wagmi/core";
 
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
-import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import type { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { getRainbowKitConfig } from "./rainbowKitConfig";
 

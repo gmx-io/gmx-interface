@@ -1,17 +1,17 @@
 import { t } from "@lingui/macro";
 import { encodeFunctionData, zeroAddress } from "viem";
 
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, getMultichainTokenId, IStargateAbi } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
-import { SendParam, TransferRequests } from "domain/multichain/types";
-import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
-import { CreateDepositParams, RawCreateDepositParams } from "domain/synthetics/markets";
+import type { SendParam, TransferRequests } from "domain/multichain/types";
+import type { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
+import type { CreateDepositParams, RawCreateDepositParams } from "domain/synthetics/markets";
 import { adjustForDecimals } from "lib/numbers";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { estimateSourceChainDepositFees, SourceChainDepositFees } from "./feeEstimation/estimateSourceChainDepositFees";

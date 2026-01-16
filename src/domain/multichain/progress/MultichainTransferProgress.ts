@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-namespace */
-import { Operation } from "domain/synthetics/markets/types";
-import { Token } from "domain/tokens";
+import type { Operation } from "domain/synthetics/markets/types";
+import type { Token } from "domain/tokens";
 
 import { LongCrossChainTask } from "./LongCrossChainTask";
 

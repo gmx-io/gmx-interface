@@ -1,4 +1,4 @@
-import { BaseContract, Contract } from "ethers";
+import type { BaseContract, Contract } from "ethers";
 
 /**
  * @deprecated use estimateGasLimit instead

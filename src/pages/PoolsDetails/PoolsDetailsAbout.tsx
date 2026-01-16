@@ -10,7 +10,7 @@ import {
   getStrictestMaxPoolUsdForDeposit,
 } from "domain/synthetics/markets";
 import { getMintableInfoGlv, getTotalSellableInfoGlv, isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { TokenData, TokensData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";

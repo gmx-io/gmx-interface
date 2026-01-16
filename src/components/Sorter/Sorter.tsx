@@ -2,7 +2,7 @@ import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useRef } from "react";
 
 import { useSorterConfig } from "context/SorterContext/SorterContextProvider";
-import { SortDirection, SorterConfig, SorterKey } from "context/SorterContext/types";
+import type { SortDirection, SorterConfig, SorterKey } from "context/SorterContext/types";
 
 import IcSortable from "img/ic_sortable.svg?react";
 import IcSortedAsc from "img/ic_sorted_asc.svg?react";

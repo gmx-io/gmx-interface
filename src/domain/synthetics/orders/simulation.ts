@@ -1,4 +1,4 @@
-import { BaseContract, JsonRpcProvider } from "ethers";
+import type { BaseContract, JsonRpcProvider } from "ethers";
 import { encodeFunctionData, withRetry } from "viem";
 
 import {
@@ -10,9 +10,9 @@ import {
 } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
-import { SwapPricingType } from "domain/synthetics/orders";
+import type { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { SignedTokenPermit } from "domain/tokens";
+import type { SignedTokenPermit } from "domain/tokens";
 import { getExpressProvider, getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
@@ -20,7 +20,7 @@ import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomErrorName, ErrorData, TxErrorType, extendError, isContractError, parseError } from "sdk/utils/errors";
-import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import type { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 export type SimulateExecuteParams = {
   account: string;

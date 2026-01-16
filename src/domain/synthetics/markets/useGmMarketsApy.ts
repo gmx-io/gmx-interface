@@ -18,7 +18,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
 import { useTokensDataRequest } from "../tokens";
 import { isGlvEnabled, isGlvInfo } from "./glv";
-import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
+import type { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";

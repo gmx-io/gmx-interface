@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData } from "domain/synthetics/tokens/types";
-import { type ShiftAmounts, getShiftAmounts } from "domain/synthetics/trade/utils/shift";
+import { getShiftAmounts, ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { parseValue } from "lib/numbers";
 
 export function useShiftAmounts({

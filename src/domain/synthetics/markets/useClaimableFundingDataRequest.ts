@@ -6,7 +6,7 @@ import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { hashDataMap } from "sdk/utils/hash";
 
 import { ClaimableFundingData, getMarketDivisor, useMarkets } from ".";

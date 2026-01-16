@@ -18,7 +18,7 @@ import {
 } from "domain/synthetics/tradeHistory";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
-import { SharePositionClickEvent } from "lib/userAnalytics/types";
+import type { SharePositionClickEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -35,7 +35,7 @@ import NewLinkIconThin from "img/ic_new_link_thin.svg?react";
 
 import ShareClosedPosition from "./ShareClosedPosition";
 import { formatPositionMessage } from "./utils/position";
-import { TooltipContent, TooltipString } from "./utils/shared";
+import type { TooltipContent, TooltipString } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 import "./TradeHistoryRow.scss";

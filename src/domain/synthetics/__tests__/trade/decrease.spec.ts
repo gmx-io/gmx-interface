@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
-import { PositionInfoLoaded } from "domain/synthetics/positions";
-import { TokenData } from "domain/synthetics/tokens";
+import type { PositionInfoLoaded } from "domain/synthetics/positions";
+import type { TokenData } from "domain/synthetics/tokens";
 import { expandDecimals } from "lib/numbers";
 import { getDecreasePositionAmounts } from "sdk/utils/trade/decrease";
 

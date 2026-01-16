@@ -22,7 +22,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { RatingToast } from "components/RatingToast/RatingToast";
 
-import { Answer } from "./types";
+import type { Answer } from "./types";
 import { formatAnswersByQuestionType } from "./utils";
 
 const ACTION_TRIGGERED_DELAY = 5000;

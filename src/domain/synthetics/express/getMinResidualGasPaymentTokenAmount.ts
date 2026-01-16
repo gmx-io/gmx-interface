@@ -5,7 +5,7 @@ import {
 } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { type TokenData, convertToTokenAmount } from "../tokens";
+import { convertToTokenAmount, TokenData } from "../tokens";
 import type { ExpressTxnParams } from "./types";
 
 export function getMinResidualGasPaymentTokenAmount({

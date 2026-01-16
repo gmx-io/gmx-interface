@@ -1,7 +1,7 @@
 import { calculateGmxAccountTechnicalFees } from "./calculateGmxAccountTechnicalFees";
 import { calculateSettlementChainTechnicalFees } from "./calculateSettlementChainTechnicalFees";
 import { calculateSourceChainTechnicalFees } from "./calculateSourceChainTechnicalFees";
-import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
+import type { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 
 export async function calculateTechnicalFees(
   params: CalculateTechnicalFeesParams

@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ComponentType, FunctionComponent } from "react";
+import type { ComponentPropsWithoutRef, ComponentType, FunctionComponent } from "react";
 import { SkeletonTheme } from "react-loading-skeleton";
 
 import AccountPnlSummarySkeletonStructure from "./AccountPnlSummarySkeletonStructure";

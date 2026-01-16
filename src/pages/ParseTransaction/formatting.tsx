@@ -1,14 +1,14 @@
 import { zeroAddress } from "viem";
 
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
 import { expandDecimals, formatBalanceAmount, formatUsdPrice } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKENS_MAP } from "sdk/configs/tokens";
 import { getMarketFullName } from "sdk/utils/markets";
 
-import { LogEntryComponentProps } from "./types";
+import type { LogEntryComponentProps } from "./types";
 
 type Formatter = (t: bigint, props: LogEntryComponentProps) => string;
 type TokenGetter = (props: LogEntryComponentProps) => Token;

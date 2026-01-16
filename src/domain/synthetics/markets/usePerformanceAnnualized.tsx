@@ -3,7 +3,7 @@ import useSWR from "swr";
 
 import { parseValue, PRECISION_DECIMALS } from "lib/numbers";
 import { PerformanceAnnualizedResponse, PerformancePeriod, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 export type PerformanceData = {
   [address: string]: bigint;

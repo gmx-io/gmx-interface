@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import DiscordIcon from "img/ic_discord.svg?react";
 import GithubIcon from "img/ic_github.svg?react";

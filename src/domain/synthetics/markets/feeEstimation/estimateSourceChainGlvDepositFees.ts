@@ -1,14 +1,14 @@
 import { zeroAddress } from "viem";
 
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getMappedTokenId, getMultichainTokenId, RANDOM_WALLET } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
-import { SendParam } from "domain/multichain/types";
-import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
+import type { SendParam } from "domain/multichain/types";
+import type { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
 import { adjustForDecimals } from "lib/numbers";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";

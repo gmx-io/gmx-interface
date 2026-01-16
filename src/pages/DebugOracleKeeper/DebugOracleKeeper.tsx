@@ -9,8 +9,8 @@ import { FreshnessMetricId } from "lib/metrics/types";
 import {
   _debugOracleKeeper,
   OracleKeeperDebugFlags,
-  type OracleKeeperDebugEvent,
-  type OracleKeeperDebugState,
+  OracleKeeperDebugEvent,
+  OracleKeeperDebugState,
 } from "lib/oracleKeeperFetcher/_debug";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { usePrevious } from "lib/usePrevious";
@@ -20,7 +20,7 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Card from "components/Card/Card";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
-import { DebugControlsPanel, EventsPanel, OracleEndpointsTable, type OracleEndpointStats } from "./parts";
+import { DebugControlsPanel, EventsPanel, OracleEndpointsTable, OracleEndpointStats } from "./parts";
 
 const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 

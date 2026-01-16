@@ -5,7 +5,7 @@ import { getContract } from "config/contracts";
 import type { SetPendingDeposit } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import type { OrderMetricId } from "lib/metrics";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";

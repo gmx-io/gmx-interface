@@ -52,7 +52,7 @@ import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/sel
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { ExpressTxnParams } from "domain/synthetics/express";
+import type { ExpressTxnParams } from "domain/synthetics/express";
 import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
@@ -70,10 +70,10 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
-import { TokenData } from "sdk/types/tokens";
+import type { ExecutionFee } from "sdk/types/fees";
+import type { TokenData } from "sdk/types/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
-import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import type { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";

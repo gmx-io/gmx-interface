@@ -6,7 +6,7 @@ import { searchBy } from "lib/searchBy";
 
 import Checkbox from "components/Checkbox/Checkbox";
 
-import { FilteredGroup, Group, Item } from "./types";
+import type { FilteredGroup, Group, Item } from "./types";
 
 type GroupsProps<T> = {
   filteredGroups: FilteredGroup<T>[];

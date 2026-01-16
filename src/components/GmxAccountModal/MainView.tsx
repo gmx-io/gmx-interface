@@ -25,7 +25,7 @@ import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
-import { Token } from "sdk/types/tokens";
+import type { Token } from "sdk/types/tokens";
 
 import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";

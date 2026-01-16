@@ -31,12 +31,12 @@ import {
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
-import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import type { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
-import { TradeMode } from "domain/synthetics/trade";
+import type { TradeMode } from "domain/synthetics/trade";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useShareSuccessClosedPosition } from "domain/synthetics/tradeHistory/useShareSuccessClosedPosition";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
@@ -54,7 +54,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
 

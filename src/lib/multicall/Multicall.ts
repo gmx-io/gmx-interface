@@ -13,12 +13,12 @@ import type {
 } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
-import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
+import type { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { sleepWithSignal } from "lib/sleep";
 import { AbiId, abis as allAbis } from "sdk/abis";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
 
-import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
+import { _debugMulticall, MulticallDebugEventType, MulticallDebugState } from "./_debug";
 
 export const MAX_PRIMARY_TIMEOUT = 20_000;
 

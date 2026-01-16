@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import useSWR from "swr";
-import { BareFetcher, SWRConfiguration } from "swr/_internal";
+import type { BareFetcher, SWRConfiguration } from "swr/_internal";
 
 export function useSequentialTimedSWR<Data = any, Error = any>(
   key: any[] | null | undefined | false,

@@ -1,7 +1,7 @@
 import type { Provider } from "ethers";
 
 import { extendError } from "lib/errors";
-import { ISigner } from "lib/transactions/iSigner";
+import type { ISigner } from "lib/transactions/iSigner";
 
 const MIN_GAS_LIMIT = 22000n;
 

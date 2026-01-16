@@ -1,4 +1,4 @@
-import { ContractCallResult } from "lib/multicall";
+import type { ContractCallResult } from "lib/multicall";
 
 export function sumBalancesFromCalls(
   result: Record<string, ContractCallResult | undefined> | undefined,

@@ -1,9 +1,9 @@
-import { LeaderboardAccount, LeaderboardPosition, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
+import type { LeaderboardAccount, LeaderboardPosition, LeaderboardPositionBase } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
-import { MarketInfo } from "domain/synthetics/markets";
+import type { MarketInfo } from "domain/synthetics/markets";
 import { applyFactor } from "lib/numbers";
 
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import { selectAccount, selectMarketsInfoData, selectTokensData, selectUserReferralInfo } from "./globalSelectors";
 

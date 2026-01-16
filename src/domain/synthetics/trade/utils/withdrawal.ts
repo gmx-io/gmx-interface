@@ -1,8 +1,8 @@
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
-import { ERC20Address } from "domain/tokens";
+import type { ERC20Address } from "domain/tokens";
 import { applyFactor } from "lib/numbers";
-import { FindSwapPath, WithdrawalAmounts } from "sdk/types/trade";
+import type { FindSwapPath, WithdrawalAmounts } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function getWithdrawalAmounts(p: {

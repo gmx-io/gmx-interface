@@ -1,10 +1,10 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
-import { UserReferralInfo } from "domain/referrals";
+import type { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
-import { MarketInfo, MarketsInfoData } from "sdk/types/markets";
-import { PositionInfo } from "sdk/types/positions";
-import { TokenData } from "sdk/types/tokens";
-import { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/types/trade";
+import type { MarketInfo, MarketsInfoData } from "sdk/types/markets";
+import type { PositionInfo } from "sdk/types/positions";
+import type { TokenData } from "sdk/types/tokens";
+import type { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/types/trade";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 

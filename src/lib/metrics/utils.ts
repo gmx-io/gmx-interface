@@ -1,17 +1,17 @@
 import { USD_DECIMALS } from "config/factors";
-import { EventLogData } from "context/SyntheticsEvents";
-import { ExpressTxnParams } from "domain/synthetics/express";
-import { ExecutionFee } from "domain/synthetics/fees";
+import type { EventLogData } from "context/SyntheticsEvents";
+import type { ExpressTxnParams } from "domain/synthetics/express";
+import type { ExecutionFee } from "domain/synthetics/fees";
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
-import { Subaccount } from "domain/synthetics/subaccount";
-import { TokenData } from "domain/synthetics/tokens";
+import type { Subaccount } from "domain/synthetics/subaccount";
+import type { TokenData } from "domain/synthetics/tokens";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMode } from "domain/synthetics/trade";
 import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
-import { TwapDuration } from "sdk/types/twap";
-import { CreateOrderPayload } from "sdk/utils/orderTransactions";
+import type { TwapDuration } from "sdk/types/twap";
+import type { CreateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { metrics, SubmittedOrderEvent } from ".";
 import {

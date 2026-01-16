@@ -9,7 +9,7 @@ import {
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExpressTxnParams } from "domain/synthetics/express";
+import type { ExpressTxnParams } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { usePrevious } from "lib/usePrevious";

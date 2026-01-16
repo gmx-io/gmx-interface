@@ -1,16 +1,16 @@
 import { Trans, t } from "@lingui/macro";
-import { Contract, Overrides, Wallet } from "ethers";
+import type { Contract, Overrides, Wallet } from "ethers";
 import React, { ReactNode } from "react";
 
 import { getExplorerUrl } from "config/chains";
-import {
+import type {
   PendingTransaction,
   PendingTransactionData,
   SetPendingTransactions,
 } from "context/PendingTxnsContext/PendingTxnsContext";
 import { makeTransactionErrorHandler } from "lib/errors/additionalValidation";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
-import { OrderMetricId } from "lib/metrics/types";
+import type { OrderMetricId } from "lib/metrics/types";
 import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";

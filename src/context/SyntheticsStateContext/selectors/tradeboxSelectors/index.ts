@@ -2,7 +2,7 @@ import { maxUint256 } from "viem";
 
 import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
   getExternalSwapInputsByFromValue,

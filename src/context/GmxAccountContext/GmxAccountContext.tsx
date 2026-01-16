@@ -6,7 +6,7 @@ import { DEFAULT_SETTLEMENT_CHAIN_ID, DEFAULT_SETTLEMENT_CHAIN_ID_MAP } from "co
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY, SELECTED_SETTLEMENT_CHAIN_ID_KEY } from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
-import { SettlementChainId, SourceChainId } from "sdk/configs/chains";
+import type { SettlementChainId, SourceChainId } from "sdk/configs/chains";
 
 export type GmxAccountModalView =
   | "main"

@@ -8,8 +8,8 @@ import {
   isStopIncreaseOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
-import { PositionInfoLoaded } from "domain/synthetics/positions";
-import { NextPositionValues } from "domain/synthetics/trade";
+import type { PositionInfoLoaded } from "domain/synthetics/positions";
+import type { NextPositionValues } from "domain/synthetics/trade";
 
 export function getPositionOrderError({
   positionOrder,

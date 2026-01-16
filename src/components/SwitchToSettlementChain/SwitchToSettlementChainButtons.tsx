@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useAccount } from "wagmi";
 
-import { getChainName, type SettlementChainId } from "config/chains";
+import { getChainName, SettlementChainId } from "config/chains";
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { switchNetwork } from "lib/wallets";
 

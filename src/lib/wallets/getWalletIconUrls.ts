@@ -1,4 +1,4 @@
-import { WagmiConnectorInstance } from "@rainbow-me/rainbowkit/dist/wallets/Wallet";
+import type { WagmiConnectorInstance } from "@rainbow-me/rainbowkit/dist/wallets/Wallet";
 import uniqBy from "lodash/uniqBy";
 import { useEffect, useState } from "react";
 

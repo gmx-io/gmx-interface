@@ -4,9 +4,8 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { useChainId } from "lib/chains";
-import type { RawIncentivesStats } from "lib/oracleKeeperFetcher";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import { ContractsChainId } from "sdk/configs/chains";
+import { useOracleKeeperFetcher, RawIncentivesStats } from "lib/oracleKeeperFetcher";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 export default function useIncentiveStats(overrideChainId?: number) {
   const { chainId: defaultChainId } = useChainId();

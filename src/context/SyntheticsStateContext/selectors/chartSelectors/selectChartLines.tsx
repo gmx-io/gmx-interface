@@ -13,7 +13,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
-import { StaticChartLine } from "components/TVChartContainer/types";
+import type { StaticChartLine } from "components/TVChartContainer/types";
 
 import { selectChartToken } from ".";
 

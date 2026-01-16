@@ -3,7 +3,7 @@ import { maxUint256, StateOverride, zeroHash } from "viem";
 import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
-import { SendParam } from "domain/multichain/types";
+import type { SendParam } from "domain/multichain/types";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";

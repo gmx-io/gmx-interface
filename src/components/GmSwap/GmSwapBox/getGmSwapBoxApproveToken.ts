@@ -1,5 +1,5 @@
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
 import { getByKey } from "lib/objects";
 

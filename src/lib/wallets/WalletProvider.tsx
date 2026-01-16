@@ -1,6 +1,5 @@
 import { useLingui } from "@lingui/react";
-import { darkTheme, lightTheme, RainbowKitProvider, type Theme, type Locale } from "@rainbow-me/rainbowkit";
-import "@rainbow-me/rainbowkit/styles.css";
+import { darkTheme, lightTheme, RainbowKitProvider, Theme, Locale } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import merge from "lodash/merge";
 import { useMemo } from "react";
@@ -9,6 +8,8 @@ import { WagmiProvider } from "wagmi";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import { getRainbowKitConfig } from "./rainbowKitConfig";
+
+import "@rainbow-me/rainbowkit/styles.css";
 
 const darkWalletTheme = merge(darkTheme(), {
   colors: {

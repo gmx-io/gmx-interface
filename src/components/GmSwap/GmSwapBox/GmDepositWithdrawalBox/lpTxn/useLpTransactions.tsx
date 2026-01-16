@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 
 import { selectPoolsDetailsOperation } from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
+import type { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { Operation } from "domain/synthetics/markets/types";
 
 import { useDepositTransactions } from "./useDepositTransactions";

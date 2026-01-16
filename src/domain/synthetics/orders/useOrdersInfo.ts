@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -8,13 +8,13 @@ import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwap
 import { getTwapOrderKey } from "sdk/utils/twap/index";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
-import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
+import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 import { useOrders } from "./useOrders";
-import { MarketsInfoData } from "../markets";
-import { TokensData } from "../tokens";
-import { OrderTypeFilterValue } from "./ordersFilters";
-import { Order, OrdersInfoData, TwapOrderInfo } from "./types";
+import type { MarketsInfoData } from "../markets";
+import type { TokensData } from "../tokens";
+import type { OrderTypeFilterValue } from "./ordersFilters";
+import type { Order, OrdersInfoData, TwapOrderInfo } from "./types";
 import { setOrderInfoTitle } from "./utils";
 
 export type AggregatedOrdersDataResult = {

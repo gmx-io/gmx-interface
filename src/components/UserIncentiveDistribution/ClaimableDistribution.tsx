@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useState } from "react";
 
-import { ClaimableAmountsData, DistributionConfiguration } from "domain/synthetics/claims/useUserClaimableAmounts";
+import type { ClaimableAmountsData, DistributionConfiguration } from "domain/synthetics/claims/useUserClaimableAmounts";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 
 import Checkbox from "components/Checkbox/Checkbox";

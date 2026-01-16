@@ -41,7 +41,7 @@ import {
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
+import type { OrderInfo, OrdersInfoData } from "sdk/types/orders";
 import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
 import {
   BatchOrderTxnParams,
@@ -59,8 +59,8 @@ import {
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
-import { ExpressTxnParams } from "../express/types";
+import type { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
+import type { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
   metricId?: OrderMetricId;

@@ -3,7 +3,7 @@ import { getContract } from "config/contracts";
 import { multichainBalanceKey } from "config/dataStore";
 import { getSettlementChainTradableTokenAddresses } from "config/markets";
 import type { TokenBalancesData } from "domain/tokens";
-import { MulticallRequestConfig, MulticallResult } from "lib/multicall";
+import type { MulticallRequestConfig, MulticallResult } from "lib/multicall";
 
 export function buildGmxAccountTokenBalancesRequest(chainId: SettlementChainId, account: string) {
   const tradableTokenAddresses: string[] = getSettlementChainTradableTokenAddresses(chainId);

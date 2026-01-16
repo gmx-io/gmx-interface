@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { getMarketUiConfig } from "config/markets";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { expandDecimals, formatBalanceAmount, formatBigUsd } from "lib/numbers";

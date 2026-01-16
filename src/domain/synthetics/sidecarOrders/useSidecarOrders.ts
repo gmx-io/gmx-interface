@@ -32,7 +32,12 @@ import { getDecreasePositionAmounts, getIncreasePositionAmounts } from "domain/s
 import { usePrevious } from "lib/usePrevious";
 
 import { convertToTokenAmount } from "../tokens";
-import { SidecarLimitOrderEntry, SidecarOrderEntry, SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
+import type {
+  SidecarLimitOrderEntry,
+  SidecarOrderEntry,
+  SidecarSlTpOrderEntry,
+  SidecarSlTpOrderEntryValid,
+} from "./types";
 import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
 import { getCommonError, handleEntryError } from "./utils";

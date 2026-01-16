@@ -5,7 +5,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { importImage } from "lib/legacy";

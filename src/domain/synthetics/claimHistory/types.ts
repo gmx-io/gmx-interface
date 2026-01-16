@@ -1,6 +1,6 @@
-import { Token } from "sdk/types/tokens";
+import type { Token } from "sdk/types/tokens";
 
-import { MarketInfo } from "../markets";
+import type { MarketInfo } from "../markets";
 
 export enum ClaimType {
   ClaimPriceImpact = "ClaimPriceImpact",

@@ -15,17 +15,16 @@ import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
-import { MarketInfo } from "domain/synthetics/markets";
+import type { MarketInfo, MarketsData, MarketsInfoData } from "domain/synthetics/markets";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
-import { TwapDuration } from "sdk/types/twap";
+import type { TwapDuration } from "sdk/types/twap";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
 import {
   isLimitOrderType,
@@ -38,7 +37,7 @@ import {
   OrdersInfoData,
   PositionOrderInfo,
 } from "../orders";
-import { PositionInfo, PositionsInfoData } from "../positions";
+import type { PositionInfo, PositionsInfoData } from "../positions";
 import { TokensData, useTokensAllowanceData } from "../tokens";
 import { useAvailableTokenOptions } from "./useAvailableTokenOptions";
 import { useSidecarOrdersState } from "./useSidecarOrdersState";

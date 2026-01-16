@@ -13,7 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd, getMidPrice, useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthetics/tokens";
-import { TokenPricesData, TokensData } from "domain/tokens";
+import type { TokenPricesData, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";

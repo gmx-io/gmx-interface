@@ -1,15 +1,15 @@
 import { t } from "@lingui/macro";
 import { encodeFunctionData, zeroAddress } from "viem";
 
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, MultichainTokenId } from "config/multichain";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
-import { SendParam } from "domain/multichain/types";
+import type { SendParam } from "domain/multichain/types";
 import { sendWalletTransaction } from "lib/transactions";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 

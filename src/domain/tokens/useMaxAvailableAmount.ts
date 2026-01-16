@@ -1,12 +1,12 @@
 import { getSourceChainDecimalsMapped } from "config/multichain";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
-import { TokenData } from "domain/synthetics/tokens";
+import type { TokenData } from "domain/synthetics/tokens";
 import { getBalanceByBalanceType } from "domain/synthetics/tokens/utils";
 import { getMinResidualAmount, TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { absDiffBps, formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { SourceChainId } from "sdk/configs/chains";
+import type { SourceChainId } from "sdk/configs/chains";
 
 export function useMaxAvailableAmount({
   fromToken,

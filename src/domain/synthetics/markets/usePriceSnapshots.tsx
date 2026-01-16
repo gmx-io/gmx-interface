@@ -4,10 +4,10 @@ import useSWR from "swr";
 
 import { SECONDS_IN_DAY } from "lib/dates";
 import { getSubsquidGraphClient } from "lib/indexers";
-import { Price } from "sdk/types/subsquid";
+import type { Price } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 
-import { Period } from "./usePoolsTimeRange";
+import type { Period } from "./usePoolsTimeRange";
 
 const PRICES_QUERY = gql`
   query Prices($fromTimestamp: Int, $tokenAddress: String!, $limit: Int, $offset: Int) {

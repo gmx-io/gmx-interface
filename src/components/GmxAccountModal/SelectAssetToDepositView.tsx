@@ -11,9 +11,9 @@ import {
   useGmxAccountDepositViewTokenAddress,
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
-import { TokenChainData } from "domain/multichain/types";
+import type { TokenChainData } from "domain/multichain/types";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
-import { TokenData, TokensData } from "domain/tokens";
+import type { TokenData, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";

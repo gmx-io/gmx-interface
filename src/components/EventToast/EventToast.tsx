@@ -1,7 +1,7 @@
 import "./EventToast.css";
-import { Toast } from "react-hot-toast";
+import type { Toast } from "react-hot-toast";
 
-import { EventData } from "config/events";
+import type { EventData } from "config/events";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 

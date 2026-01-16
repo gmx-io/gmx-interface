@@ -1,5 +1,5 @@
 import { AbiCoder, ethers, isAddress, LogParams, Provider, ProviderEvent, ZeroAddress } from "ethers";
-import { MutableRefObject } from "react";
+import type { MutableRefObject } from "react";
 import { Abi, decodeEventLog, Hex } from "viem";
 import type { ContractEventArgsFromTopics } from "viem/_types/types/contract";
 

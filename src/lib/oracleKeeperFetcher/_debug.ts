@@ -3,7 +3,7 @@ import { ORACLE_KEEPER_DEBUG_STATE_KEY } from "config/localStorage";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
 
-import { OracleKeeperFetcher } from "./oracleKeeperFetcher";
+import type { OracleKeeperFetcher } from "./oracleKeeperFetcher";
 
 export enum OracleKeeperDebugFlags {
   LogOracleKeeper = "logOracleKeeper",

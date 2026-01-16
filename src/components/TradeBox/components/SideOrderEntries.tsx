@@ -4,8 +4,8 @@ import { useCallback, useMemo, useRef } from "react";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isIncreaseOrderType } from "domain/synthetics/orders";
-import { SidecarOrderEntry, SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { TokenData } from "domain/synthetics/tokens";
+import type { SidecarOrderEntry, SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import type { TokenData } from "domain/synthetics/tokens";
 import { formatUsd, formatUsdPrice } from "lib/numbers";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 

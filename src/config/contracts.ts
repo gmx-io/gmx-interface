@@ -6,7 +6,7 @@ import { GlvRouter__factory } from "typechain-types";
 import { ExchangeRouter__factory } from "typechain-types/factories/ExchangeRouter__factory";
 import { Multicall__factory } from "typechain-types/factories/Multicall__factory";
 
-import { ContractsChainId } from "./chains";
+import type { ContractsChainId } from "./chains";
 
 const { ZeroAddress } = ethers;
 

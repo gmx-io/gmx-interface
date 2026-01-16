@@ -8,7 +8,7 @@ import { selectBotanixStakingAssetsPerShare } from "context/SyntheticsStateConte
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/types/trade";

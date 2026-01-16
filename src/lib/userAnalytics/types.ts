@@ -1,6 +1,6 @@
 import type { ChainName } from "config/chains";
-import { EditingOrderSource } from "domain/synthetics/orders/types";
-import { TradeMode, TradeType } from "domain/synthetics/trade";
+import type { EditingOrderSource } from "domain/synthetics/orders/types";
+import type { TradeMode, TradeType } from "domain/synthetics/trade";
 
 export type LandingPageViewEvent = {
   event: "LandingPageAction";

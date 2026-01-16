@@ -1,3 +1,3 @@
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 
 export const selectTokenPermits = (s: SyntheticsState) => s.tokenPermitsState.tokenPermits;

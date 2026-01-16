@@ -8,10 +8,10 @@ import {
   getExecutionFeeWarning,
   useGasLimits,
   useGasPrice,
+  estimateOrderOraclePriceCount,
 } from "domain/synthetics/fees";
-import { estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
-import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
+import type { DecreasePositionSwapType } from "domain/synthetics/orders";
+import type { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";

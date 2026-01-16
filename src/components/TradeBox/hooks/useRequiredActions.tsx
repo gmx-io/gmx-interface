@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "domain/synthetics/sidecarOrders/types";
+import type { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 
 export function useRequiredActions() {

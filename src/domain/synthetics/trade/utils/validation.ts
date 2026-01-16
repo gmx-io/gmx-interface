@@ -11,7 +11,7 @@ import {
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getMappedTokenId } from "config/multichain";
-import { ExpressTxnParams } from "domain/synthetics/express/types";
+import type { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
   GlvInfo,
   MarketInfo,

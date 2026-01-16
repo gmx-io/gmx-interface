@@ -1,11 +1,11 @@
-import { type ContractsChainId, SourceChainId } from "config/chains";
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import type { GlobalExpressParams } from "domain/synthetics/express";
-import {
+import type {
   RawCreateDepositParams,
   RawCreateGlvDepositParams,
   RawCreateWithdrawalParams,
   RawCreateGlvWithdrawalParams,
-  type GlvInfo,
+  GlvInfo,
 } from "domain/synthetics/markets";
 import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
@@ -13,9 +13,9 @@ import type { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/fee
 import type { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import type { NativeTokenSupportedAddress, ERC20Address, TokensData } from "domain/tokens";
 import type { ExecutionFee, GasLimitsConfig } from "sdk/types/fees";
-import { type DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
+import type { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
 
-import { Operation } from "../types";
+import type { Operation } from "../types";
 
 type SameChainGmFees = {
   kind: "settlementChain";

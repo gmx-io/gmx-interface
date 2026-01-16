@@ -1,5 +1,5 @@
-import { SettlementChainId, SourceChainId } from "config/chains";
-import {
+import type { SettlementChainId, SourceChainId } from "config/chains";
+import type {
   RawCreateGlvDepositParams,
   RawCreateDepositParams,
   RawCreateGlvWithdrawalParams,
@@ -10,9 +10,9 @@ import { estimateSourceChainGlvDepositFees } from "domain/synthetics/markets/fee
 import { estimateSourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import { estimateSourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import { MARKETS } from "sdk/configs/markets";
-import { WithdrawalAmounts } from "sdk/types/trade";
+import type { WithdrawalAmounts } from "sdk/types/trade";
 
-import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
+import type { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 import { Operation } from "../types";
 
 export async function calculateSourceChainTechnicalFees(

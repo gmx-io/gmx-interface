@@ -4,9 +4,9 @@ import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 
-import { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
+import type { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};

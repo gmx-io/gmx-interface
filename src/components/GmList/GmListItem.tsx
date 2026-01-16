@@ -24,11 +24,11 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
-import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
+import type { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import type { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { ProgressiveTokenData } from "domain/tokens";
+import type { ProgressiveTokenData } from "domain/tokens";
 import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";

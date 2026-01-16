@@ -1,5 +1,5 @@
-import { SettlementChainId, SourceChainId } from "config/chains";
-import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
+import type { SettlementChainId, SourceChainId } from "config/chains";
+import type { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { getToken } from "sdk/configs/tokens";
 
 import { convertToUsd, getMidPrice } from "../../tokens";

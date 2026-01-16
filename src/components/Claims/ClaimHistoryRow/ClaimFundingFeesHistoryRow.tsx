@@ -1,4 +1,4 @@
-import { MessageDescriptor } from "@lingui/core";
+import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import React, { useCallback, useMemo } from "react";

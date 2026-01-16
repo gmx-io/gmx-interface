@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 
 import { BOTANIX, getExplorerUrl } from "config/chains";
-import { StakeOrUnstakeParams } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
+import type { StakeOrUnstakeParams } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { formatTokenAmount } from "lib/numbers";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";

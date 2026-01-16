@@ -7,7 +7,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { sendMissedCoinSearchDebounced } from "./requests";
-import { MissedCoinsPlace } from "./types";
+import type { MissedCoinsPlace } from "./types";
 
 export function useMissedCoinsSearch({
   searchText,

@@ -3,11 +3,11 @@ import { Signer, ethers } from "ethers";
 import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
-import { ContractsChainId } from "sdk/configs/chains";
-import { OrderType } from "sdk/types/orders";
+import type { ContractsChainId } from "sdk/configs/chains";
+import type { OrderType } from "sdk/types/orders";
 import {
   buildUpdateOrderMulticall,
   buildUpdateOrderPayload,

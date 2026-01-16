@@ -1,6 +1,6 @@
 import { AES } from "crypto-js";
-import { Signer } from "ethers";
-import { keccak256, type Hash } from "viem";
+import type { Signer } from "ethers";
+import { keccak256, Hash } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 
 import { SUBACCOUNT_MESSAGE } from "sdk/configs/express";

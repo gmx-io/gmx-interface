@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
-import { Hash } from "viem";
+import type { Hash } from "viem";
 
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";

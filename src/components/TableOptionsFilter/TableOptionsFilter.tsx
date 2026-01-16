@@ -11,7 +11,7 @@ import { TableFilterBase } from "components/TableFilterBase/TableFilterBase";
 
 import { FlatItems, useFilteredFlatItems } from "./flat";
 import { Groups, useFilteredGroups } from "./groups";
-import { FilteredGroup, Group, Item } from "./types";
+import type { FilteredGroup, Group, Item } from "./types";
 
 import "./TableOptionsFilter.scss";
 

@@ -2,7 +2,7 @@ import orderBy from "lodash/orderBy";
 
 import { ContractsChainId, getChainName } from "config/rpc";
 import { EndpointStats, FallbackTracker, FallbackTrackerConfig } from "lib/FallbackTracker";
-import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
+import type { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { ORACLE_FALLBACK_TRACKER_CONFIG } from "sdk/configs/oracleKeeper";
 

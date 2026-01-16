@@ -2,12 +2,12 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMedia } from "react-use";
 
-import { ContractsChainId } from "config/chains";
-import { MultichainMarketTokensBalances } from "domain/multichain/types";
+import type { ContractsChainId } from "config/chains";
+import type { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { MarketTokensAPRData } from "domain/synthetics/markets/types";
-import { StakingProcessedData } from "lib/legacy";
+import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
+import type { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";

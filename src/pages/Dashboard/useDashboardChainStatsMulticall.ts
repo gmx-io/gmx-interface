@@ -1,7 +1,7 @@
 import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
-import { MulticallRequestConfig } from "lib/multicall/types";
+import type { MulticallRequestConfig } from "lib/multicall/types";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";

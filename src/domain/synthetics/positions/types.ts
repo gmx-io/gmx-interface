@@ -1,5 +1,5 @@
-import { PendingPositionUpdate } from "context/SyntheticsEvents";
-import { Position as BasePosition, PositionInfo as BasePositionInfo } from "sdk/types/positions";
+import type { PendingPositionUpdate } from "context/SyntheticsEvents";
+import type { Position as BasePosition, PositionInfo as BasePositionInfo } from "sdk/types/positions";
 
 export * from "sdk/types/positions";
 

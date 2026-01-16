@@ -7,7 +7,7 @@ import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { sleep } from "lib/sleep";
 import type { SWRGCMiddlewareConfig } from "lib/swrMiddlewares";
-import { AnyChainId, ContractsChainId } from "sdk/configs/chains";
+import type { AnyChainId, ContractsChainId } from "sdk/configs/chains";
 
 import { debugLog } from "./debug";
 import { executeMulticall } from "./executeMulticall";

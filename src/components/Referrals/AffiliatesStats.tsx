@@ -14,7 +14,7 @@ import { helperToast } from "lib/helperToast";
 import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount, formatBigUsd, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
-import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
+import type { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 

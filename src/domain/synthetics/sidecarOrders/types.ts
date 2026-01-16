@@ -1,5 +1,5 @@
-import { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
-import { DecreasePositionAmounts, IncreasePositionAmounts } from "domain/synthetics/trade";
+import type { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
+import type { DecreasePositionAmounts, IncreasePositionAmounts } from "domain/synthetics/trade";
 
 export type GroupPrefix = "sl" | "tp" | "limit";
 

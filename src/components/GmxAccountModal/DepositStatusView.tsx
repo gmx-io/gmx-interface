@@ -6,7 +6,7 @@ import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "conte
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { userAnalytics } from "lib/userAnalytics";
-import { OneClickPromotionEvent } from "lib/userAnalytics/types";
+import type { OneClickPromotionEvent } from "lib/userAnalytics/types";
 import { getToken } from "sdk/configs/tokens";
 
 import { Amount } from "components/Amount/Amount";

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { type DebouncedFuncLeading } from "lodash";
+import type { DebouncedFuncLeading } from "lodash";
 import debounce from "lodash/debounce";
 import identity from "lodash/identity";
 import { useMemo } from "react";

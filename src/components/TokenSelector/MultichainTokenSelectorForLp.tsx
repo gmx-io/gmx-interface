@@ -3,10 +3,10 @@ import { useMemo, useState } from "react";
 
 import {
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
-  type AnyChainId,
-  type ContractsChainId,
-  type GmxAccountPseudoChainId,
-  type SourceChainId,
+  AnyChainId,
+  ContractsChainId,
+  GmxAccountPseudoChainId,
+  SourceChainId,
 } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import type { Token } from "domain/tokens";

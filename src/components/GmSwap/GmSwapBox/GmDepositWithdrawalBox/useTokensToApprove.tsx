@@ -3,7 +3,7 @@ import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
-import { SourceChainId } from "config/chains";
+import type { SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getMappedTokenId, getMultichainTokenId } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -28,7 +28,7 @@ import { helperToast } from "lib/helperToast";
 import { adjustForDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { isMarketTokenAddress } from "sdk/configs/markets";
 import { getToken, isValidTokenSafe } from "sdk/configs/tokens";

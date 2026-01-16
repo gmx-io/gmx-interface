@@ -1,13 +1,13 @@
 import { t, Trans } from "@lingui/macro";
-import { Signer } from "ethers";
-import { ReactNode } from "react";
+import type { Signer } from "ethers";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
-import { ErrorData } from "lib/errors";
+import type { ErrorData } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";

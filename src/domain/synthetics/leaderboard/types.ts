@@ -1,6 +1,6 @@
 import type { ContractsChainId } from "sdk/configs/chains";
 
-import { LEADERBOARD_PAGES_ORDER } from "./constants";
+import type { LEADERBOARD_PAGES_ORDER } from "./constants";
 
 export type RemoteData<T> = {
   isLoading: boolean;

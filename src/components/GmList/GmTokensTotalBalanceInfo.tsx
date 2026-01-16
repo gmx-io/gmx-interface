@@ -2,18 +2,18 @@ import { Trans, t } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
 import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
-import { MultichainMarketTokenBalances } from "domain/multichain/types";
+import type { MultichainMarketTokenBalances } from "domain/multichain/types";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
-import { UserEarningsData } from "domain/synthetics/markets";
+import type { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
-import { ProgressiveTokenData } from "domain/tokens";
+import type { ProgressiveTokenData } from "domain/tokens";
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { TooltipPosition } from "components/Tooltip/Tooltip";
+import type { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";

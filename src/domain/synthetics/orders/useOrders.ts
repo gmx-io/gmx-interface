@@ -1,12 +1,12 @@
 import { useEffect, useMemo } from "react";
 import { Address, isAddressEqual } from "viem";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
-import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
+import type { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
@@ -23,7 +23,7 @@ import {
   isVisibleOrder,
 } from "sdk/utils/orders";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
-import { ReaderUtils } from "typechain-types/SyntheticsReader";
+import type { ReaderUtils } from "typechain-types/SyntheticsReader";
 
 import type {
   MarketFilterLongShortDirection,

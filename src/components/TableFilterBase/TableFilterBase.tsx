@@ -1,7 +1,7 @@
 import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 
 import Button from "components/Button/Button";
 

@@ -1,7 +1,7 @@
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, type ContractsChainId } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "config/chains";
 
 export const NETWORK_QUERY_PARAM = "network";
 export const VERSION_QUERY_PARAM = "v";

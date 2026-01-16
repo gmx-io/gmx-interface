@@ -1,4 +1,4 @@
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { OrderType, SwapPricingType } from "domain/synthetics/orders";
@@ -15,7 +15,7 @@ import {
 } from "domain/synthetics/trade";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/types/trade";
+import type { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/types/trade";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {

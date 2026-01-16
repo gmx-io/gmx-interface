@@ -18,9 +18,9 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { formatAmountFree } from "lib/numbers";
-import { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
+import type { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
 
 function formatTokenAmount(amount: bigint | undefined, decimals: number): string {
   if (amount === undefined || amount <= 0n) return "";

@@ -1,4 +1,4 @@
-import {
+import type {
   RawCreateGlvDepositParams,
   RawCreateDepositParams,
   RawCreateGlvWithdrawalParams,
@@ -6,7 +6,7 @@ import {
 } from "domain/synthetics/markets";
 import { estimatePureLpActionExecutionFee } from "domain/synthetics/markets/feeEstimation/estimatePureLpActionExecutionFee";
 
-import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
+import type { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 import { Operation } from "../types";
 
 export async function calculateSettlementChainTechnicalFees(

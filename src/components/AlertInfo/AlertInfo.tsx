@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";

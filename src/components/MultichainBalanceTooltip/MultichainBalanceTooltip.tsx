@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { getChainName, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
-import { MultichainMarketTokenBalances } from "domain/multichain/types";
+import type { MultichainMarketTokenBalances } from "domain/multichain/types";
 import { useSortedTokenBalances } from "domain/multichain/useSortedTokenBalances";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 

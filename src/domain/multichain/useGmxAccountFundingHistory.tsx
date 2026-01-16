@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 
 import { getIndexerUrl } from "config/indexers";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
-import { MultichainFundingHistoryItem } from "domain/multichain/types";
+import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { isValidTokenSafe } from "sdk/configs/tokens";

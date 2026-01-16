@@ -1,4 +1,4 @@
-import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
+import type { AbstractSigner, Provider, Signer, Wallet } from "ethers";
 import {
   Address,
   encodeFunctionData,
@@ -14,8 +14,7 @@ import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
-import { isSourceChain } from "config/multichain";
+import { SIMULATED_MULTICHAIN_BALANCE, isSourceChain } from "config/multichain";
 import { calculateMappingSlot, DATASTORE_SLOT_INDEXES } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import type { BridgeOutParams } from "domain/multichain/types";
@@ -40,19 +39,19 @@ import {
   SignedSubacсountApproval,
   Subaccount,
 } from "domain/synthetics/subaccount";
-import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import type { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
 import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { ISigner } from "lib/transactions/iSigner";
-import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
-import { WalletSigner } from "lib/wallets";
+import type { ISigner } from "lib/transactions/iSigner";
+import type { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
+import type { WalletSigner } from "lib/wallets";
 import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
-import { ContractName } from "sdk/configs/contracts";
+import type { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
+import type { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";

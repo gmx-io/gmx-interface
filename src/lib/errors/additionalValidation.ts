@@ -1,10 +1,10 @@
-import { BaseContract, Overrides, Provider, TransactionRequest } from "ethers";
+import type { BaseContract, Overrides, Provider, TransactionRequest } from "ethers";
 
 import { ErrorLike, parseError } from "lib/errors";
-import { ErrorEvent } from "lib/metrics";
+import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
-import { ISigner, ISignerSendTransactionParams } from "lib/transactions/iSigner";
-import { ErrorPattern } from "sdk/utils/errors/transactionsErrors";
+import type { ISigner, ISignerSendTransactionParams } from "lib/transactions/iSigner";
+import type { ErrorPattern } from "sdk/utils/errors/transactionsErrors";
 import { mustNeverExist } from "sdk/utils/types";
 
 const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [

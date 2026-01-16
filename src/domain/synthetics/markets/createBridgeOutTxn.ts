@@ -1,9 +1,9 @@
-import { SettlementChainId, SourceChainId } from "config/chains";
-import { BridgeOutParams } from "domain/multichain/types";
-import { ExpressTxnParams } from "domain/synthetics/express";
+import type { SettlementChainId, SourceChainId } from "config/chains";
+import type { BridgeOutParams } from "domain/multichain/types";
+import type { ExpressTxnParams } from "domain/synthetics/express";
 import { sendExpressTransaction } from "lib/transactions";
-import { ISigner } from "lib/transactions/iSigner";
-import { WalletSigner } from "lib/wallets";
+import type { ISigner } from "lib/transactions/iSigner";
+import type { WalletSigner } from "lib/wallets";
 
 import { buildAndSignBridgeOutTxn } from "../express/expressOrderUtils";
 

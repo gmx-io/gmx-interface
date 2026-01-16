@@ -1,6 +1,5 @@
 import { Contract } from "ethers";
-import { Address, encodeFunctionData, zeroAddress } from "viem";
-import type { PublicClient } from "viem";
+import { Address, encodeFunctionData, zeroAddress, PublicClient } from "viem";
 
 import type { SettlementChainId } from "config/chains";
 import { getContract } from "config/contracts";

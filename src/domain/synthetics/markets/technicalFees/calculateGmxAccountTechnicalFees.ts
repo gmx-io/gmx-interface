@@ -1,6 +1,6 @@
 import { estimateArbitraryRelayFee, getRawBaseRelayerParams } from "domain/multichain/arbitraryRelayParams";
-import { ExpressTransactionBuilder } from "domain/synthetics/express";
-import {
+import type { ExpressTransactionBuilder } from "domain/synthetics/express";
+import type {
   RawCreateDepositParams,
   RawCreateGlvDepositParams,
   RawCreateGlvWithdrawalParams,
@@ -18,7 +18,7 @@ import { nowInSeconds } from "sdk/utils/time";
 
 import { buildDepositTransferRequests } from "../buildDepositTransferRequests";
 import { buildWithdrawalTransferRequests } from "../buildWithdrawalTransferRequests";
-import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
+import type { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 import { Operation } from "../types";
 
 type GmxAccountFeesParams = CalculateTechnicalFeesParams &

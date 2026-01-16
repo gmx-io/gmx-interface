@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { SidecarOrderEntry } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import type { SidecarOrderEntry } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
 export function useSidecarOrdersState() {
   const [slEntries, setSlEntries] = useState<SidecarOrderEntry[]>([]);

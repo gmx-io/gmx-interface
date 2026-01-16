@@ -3,10 +3,10 @@ import cx from "classnames";
 import { useMemo } from "react";
 
 import { isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { OrderType, TwapOrderInfo } from "sdk/types/orders";
+import type { OrderType, TwapOrderInfo } from "sdk/types/orders";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 

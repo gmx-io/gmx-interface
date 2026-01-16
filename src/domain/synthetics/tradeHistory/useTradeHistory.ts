@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import merge from "lodash/merge";
 import { useMemo } from "react";
-import { SWRConfiguration } from "swr";
+import type { SWRConfiguration } from "swr";
 import useInfiniteSwr, { SWRInfiniteResponse } from "swr/infinite";
 import type { Address } from "viem";
 
@@ -11,11 +11,11 @@ import { OrderType } from "domain/synthetics/orders";
 import { definedOrThrow } from "lib/guards";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
+import type { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
 import { TradeAction, TradeActionType } from "sdk/types/tradeHistory";
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/indexers";
 
-import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
+import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 import { processRawTradeActions } from "./processTradeActions";
 

@@ -7,7 +7,7 @@ import {
   selectClaimsGroupedPositionPriceImpactAccruedFees,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
+import type { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";

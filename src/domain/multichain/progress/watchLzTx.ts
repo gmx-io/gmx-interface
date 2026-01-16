@@ -1,12 +1,4 @@
-import {
-  decodeEventLog,
-  encodeEventTopics,
-  parseEventLogs,
-  withRetry,
-  type Abi,
-  type ContractEventName,
-  type Log,
-} from "viem";
+import { decodeEventLog, encodeEventTopics, parseEventLogs, withRetry, Abi, ContractEventName, Log } from "viem";
 
 import { tryGetContract } from "config/contracts";
 import { ENDPOINT_ID_TO_CHAIN_ID } from "config/multichain";
@@ -19,7 +11,7 @@ import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { getBlockNumberBeforeTimestamp } from "./getBlockNumberByTimestamp";
 import { getLzBaseUrl } from "./getLzBaseUrl";

@@ -1,6 +1,6 @@
 import intersection from "lodash/intersection";
 
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";

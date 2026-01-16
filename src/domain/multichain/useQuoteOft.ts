@@ -4,7 +4,7 @@ import useSWR from "swr";
 import type { AnyChainId } from "config/chains";
 import { IStargateAbi } from "config/multichain";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { IStargate } from "typechain-types-stargate";
+import type { IStargate } from "typechain-types-stargate";
 
 import type { OFTFeeDetail, OFTLimit, OFTReceipt, QuoteOft, SendParam } from "./types";
 

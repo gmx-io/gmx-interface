@@ -16,8 +16,8 @@ import {
   buildAndSignClaimPositionPriceImpactFeesTxn,
   createClaimCollateralTxn,
 } from "domain/synthetics/claimHistory/claimPriceImpactRebate";
-import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
+import type { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
+import type { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";

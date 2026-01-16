@@ -5,7 +5,7 @@ import { useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "config/chains";
-import { MarketInfo } from "domain/synthetics/markets";
+import type { MarketInfo } from "domain/synthetics/markets";
 import { useChainId } from "lib/chains";
 import { formatDateTime } from "lib/dates";
 import { expandDecimals, formatAmount, formatTokenAmountWithUsd } from "lib/numbers";

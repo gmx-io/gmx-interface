@@ -3,7 +3,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import { Address } from "viem";
+import type { Address } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";

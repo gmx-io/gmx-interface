@@ -2,7 +2,7 @@ import debounce from "lodash/debounce";
 
 import { ChainName, getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { MarketInfo } from "domain/synthetics/markets";
+import type { MarketInfo } from "domain/synthetics/markets";
 import {
   EditingOrderSource,
   OrderInfo,
@@ -22,10 +22,10 @@ import {
   formatPercentageForMetrics,
   metrics,
 } from "lib/metrics";
-import { OrderMetricData, OrderMetricId } from "lib/metrics/types";
+import type { OrderMetricData, OrderMetricId } from "lib/metrics/types";
 import { bigintToNumber, formatRatePercentage, roundToOrder } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
-import {
+import type {
   AnalyticsOrderType,
   ConnectWalletClickEvent,
   DepthChartInteractionEvent,
@@ -35,10 +35,9 @@ import {
   TradeBoxInteractionStartedEvent,
   TradeBoxResultEvent,
   TradePageEditOrderEvent,
+  MultichainActionEvent,
 } from "lib/userAnalytics/types";
 import { getTwapDurationInSeconds } from "sdk/utils/twap";
-
-import type { MultichainActionEvent } from "./types";
 
 export function getTradeInteractionKey(pair: string) {
   return `trade-${pair}`;

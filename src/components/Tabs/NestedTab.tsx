@@ -7,7 +7,7 @@ import Button from "components/Button/Button";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import { NestedOption } from "./types";
+import type { NestedOption } from "./types";
 
 type Props<V extends string | number> = {
   option: NestedOption<V>;

@@ -1,13 +1,13 @@
 import { useMemo } from "react";
 
 import { useGasMultichainUsd, useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
-import { getFeeItem, getTotalFeeItem, type FeeItem, type GasLimitsConfig } from "domain/synthetics/fees";
-import { GlvInfo } from "domain/synthetics/markets";
+import { getFeeItem, getTotalFeeItem, FeeItem, GasLimitsConfig } from "domain/synthetics/fees";
+import type { GlvInfo } from "domain/synthetics/markets";
 import type { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { convertToUsd, getMidPrice, TokenData, TokensData } from "domain/synthetics/tokens";
-import { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "domain/synthetics/trade";
+import type { DepositAmounts, GmSwapFees, WithdrawalAmounts } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
-import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
 
 function calculateLogicalNetworkFeeUsd({

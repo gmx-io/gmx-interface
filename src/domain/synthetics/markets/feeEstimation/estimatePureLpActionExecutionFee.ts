@@ -1,6 +1,6 @@
 import type { ExecutionFee, GasLimitsConfig } from "domain/synthetics/fees";
 import type { TokensData } from "domain/synthetics/tokens/types";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import {
   estimateDepositOraclePriceCount,
   estimateExecuteDepositGasLimit,

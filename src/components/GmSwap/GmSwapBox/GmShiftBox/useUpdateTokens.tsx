@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useEffect } from "react";
+import { useEffect, Dispatch, SetStateAction } from "react";
 
 import type { TokenData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";

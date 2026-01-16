@@ -31,7 +31,7 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { GlvInfoData, MarketsInfoData, getContractMarketPrices, getGlvMarketName } from ".";
 import { convertToContractTokenPrices, getBalanceTypeFromSrcChainId } from "../tokens";
-import { TokenData, TokensData } from "../tokens/types";
+import type { TokenData, TokensData } from "../tokens/types";
 
 export type GlvList = {
   glv: {

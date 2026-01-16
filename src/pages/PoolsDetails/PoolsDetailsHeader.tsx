@@ -14,7 +14,7 @@ import { selectMultichainMarketTokensBalancesIsLoading } from "context/Synthetic
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { convertToUsd, TokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";

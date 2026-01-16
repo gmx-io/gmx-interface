@@ -27,14 +27,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
-import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
+import type { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { Operation } from "domain/synthetics/markets/types";
-import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
-import { GmSwapFees } from "sdk/types/trade";
+import type { GmSwapFees } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";

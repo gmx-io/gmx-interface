@@ -1,7 +1,7 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { type Provider } from "ethers";
+import type { Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
@@ -53,7 +53,7 @@ import {
   sendSameChainWithdrawalTxn,
 } from "domain/multichain/sendSameChainWithdrawalTxn";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
-import { BridgeOutParams, SendParam } from "domain/multichain/types";
+import type { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
@@ -61,7 +61,11 @@ import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
-import { ExpressTransactionBuilder, ExpressTxnParams, RawRelayParamsPayload } from "domain/synthetics/express/types";
+import type {
+  ExpressTransactionBuilder,
+  ExpressTxnParams,
+  RawRelayParamsPayload,
+} from "domain/synthetics/express/types";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { convertToUsd, sortTokenDataByBalance, TokenData } from "domain/tokens";
@@ -84,7 +88,7 @@ import { TxnEventName } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";

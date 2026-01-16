@@ -1,7 +1,7 @@
 import { isDevelopment } from "config/env";
 import { METRICS_PENDING_EVENTS_KEY as CACHED_METRICS_DATA_KEY, METRICS_TIMERS_KEY } from "config/localStorage";
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
-import {
+import type {
   BatchReportItem,
   CounterPayload,
   EventPayload,
@@ -21,7 +21,7 @@ import {
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
 import { getStorageItem, setStorageItem } from "./storage";
-import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
+import type { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
 
 export type MetricEventParams = {
   event: string;

@@ -15,7 +15,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import {
   selectChainId,

@@ -10,7 +10,7 @@ import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 
-import { ExpressTxnParams } from "./types";
+import type { ExpressTxnParams } from "./types";
 
 const notifyGasPaymentTokenSwitched = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
   helperToast.info(

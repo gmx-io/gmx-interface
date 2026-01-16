@@ -1,7 +1,7 @@
 import * as ethers from "ethers";
 import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
 
-import { LogEntry } from "pages/ParseTransaction/types";
+import type { LogEntry } from "pages/ParseTransaction/types";
 import { abis } from "sdk/abis";
 
 const PANIC_SIGNATURE4 = ethers.id("Panic(uint256)").slice(0, 10);

@@ -3,12 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
 import {
-  type ContractsChainId,
-  type SettlementChainId,
-  type SourceChainId,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   isContractsChain,
+  ContractsChainId,
+  SettlementChainId,
+  SourceChainId,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";

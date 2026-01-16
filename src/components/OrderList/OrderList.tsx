@@ -32,7 +32,7 @@ import {
   sortPositionOrders,
   sortSwapOrders,
 } from "domain/synthetics/orders";
-import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import type { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -42,7 +42,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";

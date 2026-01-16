@@ -2,7 +2,7 @@ import noop from "lodash/noop";
 
 import { safeAddGlobalListener } from "lib/safeListenner/safeAddListener";
 
-import { EndpointStats } from "./FallbackTracker";
+import type { EndpointStats } from "./FallbackTracker";
 
 type FallbackTrackerEventsTypes = {
   // Incomming

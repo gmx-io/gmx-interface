@@ -9,7 +9,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { InitialEntry } from "./types";
+import type { InitialEntry } from "./types";
 
 function isEqualOrders(a?: InitialEntry[], b?: InitialEntry[]) {
   return (

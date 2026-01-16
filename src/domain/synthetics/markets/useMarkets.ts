@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { MARKETS, isMarketEnabled } from "config/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
-import { MarketsData } from "./types";
+import type { MarketsData } from "./types";
 import { getMarketFullName } from "./utils";
 
 export type MarketsResult = {

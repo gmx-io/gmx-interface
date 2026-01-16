@@ -2,14 +2,14 @@ import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } 
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 
 import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
-import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import type { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
-import { TokenPrices } from "domain/tokens";
+import type { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Loader from "components/Loader/Loader";

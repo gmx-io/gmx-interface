@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
-import { MultichainMarketTokenBalances } from "domain/multichain/types";
+import type { MultichainMarketTokenBalances } from "domain/multichain/types";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
@@ -14,7 +14,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { formatPercentage } from "lib/numbers";
 import { EarnPagePortfolioItemType, sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";

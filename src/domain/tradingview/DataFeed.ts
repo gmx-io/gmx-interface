@@ -1,6 +1,6 @@
 import range from "lodash/range";
 
-import {
+import type {
   DatafeedErrorCallback,
   HistoryCallback,
   IBasicDataFeed,
@@ -13,7 +13,7 @@ import {
 } from "charting_library";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
-import { Bar, FromOldToNewArray } from "domain/tradingview/types";
+import type { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
   formatTimeInBarToMs,
   getCurrentCandleTime,
@@ -30,7 +30,7 @@ import {
   metrics,
 } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
-import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
+import type { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
 import {

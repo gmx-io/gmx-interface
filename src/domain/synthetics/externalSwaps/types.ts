@@ -1,4 +1,4 @@
-import { ExternalSwapQuote } from "sdk/types/trade";
+import type { ExternalSwapQuote } from "sdk/types/trade";
 
 export type ExternalSwapState = {
   baseOutput: ExternalSwapQuote | undefined;

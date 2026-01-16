@@ -9,7 +9,7 @@ import { getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { getTokenAddressByGlv } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { shortenAddressOrEns } from "lib/wallets";

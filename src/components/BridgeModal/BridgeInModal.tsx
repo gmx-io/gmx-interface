@@ -3,11 +3,11 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
 import {
-  type AnyChainId,
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
-  type GmxAccountPseudoChainId,
-  type SettlementChainId,
-  type SourceChainId,
+  AnyChainId,
+  GmxAccountPseudoChainId,
+  SettlementChainId,
+  SourceChainId,
 } from "config/chains";
 import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";

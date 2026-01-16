@@ -1,4 +1,4 @@
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 
 // Base selectors that don't depend on other selectors
 export const selectTradeboxFromTokenAddress = (s: SyntheticsState) => s.tradebox.fromTokenAddress;

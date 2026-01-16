@@ -6,7 +6,7 @@ import {
   sortPositionOrders,
 } from "domain/synthetics/orders";
 
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
 import { selectChainId, selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "./settingsSelectors";

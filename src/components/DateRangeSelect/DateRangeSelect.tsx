@@ -3,7 +3,7 @@ import { Popover, Portal } from "@headlessui/react";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { sub, type Locale as DateLocale, type Duration, format, addYears } from "date-fns";
+import { sub, format, addYears, Locale as DateLocale, Duration } from "date-fns";
 import { de as dateDe } from "date-fns/locale/de";
 import { enUS as dateEn } from "date-fns/locale/en-US";
 import { es as dateEs } from "date-fns/locale/es";
@@ -16,7 +16,7 @@ import { useCallback, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import { locales } from "lib/i18n";
+import type { locales } from "lib/i18n";
 
 import Button from "components/Button/Button";
 

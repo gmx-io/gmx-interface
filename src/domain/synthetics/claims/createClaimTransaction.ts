@@ -6,7 +6,7 @@ import type { WalletSigner } from "lib/wallets";
 import ClaimHandlerAbi from "sdk/abis/ClaimHandler";
 import type { ContractsChainId } from "sdk/configs/chains";
 
-import { ClaimableAmountsDataByDistributionId, ClaimsConfigurationData } from "./useUserClaimableAmounts";
+import type { ClaimableAmountsDataByDistributionId, ClaimsConfigurationData } from "./useUserClaimableAmounts";
 
 export function getClaimTransactionCallData({
   selectedDistributionIds,

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { CheckResult } from "../FallbackTracker";
 import { scoreBySpeedAndConsistency } from "../utils";
-import { createMockEndpointStats, testEndpoints, type TestCheckResult } from "./_utils";
+import { createMockEndpointStats, testEndpoints, TestCheckResult } from "./_utils";
 
 const createMockCheckResult = (success: boolean, responseTime?: number): CheckResult<TestCheckResult> => ({
   endpoint: testEndpoints.endpoint1,

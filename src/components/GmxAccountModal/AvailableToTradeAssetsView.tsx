@@ -1,4 +1,4 @@
-import { MessageDescriptor } from "@lingui/core";
+import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";

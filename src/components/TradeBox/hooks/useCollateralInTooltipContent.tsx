@@ -7,8 +7,8 @@ import {
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { MarketInfo } from "domain/synthetics/markets";
-import { TokenData } from "domain/synthetics/tokens";
+import type { MarketInfo } from "domain/synthetics/markets";
+import type { TokenData } from "domain/synthetics/tokens";
 import { TradeType } from "sdk/types/trade";
 
 export function useCollateralInTooltipContent() {

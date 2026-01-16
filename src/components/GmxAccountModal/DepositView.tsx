@@ -43,7 +43,7 @@ import { getMultichainTransferSendParams } from "domain/multichain/getSendParams
 import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
 import { estimateSameChainDepositGas, sendSameChainDepositTxn } from "domain/multichain/sendSameChainDepositTxn";
-import { SendParam } from "domain/multichain/types";
+import type { SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";

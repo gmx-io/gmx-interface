@@ -1,13 +1,13 @@
 import useSWR from "swr";
 import { useAccount, usePublicClient } from "wagmi";
 
-import { type SourceChainId } from "config/chains";
+import type { SourceChainId } from "config/chains";
 import { tryGetContract } from "config/contracts";
 import { CHAIN_ID_PREFERRED_DEPOSIT_TOKEN, getStargatePoolAddress } from "config/multichain";
 import { useGmxAccountDepositViewChain } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 
-import { MultichainAction } from "./codecs/CodecUiHelper";
+import type { MultichainAction } from "./codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "./estimateMultichainDepositNetworkComposeGas";
 
 const MULTICHAIN_DEPOSIT_NETWORK_COMPOSE_GAS_REFRESH_INTERVAL = 5000;

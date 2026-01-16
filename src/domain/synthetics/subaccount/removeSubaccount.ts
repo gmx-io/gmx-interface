@@ -27,7 +27,7 @@ import {
   RelayParamsPayload,
 } from "../express";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
-import { Subaccount } from "../subaccount";
+import type { Subaccount } from "../subaccount";
 
 export async function removeSubaccountWalletTxn(
   chainId: ContractsChainId,

@@ -4,7 +4,7 @@ import { toHex } from "viem";
 import type { AnyChainId, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getLayerZeroEndpointId, isSettlementChain, isSourceChain } from "config/multichain";
-import { SendParam } from "domain/multichain/types";
+import type { SendParam } from "domain/multichain/types";
 
 import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
 import { OftCmd, SEND_MODE_TAXI } from "./codecs/OftCmd";

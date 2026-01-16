@@ -24,7 +24,7 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider, useWsAdditionalSourceChains } from "context/WebsocketContext/WebsocketContextProvider";
 import { CodecUiHelper } from "domain/multichain/codecs/CodecUiHelper";
-import { MultichainFundingHistoryItem } from "domain/multichain/types";
+import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import {

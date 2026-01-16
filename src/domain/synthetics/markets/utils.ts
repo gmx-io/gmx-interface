@@ -1,6 +1,6 @@
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { GLV_MARKETS } from "config/markets";
-import { MultichainMarketTokensBalances } from "domain/multichain/types";
+import type { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getTotalTokensBalance } from "domain/tokens/getTotalTokensBalance";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import { getIsSpotOnlyMarket, getTokenSymbolByMarket } from "sdk/configs/markets";
@@ -17,10 +17,10 @@ import {
 } from "sdk/utils/markets";
 
 import { getCappedPositionImpactUsd } from "../fees";
-import { PositionInfo } from "../positions";
+import type { PositionInfo } from "../positions";
 import { isGlvAddress, isGlvInfo } from "./glv";
-import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
-import { TokenData, TokensData } from "../tokens/types";
+import type { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
+import type { TokenData, TokensData } from "../tokens/types";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 
 export * from "sdk/utils/markets";

@@ -1,5 +1,5 @@
-import { MultichainMarketTokensBalances } from "domain/multichain/types";
-import { TokensData } from "domain/synthetics/tokens/types";
+import type { MultichainMarketTokensBalances } from "domain/multichain/types";
+import type { TokensData } from "domain/synthetics/tokens/types";
 import { sumBigInts } from "lib/sumBigInts";
 
 export function getTotalTokensBalance(

@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { useCallback, type ReactNode } from "react";
+import { useCallback, ReactNode } from "react";
 
 type Props = {
   isChecked: boolean | undefined;

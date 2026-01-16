@@ -3,7 +3,7 @@ import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
-import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import type { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 
 import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
 

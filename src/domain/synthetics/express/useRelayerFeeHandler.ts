@@ -29,7 +29,7 @@ import {
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 
-import { ExpressTxnParams } from ".";
+import type { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
 import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 

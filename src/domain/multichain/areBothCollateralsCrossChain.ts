@@ -1,6 +1,6 @@
 import { getMappedTokenId } from "config/multichain";
 import { getTokenAddressByGlv, isGlvAddress } from "domain/synthetics/markets/glv";
-import { SettlementChainId, SourceChainId } from "sdk/configs/chains";
+import type { SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
 import { convertTokenAddress } from "sdk/configs/tokens";
 

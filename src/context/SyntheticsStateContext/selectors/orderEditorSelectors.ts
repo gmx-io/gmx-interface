@@ -43,7 +43,7 @@ import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
 
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
 import { selectIsExpressTransactionAvailable } from "./expressSelectors";
 import {

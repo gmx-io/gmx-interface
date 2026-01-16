@@ -1,4 +1,4 @@
-import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
+import type { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";

@@ -8,12 +8,11 @@ import type { ExpressTxnData } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import { ContractsChainId } from "sdk/configs/chains";
-import type { SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
-import { type RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
+import { RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import { getMultichainInfoFromSigner } from "../express/expressOrderUtils";
-import { RebateInfoItem } from "../fees/useRebatesInfo";
+import type { RebateInfoItem } from "../fees/useRebatesInfo";
 
 export type ClaimPriceImpactRebateParams = {
   account: string;

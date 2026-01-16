@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountHuman } from "lib/numbers";

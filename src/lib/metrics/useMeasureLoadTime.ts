@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { parseError } from "lib/errors";
 import { metrics } from "lib/metrics";
-import {
+import type {
   LoadingFailedEvent,
   LoadingStartEvent,
   LoadingSuccessEvent,

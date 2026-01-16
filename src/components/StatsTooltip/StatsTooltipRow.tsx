@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import "./StatsTooltip.css";
 
 type StatsTooltipRowProps = {
