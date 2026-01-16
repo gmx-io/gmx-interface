@@ -21,7 +21,7 @@ import {
 } from "../fees";
 import { OrderType } from "../orders/types";
 import { convertToUsd } from "../tokens";
-import { PositionInfo, PositionInfoLoaded } from "./types";
+import type { PositionInfo, PositionInfoLoaded } from "./types";
 
 export * from "sdk/utils/positions";
 

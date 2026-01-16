@@ -1,7 +1,7 @@
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import type { SourceChainId } from "config/chains";
-import { SendParam } from "domain/multichain/types";
+import type { SendParam } from "domain/multichain/types";
 import { TxnCallback, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";

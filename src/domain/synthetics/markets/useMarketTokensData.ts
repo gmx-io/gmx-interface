@@ -24,10 +24,10 @@ import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { ProgressiveTokensData } from "sdk/types/tokens";
+import type { ProgressiveTokensData } from "sdk/types/tokens";
 
 import { isGlvEnabled } from "./glv";
-import { GlvInfoData, MarketsData } from "./types";
+import type { GlvInfoData, MarketsData } from "./types";
 import { useMarkets } from "./useMarkets";
 import { getContractMarketPrices } from "./utils";
 

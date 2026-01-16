@@ -5,7 +5,7 @@ import uniqueId from "lodash/uniqueId";
 import values from "lodash/values";
 
 import { isDevelopment } from "config/env";
-import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
+import type { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { AbiId } from "sdk/abis";

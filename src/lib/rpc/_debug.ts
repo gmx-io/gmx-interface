@@ -7,7 +7,7 @@ import { getProviderNameFromUrl } from "config/rpc";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
 
-import { RpcTracker } from "./RpcTracker";
+import type { RpcTracker } from "./RpcTracker";
 
 export enum RpcDebugFlags {
   LogRpcTracker = "logRpcTracker",

@@ -1,4 +1,4 @@
-import { i18n, type MessageDescriptor } from "@lingui/core";
+import { i18n, MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
 
 import { isLimitOrderType, isSwapOrderType, OrderType } from "domain/synthetics/orders";

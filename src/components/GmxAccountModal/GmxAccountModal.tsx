@@ -2,13 +2,13 @@ import { Trans } from "@lingui/macro";
 import { memo, useEffect } from "react";
 import { useAccount } from "wagmi";
 
-import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
+import type { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { userAnalytics } from "lib/userAnalytics";
-import { OneClickPromotionEvent } from "lib/userAnalytics/types";
+import type { OneClickPromotionEvent } from "lib/userAnalytics/types";
 
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SlideModal } from "components/Modal/SlideModal";

@@ -2,8 +2,8 @@ import { t, Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { DOCS_LINKS } from "config/links";
-import { FeeItem } from "domain/synthetics/fees";
-import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import type { FeeItem } from "domain/synthetics/fees";
+import type { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";

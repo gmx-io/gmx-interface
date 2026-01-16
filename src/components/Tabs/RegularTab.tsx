@@ -2,7 +2,7 @@ import cx from "classnames";
 
 import Button from "components/Button/Button";
 
-import { RegularOption } from "./types";
+import type { RegularOption } from "./types";
 
 type Props<V extends string | number> = {
   option: RegularOption<V>;

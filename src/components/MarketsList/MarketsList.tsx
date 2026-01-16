@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { USD_DECIMALS } from "config/factors";
 import { useMarketsInfoDataToIndexTokensStats } from "context/SyntheticsStateContext/hooks/statsHooks";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import type { IndexTokenStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { useChainId } from "lib/chains";
 import { importImage } from "lib/legacy";

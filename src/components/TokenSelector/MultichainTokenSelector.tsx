@@ -7,10 +7,10 @@ import {
   AVALANCHE,
   getChainName,
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
-  type AnyChainId,
-  type ContractsChainId,
-  type GmxAccountPseudoChainId,
-  type SourceChainId,
+  AnyChainId,
+  ContractsChainId,
+  GmxAccountPseudoChainId,
+  SourceChainId,
 } from "config/chains";
 import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import type { TokenChainData } from "domain/multichain/types";

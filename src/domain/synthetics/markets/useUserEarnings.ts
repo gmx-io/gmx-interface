@@ -11,7 +11,7 @@ import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
-import { UserEarningsData } from "./types";
+import type { UserEarningsData } from "./types";
 import { useDaysConsideredInMarketsApr } from "./useDaysConsideredInMarketsApr";
 import { useGmMarketsApy } from "./useGmMarketsApy";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";

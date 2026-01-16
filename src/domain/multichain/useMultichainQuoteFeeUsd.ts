@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { zeroAddress } from "viem";
 
-import { AnyChainId, getViemChain, type SettlementChainId, type SourceChainId } from "config/chains";
+import { AnyChainId, getViemChain, SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { getMidPrice, useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";

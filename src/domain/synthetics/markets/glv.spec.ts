@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { TokenData } from "../tokens";
+import type { TokenData } from "../tokens";
 import { getMaxUsdCapUsdInGmGlvMarket } from "./glv";
-import { GlvMarket } from "./types";
+import type { GlvMarket } from "./types";
 
 describe("glv utils", () => {
   it("getMaxUsdCapUsdInGmGlvMarket", () => {

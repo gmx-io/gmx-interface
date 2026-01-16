@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { OracleFetcher, OracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 
 const oracleKeeperFetchersCached: Record<number, OracleFetcher> = {};

@@ -1,5 +1,5 @@
-import { AbiEvent } from "abitype";
-import { MaybeExtractEventArgsFromAbi, GetLogsReturnType } from "viem";
+import type { AbiEvent } from "abitype";
+import type { MaybeExtractEventArgsFromAbi, GetLogsReturnType } from "viem";
 
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";

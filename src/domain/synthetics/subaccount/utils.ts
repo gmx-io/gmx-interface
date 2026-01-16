@@ -19,7 +19,7 @@ import type {
   SubaccountSerializedConfig,
   SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import { SignatureTypes, signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -38,7 +38,7 @@ import { nowInSeconds } from "sdk/utils/time";
 import type { SubaccountGelatoRelayRouter } from "typechain-types";
 
 import { getGelatoRelayRouterDomain } from "../express";
-import { SubaccountOnchainData } from "./useSubaccountOnchainData";
+import type { SubaccountOnchainData } from "./useSubaccountOnchainData";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 
 export function getSubaccountValidations({

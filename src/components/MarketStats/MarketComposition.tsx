@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { CompositionDiagram } from "./components/CompositionDiagram";
 import { CompositionTable } from "./components/CompositionTable";
-import { CompositionItem, CompositionType } from "./hooks/useCompositionData";
+import type { CompositionItem, CompositionType } from "./hooks/useCompositionData";
 
 type Props = {
   title: ReactNode;

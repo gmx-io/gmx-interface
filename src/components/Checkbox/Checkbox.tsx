@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import CheckIcon from "img/ic_check.svg?react";
 import MinusIcon from "img/ic_minus.svg?react";

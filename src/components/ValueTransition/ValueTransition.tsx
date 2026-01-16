@@ -1,5 +1,5 @@
 import "./ValueTransition.scss";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 

@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import { selectChainId, selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo, getGlvOrMarketAddress } from "domain/synthetics/markets";
-import { TokensData } from "domain/synthetics/tokens";
+import type { TokensData } from "domain/synthetics/tokens";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import { ExchangeInfo } from "components/GmSwap/GmSwapBox/ExchangeInfo";

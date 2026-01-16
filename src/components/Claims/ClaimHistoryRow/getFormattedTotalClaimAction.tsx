@@ -1,4 +1,4 @@
-import { ClaimAction } from "domain/synthetics/claimHistory";
+import type { ClaimAction } from "domain/synthetics/claimHistory";
 import { BN_ZERO, formatUsd } from "lib/numbers";
 
 export function getFormattedTotalClaimAction(claimAction: ClaimAction) {

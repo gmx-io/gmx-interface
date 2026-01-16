@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import useSWR from "swr";
-import { Address } from "viem";
+import type { Address } from "viem";
 
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 export type PriceDelta = {

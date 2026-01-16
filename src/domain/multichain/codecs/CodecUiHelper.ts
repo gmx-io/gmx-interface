@@ -1,9 +1,9 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex, zeroAddress } from "viem";
 
-import { TransferRequests } from "domain/multichain/types";
+import type { TransferRequests } from "domain/multichain/types";
 import type { RelayParamsPayload } from "domain/synthetics/express";
-import {
+import type {
   CreateDepositParams,
   CreateGlvDepositParams,
   CreateGlvWithdrawalParams,

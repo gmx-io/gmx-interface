@@ -13,7 +13,7 @@ import {
   getPendingOrderKey,
   useSyntheticsEvents,
 } from "context/SyntheticsEvents";
-import { MarketsInfoData } from "domain/synthetics/markets";
+import type { MarketsInfoData } from "domain/synthetics/markets";
 import {
   isIncreaseOrderType,
   isLimitOrderType,
@@ -24,7 +24,7 @@ import {
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { getNameByOrderType } from "domain/synthetics/positions";
-import { TokensData } from "domain/synthetics/tokens";
+import type { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";

@@ -8,11 +8,11 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { PositionInfo } from "domain/synthetics/positions";
-import { TradeMode } from "domain/synthetics/trade";
+import type { PositionInfo } from "domain/synthetics/positions";
+import type { TradeMode } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
-import { SharePositionClickEvent } from "lib/userAnalytics/types";
+import type { SharePositionClickEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";

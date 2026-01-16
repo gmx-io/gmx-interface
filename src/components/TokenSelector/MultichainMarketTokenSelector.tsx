@@ -4,15 +4,15 @@ import { useMemo, useState } from "react";
 
 import {
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
-  type AnyChainId,
-  type ContractsChainId,
-  type GmxAccountPseudoChainId,
-  type SourceChainId,
+  AnyChainId,
+  ContractsChainId,
+  GmxAccountPseudoChainId,
+  SourceChainId,
 } from "config/chains";
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { getGlvOrMarketAddress } from "domain/synthetics/markets";
 import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvOrMarketInfo, GmPaySource } from "domain/synthetics/markets/types";
+import type { GlvOrMarketInfo, GmPaySource } from "domain/synthetics/markets/types";
 import { convertToUsd } from "domain/tokens";
 import { formatAmount, formatBalanceAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";

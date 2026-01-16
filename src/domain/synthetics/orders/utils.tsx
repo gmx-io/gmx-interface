@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import {

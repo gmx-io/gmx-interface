@@ -1,9 +1,9 @@
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
-import { ProgressiveTokensData } from "domain/tokens";
+import type { ProgressiveTokensData } from "domain/tokens";
 
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorDeprecated } from "../utils";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;

@@ -1,5 +1,5 @@
-import { BaseContract, Provider } from "ethers";
-import { numberToHex, type StateOverride } from "viem";
+import type { BaseContract, Provider } from "ethers";
+import { numberToHex, StateOverride } from "viem";
 
 import { isDevelopment } from "config/env";
 
@@ -10,7 +10,7 @@ import { estimateGasLimit } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
-import { ISigner } from "./transactions/iSigner";
+import type { ISigner } from "./transactions/iSigner";
 
 export type TenderlyConfig = {
   accountSlug: string;

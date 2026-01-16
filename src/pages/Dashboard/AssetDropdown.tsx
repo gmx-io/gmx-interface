@@ -5,8 +5,8 @@ import { useCallback } from "react";
 import { Link } from "react-router-dom";
 
 import { getMarketBadge } from "domain/synthetics/markets";
-import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { Token } from "domain/tokens";
+import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import type { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import { getNormalizedTokenSymbol, getTokenBySymbol } from "sdk/configs/tokens";

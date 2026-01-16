@@ -1,7 +1,6 @@
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import type { OracleKeeperDebugEvent, OracleKeeperDebugState } from "lib/oracleKeeperFetcher/_debug";
-import { OracleKeeperDebugFlags } from "lib/oracleKeeperFetcher/_debug";
+import { OracleKeeperDebugEvent, OracleKeeperDebugFlags, OracleKeeperDebugState } from "lib/oracleKeeperFetcher/_debug";
 
 import Button from "components/Button/Button";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";

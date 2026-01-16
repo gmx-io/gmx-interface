@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Address } from "viem";
+import type { Address } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import {

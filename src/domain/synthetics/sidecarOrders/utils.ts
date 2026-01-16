@@ -1,9 +1,8 @@
 import { t } from "@lingui/macro";
 import uniqueId from "lodash/uniqueId";
 
-import { USD_DECIMALS } from "config/factors";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
-import { PositionOrderInfo } from "domain/synthetics/orders";
+import { USD_DECIMALS, BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
+import type { PositionOrderInfo } from "domain/synthetics/orders";
 import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";

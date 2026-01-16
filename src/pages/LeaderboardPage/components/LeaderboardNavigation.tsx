@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 import { AVALANCHE } from "config/chains";
 import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
+import type { LeaderboardPageKey, LeaderboardTimeframe } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES, LEADERBOARD_PAGES_ORDER } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { getTimeframeLabel } from "lib/dates";

@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 
 import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
+import type { LandingPageAgreementConfirmationEvent } from "lib/userAnalytics/types";
 import { useRedirectPopupTimestamp } from "lib/useRedirectPopupTimestamp";
 
 import Button from "components/Button/Button";

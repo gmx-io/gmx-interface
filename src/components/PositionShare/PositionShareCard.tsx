@@ -3,10 +3,9 @@ import cx from "classnames";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
 
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { getHomeUrl } from "lib/legacy";
-import { calculateDisplayDecimals } from "lib/numbers";
-import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatPercentage, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 

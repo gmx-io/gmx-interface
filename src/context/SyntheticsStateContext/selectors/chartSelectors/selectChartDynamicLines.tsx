@@ -12,7 +12,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
-import { DynamicChartLine } from "components/TVChartContainer/types";
+import type { DynamicChartLine } from "components/TVChartContainer/types";
 
 import { selectChartToken } from ".";
 

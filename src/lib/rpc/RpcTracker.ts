@@ -12,7 +12,7 @@ import {
   FallbackTracker,
   FallbackTrackerConfig,
 } from "lib/FallbackTracker/FallbackTracker";
-import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
+import type { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { fetchBlockNumber, fetchEthCall } from "lib/rpc/fetchRpc";
 import { abis } from "sdk/abis";

@@ -1,7 +1,7 @@
 import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
-import { TransferRequests } from "domain/multichain/types";
+import type { TransferRequests } from "domain/multichain/types";
 import { ExpressTxnData, ExpressTxnResult, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";

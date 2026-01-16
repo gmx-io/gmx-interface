@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { getMintableMarketTokens, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData } from "domain/synthetics/tokens";
+import type { TokenData } from "domain/synthetics/tokens";
 
 export const useMarketMintableTokens = (marketInfo?: GlvOrMarketInfo, marketToken?: TokenData) => {
   return useMemo(() => {

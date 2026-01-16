@@ -5,14 +5,14 @@ import type { SortDirection } from "context/SorterContext/types";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { TokenFavoritesTabOption } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
-import { MultichainMarketTokensBalances } from "domain/multichain/types";
+import type { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { MarketTokensAPRData, MarketsInfoData, getMarketPoolName } from "domain/synthetics/markets";
-import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import type { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { ProgressiveTokensData } from "sdk/types/tokens";
+import type { ProgressiveTokensData } from "sdk/types/tokens";
 
 import type { SortField } from "./GmList";
 import { sortGmTokensByField } from "./sortGmTokensByField";

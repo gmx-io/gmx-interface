@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { expandDecimals, formatUsdPrice, PERCENT_PRECISION_DECIMALS } from "lib/numbers";
-import { TradeFees } from "sdk/types/trade";
+import type { TradeFees } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 

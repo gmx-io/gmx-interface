@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { checksumAddress, isAddress, type Address } from "viem";
+import { checksumAddress, isAddress, Address } from "viem";
 
 import { ContractsChainId, CONTRACTS_CHAIN_IDS } from "config/chains";
 import useSearchParams from "lib/useSearchParams";

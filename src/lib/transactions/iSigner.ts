@@ -1,4 +1,4 @@
-import {
+import type {
   AddressLike,
   BigNumberish,
   BrowserProvider,
@@ -20,7 +20,7 @@ import {
 } from "viem";
 
 import { mustNeverExist } from "lib/types";
-import { SignatureDomain, SignatureTypes } from "lib/wallets/signing";
+import type { SignatureDomain, SignatureTypes } from "lib/wallets/signing";
 
 export type ISignerSendTransactionParams = Pick<
   TransactionRequest,

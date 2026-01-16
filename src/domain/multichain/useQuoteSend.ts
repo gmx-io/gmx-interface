@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
 import type { AnyChainId } from "config/chains";
-import { SendParam } from "domain/multichain/types";
+import type { SendParam } from "domain/multichain/types";
 import { fetchLayerZeroNativeFee } from "domain/synthetics/markets/feeEstimation/stargateTransferFees";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 

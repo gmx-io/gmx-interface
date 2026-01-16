@@ -1,7 +1,7 @@
 import { Placement, autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import React, { useCallback, type ReactNode } from "react";
+import React, { useCallback, ReactNode } from "react";
 import { createBreakpoint } from "react-use";
 
 import { getExplorerUrl } from "config/chains";
@@ -15,7 +15,7 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokensData, getTokenData } from "domain/synthetics/tokens";
-import { ProgressiveTokenData, Token } from "domain/tokens";
+import type { ProgressiveTokenData, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { isMobile as headlessUiIsMobile } from "lib/headlessUiIsMobile";
 import { getByKey } from "lib/objects";

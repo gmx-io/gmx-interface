@@ -9,7 +9,7 @@ import {
 
 import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import ERC20PermitInterfaceAbi from "sdk/abis/ERC20PermitInterface";
@@ -17,7 +17,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { getToken } from "sdk/configs/tokens";
-import { SignedTokenPermit } from "sdk/types/tokens";
+import type { SignedTokenPermit } from "sdk/types/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 
 export async function createAndSignTokenPermit(

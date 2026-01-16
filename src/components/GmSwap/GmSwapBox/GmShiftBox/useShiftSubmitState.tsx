@@ -6,7 +6,7 @@ import { useMemo, useState, useEffect } from "react";
 import { getContract } from "config/contracts";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExecutionFee } from "domain/synthetics/fees";
+import type { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
@@ -15,7 +15,7 @@ import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/v
 import { approveTokens } from "domain/tokens";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import type { GmSwapFees } from "sdk/types/trade";
 

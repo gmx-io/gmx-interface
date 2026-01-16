@@ -1,6 +1,6 @@
 import { zeroAddress } from "viem";
 
-import { TokensData } from "domain/synthetics/tokens";
+import type { TokensData } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { getMidPrice } from "sdk/utils/tokens";

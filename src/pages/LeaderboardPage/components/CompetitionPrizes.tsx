@@ -10,7 +10,7 @@ import {
   selectLeaderboardRankedAccountsByPnlPercentage,
 } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { CompetitionType, LeaderboardAccount, LeaderboardPageKey } from "domain/synthetics/leaderboard";
+import type { CompetitionType, LeaderboardAccount, LeaderboardPageKey } from "domain/synthetics/leaderboard";
 import { shortenAddress } from "lib/legacy";
 import { mustNeverExist } from "lib/types";
 import { useBreakpoints } from "lib/useBreakpoints";

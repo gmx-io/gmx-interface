@@ -1,5 +1,5 @@
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { createSelectorFactory } from "context/SyntheticsStateContext/utils";
+import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { createSelectorFactory, createSelector } from "context/SyntheticsStateContext/utils";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import {
   isLimitDecreaseOrderType,
@@ -16,15 +16,12 @@ import {
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPositionKey,
   selectTradeboxTriggerPrice,
-} from ".";
-import { createSelector } from "../../utils";
-import { makeSelectOrdersByPositionKey } from "../orderSelectors";
-import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
-import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
-} from "../tradeboxSelectors";
+} from ".";
+import { makeSelectOrdersByPositionKey } from "../orderSelectors";
+import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 
 const selectTradeboxExistingSlOrders = createSelector((q) => {
   const positionKey = q(selectTradeboxSelectedPositionKey);

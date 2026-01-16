@@ -11,9 +11,9 @@ import {
   selectPoolsDetailsSetSecondTokenInputValue,
 } from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { getTokenPoolType } from "domain/synthetics/markets/utils";
-import { ERC20Address, NativeTokenSupportedAddress, Token } from "domain/tokens";
+import type { ERC20Address, NativeTokenSupportedAddress, Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 

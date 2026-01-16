@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { getExplorerUrl } from "config/chains";
 import { useChainId } from "lib/chains";

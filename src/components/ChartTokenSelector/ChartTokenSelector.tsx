@@ -22,15 +22,15 @@ import {
   TokenFavoritesTabOption,
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
-import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
+import type { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketBaseName, getMarketPoolName } from "domain/synthetics/markets/utils";
-import { IndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
+import type { IndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { PriceDelta, PriceDeltaMap, TokenData, TokensData, use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
 import { TradeType } from "domain/synthetics/trade";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
-import { stripBlacklistedWords, type Token } from "domain/tokens";
+import { stripBlacklistedWords, Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
 import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";

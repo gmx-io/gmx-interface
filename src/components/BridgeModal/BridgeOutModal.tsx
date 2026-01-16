@@ -25,7 +25,7 @@ import { getMultichainTransferSendParams } from "domain/multichain/getSendParams
 import type { BridgeOutParams } from "domain/multichain/types";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
-import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
+import type { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeOutTxn } from "domain/synthetics/markets/createBridgeOutTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";

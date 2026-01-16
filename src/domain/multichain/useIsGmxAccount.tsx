@@ -1,6 +1,6 @@
 import noop from "lodash/noop";
 
-import { ContractsChainId, SourceChainId } from "config/chains";
+import type { ContractsChainId, SourceChainId } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 
 export function useIsGmxAccount({

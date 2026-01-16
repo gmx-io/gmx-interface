@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
 
 import { Operation } from "domain/synthetics/markets/types";
-import { GmSwapFees } from "domain/synthetics/trade";
+import type { GmSwapFees } from "domain/synthetics/trade";
 import { formatDeltaUsd } from "lib/numbers";
 
 import { ExpandableRow } from "components/ExpandableRow";

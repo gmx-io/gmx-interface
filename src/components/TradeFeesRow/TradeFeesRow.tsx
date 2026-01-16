@@ -8,7 +8,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { useTradingAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
-import { TradeFees, TradeFeesType } from "domain/synthetics/trade";
+import type { TradeFees, TradeFeesType } from "domain/synthetics/trade";
 import { getIsHighSwapImpact } from "domain/synthetics/trade/utils/warnings";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatDeltaUsd, formatPercentage } from "lib/numbers";

@@ -4,7 +4,7 @@ import { useUserReferralInfoRequest } from "domain/referrals";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import {
   getEntryPrice,
@@ -23,7 +23,7 @@ import {
 } from "../markets";
 import { TokensData, convertToTokenAmount, convertToUsd } from "../tokens";
 import { getAcceptablePriceInfo, getMarkPrice } from "../trade";
-import { PositionsData, PositionsInfoData } from "./types";
+import type { PositionsData, PositionsInfoData } from "./types";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
 import { getLeverage, getLiquidationPrice, getPositionNetValue, getPositionPendingFeesUsd } from "./utils";
 

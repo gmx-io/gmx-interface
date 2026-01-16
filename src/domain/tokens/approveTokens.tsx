@@ -3,13 +3,13 @@ import { Signer, ethers } from "ethers";
 import { Link } from "react-router-dom";
 
 import { getChainName, getExplorerUrl } from "config/chains";
-import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import type { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import TokenAbi from "sdk/abis/Token";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
-import { InfoTokens, TokenInfo } from "sdk/types/tokens";
+import type { InfoTokens, TokenInfo } from "sdk/types/tokens";
 
 import { getInvalidPermitSignatureToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";

@@ -2,7 +2,7 @@ import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 
-import { MarketInfo } from "../markets";
+import type { MarketInfo } from "../markets";
 import { convertToContractPrice, parseContractPrice } from "../tokens";
 
 export function useDebugExecutionPrice(

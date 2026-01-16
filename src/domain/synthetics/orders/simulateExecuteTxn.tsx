@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { BaseContract, ethers } from "ethers";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { withRetry } from "viem";
 
 import {
@@ -10,10 +10,10 @@ import {
   getMulticallContract,
   getZeroAddressContract,
 } from "config/contracts";
-import { SwapPricingType } from "domain/synthetics/orders";
+import type { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { helperToast } from "lib/helperToast";
-import { OrderMetricId } from "lib/metrics/types";
+import type { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
@@ -21,9 +21,9 @@ import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampR
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import type { ExternalSwapQuote } from "sdk/types/trade";
 import { CustomErrorName, extractDataFromError, extractTxnError } from "sdk/utils/errors";
-import { OracleUtils } from "typechain-types/ExchangeRouter";
+import type { OracleUtils } from "typechain-types/ExchangeRouter";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";

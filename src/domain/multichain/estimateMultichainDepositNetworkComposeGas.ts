@@ -1,4 +1,4 @@
-import { Address } from "abitype";
+import type { Address } from "abitype";
 import { EstimateContractGasParameters, PublicClient, StateOverride, toHex, zeroAddress, zeroHash } from "viem";
 
 import type { ContractsChainId, SettlementChainId, SourceChainId } from "config/chains";

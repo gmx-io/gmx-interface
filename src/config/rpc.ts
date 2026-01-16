@@ -1,8 +1,8 @@
 import sample from "lodash/sample";
 
 import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
-import { RpcTrackerConfig } from "lib/rpc/RpcTracker";
-import { RpcConfig } from "lib/rpc/types";
+import type { RpcTrackerConfig } from "lib/rpc/RpcTracker";
+import type { RpcConfig } from "lib/rpc/types";
 import { mustNeverExist } from "lib/types";
 import {
   AnyChainId,

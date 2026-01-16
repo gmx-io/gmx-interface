@@ -1,11 +1,11 @@
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, RANDOM_WALLET } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
-import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express/types";
+import type { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express/types";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
@@ -14,7 +14,7 @@ import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { signCreateGlvWithdrawal } from "../signCreateGlvWithdrawal";
-import { CreateGlvWithdrawalParams } from "../types";
+import type { CreateGlvWithdrawalParams } from "../types";
 import { stargateTransferFees } from "./stargateTransferFees";
 
 export async function estimateGlvWithdrawalPlatformTokenTransferInFees({

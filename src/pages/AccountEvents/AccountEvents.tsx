@@ -7,7 +7,7 @@ import useSWR from "swr";
 import { encodeAbiParameters, getAbiItem, isAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import type { EventLogData } from "context/SyntheticsEvents/types";
 import { parseEventLogData } from "context/WebsocketContext/subscribeToEvents";

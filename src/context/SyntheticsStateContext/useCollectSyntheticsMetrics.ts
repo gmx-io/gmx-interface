@@ -1,9 +1,9 @@
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 
-import { MarketsInfoResult } from "domain/synthetics/markets";
-import { PositionsInfoData } from "domain/synthetics/positions";
-import { TokensDataResult } from "domain/synthetics/tokens";
+import type { MarketsInfoResult } from "domain/synthetics/markets";
+import type { PositionsInfoData } from "domain/synthetics/positions";
+import type { TokensDataResult } from "domain/synthetics/tokens";
 import { useMeasureLoadTime } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 

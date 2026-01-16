@@ -4,7 +4,7 @@ import cx from "classnames";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { userAnalytics } from "lib/userAnalytics";
-import { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
+import type { LandingPageFooterMenuEvent } from "lib/userAnalytics/types";
 
 import Button from "components/Button/Button";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";

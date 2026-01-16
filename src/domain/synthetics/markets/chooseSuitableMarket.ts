@@ -4,7 +4,7 @@ import { TradeType } from "domain/synthetics/trade";
 
 import { isMarketIndexToken } from "./utils";
 import { isLimitOrderType, OrdersInfoData } from "../orders";
-import { OrderInfo } from "../orders/types";
+import type { OrderInfo } from "../orders/types";
 
 type PositionOrOrder = {
   size: bigint;

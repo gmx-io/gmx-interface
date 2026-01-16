@@ -1,4 +1,4 @@
-import { ColorTree } from "lib/generateColorConfig";
+import type { ColorTree } from "lib/generateColorConfig";
 
 export const colors: ColorTree = {
   blue: {

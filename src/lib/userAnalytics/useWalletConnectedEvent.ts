@@ -7,7 +7,7 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
 import { userAnalytics } from ".";
-import { ConnectWalletResultEvent } from "./types";
+import type { ConnectWalletResultEvent } from "./types";
 
 export function useWalletConnectedUserAnalyticsEvent() {
   const [wasConnected, setWasConnected] = useState(false);

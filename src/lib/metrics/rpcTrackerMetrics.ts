@@ -2,7 +2,7 @@ import orderBy from "lodash/orderBy";
 
 import { getChainName, getProviderNameFromUrl } from "config/rpc";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
-import { RpcStats, RpcTracker } from "lib/rpc/RpcTracker";
+import type { RpcStats, RpcTracker } from "lib/rpc/RpcTracker";
 
 import {
   metrics,

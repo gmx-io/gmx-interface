@@ -1,14 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { formatDuration, type Locale as DateLocale } from "date-fns";
+import { formatDuration, Locale as DateLocale } from "date-fns";
 import { useEffect } from "react";
 import { useLocalStorage } from "react-use";
 
 import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { formatUsd } from "lib/numbers";
-import { MarketInfo } from "sdk/types/markets";
-import { TwapDuration } from "sdk/types/twap";
+import type { MarketInfo } from "sdk/types/markets";
+import type { TwapDuration } from "sdk/types/twap";
 import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";

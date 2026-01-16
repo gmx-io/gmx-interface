@@ -18,7 +18,7 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData, TokensData } from "domain/synthetics/tokens";
+import type { TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { convertTokenAddress } from "sdk/configs/tokens";

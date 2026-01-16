@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";

@@ -1,4 +1,4 @@
-import { AnyChainId } from "config/chains";
+import type { AnyChainId } from "config/chains";
 import { MULTICALLS_MAP } from "config/multichain";
 import { useMulticall } from "lib/multicall";
 

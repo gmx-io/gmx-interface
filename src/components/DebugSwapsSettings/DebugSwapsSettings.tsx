@@ -1,8 +1,11 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
-import { getSwapDebugSettings, setSwapDebugSetting } from "config/externalSwaps";
-import { SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS } from "config/externalSwaps";
+import {
+  getSwapDebugSettings,
+  setSwapDebugSetting,
+  SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS,
+} from "config/externalSwaps";
 
 import { ExpandableRow } from "components/ExpandableRow";
 import NumberInput from "components/NumberInput/NumberInput";

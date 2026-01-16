@@ -1,4 +1,4 @@
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 
 export const selectShowDebugValues = (s: SyntheticsState) => s.settings.showDebugValues;
 export const selectSavedAllowedSlippage = (s: SyntheticsState) => s.settings.savedAllowedSlippage;

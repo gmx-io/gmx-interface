@@ -1,7 +1,7 @@
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { useAccount } from "wagmi";
 
-import { AVALANCHE, type SettlementChainId } from "config/chains";
+import { AVALANCHE, SettlementChainId } from "config/chains";
 import { useChainId } from "lib/chains";
 import { executeMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";

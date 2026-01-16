@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { ChangeEvent, KeyboardEvent, RefObject } from "react";
+import type { ChangeEvent, KeyboardEvent, RefObject } from "react";
 
 function escapeSpecialRegExpChars(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

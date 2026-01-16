@@ -4,10 +4,9 @@ import {
   METRIC_COUNTER_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "lib/metrics/emitMetricEvent";
-import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
+import type { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 
-import { MULTICALL_DEBUG_EVENT_NAME } from "./_debug";
-import type { MulticallDebugState } from "./_debug";
+import { MULTICALL_DEBUG_EVENT_NAME, MulticallDebugState } from "./_debug";
 import { Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 

@@ -3,14 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AVALANCHE } from "config/chains";
 import { getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
-import { FindSwapPath } from "domain/synthetics/trade";
+import type { FindSwapPath } from "domain/synthetics/trade";
 import { expandDecimals } from "lib/numbers";
-import { DeepPartial } from "lib/types";
+import type { DeepPartial } from "lib/types";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { SyntheticsState } from "../../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../../SyntheticsStateContextProvider";
 import {
   selectExternalSwapInputs,
   selectExternalSwapQuote,

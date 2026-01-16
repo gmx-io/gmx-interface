@@ -19,7 +19,7 @@ import {
 import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
 import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
-import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
+import type { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useBotanixStakingAssetsPerShare } from "domain/synthetics/externalSwaps/useBotanixStakingAssetsPerShare";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
@@ -56,13 +56,13 @@ import { PositionEditorState, usePositionEditorState } from "domain/synthetics/t
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
-import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { ProgressiveTokensData } from "domain/tokens";
+import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import type { ProgressiveTokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimestampRequest";
-import { WalletSigner } from "lib/wallets";
+import type { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";

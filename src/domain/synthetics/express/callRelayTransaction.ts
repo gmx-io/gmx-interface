@@ -1,7 +1,7 @@
 import type { Provider } from "ethers";
-import { Hex, encodePacked, type Address } from "viem";
+import { Hex, encodePacked, Address } from "viem";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 

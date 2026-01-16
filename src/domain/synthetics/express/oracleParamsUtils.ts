@@ -1,11 +1,11 @@
 import uniq from "lodash/uniq";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { getOppositeCollateralFromConfig } from "sdk/utils/markets";
-import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import type { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 function getOracleParams({ chainId, tokenAddresses }: { chainId: ContractsChainId; tokenAddresses: string[] }) {
   const uniqTokenAddresses = uniq(

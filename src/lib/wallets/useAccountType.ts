@@ -1,7 +1,7 @@
 import { getPublicClient } from "@wagmi/core";
 import uniq from "lodash/uniq";
 import useSWR from "swr";
-import { Hex, PublicClient } from "viem";
+import type { Hex, PublicClient } from "viem";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, CONTRACTS_CHAIN_IDS, SOURCE_CHAIN_IDS } from "config/chains";

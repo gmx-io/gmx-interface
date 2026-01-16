@@ -8,7 +8,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/types";
+import type { SidecarOrderEntryGroup } from "domain/synthetics/sidecarOrders/types";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { PERCENTAGE_DECIMALS } from "domain/synthetics/sidecarOrders/utils";

@@ -43,7 +43,7 @@ import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
-import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { getEmptyExternalCallsPayload, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { fallbackCustomError } from "./fallbackCustomError";
 

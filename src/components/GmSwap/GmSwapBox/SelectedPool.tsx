@@ -1,7 +1,6 @@
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
-import { getMarketIndexName } from "domain/synthetics/markets/utils";
-import { getGlvDisplayName } from "domain/synthetics/markets/utils";
+import type { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import { getMarketIndexName, getGlvDisplayName } from "domain/synthetics/markets/utils";
 import { getByKey } from "lib/objects";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 

@@ -17,7 +17,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
-import { Market, MarketInfo } from "domain/synthetics/markets/types";
+import type { Market, MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
@@ -25,7 +25,7 @@ import { formatAmountForMetrics } from "lib/metrics";
 import { BN_ZERO } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getAnalyticsOrderTypeByTradeMode, userAnalytics } from "lib/userAnalytics";
-import {
+import type {
   TradeBoxPoolLowerFeeWarningShownEvent,
   TradeBoxWarningShownEvent,
   TradeBoxWarningSwitchPoolClickEvent,

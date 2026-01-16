@@ -42,7 +42,7 @@ import {
   DebugLegend,
   DebugLines,
   DebugTooltip,
-  type AccountPnlHistoryPointDebugFields,
+  AccountPnlHistoryPointDebugFields,
 } from "./dailyAndCumulativePnLDebug";
 
 import "./DailyAndCumulativePnL.css";

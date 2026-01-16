@@ -1,6 +1,6 @@
 import { AbFlag, getAbFlagUrlParams } from "config/ab";
 import { getStoredUtmParams } from "domain/utm";
-import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
+import type { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 
 import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";

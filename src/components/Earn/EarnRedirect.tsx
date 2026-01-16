@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { LAST_EARN_TAB_KEY } from "config/localStorage";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";

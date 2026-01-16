@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
-import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
+import type { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
 import {
   MarketInfo,
   getMarketIndexName,

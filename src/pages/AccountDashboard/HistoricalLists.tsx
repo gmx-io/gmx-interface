@@ -9,7 +9,7 @@ import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderH
 import { selectPositionsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import type { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import type { ContractsChainId } from "sdk/configs/chains";
 

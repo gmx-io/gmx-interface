@@ -5,7 +5,7 @@ import {
   selectProgressiveDepositMarketTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { MultichainMarketTokenBalances, MultichainMarketTokensBalances } from "domain/multichain/types";
+import type { MultichainMarketTokenBalances, MultichainMarketTokensBalances } from "domain/multichain/types";
 import { EMPTY_OBJECT } from "lib/objects";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 

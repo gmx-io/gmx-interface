@@ -1,7 +1,7 @@
 import { isDevelopment } from "config/env";
 import { DEBUG_METRICS_KEY } from "config/localStorage";
-import { ErrorEvent } from "lib/metrics/types";
-import { BatchReportItem, CounterPayload, EventPayload, TimingPayload } from "lib/oracleKeeperFetcher";
+import type { ErrorEvent } from "lib/metrics/types";
+import type { BatchReportItem, CounterPayload, EventPayload, TimingPayload } from "lib/oracleKeeperFetcher";
 import { Storage } from "lib/storage/Storage";
 
 export enum MetricsDebugFlags {

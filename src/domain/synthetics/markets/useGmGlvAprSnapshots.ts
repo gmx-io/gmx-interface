@@ -2,10 +2,10 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers";
-import { AprSnapshot } from "sdk/types/subsquid";
+import type { AprSnapshot } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 
-import { Period } from "./usePoolsTimeRange";
+import type { Period } from "./usePoolsTimeRange";
 
 const APR_SNAPSHOTS_QUERY = gql`
   query AprSnapshots($fromTimestamp: Int, $tokenAddresses: [String!], $limit: Int, $offset: Int) {

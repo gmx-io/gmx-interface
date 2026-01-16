@@ -1,6 +1,6 @@
 import { getExcessiveExecutionFee } from "config/chains";
 import { HIGH_PRICE_IMPACT_BPS, USD_DECIMALS } from "config/factors";
-import { GmSwapFees } from "domain/synthetics/trade";
+import type { GmSwapFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";

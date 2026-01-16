@@ -1,6 +1,6 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-import { type JSX } from "react";
+import type { JSX } from "react";
 import { Link } from "react-router-dom";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";

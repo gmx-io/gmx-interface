@@ -15,7 +15,7 @@ import {
   subscribeToV2Events,
 } from "context/WebsocketContext/subscribeToEvents";
 import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
-import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
+import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
@@ -55,7 +55,7 @@ import { getTenderlyAccountParams } from "lib/tenderly";
 import { getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
-import { TokenApproveResultEvent } from "lib/userAnalytics/types";
+import type { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { gelatoRelay } from "sdk/utils/gelatoRelay";
@@ -66,7 +66,7 @@ import { FeesSettlementStatusNotification } from "components/StatusNotification/
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
 
-import {
+import type {
   ApprovalStatuses,
   DepositCreatedEventData,
   DepositStatuses,

@@ -7,11 +7,11 @@ import {
   GlvInfoData,
   MarketsInfoData,
   getGlvOrMarketAddress,
-  type GlvAndGmMarketsInfoData,
-  type GlvOrMarketInfo,
+  GlvAndGmMarketsInfoData,
+  GlvOrMarketInfo,
 } from "../markets";
 import { isGlvInfo } from "../markets/glv";
-import { convertToUsd, type TokenData, type TokensData } from "../tokens";
+import { convertToUsd, TokenData, TokensData } from "../tokens";
 
 const DEFAULT_VALUE = {
   markets: EMPTY_ARRAY,

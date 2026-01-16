@@ -9,7 +9,7 @@ import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { defined } from "lib/guards";
-import { StakingProcessedData } from "lib/legacy";
+import type { StakingProcessedData } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";

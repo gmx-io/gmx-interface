@@ -1,17 +1,17 @@
 import { t } from "@lingui/macro";
 import { encodeFunctionData } from "viem";
 
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
-import { SendParam, TransferRequests } from "domain/multichain/types";
-import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
-import { CreateGlvWithdrawalParams, RawCreateGlvWithdrawalParams } from "domain/synthetics/markets";
+import type { SendParam, TransferRequests } from "domain/multichain/types";
+import type { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
+import type { CreateGlvWithdrawalParams, RawCreateGlvWithdrawalParams } from "domain/synthetics/markets";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
-import { ISigner } from "lib/transactions/iSigner";
-import { WalletSigner } from "lib/wallets";
+import type { ISigner } from "lib/transactions/iSigner";
+import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 
 import {

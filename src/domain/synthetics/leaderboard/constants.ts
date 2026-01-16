@@ -1,7 +1,7 @@
 import { ARBITRUM } from "config/chains";
 import { expandDecimals } from "lib/numbers";
 
-import { LeaderboardPageConfig, LeaderboardPageKey } from "./types";
+import type { LeaderboardPageConfig, LeaderboardPageKey } from "./types";
 
 export const MIN_COLLATERAL_USD_IN_LEADERBOARD = expandDecimals(500, 30);
 

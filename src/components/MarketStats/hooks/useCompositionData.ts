@@ -13,7 +13,7 @@ import { getMaxUsdCapUsdInGmGlvMarket, isGlvInfo } from "domain/synthetics/marke
 import { TokenData, TokensData, convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { defined } from "lib/guards";
 import { bigintToNumber, getBasisPoints } from "lib/numbers";
-import { MarketInfo } from "sdk/types/markets";
+import type { MarketInfo } from "sdk/types/markets";
 
 type MarketCompositionItem = {
   type: "market";

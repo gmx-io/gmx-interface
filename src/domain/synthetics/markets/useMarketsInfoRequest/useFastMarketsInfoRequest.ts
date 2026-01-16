@@ -4,10 +4,10 @@ import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 import { metrics } from "lib/metrics";
-import { MarketInfo as SquidMarketInfo } from "sdk/types/subsquid";
+import type { MarketInfo as SquidMarketInfo } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 
-import { FastMarketInfoData } from "..";
+import type { FastMarketInfoData } from "..";
 
 const MARKETS_INFO_QUERY = gql`
   query MarketsInfo($limit: Int, $offset: Int) {

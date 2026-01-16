@@ -6,10 +6,10 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { useExecutionFeeBufferBps } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GasPaymentParams } from "domain/synthetics/express";
-import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
+import type { GasPaymentParams } from "domain/synthetics/express";
+import { getExecutionFeeWarning, ExecutionFee } from "domain/synthetics/fees";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens/utils";
-import { TokenData } from "domain/tokens";
+import type { TokenData } from "domain/tokens";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";

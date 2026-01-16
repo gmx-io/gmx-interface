@@ -1,4 +1,4 @@
-import { QueryFunction } from "@taskworld.com/rereselect";
+import type { QueryFunction } from "@taskworld.com/rereselect";
 import keyBy from "lodash/keyBy";
 import values from "lodash/values";
 
@@ -29,7 +29,7 @@ import {
   selectTradeboxTradeType,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
 import {
@@ -44,7 +44,7 @@ import {
   IndexTokenStat,
   marketsInfoData2IndexTokenStatsMap,
 } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
-import { TokenData } from "domain/synthetics/tokens";
+import type { TokenData } from "domain/synthetics/tokens";
 import { getAcceptablePriceByPriceImpact, getMarkPrice } from "domain/synthetics/trade/utils/prices";
 import { expandDecimals, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";

@@ -5,7 +5,7 @@ import { ARBITRUM } from "config/chains";
 import { simulateCallDataWithTenderly, TenderlyConfig } from "lib/tenderly";
 import { ISigner } from "lib/transactions/iSigner";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { ERC20Address } from "sdk/types/tokens";
+import type { ERC20Address } from "sdk/types/tokens";
 
 import {
   EstimateMultichainDepositNetworkComposeGasParameters,

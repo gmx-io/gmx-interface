@@ -31,7 +31,7 @@ import {
 } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { GlvSellTask, GmSellTask } from "domain/multichain/progress/GmOrGlvSellProgress";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
-import { TransferRequests } from "domain/multichain/types";
+import type { TransferRequests } from "domain/multichain/types";
 import {
   CreateGlvWithdrawalParams,
   CreateWithdrawalParams,
@@ -57,7 +57,7 @@ import {
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { TokenBalanceType } from "sdk/types/tokens";
-import { WithdrawalAmounts } from "sdk/types/trade";
+import type { WithdrawalAmounts } from "sdk/types/trade";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";

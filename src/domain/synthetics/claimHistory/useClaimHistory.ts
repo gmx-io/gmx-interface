@@ -7,7 +7,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { MarketsInfoData } from "domain/synthetics/markets";
+import type { MarketsInfoData } from "domain/synthetics/markets";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { BN_ZERO, bigNumberify } from "lib/numbers";
 import { getByKey } from "lib/objects";

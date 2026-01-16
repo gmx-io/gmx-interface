@@ -58,7 +58,7 @@ import {
   formatRoleKey,
   formatSwapPath,
 } from "./formatting";
-import { LogEntryComponentProps } from "./types";
+import type { LogEntryComponentProps } from "./types";
 import { OrderTransactionsSummary, useOrderTransactions } from "./useOrderTransactions";
 
 type OrderLifecycleTxnType = "created" | "executed" | "cancelled";

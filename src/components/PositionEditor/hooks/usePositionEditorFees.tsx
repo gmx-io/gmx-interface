@@ -5,7 +5,7 @@ import { usePositionEditorPosition } from "context/SyntheticsStateContext/hooks/
 import { selectGasLimits, selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionEditorCollateralInputAmountAndUsd } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { GasPaymentParams } from "domain/synthetics/express";
+import type { GasPaymentParams } from "domain/synthetics/express";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -14,7 +14,7 @@ import {
   getTotalFeeItem,
 } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
-import { TradeFees } from "domain/synthetics/trade";
+import type { TradeFees } from "domain/synthetics/trade";
 import { useChainId } from "lib/chains";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 

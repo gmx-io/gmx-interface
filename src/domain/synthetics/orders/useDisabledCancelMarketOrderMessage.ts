@@ -1,9 +1,8 @@
 import { t } from "@lingui/macro";
 import { useEffect, useState } from "react";
 
-import { isMarketOrderType } from ".";
-import { OrderInfo } from ".";
-import { OracleSettingsData } from "../common/useOracleSettingsData";
+import { isMarketOrderType, OrderInfo } from ".";
+import type { OracleSettingsData } from "../common/useOracleSettingsData";
 
 export const useDisabledCancelMarketOrderMessage = (
   order: OrderInfo,

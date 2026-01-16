@@ -1,8 +1,8 @@
-import { AbstractSigner, TypedDataEncoder, type Wallet } from "ethers";
+import { AbstractSigner, TypedDataEncoder, Wallet } from "ethers";
 import { withRetry } from "viem";
 
 import { parseError } from "lib/errors";
-import { ISigner } from "lib/transactions/iSigner";
+import type { ISigner } from "lib/transactions/iSigner";
 
 import type { WalletSigner } from ".";
 

@@ -4,7 +4,7 @@ import { PropsWithChildren, createContext, useCallback, useContext, useMemo, use
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { setByKey, updateByKey } from "sdk/utils/objects";
 
-import { SorterConfig, SorterKey } from "./types";
+import type { SorterConfig, SorterKey } from "./types";
 
 type SorterState = Record<SorterKey, SorterConfig>;
 

@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { ComponentProps } from "react";
+import type { ComponentProps } from "react";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

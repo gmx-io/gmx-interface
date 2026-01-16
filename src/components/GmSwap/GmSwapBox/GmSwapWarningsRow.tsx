@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import noop from "lodash/noop";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 

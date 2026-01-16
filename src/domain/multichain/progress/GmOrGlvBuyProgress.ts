@@ -1,8 +1,8 @@
 import { decodeEventLog, encodeEventTopics, getAbiItem } from "viem";
 
-import { ContractsChainId } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { Operation } from "domain/synthetics/markets/types";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 

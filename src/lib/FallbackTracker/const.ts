@@ -1,4 +1,4 @@
-import { FallbackTrackerConfig } from "./FallbackTracker";
+import type { FallbackTrackerConfig } from "./FallbackTracker";
 
 export const STABILITY_WEIGHT = 0.7;
 export const SPEED_WEIGHT = 0.5;

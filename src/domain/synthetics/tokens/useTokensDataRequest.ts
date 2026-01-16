@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 
 import { useGmxAccountTokenBalances } from "domain/multichain/useGmxAccountTokenBalances";
-import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokensMap, getV2Tokens } from "sdk/configs/tokens";
 import { TokenBalanceType } from "sdk/types/tokens";
 
-import { TokensData } from "./types";
+import type { TokensData } from "./types";
 import { useOnchainTokenConfigs } from "./useOnchainTokenConfigs";
 import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPricesRequest } from "./useTokenRecentPricesData";

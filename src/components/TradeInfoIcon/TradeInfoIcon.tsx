@@ -1,5 +1,5 @@
 import { Trans, t } from "@lingui/macro";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { TradeMode, TradeType } from "sdk/types/trade";
 

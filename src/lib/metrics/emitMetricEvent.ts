@@ -1,4 +1,4 @@
-import { MetricEventParams } from "./Metrics";
+import type { MetricEventParams } from "./Metrics";
 
 export const METRIC_EVENT_DISPATCH_NAME = "send-metric";
 export const METRIC_COUNTER_DISPATCH_NAME = "send-counter";

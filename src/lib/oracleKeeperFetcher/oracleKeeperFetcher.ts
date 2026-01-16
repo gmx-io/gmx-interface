@@ -1,5 +1,5 @@
-import { ContractsChainId } from "config/chains";
-import { Bar, FromNewToOldArray } from "domain/tradingview/types";
+import type { ContractsChainId } from "config/chains";
+import type { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { withFallback } from "lib/FallbackTracker/withFallback";
 import { metrics, OracleKeeperFailureCounter } from "lib/metrics";
@@ -14,7 +14,7 @@ import { buildUrl } from "sdk/utils/buildUrl";
 
 import { _debugOracleKeeper, OracleKeeperDebugFlags } from "./_debug";
 import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
-import {
+import type {
   ApyInfo,
   ApyPeriod,
   BatchReportBody,

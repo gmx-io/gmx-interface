@@ -4,11 +4,11 @@ import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
-import { ExpressTxnData } from "lib/transactions";
-import { WalletSigner } from "lib/wallets";
+import type { ExpressTxnData } from "lib/transactions";
+import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
-import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 

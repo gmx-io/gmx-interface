@@ -9,7 +9,7 @@ import {
   useLeaderboardIsCompetition,
   useLeaderboardTimeframeTypeState,
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
-import { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
+import type { CompetitionType, LeaderboardAccount, RemoteData } from "domain/synthetics/leaderboard";
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -22,7 +22,7 @@ import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import { TooltipPosition } from "components/Tooltip/Tooltip";
+import type { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { formatDelta, getSignedValueClassName } from "./shared";

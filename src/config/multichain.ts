@@ -24,8 +24,7 @@ import { Wallet } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
-import type { Abi, Hex } from "viem";
-import { maxUint256, zeroAddress } from "viem";
+import { maxUint256, zeroAddress, Abi, Hex } from "viem";
 
 import {
   AnyChainId,
@@ -45,7 +44,7 @@ import {
   SourceChainId,
 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { LayerZeroEndpointId } from "domain/multichain/types";
+import type { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { isSettlementChain, isSourceChain } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";

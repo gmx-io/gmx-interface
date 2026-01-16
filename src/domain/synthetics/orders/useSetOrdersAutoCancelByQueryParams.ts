@@ -3,14 +3,16 @@ import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { selectOrdersInfoData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectOrdersInfoData,
+  selectChainId,
+  selectMaxAutoCancelOrders,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isLimitDecreaseOrderType, isStopLossOrderType } from "domain/synthetics/orders";
-import { PositionOrderInfo } from "domain/synthetics/orders";
+import { isLimitDecreaseOrderType, isStopLossOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { helperToast } from "lib/helperToast";
-import { SetAutoCloseOrdersAction } from "lib/metrics";
+import type { SetAutoCloseOrdersAction } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import useSearchParams from "lib/useSearchParams";
 import useWallet from "lib/wallets/useWallet";

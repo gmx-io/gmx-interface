@@ -1,10 +1,10 @@
-import { Provider } from "ethers";
+import type { Provider } from "ethers";
 import useSWR from "swr";
 
 import { useJsonRpcProvider } from "lib/rpc";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { SubaccountSerializedConfig } from "./types";
+import type { SubaccountSerializedConfig } from "./types";
 import { getSubaccountSigner } from "./utils";
 
 export function useSubaccountWithdrawalAmount(

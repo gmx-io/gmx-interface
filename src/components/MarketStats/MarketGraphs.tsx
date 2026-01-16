@@ -1,4 +1,4 @@
-import { MessageDescriptor } from "@lingui/core";
+import type { MessageDescriptor } from "@lingui/core";
 import { msg, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { format } from "date-fns/format";
@@ -12,8 +12,12 @@ import { useAprSnapshots } from "domain/synthetics/markets/useGmGlvAprSnapshots"
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
-import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
-import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import {
+  POOLS_TIME_RANGE_OPTIONS,
+  convertPoolsTimeRangeToPeriod,
+  PoolsTimeRange,
+  usePoolsTimeRange,
+} from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -22,7 +26,7 @@ import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue, PRECISION
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
-import { AprSnapshot, Price as PriceSnapshot } from "sdk/types/subsquid";
+import type { AprSnapshot, Price as PriceSnapshot } from "sdk/types/subsquid";
 
 import Tabs from "components/Tabs/Tabs";
 

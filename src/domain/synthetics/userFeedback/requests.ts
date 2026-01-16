@@ -3,7 +3,7 @@ import debounce from "lodash/debounce";
 import { USD_DECIMALS } from "config/factors";
 import { formatAmountForMetrics, metrics, MissedCoinEvent } from "lib/metrics";
 
-import { MissedCoinsPlace } from "./types";
+import type { MissedCoinsPlace } from "./types";
 import { COIN_REGEXP } from "./utils";
 
 export const sendMissedCoinSearchDebounced = debounce(

@@ -2,7 +2,7 @@ import { differenceInMilliseconds } from "date-fns";
 import uniq from "lodash/uniq";
 
 import { getFallbackTrackerKey } from "config/localStorage";
-import { ErrorLike } from "lib/errors";
+import type { ErrorLike } from "lib/errors";
 import { sleepWithSignal } from "lib/sleep";
 import { combineAbortSignals } from "sdk/utils/abort";
 
@@ -14,7 +14,7 @@ import {
   emitReportEndpointFailure,
   emitTrackingFinished,
 } from "./events";
-import { NetworkStatusObserver } from "./NetworkStatusObserver";
+import type { NetworkStatusObserver } from "./NetworkStatusObserver";
 
 export type FallbackTrackerConfig = {
   // Frequency of endpoint probing

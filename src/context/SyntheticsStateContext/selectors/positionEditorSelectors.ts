@@ -9,7 +9,7 @@ import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { parseValue } from "lib/numbers";
 import { TokenBalanceType } from "sdk/types/tokens";
 
-import { SyntheticsState } from "../SyntheticsStateContextProvider";
+import type { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import { selectPositionsInfoData, selectTokensData } from "./globalSelectors";
 

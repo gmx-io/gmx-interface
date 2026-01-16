@@ -6,11 +6,11 @@ import useSWR from "swr";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { ClaimableCollateral } from "sdk/types/subsquid";
+import type { ClaimableCollateral } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { PositionsConstants } from "../positions/usePositionsConstants";
+import type { PositionsConstants } from "../positions/usePositionsConstants";
 
 export type RebateInfoItem = {
   factor: bigint;

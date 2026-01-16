@@ -16,8 +16,7 @@ import {
   getStakingData,
   StakingProcessedData,
 } from "lib/legacy";
-import { useMulticall } from "lib/multicall";
-import type { MulticallRequestConfig, MulticallResult } from "lib/multicall";
+import { useMulticall, MulticallRequestConfig, MulticallResult } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 
 export function useStakingProcessedData(targetChainId?: ContractsChainId) {

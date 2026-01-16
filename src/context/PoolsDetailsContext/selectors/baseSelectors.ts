@@ -1,6 +1,6 @@
 import noop from "lodash/noop";
 
-import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { EMPTY_ARRAY } from "lib/objects";
 

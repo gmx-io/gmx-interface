@@ -3,14 +3,14 @@ import { ethers } from "ethers";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
-import { SetPendingWithdrawal } from "context/SyntheticsEvents";
+import type { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
-import { OrderMetricId } from "lib/metrics";
-import { BlockTimestampData } from "lib/useBlockTimestampRequest";
-import { WalletSigner } from "lib/wallets";
+import type { OrderMetricId } from "lib/metrics";
+import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
+import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { IGlvWithdrawalUtils } from "typechain-types/GlvRouter";
+import type { IGlvWithdrawalUtils } from "typechain-types/GlvRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 

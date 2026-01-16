@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 
 import {
-  type ExecutionFee,
-  type FeeItem,
-  type GasLimitsConfig,
   estimateExecuteShiftGasLimit,
   getFeeItem,
   getTotalFeeItem,
+  estimateShiftOraclePriceCount,
+  ExecutionFee,
+  FeeItem,
+  GasLimitsConfig,
 } from "domain/synthetics/fees";
-import { estimateShiftOraclePriceCount } from "domain/synthetics/fees";
 import type { TokensData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import type { GmSwapFees } from "sdk/types/trade";

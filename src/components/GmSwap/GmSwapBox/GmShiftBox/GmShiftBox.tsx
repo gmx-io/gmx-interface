@@ -19,7 +19,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
-import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
+import type { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -27,7 +27,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExpandableRow } from "components/ExpandableRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
-import { MarketState } from "components/MarketSelector/types";
+import type { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";

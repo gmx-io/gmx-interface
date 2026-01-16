@@ -9,7 +9,7 @@ import { helperToast } from "lib/helperToast";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { OrderInfo } from "sdk/types/orders";
+import type { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
 
 import { selectExpressGlobalParams } from "../selectors/expressSelectors";

@@ -27,7 +27,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { PoolListItem } from "./PoolListItem";
-import { CommonPoolSelectorProps, MarketOption } from "./types";
+import type { CommonPoolSelectorProps, MarketOption } from "./types";
 
 import "./MarketSelector.scss";
 

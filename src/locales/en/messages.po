@@ -17,7 +17,7 @@ msgstr ""
 msgid "Unrealized Base PnL"
 msgstr "Unrealized Base PnL"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
@@ -281,10 +281,6 @@ msgstr "Cancel Limit Swap"
 msgid "Roadmap"
 msgstr "Roadmap"
 
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{seconds}s"
-msgstr "{seconds}s"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "To"
@@ -337,7 +333,7 @@ msgstr "The mark price has changed, consider increasing your allowed slippage by
 msgid "Funds will appear in your GMX Account soon."
 msgstr "Funds will appear in your GMX Account soon."
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT Address"
 msgstr "Enter NFT Address"
 
@@ -858,10 +854,6 @@ msgstr "No markets matched"
 msgid "Unstake {tokenSymbol}"
 msgstr "Unstake {tokenSymbol}"
 
-#: src/components/InputSection/InputSection.jsx
-msgid "MAX"
-msgstr "MAX"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr "No centralized exchanges available for this network."
@@ -1160,7 +1152,6 @@ msgstr "Buy Fee"
 msgid "Current Yield Landscape"
 msgstr "Current Yield Landscape"
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "Tokens"
@@ -1243,7 +1234,7 @@ msgstr "Select pool"
 msgid "APR"
 msgstr "APR"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Tranferring..."
 msgstr "Tranferring..."
 
@@ -1330,10 +1321,6 @@ msgstr "Not supported"
 msgid "TWAP Swap"
 msgstr "TWAP Swap"
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
-msgstr "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
-
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
@@ -1374,7 +1361,7 @@ msgstr "What issues did you encounter that led to your rating?"
 msgid "Receive voting power and participate in governance"
 msgstr "Receive voting power and participate in governance"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Address"
 msgstr "NFT Address"
 
@@ -1396,8 +1383,8 @@ msgstr "Symbiosis"
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
 
-#: src/pages/PageNotFound/PageNotFound.jsx
-#: src/pages/PageNotFound/PageNotFound.jsx
+#: src/pages/PageNotFound/PageNotFound.tsx
+#: src/pages/PageNotFound/PageNotFound.tsx
 msgid "Page not found"
 msgstr "Page not found"
 
@@ -1472,14 +1459,9 @@ msgstr "Explore"
 msgid "Sending sell request..."
 msgstr "Sending sell request..."
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
-msgstr "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer submitted."
 msgstr "Transfer submitted."
 
@@ -1554,7 +1536,7 @@ msgstr "Failed Market Decrease"
 msgid "Full market"
 msgstr "Full market"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
@@ -1982,10 +1964,6 @@ msgstr "Try Express"
 msgid "Failed to deactivate"
 msgstr "Failed to deactivate"
 
-#: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "No open position, order cannot be executed unless a position is opened"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short Positions"
@@ -2215,7 +2193,7 @@ msgstr "What is the bonus incentive for holding your GLV?"
 msgid "Day(s)"
 msgstr "Day(s)"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer NFT"
 msgstr "Transfer NFT"
 
@@ -2467,10 +2445,6 @@ msgstr "Market Graph"
 msgid "Buy order cancelled."
 msgstr "Buy order cancelled."
 
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign message with EOA"
-msgstr "Unable to sign message with EOA"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr "Dune Analytics for GMX"
@@ -2503,7 +2477,7 @@ msgstr "Execute TWAP Part"
 msgid "Swap Profit Fee"
 msgstr "Swap Profit Fee"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX."
 msgstr "Job openings at GMX."
 
@@ -2800,10 +2774,6 @@ msgstr "Annualized data based on the past 7 days."
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
-
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
-msgstr "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3182,7 +3152,6 @@ msgstr "Please switch to the <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</
 msgid "Search Pools"
 msgstr "Search Pools"
 
-#: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Select Language"
 msgstr "Select Language"
@@ -3276,10 +3245,6 @@ msgstr "Limit - Short Inc."
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request"
 msgstr "Sending settle request"
-
-#: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "Order cannot be executed as the remaining position would be smaller than $5.00"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3414,10 +3379,6 @@ msgstr "Community-led Telegram groups."
 msgid "Settled Funding Fees"
 msgstr "Settled Funding Fees"
 
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "Ends in"
-msgstr "Ends in"
-
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Please input a referral code to benefit from fee discounts."
@@ -3472,7 +3433,6 @@ msgstr "Success claiming funding fees"
 msgid "<0>every</0> {hours} hours{0}"
 msgstr "<0>every</0> {hours} hours{0}"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
 msgstr "Fail External Swaps"
@@ -3601,7 +3561,7 @@ msgstr "Bonus APR"
 msgid "Referral code submitted."
 msgstr "Referral code submitted."
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 
@@ -3694,7 +3654,7 @@ msgid "Slippage is the difference between your expected and actual execution pri
 msgstr "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid Receiver Address"
 msgstr "Invalid Receiver Address"
 
@@ -4219,7 +4179,7 @@ msgstr "GMX Trading Stats"
 msgid "Express Trading was enabled to allow the use of collateral from your GMX Account balance. You can disable it in the <0>settings</0>."
 msgstr "Express Trading was enabled to allow the use of collateral from your GMX Account balance. You can disable it in the <0>settings</0>."
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "Jobs"
 
@@ -4430,10 +4390,6 @@ msgstr "Failed to generate session"
 msgid "No repeated wallet confirmations"
 msgstr "No repeated wallet confirmations"
 
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "This competition has ended."
-msgstr "This competition has ended."
-
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts Net Rate / 1h"
@@ -4585,10 +4541,6 @@ msgstr "Recommended"
 msgid "Decrease"
 msgstr "Decrease"
 
-#: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "Order cannot be executed as it would reduce the position's leverage below 1"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "Link copied to clipboard."
@@ -4726,7 +4678,7 @@ msgstr "Delegate"
 msgid "Harmonix"
 msgstr "Harmonix"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid NFT Address"
 msgstr "Invalid NFT Address"
 
@@ -4885,7 +4837,6 @@ msgstr "Shifting is only available on {chainNames}. Please switch to {chainNames
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "Swap Price Impact for External Swap Threshold"
@@ -5107,10 +5058,6 @@ msgstr "Total circulating supply of GMX tokens."
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
-
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
-msgstr "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
@@ -5591,7 +5538,7 @@ msgid "Today"
 msgstr "Today"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Receiver Address"
 msgstr "Receiver Address"
 
@@ -5681,7 +5628,7 @@ msgstr "Get alerts and announcements from GMX to stay on top of your trades, liq
 msgid "You have an existing limit order in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "You have an existing limit order in the {0} market pool.<0>Switch to {1} market pool</0>"
 
-#: src/pages/PageNotFound/PageNotFound.jsx
+#: src/pages/PageNotFound/PageNotFound.tsx
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 
@@ -6192,10 +6139,6 @@ msgstr "What's the difference between providing liquidity in GLV or GM?"
 msgid "Failed to sign approval"
 msgstr "Failed to sign approval"
 
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "Starts in"
-msgstr "Starts in"
-
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
@@ -6419,7 +6362,7 @@ msgstr "Kudai AI Agent"
 msgid "Current Price"
 msgstr "Current Price"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT ID"
 msgstr "Enter NFT ID"
 
@@ -6815,7 +6758,7 @@ msgid "COMPETITION Airdrop"
 msgstr "COMPETITION Airdrop"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter Receiver Address"
 msgstr "Enter Receiver Address"
 
@@ -7231,10 +7174,6 @@ msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgid "Failed Settlement of Funding Fees"
 msgstr "Failed Settlement of Funding Fees"
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
-msgstr "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
@@ -7293,7 +7232,6 @@ msgstr "Traders"
 msgid "take profit"
 msgstr "take profit"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
 msgstr "Force External Swaps"
@@ -7340,10 +7278,6 @@ msgstr "Success claiming position price impact fees"
 msgid "Lend out your GM tokens, and borrow against them."
 msgstr "Lend out your GM tokens, and borrow against them."
 
-#: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "Order size is bigger than position, will only be executable if position increases"
-
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
 msgstr "Buy"
@@ -7352,7 +7286,7 @@ msgstr "Buy"
 msgid "Copy technical details"
 msgstr "Copy technical details"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT ID"
 msgstr "NFT ID"
 
@@ -7509,7 +7443,7 @@ msgstr "DeFi Portfolio Tracker"
 msgid "Current Funding Fee / Day"
 msgstr "Current Funding Fee / Day"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Job Openings"
 msgstr "Job Openings"
 
@@ -7681,10 +7615,6 @@ msgstr "Liquidation price is influenced by fees and collateral value."
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "No data available"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{prefix} <0>{text}</0>"
-msgstr "{prefix} <0>{text}</0>"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "These networks support only trading directly from wallet."
@@ -7925,7 +7855,7 @@ msgstr "Max pool amount exceeded"
 msgid "Unknown order"
 msgstr "Unknown order"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "No open positions at GMX currently"
 msgstr "No open positions at GMX currently"
 
@@ -8024,7 +7954,7 @@ msgstr "{positionName} Fees settled."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer failed."
 msgstr "Transfer failed."
 
@@ -8181,10 +8111,6 @@ msgstr "Max. Leverage exceeded"
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Something Went Wrong"
 msgstr "Something Went Wrong"
-
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign message with smart account"
-msgstr "Unable to sign message with smart account"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."

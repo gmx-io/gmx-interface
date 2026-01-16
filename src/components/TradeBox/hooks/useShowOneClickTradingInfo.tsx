@@ -10,7 +10,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExpressTxnParams } from "domain/synthetics/express";
+import type { ExpressTxnParams } from "domain/synthetics/express";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,

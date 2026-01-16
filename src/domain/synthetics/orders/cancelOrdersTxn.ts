@@ -1,6 +1,6 @@
 import { plural, t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
@@ -8,7 +8,7 @@ import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { isTwapOrder } from "sdk/utils/orders";
 
-import { OrderParams } from "./types";
+import type { OrderParams } from "./types";
 
 export type CancelOrderParams = {
   orders: OrderParams[];

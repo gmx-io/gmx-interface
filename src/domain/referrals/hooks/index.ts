@@ -15,12 +15,12 @@ import { basisPointsToFloat } from "lib/numbers";
 import { getProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 
-import { UserReferralInfo } from "../types";
+import type { UserReferralInfo } from "../types";
 
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";

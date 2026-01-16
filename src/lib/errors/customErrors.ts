@@ -1,6 +1,6 @@
 import { decodeErrorResult } from "viem";
 
-import { SignedTokenPermit } from "domain/tokens";
+import type { SignedTokenPermit } from "domain/tokens";
 import { abis } from "sdk/abis";
 
 import { ErrorData, ErrorLike, extendError, parseError } from ".";

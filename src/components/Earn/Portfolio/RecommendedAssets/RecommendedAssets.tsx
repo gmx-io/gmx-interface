@@ -12,7 +12,7 @@ import {
   isMarketInfo,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import type { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { convertToUsd, getMidPrice, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
@@ -21,7 +21,7 @@ import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { AnyChainId, BOTANIX } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
-import { MarketInfo, MarketTokensAPRData } from "sdk/types/markets";
+import type { MarketInfo, MarketTokensAPRData } from "sdk/types/markets";
 import { getByKey } from "sdk/utils/objects";
 
 import APRLabel from "components/APRLabel/APRLabel";

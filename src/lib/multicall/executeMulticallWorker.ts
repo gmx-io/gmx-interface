@@ -6,13 +6,13 @@ import { getAbFlags } from "config/ab";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
-import { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
+import type { MetricEventParams, MulticallTimeoutEvent } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
-import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
+import type { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { getCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 import { sleep } from "lib/sleep";
 
-import { _debugMulticall, MULTICALL_DEBUG_EVENT_NAME, type MulticallDebugEvent } from "./_debug";
+import { _debugMulticall, MULTICALL_DEBUG_EVENT_NAME, MulticallDebugEvent } from "./_debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { MAX_PRIMARY_TIMEOUT } from "./Multicall";
 import type { MulticallRequestConfig, MulticallResult } from "./types";

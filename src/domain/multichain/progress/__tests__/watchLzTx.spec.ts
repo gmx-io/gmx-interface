@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { SOURCE_BASE_MAINNET } from "sdk/configs/chains";
 
-import { watchLzTxApi, watchLzTxRpc, type LzStatus } from "../watchLzTx";
+import { watchLzTxApi, watchLzTxRpc, LzStatus } from "../watchLzTx";
 
 describe.concurrent("watchLzTx watchers (Arbitrum withdraw)", () => {
   const TX_HASH = "0x1d84b3cb0b93d1634ccbc1916dc7d9d03a65556d4badcf6327480d64403e271f";

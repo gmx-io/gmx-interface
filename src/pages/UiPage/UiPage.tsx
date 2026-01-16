@@ -6,9 +6,9 @@ import { memo, SVGProps, useState } from "react";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
-import { ColorTree } from "lib/generateColorConfig";
+import type { ColorTree } from "lib/generateColorConfig";
 import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
-import { TokenCategory } from "sdk/types/tokens";
+import type { TokenCategory } from "sdk/types/tokens";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";

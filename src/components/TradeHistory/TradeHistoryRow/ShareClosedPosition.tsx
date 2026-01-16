@@ -1,8 +1,8 @@
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { getBasisPoints } from "lib/numbers";
-import { SharePositionActionSource } from "lib/userAnalytics/types";
-import { PositionTradeAction } from "sdk/types/tradeHistory";
+import type { SharePositionActionSource } from "lib/userAnalytics/types";
+import type { PositionTradeAction } from "sdk/types/tradeHistory";
 import { getEntryPrice, getLeverage } from "sdk/utils/positions";
 
 import PositionShare from "components/PositionShare/PositionShare";

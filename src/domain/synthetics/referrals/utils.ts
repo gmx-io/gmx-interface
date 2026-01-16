@@ -1,7 +1,7 @@
 import { getByKey } from "lib/objects";
 
-import { MarketsInfoData } from "../markets";
-import { AffiliateRewardsData } from "./types";
+import type { MarketsInfoData } from "../markets";
+import type { AffiliateRewardsData } from "./types";
 import { convertToUsd } from "../tokens";
 
 export function getTotalClaimableAffiliateRewardsUsd(

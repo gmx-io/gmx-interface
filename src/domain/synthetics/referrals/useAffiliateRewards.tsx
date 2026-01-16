@@ -5,7 +5,7 @@ import { useMulticall } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 
-import { AffiliateRewardsData } from "./types";
+import type { AffiliateRewardsData } from "./types";
 
 export function useAffiliateRewards(chainId: ContractsChainId) {
   const { account } = useWallet();

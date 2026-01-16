@@ -3,7 +3,7 @@ import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { getTokenData } from "sdk/utils/tokens";
 
-import { TokenData, TokensAllowanceData, TokensData, TokenToSpendParams } from "./types";
+import type { TokenData, TokensAllowanceData, TokensData, TokenToSpendParams } from "./types";
 
 export * from "sdk/utils/tokens";
 

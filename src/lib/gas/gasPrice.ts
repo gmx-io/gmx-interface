@@ -1,4 +1,4 @@
-import { Provider } from "ethers";
+import type { Provider } from "ethers";
 import { withRetry } from "viem";
 
 import {
@@ -10,7 +10,7 @@ import {
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { extendError } from "lib/errors";
-import { GetFeeDataBlockError } from "lib/metrics";
+import type { GetFeeDataBlockError } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { bigMath } from "sdk/utils/bigmath";
 

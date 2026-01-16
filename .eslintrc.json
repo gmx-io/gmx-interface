@@ -57,6 +57,7 @@
       }
     ],
     "import/namespace": "off",
+    "import/no-duplicates": "error",
 
     /* might be useful */
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -153,7 +154,10 @@
       "files": ["./src/**/*.ts", "./src/**/*.tsx", "./src/**/*.js", "./src/**/*.jsx"],
       "rules": {
         "local-rules/no-bigint-negation": "error",
-        "local-rules/no-logical-bigint": "error"
+        "local-rules/no-logical-bigint": "error",
+        "local-rules/prefer-type-imports": "warn",
+        "local-rules/merge-type-imports": "warn",
+        "local-rules/no-inline-type-specifiers": "warn"
       },
       "parserOptions": {
         "project": ["./tsconfig.json"]

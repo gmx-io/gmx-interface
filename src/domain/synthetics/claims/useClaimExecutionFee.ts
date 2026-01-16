@@ -8,7 +8,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 import { useGasPrice } from "../fees";
 import { getClaimTransactionCallData } from "./createClaimTransaction";
-import { ClaimableAmountsDataByDistributionId, ClaimsConfigurationData } from "./useUserClaimableAmounts";
+import type { ClaimableAmountsDataByDistributionId, ClaimsConfigurationData } from "./useUserClaimableAmounts";
 
 export const useClaimExecutionFee = ({
   selectedDistributionIds,

@@ -18,7 +18,7 @@ import {
   selectLeaderboardSetSearchAddress,
 } from "context/SyntheticsStateContext/selectors/leaderboardSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { CompetitionType } from "domain/synthetics/leaderboard";
+import type { CompetitionType } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";

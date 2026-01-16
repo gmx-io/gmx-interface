@@ -13,7 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { usePrevious } from "lib/usePrevious";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
+import type { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
 import { MAX_PERCENTAGE, PERCENTAGE_DECIMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({

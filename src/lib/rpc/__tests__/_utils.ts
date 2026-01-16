@@ -4,8 +4,7 @@ import type { RpcConfig } from "config/rpc";
 import type { CheckResult, EndpointStats } from "lib/FallbackTracker";
 import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "lib/FallbackTracker/const";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
-import type { ContractsChainId } from "sdk/configs/chains";
-import { ARBITRUM } from "sdk/configs/chains";
+import { ARBITRUM, ContractsChainId } from "sdk/configs/chains";
 
 import type { RpcCheckResult, RpcTrackerParams } from "../RpcTracker";
 

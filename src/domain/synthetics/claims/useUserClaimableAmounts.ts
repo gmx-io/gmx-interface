@@ -9,14 +9,14 @@ import { selectGlvInfo, selectMarketsInfoData } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
-import { ContractsChainId } from "sdk/configs/chains";
+import type { ContractsChainId } from "sdk/configs/chains";
 import type { ClaimableAmount } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 import { getMarketPoolName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
 
 import { useMarketTokensData } from "../markets";
-import { TokenData } from "../tokens";
+import type { TokenData } from "../tokens";
 import {
   GLP_DISTRIBUTION_ID,
   GLP_DISTRIBUTION_TEST_ID,

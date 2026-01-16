@@ -1,6 +1,6 @@
 import { getChainName, getProviderNameFromUrl } from "config/rpc";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
-import { OracleKeeperFallbackTracker } from "lib/oracleKeeperFetcher/OracleFallbackTracker";
+import type { OracleKeeperFallbackTracker } from "lib/oracleKeeperFetcher/OracleFallbackTracker";
 
 import { metrics, OracleKeeperEndpointBannedEvent, OracleKeeperUpdateEndpointsEvent } from ".";
 

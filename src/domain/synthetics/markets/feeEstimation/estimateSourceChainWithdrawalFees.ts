@@ -1,10 +1,10 @@
 import { zeroAddress } from "viem";
 
-import { SettlementChainId, SourceChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getStargatePoolAddress, RANDOM_WALLET } from "config/multichain";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { SendParam } from "domain/multichain/types";
-import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
+import type { SendParam } from "domain/multichain/types";
+import type { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { expandDecimals } from "lib/numbers";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 

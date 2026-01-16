@@ -11,7 +11,7 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { TokenData } from "domain/synthetics/tokens";
+import type { TokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
@@ -19,7 +19,7 @@ import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
-import { MarketOption, MarketState } from "./types";
+import type { MarketOption, MarketState } from "./types";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 export function PoolListItem(props: {

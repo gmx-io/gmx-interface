@@ -1,11 +1,11 @@
 import values from "lodash/values";
 
 import type { SortDirection } from "context/SorterContext/types";
-import { MultichainMarketTokensBalances } from "domain/multichain/types";
-import { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
-import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import type { MultichainMarketTokensBalances } from "domain/multichain/types";
+import type { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
+import type { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { ProgressiveTokensData } from "sdk/types/tokens";
+import type { ProgressiveTokensData } from "sdk/types/tokens";
 
 import type { SortField } from "./GmList";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";

@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 
 import { getChainName } from "config/chains";
-import { ExecutionFee } from "sdk/types/fees";
+import type { ExecutionFee } from "sdk/types/fees";
 
 export function getExecutionFeeWarning(chainId: number, fees: ExecutionFee) {
   const chainName = getChainName(chainId);

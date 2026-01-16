@@ -1,4 +1,4 @@
-import { MessageDescriptor } from "@lingui/core";
+import type { MessageDescriptor } from "@lingui/core";
 import { msg, t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
@@ -58,7 +58,7 @@ import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoC
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
-import { Token } from "domain/tokens";
+import type { Token } from "domain/tokens";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { useChainId } from "lib/chains";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";

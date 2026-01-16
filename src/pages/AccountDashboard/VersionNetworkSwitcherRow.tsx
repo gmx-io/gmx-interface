@@ -1,5 +1,5 @@
 import cx from "classnames";
-import { type Address } from "viem";
+import type { Address } from "viem";
 
 import { CONTRACTS_CHAIN_IDS, ContractsChainId, getChainName } from "config/chains";
 import { getIcon } from "config/icons";

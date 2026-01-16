@@ -1,8 +1,8 @@
-import { AbstractSigner } from "ethers";
+import type { AbstractSigner } from "ethers";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { TransferRequests } from "domain/multichain/types";
+import type { TransferRequests } from "domain/multichain/types";
 import { signTypedData } from "lib/wallets/signing";
 
 import type { CreateGlvDepositParams } from ".";

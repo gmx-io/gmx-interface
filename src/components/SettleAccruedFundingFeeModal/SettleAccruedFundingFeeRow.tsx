@@ -1,8 +1,8 @@
 import { t } from "@lingui/macro";
 import { useCallback } from "react";
 
-import { PositionInfo } from "domain/synthetics/positions";
-import { TokenData } from "domain/synthetics/tokens";
+import type { PositionInfo } from "domain/synthetics/positions";
+import type { TokenData } from "domain/synthetics/tokens";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 
 import Checkbox from "components/Checkbox/Checkbox";

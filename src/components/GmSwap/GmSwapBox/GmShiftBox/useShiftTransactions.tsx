@@ -6,7 +6,7 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { selectBlockTimestampData, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { ExecutionFee } from "domain/synthetics/fees";
+import type { ExecutionFee } from "domain/synthetics/fees";
 import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import { helperToast } from "lib/helperToast";
