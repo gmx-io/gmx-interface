@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-
 import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
 import { cleanFormatUsd } from "landing/pages/Home/utils/formatters";
 

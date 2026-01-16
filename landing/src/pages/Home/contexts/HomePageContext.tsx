@@ -1,10 +1,10 @@
+import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
+import { PoolsData, usePoolsData } from "landing/pages/Home/hooks/usePoolsData";
 import noop from "lodash/noop";
 import { createContext, Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from "react";
 import { useLocalStorage } from "react-use";
 
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
-import { RedirectChainIds } from "landing/pages/Home/hooks/useGoToTrade";
-import { PoolsData, usePoolsData } from "landing/pages/Home/hooks/usePoolsData";
 
 import { LeaveHomepageRedirectModal } from "../LeaveHomepageRedirectModal/LeaveHompageRedirectModal";
 import { SolanaRedirectModal } from "../SolanaRedirectModal/SolanaRedirectModal";
