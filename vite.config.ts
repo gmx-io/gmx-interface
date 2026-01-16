@@ -75,7 +75,7 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatonetwork/relay-sdk"],
             charts: ["recharts"],
-            ui: ["@headlessui/react", "framer-motion", "react-select"],
+            ui: ["@headlessui/react", "framer-motion"],
           },
         },
       },
