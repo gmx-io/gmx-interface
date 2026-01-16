@@ -28,6 +28,8 @@
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
     "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
     "tscheck:ci": "tsc -p tsconfig.json --noEmit",
+    "tscheck:landing": "tsc -p landing/tsconfig.json --noEmit --incremental",
+    "tscheck:landing:watch": "tsc -p landing/tsconfig.json --noEmit --watch",
     "clean:cache": "rm -rf .eslintcache tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
     "clean:lint": "rm -rf .eslintcache",
     "clean:ts": "rm -rf tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
