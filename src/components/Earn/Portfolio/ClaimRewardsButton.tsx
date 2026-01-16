@@ -105,4 +105,3 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
     </div>
   );
 }
-

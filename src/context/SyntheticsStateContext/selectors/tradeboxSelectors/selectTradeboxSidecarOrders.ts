@@ -48,13 +48,10 @@ const selectTradeboxExistingLimitOrders = createSelector((q) => {
 });
 
 const selectTradeboxSidecarOrdersSlEntries = (state: SyntheticsState) => state.tradebox.sidecarOrders.slEntries;
-const selectTradeboxSidecarOrdersSetSlEntries = (state: SyntheticsState) =>
-  state.tradebox.sidecarOrders.setSlEntries;
+const selectTradeboxSidecarOrdersSetSlEntries = (state: SyntheticsState) => state.tradebox.sidecarOrders.setSlEntries;
 const selectTradeboxSidecarOrdersTpEntries = (state: SyntheticsState) => state.tradebox.sidecarOrders.tpEntries;
-const selectTradeboxSidecarOrdersSetTpEntries = (state: SyntheticsState) =>
-  state.tradebox.sidecarOrders.setTpEntries;
-const selectTradeboxSidecarOrdersLimitEntries = (state: SyntheticsState) =>
-  state.tradebox.sidecarOrders.limitEntries;
+const selectTradeboxSidecarOrdersSetTpEntries = (state: SyntheticsState) => state.tradebox.sidecarOrders.setTpEntries;
+const selectTradeboxSidecarOrdersLimitEntries = (state: SyntheticsState) => state.tradebox.sidecarOrders.limitEntries;
 const selectTradeboxSidecarOrdersSetLimitEntries = (state: SyntheticsState) =>
   state.tradebox.sidecarOrders.setLimitEntries;
 export const selectTradeboxSidecarEntriesSetIsUntouched = (state: SyntheticsState) =>

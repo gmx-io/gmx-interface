@@ -294,4 +294,3 @@ function GmxAssetCardOptionsDropdown() {
     </Menu>
   );
 }
-

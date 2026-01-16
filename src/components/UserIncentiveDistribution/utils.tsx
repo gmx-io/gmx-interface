@@ -7,8 +7,6 @@ import {
   GLP_DISTRIBUTION_TEST_ID,
 } from "domain/synthetics/claims/constants";
 
-
-
 export const getDistributionTitle = (distributionId: string) => {
   switch (distributionId) {
     case GLP_DISTRIBUTION_TEST_ID.toString():
@@ -21,4 +19,3 @@ export const getDistributionTitle = (distributionId: string) => {
       return t`GLV Bonus Incentive (test)`;
   }
 };
-

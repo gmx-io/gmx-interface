@@ -275,10 +275,7 @@ export function getIsInvalidSubaccount({
   return isExpired || isNonceExpired || actionsExceeded || isApprovalInvalid;
 }
 
-function getEmptySubaccountApproval(
-  chainId: ContractsChainId,
-  subaccountAddress: string
-): SignedSubacсountApproval {
+function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress: string): SignedSubacсountApproval {
   return {
     subaccount: subaccountAddress,
     shouldAdd: false,

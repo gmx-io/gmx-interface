@@ -1,7 +1,6 @@
 import noop from "lodash/noop";
 import { EncodeEventTopicsReturnType, Hex } from "viem";
 
-
 export function matchLogRequest(request: EncodeEventTopicsReturnType, logTopics: [Hex, ...Hex[]] | []): boolean {
   return request.every((filter, index) => {
     if (!filter) {

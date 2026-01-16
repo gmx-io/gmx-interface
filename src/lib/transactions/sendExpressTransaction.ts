@@ -148,10 +148,7 @@ async function sendTxnToGelato({
 
 const finalStatuses = [TaskState.ExecSuccess, TaskState.ExecReverted, TaskState.Cancelled];
 
-async function pollGelatoTask(
-  taskId: string,
-  cb: (status: GelatoTaskStatus | undefined, error?: Error) => void
-) {
+async function pollGelatoTask(taskId: string, cb: (status: GelatoTaskStatus | undefined, error?: Error) => void) {
   const pollInterval = 500;
   const maxAttempts = 60;
 

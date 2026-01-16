@@ -422,11 +422,7 @@ function getBatchPendingOrders(
     ...cancelPendingOrders,
   ] as PendingOrderData[];
 }
-function getPendingCancelOrder(
-  params: CancelOrderTxnParams,
-  order: OrderInfo,
-  createdAt: number
-): PendingOrderData {
+function getPendingCancelOrder(params: CancelOrderTxnParams, order: OrderInfo, createdAt: number): PendingOrderData {
   return {
     txnType: "cancel",
     account: order.account,

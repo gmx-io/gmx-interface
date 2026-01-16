@@ -340,7 +340,6 @@ export const selectPoolsDetailsSecondTokenData = createSelector((q) => {
   return getTokenData(marketAndTradeTokensData, secondTokenAddress);
 });
 
-
 export const selectPoolsDetailsPayLongToken = createSelector((q) => {
   const chainId = q(selectChainId);
   const tradeTokensData = q(selectPoolsDetailsTradeTokensDataWithSourceChainBalances);

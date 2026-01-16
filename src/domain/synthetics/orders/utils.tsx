@@ -47,12 +47,7 @@ function getSwapOrderTitle(p: {
   return t`Swap ${fromTokenText} for ${toTokenText}`;
 }
 
-function getPositionOrderTitle(p: {
-  orderType: OrderType;
-  isLong: boolean;
-  indexToken: Token;
-  sizeDeltaUsd: bigint;
-}) {
+function getPositionOrderTitle(p: { orderType: OrderType; isLong: boolean; indexToken: Token; sizeDeltaUsd: bigint }) {
   const { orderType, isLong, indexToken, sizeDeltaUsd } = p;
 
   const longShortText = isLong ? t`Long` : t`Short`;

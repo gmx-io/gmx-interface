@@ -52,4 +52,3 @@ export function usePoolsDetailsMarketOrGlvTokenInputValue() {
   const setter = useSelector(selectPoolsDetailsSetMarketOrGlvTokenInputValue);
   return [value, setter] as const;
 }
-
