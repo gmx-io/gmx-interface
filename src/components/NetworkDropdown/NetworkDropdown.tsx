@@ -9,7 +9,7 @@ import { isSettlementChain, isSourceChainForAnySettlementChain } from "config/mu
 import type { NetworkOption } from "config/networkOptions";
 import { switchNetwork } from "lib/wallets";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { AVALANCHE, getChainName } from "sdk/configs/chains";
+import { AVALANCHE, getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
@@ -73,19 +73,27 @@ function isValidVisualSettlementChain(chainId: number) {
   return isSettlementChain(chainId) && chainId !== AVALANCHE;
 }
 
+function isValidVisualSourceChain(chainId: number) {
+  return isSourceChainForAnySettlementChain(chainId) && chainId !== AVALANCHE;
+}
+
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,
-    (network) => isSourceChainForAnySettlementChain(network.value) && isNonEoaAccountOnAnyChain
+    (network) =>
+      // True is passed to filter both dev and prod contracts chains
+      !isContractsChain(network.value, true) &&
+      isSourceChainForAnySettlementChain(network.value) &&
+      isNonEoaAccountOnAnyChain
   );
 
   const walletAndGmxAccountNetworks = enabledNetworks.filter(
-    (network) => isSourceChainForAnySettlementChain(network.value) || isValidVisualSettlementChain(network.value)
+    (network) => isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value)
   );
   const walletOnlyNetworks = enabledNetworks.filter(
-    (network) => !(isSourceChainForAnySettlementChain(network.value) || isValidVisualSettlementChain(network.value))
+    (network) => !(isValidVisualSourceChain(network.value) || isValidVisualSettlementChain(network.value))
   );
 
   return (
