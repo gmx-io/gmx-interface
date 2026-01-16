@@ -9,11 +9,12 @@ import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react
 import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
-import { ContractsChainId, SourceChainId } from "config/chains";
+import { AVALANCHE, ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey, getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { MarketInfo } from "domain/synthetics/markets";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
@@ -30,11 +31,11 @@ import {
   isLimitOrderType,
   isStopIncreaseOrderType,
   isSwapOrder,
-  OrderInfo,
-  OrdersInfoData,
   isTriggerDecreaseOrderType,
   isTwapOrder,
   isTwapSwapOrder,
+  OrderInfo,
+  OrdersInfoData,
   PositionOrderInfo,
 } from "../orders";
 import { PositionInfo, PositionsInfoData } from "../positions";
@@ -732,17 +733,18 @@ export function useTradeboxState(
     });
   }, [advancedOptions, setStoredOptionsOnChain, storedOptions.advanced]);
 
+  const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
+  const isAvalancheSettlement = chainId === AVALANCHE;
+  const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
+  const isEmptyAvalancheGmxAccount = isAvalancheSettlement && isAvalancheEmpty;
+
   useEffect(
     function fallbackIsFromTokenGmxAccount() {
-      if (expressOrdersEnabled) {
-        return;
-      }
-
-      if (isFromTokenGmxAccount && !expressOrdersEnabled) {
+      if (isFromTokenGmxAccount && (!expressOrdersEnabled || isEmptyAvalancheGmxAccount)) {
         setIsFromTokenGmxAccount(false);
       }
     },
-    [expressOrdersEnabled, isFromTokenGmxAccount, setIsFromTokenGmxAccount]
+    [expressOrdersEnabled, isEmptyAvalancheGmxAccount, isFromTokenGmxAccount, setIsFromTokenGmxAccount]
   );
 
   return {

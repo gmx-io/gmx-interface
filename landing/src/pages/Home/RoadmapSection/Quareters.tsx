@@ -16,6 +16,7 @@ export function Quareters() {
         <Trans>
           <p>Multichain</p>
           <p>Just-in-Time Liquidity</p>
+          <p>MegaETH Support</p>
         </Trans>
       </Quarter>
       <Quarter>

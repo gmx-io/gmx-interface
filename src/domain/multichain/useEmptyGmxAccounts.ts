@@ -1,7 +1,8 @@
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { useAccount } from "wagmi";
 
-import type { SettlementChainId } from "config/chains";
+import { AVALANCHE, type SettlementChainId } from "config/chains";
+import { useChainId } from "lib/chains";
 import { executeMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -82,5 +83,22 @@ export function useEmptyGmxAccounts(chainIds: SettlementChainId[] | undefined): 
   return {
     emptyGmxAccounts,
     isLoading: isLoading ?? true,
+  };
+}
+
+export function useEmptyAvalancheGmxAccount(): {
+  isEmptyAvalancheGmxAccountOrNotConnected: boolean;
+} {
+  const { chainId: settlementChainId } = useChainId();
+  const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
+  const { isConnected } = useAccount();
+
+  const isAvalancheSettlement = settlementChainId === AVALANCHE;
+  const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
+  const isEmptyAvalancheGmxAccount = isAvalancheSettlement && isAvalancheEmpty;
+  const isEmptyAvalancheGmxAccountOrNotConnected = isEmptyAvalancheGmxAccount || !isConnected;
+
+  return {
+    isEmptyAvalancheGmxAccountOrNotConnected,
   };
 }

@@ -14,6 +14,8 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
+
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
 
 const bucketLabelMap = {
@@ -30,8 +32,11 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
 
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
-      <div className="border-b-1/2 border-slate-600 p-20 text-20 font-medium">
+      <div className="flex items-center gap-8 border-b-1/2 border-slate-600 p-20 text-20 font-medium">
         <Trans>General Performance Details</Trans>
+        <TooltipWithPortal content={t`Performance and chart data are based on UTC times.`} variant="none">
+          <InfoIconStroke className="h-16 w-16 cursor-help text-typography-secondary" />
+        </TooltipWithPortal>
       </div>
 
       <TableScrollFadeContainer>

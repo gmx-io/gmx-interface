@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import formatDate from "date-fns/format";
+import { format as formatDate } from "date-fns/format";
 import { useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";

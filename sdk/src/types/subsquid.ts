@@ -363,6 +363,17 @@ export interface AccountStatsConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface AccountVolumeStatObject {
+  __typename?: "AccountVolumeStatObject";
+  last7DaysVolume: Scalars["BigInt"]["output"];
+  last14DaysVolume: Scalars["BigInt"]["output"];
+  maxDailyVolume: Scalars["BigInt"]["output"];
+}
+
+export interface AccountVolumeWhereInput {
+  account: Scalars["String"]["input"];
+}
+
 export interface AnnualizedPerformanceObject {
   __typename?: "AnnualizedPerformanceObject";
   address: Scalars["String"]["output"];
@@ -7706,6 +7717,7 @@ export interface Query {
   ordersConnection: OrdersConnection;
   performanceSnapshots: Array<PerformanceSnapshots>;
   periodAccountStats: Array<PeriodAccountStatObject>;
+  periodAccountVolume: AccountVolumeStatObject;
   platformStats: Array<PlatformStats>;
   platformStatsById?: Maybe<PlatformStats>;
   platformStatsConnection: PlatformStatsConnection;
@@ -8173,6 +8185,10 @@ export interface QueryperiodAccountStatsArgs {
   limit?: InputMaybe<Scalars["Float"]["input"]>;
   offset?: InputMaybe<Scalars["Float"]["input"]>;
   where?: InputMaybe<WhereInput>;
+}
+
+export interface QueryperiodAccountVolumeArgs {
+  where?: InputMaybe<AccountVolumeWhereInput>;
 }
 
 export interface QueryplatformStatsArgs {

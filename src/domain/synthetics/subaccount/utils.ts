@@ -187,7 +187,7 @@ export function getIsSubaccountNonceExpired({
   } else if (signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) {
     onChainNonce = onchainData.multichainApprovalNonce;
   } else if (!signedApproval.subaccountRouterAddress) {
-    if (isSourceChain(signedApproval.signatureChainId)) {
+    if (isSourceChain(signedApproval.signatureChainId, chainId)) {
       onChainNonce = onchainData.multichainApprovalNonce;
     } else {
       onChainNonce = onchainData.approvalNonce;

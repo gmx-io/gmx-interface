@@ -20,7 +20,7 @@ import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 import { getFormattedTotalClaimAction } from "./getFormattedTotalClaimAction";
 import {
   formatTradeActionTimestamp,
-  formatTradeActionTimestampISO,
+  formatTradeActionTimestampUTC,
 } from "../../TradeHistory/TradeHistoryRow/utils/shared";
 
 export type ClaimCollateralHistoryRowProps = {
@@ -58,7 +58,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
 
   const renderIsoTimestamp = useCallback(() => {
-    return formatTradeActionTimestampISO(claimAction.timestamp);
+    return formatTradeActionTimestampUTC(claimAction.timestamp);
   }, [claimAction.timestamp]);
 
   const sizeContent = useMemo(() => {

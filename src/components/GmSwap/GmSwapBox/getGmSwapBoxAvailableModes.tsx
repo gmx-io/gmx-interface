@@ -1,6 +1,4 @@
-import { GmPaySource, Market } from "domain/synthetics/markets/types";
-
-import { Mode, Operation } from "./types";
+import { GmPaySource, Market, Mode, Operation } from "domain/synthetics/markets/types";
 
 export function getGmSwapBoxAvailableModes({
   operation,

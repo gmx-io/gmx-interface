@@ -2,21 +2,21 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
-import { getSubsquidGraphClient } from "lib/indexers";
+import { getSyntheticsGraphClient } from "lib/indexers";
 import { getTotalVolumeSum } from "lib/legacy";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
 const query = {
   query: gql`
     query VolumeInfos {
-      volumeInfos(where: { period_eq: "total" }, limit: 1) {
+      volumeInfos(where: { period: "total" }) {
         volumeUsd
       }
     }
   `,
 };
 export function useTotalVolume() {
-  const clientArbitum = getSubsquidGraphClient(ARBITRUM)!;
-  const clientAvalanche = getSubsquidGraphClient(AVALANCHE)!;
+  const clientArbitum = getSyntheticsGraphClient(ARBITRUM)!;
+  const clientAvalanche = getSyntheticsGraphClient(AVALANCHE)!;
   return useSWR(["volumeInfos"], async () => {
     const totalArbitumVolumeReq = fetchTotalVolumeByChainId(ARBITRUM);
     const totalAvalancheVolumeReq = fetchTotalVolumeByChainId(AVALANCHE);

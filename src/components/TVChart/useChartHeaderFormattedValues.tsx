@@ -24,12 +24,8 @@ import {
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
-
-import { AvailableLiquidityTooltip } from "./components/AvailableLiquidityTooltip";
 
 export function useChartHeaderFormattedValues() {
   const chainId = useSelector(selectChainId);
@@ -147,17 +143,10 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <TooltipWithPortal
-        variant="none"
-        handle={
-          <span className="flex items-center justify-center gap-4 numbers">
-            <LongIcon width={12} className="relative top-1 opacity-70" />
-            {formatAmountHuman(liquidity, USD_DECIMALS, true)}
-          </span>
-        }
-        position="bottom-end"
-        content={<AvailableLiquidityTooltip isLong />}
-      />
+      <span className="flex items-center justify-center gap-4 numbers">
+        <LongIcon width={12} className="relative top-1 opacity-70" />
+        {formatAmountHuman(liquidity, USD_DECIMALS, true)}
+      </span>
     );
   }, [info?.liquidityLong]);
 
@@ -169,17 +158,10 @@ export function useChartHeaderFormattedValues() {
     }
 
     return (
-      <TooltipWithPortal
-        variant="none"
-        handle={
-          <span className="flex items-center justify-center gap-4 numbers">
-            <ShortIcon width={12} className="relative opacity-70" />
-            {formatAmountHuman(liquidity, USD_DECIMALS, true)}
-          </span>
-        }
-        position="bottom-end"
-        content={<AvailableLiquidityTooltip isLong={false} />}
-      />
+      <span className="flex items-center justify-center gap-4 numbers">
+        <ShortIcon width={12} className="relative opacity-70" />
+        {formatAmountHuman(liquidity, USD_DECIMALS, true)}
+      </span>
     );
   }, [info?.liquidityShort]);
 

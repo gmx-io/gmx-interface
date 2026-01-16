@@ -10,13 +10,12 @@ import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/sele
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { Operation } from "domain/synthetics/markets/types";
 import { getGlvOrMarketAddress } from "domain/synthetics/markets/utils";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 
 import Tabs from "components/Tabs/Tabs";
-
-import { Operation } from "./types";
 
 const OPERATION_LABELS_GM = {
   [Operation.Deposit]: msg`Buy GM`,

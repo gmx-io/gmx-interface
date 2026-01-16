@@ -25,7 +25,7 @@ export function AnimatedTitle() {
   const titles = useMemo(() => {
     return [
       t`With 100x Leverage`,
-      t`90+ Crypto Tokens`,
+      t`100+ Crypto Tokens`,
       t`Multiple Asset Classes`,
       t`Deep Liquid Markets`,
       t`From ${BLOCKCHAIN_COUNT} Blockchains`,

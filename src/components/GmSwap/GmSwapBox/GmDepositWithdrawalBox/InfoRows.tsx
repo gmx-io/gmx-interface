@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
 
+import { Operation } from "domain/synthetics/markets/types";
 import { GmSwapFees } from "domain/synthetics/trade";
 import { formatDeltaUsd } from "lib/numbers";
 
@@ -8,8 +9,6 @@ import { ExpandableRow } from "components/ExpandableRow";
 import { GmFees } from "components/GmSwap/GmFees/GmFees";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWithSkeleton";
-
-import { Operation } from "../types";
 
 export function InfoRows({
   isDeposit,
