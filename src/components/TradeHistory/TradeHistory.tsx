@@ -178,17 +178,17 @@ export function TradeHistory(p: Props) {
                 />
               </TableTh>
               <TableTh className="w-[26%]">
-                <Trans>Size</Trans>
+                <Trans>SIZE</Trans>
               </TableTh>
               <TableTh className="w-[22%]">
-                <Trans>Price</Trans>
+                <Trans>PRICE</Trans>
               </TableTh>
               <TableTh className="w-[12%]">
                 <TooltipWithPortal
                   variant="iconStroke"
                   content={<Trans>Realized PnL after fees and net price impact.</Trans>}
                 >
-                  <Trans>RPnL</Trans>
+                  <Trans>RPNL</Trans>
                 </TooltipWithPortal>
               </TableTh>
               <TableTh className="w-[100px]" />

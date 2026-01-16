@@ -37,7 +37,7 @@ export function RedirectPopupModal({
       className="RedirectModal"
       isVisible={redirectModalVisible}
       setIsVisible={setRedirectModalVisible}
-      label={t`Launch App`}
+      label={t`Launch app`}
     >
       <Trans>You are leaving GMX.io for a third-party website.</Trans>
       <br />

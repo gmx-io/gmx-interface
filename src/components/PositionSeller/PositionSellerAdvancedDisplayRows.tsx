@@ -84,7 +84,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   let leverageValue: React.ReactNode = "-";
 
   if (decreaseAmounts?.isFullClose) {
-    leverageValue = t`NA`;
+    leverageValue = t`N/A`;
   } else if (position) {
     if (decreaseAmounts?.sizeDeltaUsd === position.sizeInUsd) {
       leverageValue = "-";
@@ -103,7 +103,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   }
 
   return (
-    <ExpandableRow title={t`Execution Details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
+    <ExpandableRow title={t`Execution details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
       <ExitPriceRow
         isSwap={false}
         fees={fees}

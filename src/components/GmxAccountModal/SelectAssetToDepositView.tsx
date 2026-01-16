@@ -187,7 +187,7 @@ export const SelectAssetToDepositView = () => {
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId, srcChainId);
 
   const networksFilter = useMemo(() => {
-    const wildCard = { id: "all" as const, name: t`All Networks` };
+    const wildCard = { id: "all" as const, name: t`All networks` };
 
     const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT)
       .map((sourceChainId) => ({

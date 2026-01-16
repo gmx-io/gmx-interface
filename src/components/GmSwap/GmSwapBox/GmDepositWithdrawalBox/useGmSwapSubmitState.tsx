@@ -279,7 +279,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: (
           <>
-            <Trans>Loading</Trans>
+            <Trans>Loading...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -332,7 +332,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: (
           <>
-            <Trans>Loading</Trans>
+            <Trans>Loading...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

@@ -289,7 +289,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
 
   return (
     <Modal
-      label={t`Confirm Claim`}
+      label={t`Confirm claim`}
       className="Confirmation-box ClaimableModal"
       setIsVisible={onClose}
       isVisible={isVisible}

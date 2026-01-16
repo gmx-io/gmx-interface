@@ -393,7 +393,7 @@ function ClaimModalComponent(p: {
       className="Confirmation-box ClaimableModal"
       isVisible={p.isVisible}
       setIsVisible={onClose}
-      label={t`Confirm Claim`}
+      label={t`Confirm claim`}
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">

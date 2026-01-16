@@ -30,7 +30,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           isChecked={settings.isErrorBoundaryDebugEnabled}
           setIsChecked={settings.setIsErrorBoundaryDebugEnabled}
         >
-          <Trans>Show Error Boundary Debug Trigger</Trans>
+          <Trans>Show error boundary debug trigger</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch
@@ -86,7 +86,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>Oracle Keeper monitoring</Trans>
+          <Trans>Oracle keeper monitoring</Trans>
         </Link>
         <Link
           to="/permits"

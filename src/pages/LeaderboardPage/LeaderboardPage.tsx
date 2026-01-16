@@ -30,7 +30,7 @@ const LeaderboardBreadcrumbs = () => {
         <Trans>Leaderboard</Trans>
       </BreadcrumbItem>
       <BreadcrumbItem active>
-        <Trans>Concluded Competitions</Trans>
+        <Trans>Concluded competitions</Trans>
       </BreadcrumbItem>
     </Breadcrumbs>
   );

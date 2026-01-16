@@ -869,7 +869,7 @@ export function getGmSwapError(p: {
         return [
           t`Max pool amount reached`,
           longToken?.symbol === "GM"
-            ? t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Reduce size, choose different GM, or shift to another pool`
+            ? t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Reduce size, choose a different GM, or shift to another pool.`
             : t`GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] buyable cap reached. Choose a different pool or reduce size.`,
         ];
       }
@@ -901,7 +901,7 @@ export function getGmSwapError(p: {
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return [
           t`Insufficient GM pool liquidity`,
-          t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal`,
+          t`GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] sellable cap reached. Choose a different pool, reduce size, or split withdrawal.`,
         ];
       }
     }

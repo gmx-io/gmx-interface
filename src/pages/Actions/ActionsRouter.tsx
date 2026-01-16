@@ -27,7 +27,7 @@ export function AccountsRouter() {
         <div className="default-container page-layout">
           <PageTitle
             isTop
-            title={t`GMX V1 Actions`}
+            title={t`GMX V1 actions`}
             subtitle={<VersionNetworkSwitcherRow chainId={chainId} version={1} />}
           />
           <div className="text-center text-yellow-300">

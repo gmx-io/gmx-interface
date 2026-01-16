@@ -176,7 +176,7 @@ function AffiliatesStats({
           tooltipContent={
             <>
               <StatsTooltipRow
-                label={t`Traders Referred on Arbitrum`}
+                label={t`Traders referred on Arbitrum`}
                 value={arbitrumData.affiliateTotalStats.registeredReferralsCount}
                 showDollar={false}
               />
@@ -199,7 +199,7 @@ function AffiliatesStats({
         />
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.volume)}
-          label={t`Trading Volume`}
+          label={t`Trading volume`}
           labelTooltipText={t`Total trading volume from your referrals.`}
           tooltipContent={
             <>
@@ -312,7 +312,7 @@ function AffiliatesStats({
           className="Connect-wallet-modal"
           isVisible={isAddReferralCodeModalOpen}
           setIsVisible={close}
-          label={t`Create Referral Code`}
+          label={t`Create referral code`}
           onAfterOpen={() => addNewModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
@@ -400,12 +400,12 @@ function AffiliatesStats({
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
-                                label={t`V1 Volume`}
+                                label={t`V1 volume`}
                                 value={getUsdValue(stat?.v1Data.volume)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
-                                label={t`V2 Volume`}
+                                label={t`V2 volume`}
                                 value={getUsdValue(stat?.v2Data.volume)}
                                 valueClassName="numbers"
                               />
@@ -459,7 +459,7 @@ function AffiliatesStats({
         <Card
           title={
             <span className="text-body-large">
-              <Trans>Rebates Distribution History</Trans>
+              <Trans>Rebates distribution history</Trans>
             </span>
           }
           tooltipText={t`Distribution history for claimed rebates and airdrops.`}
@@ -471,16 +471,16 @@ function AffiliatesStats({
               <thead>
                 <TableTheadTr>
                   <TableTh scope="col">
-                    <Trans>Date</Trans>
+                    <Trans>DATE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Type</Trans>
+                    <Trans>TYPE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Amount</Trans>
+                    <Trans>AMOUNT</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Transaction</Trans>
+                    <Trans>TRANSACTION</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>

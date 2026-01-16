@@ -241,7 +241,7 @@ export function BridgeInModal({
       return {
         text: (
           <>
-            {t`Depositing`}
+            {t`Depositing...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -349,7 +349,7 @@ export function BridgeInModal({
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}
         </Button>
-        <SyntheticsInfoRow label={t`Network Fee`} value={formatUsd(nativeFeeUsd)} />
+        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(nativeFeeUsd)} />
         <SyntheticsInfoRow
           label={t`GMX Account balance`}
           value={

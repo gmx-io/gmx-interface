@@ -161,7 +161,7 @@ function OrderSize({
 
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
-      return t`Collateral Delta`;
+      return t`Collateral delta`;
     }
     return t`Collateral`;
   }
@@ -678,7 +678,7 @@ function OrderItemLarge({
           <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
               <Button variant="ghost" onClick={setEditingOrderKey}>
-                <EditIcon title={t`Edit order.`} className="size-16" />
+                <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
             )}
             {onCancelOrder ? (
@@ -796,7 +796,7 @@ function OrderItemSmall({
         )}
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Order Type</Trans>
+            <Trans>Order type</Trans>
           </div>
           <div>
             <OrderItemTypeLabel order={order} />
@@ -810,7 +810,7 @@ function OrderItemSmall({
         </div>
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Trigger Price</Trans>
+            <Trans>Trigger price</Trans>
           </div>
           <div>
             <TriggerPrice
@@ -823,7 +823,7 @@ function OrderItemSmall({
 
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Mark Price</Trans>
+            <Trans>Mark price</Trans>
           </div>
           <div>
             <MarkPrice order={order} />

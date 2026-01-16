@@ -56,7 +56,7 @@ export default function DashboardV2() {
       <AppPageLayout header={<ChainContentHeader />}>
         <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
           <PageTitle
-            title={t`Total Stats`}
+            title={t`Total stats`}
             qa="dashboard-page"
             subtitle={
               <div className="flex items-center gap-6 font-medium text-typography-secondary">

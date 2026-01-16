@@ -116,7 +116,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
   );
 
   return (
-    <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`We Value Your Feedback`}>
+    <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`We value your feedback`}>
       <div className="mb-15 max-w-xl">
         {feedbackQuestion}
         <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here`} />

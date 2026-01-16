@@ -61,8 +61,8 @@ export function PoolsDetailsAbout({
           </Trans>
         ) : (
           <Trans>
-            Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} per
-            the composition shown.
+            Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as
+            shown.
           </Trans>
         )}
       </div>

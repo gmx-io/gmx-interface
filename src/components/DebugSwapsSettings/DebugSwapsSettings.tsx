@@ -31,7 +31,7 @@ export function DebugSwapsSettings() {
   return (
     <ExpandableRow
       open={isShown}
-      title={t`Debug Swaps`}
+      title={t`Debug swaps`}
       onToggle={toggleDebugSwaps}
       disableCollapseOnError={false}
       contentClassName="flex flex-col gap-16 pt-8"

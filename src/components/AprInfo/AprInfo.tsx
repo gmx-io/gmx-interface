@@ -76,7 +76,6 @@ export function AprInfo({
               <ExternalLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
                 Read more
               </ExternalLink>
-              .
             </Trans>
           </div>
         )}

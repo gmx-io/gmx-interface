@@ -46,7 +46,7 @@ export default function ChainsStatsTooltipRow({
       <div className="my-5 h-1 bg-gray-800" />
       <p className="Tooltip-row">
         <span className="label">
-          <Trans>Total:</Trans>
+          <Trans>Total</Trans>:{" "}
         </span>
         <span className="amount">
           {formatAmountHuman(total, decimalsForConversion, showDollar, 2)}

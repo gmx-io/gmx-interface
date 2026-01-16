@@ -54,7 +54,7 @@ function JoinReferralCode({ active }: { active: boolean }) {
   return (
     <div className="referral-card section-center">
       <h2 className="title text-h2">
-        <Trans>Enter Referral Code</Trans>
+        <Trans>Enter referral code</Trans>
       </h2>
       <p className="sub-title">
         <Trans>Enter a referral code to get fee discounts.</Trans>
@@ -543,7 +543,7 @@ function ReferralCodeFormMultichain({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: t`Page outdated. Refresh`,
       disabled: true,
     };
   } else if (isEdit && debouncedReferralCode === userReferralCodeString) {

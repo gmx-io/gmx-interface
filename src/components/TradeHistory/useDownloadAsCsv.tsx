@@ -131,7 +131,7 @@ export function useDownloadAsCsv({
       const timezone = dateFnsFormat(new Date(), "z");
 
       downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], {
-        timestamp: t`Date` + ` (${timezone})`,
+        timestamp: t`DATE` + ` (${timezone})`,
         action: t`ACTION`,
         size: t`SIZE`,
         market: t`MARKET`,

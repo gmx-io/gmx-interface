@@ -254,7 +254,7 @@ export function StakeModal(props: {
         return <Trans>Approve {tokenSymbol}</Trans>;
       }
       if (isStaking) {
-        return <Trans>Staking</Trans>;
+        return <Trans>Staking...</Trans>;
       }
       return <Trans>Stake</Trans>;
     }
@@ -263,7 +263,7 @@ export function StakeModal(props: {
       return unstakeError;
     }
     if (isUnstaking) {
-      return <Trans>Unstaking</Trans>;
+      return <Trans>Unstaking...</Trans>;
     }
     return <Trans>Unstake</Trans>;
   }, [

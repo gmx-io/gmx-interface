@@ -125,7 +125,7 @@ export function ClaimAffiliatesModal(p: Props) {
       contentClassName="w-[400px] overflow-y-auto"
       isVisible={true}
       setIsVisible={onClose}
-      label={t`Confirm Claim`}
+      label={t`Confirm claim`}
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12">
@@ -141,10 +141,10 @@ export function ClaimAffiliatesModal(p: Props) {
               />
             </TableTh>
             <TableTh>
-              <Trans>Market</Trans>
+              <Trans>MARKET</Trans>
             </TableTh>
             <TableTh className="!pr-0">
-              <Trans>Rewards</Trans>
+              <Trans>REWARDS</Trans>
             </TableTh>
           </TableTheadTr>
           {rewards.map((reward) => (

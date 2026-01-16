@@ -88,14 +88,14 @@ export function PoolsDetails() {
                       <MarketComposition
                         type="backing"
                         label={<Trans>Backing composition</Trans>}
-                        title={<Trans>Exposure to Backing Tokens</Trans>}
+                        title={<Trans>Exposure to backing tokens</Trans>}
                         composition={backingComposition}
                       />
 
                       <MarketComposition
                         type="market"
                         label={<Trans>Market composition</Trans>}
-                        title={<Trans>Exposure to Market Traders' PnL</Trans>}
+                        title={<Trans>Exposure to market traders' PnL</Trans>}
                         composition={marketComposition}
                       />
                     </div>

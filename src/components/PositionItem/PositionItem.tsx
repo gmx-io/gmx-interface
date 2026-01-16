@@ -103,7 +103,7 @@ export function PositionItem(p: Props) {
               textClassName={getPositiveOrNegativeClass(p.position.pnl)}
             />
             <StatsTooltipRow
-              label={t`Borrow Fee`}
+              label={t`Borrow fee`}
               value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
               valueClassName="numbers"
               showDollar={false}
@@ -129,13 +129,13 @@ export function PositionItem(p: Props) {
                   textClassName={getPositiveOrNegativeClass(p.position.pendingImpactUsd)}
                 />
                 <StatsTooltipRow
-                  label={t`Close Price Impact`}
+                  label={t`Close price impact`}
                   value={formatDeltaUsd(p.position.closePriceImpactDeltaUsd) || "..."}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(p.position.closePriceImpactDeltaUsd)}
                 />
                 <StatsTooltipRow
-                  label={t`Net Price Impact`}
+                  label={t`Net price impact`}
                   value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
@@ -143,7 +143,7 @@ export function PositionItem(p: Props) {
               </>
             ) : (
               <StatsTooltipRow
-                label={t`Net Price Impact`}
+                label={t`Net price impact`}
                 value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
                 showDollar={false}
                 textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
@@ -162,7 +162,7 @@ export function PositionItem(p: Props) {
             )}
 
             <StatsTooltipRow
-              label={t`Close Fee`}
+              label={t`Close fee`}
               showDollar={false}
               value={formatUsd(-p.position.closingFeeUsd) || "..."}
               valueClassName="numbers"
@@ -179,7 +179,7 @@ export function PositionItem(p: Props) {
             )}
             <br />
             <StatsTooltipRow
-              label={t`PnL After Fees`}
+              label={t`PnL after fees`}
               value={formatDeltaUsd(p.position.pnlAfterFees, p.position.pnlAfterFeesPercentage)}
               valueClassName="numbers"
               showDollar={false}
@@ -248,7 +248,7 @@ export function PositionItem(p: Props) {
                 />
                 <br />
                 <StatsTooltipRow
-                  label={t`Borrow Fee`}
+                  label={t`Borrow fee`}
                   showDollar={false}
                   value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
                   valueClassName="numbers"
@@ -277,7 +277,7 @@ export function PositionItem(p: Props) {
                 <br />
                 <StatsTooltipRow
                   showDollar={false}
-                  label={t`Borrow Fee / Day`}
+                  label={t`Borrow fee / day`}
                   value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
                   valueClassName="numbers"
                   textClassName={cx({
@@ -286,7 +286,7 @@ export function PositionItem(p: Props) {
                 />
                 <StatsTooltipRow
                   showDollar={false}
-                  label={t`Funding Fee / Day`}
+                  label={t`Funding fee / day`}
                   value={formatDeltaUsd(fundingFeeRateUsd)}
                   valueClassName="numbers"
                   textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
@@ -645,13 +645,13 @@ export function PositionItem(p: Props) {
           </div>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
-              <Trans>Net Value</Trans>
+              <Trans>Net value</Trans>
             </div>
             <div>{renderNetValue()}</div>
           </div>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
-              {savedShowPnlAfterFees ? t`PnL After Fees` : t`PnL`}
+              {savedShowPnlAfterFees ? t`PnL after fees` : t`PnL`}
             </div>
             <div>
               <span

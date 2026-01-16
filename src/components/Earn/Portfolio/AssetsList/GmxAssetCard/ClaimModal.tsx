@@ -246,7 +246,7 @@ export function ClaimModal(props: {
     <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={t`Claim Rewards`}
+      label={t`Claim rewards`}
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12 pb-20 ">

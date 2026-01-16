@@ -12,7 +12,7 @@ import "./Jobs.css";
 
 function Jobs() {
   return (
-    <SEO title={getPageTitle(t`Job Openings`)}>
+    <SEO title={getPageTitle(t`Job openings`)}>
       <AppPageLayout>
         <div className="default-container page-layout Referrals">
           <div className="section-title-block">
@@ -37,7 +37,7 @@ function Jobs() {
 
 function NoJob() {
   return (
-    <Card title={t`No Open Positions`}>
+    <Card title={t`No open positions`}>
       <div className="body-para">
         <p className="subheading">
           <Trans>

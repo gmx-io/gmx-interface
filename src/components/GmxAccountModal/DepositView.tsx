@@ -856,7 +856,7 @@ export const DepositView = () => {
     };
   } else if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: t`Page outdated. Refresh`,
       disabled: true,
     };
   } else if (isApproving) {
@@ -873,8 +873,8 @@ export const DepositView = () => {
     buttonState = {
       text:
         depositViewChain !== undefined
-          ? t`No eligible tokens available on ${getChainName(depositViewChain)} for deposit`
-          : t`No eligible tokens available for deposit`,
+          ? t`No tokens available on ${getChainName(depositViewChain)} for deposit`
+          : t`No tokens available for deposit`,
       disabled: true,
     };
   } else if (needTokenApprove) {
@@ -1054,9 +1054,9 @@ export const DepositView = () => {
             <div className="rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-typography-secondary">
               <span className="flex min-h-20 items-center">
                 {depositViewChain !== undefined ? (
-                  <Trans>No eligible tokens available on {getChainName(depositViewChain)} for deposit</Trans>
+                  <Trans>No tokens available on {getChainName(depositViewChain)} for deposit</Trans>
                 ) : (
-                  <Trans>No eligible tokens available for deposit</Trans>
+                  <Trans>No tokens available for deposit</Trans>
                 )}
               </span>
             </div>
@@ -1128,7 +1128,7 @@ export const DepositView = () => {
           <div>
             <Trans>
               Amount exceeds the limit. Try an amount smaller than{" "}
-              <span className="numbers">{upperLimitFormatted}</span>
+              <span className="numbers">{upperLimitFormatted}</span>.
             </Trans>
           </div>
         </AlertInfoCard>
@@ -1138,7 +1138,7 @@ export const DepositView = () => {
           <div>
             <Trans>
               Amount is below the limit. Try an amount larger than{" "}
-              <span className="numbers">{lowerLimitFormatted}</span>
+              <span className="numbers">{lowerLimitFormatted}</span>.
             </Trans>
           </div>
         </AlertInfoCard>

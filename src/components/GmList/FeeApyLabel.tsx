@@ -23,9 +23,9 @@ export function FeeApyLabel({
           Projected yearly return from trading fees only.
           <br />
           <br />
-          Includes: Trading fees, borrow fees, liquidations, swaps.
+          Includes: trading fees, borrow fees, liquidations, swaps.
           <br />
-          Excludes: Backing token price changes, PnL, funding fees.
+          Excludes: backing token price changes, PnL, funding fees.
           <br />
           <br />
           <ExternalLink href="https://dune.com/gmx-io/v2-lp-dashboard">View detailed stats on Dune</ExternalLink>.

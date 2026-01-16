@@ -271,7 +271,7 @@ export function BridgeOutModal({
       return {
         text: (
           <>
-            {t`Withdrawing`}
+            {t`Withdrawing...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -316,7 +316,7 @@ export function BridgeOutModal({
       return {
         text: (
           <>
-            {t`Loading`}
+            {t`Loading...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -413,7 +413,7 @@ export function BridgeOutModal({
           {buttonState.text}
         </Button>
 
-        <SyntheticsInfoRow label={t`Network Fee`} value={formatUsd(networkFeeUsd)} />
+        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(networkFeeUsd)} />
 
         <SyntheticsInfoRow
           label={t`GMX Account balance`}

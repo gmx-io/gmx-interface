@@ -279,7 +279,7 @@ export default function ClaimableAmounts() {
 
       {displayInsufficientGasAlert ? (
         <AlertInfoCard type="warning" hideClose>
-          <Trans>Insufficient gas for network fees</Trans>
+          <Trans>Insufficient gas for network fees.</Trans>
         </AlertInfoCard>
       ) : null}
 

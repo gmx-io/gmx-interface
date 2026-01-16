@@ -173,7 +173,7 @@ const Toolbar = ({ account }: { account: string }) => {
         </TooltipWithPortal>
         <TooltipWithPortal
           shouldPreventDefault={false}
-          content={t`View in explorer.`}
+          content={t`View in explorer`}
           position="bottom"
           tooltipClassName="!min-w-max"
           variant="none"
@@ -229,7 +229,7 @@ function SettlementChainBalance() {
     <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
       <div className="flex flex-col gap-8">
         <div className="text-body-small text-typography-secondary">
-          <Trans>Available to Trade</Trans>
+          <Trans>Available to trade</Trans>
         </div>
         <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
       </div>
@@ -426,7 +426,7 @@ const FundingHistorySection = () => {
     <div className="flex grow flex-col gap-12 overflow-y-hidden">
       <div className="flex items-center justify-between px-adaptive">
         <div className="text-body-large font-medium">
-          <Trans>Funding Activity</Trans>
+          <Trans>Funding activity</Trans>
         </div>
       </div>
       {Boolean(fundingHistory?.length) && (

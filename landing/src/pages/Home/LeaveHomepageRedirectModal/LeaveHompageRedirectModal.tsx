@@ -48,7 +48,7 @@ export function LeaveHomepageRedirectModal({
   return (
     <Modal onClose={onClose}>
       <ModalHeader onClose={onClose}>
-        <Trans>Launch App</Trans>
+        <Trans>Launch app</Trans>
       </ModalHeader>
 
       <ModalBody>

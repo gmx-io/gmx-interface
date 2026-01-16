@@ -31,8 +31,8 @@ const RATE_PERIODS = [
 export default function MarketNetFee(props: Props) {
   const { borrowRateHourly, fundingRateHourly, isLong } = props;
   const netFeeHourly = borrowRateHourly + fundingRateHourly;
-  const positionType = isLong ? t`Long Positions` : t`Short Positions`;
-  const netRate = t`Net Rate`;
+  const positionType = isLong ? t`Long positions` : t`Short positions`;
+  const netRate = t`Net rate`;
 
   return (
     <>

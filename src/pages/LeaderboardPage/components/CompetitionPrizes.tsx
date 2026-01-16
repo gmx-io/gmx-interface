@@ -78,28 +78,28 @@ export function CompetitionPrizes({
       case "notionalPnl":
         return [
           {
-            title: t`1st Place`,
+            title: t`1st place`,
             description: `50,000 ARB`,
             imgType: "gold",
             key: "1",
             winners: getWinner(1, accounts, hasEnded),
           },
           {
-            title: t`2nd Place`,
+            title: t`2nd place`,
             description: `25,000 ARB`,
             imgType: "silver",
             key: "2",
             winners: getWinner(2, accounts, hasEnded),
           },
           {
-            title: t`3rd Place`,
+            title: t`3rd place`,
             imgType: "bronze",
             description: `10,000 ARB`,
             key: "3",
             winners: getWinner(3, accounts, hasEnded),
           },
           {
-            title: t`4-18 Places`,
+            title: t`4-18 places`,
             imgType: "other",
             description: `1,000 ARB`,
             key: "4-18",
@@ -109,28 +109,28 @@ export function CompetitionPrizes({
       case "pnlPercentage":
         return [
           {
-            title: t`1st Place`,
+            title: t`1st place`,
             description: `10,000 ARB`,
             imgType: "gold",
             key: "1",
             winners: getWinner(1, accounts, hasEnded),
           },
           {
-            title: t`2nd Place`,
+            title: t`2nd place`,
             description: `7,000 ARB`,
             imgType: "silver",
             key: "2",
             winners: getWinner(2, accounts, hasEnded),
           },
           {
-            title: t`3rd Place`,
+            title: t`3rd place`,
             imgType: "bronze",
             description: `5,000 ARB`,
             key: "3",
             winners: getWinner(3, accounts, hasEnded),
           },
           {
-            title: t`4-18 Places`,
+            title: t`4-18 places`,
             imgType: "other",
             description: `1,200 ARB`,
             key: "4-18",

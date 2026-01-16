@@ -50,7 +50,7 @@ export function SocialSection() {
         <div className="relative mx-auto flex w-full flex-col gap-36 sm:w-[1200px]">
           <h2 className="text-heading-1">
             <Trans>
-              Driven by <br /> Our Community
+              Driven by <br /> our community
             </Trans>
           </h2>
           <div className="flex w-full flex-col-reverse items-center justify-between gap-36 border-t-1/2 border-slate-600 md:flex-row">

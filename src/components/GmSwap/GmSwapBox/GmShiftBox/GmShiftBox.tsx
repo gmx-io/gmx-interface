@@ -330,7 +330,7 @@ export function GmShiftBox({
           />
 
           <ExpandableRow
-            title={t`Execution Details`}
+            title={t`Execution details`}
             open={isExecutionDetailsOpen}
             onToggle={toggleExecutionDetails}
             contentClassName="flex flex-col gap-12"

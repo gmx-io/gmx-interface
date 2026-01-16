@@ -22,12 +22,12 @@ export function AboutGlpIncident() {
     <div>
       <div className="flex flex-col rounded-8 bg-slate-900 p-20">
         <div className="text-body-large mt-4 font-medium text-typography-primary">
-          <Trans>About the GLP Incident</Trans>
+          <Trans>About the GLP incident</Trans>
         </div>
 
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
-          title={t`Why Is the Claim in GLV Tokens?`}
+          title={t`Why is the claim in GLV tokens?`}
           open={rowStates[0]}
           onToggle={toggleRow(0)}
           handleClassName="text-left"
@@ -45,7 +45,7 @@ export function AboutGlpIncident() {
 
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
-          title={t`What Is GLV Exactly?`}
+          title={t`What is GLV exactly?`}
           open={rowStates[1]}
           onToggle={toggleRow(1)}
           handleClassName="text-left"
@@ -61,15 +61,15 @@ export function AboutGlpIncident() {
             </p>
             <ul className="list-disc pl-12">
               <li>
-                <Trans>Earns fees from liquidity provision across GMX V2 markets.</Trans>
+                <Trans>Earns fees from liquidity provision across GMX V2 markets</Trans>
               </li>
               <li>
                 <Trans>
-                  Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield.
+                  Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield
                 </Trans>
               </li>
               <li>
-                <Trans>Auto-compounds yield (no manual claiming needed unlike GLP).</Trans>
+                <Trans>Auto-compounds yield (no manual claiming needed, unlike GLP)</Trans>
               </li>
             </ul>
           </div>
@@ -77,7 +77,7 @@ export function AboutGlpIncident() {
 
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
-          title={t`Why Do I Receive Two Different GLV Tokens?`}
+          title={t`Why do I receive two different GLV tokens?`}
           open={rowStates[2]}
           onToggle={toggleRow(2)}
           handleClassName="text-left"
@@ -95,7 +95,7 @@ export function AboutGlpIncident() {
 
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
-          title={t`Can I Sell My GLV, and Where?`}
+          title={t`Can I sell my GLV, and where?`}
           open={rowStates[3]}
           onToggle={toggleRow(3)}
           handleClassName="text-left"
@@ -112,7 +112,7 @@ export function AboutGlpIncident() {
 
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
-          title={t`How Does GLV Earn Yield, and Where Do I See My Earnings?`}
+          title={t`How does GLV earn yield, and where do I see my earnings?`}
           open={rowStates[4]}
           onToggle={toggleRow(4)}
           handleClassName="text-left"
@@ -130,7 +130,7 @@ export function AboutGlpIncident() {
 
         <ExpandableRow
           contentClassName="flex flex-col gap-14"
-          title={t`What Is the Bonus Incentive for Holding Your GLV?`}
+          title={t`What is the bonus incentive for holding your GLV?`}
           open={rowStates[5]}
           onToggle={toggleRow(5)}
           handleClassName="text-left"

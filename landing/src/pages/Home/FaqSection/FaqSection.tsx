@@ -10,7 +10,7 @@ export function FaqSection() {
           <Trans>FAQ</Trans>
         </h2>
         <div className="flex w-full flex-col gap-12 sm:w-[800px]">
-          <FaqItem title={t`What Makes GMX One of the Best Places to Earn Yield on My Crypto?`}>
+          <FaqItem title={t`What makes GMX one of the best places to earn yield on my crypto?`}>
             <Trans>
               <p>
                 Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or
@@ -25,7 +25,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`How Do I Get Started on GMX?`}>
+          <FaqItem title={t`How do I get started on GMX?`}>
             <Trans>
               <p>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</p>
               <ul className="list-decimal pl-14">
@@ -42,7 +42,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`What Makes GMX More Cost-Efficient Than Other Perpetual Platforms?`}>
+          <FaqItem title={t`What makes GMX more cost-efficient than other perpetual platforms?`}>
             <Trans>
               <p>
                 GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This
@@ -57,7 +57,7 @@ export function FaqSection() {
               </p>
             </Trans>
           </FaqItem>
-          <FaqItem title={t`Can I Build on Top of GMX or Integrate it into My DeFi App?`}>
+          <FaqItem title={t`Can I build on top of GMX or integrate it into my DeFi app?`}>
             <Trans>
               <p>
                 Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable

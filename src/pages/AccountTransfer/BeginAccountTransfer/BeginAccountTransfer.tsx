@@ -226,7 +226,7 @@ export default function BeginAccountTransfer() {
       return t`Approving...`;
     }
     if (isTransferring) {
-      return t`Transferring`;
+      return t`Transferring...`;
     }
 
     if (needFeeGmxTrackerApproval) {
@@ -298,7 +298,7 @@ export default function BeginAccountTransfer() {
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
-        label={t`Transfer Submitted`}
+        label={t`Transfer submitted`}
       >
         <Trans>Transfer initiated.</Trans>
         <br />
@@ -311,7 +311,7 @@ export default function BeginAccountTransfer() {
       <div className="pb-16">
         <PageTitle
           className="md:pl-8"
-          title={t`Transfer Account`}
+          title={t`Transfer account`}
           subtitle={
             <Trans>
               Use this only for full account transfers.
@@ -345,13 +345,13 @@ export default function BeginAccountTransfer() {
         </div>
         <div className="flex flex-col gap-8 text-14 font-medium">
           <ValidationRow isValid={!hasVestedGmx}>
-            <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GMX Vesting Vault.</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedGlp}>
-            <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GLP Vesting Vault.</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedAffiliate}>
-            <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault.</Trans>
           </ValidationRow>
           {hasVestedAffiliate && (
             <>
@@ -371,10 +371,10 @@ export default function BeginAccountTransfer() {
           )}
 
           <ValidationRow isValid={!hasStakedGmx}>
-            <Trans>Receiver has not staked GMX tokens before</Trans>
+            <Trans>Receiver has not staked GMX tokens before.</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasStakedGlp}>
-            <Trans>Receiver has not staked GLP tokens before</Trans>
+            <Trans>Receiver has not staked GLP tokens before.</Trans>
           </ValidationRow>
         </div>
 

@@ -822,7 +822,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 </button>
               )}
               <BuyInputSection
-                topLeftLabel={isTwap ? t`Receive (Approximate)` : t`Receive`}
+                topLeftLabel={isTwap ? t`Receive (approximate)` : t`Receive`}
                 bottomLeftValue={
                   !isTwap && swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined
                 }
@@ -923,7 +923,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }
 
   function renderTriggerPriceInput() {
-    const priceLabel = isLimit ? (tradeMode === TradeMode.Limit ? t`Limit Price` : t`Stop Price`) : t`Trigger Price`;
+    const priceLabel = isLimit ? (tradeMode === TradeMode.Limit ? t`Limit price` : t`Stop price`) : t`Trigger price`;
 
     return (
       <BuyInputSection
@@ -945,7 +945,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   function renderTriggerRatioInput() {
     return (
       <BuyInputSection
-        topLeftLabel={t`Limit Price`}
+        topLeftLabel={t`Limit price`}
         topRightLabel={t`Mark`}
         topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
         onClickTopRightLabel={handleTriggerMarkPriceClick}

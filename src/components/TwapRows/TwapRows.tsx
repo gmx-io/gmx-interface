@@ -98,7 +98,7 @@ const TwapRows = ({
         <FrequencyField duration={duration} numberOfParts={numberOfParts} />
       </SyntheticsInfoRow>
       <SyntheticsInfoRow
-        label={t`Size per Part`}
+        label={t`Size per part`}
         value={formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
         valueClassName="numbers"
       />
@@ -158,13 +158,13 @@ const DurationField = ({
   return (
     <div className="flex gap-4">
       <ValueInput
-        label={t`Hour(s)`}
+        label={t`Hours`}
         value={duration.hours}
         onChange={(value) => setDuration({ ...duration, hours: value })}
         className="w-[112px]"
       />
       <ValueInput
-        label={t`Minute(s)`}
+        label={t`Minutes`}
         value={duration.minutes}
         onChange={(value) => setDuration({ ...duration, minutes: value })}
         className="w-[112px]"

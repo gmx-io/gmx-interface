@@ -158,7 +158,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (hasOutdatedUi) return [t`Page outdated, please refresh`, true];
-    if (isSubmitting) return [t`Settling`, true];
+    if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];
   }, [hasOutdatedUi, isSubmitting, positionKeys.length]);
@@ -216,7 +216,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       className="Confirmation-box ClaimableModal"
       isVisible={isVisible}
       setIsVisible={handleOnClose}
-      label={t`Confirm Settle`}
+      label={t`Confirm settle`}
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">Settle {totalStr}</div>

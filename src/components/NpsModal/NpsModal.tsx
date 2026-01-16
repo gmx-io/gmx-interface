@@ -67,7 +67,7 @@ export function NpsModal() {
     <Modal
       isVisible={isModalVisible}
       setIsVisible={() => onSubmitSurvey({ answers: questions, contact })}
-      label={t`Help Us Improve`}
+      label={t`Help us improve`}
     >
       <div className="w-[300px]">
         {questions.map((question, index) => (

@@ -72,7 +72,7 @@ export function getOrderTypeLabel(orderType: OrderType) {
     [OrderType.LimitIncrease]: t`Limit Increase`,
     [OrderType.MarketDecrease]: t`Market Decrease`,
     [OrderType.LimitDecrease]: t`Limit Decrease`,
-    [OrderType.StopLossDecrease]: t`Stop Loss Decrease`,
+    [OrderType.StopLossDecrease]: t`Stop-Loss Decrease`,
     [OrderType.Liquidation]: t`Liquidation`,
   };
 
@@ -260,7 +260,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < collateralSwapUsd) {
           errors.push({
-            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price`,
+            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price.`,
             level: "error",
             key: "liquidity2",
           });

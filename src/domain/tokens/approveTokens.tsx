@@ -122,7 +122,7 @@ export async function approveTokens({
       helperToast.success(
         <div>
           <Trans>
-            Approval submitted.
+            Approval submitted
             <br />
             <br />
             <ExternalLink href={txUrl}>View status</ExternalLink>
@@ -155,7 +155,7 @@ export async function approveTokens({
         failMsg = (
           <div>
             <Trans>
-              Insufficient {nativeToken.symbol} for gas on {networkName}.
+              Insufficient {nativeToken.symbol} for gas on {networkName}
               <br />
               <br />
               <Link to="/buy_gmx#bridge">

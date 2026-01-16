@@ -65,7 +65,7 @@ export function PositionSellerPriceImpactFeesRow() {
               </Trans>
             }
           />{" "}
-          / {t`fees`}
+          / {t`Fees`}
         </>
       }
       value={

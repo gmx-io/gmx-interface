@@ -115,7 +115,7 @@ export function GmCard() {
         }
         right={
           <AppCardSection>
-            <InteractivePieChart data={chartData} label={t`GM Markets`} />
+            <InteractivePieChart data={chartData} label={t`GM markets`} />
           </AppCardSection>
         }
       />

@@ -37,7 +37,7 @@ function AddAffiliateCode({
   return (
     <div className="referral-card section-center">
       <h2 className="title">
-        <Trans>Generate Referral Code</Trans>
+        <Trans>Generate referral code</Trans>
       </h2>
       <p className="sub-title">
         <Trans>

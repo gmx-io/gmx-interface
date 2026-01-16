@@ -323,7 +323,7 @@ function MarketsList() {
           <thead>
             <tr>
               <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
-                <Trans>Market</Trans>
+                <Trans>MARKET</Trans>
               </th>
               {isSwap ? (
                 <>

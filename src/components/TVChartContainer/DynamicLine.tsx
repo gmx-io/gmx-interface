@@ -76,11 +76,11 @@ export function DynamicLine({
         .setText(title)
         .setPrice(price)
         .setQuantity("\u270E")
-        .setModifyTooltip(t`Edit order.`)
+        .setModifyTooltip(t`Edit order`)
         .onModify(() => {
           latestOnEdit.current(id);
         })
-        .setCancelTooltip(t`Cancel order.`)
+        .setCancelTooltip(t`Cancel order`)
         .onCancel(() => {
           latestOnCancel.current(id);
         })

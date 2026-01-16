@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 function SEO(props) {
   const { children, ...customMeta } = props;
   const meta = {
-    title: t`GMX | Decentralized Perpetual Exchange`,
+    title: t`GMX | Decentralized perpetual exchange`,
     description: t`Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks.`,
     image: "https://gmx.io/og.png",
     type: "exchange",

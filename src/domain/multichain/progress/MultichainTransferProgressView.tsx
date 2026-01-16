@@ -214,7 +214,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           />
 
           <div>
-            {task.operation === Operation.Deposit ? <Trans>Buying</Trans> : <Trans>Selling</Trans>}{" "}
+            {task.operation === Operation.Deposit ? <Trans>Buying...</Trans> : <Trans>Selling...</Trans>}{" "}
             {formatTokenAmount(task.amount, task.token.decimals)}{" "}
             {isMarketTokenAddress(chainId, task.token.address) ? (
               <>
@@ -263,7 +263,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
               <div className="flex items-center gap-4 group-gmx-hover:text-blue-300">
                 {isOpen ? (
                   <>
-                    <Trans>Less details</Trans>
+                    <Trans>Fewer details</Trans>
                     <ChevronUpIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
                   </>
                 ) : (
@@ -289,9 +289,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={
                     task.operation === Operation.Deposit ? (
-                      <Trans>Funds bridging to</Trans>
+                      <Trans>Funds bridging to...</Trans>
                     ) : (
-                      <Trans>{gmOrGlvLabel} bridging to</Trans>
+                      <Trans>{gmOrGlvLabel} bridging to...</Trans>
                     )
                   }
                   valueClassName="flex items-center gap-4"
@@ -305,9 +305,9 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={
                     task.operation === Operation.Deposit ? (
-                      <Trans>GM bridging to</Trans>
+                      <Trans>GM bridging to...</Trans>
                     ) : (
-                      <Trans>Funds bridging to</Trans>
+                      <Trans>Funds bridging to...</Trans>
                     )
                   }
                   valueClassName="flex items-center gap-4"
@@ -338,7 +338,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                   </>
                 )}
                 <SyntheticsInfoRow
-                  label={<Trans>Bridge tx hash</Trans>}
+                  label={<Trans>Bridge transaction hash</Trans>}
                   valueClassName="flex items-center"
                   value={
                     <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER["layerzero"](task.initialTxHash)} variant="icon">

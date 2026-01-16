@@ -425,7 +425,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>GLP Pool</Trans>
+                <Trans>GLP pool</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -434,7 +434,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in the GLP Pool.</Trans>
+                      <Trans>Total value of tokens in the GLP pool.</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
@@ -462,7 +462,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>GM Pools</Trans>
+                <Trans>GM pools</Trans>
               </div>
               <div>
                 <TooltipComponent

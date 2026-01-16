@@ -35,7 +35,7 @@ const AvailableToTradeAssetsTitle = () => {
         role="button"
         onClick={() => setIsVisibleOrView("main")}
       />
-      {srcChainId !== undefined ? <Trans>GMX Account Balance</Trans> : <Trans>Available to Trade Assets</Trans>}
+      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available to trade assets</Trans>}
     </div>
   );
 };
@@ -80,7 +80,7 @@ const DepositTitle = () => {
 const DepositStatusTitle = () => {
   return (
     <div className="flex items-center gap-8">
-      <Trans>Your Deposit Is in Progress</Trans>
+      <Trans>Your deposit is in progress</Trans>
     </div>
   );
 };
@@ -95,7 +95,7 @@ const SelectAssetToDepositTitle = () => {
         role="button"
         onClick={() => setIsVisibleOrView("deposit")}
       />
-      <Trans>Select Asset to Deposit</Trans>
+      <Trans>Select asset to deposit</Trans>
     </div>
   );
 };

@@ -39,10 +39,10 @@ export default function Ecosystem() {
 
   return (
     <AppPageLayout>
-      <SEO title={getPageTitle(t`Ecosystem Projects`)}>
+      <SEO title={getPageTitle(t`Ecosystem projects`)}>
         <div className="default-container page-layout">
           <div className="flex flex-col gap-20">
-            <PageTitle isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages`} qa="ecosystem-page" />
+            <PageTitle isTop title={t`GMX pages`} subtitle={t`GMX ecosystem pages`} qa="ecosystem-page" />
             <div className="Ecosystem-projects">
               {gmxPages.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -75,7 +75,7 @@ export default function Ecosystem() {
             </div>
 
             <PageTitle
-              title={t`Community Projects`}
+              title={t`Community projects`}
               subtitle={
                 <Trans>
                   Projects developed by the GMX community. <br />
@@ -172,7 +172,7 @@ export default function Ecosystem() {
                 );
               })}
             </div>
-            <PageTitle title={t`Partnerships and Integrations`} subtitle={t`Projects integrated with GMX.`} />
+            <PageTitle title={t`Partnerships and integrations`} subtitle={t`Projects integrated with GMX`} />
             <div className="Ecosystem-projects">
               {integrations.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -210,7 +210,7 @@ export default function Ecosystem() {
                 with interactive charting tools.
               </Trans>
             </div>
-            <PageTitle title={t`Telegram Groups`} subtitle={t`Community-led Telegram groups.`} />
+            <PageTitle title={t`Telegram groups`} subtitle={t`Community-led Telegram groups`} />
             <div className="Ecosystem-projects">
               {telegramGroups.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;

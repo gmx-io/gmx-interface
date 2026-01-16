@@ -23,7 +23,7 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: msg`Funding Fees`,
+    groupName: msg`Funding fees`,
     items: [
       {
         data: ClaimType.SettleFundingFeeExecuted,
@@ -46,7 +46,7 @@ const GROUPS: Groups = [
   },
 
   {
-    groupName: msg`Price Impact`,
+    groupName: msg`Price impact`,
     items: [
       {
         data: ClaimType.ClaimPriceImpact,

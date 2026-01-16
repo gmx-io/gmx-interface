@@ -126,7 +126,7 @@ export function LeaderboardPositionsTable({
           <thead>
             <TableTheadTr className="text-body-medium">
               <TableHeaderCell
-                title={t`Rank`}
+                title={t`RANK`}
                 width={6}
                 tooltip={
                   <Trans>
@@ -143,15 +143,15 @@ export function LeaderboardPositionsTable({
                 }
                 tooltipPosition="bottom-start"
               />
-              <TableHeaderCell title={t`Address`} width={14} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`ADDRESS`} width={14} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PNL ($)`}
                 width={12}
-                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees, excludes swap fees.`}
+                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees.`}
                 tooltipPosition="bottom-end"
               />
-              <TableHeaderCell title={t`Position`} width={12} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`POSITION`} width={12} tooltipPosition="bottom-end" />
               <TableHeaderCell {...getSorterProps("entryPrice")} title={t`ENTRY PRICE`} width={10} />
               <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`SIZE`} width={12} />
               <TableHeaderCell {...getSorterProps("leverage")} title={t`LEV.`} width={4} />
@@ -547,7 +547,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
           />
           <br />
           <StatsTooltipRow
-            label={t`Realized Price Impact`}
+            label={t`Realized price impact`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(position.realizedPriceImpact))}>

@@ -661,11 +661,11 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Min. required collateral`, formattedMinCollateral),
+        infoRow(t`Min required collateral`, formattedMinCollateral),
         infoRow(t`Collateral at liquidation`, formattedLeftoverCollateral),
         "",
         ...priceImpactLines,
-        infoRow(t`Liquidation Fee`, {
+        infoRow(t`Liquidation fee`, {
           text: formattedLiquidationFee,
           state: "error",
         }),

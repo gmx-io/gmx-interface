@@ -201,7 +201,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           className="Connect-wallet-modal"
           isVisible={isEditModalOpen}
           setIsVisible={close}
-          label={t`Edit Referral Code`}
+          label={t`Edit referral code`}
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
@@ -215,7 +215,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
       </div>
       {currentDiscountDistributions.length > 0 ? (
         <Card
-          title={t`Rebates Distribution History`}
+          title={t`Rebates distribution history`}
           tooltipText={t`V2 discounts apply automatically and aren't shown here.`}
           bodyPadding={false}
           divider={true}
@@ -225,16 +225,16 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
               <thead>
                 <TableTheadTr>
                   <TableTh scope="col">
-                    <Trans>Date</Trans>
+                    <Trans>DATE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Type</Trans>
+                    <Trans>TYPE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Amount</Trans>
+                    <Trans>AMOUNT</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Transaction</Trans>
+                    <Trans>TRANSACTION</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>

@@ -56,7 +56,7 @@ function PoolSelector2Desktop(props: Props) {
       <thead>
         <TableTheadTr>
           <TableTh padding="compact">
-            <Trans>Pool</Trans>
+            <Trans>POOL</Trans>
           </TableTh>
           <TableTh padding="compact">{isLong ? <Trans>LONG LIQ.</Trans> : <Trans>SHORT LIQ.</Trans>}</TableTh>
           <TableTh padding="compact">

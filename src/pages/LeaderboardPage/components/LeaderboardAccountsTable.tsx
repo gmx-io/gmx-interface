@@ -180,7 +180,7 @@ export function LeaderboardAccountsTable({
           <thead>
             <TableTheadTr className="text-body-medium">
               <TableHeaderCell
-                title={t`Rank`}
+                title={t`RANK`}
                 width={6}
                 tooltip={
                   <Trans>
@@ -196,7 +196,7 @@ export function LeaderboardAccountsTable({
                 }
                 tooltipPosition="bottom-start"
               />
-              <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`ADDRESS`} width={16} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 title={t`PNL ($)`}
                 width={12}
@@ -226,7 +226,7 @@ export function LeaderboardAccountsTable({
                 {...getSorterProps("averageLeverage")}
               />
               <TableHeaderCell
-                title={t`Win/Loss`}
+                title={t`WIN/LOSS`}
                 width={10}
                 tooltip={t`Wins and losses for closed positions.`}
                 tooltipPosition="bottom-end"
@@ -448,7 +448,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
     return (
       <TooltipWithPortal
         handleClassName="text-typography-secondary"
-        handle={t`NA`}
+        handle={t`N/A`}
         renderContent={tooltipContent}
         variant="underline"
       />
@@ -546,7 +546,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           )}
           <br />
           <StatsTooltipRow
-            label={t`Realized Price Impact`}
+            label={t`Realized price impact`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(account.realizedPriceImpact))}>

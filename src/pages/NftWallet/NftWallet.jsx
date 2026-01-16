@@ -47,7 +47,7 @@ export default function NftWallet() {
       return transferError;
     }
     if (isSubmitting) {
-      return t`Tranferring...`;
+      return t`Transferring...`;
     }
     return t`Transfer NFT`;
   }
@@ -86,7 +86,7 @@ export default function NftWallet() {
           </div>
           <div className="NftWallet-row">
             <label>
-              <Trans>NFT Address</Trans>
+              <Trans>NFT address</Trans>
             </label>
             <div>
               <input type="text" value={nftAddress} onChange={(e) => setNftAddress(e.target.value)} />

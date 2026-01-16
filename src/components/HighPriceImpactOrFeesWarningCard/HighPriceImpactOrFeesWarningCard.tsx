@@ -54,7 +54,7 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForTwapNetworkFee) {
       warnings.push({
         id: "high-twap-network-fee",
-        key: t`High TWAP Network Fee`,
+        key: t`High TWAP network fee`,
         value: formatUsd(executionFeeUsd),
       });
     }

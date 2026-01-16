@@ -22,7 +22,7 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: msg`Trigger Orders`,
+    groupName: msg`Trigger orders`,
     items: [
       {
         data: "trigger-limit",
@@ -30,11 +30,11 @@ const GROUPS: Groups = [
       },
       {
         data: "trigger-take-profit",
-        text: msg`Take profit`,
+        text: msg`Take-Profit`,
       },
       {
         data: "trigger-stop-loss",
-        text: msg`Stop loss`,
+        text: msg`Stop-Loss`,
       },
     ],
   },

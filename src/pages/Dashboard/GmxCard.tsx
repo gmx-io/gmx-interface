@@ -218,7 +218,7 @@ export function GmxCard({
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Market Cap</Trans>
+                  <Trans>Market cap</Trans>
                 </div>
                 <div>
                   <span className="numbers">{formatAmountHuman(gmxMarketCap, USD_DECIMALS, true, 2)}</span>

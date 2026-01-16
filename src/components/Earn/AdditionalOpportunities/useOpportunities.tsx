@@ -106,11 +106,11 @@ export const getOpportunityAssetLabel = (
 
 export const useOpportunityTagLabels = () => {
   return {
-    "lending-and-borrowing": t`Lending and Borrowing`,
+    "lending-and-borrowing": t`Lending and borrowing`,
     looping: t`Looping`,
-    "delta-neutral-vaults": t`Delta Neutral Vaults`,
+    "delta-neutral-vaults": t`Delta neutral vaults`,
     autocompound: t`Autocompound`,
-    "yield-trading": t`Yield Trading`,
+    "yield-trading": t`Yield trading`,
   };
 };
 

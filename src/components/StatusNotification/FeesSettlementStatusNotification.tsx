@@ -187,7 +187,7 @@ export function FeesSettlementStatusNotification({ orders, toastTimestamp, marke
   }, [hasError, toastTimestamp]);
 
   return (
-    <StatusNotification title={t`Settling Position Fees`}>
+    <StatusNotification title={t`Settling position fees`}>
       {creationStatus}
       {executionStatuses}
     </StatusNotification>

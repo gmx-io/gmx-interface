@@ -55,7 +55,7 @@ export function PositionEditorCollateralSelector(props: Props) {
           "..."
         )
       }
-      modalLabel={t`Collateral In`}
+      modalLabel={t`Collateral in`}
       qa="collateral-in-selector"
     >
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}

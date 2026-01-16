@@ -122,7 +122,7 @@ export default function UserIncentiveDistribution() {
   const claimableBalance = account ? (
     <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
       <div className="text-body-large font-medium text-typography-primary">
-        <Trans>Claimable Balance</Trans>
+        <Trans>Claimable balance</Trans>
       </div>
       {chainId !== AVALANCHE_FUJI ? (
         <ClaimableAmounts />
@@ -166,19 +166,19 @@ export default function UserIncentiveDistribution() {
                 <thead>
                   <TableTheadTr>
                     <TableTh className="w-[25%]">
-                      <Trans>Date</Trans>
+                      <Trans>DATE</Trans>
                     </TableTh>
                     {!isMobile && (
                       <TableTh>
-                        <Trans>Type</Trans>
+                        <Trans>TYPE</Trans>
                       </TableTh>
                     )}
                     <TableTh className="max-xl:text-right">
-                      <Trans>Amount</Trans>
+                      <Trans>AMOUNT</Trans>
                     </TableTh>
                     {!isMobile && (
                       <TableTh className="text-right">
-                        <Trans>Transaction</Trans>
+                        <Trans>TRANSACTION</Trans>
                       </TableTh>
                     )}
                     <TableTh className="w-24" />
@@ -330,7 +330,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                     "h-28 items-center": !isMobile,
                   })}
                 >
-                  <Trans>{tokenInfo.symbol} Amount</Trans>
+                  <Trans>{tokenInfo.symbol} amount</Trans>
 
                   {isMobile && (
                     <span className="text-14 text-typography-primary">

@@ -219,7 +219,7 @@ export function getCodeError(value) {
   if (!trimmedValue) return "";
 
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
-    return t`Max ${MAX_REFERRAL_CODE_LENGTH} characters.`;
+    return t`Max ${MAX_REFERRAL_CODE_LENGTH} characters`;
   }
 
   if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {

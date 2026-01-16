@@ -149,7 +149,7 @@ export default function EarnAdditionalOpportunitiesPage() {
 
   const emptyStateMessage = useMemo(() => {
     if (chainId === BOTANIX) {
-      return <Trans>No additional opportunities on Botanix. Switch to Arbitrum or Avalanche to see more</Trans>;
+      return <Trans>No opportunities on Botanix yet</Trans>;
     }
 
     if (allOpportunities.length === 0) {
@@ -158,19 +158,17 @@ export default function EarnAdditionalOpportunitiesPage() {
 
     if (activeFilter === "for-me") {
       if (userAssets.size === 0) {
-        return (
-          <Trans>No eligible holdings. Acquire or stake GMX, GLV, or GM tokens to see personalized opportunities</Trans>
-        );
+        return <Trans>No eligible holdings</Trans>;
       }
 
-      return <Trans>No opportunities match your holdings. Try another filter or check back later</Trans>;
+      return <Trans>No opportunities match your holdings</Trans>;
     }
 
     if (searchQuery.trim().length > 0) {
       return <Trans>No opportunities match your search</Trans>;
     }
 
-    return <Trans>No opportunities match the selected filters</Trans>;
+    return <Trans>No opportunities match filters</Trans>;
   }, [activeFilter, allOpportunities.length, chainId, searchQuery, userAssets.size]);
 
   return (

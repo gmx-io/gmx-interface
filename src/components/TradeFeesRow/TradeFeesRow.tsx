@@ -60,7 +60,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-typography-primary">{t`Swap Price Impact`}:</div>
+              <div className="text-typography-primary">{t`Swap price impact`}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p.swapPriceImpact!.precisePercentage), {
@@ -267,7 +267,7 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-typography-primary">
-                  <Trans>Proportional Stored Impact</Trans>:
+                  <Trans>Proportional stored impact</Trans>:
                 </div>
                 <div>
                   (
@@ -291,7 +291,7 @@ export function TradeFeesRow(p: Props) {
             id: "closePriceImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">{t`Close Price Impact`}:</div>
+                <div className="text-typography-primary">{t`Close price impact`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.decreasePositionPriceImpact.precisePercentage), {

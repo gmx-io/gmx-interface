@@ -96,7 +96,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               </TableTh>
               <TableTh>
                 <TooltipWithPortal
-                  handle={<Trans>NET RATE / 1 H</Trans>}
+                  handle={<Trans>NET RATE / 1H</Trans>}
                   renderContent={renderNetFeeHeaderTooltipContent}
                 />
               </TableTh>

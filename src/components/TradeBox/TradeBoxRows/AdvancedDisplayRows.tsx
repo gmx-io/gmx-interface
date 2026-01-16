@@ -71,7 +71,7 @@ function LeverageInfoRows() {
     let leverageValue: ReactNode = "-";
 
     if (decreaseAmounts?.isFullClose) {
-      leverageValue = t`NA`;
+      leverageValue = t`N/A`;
     } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
       leverageValue = "-";
     } else {

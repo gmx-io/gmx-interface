@@ -114,7 +114,7 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>
-                  Buy or Transfer {nativeTokenSymbol} to {chainName}
+                  Buy or transfer {nativeTokenSymbol} to {chainName}
                 </Trans>
                 <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
               </div>
@@ -227,7 +227,7 @@ function DecentralisedExchanges({
 
   if (isEmpty) {
     return (
-      <Card title={t`Buy GMX from Decentralized Exchanges`}>
+      <Card title={t`Buy GMX from decentralized exchanges`}>
         <div className="App-card-content tracking-normal text-slate-100">
           <Trans>No decentralized exchanges available</Trans>
         </div>
@@ -236,7 +236,7 @@ function DecentralisedExchanges({
   }
 
   return (
-    <Card title={t`Buy GMX from Decentralized Exchanges`}>
+    <Card title={t`Buy GMX from decentralized exchanges`}>
       <div className="App-card-content">
         {isArbitrum ? (
           <div className="exchange-info-group">
@@ -363,7 +363,7 @@ function CentralisedExchanges({ chainId }) {
 
   if (isEmpty) {
     return (
-      <Card title={t`Buy GMX from Centralized Services`}>
+      <Card title={t`Buy GMX from centralized services`}>
         <div className="App-card-content tracking-normal text-slate-100">
           <Trans>No centralized exchanges available</Trans>
         </div>
@@ -372,7 +372,7 @@ function CentralisedExchanges({ chainId }) {
   }
 
   return (
-    <Card title={t`Buy GMX from Centralized Services`}>
+    <Card title={t`Buy GMX from centralized services`}>
       <div className="App-card-content">
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">

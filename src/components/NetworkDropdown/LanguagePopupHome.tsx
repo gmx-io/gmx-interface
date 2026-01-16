@@ -38,7 +38,7 @@ export default function LanguagePopupHome() {
         className="language-popup"
         isVisible={isLanguageModalOpen}
         setIsVisible={setIsLanguageModalOpen}
-        label={t`Select Language`}
+        label={t`Select language`}
       >
         <LanguageModalContent currentLanguage={currentLanguage} onClose={handleLanguageModalClose} />
       </ModalWithPortal>

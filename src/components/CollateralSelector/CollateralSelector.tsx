@@ -39,7 +39,7 @@ export function CollateralSelector(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   return (
-    <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`} qa="collateral-in-selector">
+    <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral in`} qa="collateral-in-selector">
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
     </SelectorBase>
   );

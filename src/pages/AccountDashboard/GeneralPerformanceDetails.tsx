@@ -33,7 +33,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
       <div className="flex items-center gap-8 border-b-1/2 border-slate-600 p-20 text-20 font-medium">
-        <Trans>General Performance Details</Trans>
+        <Trans>General performance details</Trans>
         <TooltipWithPortal content={t`Performance and chart data are based on UTC times.`} variant="none">
           <InfoIconStroke className="h-16 w-16 cursor-help text-typography-secondary" />
         </TooltipWithPortal>
@@ -44,10 +44,10 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
           <thead>
             <TableTheadTr>
               <TableTh>
-                <Trans>Date</Trans>
+                <Trans>DATE</Trans>
               </TableTh>
               <TableTh>
-                <Trans>Volume</Trans>
+                <Trans>VOLUME</Trans>
               </TableTh>
               <TableTh>
                 <TooltipWithPortal
@@ -76,7 +76,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                 </TooltipWithPortal>
               </TableTh>
               <TableTh className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right">
-                <Trans>Win/Loss</Trans>
+                <Trans>WIN/LOSS</Trans>
               </TableTh>
             </TableTheadTr>
           </thead>

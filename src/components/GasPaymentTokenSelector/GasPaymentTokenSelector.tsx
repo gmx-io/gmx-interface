@@ -33,7 +33,7 @@ export function GasPaymentTokenSelector({ currentTokenAddress, onSelectToken }: 
 
   return (
     <SelectorBase
-      modalLabel={t`Gas Payment Token`}
+      modalLabel={t`Gas payment token`}
       desktopPanelClassName="!z-[10000] w-[360px] !top-[10px]"
       label={
         <div className="flex w-full justify-between">

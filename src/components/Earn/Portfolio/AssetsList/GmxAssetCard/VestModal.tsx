@@ -330,7 +330,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       if (depositError) {
         return depositError;
       }
-      return isDepositing ? <Trans>Depositing</Trans> : <Trans>Deposit</Trans>;
+      return isDepositing ? <Trans>Depositing...</Trans> : <Trans>Deposit</Trans>;
     }
     if (activeAction === "withdraw") {
       if (vestedAmount === undefined || vestedAmount === 0n) {
@@ -578,7 +578,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               />
             )}
             <ProgressRow
-              label={<Trans>Vault capacity:</Trans>}
+              label={<Trans>Vault capacity</Trans>}
               value={
                 <TooltipWithPortal
                   handle={`${formatGmxAmount(

@@ -34,7 +34,7 @@ export function BotanixBanner() {
         </Link>{" "}
         <Trans>and</Trans>{" "}
         <Link to="/pools" className="underline">
-          <Trans>Provide liquidity</Trans>
+          <Trans>provide liquidity</Trans>
         </Link>{" "}
         <Trans>using GLV and GM tokens. Staking GMX and referrals are not yet supported.</Trans>
       </p>

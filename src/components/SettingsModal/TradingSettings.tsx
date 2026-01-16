@@ -89,7 +89,7 @@ export function TradingSettings({
         <>
           <SettingsSection>
             <div className="text-14 font-medium text-typography-primary">
-              <Trans>Trading Mode</Trans>
+              <Trans>Trading mode</Trans>
             </div>
             {!srcChainId && (
               <SettingButton

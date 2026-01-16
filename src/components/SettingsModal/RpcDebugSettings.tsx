@@ -64,7 +64,7 @@ export function RpcDebugSettings() {
         ))}
 
         <ExpandableRow
-          title={<Trans>Debug RPC Endpoints ({getChainName(chainId)})</Trans>}
+          title={<Trans>Debug RPC endpoints ({getChainName(chainId)})</Trans>}
           open={debugEndpointsOpen}
           onToggle={setDebugEndpointsOpen}
         >
@@ -73,7 +73,7 @@ export function RpcDebugSettings() {
             {debugEndpoints.length > 0 && (
               <div className="flex flex-col gap-8">
                 <div className="text-sm font-semibold text-white">
-                  <Trans>Current Endpoints ({debugEndpoints.length})</Trans>
+                  <Trans>Current endpoints ({debugEndpoints.length})</Trans>
                 </div>
                 {debugEndpoints.map((endpoint, index) => (
                   <div

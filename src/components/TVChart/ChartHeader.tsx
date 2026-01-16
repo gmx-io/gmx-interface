@@ -286,7 +286,7 @@ function ChartHeaderDesktop() {
         <ChartHeaderItem
           label={
             <Trans>
-              Open Interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
+              Open interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
               <span className="text-red-500 numbers">{shortOIPercentage}</span>)
             </Trans>
           }

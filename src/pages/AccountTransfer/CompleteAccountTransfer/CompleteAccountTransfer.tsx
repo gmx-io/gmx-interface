@@ -82,7 +82,7 @@ export default function CompleteAccountTransfer() {
   if (!isSenderAndReceiverValid) {
     return (
       <AppPageLayout>
-        <PageTitle title={t`Complete Account Transfer`} />
+        <PageTitle title={t`Complete account transfer`} />
 
         <ColorfulBanner color="red">
           <Trans>Invalid transfer addresses. Check the URL.</Trans>
@@ -106,7 +106,7 @@ export default function CompleteAccountTransfer() {
         </Link>
       </Modal>
       <PageTitle
-        title={t`Complete Account Transfer`}
+        title={t`Complete account transfer`}
         subtitle={
           isCorrectAccount ? (
             <div className="hyphens-auto">

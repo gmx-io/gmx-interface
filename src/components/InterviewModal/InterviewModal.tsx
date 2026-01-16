@@ -16,7 +16,7 @@ type Props = {
 export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
   if (type === "trader") {
     return (
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat with GMX`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous chat with GMX`}>
         <div className="max-w-xl">
           <Trans>
             Help us improve GMX. For security, we won't contact you first. Send "I have feedback" to our official
@@ -37,7 +37,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
 
   if (type === "lp") {
     return (
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous Chat with GMX Team`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous chat with GMX Team`}>
         <div className="max-w-xl">
           <Trans>
             Help us improve GMX for Liquidity Providers. For security, we won't contact you first. Send "I'm a Liquidity

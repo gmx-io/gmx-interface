@@ -1080,7 +1080,7 @@ export const WithdrawalView = () => {
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: t`Page outdated`,
       disabled: true,
     };
   } else if (isSubmitting) {
@@ -1295,7 +1295,7 @@ export const WithdrawalView = () => {
 
   const networkItemDisabledMessage = useCallback(
     (option: { id: number; name: string; disabled?: boolean | string }) => {
-      return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not currently supported`;
+      return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not supported.`;
     },
     [selectedToken?.symbol]
   );
@@ -1436,8 +1436,8 @@ export const WithdrawalView = () => {
               <div>
                 {isSameChain ? (
                   <Trans>
-                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for express trading, so
-                    please keep at least{" "}
+                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for Express Trading, so
+                    keep at least{" "}
                     <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
                     {selectedToken?.symbol} or switch your gas token in{" "}
                     <WarningSettingsButton>settings</WarningSettingsButton>.
@@ -1445,7 +1445,7 @@ export const WithdrawalView = () => {
                 ) : (
                   <Trans>
                     You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
-                    please keep at least{" "}
+                    keep at least{" "}
                     <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
                     {selectedToken?.symbol} or switch your gas token in{" "}
                     <WarningSettingsButton>settings</WarningSettingsButton>.
@@ -1483,7 +1483,7 @@ export const WithdrawalView = () => {
                         history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
                       }}
                     >
-                      swap
+                      Swap
                     </span>{" "}
                     or{" "}
                     <span
@@ -1526,10 +1526,10 @@ export const WithdrawalView = () => {
             valueClassName="numbers"
             value={estimatedTimeValue}
           />
-          <SyntheticsInfoRow label={<Trans>Network Fee</Trans>} value={networkFeeValue} />
-          <SyntheticsInfoRow label={<Trans>Withdraw Fee</Trans>} value={withdrawFeeValue} />
+          <SyntheticsInfoRow label={<Trans>Network fee</Trans>} value={networkFeeValue} />
+          <SyntheticsInfoRow label={<Trans>Withdraw fee</Trans>} value={withdrawFeeValue} />
           <SyntheticsInfoRow
-            label={<Trans>GMX balance</Trans>}
+            label={<Trans>GMX Account balance</Trans>}
             value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
           />
         </div>
