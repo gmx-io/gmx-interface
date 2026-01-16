@@ -854,10 +854,6 @@ msgstr ""
 msgid "Unstake {tokenSymbol}"
 msgstr ""
 
-#: src/components/InputSection/InputSection.tsx
-msgid "MAX"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr ""

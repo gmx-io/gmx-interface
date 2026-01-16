@@ -854,10 +854,6 @@ msgstr "Нет совпадающих рынков"
 msgid "Unstake {tokenSymbol}"
 msgstr "Вывести из стейкинга {tokenSymbol}"
 
-#: src/components/InputSection/InputSection.tsx
-msgid "MAX"
-msgstr "МАКС"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr "Нет централизованных бирж для этой сети."

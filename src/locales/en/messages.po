@@ -854,10 +854,6 @@ msgstr "No markets matched"
 msgid "Unstake {tokenSymbol}"
 msgstr "Unstake {tokenSymbol}"
 
-#: src/components/InputSection/InputSection.tsx
-msgid "MAX"
-msgstr "MAX"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr "No centralized exchanges available for this network."
