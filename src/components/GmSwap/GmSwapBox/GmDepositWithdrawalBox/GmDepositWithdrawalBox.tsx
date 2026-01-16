@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
@@ -63,6 +64,8 @@ import { useChainId } from "lib/chains";
 import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
+import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
+import useWallet from "lib/wallets/useWallet";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
 import { MARKETS } from "sdk/configs/markets";
 import { convertTokenAddress, getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -93,6 +96,9 @@ import { useUpdateTokens } from "./useUpdateTokens";
 export function GmSwapBoxDepositWithdrawal() {
   const { shouldDisableValidationForTesting } = useSettings();
   const { chainId, srcChainId } = useChainId();
+  const { active } = useWallet();
+  const { openConnectModal } = useConnectModal();
+  const walletIconUrls = useWalletIconUrls();
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
@@ -495,6 +501,9 @@ export function GmSwapBoxDepositWithdrawal() {
                         );
                         handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}
+                      isConnected={active}
+                      walletIconUrls={walletIconUrls}
+                      openConnectModal={openConnectModal}
                     />
                   ) : isWithdrawal && firstTokenAddress && isSingle && tokenOptions.length > 1 ? (
                     <TokenSelector

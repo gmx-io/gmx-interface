@@ -107,7 +107,7 @@ export function MultichainTokenSelectorForLp({
         label={label}
         footerContent={null}
         headerContent={
-          !isConnected && (
+          isConnected !== false && (
             <SearchInput
               value={searchKeyword}
               setValue={setSearchKeyword}
