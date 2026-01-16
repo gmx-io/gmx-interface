@@ -89,7 +89,7 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
@@ -1150,11 +1150,23 @@ export const WithdrawalView = () => {
     }
   }
 
-  const hasValidSelectedToken =
-    selectedTokenAddress !== undefined && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
   useEffect(
     function fallbackWithdrawTokens() {
-      if (hasValidSelectedToken || !withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
+      const hasSelectedTokenAddress = selectedTokenAddress !== undefined;
+      if (!hasSelectedTokenAddress) {
+        return;
+      }
+
+      const isValidSameChainToken = isSameChain && isValidTokenSafe(chainId, selectedTokenAddress);
+
+      const isValidMultichainToken =
+        !isSameChain && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
+
+      if (isValidSameChainToken || isValidMultichainToken) {
+        return;
+      }
+
+      if (!withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
         return;
       }
 
@@ -1204,7 +1216,15 @@ export const WithdrawalView = () => {
         setSelectedTokenAddress(maxBalanceSettlementChainTokenAddress);
       }
     },
-    [chainId, hasValidSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
+    [
+      chainId,
+      isSameChain,
+      isVisibleOrView,
+      selectedTokenAddress,
+      setSelectedTokenAddress,
+      tokensData,
+      withdrawalViewChain,
+    ]
   );
 
   const isTestnet = isTestnetChain(chainId);
