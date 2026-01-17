@@ -97,7 +97,7 @@ export function Features({ goToTradeArbitrum }: Props) {
       <div className="h-full rounded-20 bg-slate-800 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 lg:min-h-[180px]">
         <div className="flex h-full w-full flex-col justify-between">
           <p className="text-heading-4 mb-20 lg:mb-0">
-            <Trans>Secure & Permissionless</Trans>
+            <Trans>Secure & permissionless</Trans>
           </p>
           <div className="flex flex-row flex-wrap gap-12 text-[13px]">
             <div className="flex flex-1 flex-col items-stretch gap-8 lg:flex-row lg:flex-wrap lg:items-start">

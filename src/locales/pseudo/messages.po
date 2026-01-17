@@ -1711,6 +1711,10 @@ msgstr ""
 msgid "Shift order cancelled"
 msgstr ""
 
+#: landing/src/pages/Home/HeroSection/Features.tsx
+msgid "Secure & permissionless"
+msgstr ""
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (stop market)"
 msgstr ""
@@ -3780,10 +3784,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
-msgstr ""
-
-#: landing/src/pages/Home/HeroSection/Features.tsx
-msgid "Secure & Permissionless"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx

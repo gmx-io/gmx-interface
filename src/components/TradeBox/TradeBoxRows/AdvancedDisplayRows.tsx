@@ -191,7 +191,7 @@ export function TradeBoxAdvancedGroups({
   return (
     <ExpandableRow
       open={isVisible}
-      title={t`Execution Details`}
+      title={t`Execution details`}
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}

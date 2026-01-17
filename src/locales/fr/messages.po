@@ -1711,6 +1711,10 @@ msgstr "V2 Avalanche Fuji"
 msgid "Shift order cancelled"
 msgstr ""
 
+#: landing/src/pages/Home/HeroSection/Features.tsx
+msgid "Secure & permissionless"
+msgstr ""
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (stop market)"
 msgstr ""
@@ -3781,10 +3785,6 @@ msgstr "Ouverture..."
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr "Frais"
-
-#: landing/src/pages/Home/HeroSection/Features.tsx
-msgid "Secure & Permissionless"
-msgstr "Sécurisé & Sans Permission"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
