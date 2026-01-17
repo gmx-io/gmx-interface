@@ -41,7 +41,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
             <div className="text-typography-primary">
               <Trans>
                 The difference between expected and actual execution price due to volatility. Orders won't execute if
-                slippage exceeds your maximum. Adjust the default in Settings.
+                slippage exceeds your maximum. Adjust the default in settings.
                 <br />
                 <br />A low value (e.g. less than -
                 {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause failed orders during

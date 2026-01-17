@@ -9,7 +9,7 @@ export function toastEnableExpress(openSettings: () => void) {
     <Trans>
       Express Trading enabled. Disable in{" "}
       <Button variant="link" onClick={openSettings}>
-        Settings
+        settings
       </Button>
     </Trans>
   );

@@ -256,6 +256,10 @@ msgstr "Buy {gasPaymentTokensText}"
 msgid "Show error"
 msgstr "Show error"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "settings"
+msgstr "settings"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics."
 msgstr "Protocol analytics."
@@ -295,6 +299,11 @@ msgstr "{seconds}s"
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FULL MARKET"
 msgstr "FULL MARKET"
+
+#: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
+msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
+msgstr "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -747,6 +756,10 @@ msgstr "Network fees are high due to increased {chainName} network activity."
 msgid "Try Express Trading."
 msgstr "Try Express Trading."
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Net price impact and fees from your trade. <0>Read more</0>."
+msgstr "Net price impact and fees from your trade. <0>Read more</0>."
+
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -799,10 +812,6 @@ msgstr "Limit price above mark price"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "Max network fee buffer precision is 0.01%"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Enable <0>Express Trading</0> in Settings for better reliability<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
-msgstr "Enable <0>Express Trading</0> in Settings for better reliability<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
@@ -1322,10 +1331,6 @@ msgstr "RPNL"
 msgid "FUNDING FEE"
 msgstr "FUNDING FEE"
 
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>"
-msgstr "No price impact on increases — orders execute at mark price. <0>Read more</0>"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a pay token"
 msgstr "Select a pay token"
@@ -1410,10 +1415,6 @@ msgstr "Failed Limit Swap"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Failed"
 msgstr "Failed"
-
-#: src/domain/multichain/toastEnableExpress.tsx
-msgid "Express Trading enabled. Disable in <0>Settings</0>"
-msgstr "Express Trading enabled. Disable in <0>Settings</0>"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No additional opportunities on this chain yet"
@@ -1511,10 +1512,6 @@ msgstr "Yield optimizations."
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>."
 msgstr "Mint tBTC using BTC with <0>Threshold</0>."
-
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "Net price impact and fees from your trade. <0>Read more</0>"
-msgstr "Net price impact and fees from your trade. <0>Read more</0>"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Withdraw {glvOrGm}"
@@ -1932,10 +1929,6 @@ msgstr "Max {0} out"
 msgid "No assets available for deposit"
 msgstr "No assets available for deposit"
 
-#: src/components/AprInfo/AprInfo.tsx
-msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>"
-msgstr "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Stop price above mark price"
 msgstr "Stop price above mark price"
@@ -2319,11 +2312,6 @@ msgstr "On-chain signing for every transaction."
 msgid "Check the recommended section above to start earning"
 msgstr "Check the recommended section above to start earning"
 
-#: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
-#: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
-msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in Settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
-msgstr "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in Settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
-
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Subscribe"
@@ -2501,6 +2489,10 @@ msgstr "Claiming funding fees failed"
 msgid "TVL"
 msgstr "TVL"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
+msgstr "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
+
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
@@ -2534,6 +2526,10 @@ msgstr "AB flags"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet & GMX Account"
 msgstr "Wallet & GMX Account"
+
+#: src/components/TenderlySettings/TenderlySettings.tsx
+msgid "Tenderly settings"
+msgstr "Tenderly settings"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Saulius GMX Analytics"
@@ -2708,6 +2704,10 @@ msgstr "Missing claim params. Retry in a few seconds"
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period."
 msgstr "Buy GMX bonds on Bond Protocol at a discount with a short vesting period."
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Invalid signature<0/><1/>Try a different wallet provider, or switch to Classic or One-Click Trading in <2>settings</2>"
+msgstr "Invalid signature<0/><1/>Try a different wallet provider, or switch to Classic or One-Click Trading in <2>settings</2>"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
@@ -2791,10 +2791,6 @@ msgstr "Confirm claim"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet-only"
 msgstr "Wallet-only"
-
-#: src/components/TenderlySettings/TenderlySettings.tsx
-msgid "Tenderly Settings"
-msgstr "Tenderly Settings"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -2895,10 +2891,6 @@ msgstr "Decreasing..."
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "Cumulative PnL <0>{0}</0>"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "RPC error<0/><1/>Enable <2>Express Trading</2> in Settings for better reliability"
-msgstr "RPC error<0/><1/>Enable <2>Express Trading</2> in Settings for better reliability"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "(Rebated)"
@@ -3440,10 +3432,6 @@ msgstr "USD value may not be accurate because prices are missing for {0}."
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
-
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>"
-msgstr "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
@@ -4081,6 +4069,10 @@ msgstr "Trigger price for the order."
 msgid "Settings updated"
 msgstr "Settings updated"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Enable <0>Express Trading</0> in settings for better reliability<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "Enable <0>Express Trading</0> in settings for better reliability<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -4355,7 +4347,6 @@ msgstr "Failed Stop Market"
 msgid "Documentation"
 msgstr "Documentation"
 
-#: src/components/Errors/errorToasts.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -4506,10 +4497,6 @@ msgstr "Unstake submitted"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM Pools."
 msgstr "Total value of tokens in GM Pools."
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Invalid signature<0/><1/>Try a different wallet provider, or switch to Classic or One-Click Trading in <2>Settings</2>"
-msgstr "Invalid signature<0/><1/>Try a different wallet provider, or switch to Classic or One-Click Trading in <2>Settings</2>"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Botanix"
@@ -6413,6 +6400,10 @@ msgstr "Confirm withdrawal"
 msgid "Referral code submitted"
 msgstr "Referral code submitted"
 
+#: src/components/AprInfo/AprInfo.tsx
+msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
+msgstr "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake failed"
 msgstr "Unstake failed"
@@ -6430,6 +6421,10 @@ msgstr "Net rate / 1h"
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Select language"
 msgstr "Select language"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "RPC error<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
+msgstr "RPC error<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -7288,6 +7283,10 @@ msgstr "Claim price impact rebates"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "Fulfilling shift request..."
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
+msgstr "No price impact on increases — orders execute at mark price. <0>Read more</0>."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -8530,6 +8529,10 @@ msgstr "Total fee APY"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."
 msgstr "Loading Express Trading params..."
+
+#: src/domain/multichain/toastEnableExpress.tsx
+msgid "Express Trading enabled. Disable in <0>settings</0>"
+msgstr "Express Trading enabled. Disable in <0>settings</0>"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards."

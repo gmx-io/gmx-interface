@@ -40,7 +40,7 @@ export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boo
   return (
     <ExpandableRow
       open={isShown}
-      title={t`Tenderly Settings`}
+      title={t`Tenderly settings`}
       onToggle={toggleTenderlySettings}
       disableCollapseOnError={false}
       contentClassName="flex flex-col gap-16 pt-8"
