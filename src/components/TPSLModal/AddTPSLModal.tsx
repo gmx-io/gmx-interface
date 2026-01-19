@@ -54,10 +54,10 @@ import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmo
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   calculateDisplayDecimals,
+  expandDecimals,
   formatAmount,
   formatBalanceAmount,
   formatDeltaUsd,
-  formatPercentage,
   formatUsd,
   parseValue,
 } from "lib/numbers";
@@ -80,6 +80,7 @@ import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
@@ -96,6 +97,11 @@ type Props = {
   onBack?: () => void;
 };
 
+const TP_SL_OPTIONS = [
+  { value: "tp" as const, label: t`Take Profit` },
+  { value: "sl" as const, label: t`Stop Loss` },
+];
+
 export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onBack }: Props) {
   const [tpPriceInput, setTpPriceInput] = useState("");
   const [slPriceInput, setSlPriceInput] = useState("");
@@ -108,6 +114,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     "add-tpsl-execution-details-open",
     false
   );
+  const [previewTab, setPreviewTab] = useState<"tp" | "sl">("tp");
 
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -147,8 +154,9 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
         collateralUsd: position.collateralUsd,
         indexTokenDecimals: indexToken?.decimals ?? 18,
         visualMultiplier,
+        referencePrice: markPrice,
       })!,
-    [position, indexToken?.decimals, visualMultiplier]
+    [position, indexToken?.decimals, visualMultiplier, markPrice]
   );
 
   const tpPriceEntry = useMemo(
@@ -264,8 +272,6 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     isSetAcceptablePriceImpactEnabled,
   ]);
 
-  const activeDecreaseAmounts = tpDecreaseAmounts || slDecreaseAmounts;
-
   const getSidecarExecutionFee = useCallback(
     (decreaseSwapType: DecreasePositionSwapType | undefined) => {
       if (!gasLimits || !tokensData || gasPrice === undefined) {
@@ -294,110 +300,176 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     return getSidecarExecutionFee(slDecreaseAmounts.decreaseSwapType);
   }, [getSidecarExecutionFee, slDecreaseAmounts]);
 
-  const fees = useMemo(() => {
-    if (!activeDecreaseAmounts || !position) {
-      return undefined;
-    }
+  const getFeesForDecreaseAmounts = useCallback(
+    (decreaseAmounts: DecreasePositionAmounts | undefined) => {
+      if (!decreaseAmounts || !position) {
+        return undefined;
+      }
 
-    const sizeReductionBps = bigMath.mulDiv(
-      activeDecreaseAmounts.sizeDeltaUsd,
-      BASIS_POINTS_DIVISOR_BIGINT,
-      position.sizeInUsd
-    );
-    const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
+      const sizeReductionBps = bigMath.mulDiv(
+        decreaseAmounts.sizeDeltaUsd,
+        BASIS_POINTS_DIVISOR_BIGINT,
+        position.sizeInUsd
+      );
+      const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
-    return getTradeFees({
-      initialCollateralUsd: position.collateralUsd,
-      sizeInUsd: position.sizeInUsd,
-      collateralDeltaUsd,
-      sizeDeltaUsd: activeDecreaseAmounts.sizeDeltaUsd,
-      swapSteps: [],
-      externalSwapQuote: undefined,
-      positionFeeUsd: activeDecreaseAmounts.positionFeeUsd,
-      swapPriceImpactDeltaUsd: 0n,
-      totalPendingImpactDeltaUsd: activeDecreaseAmounts.totalPendingImpactDeltaUsd,
-      increasePositionPriceImpactDeltaUsd: 0n,
-      priceImpactDiffUsd: activeDecreaseAmounts.priceImpactDiffUsd,
-      proportionalPendingImpactDeltaUsd: activeDecreaseAmounts.proportionalPendingImpactDeltaUsd,
-      decreasePositionPriceImpactDeltaUsd: activeDecreaseAmounts.closePriceImpactDeltaUsd,
-      borrowingFeeUsd: activeDecreaseAmounts.borrowingFeeUsd,
-      fundingFeeUsd: activeDecreaseAmounts.fundingFeeUsd,
-      feeDiscountUsd: activeDecreaseAmounts.feeDiscountUsd,
-      swapProfitFeeUsd: activeDecreaseAmounts.swapProfitFeeUsd,
-      uiFeeFactor,
-      type: "decrease",
-    });
-  }, [activeDecreaseAmounts, position, uiFeeFactor]);
+      return getTradeFees({
+        initialCollateralUsd: position.collateralUsd,
+        sizeInUsd: position.sizeInUsd,
+        collateralDeltaUsd,
+        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+        swapSteps: [],
+        externalSwapQuote: undefined,
+        positionFeeUsd: decreaseAmounts.positionFeeUsd,
+        swapPriceImpactDeltaUsd: 0n,
+        totalPendingImpactDeltaUsd: decreaseAmounts.totalPendingImpactDeltaUsd,
+        increasePositionPriceImpactDeltaUsd: 0n,
+        priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+        proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
+        decreasePositionPriceImpactDeltaUsd: decreaseAmounts.closePriceImpactDeltaUsd,
+        borrowingFeeUsd: decreaseAmounts.borrowingFeeUsd,
+        fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
+        feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
+        swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+        uiFeeFactor,
+        type: "decrease",
+      });
+    },
+    [position, uiFeeFactor]
+  );
 
-  const nextPositionValues = useMemo(() => {
-    if (
-      !activeDecreaseAmounts ||
-      activeDecreaseAmounts.acceptablePrice === undefined ||
-      !marketInfo ||
-      minCollateralUsd === undefined
-    ) {
-      return undefined;
-    }
+  const tpFees = useMemo(
+    () => getFeesForDecreaseAmounts(tpDecreaseAmounts),
+    [getFeesForDecreaseAmounts, tpDecreaseAmounts]
+  );
+  const slFees = useMemo(
+    () => getFeesForDecreaseAmounts(slDecreaseAmounts),
+    [getFeesForDecreaseAmounts, slDecreaseAmounts]
+  );
 
-    return getNextPositionValuesForDecreaseTrade({
-      existingPosition: position,
-      marketInfo,
-      collateralToken,
-      sizeDeltaUsd: activeDecreaseAmounts.sizeDeltaUsd,
-      sizeDeltaInTokens: activeDecreaseAmounts.sizeDeltaInTokens,
-      estimatedPnl: activeDecreaseAmounts.estimatedPnl,
-      realizedPnl: activeDecreaseAmounts.realizedPnl,
-      collateralDeltaUsd: activeDecreaseAmounts.collateralDeltaUsd,
-      collateralDeltaAmount: activeDecreaseAmounts.collateralDeltaAmount,
-      payedRemainingCollateralUsd: activeDecreaseAmounts.payedRemainingCollateralUsd,
-      payedRemainingCollateralAmount: activeDecreaseAmounts.payedRemainingCollateralAmount,
-      proportionalPendingImpactDeltaUsd: activeDecreaseAmounts.proportionalPendingImpactDeltaUsd,
-      showPnlInLeverage: isPnlInLeverage,
-      isLong,
-      minCollateralUsd,
-      userReferralInfo,
-    });
-  }, [
-    activeDecreaseAmounts,
-    marketInfo,
-    collateralToken,
-    isLong,
-    minCollateralUsd,
-    position,
-    userReferralInfo,
-    isPnlInLeverage,
-  ]);
+  const getNextPositionValuesForAmounts = useCallback(
+    (decreaseAmounts: DecreasePositionAmounts | undefined) => {
+      if (
+        !decreaseAmounts ||
+        decreaseAmounts.acceptablePrice === undefined ||
+        !marketInfo ||
+        minCollateralUsd === undefined
+      ) {
+        return undefined;
+      }
 
-  const tpEstimatedPnl = useMemo(() => {
-    if (!tpDecreaseAmounts) return undefined;
-    return {
-      pnlUsd: tpDecreaseAmounts.realizedPnl,
-      pnlPercentage: tpDecreaseAmounts.realizedPnlPercentage,
-    };
-  }, [tpDecreaseAmounts]);
+      return getNextPositionValuesForDecreaseTrade({
+        existingPosition: position,
+        marketInfo,
+        collateralToken,
+        sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+        sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+        estimatedPnl: decreaseAmounts.estimatedPnl,
+        realizedPnl: decreaseAmounts.realizedPnl,
+        collateralDeltaUsd: decreaseAmounts.collateralDeltaUsd,
+        collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+        payedRemainingCollateralUsd: decreaseAmounts.payedRemainingCollateralUsd,
+        payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+        proportionalPendingImpactDeltaUsd: decreaseAmounts.proportionalPendingImpactDeltaUsd,
+        showPnlInLeverage: isPnlInLeverage,
+        isLong,
+        minCollateralUsd,
+        userReferralInfo,
+      });
+    },
+    [marketInfo, collateralToken, isLong, minCollateralUsd, position, userReferralInfo, isPnlInLeverage]
+  );
 
-  const slEstimatedPnl = useMemo(() => {
-    if (!slDecreaseAmounts) return undefined;
-    return {
-      pnlUsd: slDecreaseAmounts.realizedPnl,
-      pnlPercentage: slDecreaseAmounts.realizedPnlPercentage,
-    };
-  }, [slDecreaseAmounts]);
+  const tpNextPositionValues = useMemo(
+    () => getNextPositionValuesForAmounts(tpDecreaseAmounts),
+    [getNextPositionValuesForAmounts, tpDecreaseAmounts]
+  );
+  const slNextPositionValues = useMemo(
+    () => getNextPositionValuesForAmounts(slDecreaseAmounts),
+    [getNextPositionValuesForAmounts, slDecreaseAmounts]
+  );
 
-  const receiveDisplay = useMemo(() => {
-    const amounts = activeDecreaseAmounts;
-    if (!amounts) return undefined;
+  const getEstimatedPnlFromMark = useCallback(
+    (decreaseAmounts: DecreasePositionAmounts | undefined, triggerPrice: bigint | undefined) => {
+      if (!decreaseAmounts || triggerPrice === undefined || markPrice === undefined) return undefined;
 
-    const receiveUsd = amounts.receiveUsd ?? 0n;
-    const receiveAmount = amounts.receiveTokenAmount ?? 0n;
+      const sizeDeltaInTokens = decreaseAmounts.sizeDeltaInTokens;
+      if (sizeDeltaInTokens <= 0n) return undefined;
 
-    return {
-      text: formatBalanceAmount(receiveAmount, collateralToken.decimals, collateralToken.symbol, {
-        isStable: collateralToken.isStable,
-      }),
-      usd: formatUsd(receiveUsd),
-    };
-  }, [activeDecreaseAmounts, collateralToken]);
+      const tokenPrecision = expandDecimals(1, indexToken?.decimals ?? 18);
+      const priceDiff = isLong ? triggerPrice - markPrice : markPrice - triggerPrice;
+      const pnlUsd = bigMath.mulDiv(priceDiff, sizeDeltaInTokens, tokenPrecision);
+      const pnlPercentage =
+        position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : undefined;
+
+      return {
+        pnlUsd,
+        pnlPercentage,
+      };
+    },
+    [indexToken?.decimals, isLong, markPrice, position.collateralUsd]
+  );
+
+  const tpEstimatedPnl = useMemo(
+    () => getEstimatedPnlFromMark(tpDecreaseAmounts, tpTriggerPrice),
+    [getEstimatedPnlFromMark, tpDecreaseAmounts, tpTriggerPrice]
+  );
+
+  const slEstimatedPnl = useMemo(
+    () => getEstimatedPnlFromMark(slDecreaseAmounts, slTriggerPrice),
+    [getEstimatedPnlFromMark, slDecreaseAmounts, slTriggerPrice]
+  );
+
+  const getReceiveDisplay = useCallback(
+    (amounts: DecreasePositionAmounts | undefined) => {
+      if (!amounts) return undefined;
+
+      const receiveUsd = amounts.receiveUsd ?? 0n;
+      const receiveAmount = amounts.receiveTokenAmount ?? 0n;
+
+      return {
+        text: formatBalanceAmount(receiveAmount, collateralToken.decimals, collateralToken.symbol, {
+          isStable: collateralToken.isStable,
+        }),
+        usd: formatUsd(receiveUsd),
+      };
+    },
+    [collateralToken]
+  );
+
+  const tpReceiveDisplay = useMemo(() => getReceiveDisplay(tpDecreaseAmounts), [getReceiveDisplay, tpDecreaseAmounts]);
+  const slReceiveDisplay = useMemo(() => getReceiveDisplay(slDecreaseAmounts), [getReceiveDisplay, slDecreaseAmounts]);
+
+  const tpPreview = useMemo(
+    () => ({
+      decreaseAmounts: tpDecreaseAmounts,
+      nextPositionValues: tpNextPositionValues,
+      fees: tpFees,
+      receiveDisplay: tpReceiveDisplay,
+      triggerPrice: tpTriggerPrice,
+    }),
+    [tpDecreaseAmounts, tpNextPositionValues, tpFees, tpReceiveDisplay, tpTriggerPrice]
+  );
+
+  const slPreview = useMemo(
+    () => ({
+      decreaseAmounts: slDecreaseAmounts,
+      nextPositionValues: slNextPositionValues,
+      fees: slFees,
+      receiveDisplay: slReceiveDisplay,
+      triggerPrice: slTriggerPrice,
+    }),
+    [slDecreaseAmounts, slNextPositionValues, slFees, slReceiveDisplay, slTriggerPrice]
+  );
+
+  const activePreview = previewTab === "tp" ? tpPreview : slPreview;
+  const activeDecreaseAmounts = activePreview.decreaseAmounts;
+  const activeNextPositionValues = activePreview.nextPositionValues;
+  const activeFees = activePreview.fees;
+  const activeReceiveDisplay = activePreview.receiveDisplay;
+  const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
+  const activeNetPriceImpactUsd = activeFees?.collateralNetPriceImpact?.deltaUsd;
+  const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
 
   const formattedMaxCloseSize = formatAmount(position.sizeInUsd, USD_DECIMALS, 2);
 
@@ -637,13 +709,22 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       setCloseSizeInput("");
       setEditTPSLSize(false);
       setClosePercentage(100);
+      setPreviewTab("tp");
     }
   }, [isVisible]);
+
+  useEffect(() => {
+    if (tpDecreaseAmounts && !slDecreaseAmounts) {
+      setPreviewTab("tp");
+    } else if (!tpDecreaseAmounts && slDecreaseAmounts) {
+      setPreviewTab("sl");
+    }
+  }, [tpDecreaseAmounts, slDecreaseAmounts]);
 
   const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${indexToken.symbol}`;
 
   const currentLeverage = formatLeverage(position.leverage);
-  const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? tpTriggerPrice ?? slTriggerPrice;
+  const nextLeverage = activeNextPositionValues?.nextLeverage;
 
   const leverageValue: ReactNode = useMemo(() => {
     if (activeDecreaseAmounts?.isFullClose) {
@@ -655,7 +736,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     }
 
     if (activeDecreaseAmounts?.sizeDeltaUsd && activeDecreaseAmounts.sizeDeltaUsd > 0n) {
-      return <ValueTransition from={currentLeverage!} to={formatLeverage(nextPositionValues?.nextLeverage)} />;
+      return <ValueTransition from={currentLeverage} to={formatLeverage(nextLeverage)} />;
     }
 
     return currentLeverage;
@@ -663,15 +744,9 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     activeDecreaseAmounts?.isFullClose,
     activeDecreaseAmounts?.sizeDeltaUsd,
     currentLeverage,
-    nextPositionValues,
+    nextLeverage,
     position.sizeInUsd,
   ]);
-
-  const priceImpactFeesDisplay = useMemo(() => {
-    if (!fees) return "-";
-    const netFee = fees.collateralNetPriceImpact?.deltaUsd ?? 0n;
-    return formatDeltaUsd(netFee);
-  }, [fees]);
 
   const handleBack = useCallback(() => {
     if (onBack) {
@@ -712,7 +787,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             positionData={positionData}
             priceError={slPriceError}
             variant="full"
-            defaultDisplayMode="usd"
+            defaultDisplayMode="percentage"
             estimatedPnl={slEstimatedPnl}
           />
         </div>
@@ -759,67 +834,70 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
           {submitError || (isSubmitting ? t`Creating...` : t`Create TP/SL`)}
         </Button>
 
-        <div className="flex flex-col gap-10">
-          <SyntheticsInfoRow
-            label={<Trans>Receive</Trans>}
-            value={
-              receiveDisplay ? (
-                <span className="numbers">
-                  {receiveDisplay.text} <span className="text-typography-secondary">({receiveDisplay.usd})</span>
-                </span>
-              ) : (
-                "-"
-              )
-            }
-          />
-          <SyntheticsInfoRow
-            label={<Trans>Liquidation Price</Trans>}
-            value={
-              activeDecreaseAmounts?.isFullClose ? (
-                formatLiquidationPrice(position.liquidationPrice, {
-                  displayDecimals: priceDecimals,
-                  visualMultiplier,
-                })
-              ) : (
-                <ValueTransition
-                  from={formatLiquidationPrice(position.liquidationPrice, {
-                    displayDecimals: priceDecimals,
-                    visualMultiplier,
-                  })}
-                  to={
-                    activeDecreaseAmounts?.sizeDeltaUsd !== undefined && activeDecreaseAmounts.sizeDeltaUsd > 0n
-                      ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                          displayDecimals: priceDecimals,
-                          visualMultiplier,
-                        })
-                      : undefined
+        {hasPreviewData && (
+          <div className="flex flex-col gap-12">
+            <Tabs options={TP_SL_OPTIONS} selectedValue={previewTab} onChange={setPreviewTab} type="block" />
+
+            {activeDecreaseAmounts && (
+              <div className="flex flex-col gap-10">
+                <SyntheticsInfoRow
+                  label={<Trans>Receive</Trans>}
+                  value={
+                    activeReceiveDisplay ? (
+                      <span className="numbers">
+                        {activeReceiveDisplay.text}{" "}
+                        <span className="text-typography-secondary">({activeReceiveDisplay.usd})</span>
+                      </span>
+                    ) : (
+                      "-"
+                    )
                   }
                 />
-              )
-            }
-          />
-          <SyntheticsInfoRow
-            label={<Trans>PnL</Trans>}
-            value={
-              activeDecreaseAmounts ? (
-                <>
-                  {formatDeltaUsd(activeDecreaseAmounts.estimatedPnl)} (
-                  {formatPercentage(activeDecreaseAmounts.estimatedPnlPercentage, { signed: true })})
-                </>
-              ) : (
-                "-"
-              )
-            }
-          />
-          <SyntheticsInfoRow
-            label={<Trans>Net Price Impact / Fees</Trans>}
-            value={
-              <span className={cx("numbers", getPositiveOrNegativeClass(fees?.collateralNetPriceImpact?.deltaUsd))}>
-                {priceImpactFeesDisplay}
-              </span>
-            }
-          />
-        </div>
+                <SyntheticsInfoRow
+                  label={<Trans>Liquidation Price</Trans>}
+                  value={
+                    <ValueTransition
+                      from={formatLiquidationPrice(position.liquidationPrice, {
+                        displayDecimals: priceDecimals,
+                        visualMultiplier,
+                      })}
+                      to={
+                        activeDecreaseAmounts.isFullClose
+                          ? "-"
+                          : activeDecreaseAmounts.sizeDeltaUsd > 0n
+                            ? formatLiquidationPrice(activeNextPositionValues?.nextLiqPrice, {
+                                displayDecimals: priceDecimals,
+                                visualMultiplier,
+                              })
+                            : undefined
+                      }
+                    />
+                  }
+                />
+                <SyntheticsInfoRow
+                  label={<Trans>PnL</Trans>}
+                  value={
+                    <ValueTransition
+                      from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
+                      to={formatDeltaUsd(
+                        activeNextPositionValues?.nextPnl,
+                        activeNextPositionValues?.nextPnlPercentage
+                      )}
+                    />
+                  }
+                />
+                <SyntheticsInfoRow
+                  label={<Trans>Net Price Impact / Fees</Trans>}
+                  value={
+                    <span className={cx("numbers", getPositiveOrNegativeClass(activeNetPriceImpactUsd))}>
+                      {activeFees ? formatDeltaUsd(activeNetPriceImpactUsd ?? 0n) : "-"}
+                    </span>
+                  }
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         <ExpandableRow
           title={t`Execution Details`}
@@ -828,14 +906,17 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
           contentClassName="flex flex-col gap-10"
           wrapped
         >
-          <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={fees} />
-          <TradeFeesRow {...(fees || {})} feesType="decrease" />
+          <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
+          <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
           <NetworkFeeRow executionFee={totalExecutionFee} />
           <SyntheticsInfoRow label={<Trans>Leverage</Trans>} value={leverageValue} />
           <SyntheticsInfoRow
             label={<Trans>Size</Trans>}
             value={
-              <ValueTransition from={formatUsd(position.sizeInUsd)!} to={formatUsd(nextPositionValues?.nextSizeUsd)} />
+              <ValueTransition
+                from={formatUsd(position.sizeInUsd)}
+                to={formatUsd(activeNextPositionValues?.nextSizeUsd)}
+              />
             }
           />
           <SyntheticsInfoRow
@@ -848,8 +929,12 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             }
             value={
               <ValueTransition
-                from={formatUsd(position.collateralUsd)!}
-                to={nextPositionValues?.nextCollateralUsd ? formatUsd(nextPositionValues.nextCollateralUsd) : undefined}
+                from={formatUsd(position.collateralUsd)}
+                to={
+                  activeNextPositionValues?.nextCollateralUsd
+                    ? formatUsd(activeNextPositionValues.nextCollateralUsd)
+                    : undefined
+                }
               />
             }
           />

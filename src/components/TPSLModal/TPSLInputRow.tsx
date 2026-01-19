@@ -23,10 +23,10 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 export type TPSLDisplayMode = "percentage" | "usd";
 
 type PositionData = {
-  sizeInUsd: bigint;
   sizeInTokens: bigint;
   collateralUsd: bigint;
   entryPrice: bigint;
+  referencePrice?: bigint;
   liquidationPrice?: bigint;
   isLong: boolean;
   indexTokenDecimals: number;
@@ -65,15 +65,17 @@ export function TPSLInputRow({
   const [gainLossInputValue, setGainLossInputValue] = useState<string>("");
 
   const {
-    sizeInUsd,
     sizeInTokens,
     collateralUsd,
     entryPrice,
+    referencePrice,
     liquidationPrice,
     isLong,
     indexTokenDecimals,
     visualMultiplier = 1,
   } = positionData;
+  const priceReference = referencePrice ?? entryPrice;
+  const tokenPrecision = expandDecimals(1, indexTokenDecimals);
 
   const isStopLoss = type === "stopLoss";
   const priceLabel = isStopLoss ? t`Stop Loss Price` : t`Take Profit Price`;
@@ -100,23 +102,25 @@ export function TPSLInputRow({
 
   const calculatePriceFromPnlUsd = useCallback(
     (targetPnlUsd: bigint): bigint | undefined => {
-      if (sizeInTokens === 0n) return undefined;
-      if (sizeInUsd === 0n) return undefined;
+      if (sizeInTokens === 0n || priceReference === 0n) return undefined;
 
       const absPnl = bigMath.abs(targetPnlUsd);
+      const positionValueUsd = bigMath.mulDiv(priceReference, sizeInTokens, tokenPrecision);
+      if (positionValueUsd === 0n) return undefined;
+
       const targetPositionValueUsd = isLong
         ? isStopLoss
-          ? sizeInUsd - absPnl
-          : sizeInUsd + absPnl
+          ? positionValueUsd - absPnl
+          : positionValueUsd + absPnl
         : isStopLoss
-          ? sizeInUsd + absPnl
-          : sizeInUsd - absPnl;
+          ? positionValueUsd + absPnl
+          : positionValueUsd - absPnl;
 
       if (targetPositionValueUsd <= 0n) return undefined;
 
-      return bigMath.mulDiv(targetPositionValueUsd, expandDecimals(1, indexTokenDecimals), sizeInTokens);
+      return bigMath.mulDiv(targetPositionValueUsd, tokenPrecision, sizeInTokens);
     },
-    [sizeInTokens, sizeInUsd, indexTokenDecimals, isLong, isStopLoss]
+    [isLong, isStopLoss, priceReference, sizeInTokens, tokenPrecision]
   );
 
   const calculatePriceFromPnlPercentage = useCallback(
@@ -149,24 +153,23 @@ export function TPSLInputRow({
   const formatGainLossValue = useCallback(
     (mode: TPSLDisplayMode): string => {
       if (currentPriceValue === undefined || currentPriceValue === 0n) return "";
+      if (sizeInTokens === 0n || priceReference === 0n) return "";
 
       if (mode === "percentage") {
-        if (collateralUsd > 0n && entryPrice > 0n) {
-          const priceDiff = isLong ? currentPriceValue - entryPrice : entryPrice - currentPriceValue;
-          const pnlUsd = bigMath.mulDiv(priceDiff, sizeInUsd, entryPrice);
+        if (collateralUsd > 0n) {
+          const priceDiff = isLong ? currentPriceValue - priceReference : priceReference - currentPriceValue;
+          const pnlUsd = bigMath.mulDiv(priceDiff, sizeInTokens, tokenPrecision);
           const percentage = bigMath.mulDiv(bigMath.abs(pnlUsd), 10000n, collateralUsd);
           return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
         }
       } else {
-        if (entryPrice > 0n) {
-          const priceDiff = isLong ? currentPriceValue - entryPrice : entryPrice - currentPriceValue;
-          const pnlUsd = bigMath.mulDiv(priceDiff, sizeInUsd, entryPrice);
-          return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
-        }
+        const priceDiff = isLong ? currentPriceValue - priceReference : priceReference - currentPriceValue;
+        const pnlUsd = bigMath.mulDiv(priceDiff, sizeInTokens, tokenPrecision);
+        return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
       }
       return "";
     },
-    [currentPriceValue, entryPrice, isLong, collateralUsd, sizeInUsd]
+    [currentPriceValue, collateralUsd, isLong, priceReference, sizeInTokens, tokenPrecision]
   );
 
   const calculateAndUpdatePrice = useCallback(
@@ -217,17 +220,17 @@ export function TPSLInputRow({
 
   const derivedEstimatedPnl = useMemo(() => {
     if (currentPriceValue === undefined || currentPriceValue === 0n) return undefined;
-    if (entryPrice === 0n || sizeInUsd === 0n) return undefined;
+    if (priceReference === 0n || sizeInTokens === 0n) return undefined;
 
-    const priceDiff = isLong ? currentPriceValue - entryPrice : entryPrice - currentPriceValue;
-    const pnlUsd = bigMath.mulDiv(priceDiff, sizeInUsd, entryPrice);
+    const priceDiff = isLong ? currentPriceValue - priceReference : priceReference - currentPriceValue;
+    const pnlUsd = bigMath.mulDiv(priceDiff, sizeInTokens, tokenPrecision);
     const pnlPercentage = collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, collateralUsd) : undefined;
 
     return {
       pnlUsd,
       pnlPercentage,
     };
-  }, [collateralUsd, currentPriceValue, entryPrice, isLong, sizeInUsd]);
+  }, [collateralUsd, currentPriceValue, isLong, priceReference, sizeInTokens, tokenPrecision]);
 
   const convertGainLossValue = useCallback(
     (value: string, fromMode: TPSLDisplayMode, toMode: TPSLDisplayMode): string => {
