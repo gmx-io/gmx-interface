@@ -557,7 +557,7 @@ export const WithdrawalView = () => {
 
   const tokenOptions = useMemo(() => getWithdrawalTokenOptions({ chainId, tokensData }), [chainId, tokensData]);
 
-  const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
+  const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo(() => {
     if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
@@ -588,7 +588,7 @@ export const WithdrawalView = () => {
     });
   }, [isSameChain, account, inputAmount, withdrawalViewChain]);
 
-  const quoteOft = useQuoteOft({
+  const { data: quoteOft, isLoading: isQuoteOftLoading } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainProvider: provider,
@@ -620,7 +620,7 @@ export const WithdrawalView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const nativeFee = useQuoteSendNativeFee({
+  const { data: nativeFee, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
@@ -674,7 +674,7 @@ export const WithdrawalView = () => {
     return false;
   }, [baseSendParams, isSameChain]);
 
-  const baseNativeFee = useQuoteSendNativeFee({
+  const { data: baseNativeFee } = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
@@ -761,6 +761,7 @@ export const WithdrawalView = () => {
               chainId,
             }
           : undefined,
+      withLoading: true,
     }
   );
 
@@ -1293,6 +1294,32 @@ export const WithdrawalView = () => {
     );
   }, [isSameChain, protocolFeeUsd, selectedTokenSettlementChainTokenId, protocolFeeAmount, selectedToken?.symbol]);
 
+  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
+
+  const infoRowSkeleton = (
+    <Skeleton
+      baseColor="#B4BBFF1A"
+      highlightColor="#B4BBFF1A"
+      width={96}
+      height={14}
+      borderRadius={4}
+      className="leading-[14px]"
+      inline
+    />
+  );
+
+  const isNetworkFeeLoading =
+    shouldShowInfoRowPlaceholder &&
+    (isSameChain
+      ? sameChainNetworkFeeAsyncResult.isLoading
+      : isQuoteOftLoading ||
+        isQuoteSendNativeFeeLoading ||
+        (expressTxnParamsAsyncResult.isLoading && expressTxnParamsAsyncResult.lastEstimated === 0));
+
+  const isWithdrawFeeLoading = shouldShowInfoRowPlaceholder && (isQuoteOftLoading || isQuoteSendNativeFeeLoading);
+
+  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountLoading;
+
   const networkItemDisabledMessage = useCallback(
     (option: { id: number; name: string; disabled?: boolean | string }) => {
       return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not currently supported`;
@@ -1528,11 +1555,23 @@ export const WithdrawalView = () => {
             valueClassName="numbers"
             value={estimatedTimeValue}
           />
-          <SyntheticsInfoRow label={<Trans>Network Fee</Trans>} value={networkFeeValue} />
-          <SyntheticsInfoRow label={<Trans>Withdraw Fee</Trans>} value={withdrawFeeValue} />
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            value={isNetworkFeeLoading ? infoRowSkeleton : networkFeeValue}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Withdraw Fee</Trans>}
+            value={isWithdrawFeeLoading ? infoRowSkeleton : withdrawFeeValue}
+          />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
-            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+            value={
+              isGmxBalanceLoading ? (
+                infoRowSkeleton
+              ) : (
+                <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+              )
+            }
           />
         </div>
       )}

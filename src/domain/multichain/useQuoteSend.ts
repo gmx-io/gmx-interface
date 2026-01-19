@@ -17,7 +17,11 @@ export function useQuoteSendNativeFee({
   fromChainId: AnyChainId | undefined;
   toChainId: AnyChainId | undefined;
   composeGas?: bigint;
-}): bigint | undefined {
+}): {
+  data: bigint | undefined;
+  isLoading: boolean;
+  error: Error | undefined;
+} {
   const quoteSendCondition =
     sendParams !== undefined &&
     fromStargateAddress !== undefined &&
@@ -41,5 +45,9 @@ export function useQuoteSendNativeFee({
     }
   );
 
-  return quoteSendQuery.data;
+  return {
+    data: quoteSendQuery.data,
+    isLoading: quoteSendQuery.isLoading,
+    error: quoteSendQuery.error,
+  };
 }
