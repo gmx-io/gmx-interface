@@ -1,11 +1,16 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useAccount } from "wagmi";
 
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
-import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
+import {
+  ArbitraryExpressError,
+  useArbitraryError,
+  useArbitraryRelayParamsAndPayload,
+} from "domain/multichain/arbitraryRelayParams";
+import { ExpressTransactionBuilder, ExpressTxnParams } from "domain/synthetics/express/types";
 import {
   getMarketIndexName,
   getMarketPoolName,
@@ -26,9 +31,12 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import type { AsyncResult } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import type { TokenData } from "sdk/types/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -45,11 +53,173 @@ type Props = {
   setPendingTxns?: (txns: any) => void;
 };
 
+type RewardsParams = {
+  marketAddresses: string[];
+  tokenAddresses: string[];
+};
+
+function buildRewardsParams(chainId: ContractsChainId, rewards: AffiliateReward[], selectedMarketAddresses: string[]) {
+  const selectedRewards = rewards.filter((reward) => selectedMarketAddresses.includes(reward.marketAddress));
+  const marketAddresses: string[] = [];
+  const tokenAddresses: string[] = [];
+
+  for (const reward of selectedRewards) {
+    if (reward.longTokenAmount > 0) {
+      marketAddresses.push(reward.marketAddress);
+      tokenAddresses.push(getTokenAddressByMarket(chainId, reward.marketAddress, "long"));
+    }
+
+    if (reward.shortTokenAmount > 0) {
+      marketAddresses.push(reward.marketAddress);
+      tokenAddresses.push(getTokenAddressByMarket(chainId, reward.marketAddress, "short"));
+    }
+  }
+
+  return {
+    marketAddresses,
+    tokenAddresses,
+  };
+}
+
+function useMultichainClaimAffiliateRewardsExpressTransactionBuilder({
+  rewardsParams,
+}: {
+  rewardsParams: RewardsParams | undefined;
+}): ExpressTransactionBuilder | undefined {
+  const { chainId, srcChainId } = useChainId();
+  const { address: account } = useAccount();
+
+  return useMemo((): ExpressTransactionBuilder | undefined => {
+    const areValidRewardsParams =
+      rewardsParams && rewardsParams.marketAddresses.length > 0 && rewardsParams.tokenAddresses.length > 0;
+    if (!account || !areValidRewardsParams) {
+      return undefined;
+    }
+
+    const expressTransactionBuilder: ExpressTransactionBuilder = async ({ gasPaymentParams, relayParams }) => ({
+      txnData: await buildAndSignMultichainClaimAffiliateRewardsTxn({
+        account,
+        marketAddresses: rewardsParams.marketAddresses,
+        tokenAddresses: rewardsParams.tokenAddresses,
+        chainId,
+        srcChainId,
+        relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
+        relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
+        relayParams,
+        signer: undefined,
+        emptySignature: true,
+      }),
+    });
+
+    return expressTransactionBuilder;
+  }, [account, chainId, rewardsParams, srcChainId]);
+}
+
+function NetworkFee({
+  errors,
+  expressTxnParamsAsyncResult,
+}: {
+  errors: ArbitraryExpressError | undefined;
+  expressTxnParamsAsyncResult: AsyncResult<ExpressTxnParams>;
+}) {
+  const { srcChainId } = useChainId();
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
+
+  if (srcChainId === undefined) {
+    return null;
+  }
+
+  let gasPaymentTokenAmount: bigint | undefined;
+
+  if (errors?.isOutOfTokenError?.isGasPaymentToken && errors.isOutOfTokenError.requiredAmount !== undefined) {
+    gasPaymentTokenAmount = errors.isOutOfTokenError.requiredAmount;
+  } else if (expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
+    gasPaymentTokenAmount = expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentTokenAmount;
+  }
+
+  const networkFeeFormatted =
+    gasPaymentTokenAmount === undefined || !gasPaymentToken ? (
+      "-"
+    ) : (
+      <AmountWithUsdBalance
+        amount={gasPaymentTokenAmount}
+        decimals={gasPaymentToken.decimals}
+        usd={convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice)}
+        symbol={gasPaymentToken.symbol}
+        isStable={gasPaymentToken.isStable}
+      />
+    );
+
+  return <SyntheticsInfoRow label={t`Network Fee`} value={networkFeeFormatted} />;
+}
+
+function OutOfTokenErrorAlert({
+  errors,
+  token,
+  onClose,
+}: {
+  errors: ArbitraryExpressError | undefined;
+  token: TokenData | undefined;
+  onClose: () => void;
+}) {
+  const history = useHistory();
+  const { chainId } = useChainId();
+
+  if (!errors?.isOutOfTokenError || !token) {
+    return null;
+  }
+
+  return (
+    <AlertInfoCard type="warning" hideClose>
+      <div>
+        <Trans>
+          Claiming requires{" "}
+          <Amount
+            amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
+            decimals={token.decimals}
+            isStable={token.isStable}
+            symbol={token.symbol}
+            showZero
+          />{" "}
+          while you have{" "}
+          <Amount
+            amount={token.gmxAccountBalance ?? 0n}
+            decimals={token.decimals}
+            isStable={token.isStable}
+            symbol={token.symbol}
+            showZero
+          />
+          . Please{" "}
+          <span
+            className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+            onClick={() => {
+              onClose();
+              history.push(`/trade/swap?to=${token.symbol}`);
+            }}
+          >
+            swap
+          </span>{" "}
+          or{" "}
+          <span
+            className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+            onClick={() => {
+              onClose();
+              history.push(`/account?action=deposit&token=${convertTokenAddress(chainId, token.address, "native")}`);
+            }}
+          >
+            deposit
+          </span>{" "}
+          more {token.symbol} to your GMX account.
+        </Trans>
+      </div>
+    </AlertInfoCard>
+  );
+}
+
 export function ClaimAffiliatesModal(p: Props) {
   const { onClose, setPendingTxns = () => null } = p;
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
-  const history = useHistory();
 
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
@@ -74,28 +244,10 @@ export function ClaimAffiliatesModal(p: Props) {
       ? getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData)
       : 0n;
 
-  const rewardsParams = useMemo(() => {
-    const selectedRewards = rewards.filter((reward) => selectedMarketAddresses.includes(reward.marketAddress));
-    const marketAddresses: string[] = [];
-    const tokenAddresses: string[] = [];
-
-    for (const reward of selectedRewards) {
-      if (reward.longTokenAmount > 0) {
-        marketAddresses.push(reward.marketAddress);
-        tokenAddresses.push(getTokenAddressByMarket(chainId, reward.marketAddress, "long"));
-      }
-
-      if (reward.shortTokenAmount > 0) {
-        marketAddresses.push(reward.marketAddress);
-        tokenAddresses.push(getTokenAddressByMarket(chainId, reward.marketAddress, "short"));
-      }
-    }
-
-    return {
-      marketAddresses,
-      tokenAddresses,
-    };
-  }, [rewards, selectedMarketAddresses, chainId]);
+  const rewardsParams = useMemo(
+    () => buildRewardsParams(chainId, rewards, selectedMarketAddresses),
+    [rewards, selectedMarketAddresses, chainId]
+  );
 
   const handleSubmitSettlementChain = () => {
     if (!account || !signer || !affiliateRewardsData || !marketsInfoData || srcChainId !== undefined || !rewardsParams)
@@ -112,36 +264,9 @@ export function ClaimAffiliatesModal(p: Props) {
       .finally(() => setIsSubmitting(false));
   };
 
-  const expressTransactionBuilder = useMemo((): ExpressTransactionBuilder | undefined => {
-    if (
-      !account ||
-      !rewardsParams ||
-      rewardsParams.marketAddresses.length === 0 ||
-      rewardsParams.tokenAddresses.length === 0 ||
-      !signer
-    ) {
-      return undefined;
-    }
-
-    const expressTransactionBuilder: ExpressTransactionBuilder = async ({ gasPaymentParams, relayParams }) => ({
-      txnData: await buildAndSignMultichainClaimAffiliateRewardsTxn({
-        account,
-        marketAddresses: rewardsParams.marketAddresses,
-        tokenAddresses: rewardsParams.tokenAddresses,
-        chainId,
-        srcChainId,
-        relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
-        relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
-        relayParams,
-        signer: undefined,
-        emptySignature: true,
-      }),
-    });
-
-    return expressTransactionBuilder;
-  }, [account, chainId, rewardsParams, signer, srcChainId]);
-
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const expressTransactionBuilder = useMultichainClaimAffiliateRewardsExpressTransactionBuilder({
+    rewardsParams,
+  });
 
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     isGmxAccount: true,
@@ -156,46 +281,6 @@ export function ClaimAffiliatesModal(p: Props) {
       return getByKey(tokensData, errors.isOutOfTokenError.tokenAddress);
     }
   }, [errors, tokensData]);
-
-  const networkFeeFormatted = useMemo(() => {
-    if (srcChainId === undefined) {
-      return undefined;
-    }
-
-    let gasPaymentTokenAmount: bigint | undefined;
-
-    if (errors?.isOutOfTokenError?.isGasPaymentToken && errors.isOutOfTokenError.requiredAmount !== undefined) {
-      gasPaymentTokenAmount = errors.isOutOfTokenError.requiredAmount;
-    } else if (expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
-      gasPaymentTokenAmount = expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentTokenAmount;
-    }
-
-    if (gasPaymentTokenAmount === undefined || !gasPaymentToken) {
-      return "-";
-    }
-
-    const networkFeeUsd = convertToUsd(
-      gasPaymentTokenAmount,
-      gasPaymentToken.decimals,
-      gasPaymentToken.prices.minPrice
-    );
-
-    return (
-      <AmountWithUsdBalance
-        amount={gasPaymentTokenAmount}
-        decimals={gasPaymentToken.decimals}
-        usd={networkFeeUsd}
-        symbol={gasPaymentToken.symbol}
-        isStable={gasPaymentToken.isStable}
-      />
-    );
-  }, [
-    srcChainId,
-    errors?.isOutOfTokenError?.isGasPaymentToken,
-    errors?.isOutOfTokenError?.requiredAmount,
-    expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount,
-    gasPaymentToken,
-  ]);
 
   const handleSubmitMultichain = async () => {
     setIsSubmitting(true);
@@ -311,53 +396,7 @@ export function ClaimAffiliatesModal(p: Props) {
           ))}
         </Table>
 
-        {errors?.isOutOfTokenError && isOutOfTokenErrorToken !== undefined && (
-          <AlertInfoCard type="warning" hideClose>
-            <div>
-              <Trans>
-                Claiming requires{" "}
-                <Amount
-                  amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
-                  decimals={isOutOfTokenErrorToken.decimals}
-                  isStable={isOutOfTokenErrorToken.isStable}
-                  symbol={isOutOfTokenErrorToken.symbol}
-                  showZero
-                />{" "}
-                while you have{" "}
-                <Amount
-                  amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
-                  decimals={isOutOfTokenErrorToken.decimals}
-                  isStable={isOutOfTokenErrorToken.isStable}
-                  symbol={isOutOfTokenErrorToken.symbol}
-                  showZero
-                />
-                . Please{" "}
-                <span
-                  className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
-                  onClick={() => {
-                    onClose();
-                    history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
-                  }}
-                >
-                  swap
-                </span>{" "}
-                or{" "}
-                <span
-                  className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
-                  onClick={() => {
-                    onClose();
-                    history.push(
-                      `/account?action=deposit&token=${convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native")}`
-                    );
-                  }}
-                >
-                  deposit
-                </span>{" "}
-                more {isOutOfTokenErrorToken.symbol} to your GMX account.
-              </Trans>
-            </div>
-          </AlertInfoCard>
-        )}
+        <OutOfTokenErrorAlert errors={errors} token={isOutOfTokenErrorToken} onClose={onClose} />
 
         <Button
           className="w-full"
@@ -368,7 +407,7 @@ export function ClaimAffiliatesModal(p: Props) {
           {submitButtonState.text}
         </Button>
 
-        {srcChainId !== undefined && <SyntheticsInfoRow label={t`Network Fee`} value={networkFeeFormatted} />}
+        <NetworkFee errors={errors} expressTxnParamsAsyncResult={expressTxnParamsAsyncResult} />
       </div>
     </Modal>
   );

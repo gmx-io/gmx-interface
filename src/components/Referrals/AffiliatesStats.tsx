@@ -1,10 +1,9 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl, SourceChainId } from "config/chains";
 import { isDevelopment } from "config/env";
-import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
@@ -611,11 +610,7 @@ function AffiliatesStats({
         />
       )}
 
-      {isClaiming && (
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
-          <ClaimAffiliatesModal onClose={() => setIsClaiming(false)} />
-        </SyntheticsStateContextProvider>
-      )}
+      {isClaiming && <ClaimAffiliatesModal onClose={() => setIsClaiming(false)} />}
     </div>
   );
 }

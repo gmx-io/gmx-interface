@@ -9,7 +9,7 @@ import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { ExpressTxnParams, RawRelayParamsPayload, RelayParamsPayload } from "../express";
-import { signClaimAffiliateRewards } from "../markets/signClaimAffiliateRewards";
+import { signClaimAffiliateRewards } from "./signClaimAffiliateRewards";
 
 type TxnParams = {
   chainId: ContractsChainId;
