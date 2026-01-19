@@ -228,6 +228,11 @@ export function ClaimAffiliatesModal(p: Props) {
 
   const rewards = useMemo(() => Object.values(affiliateRewardsData || {}), [affiliateRewardsData]);
 
+  const visibleRewards = useMemo(
+    () => rewards.filter((reward) => reward.longTokenAmount > 0 || reward.shortTokenAmount > 0),
+    [rewards]
+  );
+
   const [selectedMarketAddresses, setSelectedMarketAddresses] = useState<string[]>([]);
 
   const handleToggleSelect = useCallback((marketAddress: string) => {
@@ -285,15 +290,14 @@ export function ClaimAffiliatesModal(p: Props) {
   const handleSubmitMultichain = async () => {
     setIsSubmitting(true);
 
-    const expressTxnParams = await expressTxnParamsAsyncResult.promise;
-    if (!expressTxnParams || !account || !signer) {
-      setIsSubmitting(false);
-      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
-      metrics.pushError(new Error("No necessary params to claim"), "expressClaimAffiliateRewards");
-      return;
-    }
-
     try {
+      const expressTxnParams = await expressTxnParamsAsyncResult.promise;
+      if (!expressTxnParams || !account || !signer) {
+        helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+        metrics.pushError(new Error("No necessary params to claim"), "expressClaimAffiliateRewards");
+        return;
+      }
+
       const result = await createMultichainClaimAffiliateRewardsTxn({
         account,
         marketAddresses: rewardsParams.marketAddresses,
@@ -304,7 +308,10 @@ export function ClaimAffiliatesModal(p: Props) {
         expressTxnParams,
       });
 
-      await result.wait();
+      const receipt = await result.wait();
+      if (receipt?.status === "failed") {
+        throw new Error("Transaction receipt status is failed");
+      }
 
       onClose();
     } catch (error) {
@@ -323,15 +330,15 @@ export function ClaimAffiliatesModal(p: Props) {
     }
   };
 
-  const isAllChecked = selectedMarketAddresses.length === rewards.length;
+  const isAllChecked = selectedMarketAddresses.length === visibleRewards.length && visibleRewards.length > 0;
 
   const handleToggleSelectAll = useCallback(() => {
     if (isAllChecked) {
       setSelectedMarketAddresses([]);
     } else {
-      setSelectedMarketAddresses(rewards.map((reward) => reward.marketAddress));
+      setSelectedMarketAddresses(visibleRewards.map((reward) => reward.marketAddress));
     }
-  }, [isAllChecked, rewards, setSelectedMarketAddresses]);
+  }, [isAllChecked, visibleRewards]);
 
   const submitButtonState = useMemo(() => {
     if (isSubmitting) {
@@ -375,7 +382,9 @@ export function ClaimAffiliatesModal(p: Props) {
               <Checkbox
                 isChecked={isAllChecked}
                 setIsChecked={handleToggleSelectAll}
-                isPartialChecked={selectedMarketAddresses.length > 0 && selectedMarketAddresses.length < rewards.length}
+                isPartialChecked={
+                  selectedMarketAddresses.length > 0 && selectedMarketAddresses.length < visibleRewards.length
+                }
               />
             </TableTh>
             <TableTh>
@@ -385,7 +394,7 @@ export function ClaimAffiliatesModal(p: Props) {
               <Trans>Rewards</Trans>
             </TableTh>
           </TableTheadTr>
-          {rewards.map((reward) => (
+          {visibleRewards.map((reward) => (
             <ClaimRewardRow
               key={reward.marketAddress}
               reward={reward}
