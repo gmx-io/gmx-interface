@@ -11,6 +11,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -30,10 +31,13 @@ const ENV_AVALANCHE_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_AVAL
 
 const ENV_BOTANIX_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_BOTANIX_RPC_URLS);
 
+const ENV_MEGAETH_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_MEGAETH_RPC_URLS);
+
 // Chains that support Alchemy WebSocket endpoints
 export const ALCHEMY_WS_SUPPORT_CHAINS = [
   ARBITRUM,
   BOTANIX,
+  MEGAETH,
   ARBITRUM_SEPOLIA,
   SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -198,6 +202,31 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(BOTANIX) ?? []),
   ],
+  [MEGAETH]: [
+    ...["https://mainnet.megaeth.com/rpc"].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
+
+    // Fallback
+    ...(ENV_MEGAETH_RPC_URLS
+      ? ENV_MEGAETH_RPC_URLS.map((url: string) => ({
+          url,
+          isPublic: false,
+          purpose: "fallback",
+        }))
+      : [getAlchemyProvider(MEGAETH, "fallback")]),
+
+    // Large account
+    getAlchemyProvider(MEGAETH, "largeAccount"),
+
+    // Express
+    getAlchemyProvider(MEGAETH, "express"),
+
+    // Debug endpoints from settings
+    ...(_debugRpcTracker?.getDebugRpcEndpoints(MEGAETH) ?? []),
+  ],
 
   // SOURCE CHAINS
   [SOURCE_BASE_MAINNET]: [
@@ -309,6 +338,7 @@ export const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
     getAlchemyProvider(ARBITRUM_SEPOLIA, "largeAccount", "ws"),
   ],
   [BOTANIX]: [getAlchemyProvider(BOTANIX, "fallback", "ws"), getAlchemyProvider(BOTANIX, "largeAccount", "ws")],
+  [MEGAETH]: [getAlchemyProvider(MEGAETH, "fallback", "ws"), getAlchemyProvider(MEGAETH, "largeAccount", "ws")],
   [SOURCE_BASE_MAINNET]: [
     getAlchemyProvider(SOURCE_BASE_MAINNET, "fallback", "ws"),
     getAlchemyProvider(SOURCE_BASE_MAINNET, "largeAccount", "ws"),
@@ -408,6 +438,10 @@ export function getAlchemyProvider(
       break;
     case BOTANIX:
       baseUrl = `botanix-mainnet.g.alchemy.com/v2`;
+      break;
+    case MEGAETH:
+      // TODO: Update when Alchemy supports MegaEth
+      baseUrl = `megaeth-mainnet.g.alchemy.com/v2`;
       break;
     case ARBITRUM_SEPOLIA:
       baseUrl = `arb-sepolia.g.alchemy.com/v2`;

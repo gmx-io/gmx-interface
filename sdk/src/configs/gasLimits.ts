@@ -1,6 +1,6 @@
 import { GasLimitsConfig } from "types/fees";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, BOTANIX } from "./chainIds";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, BOTANIX, MEGAETH } from "./chainIds";
 import { ContractsChainId } from "./chains";
 
 export type StaticGasLimitsConfig = Pick<
@@ -42,6 +42,14 @@ export const GAS_LIMITS_STATIC_CONFIG: Record<ContractsChainId, StaticGasLimitsC
     gmxAccountCollateralGasLimit: 400000n,
   },
   [BOTANIX]: {
+    createOrderGasLimit: 1000000n,
+    updateOrderGasLimit: 800000n,
+    cancelOrderGasLimit: 700000n,
+    tokenPermitGasLimit: 90000n,
+    gmxAccountCollateralGasLimit: 0n,
+  },
+  // TODO: Verify gas limits for MegaEth
+  [MEGAETH]: {
     createOrderGasLimit: 1000000n,
     updateOrderGasLimit: 800000n,
     cancelOrderGasLimit: 700000n,

@@ -20,6 +20,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -32,6 +33,7 @@ export {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   ARBITRUM_SEPOLIA,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
@@ -40,7 +42,7 @@ export {
   SOURCE_SEPOLIA,
 };
 
-export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, BOTANIX] as const;
+export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, BOTANIX, MEGAETH] as const;
 export const CONTRACTS_CHAIN_IDS_DEV = [...CONTRACTS_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA] as const;
 export const SETTLEMENT_CHAIN_IDS = [ARBITRUM, AVALANCHE] as const;
 export const SETTLEMENT_CHAIN_IDS_DEV = [...SETTLEMENT_CHAIN_IDS, ARBITRUM_SEPOLIA, AVALANCHE_FUJI] as const;
@@ -165,6 +167,26 @@ const CONTRACTS_CHAIN_CONFIGS = {
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
+  // TODO: Verify gas configuration for MegaEth
+  [MEGAETH]: {
+    chainId: MEGAETH,
+    name: "MegaEth",
+    slug: "megaeth",
+    explorerUrl: "https://megaexplorer.xyz/",
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDM",
+    highExecutionFee: 5,
+    shouldUseMaxPriorityFeePerGas: false,
+    defaultExecutionFeeBufferBps: 3000, // 30%
+    maxFeePerGas: undefined,
+    gasPricePremium: 0n,
+    maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
+    excessiveExecutionFee: 10, // 10 USD
+    minExecutionFee: undefined,
+    gasPriceBuffer: 2000n, // 20%
+    isDisabled: false,
+  },
   // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<ContractsChainId, ContractsChainConfig>;
 
@@ -270,12 +292,39 @@ export const botanix: Chain = defineChain({
   },
 });
 
+export const megaeth: Chain = defineChain({
+  id: MEGAETH,
+  name: "MegaEth",
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://mainnet.megaeth.com/rpc"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "MegaExplorer",
+      url: "https://megaexplorer.xyz",
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
+    },
+  },
+});
+
 export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [BOTANIX]: botanix,
+  [MEGAETH]: megaeth,
   [SOURCE_ETHEREUM_MAINNET]: mainnet,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,

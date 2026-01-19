@@ -4,7 +4,15 @@
 
   However, this files can be a dependency for the client code.
 */
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "sdk/configs/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  MEGAETH,
+  ContractsChainId,
+} from "sdk/configs/chains";
 import { MARKETS as SDK_MARKETS } from "sdk/configs/markets";
 
 type MarketUiConfig = {
@@ -706,6 +714,8 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
       enabled: true,
     },
   },
+  // TODO: Add MegaEth markets when available
+  [MEGAETH]: {},
 };
 
 export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(
