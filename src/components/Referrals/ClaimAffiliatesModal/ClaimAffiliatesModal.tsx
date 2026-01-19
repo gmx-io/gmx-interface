@@ -254,19 +254,28 @@ export function ClaimAffiliatesModal(p: Props) {
     [rewards, selectedMarketAddresses, chainId]
   );
 
-  const handleSubmitSettlementChain = () => {
+  const handleSubmitSettlementChain = async () => {
     if (!account || !signer || !affiliateRewardsData || !marketsInfoData || srcChainId !== undefined || !rewardsParams)
       return;
 
     setIsSubmitting(true);
 
-    claimAffiliateRewardsTxn(chainId, signer, {
-      account,
-      rewardsParams,
-      setPendingTxns,
-    })
-      .then(onClose)
-      .finally(() => setIsSubmitting(false));
+    try {
+      const tx = await claimAffiliateRewardsTxn(chainId, signer, {
+        account,
+        rewardsParams,
+        setPendingTxns,
+      });
+
+      const receipt = await tx.wait();
+      if (receipt?.status === 1) {
+        onClose();
+      }
+    } catch (error) {
+      metrics.pushError(error, "expressClaimAffiliateRewards");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const expressTransactionBuilder = useMultichainClaimAffiliateRewardsExpressTransactionBuilder({
@@ -313,6 +322,7 @@ export function ClaimAffiliatesModal(p: Props) {
         throw new Error("Transaction receipt status is failed");
       }
 
+      helperToast.success(t`Claiming successful.`);
       onClose();
     } catch (error) {
       helperToast.error(t`Claiming affiliate rewards failed`);

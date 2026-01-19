@@ -2111,6 +2111,7 @@ msgstr "스왑 경로 없음. {1}을 담보로 사용하려면 <0>{0}을 STBTC�
 msgid "Address"
 msgstr "주소"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2428,6 +2429,7 @@ msgstr "최대 부분 수: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "앱 실행하기"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claiming affiliate rewards failed"
 msgstr "제휴 보상 청구 실패"

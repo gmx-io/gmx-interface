@@ -2111,6 +2111,7 @@ msgstr "Aucun chemin de swap disponible. <0>Échanger {0} vers STBTC</0> pour ut
 msgid "Address"
 msgstr "Adresse"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2428,6 +2429,7 @@ msgstr "Nombre maximum de parties : {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "Lancer l'application"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claiming affiliate rewards failed"
 msgstr "Échec de la réclamation des récompenses d'affiliation"

@@ -2111,6 +2111,7 @@ msgstr "スワップパスが利用できません。<0>{0}をSTBTCにスワッ�
 msgid "Address"
 msgstr "アドレス"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2428,6 +2429,7 @@ msgstr "最大パート数: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "アプリ起動"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claiming affiliate rewards failed"
 msgstr "アフィリエイトリワードの請求に失敗しました"
