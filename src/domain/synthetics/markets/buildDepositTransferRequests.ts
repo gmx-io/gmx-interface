@@ -74,6 +74,16 @@ export function buildDepositTransferRequests({
     return getTransferRequests([{ to: vaultAddress, token: tokenAddress, amount }]);
   }
 
+  if (initialLongTokenAddress === initialShortTokenAddress) {
+    return getTransferRequests([
+      {
+        to: vaultAddress,
+        token: initialLongTokenAddress,
+        amount: (longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n),
+      },
+    ]);
+  }
+
   return getTransferRequests([
     {
       to: vaultAddress,

@@ -174,6 +174,10 @@ msgstr "Récompenses LP à vie :"
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Shows the total open interest in tokens and its notional value in USD."
+msgstr ""
+
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -429,6 +433,10 @@ msgstr "USD max du pool dépassé"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
 msgstr "Prix limite en dessous du prix mark"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Long OI"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
@@ -1274,6 +1282,11 @@ msgstr "Swap limité échoué"
 msgid "Failed"
 msgstr "Échec"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "Aucun frais"
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "Liq. {longOrShortText} - {marketIndexName}"
@@ -2053,6 +2066,11 @@ msgstr "Système"
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr "Gagnez des récompenses en partageant votre code !"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
+msgstr "Instantané"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -2937,6 +2955,11 @@ msgstr "Comment commencer sur GMX ?"
 msgid "Withdrawing from subaccount..."
 msgstr "Retrait du sous-compte…"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "Retrait échoué"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "Total staké"
@@ -3385,10 +3408,6 @@ msgstr "{typeString} Short TP/SL : {0} une position short lorsque le prix de dé
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
 msgstr "Groupes Telegram gérés par la communauté."
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr "Intérêt ouvert {longShortText} {0}"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -3872,6 +3891,10 @@ msgstr "Pourquoi je reçois deux jetons GLV différents ?"
 msgid "Set TP/SL"
 msgstr "Définir TP/SL"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "Tous les Réseaux"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -3920,7 +3943,6 @@ msgstr "Prix de déclenchement pour l'ordre."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4130,10 +4152,6 @@ msgstr "Sélectionner un token"
 msgid "Click here to give us your feedback on GMX"
 msgstr "Cliquez ici pour nous donner votre avis sur GMX"
 
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-#~ msgid "Exposure to Market Traders’ PnL"
-#~ msgstr "Exposition au PnL des traders du marché"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "Optimal"
@@ -4279,6 +4297,10 @@ msgstr "Suivi de portefeuille de dérivés"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying error"
 msgstr "Erreur d'achat"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Short OI"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
@@ -4692,10 +4714,6 @@ msgstr "Échec de l'annulation de {ordersText}."
 msgid "Vesting"
 msgstr "Vesting"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
-msgstr "Réserve {longShortText} {0}"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "Annuler les ordres nouvellement créés"
@@ -4772,6 +4790,10 @@ msgstr "Collatéral ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "Vous avez une position existante avec {0} comme collatéral. Cet ordre ne sera pas valide pour cette position. <0>Passer au collatéral {1}</0>"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "Vous retirez {0}, votre jeton de gas. Du gas est requis pour le trading express, veuillez donc conserver au moins <0>{1}</0> en {2} ou changer votre jeton de gas dans <1>les paramètres</1>."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
@@ -5853,6 +5875,10 @@ msgstr "<0>Passez au pool {0}</0> pour un impact net potentiellement plus faible
 msgid "market"
 msgstr "marché"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "Le retrait de {0} vers {1} n'est actuellement pas pris en charge"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -6352,11 +6378,6 @@ msgstr "Opportunités supplémentaires"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GMX not withdrawn"
 msgstr "GMX en vesting non retiré"
-
-#: src/components/Errors/ErrorBoundary.tsx
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Report issue"
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Max Capacity:"
@@ -6872,10 +6893,6 @@ msgstr "Création du code"
 msgid "Swap failed."
 msgstr "Échange échoué."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the problem persists."
-#~ msgstr ""
-
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -6938,10 +6955,6 @@ msgstr "Obtenez des remises sur les frais et gagnez des rabais via le programme 
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
 msgstr "L'opération de vente de {gmOrGlvLabel} a échoué. Vos fonds sont en sécurité et actuellement stockés dans votre compte GMX. Vous pouvez passer à la chaîne de règlement et aller au pool {indexName} pour vendre manuellement vos tokens {gmOrGlvLabel}."
 
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Something went wrong"
-#~ msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer {nativeTokenSymbol} to {chainName}"
 msgstr "Acheter ou Transférer {nativeTokenSymbol} vers {chainName}"
@@ -6999,10 +7012,6 @@ msgstr "{ordersText} annulé."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a Pay token"
 msgstr "Sélectionner un token de paiement"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr "La liquidité disponible sera la moindre de la différence entre la valeur maximale et la valeur actuelle pour la réserve et l'intérêt ouvert."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
@@ -7084,7 +7093,6 @@ msgstr "Erreur de décalage."
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7201,10 +7209,6 @@ msgstr "Prix de liquidation"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
 msgstr "Aucune gestion active requise"
-
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
-msgstr "La réserve longue tient compte du PnL des positions ouvertes, tandis que l'intérêt ouvert ne le fait pas."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take Profit"
@@ -7693,10 +7697,6 @@ msgstr "Financement réclamé."
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Keep leverage is not available as Position exceeds max. allowed leverage. <0>Read more</0>."
 msgstr "Maintenir le levier n'est pas disponible car la position dépasse le levier max. autorisé. <0>En savoir plus</0>."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "Please try reloading or report the issue if the <0/> problem persists."
-#~ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Loss"
@@ -8254,10 +8254,6 @@ msgstr "L'ordre au marché sera annulable dans ..."
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
 msgstr "Le staking de GMX n’est actuellement pas pris en charge sur Botanix. Pour accéder à ces fonctionnalités, veuillez visiter les déploiements Arbitrum et Avalanche."
-
-#: src/components/Errors/ErrorBoundary.tsx
-#~ msgid "ERROR CODE: {errorCode}"
-#~ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

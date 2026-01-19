@@ -5,6 +5,8 @@ import { getTradeboxLeverageSliderMarks } from "domain/synthetics/markets";
 
 describe("tradeboxSelectors", () => {
   it("selectTradeboxLeverageSliderMarks", () => {
+    expect(getTradeboxLeverageSliderMarks(30 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 15]);
+    expect(getTradeboxLeverageSliderMarks(50 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25]);
     expect(getTradeboxLeverageSliderMarks(100 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25, 50]);
     expect(getTradeboxLeverageSliderMarks(120 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25, 50, 60]);
     expect(getTradeboxLeverageSliderMarks(140 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 30, 50, 70]);

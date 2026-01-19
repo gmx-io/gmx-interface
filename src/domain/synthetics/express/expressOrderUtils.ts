@@ -816,7 +816,7 @@ export async function getMultichainInfoFromSigner(
 ): Promise<SourceChainId | undefined> {
   const srcChainId = await signer.provider!.getNetwork().then((n) => Number(n.chainId) as AnyChainId);
 
-  if (!isSourceChain(srcChainId)) {
+  if (!isSourceChain(srcChainId, chainId)) {
     return undefined;
   }
 

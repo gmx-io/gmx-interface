@@ -487,7 +487,11 @@ export function GmSwapBoxDepositWithdrawal() {
                         }
 
                         setPaySource(
-                          isSourceChain(newSrcChainId) ? "sourceChain" : isGmxAccount ? "gmxAccount" : "settlementChain"
+                          isSourceChain(newSrcChainId, chainId)
+                            ? "sourceChain"
+                            : isGmxAccount
+                              ? "gmxAccount"
+                              : "settlementChain"
                         );
                         handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}

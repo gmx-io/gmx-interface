@@ -15,6 +15,7 @@ import {
   getMaxPoolUsdForSwap,
   getMaxReservedUsd,
   getOpenInterestForBalance,
+  getOpenInterestUsd,
   getPoolUsdWithoutPnl,
   getReservedUsd,
   getStrictestMaxPoolUsdForDeposit,
@@ -682,7 +683,7 @@ export function SyntheticsStats() {
                         maxLiquidityLong,
                         reservedUsdLong,
                         maxReservedUsdLong,
-                        getOpenInterestForBalance(market, true),
+                        getOpenInterestUsd(market, true),
                         maxOpenInterestLong,
                         market.longToken,
                       ]
@@ -692,7 +693,7 @@ export function SyntheticsStats() {
                         maxLiquidityShort,
                         reservedUsdShort,
                         maxReservedUsdShort,
-                        getOpenInterestForBalance(market, false),
+                        getOpenInterestUsd(market, false),
                         maxOpenInterestShort,
                         market.shortToken,
                       ];
@@ -718,7 +719,10 @@ export function SyntheticsStats() {
                           }
                           renderContent={() => (
                             <>
-                              <StatsTooltipRow label={`Reserved Long`} value={formatAmount(reservedUsd, 30, 0, true)} />
+                              <StatsTooltipRow
+                                label={`Reserved ${isLongLabel}`}
+                                value={formatAmount(reservedUsd, 30, 0, true)}
+                              />
                               <StatsTooltipRow
                                 label={`Max Reserved ${isLongLabel}`}
                                 value={formatAmount(maxReservedUsd, 30, 0, true)}

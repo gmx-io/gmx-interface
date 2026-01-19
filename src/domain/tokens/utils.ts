@@ -2,6 +2,7 @@ import { zeroAddress } from "viem";
 
 import { BOTANIX, ContractsChainId, getExplorerUrl } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import type { TokenData } from "domain/synthetics/tokens";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 import {
   adjustForDecimals,
@@ -16,6 +17,7 @@ import {
 import { expandDecimals, PRECISION } from "lib/numbers";
 import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
 import { InfoTokens, Token, TokenInfo } from "sdk/types/tokens";
+import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 export * from "sdk/utils/tokens";
 
@@ -279,4 +281,21 @@ export function getMinResidualAmount({
 const BLACKLISTED_REGEX = /Wrapped|\(Wormhole\)|\(LayerZero\)/gim;
 export function stripBlacklistedWords(name: string): string {
   return name.replace(BLACKLISTED_REGEX, "").trim();
+}
+
+export function sortTokenDataByBalance(a: TokenData, b: TokenData): 1 | -1 | 0 {
+  const aBalanceUsd =
+    a.prices && a.gmxAccountBalance !== undefined
+      ? convertToUsd(a.gmxAccountBalance, a.decimals, getMidPrice(a.prices)) ?? 0n
+      : 0n;
+  const bBalanceUsd =
+    b.prices && b.gmxAccountBalance !== undefined
+      ? convertToUsd(b.gmxAccountBalance, b.decimals, getMidPrice(b.prices)) ?? 0n
+      : 0n;
+
+  if (aBalanceUsd === bBalanceUsd) {
+    return 0;
+  }
+
+  return bBalanceUsd > aBalanceUsd ? 1 : -1;
 }
