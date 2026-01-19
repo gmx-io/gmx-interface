@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import {
   MarketInfo,
@@ -11,7 +11,11 @@ import {
 } from "domain/synthetics/markets";
 import { TokenData, getMidPrice } from "domain/synthetics/tokens";
 import { CHART_PERIODS } from "lib/legacy";
+import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+
+const MIN_OI_CAP_THRESHOLD_USD = expandDecimals(10000, USD_DECIMALS);
+
 export type MarketStat = {
   marketInfo: MarketInfo;
   poolValueUsd: bigint;
@@ -69,6 +73,12 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
 
   for (const marketInfo of markets) {
     if (marketInfo.isSpotOnly || marketInfo.isDisabled) {
+      continue;
+    }
+
+    // Skip markets with near-zero OI caps (closed markets with leftover positions)
+    const totalMaxOI = marketInfo.maxOpenInterestLong + marketInfo.maxOpenInterestShort;
+    if (totalMaxOI < MIN_OI_CAP_THRESHOLD_USD) {
       continue;
     }
 

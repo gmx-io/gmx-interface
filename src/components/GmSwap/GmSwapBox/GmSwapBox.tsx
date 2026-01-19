@@ -12,13 +12,13 @@ import {
   selectPoolsDetailsSetSelectedMarketAddressForGlv,
 } from "context/PoolsDetailsContext/selectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { Mode, Operation } from "domain/synthetics/markets/types";
 import { useLocalizedMap } from "lib/i18n";
 
 import Tabs from "components/Tabs/Tabs";
 
 import { GmSwapBoxDepositWithdrawal } from "./GmDepositWithdrawalBox/GmDepositWithdrawalBox";
 import { GmShiftBox } from "./GmShiftBox/GmShiftBox";
-import { Mode, Operation } from "./types";
 
 import "./GmSwapBox.scss";
 

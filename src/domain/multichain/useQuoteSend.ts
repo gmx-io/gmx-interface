@@ -1,4 +1,3 @@
-import { Provider } from "ethers";
 import useSWR from "swr";
 
 import type { AnyChainId } from "config/chains";
@@ -9,14 +8,12 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 export function useQuoteSendNativeFee({
   sendParams,
   fromStargateAddress,
-  fromChainProvider,
   fromChainId,
   toChainId,
   composeGas,
 }: {
   sendParams: SendParam | undefined;
   fromStargateAddress: string | undefined;
-  fromChainProvider: Provider | undefined;
   fromChainId: AnyChainId | undefined;
   toChainId: AnyChainId | undefined;
   composeGas?: bigint;
@@ -24,7 +21,6 @@ export function useQuoteSendNativeFee({
   const quoteSendCondition =
     sendParams !== undefined &&
     fromStargateAddress !== undefined &&
-    fromChainProvider !== undefined &&
     toChainId !== undefined &&
     fromChainId !== undefined &&
     fromChainId !== toChainId;

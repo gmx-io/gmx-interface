@@ -4,6 +4,7 @@ import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, u
 import { RemoveScroll } from "react-remove-scroll";
 
 import Button from "components/Button/Button";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
@@ -149,25 +150,27 @@ export default function Modal({
                 </div>
                 {headerContent}
               </div>
-              {disableOverflowHandling ? (
-                children
-              ) : (
-                <div className="overflow-auto">
-                  <div
-                    className={cx("Modal-body", {
-                      "px-adaptive": contentPadding,
-                      "pb-adaptive": contentPadding && !footerContent,
-                    })}
-                  >
-                    {children}
+              <ErrorBoundary id="Modal" variant="block" wrapperClassName="rounded-t-8">
+                {disableOverflowHandling ? (
+                  children
+                ) : (
+                  <div className="overflow-auto">
+                    <div
+                      className={cx("Modal-body", {
+                        "px-adaptive": contentPadding,
+                        "pb-adaptive": contentPadding && !footerContent,
+                      })}
+                    >
+                      {children}
+                    </div>
                   </div>
-                </div>
-              )}
-              {footerContent && (
-                <>
-                  <div className="px-adaptive pb-adaptive">{footerContent}</div>
-                </>
-              )}
+                )}
+                {footerContent && (
+                  <>
+                    <div className="px-adaptive pb-adaptive">{footerContent}</div>
+                  </>
+                )}
+              </ErrorBoundary>
             </div>
           </motion.div>
         </RemoveScroll>

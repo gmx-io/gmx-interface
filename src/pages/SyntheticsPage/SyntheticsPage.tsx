@@ -64,6 +64,7 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
@@ -372,36 +373,46 @@ export function SyntheticsPage(p: Props) {
               />
 
               {listSection === ListSection.Positions && (
-                <PositionList
-                  onOrdersClick={handlePositionListOrdersClick}
-                  onSelectPositionClick={onSelectPositionClick}
-                  onClosePositionClick={setClosingPositionKey}
-                  openSettings={openSettings}
-                  onCancelOrder={onCancelOrder}
-                />
+                <ErrorBoundary id="SyntheticsPage-PositionList" variant="block">
+                  <PositionList
+                    onOrdersClick={handlePositionListOrdersClick}
+                    onSelectPositionClick={onSelectPositionClick}
+                    onClosePositionClick={setClosingPositionKey}
+                    openSettings={openSettings}
+                    onCancelOrder={onCancelOrder}
+                  />
+                </ErrorBoundary>
               )}
               {listSection === ListSection.Orders && (
-                <OrderList
-                  selectedOrdersKeys={selectedOrderKeys}
-                  setSelectedOrderKeys={setSelectedOrderKeys}
-                  selectedPositionOrderKey={selectedPositionOrderKey}
-                  setSelectedPositionOrderKey={setSelectedPositionOrderKey}
-                  marketsDirectionsFilter={marketsDirectionsFilter}
-                  setMarketsDirectionsFilter={setMarketsDirectionsFilter}
-                  orderTypesFilter={orderTypesFilter}
-                  setOrderTypesFilter={setOrderTypesFilter}
-                  onCancelSelectedOrders={onCancelSelectedOrders}
-                  onSelectOrderClick={onSelectOrderClick}
-                />
+                <ErrorBoundary id="SyntheticsPage-OrderList" variant="block">
+                  <OrderList
+                    selectedOrdersKeys={selectedOrderKeys}
+                    setSelectedOrderKeys={setSelectedOrderKeys}
+                    selectedPositionOrderKey={selectedPositionOrderKey}
+                    setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                    marketsDirectionsFilter={marketsDirectionsFilter}
+                    setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                    orderTypesFilter={orderTypesFilter}
+                    setOrderTypesFilter={setOrderTypesFilter}
+                    onCancelSelectedOrders={onCancelSelectedOrders}
+                    onSelectOrderClick={onSelectOrderClick}
+                  />
+                </ErrorBoundary>
               )}
-              {listSection === ListSection.Trades && <TradeHistory account={account} />}
+              {listSection === ListSection.Trades && (
+                <ErrorBoundary id="SyntheticsPage-TradeHistory" variant="block">
+                  <TradeHistory account={account} />
+                </ErrorBoundary>
+              )}
               {listSection === ListSection.Claims && (
-                <Claims
-                  setIsSettling={setIsSettling}
-                  isSettling={isSettling}
-                  setPendingTxns={setPendingTxns}
-                  allowedSlippage={savedAllowedSlippage}
-                />
+                <ErrorBoundary id="SyntheticsPage-Claims" variant="block">
+                  <Claims
+                    setIsSettling={setIsSettling}
+                    isSettling={isSettling}
+                    setPendingTxns={setPendingTxns}
+                    allowedSlippage={savedAllowedSlippage}
+                  />
+                </ErrorBoundary>
               )}
             </div>
           )}
@@ -434,7 +445,7 @@ export function SyntheticsPage(p: Props) {
             data-qa="trade-table-small"
             ref={tabsContentTabletRef}
           >
-            <div className="overflow-x-auto scrollbar-hide">
+            <div className="shrink-0 overflow-x-auto scrollbar-hide">
               <Tabs
                 options={tabsOptions}
                 selectedValue={listSection}
@@ -453,36 +464,46 @@ export function SyntheticsPage(p: Props) {
             </div>
 
             {listSection === ListSection.Positions && (
-              <PositionList
-                onOrdersClick={handlePositionListOrdersClick}
-                onSelectPositionClick={onSelectPositionClick}
-                onClosePositionClick={setClosingPositionKey}
-                openSettings={openSettings}
-                onCancelOrder={onCancelOrder}
-              />
+              <ErrorBoundary id="SyntheticsPage-PositionList-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <PositionList
+                  onOrdersClick={handlePositionListOrdersClick}
+                  onSelectPositionClick={onSelectPositionClick}
+                  onClosePositionClick={setClosingPositionKey}
+                  openSettings={openSettings}
+                  onCancelOrder={onCancelOrder}
+                />
+              </ErrorBoundary>
             )}
             {listSection === ListSection.Orders && (
-              <OrderList
-                selectedOrdersKeys={selectedOrderKeys}
-                setSelectedOrderKeys={setSelectedOrderKeys}
-                selectedPositionOrderKey={selectedPositionOrderKey}
-                setSelectedPositionOrderKey={setSelectedPositionOrderKey}
-                marketsDirectionsFilter={marketsDirectionsFilter}
-                setMarketsDirectionsFilter={setMarketsDirectionsFilter}
-                orderTypesFilter={orderTypesFilter}
-                setOrderTypesFilter={setOrderTypesFilter}
-                onCancelSelectedOrders={onCancelSelectedOrders}
-                onSelectOrderClick={onSelectOrderClick}
-              />
+              <ErrorBoundary id="SyntheticsPage-OrderList-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <OrderList
+                  selectedOrdersKeys={selectedOrderKeys}
+                  setSelectedOrderKeys={setSelectedOrderKeys}
+                  selectedPositionOrderKey={selectedPositionOrderKey}
+                  setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                  marketsDirectionsFilter={marketsDirectionsFilter}
+                  setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                  orderTypesFilter={orderTypesFilter}
+                  setOrderTypesFilter={setOrderTypesFilter}
+                  onCancelSelectedOrders={onCancelSelectedOrders}
+                  onSelectOrderClick={onSelectOrderClick}
+                />
+              </ErrorBoundary>
             )}
-            {listSection === ListSection.Trades && <TradeHistory account={account} />}
+            {listSection === ListSection.Trades && (
+              <ErrorBoundary id="SyntheticsPage-TradeHistory-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <TradeHistory account={account} />
+              </ErrorBoundary>
+            )}
             {listSection === ListSection.Claims && (
-              <Claims
-                setIsSettling={setIsSettling}
-                isSettling={isSettling}
-                setPendingTxns={setPendingTxns}
-                allowedSlippage={savedAllowedSlippage}
-              />
+              <ErrorBoundary id="SyntheticsPage-Claims-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <Claims
+                  setIsSettling={setIsSettling}
+                  isSettling={isSettling}
+                  setPendingTxns={setPendingTxns}
+                  allowedSlippage={savedAllowedSlippage}
+                />
+              </ErrorBoundary>
             )}
           </div>
         )}
