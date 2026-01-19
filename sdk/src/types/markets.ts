@@ -129,8 +129,113 @@ export type MarketInfo = Market &
     virtualShortTokenId: string;
   };
 
+export type RawOpenInterestValues = {
+  longInterestUsingLongToken: bigint;
+  longInterestUsingShortToken: bigint;
+  shortInterestUsingLongToken: bigint;
+  shortInterestUsingShortToken: bigint;
+  longInterestInTokensUsingLongToken: bigint;
+  longInterestInTokensUsingShortToken: bigint;
+  shortInterestInTokensUsingLongToken: bigint;
+  shortInterestInTokensUsingShortToken: bigint;
+};
+
+/**
+ * Updates frequently
+ */
+export type MarketValues = Pick<
+  MarketInfo,
+  | "longInterestUsd"
+  | "shortInterestUsd"
+  | "longInterestInTokens"
+  | "shortInterestInTokens"
+  | "longPoolAmount"
+  | "shortPoolAmount"
+  | "poolValueMin"
+  | "poolValueMax"
+  | "totalBorrowingFees"
+  | "positionImpactPoolAmount"
+  | "swapImpactPoolAmountLong"
+  | "swapImpactPoolAmountShort"
+  | "borrowingFactorPerSecondForLongs"
+  | "borrowingFactorPerSecondForShorts"
+  | "fundingFactorPerSecond"
+  | "longsPayShorts"
+  | "virtualPoolAmountForLongToken"
+  | "virtualPoolAmountForShortToken"
+  | "virtualInventoryForPositions"
+>;
+
+/**
+ * Updates seldom
+ */
+export type MarketConfig = Pick<
+  MarketInfo,
+  | "isDisabled"
+  | "maxLongPoolUsdForDeposit"
+  | "maxShortPoolUsdForDeposit"
+  | "maxLongPoolAmount"
+  | "maxShortPoolAmount"
+  | "reserveFactorLong"
+  | "reserveFactorShort"
+  | "openInterestReserveFactorLong"
+  | "openInterestReserveFactorShort"
+  | "maxOpenInterestLong"
+  | "maxOpenInterestShort"
+  | "minPositionImpactPoolAmount"
+  | "positionImpactPoolDistributionRate"
+  | "borrowingFactorLong"
+  | "borrowingFactorShort"
+  | "borrowingExponentFactorLong"
+  | "borrowingExponentFactorShort"
+  | "fundingFactor"
+  | "fundingExponentFactor"
+  | "fundingIncreaseFactorPerSecond"
+  | "fundingDecreaseFactorPerSecond"
+  | "thresholdForDecreaseFunding"
+  | "thresholdForStableFunding"
+  | "minFundingFactorPerSecond"
+  | "maxFundingFactorPerSecond"
+  | "maxPnlFactorForTradersLong"
+  | "maxPnlFactorForTradersShort"
+  | "minCollateralFactor"
+  | "minCollateralFactorForLiquidation"
+  | "minCollateralFactorForOpenInterestLong"
+  | "minCollateralFactorForOpenInterestShort"
+  | "positionFeeFactorForBalanceWasImproved"
+  | "positionFeeFactorForBalanceWasNotImproved"
+  | "positionImpactFactorPositive"
+  | "positionImpactFactorNegative"
+  | "maxPositionImpactFactorPositive"
+  | "maxPositionImpactFactorNegative"
+  | "maxPositionImpactFactorForLiquidations"
+  | "maxLendableImpactFactor"
+  | "maxLendableImpactFactorForWithdrawals"
+  | "maxLendableImpactUsd"
+  | "lentPositionImpactPoolAmount"
+  | "positionImpactExponentFactorPositive"
+  | "positionImpactExponentFactorNegative"
+  | "swapFeeFactorForBalanceWasImproved"
+  | "swapFeeFactorForBalanceWasNotImproved"
+  | "swapImpactFactorPositive"
+  | "swapImpactFactorNegative"
+  | "swapImpactExponentFactor"
+  | "atomicSwapFeeFactor"
+  | "withdrawalFeeFactorBalanceWasImproved"
+  | "withdrawalFeeFactorBalanceWasNotImproved"
+  | "virtualMarketId"
+  | "virtualLongTokenId"
+  | "virtualShortTokenId"
+>;
+
 export type MarketsData = {
   [marketTokenAddress: string]: Market;
+};
+
+export type RawMarketInfo = Omit<MarketInfo, "longToken" | "shortToken" | "indexToken">;
+
+export type RawMarketsInfoData = {
+  [marketAddress: string]: RawMarketInfo;
 };
 
 export type MarketsInfoData = {
@@ -180,4 +285,24 @@ export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
 };
 
-export type { MarketConfig, MarketValues } from "modules/markets/types";
+export type MarketTicker = {
+  markPrice: bigint;
+  high24h: bigint;
+  low24h: bigint;
+  open24h: bigint;
+  close24h: bigint;
+  priceChange24h: bigint;
+  priceChangePercent24hBps: bigint;
+  openInterestLong: bigint;
+  openInterestShort: bigint;
+  availableLiquidityLong: bigint;
+  availableLiquidityShort: bigint;
+  poolAmountLongUsd: bigint;
+  poolAmountShortUsd: bigint;
+  fundingRateLong: bigint;
+  fundingRateShort: bigint;
+  borrowingRateLong: bigint;
+  borrowingRateShort: bigint;
+  netRateLong: bigint;
+  netRateShort: bigint;
+};

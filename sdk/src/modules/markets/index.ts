@@ -3,19 +3,25 @@ import { zeroAddress } from "viem";
 import { getContract } from "configs/contracts";
 import { USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE } from "configs/dataStore";
 import { convertTokenAddress, getToken } from "configs/tokens";
-import { ClaimableFundingData, MarketInfo, MarketsData, MarketSdkConfig, MarketsInfoData } from "types/markets";
+import { ClaimableFundingData, MarketsData, MarketSdkConfig, MarketsInfoData, MarketValues } from "types/markets";
 import { TokensData } from "types/tokens";
 import graphqlFetcher from "utils/graphqlFetcher";
-import { getMarketDivisor, getMarketFullName } from "utils/markets";
-import { getByKey } from "utils/objects";
-
-import { Module } from "../base";
+import {
+  composeFullMarketsInfoData,
+  composeRawMarketsInfoData,
+  getMarketDivisor,
+  getMarketFullName,
+} from "utils/markets";
 import {
   buildClaimableFundingDataRequest,
   buildMarketsConfigsRequest,
   buildMarketsValuesRequest,
-} from "./query-builders";
-import { MarketConfig, MarketsInfoResult, MarketsResult, MarketValues } from "./types";
+  parseMarketsConfigsResponse,
+  parseMarketsValuesResponse,
+} from "utils/markets/multicall";
+import { getByKey } from "utils/objects";
+
+import { Module } from "../base";
 
 export class Markets extends Module {
   private async getClaimableFundingData() {
@@ -72,224 +78,26 @@ export class Markets extends Module {
   }): Promise<{
     [marketAddress: string]: MarketValues;
   }> {
-    const dataStoreAddress = getContract(this.chainId, "DataStore");
-    const syntheticsReaderAddress = getContract(this.chainId, "SyntheticsReader");
-
     const request = await buildMarketsValuesRequest(this.chainId, {
       marketsAddresses,
       marketsData,
       tokensData,
-      dataStoreAddress,
-      syntheticsReaderAddress,
     });
 
     return this.sdk.executeMulticall(request).then((res) => {
-      const result = marketsAddresses!.reduce(
-        (acc, marketAddress) => {
-          const readerErrors = res.errors[`${marketAddress}-reader`];
-          const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
-
-          const readerValues = res.data[`${marketAddress}-reader`];
-          const dataStoreValues = res.data[`${marketAddress}-dataStore`];
-
-          // Skip invalid market
-          if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
-            // eslint-disable-next-line no-console
-            console.warn(`No market found ${marketAddress} in getMarketsValues`);
-            return acc;
-          }
-
-          const market = getByKey(marketsData, marketAddress)!;
-          const marketDivisor = market.isSameCollaterals ? 2n : 1n;
-
-          const longInterestUsingLongToken =
-            BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]) / marketDivisor;
-          const longInterestUsingShortToken =
-            BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]) / marketDivisor;
-          const shortInterestUsingLongToken =
-            BigInt(dataStoreValues.shortInterestUsingLongToken.returnValues[0]) / marketDivisor;
-          const shortInterestUsingShortToken =
-            BigInt(dataStoreValues.shortInterestUsingShortToken.returnValues[0]) / marketDivisor;
-
-          const longInterestUsd = longInterestUsingLongToken + longInterestUsingShortToken;
-          const shortInterestUsd = shortInterestUsingLongToken + shortInterestUsingShortToken;
-
-          const longInterestInTokensUsingLongToken =
-            BigInt(dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
-          const longInterestInTokensUsingShortToken =
-            BigInt(dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
-          const shortInterestInTokensUsingLongToken =
-            BigInt(dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]) / marketDivisor;
-          const shortInterestInTokensUsingShortToken =
-            BigInt(dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]) / marketDivisor;
-
-          const longInterestInTokens = longInterestInTokensUsingLongToken + longInterestInTokensUsingShortToken;
-          const shortInterestInTokens = shortInterestInTokensUsingLongToken + shortInterestInTokensUsingShortToken;
-
-          const { nextFunding, virtualInventory } = readerValues.marketInfo.returnValues;
-
-          const [, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues as [
-            unknown,
-            {
-              poolValue: bigint;
-
-              longPnl: bigint;
-              shortPnl: bigint;
-              netPnl: bigint;
-            },
-          ];
-
-          const [, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues as [
-            unknown,
-            { poolValue: bigint; totalBorrowingFees: bigint; longPnl: bigint; shortPnl: bigint; netPnl: bigint },
-          ];
-
-          acc[marketAddress] = {
-            longInterestUsd,
-            shortInterestUsd,
-            longInterestInTokens,
-            shortInterestInTokens,
-            longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
-            shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
-            poolValueMin: poolValueInfoMin.poolValue,
-            poolValueMax: poolValueInfoMax.poolValue,
-            totalBorrowingFees: poolValueInfoMax.totalBorrowingFees,
-            positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
-            swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
-            swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
-
-            borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
-            borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
-
-            fundingFactorPerSecond: nextFunding.fundingFactorPerSecond,
-            longsPayShorts: nextFunding.longsPayShorts,
-
-            virtualPoolAmountForLongToken: virtualInventory.virtualPoolAmountForLongToken,
-            virtualPoolAmountForShortToken: virtualInventory.virtualPoolAmountForShortToken,
-            virtualInventoryForPositions: virtualInventory.virtualInventoryForPositions,
-          };
-
-          return acc;
-        },
-        {} as {
-          [marketAddress: string]: MarketValues;
-        }
+      return parseMarketsValuesResponse(res, marketsAddresses!, marketsData, (market) =>
+        market.isSameCollaterals ? 2n : 1n
       );
-
-      return result;
     });
   }
 
-  private async getMarketsConfigs({
-    marketsAddresses,
-    marketsData,
-  }: {
-    marketsAddresses: string[] | undefined;
-    marketsData: MarketsData | undefined;
-  }) {
-    const dataStoreAddress = getContract(this.chainId, "DataStore");
-
+  private async getMarketsConfigs({ marketsAddresses }: { marketsAddresses: string[] | undefined }) {
     const request = await buildMarketsConfigsRequest(this.chainId, {
-      marketsData,
       marketsAddresses,
-      dataStoreAddress,
     });
 
     return this.sdk.executeMulticall(request).then((res) => {
-      const result = marketsAddresses!.reduce(
-        (acc, marketAddress) => {
-          const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
-
-          const dataStoreValues = res.data[`${marketAddress}-dataStore`];
-
-          // Skip invalid market
-          if (!dataStoreValues || dataStoreErrors) {
-            // eslint-disable-next-line no-console
-            console.log("Market info error", marketAddress, dataStoreErrors, dataStoreValues);
-            return acc;
-          }
-
-          acc[marketAddress] = {
-            isDisabled: dataStoreValues.isDisabled.returnValues[0],
-            maxLongPoolUsdForDeposit: dataStoreValues.maxLongPoolUsdForDeposit.returnValues[0],
-            maxShortPoolUsdForDeposit: dataStoreValues.maxShortPoolUsdForDeposit.returnValues[0],
-            maxLongPoolAmount: dataStoreValues.maxLongPoolAmount.returnValues[0],
-            maxShortPoolAmount: dataStoreValues.maxShortPoolAmount.returnValues[0],
-            reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
-            reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
-            openInterestReserveFactorLong: dataStoreValues.openInterestReserveFactorLong.returnValues[0],
-            openInterestReserveFactorShort: dataStoreValues.openInterestReserveFactorShort.returnValues[0],
-            maxOpenInterestLong: dataStoreValues.maxOpenInterestLong.returnValues[0],
-            maxOpenInterestShort: dataStoreValues.maxOpenInterestShort.returnValues[0],
-            minPositionImpactPoolAmount: dataStoreValues.minPositionImpactPoolAmount.returnValues[0],
-            positionImpactPoolDistributionRate: dataStoreValues.positionImpactPoolDistributionRate.returnValues[0],
-            borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
-            borrowingFactorShort: dataStoreValues.borrowingFactorShort.returnValues[0],
-            borrowingExponentFactorLong: dataStoreValues.borrowingExponentFactorLong.returnValues[0],
-            borrowingExponentFactorShort: dataStoreValues.borrowingExponentFactorShort.returnValues[0],
-            fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
-            fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
-            fundingIncreaseFactorPerSecond: dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0],
-            fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
-            thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
-            thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],
-            minFundingFactorPerSecond: dataStoreValues.minFundingFactorPerSecond.returnValues[0],
-            maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
-
-            maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
-            maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
-
-            minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
-            minCollateralFactorForOpenInterestLong:
-              dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
-
-            minCollateralFactorForOpenInterestShort:
-              dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
-
-            minCollateralFactorForLiquidation: dataStoreValues.minCollateralFactorForLiquidation.returnValues[0],
-
-            positionFeeFactorForBalanceWasImproved:
-              dataStoreValues.positionFeeFactorForBalanceWasImproved.returnValues[0],
-            positionFeeFactorForBalanceWasNotImproved:
-              dataStoreValues.positionFeeFactorForBalanceWasNotImproved.returnValues[0],
-            positionImpactFactorPositive: dataStoreValues.positionImpactFactorPositive.returnValues[0],
-            positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
-            maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
-            maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
-            maxPositionImpactFactorForLiquidations:
-              dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
-            maxLendableImpactFactor: dataStoreValues.maxLendableImpactFactor.returnValues[0],
-            maxLendableImpactFactorForWithdrawals:
-              dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
-            maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
-            lentPositionImpactPoolAmount: dataStoreValues.lentPositionImpactPoolAmount.returnValues[0],
-            positionImpactExponentFactorPositive: dataStoreValues.positionImpactExponentFactorPositive.returnValues[0],
-            positionImpactExponentFactorNegative: dataStoreValues.positionImpactExponentFactorNegative.returnValues[0],
-            swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
-            swapFeeFactorForBalanceWasNotImproved:
-              dataStoreValues.swapFeeFactorForBalanceWasNotImproved.returnValues[0],
-            swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
-            atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
-            swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
-            swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
-            withdrawalFeeFactorBalanceWasImproved:
-              dataStoreValues.withdrawalFeeFactorBalanceWasImproved.returnValues[0],
-            withdrawalFeeFactorBalanceWasNotImproved:
-              dataStoreValues.withdrawalFeeFactorBalanceWasNotImproved.returnValues[0],
-
-            virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
-            virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
-            virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
-          };
-
-          return acc;
-        },
-        {} as {
-          [marketAddress: string]: MarketConfig;
-        }
-      );
-
-      return result;
+      return parseMarketsConfigsResponse(res, marketsAddresses!);
     });
   }
 
@@ -440,13 +248,12 @@ export class Markets extends Module {
       }),
       this.getMarketsConfigs({
         marketsAddresses,
-        marketsData,
       }),
       this.getClaimableFundingData(),
       this.getMarketsConstants(),
     ]);
 
-    if (!marketsValues || !marketsConfigs || !marketsAddresses || !claimableFundingData) {
+    if (!marketsValues || !marketsConfigs || !marketsAddresses || !marketsData || !tokensData || !marketsConstants) {
       return {
         marketsInfoData: {},
         tokensData,
@@ -454,36 +261,21 @@ export class Markets extends Module {
       };
     }
 
-    // Manual merging to avoid cloning tokens as they are sometimes compared by reference
-    const marketsInfoData: MarketsInfoData = {};
-    for (const marketAddress of marketsAddresses) {
-      const market = marketsData?.[marketAddress];
-      const marketValues = marketsValues[marketAddress];
-      const marketConfig = marketsConfigs[marketAddress];
+    const rawMarketsInfoData = composeRawMarketsInfoData({
+      marketsAddresses,
+      marketsData,
+      marketsValuesData: marketsValues,
+      marketsConfigsData: marketsConfigs,
+      marketsConstants,
+    });
 
-      const longToken = getByKey(tokensData!, market?.longTokenAddress);
-      const shortToken = getByKey(tokensData!, market?.shortTokenAddress);
-      const indexToken = market
-        ? getByKey(tokensData!, convertTokenAddress(this.chainId, market.indexTokenAddress, "native"))
-        : undefined;
-
-      if (!market || !marketValues || !marketConfig || !longToken || !shortToken || !indexToken || !marketsConstants) {
-        continue;
-      }
-
-      const fullMarketInfo: MarketInfo = {
-        ...marketValues,
-        ...marketConfig,
-        ...claimableFundingData[marketAddress],
-        ...market,
-        ...marketsConstants,
-        longToken,
-        shortToken,
-        indexToken,
-      };
-
-      marketsInfoData[marketAddress] = fullMarketInfo;
-    }
+    const marketsInfoData = composeFullMarketsInfoData({
+      chainId: this.chainId,
+      marketsAddresses,
+      rawMarketsInfoData,
+      tokensData,
+      claimableFundingData,
+    });
 
     return {
       marketsInfoData,
@@ -525,3 +317,15 @@ const POSITIONS_VOLUME_INFOS_QUERY = `
     volume
   }
 }`;
+
+export type MarketsResult = {
+  marketsData?: MarketsData;
+  marketsAddresses?: string[];
+  error?: Error | undefined;
+};
+
+export type MarketsInfoResult = {
+  marketsInfoData?: MarketsInfoData;
+  tokensData?: TokensData;
+  pricesUpdatedAt?: number;
+};

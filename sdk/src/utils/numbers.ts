@@ -750,10 +750,18 @@ export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBi
   return result;
 }
 
-export function deserializeBigIntsInObject<T extends object>(obj: T): DeserializeBigIntInObject<T> {
+const NUMERIC_STRING_REGEX = /^-?\d+$/;
+
+export function deserializeBigIntsInObject<T extends object>(
+  obj: T,
+  opts?: { handleInts?: boolean }
+): DeserializeBigIntInObject<T> {
+  const handleInts = opts?.handleInts ?? false;
   const result: any = Array.isArray(obj) ? [] : {};
+
   for (const key in obj) {
     const value = obj[key];
+
     if (
       typeof value === "object" &&
       value !== null &&
@@ -768,12 +776,15 @@ export function deserializeBigIntsInObject<T extends object>(obj: T): Deserializ
           result[key] = BigInt(value.hex);
         }
       }
+    } else if (handleInts && typeof value === "string" && NUMERIC_STRING_REGEX.test(value)) {
+      result[key] = BigInt(value);
     } else if (value && typeof value === "object") {
-      result[key] = deserializeBigIntsInObject(value);
+      result[key] = deserializeBigIntsInObject(value, opts);
     } else {
       result[key] = value;
     }
   }
+
   return result;
 }
 

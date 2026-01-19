@@ -7,15 +7,15 @@
     "url": "https://github.com/gmx-io/gmx-interface",
     "directory": "sdk"
   },
-  "main": "./build/cjs/src/index.js",
-  "module": "./build/esm/src/index.js",
-  "types": "./build/types/src/index.d.ts",
+  "main": "./build/cjs/src/client/v1/index.js",
+  "module": "./build/esm/src/client/v1/index.js",
+  "types": "./build/types/src/client/v1/index.d.ts",
   "exports": {
     ".": {
-      "import": "./build/esm/src/index.js",
-      "require": "./build/cjs/src/index.js",
-      "types": "./build/types/src/index.d.ts",
-      "default": "./build/cjs/src/index.js"
+      "import": "./build/esm/src/client/v1/index.js",
+      "require": "./build/cjs/src/client/v1/index.js",
+      "types": "./build/types/src/client/v1/index.d.ts",
+      "default": "./build/cjs/src/client/v1/index.js"
     },
     "./configs/*": {
       "import": "./build/esm/src/configs/*.js",
@@ -41,6 +41,12 @@
       "types": "./build/types/src/utils/*.d.ts",
       "default": "./build/cjs/src/utils/*.js"
     },
+    "./utils/markets": {
+      "import": "./build/esm/src/utils/markets/index.js",
+      "require": "./build/cjs/src/utils/markets/index.js",
+      "types": "./build/types/src/utils/markets/index.d.ts",
+      "default": "./build/cjs/src/utils/markets/index.js"
+    },
     "./types/*": {
       "import": "./build/esm/src/types/*.js",
       "require": "./build/cjs/src/types/*.js",
@@ -54,6 +60,7 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:multicall": "vitest run --config vitest.multicall.config.ts",
+    "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
@@ -66,7 +73,6 @@
     "clean:cache": "rm -rf ../.eslintcache ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
     "clean:lint": "rm -rf ../.eslintcache",
     "clean:ts": "rm -rf ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
-    "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
     "dev": "tspc -p tsconfig.esm.json --watch & tspc -p tsconfig.json --emitDeclarationOnly --watch",
     "dev:cjs": "mkdir -p build/cjs/src && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json && tsc -p tsconfig.cjs.json --watch"
   },

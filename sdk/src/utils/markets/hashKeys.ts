@@ -1,5 +1,7 @@
 import {
+  ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR,
   ATOMIC_SWAP_FEE_FACTOR_KEY,
+  BASE_BORROWING_FACTOR,
   BORROWING_EXPONENT_FACTOR_KEY,
   BORROWING_FACTOR_KEY,
   FUNDING_DECREASE_FACTOR_PER_SECOND,
@@ -27,6 +29,7 @@ import {
   OPEN_INTEREST_IN_TOKENS_KEY,
   OPEN_INTEREST_KEY,
   OPEN_INTEREST_RESERVE_FACTOR_KEY,
+  OPTIMAL_USAGE_FACTOR,
   POOL_AMOUNT_KEY,
   POSITION_FEE_FACTOR_KEY,
   POSITION_IMPACT_EXPONENT_FACTOR_KEY,
@@ -44,10 +47,39 @@ import {
   VIRTUAL_TOKEN_ID_KEY,
   WITHDRAWAL_FEE_FACTOR_KEY,
 } from "configs/dataStore";
-import { MarketConfig } from "configs/markets";
+import { MarketConfig as MarketConfigInput } from "configs/markets";
+import type { MarketConfig, MarketValues, RawOpenInterestValues } from "types/markets";
 import { hashDataMap } from "utils/hash";
 
-export function hashMarketConfigKeys(market: MarketConfig) {
+export type MarketConfigKeysHash = {
+  [K in keyof MarketConfig]: string;
+};
+
+type RawMarketValuesKeys = Pick<
+  MarketValues,
+  | "longPoolAmount"
+  | "shortPoolAmount"
+  | "positionImpactPoolAmount"
+  | "swapImpactPoolAmountLong"
+  | "swapImpactPoolAmountShort"
+>;
+
+export type MarketValuesKeysHash = {
+  [K in keyof RawMarketValuesKeys]: string;
+} & {
+  [K in keyof RawOpenInterestValues]: string;
+};
+
+export type KinkModelKeysHash = {
+  optimalUsageFactorLong: string;
+  optimalUsageFactorShort: string;
+  baseBorrowingFactorLong: string;
+  baseBorrowingFactorShort: string;
+  aboveOptimalUsageBorrowingFactorLong: string;
+  aboveOptimalUsageBorrowingFactorShort: string;
+};
+
+export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKeysHash {
   const marketAddress = market.marketTokenAddress;
   return hashDataMap({
     isDisabled: [
@@ -273,7 +305,7 @@ export function hashMarketConfigKeys(market: MarketConfig) {
   });
 }
 
-export function hashMarketValuesKeys(market: MarketConfig) {
+export function hashMarketValuesKeys(market: MarketConfigInput): MarketValuesKeysHash {
   const marketAddress = market.marketTokenAddress;
   const marketKeys = hashDataMap({
     longPoolAmount: [
@@ -331,4 +363,33 @@ export function hashMarketValuesKeys(market: MarketConfig) {
   });
 
   return marketKeys;
+}
+
+export function hashKinkModelKeys(marketAddress: string): KinkModelKeysHash {
+  return hashDataMap({
+    optimalUsageFactorLong: [
+      ["bytes32", "address", "bool"],
+      [OPTIMAL_USAGE_FACTOR, marketAddress, true],
+    ],
+    optimalUsageFactorShort: [
+      ["bytes32", "address", "bool"],
+      [OPTIMAL_USAGE_FACTOR, marketAddress, false],
+    ],
+    baseBorrowingFactorLong: [
+      ["bytes32", "address", "bool"],
+      [BASE_BORROWING_FACTOR, marketAddress, true],
+    ],
+    baseBorrowingFactorShort: [
+      ["bytes32", "address", "bool"],
+      [BASE_BORROWING_FACTOR, marketAddress, false],
+    ],
+    aboveOptimalUsageBorrowingFactorLong: [
+      ["bytes32", "address", "bool"],
+      [ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR, marketAddress, true],
+    ],
+    aboveOptimalUsageBorrowingFactorShort: [
+      ["bytes32", "address", "bool"],
+      [ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR, marketAddress, false],
+    ],
+  });
 }

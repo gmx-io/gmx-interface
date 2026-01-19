@@ -1,16 +1,19 @@
 import { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
-import { MarketsData } from "types/markets";
-import { TokensData } from "types/tokens";
+import type { MarketConfig, MarketValues, MarketsData } from "types/markets";
+import type { TokensData } from "types/tokens";
 import { hashDataMap } from "utils/hash";
-import { hashMarketConfigKeys, hashMarketValuesKeys } from "utils/marketKeysAndConfigs";
-import { getContractMarketPrices } from "utils/markets";
+import { getContractMarketPrices, getOiInTokensFromRawValues, getOiUsdFromRawValues } from "utils/markets";
 import type { ContractCallsConfig } from "utils/multicall";
 import { getByKey } from "utils/objects";
 
-import { MarketConfigMulticallRequestConfig, MarketValuesMulticallRequestConfig } from "./types";
 import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "../../prebuilt";
+
+type MulticallResponse = {
+  data: Record<string, any>;
+  errors: Record<string, any>;
+};
 
 export function buildClaimableFundingDataRequest({
   marketsAddresses,
@@ -68,37 +71,31 @@ export function buildClaimableFundingDataRequest({
 }
 
 export async function buildMarketsValuesRequest(
-  chainId: number,
+  chainId: ContractsChainId,
   {
     marketsAddresses,
     marketsData,
     tokensData,
-    dataStoreAddress,
-    syntheticsReaderAddress,
   }: {
     marketsAddresses: string[] | undefined;
     marketsData: MarketsData | undefined;
     tokensData: TokensData | undefined;
-    dataStoreAddress: string;
-    syntheticsReaderAddress: string;
   }
 ) {
-  const request: MarketValuesMulticallRequestConfig = {};
+  const dataStoreAddress = getContract(chainId, "DataStore");
+  const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
+  const request: Record<string, ContractCallsConfig<any>> = {};
 
   for (const marketAddress of marketsAddresses || []) {
-    const market = getByKey(marketsData, marketAddress)!;
+    const market = getByKey(marketsData, marketAddress);
 
     if (!market) {
-      // eslint-disable-next-line no-console
-      console.warn(`No market data found for ${marketAddress}, skipping market values request`);
       continue;
     }
 
-    const marketPrices = getContractMarketPrices(tokensData!, market)!;
+    const marketPrices = getContractMarketPrices(tokensData!, market);
 
     if (!marketPrices) {
-      // eslint-disable-next-line no-console
-      console.warn(`No market prices for ${marketAddress}, skipping market values request`);
       continue;
     }
 
@@ -144,24 +141,11 @@ export async function buildMarketsValuesRequest(
       },
     } satisfies ContractCallsConfig<any>;
 
-    let prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
+    const prebuiltHashedKeys = HASHED_MARKET_VALUES_KEYS[chainId]?.[marketAddress];
 
     if (!prebuiltHashedKeys) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `No pre-built hashed market keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
-      );
-
-      if (!marketsData?.[marketAddress]) {
-        throw new Error(`No market data found for the market ${marketAddress}`);
-      }
-
-      prebuiltHashedKeys = hashMarketValuesKeys(marketsData[marketAddress]);
+      throw new Error(`No pre-built hashed market keys found for the market ${marketAddress}.`);
     }
-
-    const keys = {
-      ...prebuiltHashedKeys,
-    };
 
     request[`${marketAddress}-dataStore`] = {
       contractAddress: dataStoreAddress,
@@ -169,55 +153,55 @@ export async function buildMarketsValuesRequest(
       calls: {
         longPoolAmount: {
           methodName: "getUint",
-          params: [keys.longPoolAmount],
+          params: [prebuiltHashedKeys.longPoolAmount],
         },
         shortPoolAmount: {
           methodName: "getUint",
-          params: [keys.shortPoolAmount],
+          params: [prebuiltHashedKeys.shortPoolAmount],
         },
         positionImpactPoolAmount: {
           methodName: "getUint",
-          params: [keys.positionImpactPoolAmount],
+          params: [prebuiltHashedKeys.positionImpactPoolAmount],
         },
         swapImpactPoolAmountLong: {
           methodName: "getUint",
-          params: [keys.swapImpactPoolAmountLong],
+          params: [prebuiltHashedKeys.swapImpactPoolAmountLong],
         },
         swapImpactPoolAmountShort: {
           methodName: "getUint",
-          params: [keys.swapImpactPoolAmountShort],
+          params: [prebuiltHashedKeys.swapImpactPoolAmountShort],
         },
         longInterestUsingLongToken: {
           methodName: "getUint",
-          params: [keys.longInterestUsingLongToken],
+          params: [prebuiltHashedKeys.longInterestUsingLongToken],
         },
         longInterestUsingShortToken: {
           methodName: "getUint",
-          params: [keys.longInterestUsingShortToken],
+          params: [prebuiltHashedKeys.longInterestUsingShortToken],
         },
         shortInterestUsingLongToken: {
           methodName: "getUint",
-          params: [keys.shortInterestUsingLongToken],
+          params: [prebuiltHashedKeys.shortInterestUsingLongToken],
         },
         shortInterestUsingShortToken: {
           methodName: "getUint",
-          params: [keys.shortInterestUsingShortToken],
+          params: [prebuiltHashedKeys.shortInterestUsingShortToken],
         },
         longInterestInTokensUsingLongToken: {
           methodName: "getUint",
-          params: [keys.longInterestInTokensUsingLongToken],
+          params: [prebuiltHashedKeys.longInterestInTokensUsingLongToken],
         },
         longInterestInTokensUsingShortToken: {
           methodName: "getUint",
-          params: [keys.longInterestInTokensUsingShortToken],
+          params: [prebuiltHashedKeys.longInterestInTokensUsingShortToken],
         },
         shortInterestInTokensUsingLongToken: {
           methodName: "getUint",
-          params: [keys.shortInterestInTokensUsingLongToken],
+          params: [prebuiltHashedKeys.shortInterestInTokensUsingLongToken],
         },
         shortInterestInTokensUsingShortToken: {
           methodName: "getUint",
-          params: [keys.shortInterestInTokensUsingShortToken],
+          params: [prebuiltHashedKeys.shortInterestInTokensUsingShortToken],
         },
       },
     } satisfies ContractCallsConfig<any>;
@@ -226,33 +210,120 @@ export async function buildMarketsValuesRequest(
   return request;
 }
 
-export async function buildMarketsConfigsRequest(
-  chainId: number,
-  {
-    marketsData,
-    marketsAddresses,
-    dataStoreAddress,
-  }: {
-    marketsData: MarketsData | undefined;
-    marketsAddresses: string[] | undefined;
-    dataStoreAddress: string;
-  }
-) {
-  const request: MarketConfigMulticallRequestConfig = {};
-  for (const marketAddress of marketsAddresses || []) {
-    let prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
+export function parseMarketsValuesResponse(
+  res: MulticallResponse,
+  marketsAddresses: string[],
+  marketsData: MarketsData | undefined,
+  getMarketDivisor: (market: any) => bigint
+): Record<string, MarketValues> {
+  return marketsAddresses.reduce(
+    (acc, marketAddress) => {
+      const readerErrors = res.errors[`${marketAddress}-reader`];
+      const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
 
-    if (!prebuiltHashedKeys) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
-      );
+      const readerValues = res.data[`${marketAddress}-reader`];
+      const dataStoreValues = res.data[`${marketAddress}-dataStore`];
 
-      if (!marketsData?.[marketAddress]) {
-        throw new Error(`No market data found for the market ${marketAddress}`);
+      if (!readerValues || !dataStoreValues || readerErrors || dataStoreErrors) {
+        return acc;
       }
 
-      prebuiltHashedKeys = hashMarketConfigKeys(marketsData[marketAddress]);
+      const market = getByKey(marketsData, marketAddress);
+
+      if (!market) {
+        return acc;
+      }
+
+      const marketDivisor = getMarketDivisor(market);
+
+      const { longInterestUsd, shortInterestUsd } = getOiUsdFromRawValues(
+        {
+          longInterestUsingLongToken: BigInt(dataStoreValues.longInterestUsingLongToken.returnValues[0]),
+          longInterestUsingShortToken: BigInt(dataStoreValues.longInterestUsingShortToken.returnValues[0]),
+          shortInterestUsingLongToken: BigInt(dataStoreValues.shortInterestUsingLongToken.returnValues[0]),
+          shortInterestUsingShortToken: BigInt(dataStoreValues.shortInterestUsingShortToken.returnValues[0]),
+        },
+        marketDivisor
+      );
+
+      const { longInterestInTokens, shortInterestInTokens } = getOiInTokensFromRawValues(
+        {
+          longInterestInTokensUsingLongToken: BigInt(
+            dataStoreValues.longInterestInTokensUsingLongToken.returnValues[0]
+          ),
+          longInterestInTokensUsingShortToken: BigInt(
+            dataStoreValues.longInterestInTokensUsingShortToken.returnValues[0]
+          ),
+          shortInterestInTokensUsingLongToken: BigInt(
+            dataStoreValues.shortInterestInTokensUsingLongToken.returnValues[0]
+          ),
+          shortInterestInTokensUsingShortToken: BigInt(
+            dataStoreValues.shortInterestInTokensUsingShortToken.returnValues[0]
+          ),
+        },
+        marketDivisor
+      );
+
+      const { nextFunding, virtualInventory } = readerValues.marketInfo.returnValues;
+
+      const [, poolValueInfoMin] = readerValues.marketTokenPriceMin.returnValues as [
+        unknown,
+        {
+          poolValue: bigint;
+          longPnl: bigint;
+          shortPnl: bigint;
+          netPnl: bigint;
+        },
+      ];
+
+      const [, poolValueInfoMax] = readerValues.marketTokenPriceMax.returnValues as [
+        unknown,
+        { poolValue: bigint; totalBorrowingFees: bigint; longPnl: bigint; shortPnl: bigint; netPnl: bigint },
+      ];
+
+      acc[marketAddress] = {
+        longInterestUsd,
+        shortInterestUsd,
+        longInterestInTokens,
+        shortInterestInTokens,
+        longPoolAmount: dataStoreValues.longPoolAmount.returnValues[0] / marketDivisor,
+        shortPoolAmount: dataStoreValues.shortPoolAmount.returnValues[0] / marketDivisor,
+        poolValueMin: poolValueInfoMin.poolValue,
+        poolValueMax: poolValueInfoMax.poolValue,
+        totalBorrowingFees: poolValueInfoMax.totalBorrowingFees,
+        positionImpactPoolAmount: dataStoreValues.positionImpactPoolAmount.returnValues[0],
+        swapImpactPoolAmountLong: dataStoreValues.swapImpactPoolAmountLong.returnValues[0],
+        swapImpactPoolAmountShort: dataStoreValues.swapImpactPoolAmountShort.returnValues[0],
+        borrowingFactorPerSecondForLongs: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForLongs,
+        borrowingFactorPerSecondForShorts: readerValues.marketInfo.returnValues.borrowingFactorPerSecondForShorts,
+        fundingFactorPerSecond: nextFunding.fundingFactorPerSecond,
+        longsPayShorts: nextFunding.longsPayShorts,
+        virtualPoolAmountForLongToken: virtualInventory.virtualPoolAmountForLongToken,
+        virtualPoolAmountForShortToken: virtualInventory.virtualPoolAmountForShortToken,
+        virtualInventoryForPositions: virtualInventory.virtualInventoryForPositions,
+      };
+
+      return acc;
+    },
+    {} as Record<string, MarketValues>
+  );
+}
+
+export async function buildMarketsConfigsRequest(
+  chainId: ContractsChainId,
+  {
+    marketsAddresses,
+  }: {
+    marketsAddresses: string[] | undefined;
+  }
+) {
+  const dataStoreAddress = getContract(chainId, "DataStore");
+  const request: Record<string, ContractCallsConfig<any>> = {};
+  for (const marketAddress of marketsAddresses || []) {
+    const prebuiltHashedKeys = HASHED_MARKET_CONFIG_KEYS[chainId]?.[marketAddress];
+
+    if (!prebuiltHashedKeys) {
+      throw new Error(`No pre-built hashed config keys found for the market ${marketAddress}.`);
     }
 
     request[`${marketAddress}-dataStore`] = {
@@ -484,4 +555,84 @@ export async function buildMarketsConfigsRequest(
   }
 
   return request;
+}
+
+export function parseMarketsConfigsResponse(
+  res: MulticallResponse,
+  marketsAddresses: string[]
+): Record<string, MarketConfig> {
+  return marketsAddresses.reduce(
+    (acc, marketAddress) => {
+      const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
+      const dataStoreValues = res.data[`${marketAddress}-dataStore`];
+
+      if (!dataStoreValues || dataStoreErrors) {
+        return acc;
+      }
+
+      acc[marketAddress] = {
+        isDisabled: dataStoreValues.isDisabled.returnValues[0],
+        maxLongPoolUsdForDeposit: dataStoreValues.maxLongPoolUsdForDeposit.returnValues[0],
+        maxShortPoolUsdForDeposit: dataStoreValues.maxShortPoolUsdForDeposit.returnValues[0],
+        maxLongPoolAmount: dataStoreValues.maxLongPoolAmount.returnValues[0],
+        maxShortPoolAmount: dataStoreValues.maxShortPoolAmount.returnValues[0],
+        reserveFactorLong: dataStoreValues.reserveFactorLong.returnValues[0],
+        reserveFactorShort: dataStoreValues.reserveFactorShort.returnValues[0],
+        openInterestReserveFactorLong: dataStoreValues.openInterestReserveFactorLong.returnValues[0],
+        openInterestReserveFactorShort: dataStoreValues.openInterestReserveFactorShort.returnValues[0],
+        maxOpenInterestLong: dataStoreValues.maxOpenInterestLong.returnValues[0],
+        maxOpenInterestShort: dataStoreValues.maxOpenInterestShort.returnValues[0],
+        minPositionImpactPoolAmount: dataStoreValues.minPositionImpactPoolAmount.returnValues[0],
+        positionImpactPoolDistributionRate: dataStoreValues.positionImpactPoolDistributionRate.returnValues[0],
+        borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
+        borrowingFactorShort: dataStoreValues.borrowingFactorShort.returnValues[0],
+        borrowingExponentFactorLong: dataStoreValues.borrowingExponentFactorLong.returnValues[0],
+        borrowingExponentFactorShort: dataStoreValues.borrowingExponentFactorShort.returnValues[0],
+        fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
+        fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
+        fundingIncreaseFactorPerSecond: dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0],
+        fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
+        thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
+        thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],
+        minFundingFactorPerSecond: dataStoreValues.minFundingFactorPerSecond.returnValues[0],
+        maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
+        maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
+        maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
+        minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
+        minCollateralFactorForOpenInterestLong: dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
+        minCollateralFactorForOpenInterestShort:
+          dataStoreValues.minCollateralFactorForOpenInterestShort.returnValues[0],
+        minCollateralFactorForLiquidation: dataStoreValues.minCollateralFactorForLiquidation.returnValues[0],
+        positionFeeFactorForBalanceWasImproved: dataStoreValues.positionFeeFactorForBalanceWasImproved.returnValues[0],
+        positionFeeFactorForBalanceWasNotImproved:
+          dataStoreValues.positionFeeFactorForBalanceWasNotImproved.returnValues[0],
+        positionImpactFactorPositive: dataStoreValues.positionImpactFactorPositive.returnValues[0],
+        positionImpactFactorNegative: dataStoreValues.positionImpactFactorNegative.returnValues[0],
+        maxPositionImpactFactorPositive: dataStoreValues.maxPositionImpactFactorPositive.returnValues[0],
+        maxPositionImpactFactorNegative: dataStoreValues.maxPositionImpactFactorNegative.returnValues[0],
+        maxPositionImpactFactorForLiquidations: dataStoreValues.maxPositionImpactFactorForLiquidations.returnValues[0],
+        maxLendableImpactFactor: dataStoreValues.maxLendableImpactFactor.returnValues[0],
+        maxLendableImpactFactorForWithdrawals: dataStoreValues.maxLendableImpactFactorForWithdrawals.returnValues[0],
+        maxLendableImpactUsd: dataStoreValues.maxLendableImpactUsd.returnValues[0],
+        lentPositionImpactPoolAmount: dataStoreValues.lentPositionImpactPoolAmount.returnValues[0],
+        positionImpactExponentFactorPositive: dataStoreValues.positionImpactExponentFactorPositive.returnValues[0],
+        positionImpactExponentFactorNegative: dataStoreValues.positionImpactExponentFactorNegative.returnValues[0],
+        swapFeeFactorForBalanceWasImproved: dataStoreValues.swapFeeFactorForBalanceWasImproved.returnValues[0],
+        swapFeeFactorForBalanceWasNotImproved: dataStoreValues.swapFeeFactorForBalanceWasNotImproved.returnValues[0],
+        swapImpactFactorPositive: dataStoreValues.swapImpactFactorPositive.returnValues[0],
+        swapImpactFactorNegative: dataStoreValues.swapImpactFactorNegative.returnValues[0],
+        atomicSwapFeeFactor: dataStoreValues.atomicSwapFeeFactor.returnValues[0],
+        withdrawalFeeFactorBalanceWasImproved: dataStoreValues.withdrawalFeeFactorBalanceWasImproved.returnValues[0],
+        withdrawalFeeFactorBalanceWasNotImproved:
+          dataStoreValues.withdrawalFeeFactorBalanceWasNotImproved.returnValues[0],
+        swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
+        virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
+        virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
+        virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
+      };
+
+      return acc;
+    },
+    {} as Record<string, MarketConfig>
+  );
 }

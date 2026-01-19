@@ -5,7 +5,6 @@ import { useMarkets } from "domain/synthetics/markets";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { KinkModelMarketRateMulticallRequestConfig } from "sdk/modules/markets/types";
 import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
 
 export type KinkModelMarketsRatesResult = {
@@ -74,7 +73,7 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
         } satisfies ContractCallsConfig<any>;
 
         return acc;
-      }, {}) as KinkModelMarketRateMulticallRequestConfig,
+      }, {}),
     parseResponse: (res) => {
       const result = marketsAddresses!.reduce(
         (acc, marketAddress) => {

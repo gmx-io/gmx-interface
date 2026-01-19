@@ -48,3 +48,17 @@ export function objectKeysDeep(obj: Record<string, any>, depth = 1): string[] {
 
   return Array.from(keys);
 }
+
+export function toDict<T, K extends keyof T>(
+  array: T[],
+  by: K
+): T[K] extends string | number | symbol ? Record<T[K], T> : Record<string | number | symbol, T> {
+  return array.reduce(
+    (acc, item) => {
+      const key = item[by] as string | number | symbol;
+      (acc as Record<string | number | symbol, T>)[key] = item;
+      return acc;
+    },
+    {} as T[K] extends string | number | symbol ? Record<T[K], T> : Record<string | number | symbol, T>
+  );
+}

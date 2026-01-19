@@ -19,6 +19,7 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
+import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
@@ -77,6 +78,7 @@ function App() {
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <ThemeProvider>{app}</ThemeProvider>;
+  app = <GmxSdkProvider>{app}</GmxSdkProvider>;
   app = <Router>{app}</Router>;
 
   return app;
