@@ -79,7 +79,7 @@ export function buildDepositTransferRequests({
       {
         to: vaultAddress,
         token: initialLongTokenAddress,
-        amount: longTokenAmount,
+        amount: (longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n),
       },
     ]);
   }
