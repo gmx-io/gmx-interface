@@ -323,6 +323,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "WIF",
       address: "0xA1b91fe9FD52141Ff8cac388Ce3F10BFDc1dE79d",
       decimals: 6,
+      priceDecimals: 5,
       categories: ["meme"],
       imageUrl: "https://assets.coingecko.com/coins/images/33566/standard/dogwifhat.jpg?1702499428",
       isPermitSupported: true,
