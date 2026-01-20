@@ -18,11 +18,9 @@ import { convertTokenAddress, getToken, getWrappedToken } from "sdk/configs/toke
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { Operation } from "components/GmSwap/GmSwapBox/types";
-
 import { convertToUsd, getMidPrice } from "../../tokens";
 import { signCreateDeposit } from "../signCreateDeposit";
-import { CreateDepositParams, RawCreateDepositParams } from "../types";
+import { CreateDepositParams, Operation, RawCreateDepositParams } from "../types";
 import { estimateDepositPlatformTokenTransferOutFees } from "./estimateDepositPlatformTokenTransferOutFees";
 import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
 import { stargateTransferFees } from "./stargateTransferFees";

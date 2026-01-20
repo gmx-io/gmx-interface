@@ -33,12 +33,6 @@ export const selectGasPaymentToken = createSelector((q) => {
   return q((state) => getByKey(selectTokensData(state), gasPaymentTokenAddress));
 });
 
-export const selectRelayerFeeToken = createSelector((q) => {
-  const chainId = q(selectChainId);
-  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
-  return q((state) => getByKey(selectTokensData(state), relayerFeeTokenAddress));
-});
-
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
   const isRelayRouterEnabled = q(selectIsRelayRouterEnabled);
@@ -107,7 +101,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
   };
 });
 
-export const selectExpressFindSwapPath = createSelector(function selectExpressFindSwapPath(q): FindSwapPath {
+const selectExpressFindSwapPath = createSelector(function selectExpressFindSwapPath(q): FindSwapPath {
   const chainId = q(selectChainId);
   const marketsInfoData = q(selectMarketsInfoData);
   const gasEstimationParams = q(selectGasEstimationParams);

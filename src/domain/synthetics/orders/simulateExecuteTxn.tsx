@@ -22,7 +22,7 @@ import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
-import { CustomErrorName, ErrorData, extractDataFromError, extractTxnError, isContractError } from "sdk/utils/errors";
+import { CustomErrorName, extractDataFromError, extractTxnError } from "sdk/utils/errors";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
@@ -30,7 +30,7 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { isGlvEnabled } from "../markets/glv";
 
-export type PriceOverrides = {
+type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
 };
 
@@ -57,10 +57,6 @@ export type SimulateExecuteParams = {
   };
   externalSwapQuote?: ExternalSwapQuote;
 };
-
-export function isSimulationPassed(errorData: ErrorData) {
-  return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
-}
 
 /**
  * @deprecated use simulateExecution instead
@@ -263,7 +259,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   }
 }
 
-export function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
+function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];

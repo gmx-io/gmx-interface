@@ -29,12 +29,12 @@ export type PendingTransaction = {
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
 
-export type PendingTxnsContextType = {
+type PendingTxnsContextType = {
   pendingTxns: PendingTransaction[];
   setPendingTxns: SetPendingTransactions;
 };
 
-export const PendingTxnsContext = createContext<PendingTxnsContextType>({
+const PendingTxnsContext = createContext<PendingTxnsContextType>({
   pendingTxns: [],
   setPendingTxns: () => null,
 });

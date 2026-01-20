@@ -53,7 +53,7 @@ export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   return q(selectTradeboxDecreaseOrderParams);
 });
 
-export const selectCommonOrderParams = createSelector((q) => {
+const selectCommonOrderParams = createSelector((q) => {
   const signer = q(selectSigner);
   const chainId = q(selectChainId);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
@@ -77,7 +77,7 @@ export const selectCommonOrderParams = createSelector((q) => {
   };
 });
 
-export const selectTradeboxSwapOrderPayload = createSelector((q) => {
+const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
 
@@ -125,7 +125,7 @@ export const selectTradeboxSwapOrderPayload = createSelector((q) => {
   return [buildSwapOrderPayload(swapOrderParams)];
 });
 
-export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
+const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const indexTokenAddress = q(selectTradeboxToTokenAddress);
@@ -186,7 +186,7 @@ export const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   return [buildIncreaseOrderPayload(increaseOrderParams)];
 });
 
-export const selectTradeboxDecreaseOrderParams = createSelector((q) => {
+const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   const commonParams = q(selectCommonOrderParams);
   const marketInfo = q(selectTradeboxMarketInfo);
   const collateralTokenAddress: string | undefined = q(selectTradeboxCollateralTokenAddress);

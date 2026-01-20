@@ -132,7 +132,7 @@ function OpportunityTokenIcon({
   }
 }
 
-export const OpportunityTokenLabel = ({
+const OpportunityTokenLabel = ({
   asset,
   marketsInfoData,
   tokensData,

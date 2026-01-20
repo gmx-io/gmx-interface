@@ -72,7 +72,7 @@ export function MultichainTokenSelectorForLp({
     setIsModalVisible(false);
     const isGmxAccount = tokenChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID;
     const tokenSrcChainId =
-      tokenChainId !== chainId && !isGmxAccount && isSourceChain(tokenChainId) ? tokenChainId : undefined;
+      tokenChainId !== chainId && !isGmxAccount && isSourceChain(tokenChainId, chainId) ? tokenChainId : undefined;
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount, tokenSrcChainId);
   };
 

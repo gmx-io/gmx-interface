@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
+import { Operation } from "domain/synthetics/markets/types";
 import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { FeeItem } from "sdk/utils/fees/types";
@@ -11,8 +12,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tooltip from "components/Tooltip/Tooltip";
-
-import { Operation } from "../GmSwapBox/types";
 
 import "./GmFees.scss";
 

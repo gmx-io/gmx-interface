@@ -5,59 +5,11 @@ import {
   getTotalFeeItem,
   getTotalSwapVolumeFromSwapStats,
 } from "domain/synthetics/fees";
-import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { BASIS_POINTS_DIVISOR_BIGINT, PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
-import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/utils/trade/types";
+import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { OrderOption } from "../usePositionSellerState";
-
-export function getTradeFlags(tradeType: TradeType, tradeMode: TradeMode): TradeFlags {
-  const isLong = tradeType === TradeType.Long;
-  const isShort = tradeType === TradeType.Short;
-  const isSwap = tradeType === TradeType.Swap;
-  const isPosition = isLong || isShort;
-  const isMarket = tradeMode === TradeMode.Market;
-  const isLimit = tradeMode === TradeMode.Limit;
-  const isTrigger = tradeMode === TradeMode.Trigger;
-  const isIncrease = isPosition && (isMarket || isLimit);
-  const isTwap = tradeMode === TradeMode.Twap;
-
-  return {
-    isLong,
-    isShort,
-    isSwap,
-    isPosition,
-    isIncrease,
-    isTrigger,
-    isMarket,
-    isLimit,
-    isTwap,
-  };
-}
-
-export function getTradeFlagsForOrder(order: OrderInfo) {
-  let tradeType: TradeType;
-  let tradeMode: TradeMode;
-
-  if (isMarketOrderType(order.orderType)) {
-    tradeMode = TradeMode.Market;
-  } else if (isLimitOrderType(order.orderType)) {
-    tradeMode = TradeMode.Limit;
-  } else {
-    tradeMode = TradeMode.Trigger;
-  }
-
-  if (isSwapOrderType(order.orderType)) {
-    tradeType = TradeType.Swap;
-  } else if (order.isLong) {
-    tradeType = TradeType.Long;
-  } else {
-    tradeType = TradeType.Short;
-  }
-
-  return getTradeFlags(tradeType, tradeMode);
-}
 
 export function getTradeFlagsForCollateralEdit(isLong: boolean | undefined, isIncrease: boolean): TradeFlags {
   return {

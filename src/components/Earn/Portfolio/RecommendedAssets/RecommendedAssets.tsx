@@ -48,7 +48,7 @@ const getRecommendedGlvs = ({
   return glvs.slice(0, maxCount);
 };
 
-export const MIN_LIQUIDITY_USD = expandDecimals(500_000, USD_DECIMALS);
+const MIN_LIQUIDITY_USD = expandDecimals(500_000, USD_DECIMALS);
 
 const getRecommendedGms = ({
   hasGmxAssets,

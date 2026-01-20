@@ -100,7 +100,7 @@ export function BuyGmxModal({
   );
 }
 
-export function BuyGmxModalButton({
+function BuyGmxModalButton({
   to,
   icon,
   children,

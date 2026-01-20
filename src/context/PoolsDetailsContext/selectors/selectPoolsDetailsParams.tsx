@@ -29,7 +29,6 @@ import {
   selectAccount,
   selectChainId,
   selectGlvAndMarketsInfoData,
-  selectMarketsInfoData,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
@@ -82,7 +81,6 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   const shortTokenAmount = q(selectPoolsDetailsShortTokenAmount);
 
   const glvAndMarketsInfoData = q(selectGlvAndMarketsInfoData);
-  const marketsInfoData = q(selectMarketsInfoData);
 
   const marketOrGlvTokenAddress = q(selectPoolsDetailsGlvOrMarketAddress);
   const selectedMarketForGlv = q(selectPoolsDetailsSelectedMarketAddressForGlv);
@@ -108,12 +106,6 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   if (isGlv && !selectedMarketForGlv) {
     return undefined;
   }
-
-  const marketInfo = isGlv
-    ? selectedMarketForGlv
-      ? marketsInfoData?.[selectedMarketForGlv]
-      : undefined
-    : glvOrMarketInfo;
 
   const glvInfo = isGlv ? glvOrMarketInfo : undefined;
 
@@ -188,7 +180,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   //#region GLV Deposit
   if (isDeposit && isGlv) {
     // Raw GLV Deposit Params
-    if (!marketInfo || !glvTokenAddress || !selectedMarketForGlv || marketOrGlvTokenAmount === undefined) {
+    if (!glvTokenAddress || !selectedMarketForGlv || marketOrGlvTokenAmount === undefined) {
       return undefined;
     }
 

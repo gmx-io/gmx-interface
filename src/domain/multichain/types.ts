@@ -38,7 +38,7 @@ export type BridgeOutParams = {
   data: string;
 };
 
-export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110 | 30106 | 30102 | 30101;
+export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110 | 30106 | 30102 | 30101 | 40106;
 
 export type OFTLimit = {
   minAmountLD: bigint;

@@ -19,6 +19,7 @@ import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import ChartTokenSelector from "../ChartTokenSelector/ChartTokenSelector";
 import { renderNetFeeHeaderTooltipContent } from "../MarketsList/NetFeeHeaderTooltipContent";
 import { NetRate1hTooltip } from "./components/NetRate1hTooltip";
+import { OpenInterestTooltip } from "./components/OpenInterestTooltip";
 import { useChartHeaderFormattedValues } from "./useChartHeaderFormattedValues";
 
 const MIN_FADE_AREA = 24; //px
@@ -105,10 +106,16 @@ function ChartHeaderMobile() {
             <span className="text-red-500 numbers">{shortOIPercentage}</span>
             <span>{")"}</span>
           </div>
-          <div className="flex flex-row items-center gap-8 ">
+          <TooltipWithPortal
+            variant="none"
+            as="div"
+            className="inline-flex flex-row items-center gap-8"
+            position="bottom-end"
+            content={<OpenInterestTooltip />}
+          >
             <div className="flex flex-row items-center gap-8 numbers">{longOIValue}</div>
             <div className="flex flex-row items-center gap-8 numbers">{shortOIValue}</div>
-          </div>
+          </TooltipWithPortal>
         </div>
 
         <div>
@@ -284,11 +291,13 @@ function ChartHeaderDesktop() {
             </Trans>
           }
           value={
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-4 numbers">{longOIValue}</div>
-              <span className="text-typography-inactive">/</span>
-              <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
-            </div>
+            <TooltipWithPortal variant="none" as="div" position="bottom-end" content={<OpenInterestTooltip />}>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 numbers">{longOIValue}</div>
+                <span className="text-typography-inactive">/</span>
+                <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
+              </div>
+            </TooltipWithPortal>
           }
         />
 

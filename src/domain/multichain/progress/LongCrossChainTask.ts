@@ -1,8 +1,6 @@
 import noop from "lodash/noop";
 import { EncodeEventTopicsReturnType, Hex } from "viem";
 
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-
 export function matchLogRequest(request: EncodeEventTopicsReturnType, logTopics: [Hex, ...Hex[]] | []): boolean {
   return request.every((filter, index) => {
     if (!filter) {
@@ -106,12 +104,4 @@ export abstract class LongCrossChainTask<
     }
     this.resolversRegistry[name]?.reject(reason);
   }
-}
-
-export async function fetchLogs(chainId: number, txHash: string) {
-  const receipt = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({
-    hash: txHash,
-  });
-
-  return receipt.logs;
 }

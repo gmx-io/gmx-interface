@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import formatDate from "date-fns/format";
+import { format as formatDate } from "date-fns/format";
 import { useCallback, useEffect, useState } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -36,20 +36,6 @@ import { formatTradeActionTimestamp } from "../TradeHistory/TradeHistoryRow/util
 import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
-
-export type ClaimsHistoryProps = {
-  isLoading: boolean;
-  isEmpty: boolean;
-  hasFilters: boolean;
-  eventNameFilter: string[];
-  setEventNameFilter: (eventNameFilter: string[]) => void;
-  marketAddressesFilter: string[];
-  setMarketAddressesFilter: (marketAddressesFilter: string[]) => void;
-  currentPage: number;
-  setCurrentPage: (currentPage: number) => void;
-  pageCount: number;
-  currentPageData: ClaimAction[];
-};
 
 export function ClaimsHistory() {
   const chainId = useSelector(selectChainId);

@@ -8,10 +8,8 @@ import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/expre
 import { expandDecimals } from "lib/numbers";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
-import { Operation } from "components/GmSwap/GmSwapBox/types";
-
 import { convertToUsd, getMidPrice } from "../../tokens";
-import { CreateWithdrawalParams, RawCreateWithdrawalParams } from "../types";
+import { CreateWithdrawalParams, Operation, RawCreateWithdrawalParams } from "../types";
 import { estimatePureLpActionExecutionFee } from "./estimatePureLpActionExecutionFee";
 import { estimateWithdrawalPlatformTokenTransferInFees } from "./estimateWithdrawalPlatformTokenTransferInFees";
 import { stargateTransferFees } from "./stargateTransferFees";

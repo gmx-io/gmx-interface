@@ -1,11 +1,9 @@
-import { USD_DECIMALS } from "config/factors";
-import { InfoTokens, SignedTokenPermit, Token, TokenBalanceType, TokenInfo } from "domain/tokens";
-import { formatAmount } from "lib/numbers";
+import { InfoTokens, SignedTokenPermit, TokenBalanceType, TokenInfo } from "domain/tokens";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { getTokenData } from "sdk/utils/tokens";
 
-import { TokenData, TokensAllowanceData, TokensData, TokensRatio, TokenToSpendParams } from "./types";
+import { TokenData, TokensAllowanceData, TokensData, TokenToSpendParams } from "./types";
 
 export * from "sdk/utils/tokens";
 
@@ -79,17 +77,6 @@ export function getApprovalRequirements({
     tokensToApprove,
     isAllowanceLoaded,
   };
-}
-
-export function formatTokensRatio(fromToken?: Token, toToken?: Token, ratio?: TokensRatio) {
-  if (!fromToken || !toToken || !ratio) {
-    return undefined;
-  }
-
-  const [largest, smallest] =
-    ratio.largestToken.address === fromToken.address ? [fromToken, toToken] : [toToken, fromToken];
-
-  return `${formatAmount(ratio.ratio, USD_DECIMALS, 4)} ${smallest.symbol} / ${largest.symbol}`;
 }
 
 /**

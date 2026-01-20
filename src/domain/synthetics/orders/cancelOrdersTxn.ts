@@ -39,7 +39,7 @@ export async function cancelOrdersTxn(chainId: ContractsChainId, signer: Signer,
   });
 }
 
-export function createCancelEncodedPayload({
+function createCancelEncodedPayload({
   router,
   orderKeys = [],
 }: {

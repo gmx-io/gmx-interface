@@ -43,7 +43,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
-export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
   | [errorMessage: undefined]
   | [errorMessage: string]
@@ -636,19 +635,6 @@ export function getEditCollateralError(p: {
   }
 
   return [undefined];
-}
-
-export function decreasePositionSizeByLeverageDiff(
-  currentLeverage: bigint,
-  targetLeverage: bigint,
-  sizeDeltaUsd: bigint
-) {
-  return bigMath.mulDiv(
-    bigMath.mulDiv(sizeDeltaUsd, targetLeverage, currentLeverage),
-    // 2% slipage
-    98n,
-    100n
-  );
 }
 
 function getTokenBalanceByPaySource(

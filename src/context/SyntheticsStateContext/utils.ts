@@ -34,7 +34,7 @@ export function createSelectorFactory<SelectionResult, Args extends SupportedArg
   };
 }
 
-export function getKeyForArgs(...args: SupportedArg[]) {
+function getKeyForArgs(...args: SupportedArg[]) {
   return args
     .map((arg) =>
       typeof arg === "object" && arg
