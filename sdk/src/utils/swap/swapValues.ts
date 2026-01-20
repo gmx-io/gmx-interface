@@ -21,7 +21,6 @@ import type { TokenData, TokensRatio } from "../tokens/types";
 import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "../trade/types";
 import { ExternalSwapQuoteParams, SwapRoute } from "../trade/types";
 
-
 export function getSwapAmountsByFromValue(p: {
   tokenIn: TokenData;
   tokenOut: TokenData;

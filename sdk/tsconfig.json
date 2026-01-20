@@ -26,11 +26,9 @@
     "paths": {
       "utils/*": ["utils/*"],
       "configs/*": ["configs/*"],
-      "types/*": ["types/*"],
       "abis/*": ["abis/*"],
       "abis": ["abis/index"],
-      "swap/*": ["swap/*"],
-      "prebuilt": ["prebuild/index"],
+      "codegen/*": ["codegen/*"],
       "clients/*": ["clients/*"]
     },
     "plugins": [

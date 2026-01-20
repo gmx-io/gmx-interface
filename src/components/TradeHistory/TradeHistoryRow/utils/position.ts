@@ -4,7 +4,7 @@ import { t } from "@lingui/macro";
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { OrderType, isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
-import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens/utils";
+import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
 import {
   BN_NEGATIVE_ONE,
@@ -17,8 +17,8 @@ import {
   formatTokenAmountWithUsd,
   formatUsd,
 } from "lib/numbers";
-import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 import { bigMath } from "sdk/utils/bigmath";
+import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import {
   INEQUALITY_GT,

@@ -23,8 +23,8 @@ import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
 import { getWithdrawalAmounts } from "domain/synthetics/trade/utils/withdrawal";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
+import { DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts | WithdrawalAmounts | undefined => {
   const chainId = q(selectChainId);

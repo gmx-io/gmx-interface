@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { ContractsChainId } from "config/chains";
+import { parseContractPrice, TokenPricesData } from "domain/synthetics/tokens";
 import { FreshnessMetricId, metrics, TickersErrorsCounter, TickersPartialDataCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { _debugOracleKeeper } from "lib/oracleKeeperFetcher/_debug";
@@ -10,9 +11,7 @@ import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INT
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token } from "sdk/utils/tokens/types";
 
-import { TokenPricesData } from "./types";
 import { useSequentialTimedSWR } from "./useSequentialTimedSWR";
-import { parseContractPrice } from "./utils";
 
 export type TokenPricesDataResult = {
   pricesData?: TokenPricesData;

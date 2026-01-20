@@ -41,8 +41,8 @@ export function hashDataMap<
 >(
   map: R
 ): {
-    [K in keyof R]: string;
-  } {
+  [K in keyof R]: string;
+} {
   const result: Record<string, string> = {};
 
   for (const key of Object.keys(map)) {

@@ -8,7 +8,6 @@ import { getExecutionFee } from "./executionFee";
 import type { GasLimitsConfig } from "../fees/types";
 import type { TokensData } from "../tokens/types";
 
-
 describe("getExecutionFee", () => {
   const chainId = ARBITRUM;
   const gasLimits = {

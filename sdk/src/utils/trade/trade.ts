@@ -12,7 +12,6 @@ import {
   TradeType,
 } from "../trade/types";
 
-
 export function applySlippageToPrice(allowedSlippage: number, price: bigint, isIncrease: boolean, isLong: boolean) {
   const shouldIncreasePrice = getShouldUseMaxPrice(isIncrease, isLong);
 

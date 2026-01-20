@@ -6,7 +6,6 @@ import type { SignedTokenPermit, TokenData } from "domain/tokens";
 import type { SignatureDomain } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { ContractName, getContract } from "sdk/configs/contracts";
-import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/utils/trade/types";
 import {
   combineExternalCalls,
   ExternalCallsPayload,
@@ -15,6 +14,7 @@ import {
 } from "sdk/utils/orderTransactions";
 import { getSwapAmountsByToValue } from "sdk/utils/swap";
 import { nowInSeconds } from "sdk/utils/time";
+import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/utils/trade/types";
 
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
 import type { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "./types";

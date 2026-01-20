@@ -48,10 +48,16 @@
       "default": "./build/cjs/src/abis/*.js"
     },
     "./prebuilt/*": {
-      "types": "./build/types/src/prebuilt/*.d.ts",
-      "import": "./build/esm/src/prebuilt/*.js",
-      "require": "./build/cjs/src/prebuilt/*.js",
-      "default": "./build/cjs/src/prebuilt/*.js"
+      "types": "./build/types/src/codegen/prebuilt/*.d.ts",
+      "import": "./build/esm/src/codegen/prebuilt/*.js",
+      "require": "./build/cjs/src/codegen/prebuilt/*.js",
+      "default": "./build/cjs/src/codegen/prebuilt/*.js"
+    },
+    "./types/subsquid": {
+      "types": "./build/types/src/codegen/subsquid.d.ts",
+      "import": "./build/esm/src/codegen/subsquid.js",
+      "require": "./build/cjs/src/codegen/subsquid.js",
+      "default": "./build/cjs/src/codegen/subsquid.js"
     },
     "./utils/markets": {
       "types": "./build/types/src/utils/markets/index.d.ts",
@@ -263,11 +269,29 @@
       "require": "./build/cjs/src/utils/LruCache/index.js",
       "default": "./build/cjs/src/utils/LruCache/index.js"
     },
-    "./utils/orderTransactions": {
-      "types": "./build/types/src/utils/orderTransactions/index.d.ts",
-      "import": "./build/esm/src/utils/orderTransactions/index.js",
-      "require": "./build/cjs/src/utils/orderTransactions/index.js",
-      "default": "./build/cjs/src/utils/orderTransactions/index.js"
+    "./utils/abort": {
+      "types": "./build/types/src/utils/abort/index.d.ts",
+      "import": "./build/esm/src/utils/abort/index.js",
+      "require": "./build/cjs/src/utils/abort/index.js",
+      "default": "./build/cjs/src/utils/abort/index.js"
+    },
+    "./utils/common": {
+      "types": "./build/types/src/utils/common/index.d.ts",
+      "import": "./build/esm/src/utils/common/index.js",
+      "require": "./build/cjs/src/utils/common/index.js",
+      "default": "./build/cjs/src/utils/common/index.js"
+    },
+    "./utils/gelatoRelay": {
+      "types": "./build/types/src/utils/gelatoRelay/index.d.ts",
+      "import": "./build/esm/src/utils/gelatoRelay/index.js",
+      "require": "./build/cjs/src/utils/gelatoRelay/index.js",
+      "default": "./build/cjs/src/utils/gelatoRelay/index.js"
+    },
+    "./utils/types": {
+      "types": "./build/types/src/utils/types/index.d.ts",
+      "import": "./build/esm/src/utils/types/index.js",
+      "require": "./build/cjs/src/utils/types/index.js",
+      "default": "./build/cjs/src/utils/types/index.js"
     }
   },
   "scripts": {
@@ -280,7 +304,7 @@
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c subsquid-codegen.ts && npx prettier --write src/types/subsquid.ts",
+    "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c scripts/subsquid-codegen.ts && npx prettier --write src/codegen/subsquid.ts",
     "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
     "tscheck:ci": "tsc -p tsconfig.json --noEmit",
     "lint": "cd .. && node node_modules/.bin/eslint sdk --fix --cache --cache-location .eslintcache",

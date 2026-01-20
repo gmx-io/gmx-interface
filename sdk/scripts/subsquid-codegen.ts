@@ -5,7 +5,7 @@ const config: CodegenConfig = {
   overwrite: true,
   debug: true,
   generates: {
-    "./src/types/subsquid.ts": {
+    "./src/codegen/subsquid.ts": {
       plugins: ["typescript", "typescript-operations"],
       config: {
         // Prevent duplicate types

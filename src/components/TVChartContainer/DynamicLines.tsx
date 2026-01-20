@@ -33,8 +33,8 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
-import { PositionOrderInfo } from "sdk/utils/orders/types";
 import { getOrderKeys } from "sdk/utils/orders";
+import { PositionOrderInfo } from "sdk/utils/orders/types";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";

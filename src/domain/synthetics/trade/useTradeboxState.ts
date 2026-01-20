@@ -21,9 +21,9 @@ import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
+import { createTradeFlags } from "sdk/utils/trade";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { TwapDuration } from "sdk/utils/twap/types";
-import { createTradeFlags } from "sdk/utils/trade";
 
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";

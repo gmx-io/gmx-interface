@@ -10,8 +10,8 @@ import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMod
 import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
-import { TwapDuration } from "sdk/utils/twap/types";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";
+import { TwapDuration } from "sdk/utils/twap/types";
 
 import { metrics, SubmittedOrderEvent } from ".";
 import {

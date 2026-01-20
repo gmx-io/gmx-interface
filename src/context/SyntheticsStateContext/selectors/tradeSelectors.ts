@@ -15,7 +15,6 @@ import {
 } from "domain/synthetics/trade";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/types";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -25,6 +24,7 @@ import {
   getTokenSwapPathsForTokenPairPrebuilt,
 } from "sdk/utils/swap/swapRouting";
 import { createTradeFlags } from "sdk/utils/trade";
+import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/types";
 
 import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {

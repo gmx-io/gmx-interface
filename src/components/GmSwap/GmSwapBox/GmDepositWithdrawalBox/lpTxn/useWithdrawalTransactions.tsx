@@ -56,9 +56,9 @@ import {
 } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { WithdrawalAmounts } from "sdk/utils/trade/types";
-import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";
 import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdrawalExpressTxnParams";

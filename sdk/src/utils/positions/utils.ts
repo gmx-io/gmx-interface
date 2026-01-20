@@ -1,6 +1,5 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 
-
 import { bigMath } from "../bigmath";
 import {
   capPositionImpactUsdByMaxImpactPool,

@@ -6,7 +6,6 @@ import type { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
-import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "../../../../utils/sidecarOrders/types";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
 import type { GasLimitsConfig } from "utils/fees/types";
@@ -16,6 +15,7 @@ import { DecreasePositionSwapType, Order, OrderType } from "utils/orders/types";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import type { TokensData } from "utils/tokens/types";
 
+import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "../../../../utils/sidecarOrders/types";
 import type { GmxSdk } from "../../index";
 
 export const getOrderExecutionFee = (

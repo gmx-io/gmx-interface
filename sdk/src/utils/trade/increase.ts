@@ -620,12 +620,12 @@ export function getNextPositionValuesForIncreaseTrade(p: {
 
   const nextPnl = existingPosition
     ? getPositionPnlUsd({
-      marketInfo,
-      sizeInUsd: nextSizeUsd,
-      sizeInTokens: nextSizeInTokens,
-      markPrice: indexPrice,
-      isLong,
-    })
+        marketInfo,
+        sizeInUsd: nextSizeUsd,
+        sizeInTokens: nextSizeInTokens,
+        markPrice: indexPrice,
+        isLong,
+      })
     : undefined;
 
   const nextLeverage = getLeverage({

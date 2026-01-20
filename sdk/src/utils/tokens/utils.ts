@@ -2,18 +2,9 @@ import { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
 import { GLV_STUB_ADDRESS, getToken, NATIVE_TOKEN_ADDRESS, GM_STUB_ADDRESS } from "configs/tokens";
 
-
 import { bigMath } from "../bigmath";
 import { adjustForDecimals, expandDecimals, PRECISION } from "../numbers";
-import {
-  ContractPrice,
-  Token,
-  TokenData,
-  TokenPrices,
-  TokensData,
-  TokensRatio,
-  TokensRatioAndSlippage,
-} from "./types";
+import { ContractPrice, Token, TokenData, TokenPrices, TokensData, TokensRatio, TokensRatioAndSlippage } from "./types";
 
 export function parseContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);

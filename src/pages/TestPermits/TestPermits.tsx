@@ -14,8 +14,8 @@ import { sleep } from "lib/sleep";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { getV2Tokens } from "sdk/configs/tokens";
-import { SignedTokenPermit, Token } from "sdk/utils/tokens/types";
 import { MaxUint256 } from "sdk/utils/numbers";
+import { SignedTokenPermit, Token } from "sdk/utils/tokens/types";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";

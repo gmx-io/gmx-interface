@@ -1,15 +1,14 @@
 import { getAddress } from "viem";
 
-import type { TradeAction as SubsquidTradeAction } from "../../types/subsquid";
-
+import type { TradeAction as SubsquidTradeAction } from "../../codegen/subsquid";
 import type { MarketsInfoData } from "../markets/types";
 import { getByKey } from "../objects";
 import { isIncreaseOrderType, isSwapOrderType } from "../orders";
+import { TradeActionType } from "./types";
 import { getSwapPathOutputAddresses } from "../swap/swapStats";
 import { parseContractPrice } from "../tokens";
-import { Token, TokensData } from "../tokens/types";
 import type { PositionTradeAction, SwapTradeAction } from "./types";
-import { TradeActionType } from "./types";
+import { Token, TokensData } from "../tokens/types";
 
 export function createRawTradeActionTransformer(
   marketsInfoData: MarketsInfoData,
@@ -66,9 +65,9 @@ export function createRawTradeActionTransformer(
         twapParams:
           rawAction.twapGroupId && rawAction.numberOfParts
             ? {
-              twapGroupId: rawAction.twapGroupId,
-              numberOfParts: rawAction.numberOfParts,
-            }
+                twapGroupId: rawAction.twapGroupId,
+                numberOfParts: rawAction.numberOfParts,
+              }
             : undefined,
       };
 
@@ -157,9 +156,9 @@ export function createRawTradeActionTransformer(
         twapParams:
           rawAction.twapGroupId && rawAction.numberOfParts
             ? {
-              twapGroupId: rawAction.twapGroupId,
-              numberOfParts: rawAction.numberOfParts,
-            }
+                twapGroupId: rawAction.twapGroupId,
+                numberOfParts: rawAction.numberOfParts,
+              }
             : undefined,
       };
 

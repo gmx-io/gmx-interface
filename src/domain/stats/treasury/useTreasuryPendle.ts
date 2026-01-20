@@ -4,9 +4,9 @@ import useSWR from "swr";
 import { USD_DECIMALS } from "config/factors";
 import type { TokenPricesData } from "domain/synthetics/tokens";
 import { ARBITRUM, type ContractsChainId } from "sdk/configs/chains";
-import type { Token } from "sdk/utils/tokens/types";
 import { expandDecimals } from "sdk/utils/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
+import type { Token } from "sdk/utils/tokens/types";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
 import type { TreasuryBalanceAsset, TreasuryData } from "./types";

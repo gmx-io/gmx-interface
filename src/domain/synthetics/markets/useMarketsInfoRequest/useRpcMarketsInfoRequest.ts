@@ -8,13 +8,13 @@ import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { MarketsData } from "sdk/utils/markets/types";
 import {
   buildMarketsConfigsRequest,
   buildMarketsValuesRequest,
   parseMarketsConfigsResponse,
   parseMarketsValuesResponse,
 } from "sdk/utils/markets/multicall";
+import type { MarketsData } from "sdk/utils/markets/types";
 
 import { useMarketsConstantsRequest } from "./useMarketsConstantsRequest";
 

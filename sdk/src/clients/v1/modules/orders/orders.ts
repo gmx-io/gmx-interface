@@ -2,7 +2,6 @@ import { Address } from "viem";
 
 import { MarketFilterLongShortItemData } from "clients/v1/modules/trades/trades";
 import { getWrappedToken } from "configs/tokens";
-import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "../../../../utils/sidecarOrders/types";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { getByKey } from "utils/objects";
 import { getOrderInfo, isOrderForPositionByData, isVisibleOrder } from "utils/orders";
@@ -18,6 +17,7 @@ import { PositionIncreaseParams, SwapParams, increaseOrderHelper, swap } from ".
 import { cancelOrdersTxn } from "./transactions/cancelOrdersTxn";
 import { createSwapOrderTxn } from "./transactions/createSwapOrderTxn";
 import { createWrapOrUnwrapTxn, WrapOrUnwrapParams } from "./transactions/createWrapOrUnwrapTxn";
+import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "../../../../utils/sidecarOrders/types";
 
 export class Orders extends Module {
   async getOrders({

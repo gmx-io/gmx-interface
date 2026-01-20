@@ -1,8 +1,8 @@
 import merge from "lodash/merge";
 import type { Address } from "viem";
 
+import { TradeAction as SubsquidTradeAction } from "codegen/subsquid";
 import { getWrappedToken } from "configs/tokens";
-import { TradeAction as SubsquidTradeAction } from "types/subsquid";
 import graphqlFetcher from "utils/graphqlFetcher";
 import { GraphQlFilters, buildFiltersBody } from "utils/indexers";
 import { MarketsInfoData } from "utils/markets/types";

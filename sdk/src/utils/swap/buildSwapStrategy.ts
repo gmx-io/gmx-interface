@@ -19,7 +19,6 @@ import { SwapStrategyForSwapOrders } from "../swap/types";
 import { TokenData } from "../tokens/types";
 import { ExternalSwapQuoteParams, SwapOptimizationOrderArray } from "../trade/types";
 
-
 /*
   Order/Priority of getting swap strategy:
   1. Check if it needs a swap and return noSwap if tokens are equivalent, stake or unstake [noSwap]

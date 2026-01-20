@@ -6,8 +6,8 @@ import Skeleton from "react-loading-skeleton";
 import { Operation } from "domain/synthetics/markets/types";
 import { formatDeltaUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
-import { FeeItem } from "sdk/utils/fees/types";
 import { bigMath } from "sdk/utils/bigmath";
+import { FeeItem } from "sdk/utils/fees/types";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";

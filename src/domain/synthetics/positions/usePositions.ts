@@ -16,11 +16,11 @@ import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
+import { getContractMarketPrices } from "sdk/utils/markets";
 import type { ContractMarketPrices, MarketsData } from "sdk/utils/markets/types";
+import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
 import type { PositionsData } from "sdk/utils/positions/types";
 import type { TokensData } from "sdk/utils/tokens/types";
-import { getContractMarketPrices } from "sdk/utils/markets";
-import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
 import type { SyntheticsReader } from "typechain-types/SyntheticsReader";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes

@@ -6,8 +6,8 @@ import {
   getTotalSwapVolumeFromSwapStats,
 } from "domain/synthetics/fees";
 import { BASIS_POINTS_DIVISOR_BIGINT, PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
-import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
+import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags } from "sdk/utils/trade/types";
 
 import { OrderOption } from "../usePositionSellerState";
 

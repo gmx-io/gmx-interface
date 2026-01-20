@@ -22,10 +22,8 @@ export default defineConfig({
       configs: path.resolve(__dirname, "./src/configs"),
       clients: path.resolve(__dirname, "./src/clients"),
       utils: path.resolve(__dirname, "./src/utils"),
-      types: path.resolve(__dirname, "./src/types"),
-      prebuilt: path.resolve(__dirname, "./src/prebuilt/index.ts"),
+      codegen: path.resolve(__dirname, "./src/codegen"),
       abis: path.resolve(__dirname, "./src/abis"),
-      swap: path.resolve(__dirname, "./src/swap"),
     },
   },
 });

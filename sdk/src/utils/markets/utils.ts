@@ -3,7 +3,6 @@ import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/facto
 import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 
-import type { DayPriceCandle } from "../24h/types";
 import type {
   ClaimableFundingData,
   ContractMarketPrices,
@@ -17,6 +16,7 @@ import type {
   RawMarketInfo,
   RawMarketsInfoData,
 } from "./types";
+import type { DayPriceCandle } from "../24h/types";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "../fees";
 import { applyFactor, PRECISION } from "../numbers";
 import { getByKey } from "../objects";

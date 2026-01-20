@@ -4,8 +4,8 @@ import type { GlobalExpressParams } from "domain/synthetics/express";
 import { getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { SwapPricingType } from "sdk/utils/orders/types";
-import type { FindSwapPath } from "sdk/utils/trade/types";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
+import type { FindSwapPath } from "sdk/utils/trade/types";
 
 import { createSelector } from "../utils";
 import {

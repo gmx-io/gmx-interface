@@ -11,9 +11,9 @@ import { OrderType } from "domain/synthetics/orders";
 import { definedOrThrow } from "lib/guards";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
-import { TradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
+import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/indexers";
+import { TradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 

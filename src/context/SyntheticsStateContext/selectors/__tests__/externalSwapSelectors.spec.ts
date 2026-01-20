@@ -7,8 +7,8 @@ import { FindSwapPath } from "domain/synthetics/trade";
 import { expandDecimals } from "lib/numbers";
 import { DeepPartial } from "lib/types";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
-import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
+import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import { SyntheticsState } from "../../SyntheticsStateContextProvider";
 import {

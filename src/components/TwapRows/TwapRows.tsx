@@ -8,8 +8,8 @@ import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/utils/markets/types";
-import { TwapDuration } from "sdk/utils/twap/types";
 import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
+import { TwapDuration } from "sdk/utils/twap/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";

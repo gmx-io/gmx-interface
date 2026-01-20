@@ -9,7 +9,6 @@ import { convertToTokenAmount } from "../tokens";
 import { TokenPrices } from "../tokens/types";
 import { TriggerThresholdType } from "../trade/types";
 
-
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
   const { prices, isIncrease, isLong } = p;
 

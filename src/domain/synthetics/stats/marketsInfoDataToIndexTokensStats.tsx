@@ -97,10 +97,10 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
 
     const poolValueUsd = marketInfo.poolValueMax;
 
-    const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
-    const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
-    const borrowingRateLong = -1n * getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
-    const borrowingRateShort = -1n * getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
+    const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
+    const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, BigInt(CHART_PERIODS["1h"]));
+    const borrowingRateLong = -1n * getBorrowingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
+    const borrowingRateShort = -1n * getBorrowingFactorPerPeriod(marketInfo, false, BigInt(CHART_PERIODS["1h"]));
 
     const [longUsedLiquidity, longMaxLiquidity] = getUsedLiquidity(marketInfo, true);
 

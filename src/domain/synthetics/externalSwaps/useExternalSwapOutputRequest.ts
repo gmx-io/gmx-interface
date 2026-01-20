@@ -11,8 +11,8 @@ import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 import { getBotanixStakingExternalSwapQuote } from "sdk/utils/swap/botanixStaking";
+import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getOpenOceanTxnData, OpenOceanQuote } from "./openOcean";

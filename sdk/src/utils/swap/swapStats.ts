@@ -2,7 +2,6 @@ import { maxUint256 } from "viem";
 
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 
-
 import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "../fees";
 import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "../markets";
 import { MarketInfo, MarketsInfoData } from "../markets/types";
