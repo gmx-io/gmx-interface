@@ -325,8 +325,8 @@ export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPrice
   const SECONDS_PER_HOUR = BigInt(periodToSeconds(1, "1h"));
   const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, SECONDS_PER_HOUR);
   const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, SECONDS_PER_HOUR);
-  const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, true, SECONDS_PER_HOUR);
-  const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, false, SECONDS_PER_HOUR);
+  const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, true, SECONDS_PER_HOUR);
+  const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, false, SECONDS_PER_HOUR);
 
   const netRateLong = fundingRateLong + borrowingRateLong;
   const netRateShort = fundingRateShort + borrowingRateShort;
