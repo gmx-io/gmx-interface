@@ -16,6 +16,7 @@ import {
   parseMarketsValuesResponse,
 } from "sdk/utils/markets/multicall";
 
+import { useFastMarketsInfoRequest } from "./useFastMarketsInfoRequest";
 import { useMarketsConstantsRequest } from "./useMarketsConstantsRequest";
 
 export function useRpcMarketsInfoRequest({
@@ -27,6 +28,7 @@ export function useRpcMarketsInfoRequest({
   tokensData: TokensData | undefined;
   enabled?: boolean;
 }) {
+  const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId);
   const isDependenciesLoading = !marketsAddresses || !tokensData || !marketsConstantsData || !enabled;
@@ -46,6 +48,7 @@ export function useRpcMarketsInfoRequest({
   });
 
   return {
+    fastMarketInfoData,
     marketsData,
     marketsAddresses,
     marketsValuesData,

@@ -18,12 +18,12 @@ type ApiMarketsInfoResponse = {
   updatedAt: number;
 };
 
-export function useApiMarketsInfoRequest(chainId: ContractsChainId) {
+export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = true }: { enabled?: boolean } = {}) {
   const sdk = useGmxSdk(chainId);
   const mountedAtRef = useRef<number | undefined>(mountedAtCache.get(chainId));
 
   const { data, error } = useSWR<ApiMarketsInfoResponse>(
-    ["apiMarketsInfoRequest", chainId],
+    enabled ? ["apiMarketsInfoRequest", chainId] : null,
     async () => {
       const marketsInfo: RawMarketInfo[] = await sdk.fetchMarketsInfo();
       const marketsInfoData = toDict(marketsInfo, "marketTokenAddress");
