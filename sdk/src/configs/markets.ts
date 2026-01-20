@@ -4,7 +4,7 @@
 */
 import { zeroAddress } from "viem";
 
-import type { ERC20Address, NativeTokenSupportedAddress, Token } from "types/tokens";
+import type { ERC20Address, NativeTokenSupportedAddress, Token } from "utils/tokens/types";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
 import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";

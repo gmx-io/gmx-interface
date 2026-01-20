@@ -4,8 +4,8 @@ import { ARBITRUM } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { OrderType } from "types/orders";
 import { parseValue, USD_DECIMALS } from "utils/numbers";
+import { OrderType } from "utils/orders/types";
 import {
   buildIncreaseOrderPayload,
   buildUpdateOrderPayload,

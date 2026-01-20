@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import type { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
+import { SwapPricingType } from "utils/orders/types";
 
 import { mockMarketsInfoData as createMockMarketsInfoData, mockTokensData, usdToToken } from "../../../test/mock";
+import type { MarketsInfoData } from "../../markets/types";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "../swapStats";
 
 const someWrappedToken = "0x0000000000000000000000000000000000000001";

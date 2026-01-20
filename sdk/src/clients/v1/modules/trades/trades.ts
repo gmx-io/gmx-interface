@@ -1,17 +1,17 @@
 import merge from "lodash/merge";
 import type { Address } from "viem";
 
+import { TradeAction as SubsquidTradeAction } from "codegen/subsquid";
 import { getWrappedToken } from "configs/tokens";
-import { MarketsInfoData } from "types/markets";
-import { OrderType } from "types/orders";
-import { TradeAction as SubsquidTradeAction } from "types/subsquid";
-import { TokensData } from "types/tokens";
-import { PositionTradeAction, TradeAction, TradeActionType } from "types/tradeHistory";
 import graphqlFetcher from "utils/graphqlFetcher";
 import { GraphQlFilters, buildFiltersBody } from "utils/indexers";
+import { MarketsInfoData } from "utils/markets/types";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
+import { OrderType } from "utils/orders/types";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
+import { TokensData } from "utils/tokens/types";
 import { createRawTradeActionTransformer } from "utils/tradeHistory";
+import { PositionTradeAction, TradeAction, TradeActionType } from "utils/tradeHistory/types";
 
 import type { GmxSdk } from "../..";
 import { Module } from "../base";

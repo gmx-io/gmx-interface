@@ -20,7 +20,7 @@ import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/sele
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { Token } from "domain/tokens";
 import { formatAmountFree } from "lib/numbers";
-import { DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
+import { DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 function formatTokenAmount(amount: bigint | undefined, decimals: number): string {
   if (amount === undefined || amount <= 0n) return "";

@@ -3,8 +3,8 @@ import { Abi, Address, decodeErrorResult, encodeFunctionData, withRetry } from "
 import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress } from "configs/tokens";
-import { SwapPricingType } from "types/orders";
-import { TokenPrices, TokensData } from "types/tokens";
+import { SwapPricingType } from "utils/orders/types";
+import { TokenPrices, TokensData } from "utils/tokens/types";
 
 import type { GmxSdk } from ".";
 import { extractTxnError } from "../../utils/errors";

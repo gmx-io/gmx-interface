@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach, beforeAll } from "vitest";
 
 import { arbitrumSdk } from "clients/v1/testUtil";
 import { ARBITRUM } from "configs/chains";
-import { MarketInfo, MarketsInfoData } from "types/markets";
-import { TokenData, TokensData } from "types/tokens";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { getByKey } from "utils/objects";
 import * as swapPath from "utils/swap/swapPath";
+import { TokenData, TokensData } from "utils/tokens/types";
 import * as tradeAmounts from "utils/trade/increase";
 
 describe("increaseOrderHelper", () => {

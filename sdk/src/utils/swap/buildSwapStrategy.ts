@@ -1,8 +1,3 @@
-import { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { SwapStrategyForSwapOrders } from "types/swapStrategy";
-import { TokenData } from "types/tokens";
-import { ExternalSwapQuoteParams, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import {
   convertToTokenAmount,
@@ -18,6 +13,11 @@ import {
 import { getAvailableExternalSwapPaths } from "./externalSwapPath";
 import { getExternalSwapQuoteByPath } from "./externalSwapQuoteByPath";
 import { createFindSwapPath } from "./swapPath";
+import { MarketsInfoData } from "../markets/types";
+import { SwapPricingType } from "../orders/types";
+import { SwapStrategyForSwapOrders } from "../swap/types";
+import { TokenData } from "../tokens/types";
+import { ExternalSwapQuoteParams, SwapOptimizationOrderArray } from "../trade/types";
 
 /*
   Order/Priority of getting swap strategy:

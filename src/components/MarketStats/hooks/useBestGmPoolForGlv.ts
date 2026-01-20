@@ -23,7 +23,7 @@ import { getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { absDiffBps } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-import type { GmSwapFees } from "sdk/types/trade";
+import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import { useGlvGmMarketsWithComposition } from "./useMarketGlvGmMarketsCompositions";
 

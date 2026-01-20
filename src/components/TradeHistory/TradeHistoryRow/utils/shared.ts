@@ -9,7 +9,7 @@ import { BytesLike, ethers } from "ethers";
 import words from "lodash/words";
 
 import { abis } from "sdk/abis";
-import { TradeActionType } from "sdk/types/tradeHistory";
+import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
 

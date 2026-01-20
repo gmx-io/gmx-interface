@@ -2,8 +2,8 @@ import { Abi, Address, encodeFunctionData } from "viem";
 
 import { abis } from "abis";
 import { getContract } from "configs/contracts";
-import { Token } from "types/tokens";
 import { convertToContractPrice } from "utils/tokens";
+import { Token } from "utils/tokens/types";
 
 import type { GmxSdk } from "../../../index";
 

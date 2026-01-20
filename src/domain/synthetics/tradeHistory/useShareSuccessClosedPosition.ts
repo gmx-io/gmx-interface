@@ -6,7 +6,7 @@ import { convertToUsd } from "domain/tokens";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getBasisPoints } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { PositionTradeAction, TradeActionType, isPositionTradeAction } from "sdk/types/tradeHistory";
+import { PositionTradeAction, TradeActionType, isPositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import { useTradeHistory } from "./useTradeHistory";
 

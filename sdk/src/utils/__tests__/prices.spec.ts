@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { OrderType } from "types/orders";
-import { TokenPrices } from "types/tokens";
-import { TriggerThresholdType } from "types/trade";
+import { OrderType } from "utils/orders/types";
+import { TokenPrices } from "utils/tokens/types";
+import { TriggerThresholdType } from "utils/trade/types";
 
 import { getMarkPrice, getOrderThresholdType, getShouldUseMaxPrice } from "../prices";
 

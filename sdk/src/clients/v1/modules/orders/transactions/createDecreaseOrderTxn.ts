@@ -4,10 +4,10 @@ import { abis } from "abis";
 import { simulateExecuteOrder } from "clients/v1/simulateExecuteOrder";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import type { DecreasePositionSwapType, OrderType } from "types/orders";
-import type { Token, TokensData } from "types/tokens";
 import { isMarketOrderType } from "utils/orders";
+import type { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { convertToContractPrice } from "utils/tokens";
+import type { Token, TokensData } from "utils/tokens/types";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 
 import type { PriceOverrides } from "./createIncreaseOrderTxn";

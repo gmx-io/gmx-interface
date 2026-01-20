@@ -10,11 +10,6 @@ import {
   MIN_POSITION_SIZE_USD_KEY,
   uiFeeFactorKey,
 } from "configs/dataStore";
-import { ContractMarketPrices, MarketsData, MarketsInfoData } from "types/markets";
-import { OrderInfo } from "types/orders";
-import { Position, PositionsData, PositionsInfoData } from "types/positions";
-import { UserReferralInfo } from "types/referrals";
-import { TokensData } from "types/tokens";
 import { getPositionFee } from "utils/fees";
 import {
   getContractMarketPrices,
@@ -22,8 +17,10 @@ import {
   getMarketPoolName,
   getMaxAllowedLeverageByMinCollateralFactor,
 } from "utils/markets";
+import { ContractMarketPrices, MarketsData, MarketsInfoData } from "utils/markets/types";
 import { basisPointsToFloat, getBasisPoints } from "utils/numbers";
 import { getByKey } from "utils/objects";
+import { OrderInfo } from "utils/orders/types";
 import {
   getEntryPrice,
   getLeverage,
@@ -35,9 +32,12 @@ import {
   getPositionPnlAfterFees,
   getPositionPnlUsd,
 } from "utils/positions";
+import { Position, PositionsData, PositionsInfoData } from "utils/positions/types";
 import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
 import { decodeReferralCode } from "utils/referrals";
+import { UserReferralInfo } from "utils/referrals/types";
 import { convertToTokenAmount, convertToUsd } from "utils/tokens";
+import { TokensData } from "utils/tokens/types";
 
 import { Module } from "../base";
 

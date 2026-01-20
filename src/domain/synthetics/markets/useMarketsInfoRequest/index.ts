@@ -2,8 +2,8 @@ import { useMemo } from "react";
 
 import { getIsFlagEnabled } from "config/ab";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { MarketsInfoData, RawMarketsInfoData } from "sdk/types/markets";
 import { composeFullMarketsInfoData, composeRawMarketsInfoData } from "sdk/utils/markets";
+import type { MarketsInfoData, RawMarketsInfoData } from "sdk/utils/markets/types";
 
 import type { TokensData } from "../../tokens";
 import { useClaimableFundingDataRequest } from "../useClaimableFundingDataRequest";

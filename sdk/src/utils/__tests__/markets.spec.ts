@@ -3,8 +3,6 @@ import { describe, expect, it } from "vitest";
 import { ARBITRUM } from "configs/chains";
 import { TOKENS } from "configs/tokens";
 
-import { MarketInfo } from "../../types/markets";
-import { Token, TokensData } from "../../types/tokens";
 import {
   getMarketFullName,
   getMarketIndexName,
@@ -24,7 +22,9 @@ import {
   getOpenInterestInTokens,
   getPriceForPnl,
 } from "../markets";
+import { MarketInfo } from "../markets/types";
 import { expandDecimals } from "../numbers";
+import { Token, TokensData } from "../tokens/types";
 
 function getToken(symbol: string) {
   return TOKENS[ARBITRUM].find((token) => token.symbol === symbol) as Token;

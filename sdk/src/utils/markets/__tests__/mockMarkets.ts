@@ -1,11 +1,11 @@
 import { zeroAddress } from "viem";
 
 import { USD_DECIMALS } from "configs/factors";
-import { MarketInfo, MarketsData, MarketsInfoData } from "types/markets";
-import { TokensData } from "types/tokens";
 import { getMarketFullName } from "utils/markets";
+import { MarketInfo, MarketsData, MarketsInfoData } from "utils/markets/types";
 import { expandDecimals } from "utils/numbers";
 import { getTokenData } from "utils/tokens";
+import { TokensData } from "utils/tokens/types";
 
 import { usdToToken } from "../../../test/mock";
 
