@@ -531,3 +531,8 @@ export function getCappedPriceImpactPercentageFromFees({
 
   return fees?.positionNetPriceImpact?.precisePercentage ?? 0n;
 }
+
+export function getMaxNegativeImpactBps(marketInfo: MarketInfo): bigint {
+  const factor = marketInfo.maxPositionImpactFactorNegative;
+  return factor / expandDecimals(1, 26);
+}
