@@ -5,7 +5,6 @@ import { DOCS_LINKS } from "config/links";
 import { FeeItem } from "domain/synthetics/fees";
 import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { formatPercentage, formatUsd } from "lib/numbers";
-import { getIsElevatedImpactCap } from "sdk/utils/fees/priceImpact";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -30,8 +29,6 @@ export function HighPriceImpactOrFeesWarningCard({
   isIncrease,
   maxImpactCapBps,
 }: Props) {
-  const hasElevatedCap = getIsElevatedImpactCap(maxImpactCapBps);
-
   const formattedCap = maxImpactCapBps !== undefined ? formatPercentage(maxImpactCapBps, { bps: true }) : "";
 
   const warnings = useMemo(() => {
@@ -44,17 +41,10 @@ export function HighPriceImpactOrFeesWarningCard({
           id: "high-impact-on-collateral",
           key: t`High Net Price Impact`,
           value: undefined,
-          tooltipContent: hasElevatedCap ? (
+          tooltipContent: (
             <Trans>
-              The potential net price impact that will apply when closing this position may be high compared to the
-              amount of collateral you're using. This market has a maximum price impact cap of {formattedCap}. Consider
-              reducing leverage or choosing a different market.{" "}
-              <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
-            </Trans>
-          ) : (
-            <Trans>
-              The potential net price impact that will apply when closing this position may be high compared to the
-              amount of collateral you're using. Consider reducing leverage.{" "}
+              High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
+              collateral. Consider reducing leverage.{" "}
               <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
             </Trans>
           ),
@@ -64,16 +54,10 @@ export function HighPriceImpactOrFeesWarningCard({
           id: "high-impact-on-close",
           key: t`High Price Impact on Close`,
           value: undefined,
-          tooltipContent: hasElevatedCap ? (
+          tooltipContent: (
             <Trans>
-              The current price impact for closing this position is high. This market has a maximum cap of{" "}
-              {formattedCap}. Consider waiting for better market conditions or reducing your close size.{" "}
-              <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
-            </Trans>
-          ) : (
-            <Trans>
-              The current price impact for closing this position is high. Consider waiting for better market conditions
-              or reducing your close size. <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
+              High net price impact (capped at {formattedCap} for this market). Consider reducing size or waiting for
+              better conditions. <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
             </Trans>
           ),
         });
@@ -134,7 +118,6 @@ export function HighPriceImpactOrFeesWarningCard({
     swapPriceImpact?.deltaUsd,
     swapProfitFee?.deltaUsd,
     isIncrease,
-    hasElevatedCap,
     formattedCap,
   ]);
 

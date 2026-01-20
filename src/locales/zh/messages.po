@@ -2133,6 +2133,10 @@ msgstr "Botanix 当前暂无更多机会。请切换至 Arbitrum 或 Avalanche �
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "没有可用交换路径。<0>交换 {0} 到 STBTC</0> 以使用 {1} 作为抵押品。"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
@@ -3757,10 +3761,6 @@ msgstr "资金活动"
 msgid "Buy GLV"
 msgstr "购买 GLV"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The current price impact for closing this position is high. This market has a maximum cap of {formattedCap}. Consider waiting for better market conditions or reducing your close size. <0>Read more</0>."
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Part"
 msgstr "TWAP 部分失败"
@@ -4770,10 +4770,6 @@ msgstr "奖励来源于协议费用，用于 GMX 回购"
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr "奖金回扣是一个估计值，可达开仓费用的 {0}%。它将按比例空投为 {incentivesTokenTitle} 代币。<0><1>阅读更多</1>。</0>"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. This market has a maximum price impact cap of {formattedCap}. Consider reducing leverage or choosing a different market. <0>Read more</0>."
-msgstr ""
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
 msgstr "{gmOrGlvLabel} 代币已成功卖出，但跨链桥接至 Base 失败。您的资金是安全的，目前存储在您的 GMX 账户中。您可以重试桥接或打开 GMX 账户弹窗手动提取代币。"
@@ -4990,6 +4986,10 @@ msgstr "搜索操作"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show Leverage Slider"
 msgstr "显示杠杆滑块"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High net price impact (capped at {formattedCap} for this market). Consider reducing size or waiting for better conditions. <0>Read more</0>."
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
@@ -5209,10 +5209,6 @@ msgstr "起始未实现 PnL"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "批准已提交！<0>查看状态。</0>"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "平仓时可能应用的潜在净价格冲击相对于您使用的抵押品金额可能较高。请考虑降低杠杆。<0>了解更多</0>。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
@@ -5972,10 +5968,6 @@ msgstr "授权 GMX"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fee"
 msgstr "负资金费用"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The current price impact for closing this position is high. Consider waiting for better market conditions or reducing your close size. <0>Read more</0>."
-msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts

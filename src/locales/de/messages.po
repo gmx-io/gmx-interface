@@ -2133,6 +2133,10 @@ msgstr "Derzeit keine weiteren Möglichkeiten auf Botanix. Wechsle zu Arbitrum o
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "Kein Swap-Pfad verfügbar. <0>Swappe {0} zu STBTC</0>, um {1} als Kollateral zu verwenden."
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
@@ -3757,10 +3761,6 @@ msgstr "Funding-Aktivität"
 msgid "Buy GLV"
 msgstr "GLV kaufen"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The current price impact for closing this position is high. This market has a maximum cap of {formattedCap}. Consider waiting for better market conditions or reducing your close size. <0>Read more</0>."
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Part"
 msgstr "Fehlgeschlagener TWAP-Teil"
@@ -4770,10 +4770,6 @@ msgstr "Belohnungen werden durch Protokollgebühren finanziert, die GMX-Rückkä
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr "Der Bonus-Rabatt ist eine Schätzung und kann bis zu {0}% der Eröffnungsgebühr betragen. Er wird als {incentivesTokenTitle}-Token auf pro-rata-Basis airdropped. <0><1>Mehr lesen</1>.</0>"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. This market has a maximum price impact cap of {formattedCap}. Consider reducing leverage or choosing a different market. <0>Read more</0>."
-msgstr ""
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
 msgstr "{gmOrGlvLabel}-Token wurden erfolgreich verkauft, aber die Bridge zu Base ist fehlgeschlagen. Deine Mittel sind sicher und befinden sich derzeit auf deinem GMX-Konto. Du kannst die Bridge erneut versuchen oder das GMX-Konto-Modal öffnen, um deine Token manuell abzuheben."
@@ -4990,6 +4986,10 @@ msgstr "Aktion suchen"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show Leverage Slider"
 msgstr "Hebelwirkungs-Slider anzeigen"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High net price impact (capped at {formattedCap} for this market). Consider reducing size or waiting for better conditions. <0>Read more</0>."
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
@@ -5209,10 +5209,6 @@ msgstr "Start unrealisierter PnL"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Genehmigung übermittelt! <0>Status anzeigen.</0>"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "Der mögliche Netto-Preis-Impact beim Schließen dieser Position könnte im Verhältnis zu deinem eingesetzten Collateral hoch sein. Erwäge, den Hebel zu reduzieren. <0>Mehr erfahren</0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
@@ -5972,10 +5968,6 @@ msgstr "GMX genehmigen"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fee"
 msgstr "Negative Funding-Gebühr"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The current price impact for closing this position is high. Consider waiting for better market conditions or reducing your close size. <0>Read more</0>."
-msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts

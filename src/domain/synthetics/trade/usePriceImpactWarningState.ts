@@ -146,7 +146,7 @@ export function usePriceImpactWarningState({
   shouldShowWarningForExecutionFee = isHightExecutionPrice;
   shouldShowWarningForTriggerOrders = willDecreaseOrdersBeExecuted ?? false;
   shouldShowWarningForExternalSwap = isHighExternalSwapFees;
-  shouldShowWarningForCollateral = isHighCollateralImpact && tradeFlags.isIncrease;
+  shouldShowWarningForCollateral = isHighCollateralImpact;
   shouldShowWarningForTwapNetworkFee = isHighTwapNetworkFee;
 
   shouldShowWarning =
