@@ -29,13 +29,14 @@ export function HighPriceImpactOrFeesWarningCard({
   isIncrease,
   maxImpactCapBps,
 }: Props) {
-  const formattedCap = maxImpactCapBps !== undefined ? formatPercentage(maxImpactCapBps, { bps: true }) : "";
+  console.log("maxImpactCapBps", maxImpactCapBps);
+  const formattedCap = formatPercentage(maxImpactCapBps, { displayDecimals: 1 });
 
   const warnings = useMemo(() => {
     const warnings: { id: string; key: React.ReactNode; value?: React.ReactNode; tooltipContent?: React.ReactNode }[] =
       [];
 
-    if (priceImpactWarningState.shouldShowWarningForCollateral) {
+    if (priceImpactWarningState.shouldShowWarningForCollateral && formattedCap) {
       if (isIncrease) {
         warnings.push({
           id: "high-impact-on-collateral",
