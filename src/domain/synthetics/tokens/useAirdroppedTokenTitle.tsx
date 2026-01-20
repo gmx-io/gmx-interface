@@ -87,10 +87,3 @@ export function useTradingAirdroppedTokenTitle(): string | JSX.Element {
 
   return "";
 }
-
-export function useAnyAirdroppedTokenTitle(): string | JSX.Element {
-  const lpAirdroppedTokenTitle = useLpAirdroppedTokenTitle();
-  const tradingAirdroppedTokenTitle = useTradingAirdroppedTokenTitle();
-
-  return lpAirdroppedTokenTitle ?? tradingAirdroppedTokenTitle;
-}

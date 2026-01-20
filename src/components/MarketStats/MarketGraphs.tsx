@@ -1,7 +1,7 @@
 import { MessageDescriptor } from "@lingui/core";
 import { msg, t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import format from "date-fns/format";
+import { format } from "date-fns/format";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
@@ -209,7 +209,7 @@ type GraphData = {
   snapshotTimestamp: Date;
 };
 
-export const formatPerformanceBps = (performance: number): string => {
+const formatPerformanceBps = (performance: number): string => {
   return Number((performance * 100).toFixed(2)) + "%";
 };
 

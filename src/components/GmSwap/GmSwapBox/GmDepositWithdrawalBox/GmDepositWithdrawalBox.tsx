@@ -3,6 +3,7 @@ import cx from "classnames";
 import mapValues from "lodash/mapValues";
 import { useCallback, useEffect, useMemo } from "react";
 
+import { AVALANCHE } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import {
   usePoolsDetailsFirstTokenAddress,
@@ -184,7 +185,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const technicalFees = useTechnicalFees();
 
-  const { logicalFees } = useDepositWithdrawalFees({
+  const logicalFees = useDepositWithdrawalFees({
     amounts,
     chainId,
     gasLimits,
@@ -200,6 +201,8 @@ export function GmSwapBoxDepositWithdrawal() {
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees,
   });
+
+  const shouldShowAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
 
   const submitState = useGmSwapSubmitState({
     logicalFees,
@@ -484,7 +487,11 @@ export function GmSwapBoxDepositWithdrawal() {
                         }
 
                         setPaySource(
-                          isSourceChain(newSrcChainId) ? "sourceChain" : isGmxAccount ? "gmxAccount" : "settlementChain"
+                          isSourceChain(newSrcChainId, chainId)
+                            ? "sourceChain"
+                            : isGmxAccount
+                              ? "gmxAccount"
+                              : "settlementChain"
                         );
                         handleFirstTokenSelect(tokenAddress as ERC20Address | NativeTokenSupportedAddress);
                       }}
@@ -629,6 +636,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarningForPosition={shouldShowWarningForPosition}
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
                 insufficientGasWarningText={submitState.warningText}
+                shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
               />
             </div>
           </div>

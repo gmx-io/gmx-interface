@@ -1,37 +1,57 @@
 import {
-  ARBITRUM_SEPOLIA,
   ARBITRUM,
   AVALANCHE,
-  SOURCE_OPTIMISM_SEPOLIA,
-  SOURCE_SEPOLIA,
+  AVALANCHE_FUJI,
+  ARBITRUM_SEPOLIA,
   SOURCE_BASE_MAINNET,
-  SOURCE_BSC_MAINNET,
   SOURCE_ETHEREUM_MAINNET,
+  SOURCE_BSC_MAINNET,
+  SOURCE_SEPOLIA,
+  SOURCE_OPTIMISM_SEPOLIA,
 } from "./chainIds";
-import { SettlementChainId, SourceChainId } from "./chains";
-
-function ensureExhaustive<T extends number>(value: Record<T, true>): T[] {
-  return Object.keys(value).map(Number) as T[];
-}
-
-export const SETTLEMENT_CHAINS: SettlementChainId[] = ensureExhaustive<SettlementChainId>({
-  [ARBITRUM_SEPOLIA]: true,
-  [ARBITRUM]: true,
-  [AVALANCHE]: true,
-});
-
-export const SOURCE_CHAINS: SourceChainId[] = ensureExhaustive<SourceChainId>({
-  [SOURCE_OPTIMISM_SEPOLIA]: true,
-  [SOURCE_SEPOLIA]: true,
-  [SOURCE_BASE_MAINNET]: true,
-  [SOURCE_BSC_MAINNET]: true,
-  [SOURCE_ETHEREUM_MAINNET]: true,
-});
+import {
+  SETTLEMENT_CHAIN_IDS,
+  SETTLEMENT_CHAIN_IDS_DEV,
+  SettlementChainId,
+  SOURCE_CHAIN_IDS,
+  SourceChainId,
+} from "./chains";
 
 export function isSettlementChain(chainId: number): chainId is SettlementChainId {
-  return SETTLEMENT_CHAINS.includes(chainId as SettlementChainId);
+  return SETTLEMENT_CHAIN_IDS.includes(chainId as any) || SETTLEMENT_CHAIN_IDS_DEV.includes(chainId as any);
 }
 
-export function isSourceChain(chainId: number | undefined): chainId is SourceChainId {
-  return SOURCE_CHAINS.includes(chainId as SourceChainId);
+const SOURCE_CHAIN_IDS_MAP: Record<SettlementChainId, SourceChainId[]> = {
+  [ARBITRUM]: [SOURCE_BASE_MAINNET, SOURCE_ETHEREUM_MAINNET, SOURCE_BSC_MAINNET],
+  [AVALANCHE]: [SOURCE_BASE_MAINNET, SOURCE_BSC_MAINNET],
+  [AVALANCHE_FUJI]: [ARBITRUM_SEPOLIA],
+  [ARBITRUM_SEPOLIA]: [SOURCE_SEPOLIA, SOURCE_OPTIMISM_SEPOLIA],
+};
+
+export function isSourceChain(
+  chainId: number | undefined,
+  forSettlementChain: number | undefined
+): chainId is SourceChainId {
+  if (!chainId || !forSettlementChain) {
+    return false;
+  }
+
+  const sourceChainIds = SOURCE_CHAIN_IDS_MAP[forSettlementChain as SettlementChainId];
+  if (!sourceChainIds) {
+    return false;
+  }
+
+  return sourceChainIds.includes(chainId as any);
+}
+
+/**
+ * Check if a chain is a source chain for any settlement chain
+ * Useful when settlement chain context is not available
+ */
+export function isSourceChainForAnySettlementChain(chainId: number | undefined): chainId is SourceChainId {
+  if (!chainId) {
+    return false;
+  }
+
+  return SOURCE_CHAIN_IDS.includes(chainId as any);
 }

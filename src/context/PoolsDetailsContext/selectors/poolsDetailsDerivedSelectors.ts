@@ -16,6 +16,7 @@ import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
 import { isMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { Mode, Operation } from "domain/synthetics/markets/types";
 import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from "domain/tokens";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -29,7 +30,6 @@ import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/types/orders";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 
 import {
   PLATFORM_TOKEN_DECIMALS,
@@ -80,7 +80,7 @@ export const selectPoolsDetailsGlvOrMarketInfo = createSelector((q) => {
   });
 });
 
-export const selectPoolsDetailsAreBothCollateralsCrossChain = createSelector((q): boolean => {
+const selectPoolsDetailsAreBothCollateralsCrossChain = createSelector((q): boolean => {
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);
   const glvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
@@ -338,28 +338,6 @@ export const selectPoolsDetailsSecondTokenData = createSelector((q) => {
   }
 
   return getTokenData(marketAndTradeTokensData, secondTokenAddress);
-});
-
-export const selectPoolsDetailsLongTokenData = createSelector((q) => {
-  const tokensData = q(selectTokensData);
-  const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
-
-  if (!tokensData || !longTokenAddress) {
-    return undefined;
-  }
-
-  return getTokenData(tokensData, longTokenAddress);
-});
-
-export const selectPoolsDetailsShortTokenData = createSelector((q) => {
-  const tokensData = q(selectTokensData);
-  const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
-
-  if (!tokensData || !shortTokenAddress) {
-    return undefined;
-  }
-
-  return getTokenData(tokensData, shortTokenAddress);
 });
 
 export const selectPoolsDetailsPayLongToken = createSelector((q) => {

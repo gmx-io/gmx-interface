@@ -5,7 +5,6 @@ import { buildAndSignMultichainGlvWithdrawalTxn } from "domain/synthetics/market
 import { buildAndSignMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
 import type { GmPaySource } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
-import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
@@ -23,14 +22,8 @@ export function useMultichainWithdrawalExpressTxnParams({
   isWithdrawal: boolean;
 }) {
   const { chainId, srcChainId } = useChainId();
-  const { signer } = useWallet();
 
-  const enabled =
-    paySource === "gmxAccount" &&
-    isWithdrawal &&
-    Boolean(params) &&
-    transferRequests !== undefined &&
-    signer !== undefined;
+  const enabled = paySource === "gmxAccount" && isWithdrawal && Boolean(params) && transferRequests !== undefined;
 
   const multichainWithdrawalExpressTxnParams = useArbitraryRelayParamsAndPayload({
     isGmxAccount: paySource === "gmxAccount",
@@ -56,7 +49,6 @@ export function useMultichainWithdrawalExpressTxnParams({
             ...relayParams,
             deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
           },
-          signer,
           transferRequests,
         });
 
@@ -78,7 +70,6 @@ export function useMultichainWithdrawalExpressTxnParams({
           ...relayParams,
           deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
         },
-        signer,
         transferRequests,
       });
 

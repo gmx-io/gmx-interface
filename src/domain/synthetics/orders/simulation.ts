@@ -40,7 +40,7 @@ export type SimulateExecuteParams = {
   blockTimestampData: BlockTimestampData | undefined;
 };
 
-export function isSimulationPassed(errorData: ErrorData) {
+function isSimulationPassed(errorData: ErrorData) {
   return isContractError(errorData, CustomErrorName.EndOfOracleSimulation);
 }
 
@@ -233,7 +233,7 @@ export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderT
   return overrides;
 }
 
-export type SimulationPrices = ReturnType<typeof getSimulationPrices>;
+type SimulationPrices = ReturnType<typeof getSimulationPrices>;
 
 export type PriceOverride = { tokenAddress: string; contractPrices?: TokenPrices; prices?: TokenPrices };
 

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
+import type { ContractsChainId } from "config/chains";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { PerformanceInfo, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
@@ -123,7 +124,7 @@ export function usePoolsData(): Partial<PoolsData> {
 }
 
 function useApysByChainId(chainId: number) {
-  const fetcher = useOracleKeeperFetcher(chainId);
+  const fetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
   return useSWR(["apys", chainId], async () => {
     const res = await fetcher.fetchApys("90d");
     return res;
@@ -191,7 +192,7 @@ function useMarketInfos() {
 }
 
 function usePerformanceByChainId(chainId: number) {
-  const fetcher = useOracleKeeperFetcher(chainId);
+  const fetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
   return useSWR(["performance", chainId], async () => {
     const res = await fetcher.fetchPerformanceAnnualized("90d");
     return res;

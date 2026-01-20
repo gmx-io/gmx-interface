@@ -36,21 +36,6 @@ export type LandingPageProtocolTokenEvent = {
   };
 };
 
-export type LandingPageProtocolReadMoreEvent = {
-  event: "LandingPageAction";
-  data: {
-    action: "ProtocolReadMore";
-  };
-};
-
-export type LandingPageHeaderMenuEvent = {
-  event: "LandingPageAction";
-  data: {
-    action: "HeaderMenu";
-    button: "App" | "Protocol" | "Governance" | "Voting" | "Docs";
-  };
-};
-
 export type LandingPageFooterMenuEvent = {
   event: "LandingPageAction";
   data: {
@@ -202,14 +187,6 @@ export type TradeBoxResultEvent = {
   };
 };
 
-export type TradeBoxLeverageSliderToggleEvent = {
-  event: "TradeBoxAction";
-  data: {
-    action: "LeverageSliderToggle";
-    state: "enabled" | "disabled";
-  };
-};
-
 export type TradeBoxWarningShownEvent = {
   event: "TradeBoxAction";
   data: {
@@ -292,13 +269,6 @@ export type SharePositionActionEvent = {
     source?: SharePositionActionSource;
     hasReferralCode?: boolean;
     doNotShowAgain?: boolean;
-  };
-};
-
-export type ReferralTopMenuClickEvent = {
-  event: "ReferralCodeAction";
-  data: {
-    action: "ReferralTopMenuClick";
   };
 };
 

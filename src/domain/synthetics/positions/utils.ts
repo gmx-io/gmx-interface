@@ -2,8 +2,6 @@ import { t } from "@lingui/macro";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { isBoundaryAcceptablePrice } from "domain/prices";
-import { MarketInfo, getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "domain/synthetics/markets";
-import { Token } from "domain/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import {
   applyFactor,
@@ -27,52 +25,10 @@ import { PositionInfo, PositionInfoLoaded } from "./types";
 
 export * from "sdk/utils/positions";
 
-export function getPositionValueUsd(p: { indexToken: Token; sizeInTokens: bigint; markPrice: bigint }) {
-  const { indexToken, sizeInTokens, markPrice } = p;
-
-  return convertToUsd(sizeInTokens, indexToken.decimals, markPrice)!;
-}
-
 export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: bigint; pendingBorrowingFeesUsd: bigint }) {
   const { pendingFundingFeesUsd, pendingBorrowingFeesUsd } = p;
 
   return pendingBorrowingFeesUsd + pendingFundingFeesUsd;
-}
-
-export function getPositionPnlUsd(p: {
-  marketInfo: MarketInfo;
-  sizeInUsd: bigint;
-  sizeInTokens: bigint;
-  markPrice: bigint;
-  isLong: boolean;
-}) {
-  const { marketInfo, sizeInUsd, sizeInTokens, markPrice, isLong } = p;
-
-  const positionValueUsd = getPositionValueUsd({ indexToken: marketInfo.indexToken, sizeInTokens, markPrice });
-
-  let totalPnl = isLong ? positionValueUsd - sizeInUsd : sizeInUsd - positionValueUsd;
-
-  if (totalPnl <= 0) {
-    return totalPnl;
-  }
-
-  const poolPnl = getMarketPnl(marketInfo, isLong, true);
-  const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
-
-  const cappedPnl = getCappedPoolPnl({
-    marketInfo,
-    poolUsd,
-    poolPnl,
-    isLong,
-  });
-
-  const WEI_PRECISION = expandDecimals(1, 18);
-
-  if (cappedPnl !== poolPnl && cappedPnl > 0 && poolPnl > 0) {
-    totalPnl = bigMath.mulDiv(totalPnl, cappedPnl / WEI_PRECISION, poolPnl / WEI_PRECISION);
-  }
-
-  return totalPnl;
 }
 
 export function formatLiquidationPrice(

@@ -110,7 +110,7 @@ export function getTierIdDisplay(tierId) {
   return Number(tierId) + 1;
 }
 
-export const tierRebateInfo = {
+const tierRebateInfo = {
   0: 5,
   1: 10,
   2: 15,

@@ -50,7 +50,7 @@ export function ClaimModal(p: Props) {
   }
 }
 
-export function ClaimModalSettlementChain(p: Props) {
+function ClaimModalSettlementChain(p: Props) {
   const { isVisible, onClose, setPendingTxns } = p;
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
@@ -124,7 +124,7 @@ export function ClaimModalSettlementChain(p: Props) {
   return <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} />;
 }
 
-export function ClaimModalMultichain(p: Props) {
+function ClaimModalMultichain(p: Props) {
   const { isVisible, onClose } = p;
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();

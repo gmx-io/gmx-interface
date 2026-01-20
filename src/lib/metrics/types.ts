@@ -32,7 +32,7 @@ export enum OrderStage {
   Failed = "failed",
 }
 
-export enum LoadingStage {
+enum LoadingStage {
   Started = "started",
   Success = "success",
   Timeout = "timeout",
@@ -59,9 +59,6 @@ export type OrderMetricType =
   | ShiftGmMetricData["metricType"]
   | MultichainDepositMetricData["metricType"]
   | MultichainWithdrawalMetricData["metricType"];
-
-export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
-export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
 
 export type OrderMetricId = OrderMetricData["metricId"];
 
@@ -181,12 +178,6 @@ export type SubmittedOrderEvent = {
   data: OrderMetricData;
 };
 
-export type ValidationErrorEvent = {
-  event: `${OrderMetricType}.${OrderStage.Failed}`;
-  isError: true;
-  data: OrderMetricData & ErrorData;
-};
-
 export type OrderStepTimings = {
   timeFromSubmitted: number;
   timeFromSimulated: number;
@@ -227,13 +218,6 @@ export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
   data: Partial<OrderMetricData & ErrorData & OrderStepTimings>;
-};
-
-export type PendingTxnErrorEvent = {
-  event: `${OrderMetricType}.${OrderStage.Failed}`;
-  isError: true;
-  time: number | undefined;
-  data: OrderMetricData & ErrorData;
 };
 
 export type OrderExecutedEvent = {
@@ -628,14 +612,6 @@ export type MulticallRequestCounter = {
   };
 };
 
-export type MulticallFallbackRpcModeCounter = {
-  event: `multicall.fallbackRpcMode.${"on" | "off"}`;
-  data: {
-    chainId: number;
-    isInMainThread: boolean;
-  };
-};
-
 export type WsSourceChainProviderConnectedCounter = {
   event: "wsSourceChainProvider.connected";
   data: {
@@ -675,16 +651,4 @@ export type MultichainWithdrawalMetricData = MultichainFundingParams & {
   metricId: `multichainWithdrawal:${string}`;
   metricType: "multichainWithdrawal";
   isFirstWithdrawal: boolean;
-};
-
-export type MultichainDepositEvent = {
-  event: "multichainDeposit";
-  isError: false;
-  data: MultichainDepositMetricData;
-};
-
-export type MultichainWithdrawalEvent = {
-  event: "multichainWithdrawal";
-  isError: false;
-  data: MultichainWithdrawalMetricData;
 };

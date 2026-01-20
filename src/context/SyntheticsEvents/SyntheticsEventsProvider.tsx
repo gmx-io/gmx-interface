@@ -96,7 +96,7 @@ import {
 import { useMultichainEvents } from "./useMultichainEvents";
 import { extractGelatoError, getGelatoTaskUrl, getPendingOrderKey } from "./utils";
 
-export const SyntheticsEventsContext = createContext({});
+const SyntheticsEventsContext = createContext({});
 
 export function useSyntheticsEvents(): SyntheticsEventsContextType {
   return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
