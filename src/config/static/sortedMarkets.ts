@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "sdk/configs/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "sdk/configs/chains";
 
 /*
   A temporary solution before positions sorting logic is updated
@@ -171,4 +171,5 @@ export const SORTED_MARKETS = {
     "0x2f95a2529328E427d3204555F164B1102086690E",
     "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d",
   ],
+  [MEGAETH]: ["0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7"],
 };

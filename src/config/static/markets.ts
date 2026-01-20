@@ -714,8 +714,12 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
       enabled: true,
     },
   },
-  // TODO: Add MegaEth markets when available
-  [MEGAETH]: {},
+  [MEGAETH]: {
+    // ETH/USD [WETH-WETH]
+    "0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7": {
+      enabled: true,
+    },
+  },
 };
 
 export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(

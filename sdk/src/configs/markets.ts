@@ -1225,8 +1225,15 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       shortTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
     },
   },
-  // TODO: Add MegaEth markets when available
-  [MEGAETH]: {},
+  [MEGAETH]: {
+    // ETH/USD [WETH-WETH]
+    "0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7": {
+      marketTokenAddress: "0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7",
+      indexTokenAddress: "0x4200000000000000000000000000000000000006",
+      longTokenAddress: "0x4200000000000000000000000000000000000006",
+      shortTokenAddress: "0x4200000000000000000000000000000000000006",
+    },
+  },
 };
 
 export type MarketLabel = `${string}/USD [${string}-${string}]`;
