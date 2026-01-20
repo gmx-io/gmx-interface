@@ -11,7 +11,7 @@ import type { ExternalSwapQuote } from "sdk/types/trade";
 
 import type { MultichainEventsState } from "./useMultichainEvents";
 
-export type MultiTransactionStatus<TEventData> = {
+type MultiTransactionStatus<TEventData> = {
   key: string;
   data?: TEventData;
   createdTxnHash?: string;
@@ -104,11 +104,6 @@ export type GelatoTaskStatus = {
   transactionHash?: string;
 };
 
-export type ExpressHandlers = {
-  onSuccess: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
-  onFailure: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
-};
-
 export type PendingPositionsUpdates = {
   [key: string]: PendingPositionUpdate | undefined;
 };
@@ -135,11 +130,11 @@ export type SubmittedMultichainWithdrawal = {
 
 export type PendingMultichainFunding = MultichainFundingHistoryItem[];
 
-export type EventLogItems<T> = {
+type EventLogItems<T> = {
   [key: string]: T;
 };
 
-export type EventLogArrayItems<T> = {
+type EventLogArrayItems<T> = {
   [key: string]: T[];
 };
 

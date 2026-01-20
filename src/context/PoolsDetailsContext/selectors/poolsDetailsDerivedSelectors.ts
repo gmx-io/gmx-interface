@@ -80,7 +80,7 @@ export const selectPoolsDetailsGlvOrMarketInfo = createSelector((q) => {
   });
 });
 
-export const selectPoolsDetailsAreBothCollateralsCrossChain = createSelector((q): boolean => {
+const selectPoolsDetailsAreBothCollateralsCrossChain = createSelector((q): boolean => {
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);
   const glvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
@@ -338,28 +338,6 @@ export const selectPoolsDetailsSecondTokenData = createSelector((q) => {
   }
 
   return getTokenData(marketAndTradeTokensData, secondTokenAddress);
-});
-
-export const selectPoolsDetailsLongTokenData = createSelector((q) => {
-  const tokensData = q(selectTokensData);
-  const longTokenAddress = q(selectPoolsDetailsLongTokenAddress);
-
-  if (!tokensData || !longTokenAddress) {
-    return undefined;
-  }
-
-  return getTokenData(tokensData, longTokenAddress);
-});
-
-export const selectPoolsDetailsShortTokenData = createSelector((q) => {
-  const tokensData = q(selectTokensData);
-  const shortTokenAddress = q(selectPoolsDetailsShortTokenAddress);
-
-  if (!tokensData || !shortTokenAddress) {
-    return undefined;
-  }
-
-  return getTokenData(tokensData, shortTokenAddress);
 });
 
 export const selectPoolsDetailsPayLongToken = createSelector((q) => {

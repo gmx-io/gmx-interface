@@ -49,7 +49,7 @@ import { FeeApyLabel } from "./FeeApyLabel";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
 
-export const tokenAddressStyle = { fontSize: 5 };
+const tokenAddressStyle = { fontSize: 5 };
 
 export function GmListItem({
   token,

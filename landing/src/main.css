@@ -9,7 +9,7 @@
   }
   html {
     /* Restore native webkit behavior */
-    @apply leading-base bg-slate-800;
+    @apply bg-slate-800 leading-base;
   }
 }
 
@@ -26,4 +26,3 @@
   font-weight: 500;
   src: url("fonts/tthoves/tthoves-pro-medium.ttf") format("truetype");
 }
-
