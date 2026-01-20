@@ -695,6 +695,10 @@ msgstr "Precio límite por encima del precio de referencia"
 msgid "Open Interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgstr "Interés Abierto (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High Price Impact on Close"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "La precisión máxima del buffer de comisión de red es 0.01%"
@@ -3753,6 +3757,10 @@ msgstr "Actividad de Funding"
 msgid "Buy GLV"
 msgstr "Comprar GLV"
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The current price impact for closing this position is high. This market has a maximum cap of {formattedCap}. Consider waiting for better market conditions or reducing your close size. <0>Read more</0>."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Part"
 msgstr "Parte TWAP Fallida"
@@ -4761,6 +4769,10 @@ msgstr "Las recompensas están financiadas por las comisiones del protocolo que 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "The bonus rebate is an estimate and can be up to {0}% of the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis. <0><1>Read more</1>.</0>"
 msgstr "El reembolso de bonificación es una estimación y puede ser hasta {0}% de la comisión de apertura. Se lanzará como tokens {incentivesTokenTitle} en base prorrateada. <0><1>Leer más</1>.</0>"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. This market has a maximum price impact cap of {formattedCap}. Consider reducing leverage or choosing a different market. <0>Read more</0>."
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} tokens were sold successfully, but the bridge to Base failed. Your funds are safe and currently stored in your GMX account. You can retry the bridge or open GMX account modal to manually withdraw your tokens."
@@ -5960,6 +5972,10 @@ msgstr "Aprobar GMX"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative Funding Fee"
 msgstr "Tarifa de Funding Negativa"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "The current price impact for closing this position is high. Consider waiting for better market conditions or reducing your close size. <0>Read more</0>."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
