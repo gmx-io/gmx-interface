@@ -15,7 +15,11 @@ import { BlockField } from "components/BlockField/BlockField";
 
 import { PoolSelector2 } from "../PoolSelector2/PoolSelector2";
 
-export function MarketPoolSelectorField() {
+type Props = {
+  disabled?: boolean;
+};
+
+export function MarketPoolSelectorField({ disabled }: Props = {}) {
   const { relatedMarketStats, relatedMarketsPositionStats } = useSelector(selectTradeboxRelatedMarketsStats);
   const { marketAddress, setMarketAddress } = useSelector(selectTradeboxState);
   const tradeType = useSelector(selectTradeboxTradeType);
@@ -31,6 +35,7 @@ export function MarketPoolSelectorField() {
       forwardClickToSelector
       label={t`Pool`}
       className="group/selector-field"
+      disabled={disabled}
       content={
         <PoolSelector2
           selectedPoolName={poolName}
@@ -42,6 +47,7 @@ export function MarketPoolSelectorField() {
           chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
           wrapperClassName="overflow-hidden"
           popoverReferenceRef={popoverReferenceRef}
+          disabled={disabled}
         />
       }
     />

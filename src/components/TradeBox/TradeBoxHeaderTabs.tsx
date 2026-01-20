@@ -68,7 +68,9 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     [localizedTradeTypeLabels]
   );
 
-  const leverageFieldVisible = isIncrease;
+  const isSwap = tradeType === TradeType.Swap;
+  const fieldsDisabled = isSwap;
+  const leverageFieldVisible = isIncrease || isSwap;
   const fieldsColumnsClass = leverageFieldVisible ? "md:grid-cols-3" : "md:grid-cols-2";
 
   const fields = (
@@ -78,11 +80,12 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           marks={leverageSliderMarks}
           value={isLeverageSliderEnabled ? leverageOption ?? null : null}
           onChange={setLeverageOption}
+          disabled={fieldsDisabled}
         />
       ) : null}
 
       <div className="overflow-hidden">
-        <MarketPoolSelectorField />
+        <MarketPoolSelectorField disabled={fieldsDisabled} />
       </div>
 
       <div className="overflow-hidden">
@@ -90,6 +93,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
+          disabled={fieldsDisabled}
         />
       </div>
     </div>
@@ -97,7 +101,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
 
   const fieldsRow = (
     <div className={cx("h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-8", fieldsColumnsClass)}>
-      {isPosition ? fields : null}
+      {isPosition || isSwap ? fields : null}
     </div>
   );
 
@@ -111,8 +115,6 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const handleTabsClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
-
-  const isSwap = tradeType === TradeType.Swap;
 
   return (
     <>

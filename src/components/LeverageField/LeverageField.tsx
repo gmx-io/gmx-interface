@@ -9,6 +9,7 @@ type Props = {
   value: number | null;
   onChange: (value: number) => void;
   marks: number[];
+  disabled?: boolean;
 };
 
 function clampLeverage(value: number, min: number, max: number) {
@@ -20,7 +21,7 @@ function formatLeverage(value: number) {
   return parseFloat(value.toFixed(2)).toString();
 }
 
-export function LeverageField({ value, onChange, marks }: Props) {
+export function LeverageField({ value, onChange, marks, disabled }: Props) {
   const finalMarks = useMemo(() => (marks?.length ? marks : defaultMarks), [marks]);
   const minMark = finalMarks[0] ?? DEFAULT_LEVERAGE;
   const maxMark = finalMarks.at(-1) ?? DEFAULT_LEVERAGE;
@@ -90,6 +91,7 @@ export function LeverageField({ value, onChange, marks }: Props) {
         suffix="x"
         inputClassName="w-full text-right"
         className="leading-none !rounded-4 px-0 py-[1.5px]"
+        disabled={disabled}
       />
     </div>
   );

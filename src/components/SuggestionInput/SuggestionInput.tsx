@@ -32,6 +32,7 @@ type Props = {
   onPanelVisibleChange?: (isPanelVisible: boolean) => void;
   suggestionWithSuffix?: boolean;
   suggestionsPlacement?: Placement;
+  disabled?: boolean;
 };
 
 export default function SuggestionInput({
@@ -50,6 +51,7 @@ export default function SuggestionInput({
   inputId,
   suggestionWithSuffix,
   suggestionsPlacement = "bottom-end",
+  disabled,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -84,11 +86,15 @@ export default function SuggestionInput({
     onBlur?.();
   }, [onBlur]);
 
-  const handleReferencePointerDown = useCallback((e: PointerEvent<Element>) => {
-    e.stopPropagation();
-    inputRef.current?.focus();
-    setIsPanelVisible(true);
-  }, []);
+  const handleReferencePointerDown = useCallback(
+    (e: PointerEvent<Element>) => {
+      if (disabled) return;
+      e.stopPropagation();
+      inputRef.current?.focus();
+      setIsPanelVisible(true);
+    },
+    [disabled]
+  );
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -118,7 +124,11 @@ export default function SuggestionInput({
   return (
     <div className="Suggestion-input-wrapper">
       <div
-        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !suffix })}
+        className={cx("Suggestion-input flex items-baseline", className, {
+          "input-error": isError,
+          "pr-6": !suffix,
+          "cursor-default opacity-50": disabled,
+        })}
         ref={refs.setReference}
         {...getReferenceProps({ onPointerDown: handleReferencePointerDown })}
       >
@@ -127,12 +137,13 @@ export default function SuggestionInput({
           inputId={inputId}
           inputRef={inputRef}
           className={cx(inputClassName, "min-w-0 text-right outline-none")}
-          onFocus={() => setIsPanelVisible(true)}
+          onFocus={() => !disabled && setIsPanelVisible(true)}
           onBlur={handleBlur}
           value={value ?? ""}
           placeholder={placeholder}
           onValueChange={handleChange}
           onKeyDown={handleKeyDown}
+          isDisabled={disabled}
         />
         {suffix && (
           <div className="pr-7 text-typography-secondary">

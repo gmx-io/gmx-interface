@@ -35,6 +35,8 @@ type Props = {
   onSelect: (tokenAddress: string) => void;
   // eslint-disable-next-line react/no-unused-prop-types
   popoverReferenceRef?: React.RefObject<HTMLElement | null>;
+  // eslint-disable-next-line react/no-unused-prop-types
+  disabled?: boolean;
 };
 
 export function CollateralSelector(props: Props) {
@@ -48,6 +50,7 @@ export function CollateralSelector(props: Props) {
       chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
       handleClassName="text-12 group-gmx-hover/selector-field:text-blue-300"
       popoverReferenceRef={props.popoverReferenceRef}
+      disabled={props.disabled}
     >
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
     </SelectorBase>

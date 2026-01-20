@@ -42,11 +42,13 @@ type Props = {
   wrapperClassName?: string;
   // eslint-disable-next-line react/no-unused-prop-types
   popoverReferenceRef?: React.RefObject<HTMLElement | null>;
+  // eslint-disable-next-line react/no-unused-prop-types
+  disabled?: boolean;
 };
 
 export function PoolSelector2(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
-  const disabled = props.options?.length === 1;
+  const disabled = props.disabled || props.options?.length === 1;
 
   return (
     <SelectorBase

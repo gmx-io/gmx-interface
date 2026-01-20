@@ -17,6 +17,7 @@ type Props = {
   contentClassName?: string;
   containerRef?: Ref<HTMLDivElement>;
   forwardClickToSelector?: boolean;
+  disabled?: boolean;
 };
 
 export function BlockField({
@@ -27,6 +28,7 @@ export function BlockField({
   contentClassName,
   containerRef,
   forwardClickToSelector,
+  disabled,
 }: Props) {
   const localRef = useRef<HTMLDivElement | null>(null);
   const wasOpenOnPointerDown = useRef(false);
@@ -69,7 +71,7 @@ export function BlockField({
 
   const handleClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
-      if (!forwardClickToSelector) {
+      if (!forwardClickToSelector || disabled) {
         return;
       }
       const button = localRef.current?.querySelector<HTMLElement>(".SelectorBase-button");
@@ -88,18 +90,19 @@ export function BlockField({
       button.click();
       wasOpenOnPointerDown.current = false;
     },
-    [forwardClickToSelector]
+    [forwardClickToSelector, disabled]
   );
 
   return (
     <div
       ref={setContainerRef}
       className={cx(
-        "flex cursor-pointer items-center justify-between gap-10 rounded-4 bg-slate-800 px-8 py-[3.5px]",
+        "flex items-center justify-between gap-10 rounded-4 bg-slate-800 px-8 py-[3.5px]",
+        disabled ? "cursor-default opacity-50" : "cursor-pointer",
         className
       )}
-      onPointerDown={handlePointerDown}
-      onClick={handleClick}
+      onPointerDown={disabled ? undefined : handlePointerDown}
+      onClick={disabled ? undefined : handleClick}
     >
       <div className={cx("select-none text-13 text-typography-secondary", labelClassName)}>{label}</div>
       <div className={cx("flex min-w-0 flex-1 justify-end", contentClassName)}>{content}</div>

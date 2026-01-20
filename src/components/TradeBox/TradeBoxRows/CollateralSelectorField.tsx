@@ -26,10 +26,11 @@ export type Props = {
   selectedMarketAddress?: string;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
+  disabled?: boolean;
 };
 
 export function CollateralSelectorField(p: Props) {
-  const { onSelectCollateralAddress } = p;
+  const { onSelectCollateralAddress, disabled } = p;
   const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
   const popoverReferenceRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,6 +42,7 @@ export function CollateralSelectorField(p: Props) {
     <BlockField
       containerRef={popoverReferenceRef}
       forwardClickToSelector
+      disabled={disabled}
       label={
         <TooltipWithPortal
           position="bottom-end"
@@ -65,6 +67,7 @@ export function CollateralSelectorField(p: Props) {
           disabledOptions={disabledTokens}
           selectedTokenSymbol={selectedTokenName}
           popoverReferenceRef={popoverReferenceRef}
+          disabled={disabled}
         />
       }
     />
