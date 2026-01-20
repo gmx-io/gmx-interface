@@ -2,19 +2,19 @@ import concat from "lodash/concat";
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import { abis } from "abis";
+import { simulateExecuteOrder } from "clients/v1/simulateExecuteOrder";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import type { GmxSdk } from "index";
 import { DecreasePositionSwapType, OrderTxnType, OrderType } from "types/orders";
 import { TokenData, TokenPrices, TokensData } from "types/tokens";
 import { isMarketOrderType } from "utils/orders";
-import { simulateExecuteOrder } from "utils/simulateExecuteOrder";
 import { convertToContractPrice } from "utils/tokens";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";
 import { createDecreaseEncodedPayload, DecreaseOrderParams } from "./createDecreaseOrderTxn";
 import { createUpdateEncodedPayload } from "./updateOrderTxn";
+import type { GmxSdk } from "../../../index";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;

@@ -6,7 +6,7 @@ import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { RawMarketsInfoData } from "sdk/types/markets";
+import type { RawMarketInfo, RawMarketsInfoData } from "sdk/types/markets";
 import { toDict } from "sdk/utils/objects";
 
 const mountedAtCache = new Map<ContractsChainId, number>();
@@ -25,7 +25,7 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId) {
   const { data, error } = useSWR<ApiMarketsInfoResponse>(
     ["apiMarketsInfoRequest", chainId],
     async () => {
-      const marketsInfo = await sdk.fetchMarketsInfo();
+      const marketsInfo: RawMarketInfo[] = await sdk.fetchMarketsInfo();
       const marketsInfoData = toDict(marketsInfo, "marketTokenAddress");
       return {
         marketsInfoData,

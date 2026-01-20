@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { arbitrumSdk } from "utils/testUtil";
+import { arbitrumSdk } from "clients/v1/testUtil";
 
 describe("Trades", () => {
   it("should be able to get positions", { timeout: 90_000 }, async () => {

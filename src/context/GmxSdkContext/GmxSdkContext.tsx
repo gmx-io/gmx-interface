@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useRef } from "react";
 
-import { GmxApiSdk } from "sdk/client/v2";
+import { GmxApiSdk } from "sdk/clients/v2";
 import { ContractsChainId } from "sdk/configs/chains";
 
 type GmxSdkContextType = {

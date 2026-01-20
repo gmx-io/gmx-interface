@@ -1,56 +1,68 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "2.0.0-alpha-1",
+  "version": "1.5.0",
   "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/gmx-io/gmx-interface",
     "directory": "sdk"
   },
-  "main": "./build/cjs/src/client/v1/index.js",
-  "module": "./build/esm/src/client/v1/index.js",
-  "types": "./build/types/src/client/v1/index.d.ts",
+  "main": "./build/cjs/src/clients/v1/index.js",
+  "module": "./build/esm/src/clients/v1/index.js",
+  "types": "./build/types/src/clients/v1/index.d.ts",
   "exports": {
     ".": {
-      "import": "./build/esm/src/client/v1/index.js",
-      "require": "./build/cjs/src/client/v1/index.js",
-      "types": "./build/types/src/client/v1/index.d.ts",
-      "default": "./build/cjs/src/client/v1/index.js"
+      "types": "./build/types/src/clients/v1/index.d.ts",
+      "import": "./build/esm/src/clients/v1/index.js",
+      "require": "./build/cjs/src/clients/v1/index.js",
+      "default": "./build/cjs/src/clients/v1/index.js"
+    },
+    "./v1": {
+      "types": "./build/types/src/clients/v1/index.d.ts",
+      "import": "./build/esm/src/clients/v1/index.js",
+      "require": "./build/cjs/src/clients/v1/index.js",
+      "default": "./build/cjs/src/clients/v1/index.js"
+    },
+    "./v2": {
+      "types": "./build/types/src/clients/v2/index.d.ts",
+      "import": "./build/esm/src/clients/v2/index.js",
+      "require": "./build/cjs/src/clients/v2/index.js",
+      "default": "./build/cjs/src/clients/v2/index.js"
     },
     "./configs/*": {
+      "types": "./build/types/src/configs/*.d.ts",
       "import": "./build/esm/src/configs/*.js",
       "require": "./build/cjs/src/configs/*.js",
-      "types": "./build/types/src/configs/*.d.ts",
       "default": "./build/cjs/src/configs/*.js"
     },
     "./abis/*": {
+      "types": "./build/types/src/abis/*.d.ts",
       "import": "./build/esm/src/abis/*.js",
       "require": "./build/cjs/src/abis/*.js",
-      "types": "./build/types/src/abis/*.d.ts",
       "default": "./build/cjs/src/abis/*.js"
     },
     "./prebuilt/*": {
+      "types": "./build/types/src/prebuilt/*.d.ts",
       "import": "./build/esm/src/prebuilt/*.js",
       "require": "./build/cjs/src/prebuilt/*.js",
-      "types": "./build/types/src/prebuilt/*.d.ts",
       "default": "./build/cjs/src/prebuilt/*.js"
     },
     "./utils/*": {
+      "types": "./build/types/src/utils/*.d.ts",
       "import": "./build/esm/src/utils/*.js",
       "require": "./build/cjs/src/utils/*.js",
-      "types": "./build/types/src/utils/*.d.ts",
       "default": "./build/cjs/src/utils/*.js"
     },
     "./utils/markets": {
+      "types": "./build/types/src/utils/markets/index.d.ts",
       "import": "./build/esm/src/utils/markets/index.js",
       "require": "./build/cjs/src/utils/markets/index.js",
-      "types": "./build/types/src/utils/markets/index.d.ts",
       "default": "./build/cjs/src/utils/markets/index.js"
     },
     "./types/*": {
+      "types": "./build/types/src/types/*.d.ts",
       "import": "./build/esm/src/types/*.js",
       "require": "./build/cjs/src/types/*.js",
-      "types": "./build/types/src/types/*.d.ts",
       "default": "./build/cjs/src/types/*.js"
     }
   },

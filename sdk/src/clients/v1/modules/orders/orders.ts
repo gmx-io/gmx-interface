@@ -1,7 +1,7 @@
 import { Address } from "viem";
 
+import { MarketFilterLongShortItemData } from "clients/v1/modules/trades/trades";
 import { getWrappedToken } from "configs/tokens";
-import { MarketFilterLongShortItemData } from "modules/trades/trades";
 import { MarketInfo, MarketsInfoData } from "types/markets";
 import { OrdersData, OrdersInfoData, OrderType, PositionOrderInfo } from "types/orders";
 import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "types/sidecarOrders";

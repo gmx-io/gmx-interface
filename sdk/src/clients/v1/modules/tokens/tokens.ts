@@ -1,7 +1,7 @@
+import type { ContractCallsConfig } from "clients/v1/multicall";
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokensMap, getV2Tokens, getWrappedToken } from "configs/tokens";
 import { TokenBalancesData, TokenPricesData, TokensData, Token as TToken } from "types/tokens";
-import type { ContractCallsConfig } from "utils/multicall";
 import { parseContractPrice } from "utils/tokens";
 
 import { Module } from "../base";

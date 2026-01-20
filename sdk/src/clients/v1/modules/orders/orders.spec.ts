@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { arbitrumSdk } from "utils/testUtil";
+import { arbitrumSdk } from "clients/v1/testUtil";
 
 describe("Positions", () => {
   describe("read", () => {

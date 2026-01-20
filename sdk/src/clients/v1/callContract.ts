@@ -11,10 +11,10 @@ import {
 } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 
-import type { GmxSdk } from "../index";
-import { bigMath } from "./bigmath";
+import type { GmxSdk } from "./index";
+import { bigMath } from "../../utils/bigmath";
 
-export async function getGasPrice(client: PublicClient, chainId: number) {
+async function getGasPrice(client: PublicClient, chainId: number) {
   let maxFeePerGas = getMaxFeePerGas(chainId as ContractsChainId);
   const premium: bigint = getGasPricePremium(chainId as ContractsChainId) || 0n;
 
@@ -71,7 +71,7 @@ export async function getGasPrice(client: PublicClient, chainId: number) {
   };
 }
 
-export async function getGasLimit(
+async function getGasLimit(
   client: PublicClient,
   account: Address,
   contractAddress: Address,

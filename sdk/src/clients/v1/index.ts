@@ -1,18 +1,18 @@
 import { Abi, Address, createPublicClient, createWalletClient, http, PublicClient, WalletClient } from "viem";
 
+import { callContract, CallContractOpts } from "clients/v1/callContract";
+import { Accounts } from "clients/v1/modules/accounts/accounts";
+import { Markets } from "clients/v1/modules/markets";
+import { Oracle } from "clients/v1/modules/oracle";
+import { Orders } from "clients/v1/modules/orders/orders";
+import { Positions } from "clients/v1/modules/positions/positions";
+import { Tokens } from "clients/v1/modules/tokens/tokens";
+import { Trades } from "clients/v1/modules/trades/trades";
+import { Utils } from "clients/v1/modules/utils/utils";
+import { MAX_TIMEOUT, Multicall, MulticallRequestConfig } from "clients/v1/multicall";
 import { BATCH_CONFIGS } from "configs/batch";
 import { getViemChain } from "configs/chains";
-import { Accounts } from "modules/accounts/accounts";
-import { Markets } from "modules/markets";
-import { Oracle } from "modules/oracle";
-import { Orders } from "modules/orders/orders";
-import { Positions } from "modules/positions/positions";
-import { Tokens } from "modules/tokens/tokens";
-import { Trades } from "modules/trades/trades";
-import { Utils } from "modules/utils/utils";
 import type { GmxSdkConfig } from "types/sdk";
-import { callContract, CallContractOpts } from "utils/callContract";
-import { MAX_TIMEOUT, Multicall, MulticallRequestConfig } from "utils/multicall";
 
 export class GmxSdk {
   public readonly markets = new Markets(this);

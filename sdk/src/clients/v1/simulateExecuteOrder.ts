@@ -6,9 +6,9 @@ import { convertTokenAddress } from "configs/tokens";
 import { SwapPricingType } from "types/orders";
 import { TokenPrices, TokensData } from "types/tokens";
 
-import type { GmxSdk } from "..";
-import { extractTxnError } from "./errors";
-import { convertToContractPrice, getTokenData } from "./tokens";
+import type { GmxSdk } from ".";
+import { extractTxnError } from "../../utils/errors";
+import { convertToContractPrice, getTokenData } from "../../utils/tokens";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;

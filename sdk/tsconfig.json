@@ -25,13 +25,13 @@
     "baseUrl": "./src",
     "paths": {
       "utils/*": ["utils/*"],
-      "modules/*": ["modules/*"],
       "configs/*": ["configs/*"],
       "types/*": ["types/*"],
       "abis/*": ["abis/*"],
       "abis": ["abis/index"],
       "swap/*": ["swap/*"],
-      "prebuilt": ["prebuild/index"]
+      "prebuilt": ["prebuild/index"],
+      "clients/*": ["clients/*"]
     },
     "plugins": [
       { "transform": "typescript-transform-paths" },

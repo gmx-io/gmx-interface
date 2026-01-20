@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { arbitrumSdk, arbitrumSdkConfig } from "utils/testUtil";
+import { arbitrumSdk, arbitrumSdkConfig } from "clients/v1/testUtil";
 
 import { GmxSdk } from "../..";
 

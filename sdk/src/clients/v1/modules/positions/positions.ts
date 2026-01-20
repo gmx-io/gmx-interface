@@ -1,5 +1,6 @@
 import { zeroAddress, zeroHash } from "viem";
 
+import type { MulticallRequestConfig } from "clients/v1/multicall";
 import { BOTANIX } from "configs/chains";
 import { getContract } from "configs/contracts";
 import {
@@ -21,7 +22,6 @@ import {
   getMarketPoolName,
   getMaxAllowedLeverageByMinCollateralFactor,
 } from "utils/markets";
-import type { MulticallRequestConfig } from "utils/multicall";
 import { basisPointsToFloat, getBasisPoints } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import {
