@@ -5,10 +5,10 @@ import { abis } from "abis";
 import { simulateExecuteOrder } from "clients/v1/simulateExecuteOrder";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { DecreasePositionSwapType, OrderTxnType, OrderType } from "types/orders";
-import { TokenData, TokenPrices, TokensData } from "types/tokens";
 import { isMarketOrderType } from "utils/orders";
+import { DecreasePositionSwapType, OrderTxnType, OrderType } from "utils/orders/types";
 import { convertToContractPrice } from "utils/tokens";
+import { TokenData, TokenPrices, TokensData } from "utils/tokens/types";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 
 import { createCancelEncodedPayload } from "./cancelOrdersTxn";

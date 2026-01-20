@@ -3,10 +3,8 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { OrderType } from "types/orders";
-import { ERC20Address } from "types/tokens";
-import { ExternalSwapQuote } from "types/trade";
 import { expandDecimals, parseValue, USD_DECIMALS } from "utils/numbers";
+import { OrderType } from "utils/orders/types";
 import {
   buildIncreaseOrderPayload,
   getBatchExternalCalls,
@@ -18,6 +16,8 @@ import {
   getIsInvalidBatchReceiver,
   IncreasePositionOrderParams,
 } from "utils/orderTransactions";
+import { ERC20Address } from "utils/tokens/types";
+import { ExternalSwapQuote } from "utils/trade/types";
 
 import { mockExternalSwap } from "../../../test/mock";
 

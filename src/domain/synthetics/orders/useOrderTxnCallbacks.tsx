@@ -41,7 +41,7 @@ import {
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
+import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
 import {
   BatchOrderTxnParams,

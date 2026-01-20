@@ -38,7 +38,7 @@ import {
   SwapPathStats,
   TradeFees,
   TriggerThresholdType,
-} from "sdk/types/trade";
+} from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";

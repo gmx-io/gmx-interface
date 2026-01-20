@@ -5,7 +5,7 @@ import type { TokenPricesData } from "domain/synthetics/tokens";
 import { useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import type { Token } from "sdk/types/tokens";
+import type { Token } from "sdk/utils/tokens/types";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";

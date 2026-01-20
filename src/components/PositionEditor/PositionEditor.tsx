@@ -38,7 +38,7 @@ import {
   getTokenVisualMultiplier,
   getWrappedToken,
 } from "sdk/configs/tokens";
-import { TokenBalanceType } from "sdk/types/tokens";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";

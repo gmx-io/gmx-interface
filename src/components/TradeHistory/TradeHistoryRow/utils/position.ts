@@ -17,7 +17,7 @@ import {
   formatTokenAmountWithUsd,
   formatUsd,
 } from "lib/numbers";
-import { PositionTradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 import { bigMath } from "sdk/utils/bigmath";
 
 import {

@@ -3,8 +3,6 @@ import { zeroAddress } from "viem";
 import { getContract } from "configs/contracts";
 import { USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE } from "configs/dataStore";
 import { convertTokenAddress, getToken } from "configs/tokens";
-import { ClaimableFundingData, MarketsData, MarketSdkConfig, MarketsInfoData, MarketValues } from "types/markets";
-import { TokensData } from "types/tokens";
 import graphqlFetcher from "utils/graphqlFetcher";
 import {
   composeFullMarketsInfoData,
@@ -19,7 +17,9 @@ import {
   parseMarketsConfigsResponse,
   parseMarketsValuesResponse,
 } from "utils/markets/multicall";
+import { ClaimableFundingData, MarketsData, MarketSdkConfig, MarketsInfoData, MarketValues } from "utils/markets/types";
 import { getByKey } from "utils/objects";
+import { TokensData } from "utils/tokens/types";
 
 import { Module } from "../base";
 

@@ -33,7 +33,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
-import { PositionOrderInfo } from "sdk/types/orders";
+import { PositionOrderInfo } from "sdk/utils/orders/types";
 import { getOrderKeys } from "sdk/utils/orders";
 
 import { DynamicLine } from "./DynamicLine";

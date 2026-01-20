@@ -17,7 +17,7 @@ import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";

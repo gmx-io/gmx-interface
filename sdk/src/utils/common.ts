@@ -15,5 +15,3 @@ export const sleep = (ms: number, abortSignal?: AbortSignal) =>
       });
     }
   });
-
-export const TIMEZONE_OFFSET_SEC = -new Date().getTimezoneOffset() * 60;

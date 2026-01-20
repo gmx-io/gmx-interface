@@ -1,11 +1,12 @@
-import { MarketInfo } from "types/markets";
-import { TokenData } from "types/tokens";
-import { TradeFees } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getOpenInterestForBalance, getTokenPoolType } from "utils/markets";
 import { applyFactor, expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "utils/tokens";
 import { bigNumberify } from "utils/tradeHistory";
+
+import { MarketInfo } from "../markets/types";
+import { TokenData } from "../tokens/types";
+import { TradeFees } from "../trade/types";
 
 export function getPriceImpactByAcceptablePrice(p: {
   sizeDeltaUsd: bigint;

@@ -2,7 +2,8 @@ import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import type { DayPriceCandle } from "types/24h";
+
+import type { DayPriceCandle } from "../24h/types";
 import type {
   ClaimableFundingData,
   ContractMarketPrices,
@@ -15,16 +16,13 @@ import type {
   MarketValues,
   RawMarketInfo,
   RawMarketsInfoData,
-} from "types/markets";
-import type { Token, TokenPrices, TokensData } from "types/tokens";
-
+} from "./types";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "../fees";
 import { applyFactor, PRECISION } from "../numbers";
 import { getByKey } from "../objects";
 import { periodToSeconds } from "../time";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "../tokens";
-
-export type { DayPriceCandle };
+import type { Token, TokenPrices, TokensData } from "../tokens/types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -324,11 +322,11 @@ export function getMarket24Stats(dayPriceCandle: DayPriceCandle) {
 export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPriceCandle): MarketTicker {
   const markPrice = getMidPrice(marketInfo.indexToken.prices);
 
-  const SECONDS_PER_HOUR = periodToSeconds(1, "1h");
+  const SECONDS_PER_HOUR = BigInt(periodToSeconds(1, "1h"));
   const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, SECONDS_PER_HOUR);
   const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, SECONDS_PER_HOUR);
-  const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, true, SECONDS_PER_HOUR);
-  const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, false, SECONDS_PER_HOUR);
+  const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, true, SECONDS_PER_HOUR);
+  const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, false, SECONDS_PER_HOUR);
 
   const netRateLong = fundingRateLong + borrowingRateLong;
   const netRateShort = fundingRateShort + borrowingRateShort;

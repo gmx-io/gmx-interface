@@ -50,7 +50,7 @@ import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { BOTANIX } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { TokenBalanceType } from "sdk/types/tokens";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";

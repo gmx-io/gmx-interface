@@ -56,9 +56,9 @@ import {
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
-import { TokenBalanceType } from "sdk/types/tokens";
-import { WithdrawalAmounts } from "sdk/types/trade";
+import { ExecutionFee } from "sdk/utils/fees/types";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
+import { WithdrawalAmounts } from "sdk/utils/trade/types";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 
 import type { UseLpTransactionProps } from "./useLpTransactions";

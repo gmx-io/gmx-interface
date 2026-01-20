@@ -8,7 +8,7 @@ import { ContractCallResult, useMulticall } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { getUniswapV3Deployment } from "sdk/configs/uniswapV3";
-import type { Token } from "sdk/types/tokens";
+import type { Token } from "sdk/utils/tokens/types";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";

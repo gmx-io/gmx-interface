@@ -12,7 +12,7 @@ import { definedOrThrow } from "lib/guards";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
-import { TradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import { TradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/indexers";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";

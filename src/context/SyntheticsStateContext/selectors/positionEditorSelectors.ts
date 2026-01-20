@@ -7,7 +7,7 @@ import {
 } from "domain/synthetics/positions";
 import { convertToUsd } from "domain/synthetics/tokens/utils";
 import { parseValue } from "lib/numbers";
-import { TokenBalanceType } from "sdk/types/tokens";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";

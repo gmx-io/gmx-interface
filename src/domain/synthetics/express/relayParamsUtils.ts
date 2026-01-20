@@ -6,7 +6,7 @@ import type { SignedTokenPermit, TokenData } from "domain/tokens";
 import type { SignatureDomain } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { ContractName, getContract } from "sdk/configs/contracts";
-import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/types/trade";
+import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/utils/trade/types";
 import {
   combineExternalCalls,
   ExternalCallsPayload,

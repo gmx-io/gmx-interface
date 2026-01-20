@@ -2,8 +2,8 @@ import type { SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
-import type { TradeMode } from "sdk/types/trade";
-import type { TwapDuration } from "sdk/types/twap";
+import type { TradeMode } from "sdk/utils/trade/types";
+import type { TwapDuration } from "sdk/utils/twap/types";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;

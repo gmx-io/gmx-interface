@@ -1,6 +1,6 @@
 import { FeeItem } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
-import { ExternalSwapQuote } from "sdk/types/trade";
+import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 export enum TradeType {
   Long = "Long",

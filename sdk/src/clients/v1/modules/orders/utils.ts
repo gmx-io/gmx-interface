@@ -6,15 +6,15 @@ import type { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { accountOrderListKey } from "configs/dataStore";
 import { getWrappedToken } from "configs/tokens";
-import type { GasLimitsConfig } from "types/fees";
-import type { MarketsInfoData } from "types/markets";
-import { DecreasePositionSwapType, Order, OrderType } from "types/orders";
-import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "types/sidecarOrders";
-import type { TokensData } from "types/tokens";
+import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "../../../../utils/sidecarOrders/types";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import { estimateExecuteDecreaseOrderGasLimit, getExecutionFee } from "utils/fees/executionFee";
+import type { GasLimitsConfig } from "utils/fees/types";
+import type { MarketsInfoData } from "utils/markets/types";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
+import { DecreasePositionSwapType, Order, OrderType } from "utils/orders/types";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
+import type { TokensData } from "utils/tokens/types";
 
 import type { GmxSdk } from "../../index";
 

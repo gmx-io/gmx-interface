@@ -1,17 +1,5 @@
 import { maxUint256 } from "viem";
 
-import { GasLimitsConfig } from "types/fees";
-import { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { TokensData } from "types/tokens";
-import {
-  MarketEdge,
-  MarketEdgeLiquidityGetter,
-  NaiveNetworkEstimator,
-  NaiveSwapEstimator,
-  SwapEstimator,
-  SwapPaths,
-} from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { estimateOrderOraclePriceCount, getExecutionFee } from "utils/fees";
 import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGasBySwapCount";
@@ -23,6 +11,18 @@ import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "utils/swap/constants";
 import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "utils/swap/preparedSwapData";
 
 import { getSwapStats } from "./swapStats";
+import { GasLimitsConfig } from "../fees/types";
+import { MarketsInfoData } from "../markets/types";
+import { SwapPricingType } from "../orders/types";
+import { TokensData } from "../tokens/types";
+import {
+  MarketEdge,
+  MarketEdgeLiquidityGetter,
+  NaiveNetworkEstimator,
+  NaiveSwapEstimator,
+  SwapEstimator,
+  SwapPaths,
+} from "../trade/types";
 
 export const createSwapEstimator = (
   marketsInfoData: MarketsInfoData,

@@ -1,7 +1,7 @@
 import { createTestClient, http, publicActions, walletActions } from "viem";
 
 import { ARBITRUM, getViemChain } from "configs/chains";
-import { GmxSdkConfig } from "types/sdk";
+import { GmxSdkConfig } from "./types";
 
 import { GmxSdk } from "./index";
 

@@ -7,8 +7,8 @@ import type { TokenData } from "domain/synthetics/tokens";
 import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens/utils";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatBalanceAmount } from "lib/numbers";
-import type { Token, TokenInfo } from "sdk/types/tokens";
-import { SwapTradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import type { Token, TokenInfo } from "sdk/utils/tokens/types";
+import { SwapTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import {
   INEQUALITY_GT,

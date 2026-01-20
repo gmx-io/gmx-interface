@@ -17,7 +17,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { getToken } from "sdk/configs/tokens";
-import { SignedTokenPermit } from "sdk/types/tokens";
+import { SignedTokenPermit } from "sdk/utils/tokens/types";
 import { nowInSeconds } from "sdk/utils/time";
 
 export async function createAndSignTokenPermit(

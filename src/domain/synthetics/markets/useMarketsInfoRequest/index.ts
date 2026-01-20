@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { MarketsInfoData, RawMarketsInfoData } from "sdk/types/markets";
+import type { MarketsInfoData, RawMarketsInfoData } from "sdk/utils/markets/types";
 import { composeFullMarketsInfoData, composeRawMarketsInfoData } from "sdk/utils/markets";
 
 import type { TokensData } from "../../tokens";

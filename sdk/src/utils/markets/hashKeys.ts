@@ -48,8 +48,9 @@ import {
   WITHDRAWAL_FEE_FACTOR_KEY,
 } from "configs/dataStore";
 import { MarketConfig as MarketConfigInput } from "configs/markets";
-import type { MarketConfig, MarketValues, RawOpenInterestValues } from "types/markets";
 import { hashDataMap } from "utils/hash";
+
+import type { MarketConfig, MarketValues, RawOpenInterestValues } from "./types";
 
 export type MarketConfigKeysHash = {
   [K in keyof MarketConfig]: string;

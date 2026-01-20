@@ -17,7 +17,7 @@ import {
 import { calculateDisplayDecimals } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { MARKETS } from "sdk/configs/markets";
-import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/types/trade";
+import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/types";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {

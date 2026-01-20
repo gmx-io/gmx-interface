@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
-import type { MarketInfo } from "types/markets";
+import type { MarketInfo } from "utils/markets/types";
 import { numberToBigint } from "utils/numbers";
 
 import { getFundingFactorPerPeriod } from "../fees";
@@ -15,7 +15,7 @@ function toFactor(percent: `${number}%`) {
   return numberToBigint(value, 30 - 2);
 }
 
-const second = 1;
+const second = 1n;
 
 describe("getFundingFactorPerPeriod", () => {
   it("works when short pay, shorts OI bigger", () => {

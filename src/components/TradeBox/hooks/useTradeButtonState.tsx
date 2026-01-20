@@ -70,9 +70,9 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
-import { TokenData } from "sdk/types/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
+import { ExecutionFee } from "sdk/utils/fees/types";
+import { TokenData } from "sdk/utils/tokens/types";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 

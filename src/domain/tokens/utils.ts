@@ -15,7 +15,7 @@ import {
 } from "lib/legacy";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import { getVisibleV1Tokens, getWhitelistedV1Tokens } from "sdk/configs/tokens";
-import { InfoTokens, Token, TokenInfo } from "sdk/types/tokens";
+import { InfoTokens, Token, TokenInfo } from "sdk/utils/tokens/types";
 
 export * from "sdk/utils/tokens";
 

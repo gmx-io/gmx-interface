@@ -7,7 +7,7 @@ import {
 } from "domain/synthetics/fees";
 import { OrderInfo, isLimitOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { BASIS_POINTS_DIVISOR_BIGINT, PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
-import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/types/trade";
+import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags, TradeMode, TradeType } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { OrderOption } from "../usePositionSellerState";

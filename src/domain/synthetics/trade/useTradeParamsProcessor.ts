@@ -22,7 +22,7 @@ import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 import { switchNetwork } from "lib/wallets";
 import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
-import { TradeMode, TradeSearchParams, TradeType } from "sdk/types/trade";
+import { TradeMode, TradeSearchParams, TradeType } from "sdk/utils/trade/types";
 
 import { getMarketPoolName } from "../markets";
 

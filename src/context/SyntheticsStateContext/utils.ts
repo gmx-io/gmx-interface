@@ -4,7 +4,7 @@ import { Selector, createSelector as createSelectorCommon } from "reselect";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 import type { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import type { ExternalSwapQuote, TradeMode, TradeType } from "sdk/types/trade";
+import type { ExternalSwapQuote, TradeMode, TradeType } from "sdk/utils/trade/types";
 import { LRUCache } from "sdk/utils/LruCache";
 import type { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 

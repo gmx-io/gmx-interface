@@ -68,7 +68,7 @@ import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmC
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
+import { ExecutionFee } from "sdk/utils/fees/types";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 

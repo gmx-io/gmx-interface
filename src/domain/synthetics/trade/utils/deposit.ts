@@ -2,8 +2,8 @@ import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domai
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { applyFactor } from "lib/numbers";
-import { SwapPricingType } from "sdk/types/orders";
-import { DepositAmounts } from "sdk/types/trade";
+import { SwapPricingType } from "sdk/utils/orders/types";
+import { DepositAmounts } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
 
 export function getDepositAmounts(p: {

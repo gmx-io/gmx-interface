@@ -12,7 +12,7 @@ import { Utils } from "clients/v1/modules/utils/utils";
 import { MAX_TIMEOUT, Multicall, MulticallRequestConfig } from "clients/v1/multicall";
 import { BATCH_CONFIGS } from "configs/batch";
 import { getViemChain } from "configs/chains";
-import type { GmxSdkConfig } from "types/sdk";
+import type { GmxSdkConfig } from "./types";
 
 export class GmxSdk {
   public readonly markets = new Markets(this);

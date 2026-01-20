@@ -37,7 +37,7 @@ import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/va
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
-import { GmSwapFees } from "sdk/types/trade";
+import { GmSwapFees } from "sdk/utils/trade/types";
 import { bigMath } from "sdk/utils/bigmath";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";

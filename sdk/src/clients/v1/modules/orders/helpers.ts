@@ -1,13 +1,13 @@
-import type { GasLimitsConfig } from "types/fees";
-import { MarketsInfoData } from "types/markets";
-import { OrderType, SwapPricingType } from "types/orders";
-import { TokenData, TokensData, TokensRatio } from "types/tokens";
-import { SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
+import type { GasLimitsConfig } from "utils/fees/types";
+import { MarketsInfoData } from "utils/markets/types";
 import { getByKey } from "utils/objects";
+import { OrderType, SwapPricingType } from "utils/orders/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { createFindSwapPath } from "utils/swap/swapPath";
 import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
+import { TokenData, TokensData, TokensRatio } from "utils/tokens/types";
 import { getIncreasePositionAmounts } from "utils/trade/increase";
+import { SwapAmounts, SwapOptimizationOrderArray } from "utils/trade/types";
 
 import type { GmxSdk } from "../..";
 

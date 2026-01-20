@@ -11,7 +11,7 @@ import type { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade/utils";
 import { getWrappedToken } from "sdk/configs/tokens";
 import type { TradeAction as SubsquidTradeAction } from "sdk/types/subsquid";
-import type { PositionTradeAction, TradeAction } from "sdk/types/tradeHistory";
+import type { PositionTradeAction, TradeAction } from "sdk/utils/tradeHistory/types";
 import { createRawTradeActionTransformer } from "sdk/utils/tradeHistory";
 
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";

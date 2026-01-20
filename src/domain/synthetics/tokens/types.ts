@@ -1,6 +1,6 @@
 import type { Token } from "domain/tokens";
 
-export type { TokenData, TokensData } from "sdk/types/tokens";
+export type { TokenData, TokensData } from "sdk/utils/tokens/types";
 
 export type TokenPrices = {
   minPrice: bigint;

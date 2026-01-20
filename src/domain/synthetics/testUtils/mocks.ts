@@ -4,7 +4,7 @@ import { AVALANCHE } from "config/chains";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import type { PositionInfo } from "sdk/types/positions";
+import type { PositionInfo } from "sdk/utils/positions/types";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
 

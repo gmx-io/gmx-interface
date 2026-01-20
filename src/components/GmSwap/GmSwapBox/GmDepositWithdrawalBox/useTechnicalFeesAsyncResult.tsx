@@ -45,8 +45,8 @@ import { useChainId } from "lib/chains";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { MARKETS } from "sdk/configs/markets";
-import { ExecutionFee } from "sdk/types/fees";
-import { WithdrawalAmounts } from "sdk/types/trade";
+import { ExecutionFee } from "sdk/utils/fees/types";
+import { WithdrawalAmounts } from "sdk/utils/trade/types";
 import { absDiffBps } from "sdk/utils/numbers";
 
 import { Operation } from "../types";

@@ -2,13 +2,13 @@ import type { ContractCallsConfig } from "clients/v1/multicall";
 import { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "configs/dataStore";
-import type { MarketConfig, MarketValues, MarketsData } from "types/markets";
-import type { TokensData } from "types/tokens";
 import { hashDataMap } from "utils/hash";
 import { getContractMarketPrices, getOiInTokensFromRawValues, getOiUsdFromRawValues } from "utils/markets";
 import { getByKey } from "utils/objects";
 
+import type { MarketConfig, MarketValues, MarketsData } from "./types";
 import { HASHED_MARKET_CONFIG_KEYS, HASHED_MARKET_VALUES_KEYS } from "../../prebuilt";
+import type { TokensData } from "../tokens/types";
 
 type MulticallResponse = {
   data: Record<string, any>;
