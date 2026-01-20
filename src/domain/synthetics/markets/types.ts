@@ -4,16 +4,7 @@ import { Market, MarketInfo, MarketPoolTokens } from "sdk/utils/markets/types";
 
 export * from "sdk/utils/markets/types";
 
-export type FastMarketInfo = Omit<
-  Omit<MarketInfo, keyof MarketPoolTokens | keyof Market>,
-  "useOpenInterestInTokensForBalance"
-> & {
-  marketTokenAddress: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-  indexTokenAddress: string;
-  useOpenInterestInTokensForBalance: boolean;
-};
+export type FastMarketInfo = Omit<MarketInfo, keyof MarketPoolTokens | keyof Market>;
 
 export type FastMarketInfoData = {
   [address: string]: FastMarketInfo;

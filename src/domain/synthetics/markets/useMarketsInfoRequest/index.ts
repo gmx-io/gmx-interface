@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { getIsFlagEnabled } from "config/ab";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { composeFullMarketsInfoData, composeRawMarketsInfoData } from "sdk/utils/markets";
 import type { MarketsInfoData, RawMarketsInfoData } from "sdk/utils/markets/types";
@@ -21,15 +22,17 @@ export function useMarketsInfoRequest(
 ): MarketsInfoResult {
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
 
+  const isApiSdkEnabled = getIsFlagEnabled("apiSdk");
+
   const {
     marketsInfoData: apiMarketsInfoData,
     isStale: isApiStale,
     error: apiError,
-  } = useApiMarketsInfoRequest(chainId);
+  } = useApiMarketsInfoRequest(chainId, { enabled: isApiSdkEnabled });
 
   const shouldFallbackToRpc = apiError || isApiStale;
 
-  const { marketsAddresses, marketsData, marketsValuesData, marketsConfigsData, marketsConstants } =
+  const { marketsAddresses, fastMarketInfoData, marketsData, marketsValuesData, marketsConfigsData, marketsConstants } =
     useRpcMarketsInfoRequest({
       chainId,
       tokensData,
@@ -43,19 +46,24 @@ export function useMarketsInfoRequest(
       return apiMarketsInfoData as RawMarketsInfoData;
     }
 
-    if (!marketsAddresses || !rpcMarketsInfoDataReady) {
-      return undefined;
+    if (fastMarketInfoData) {
+      return fastMarketInfoData;
     }
 
-    return composeRawMarketsInfoData({
-      marketsAddresses,
-      marketsData,
-      marketsValuesData,
-      marketsConfigsData,
-      marketsConstants,
-    });
+    if (marketsAddresses && rpcMarketsInfoDataReady) {
+      return composeRawMarketsInfoData({
+        marketsAddresses,
+        marketsData,
+        marketsValuesData,
+        marketsConfigsData,
+        marketsConstants,
+      });
+    }
+
+    return undefined;
   }, [
     apiMarketsInfoData,
+    fastMarketInfoData,
     marketsAddresses,
     rpcMarketsInfoDataReady,
     marketsData,
