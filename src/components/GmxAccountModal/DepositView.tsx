@@ -98,6 +98,18 @@ import { calculateNetworkFeeDetails } from "./calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useMultichainTradeTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
+const valueSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={96}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
+
 const useIsFirstDeposit = () => {
   const [enabled, setEnabled] = useState(true);
   const [isFirstDeposit, setIsFirstDeposit] = useState(false);
@@ -255,7 +267,7 @@ export const DepositView = () => {
     unwrappedSelectedTokenAddress,
   ]);
 
-  const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetMultichain();
+  const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
@@ -1012,28 +1024,15 @@ export const DepositView = () => {
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
-  const infoRowSkeleton = (
-    <Skeleton
-      baseColor="#B4BBFF1A"
-      highlightColor="#B4BBFF1A"
-      width={96}
-      height={14}
-      borderRadius={4}
-      className="leading-[14px]"
-      inline
-    />
-  );
+  const areMultichainFeesLoading = isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading;
 
   const isNetworkFeeLoading =
     shouldShowInfoRowPlaceholder &&
-    (depositViewChain === settlementChainId
-      ? sameChainNetworkFeeAsyncResult.isLoading
-      : isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading);
+    (depositViewChain === settlementChainId ? sameChainNetworkFeeAsyncResult.isLoading : areMultichainFeesLoading);
 
-  const isDepositFeeLoading =
-    shouldShowInfoRowPlaceholder && (isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading);
+  const isDepositFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
 
-  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountLoading;
+  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountUsdLoading;
 
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
@@ -1176,17 +1175,17 @@ export const DepositView = () => {
           <SyntheticsInfoRow label={<Trans>Estimated Time</Trans>} value={estimatedTimeValue} />
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
-            value={isNetworkFeeLoading ? infoRowSkeleton : networkFeeValue}
+            value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow
             label={<Trans>Deposit Fee</Trans>}
-            value={isDepositFeeLoading ? infoRowSkeleton : depositFeeValue}
+            value={isDepositFeeLoading ? valueSkeleton : depositFeeValue}
           />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
             value={
               isGmxBalanceLoading ? (
-                infoRowSkeleton
+                valueSkeleton
               ) : (
                 <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
               )

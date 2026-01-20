@@ -20,7 +20,6 @@ export function useQuoteSendNativeFee({
 }): {
   data: bigint | undefined;
   isLoading: boolean;
-  error: Error | undefined;
 } {
   const quoteSendCondition =
     sendParams !== undefined &&
@@ -48,6 +47,5 @@ export function useQuoteSendNativeFee({
   return {
     data: quoteSendQuery.data,
     isLoading: quoteSendQuery.isLoading,
-    error: quoteSendQuery.error,
   };
 }

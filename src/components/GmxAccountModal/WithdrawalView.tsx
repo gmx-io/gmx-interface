@@ -116,6 +116,18 @@ const USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET = expandDecimals(3, USD_DECIMALS);
 const USD_GAS_TOKEN_BUFFER_TESTNET = expandDecimals(10, USD_DECIMALS);
 const USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET = expandDecimals(9, USD_DECIMALS);
 
+const valueSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={96}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
+
 function useUsdGasTokenBuffer(): {
   gasTokenBuffer: bigint;
   gasTokenBufferWarningThreshold: bigint;
@@ -557,7 +569,7 @@ export const WithdrawalView = () => {
 
   const tokenOptions = useMemo(() => getWithdrawalTokenOptions({ chainId, tokensData }), [chainId, tokensData]);
 
-  const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetMultichain();
+  const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo(() => {
     if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
@@ -1296,29 +1308,17 @@ export const WithdrawalView = () => {
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
-  const infoRowSkeleton = (
-    <Skeleton
-      baseColor="#B4BBFF1A"
-      highlightColor="#B4BBFF1A"
-      width={96}
-      height={14}
-      borderRadius={4}
-      className="leading-[14px]"
-      inline
-    />
-  );
+  const areMultichainFeesLoading = isQuoteOftLoading || isQuoteSendNativeFeeLoading;
 
   const isNetworkFeeLoading =
     shouldShowInfoRowPlaceholder &&
     (isSameChain
       ? sameChainNetworkFeeAsyncResult.isLoading
-      : isQuoteOftLoading ||
-        isQuoteSendNativeFeeLoading ||
-        (expressTxnParamsAsyncResult.isLoading && expressTxnParamsAsyncResult.lastEstimated === 0));
+      : areMultichainFeesLoading || !expressTxnParamsAsyncResult.data);
 
-  const isWithdrawFeeLoading = shouldShowInfoRowPlaceholder && (isQuoteOftLoading || isQuoteSendNativeFeeLoading);
+  const isWithdrawFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
 
-  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountLoading;
+  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountUsdLoading;
 
   const networkItemDisabledMessage = useCallback(
     (option: { id: number; name: string; disabled?: boolean | string }) => {
@@ -1557,17 +1557,17 @@ export const WithdrawalView = () => {
           />
           <SyntheticsInfoRow
             label={<Trans>Network Fee</Trans>}
-            value={isNetworkFeeLoading ? infoRowSkeleton : networkFeeValue}
+            value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow
             label={<Trans>Withdraw Fee</Trans>}
-            value={isWithdrawFeeLoading ? infoRowSkeleton : withdrawFeeValue}
+            value={isWithdrawFeeLoading ? valueSkeleton : withdrawFeeValue}
           />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
             value={
               isGmxBalanceLoading ? (
-                infoRowSkeleton
+                valueSkeleton
               ) : (
                 <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
               )
