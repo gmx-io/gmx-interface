@@ -6,7 +6,7 @@ import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { RawMarketInfo, RawMarketsInfoData } from "sdk/types/markets";
+import type { RawMarketInfo, RawMarketsInfoData } from "sdk/utils/markets/types";
 import { toDict } from "sdk/utils/objects";
 
 const mountedAtCache = new Map<ContractsChainId, number>();

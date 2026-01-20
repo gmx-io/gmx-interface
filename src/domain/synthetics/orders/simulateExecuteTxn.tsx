@@ -21,8 +21,8 @@ import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampR
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { ExternalSwapQuote } from "sdk/types/trade";
 import { CustomErrorName, extractDataFromError, extractTxnError } from "sdk/utils/errors";
+import { ExternalSwapQuote } from "sdk/utils/trade/types";
 import { OracleUtils } from "typechain-types/ExchangeRouter";
 
 import { getErrorMessage } from "components/Errors/errorToasts";

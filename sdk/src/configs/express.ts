@@ -1,6 +1,6 @@
-import { Token } from "types/tokens";
 import { expandDecimals, USD_DECIMALS } from "utils/numbers";
 import { periodToSeconds } from "utils/time";
+import { Token } from "utils/tokens/types";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";

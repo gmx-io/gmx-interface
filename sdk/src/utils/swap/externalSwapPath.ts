@@ -1,6 +1,7 @@
 import { BOTANIX } from "configs/chains";
 import { NATIVE_TOKEN_ADDRESS, getTokenBySymbol } from "configs/tokens";
-import { ExternalSwapAggregator, ExternalSwapPath } from "types/trade";
+
+import { ExternalSwapAggregator, ExternalSwapPath } from "../trade/types";
 
 const BBTC_ADDRESS = NATIVE_TOKEN_ADDRESS;
 const PBTC_ADDRESS = getTokenBySymbol(BOTANIX, "PBTC").address;

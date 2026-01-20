@@ -5,9 +5,8 @@ import { ARBITRUM } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { DecreasePositionSwapType, OrderType } from "types/orders";
-import { ContractPrice, ERC20Address } from "types/tokens";
 import { MaxUint256, parseValue, USD_DECIMALS } from "utils/numbers";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import {
   buildDecreaseOrderPayload,
   buildTwapOrdersPayloads,
@@ -16,6 +15,7 @@ import {
   DecreasePositionOrderParams,
   getIsTwapOrderPayload,
 } from "utils/orderTransactions";
+import { ContractPrice, ERC20Address } from "utils/tokens/types";
 import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
 import { MOCK_GAS_PRICE } from "../../../test/mock";

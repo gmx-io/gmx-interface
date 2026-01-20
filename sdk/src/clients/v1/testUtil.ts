@@ -1,9 +1,9 @@
 import { createTestClient, http, publicActions, walletActions } from "viem";
 
 import { ARBITRUM, getViemChain } from "configs/chains";
-import { GmxSdkConfig } from "types/sdk";
 
 import { GmxSdk } from "./index";
+import { GmxSdkConfig } from "./types";
 
 const client = createTestClient({
   chain: getViemChain(ARBITRUM),

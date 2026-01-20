@@ -1,10 +1,5 @@
 import { MarketConfig, MARKETS } from "configs/markets";
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { GasLimitsConfig } from "types/fees";
-import { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { TokensData } from "types/tokens";
-import { FindSwapPath, SwapPathStats } from "types/trade";
 import { LRUCache } from "utils/LruCache";
 import { getIsMarketAvailableForExpressSwaps } from "utils/markets";
 
@@ -22,6 +17,11 @@ import {
   marketRouteToMarketEdges,
 } from "./swapRouting";
 import { getSwapPathStats } from "./swapStats";
+import { GasLimitsConfig } from "../fees/types";
+import { MarketsInfoData } from "../markets/types";
+import { SwapPricingType } from "../orders/types";
+import { TokensData } from "../tokens/types";
+import { FindSwapPath, SwapPathStats } from "../trade/types";
 
 export const getWrappedAddress = (chainId: number, address: string | undefined) => {
   return address ? convertTokenAddress(chainId, address, "wrapped") : undefined;

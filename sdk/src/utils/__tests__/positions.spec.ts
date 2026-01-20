@@ -1,8 +1,8 @@
 import { describe, expect, it, vi, beforeEach, Mock } from "vitest";
 
-import { MarketInfo } from "types/markets";
-import { Token } from "types/tokens";
+import { MarketInfo } from "utils/markets/types";
 import { expandDecimals, USD_DECIMALS } from "utils/numbers";
+import { Token } from "utils/tokens/types";
 
 import { bigMath } from "../bigmath";
 import { getPositionFee, getPriceImpactForPosition } from "../fees";

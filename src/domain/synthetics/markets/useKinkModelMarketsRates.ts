@@ -4,8 +4,8 @@ import { getContract } from "config/contracts";
 import { useMarkets } from "domain/synthetics/markets";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/codegen/prebuilt";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/prebuilt";
 
 export type KinkModelMarketsRatesResult = {
   kinkMarketsBorrowingRatesData: Record<

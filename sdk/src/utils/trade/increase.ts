@@ -1,21 +1,6 @@
 import { maxUint256 } from "viem";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
-import { MarketInfo, MarketsInfoData } from "types/markets";
-import { OrderType } from "types/orders";
-import { PositionInfo } from "types/positions";
-import { UserReferralInfo } from "types/referrals";
-import { ExternalSwapStrategy, NoSwapStrategy } from "types/swapStrategy";
-import { TokenData, TokensRatio } from "types/tokens";
-import {
-  ExternalSwapQuote,
-  ExternalSwapQuoteParams,
-  FindSwapPath,
-  IncreasePositionAmounts,
-  NextPositionValues,
-  SwapOptimizationOrderArray,
-  TriggerThresholdType,
-} from "types/trade";
 import { bigMath } from "utils/bigmath";
 import {
   capPositionImpactUsdByMaxImpactPool,
@@ -40,6 +25,22 @@ import {
 } from "utils/prices";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getTokensRatioByPrice } from "utils/tokens";
+
+import {
+  ExternalSwapQuote,
+  ExternalSwapQuoteParams,
+  FindSwapPath,
+  IncreasePositionAmounts,
+  NextPositionValues,
+  SwapOptimizationOrderArray,
+  TriggerThresholdType,
+} from "./types";
+import { MarketInfo, MarketsInfoData } from "../markets/types";
+import { OrderType } from "../orders/types";
+import { PositionInfo } from "../positions/types";
+import { UserReferralInfo } from "../referrals/types";
+import { ExternalSwapStrategy, NoSwapStrategy } from "../swap/types";
+import { TokenData, TokensRatio } from "../tokens/types";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;

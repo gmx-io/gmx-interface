@@ -3,9 +3,9 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken } from "configs/tokens";
-import { ERC20Address } from "types/tokens";
 import { expandDecimals, MaxUint256, parseValue, USD_DECIMALS } from "utils/numbers";
 import { combineExternalCalls, getExternalCallsPayload } from "utils/orderTransactions";
+import { ERC20Address } from "utils/tokens/types";
 
 import { mockExternalSwap } from "../../../test/mock";
 

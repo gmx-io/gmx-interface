@@ -12,8 +12,6 @@ import {
   sepolia,
 } from "viem/chains";
 
-import { ContractsChainConfig, SourceChainConfig } from "types/chains";
-
 import {
   ARBITRUM,
   ARBITRUM_SEPOLIA,
@@ -26,6 +24,7 @@ import {
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
 } from "./chainIds";
+import { ContractsChainConfig, SourceChainConfig } from "../utils/chains/types";
 
 export {
   ARBITRUM,

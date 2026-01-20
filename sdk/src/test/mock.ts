@@ -1,8 +1,8 @@
 import { USD_DECIMALS } from "configs/factors";
-import { Token, TokenData, TokensData } from "types/tokens";
-import { ExternalSwapAggregator, ExternalSwapQuote } from "types/trade";
 import { expandDecimals } from "utils/numbers";
 import { convertToTokenAmount } from "utils/tokens";
+import { Token, TokenData, TokensData } from "utils/tokens/types";
+import { ExternalSwapAggregator, ExternalSwapQuote } from "utils/trade/types";
 
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, USD_DECIMALS), token.decimals, token.prices?.minPrice)!;

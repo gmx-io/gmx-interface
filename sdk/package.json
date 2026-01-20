@@ -23,6 +23,12 @@
       "require": "./build/cjs/src/clients/v1/index.js",
       "default": "./build/cjs/src/clients/v1/index.js"
     },
+    "./types/sdk": {
+      "types": "./build/types/src/clients/v1/types.d.ts",
+      "import": "./build/esm/src/clients/v1/types.js",
+      "require": "./build/cjs/src/clients/v1/types.js",
+      "default": "./build/cjs/src/clients/v1/types.js"
+    },
     "./v2": {
       "types": "./build/types/src/clients/v2/index.d.ts",
       "import": "./build/esm/src/clients/v2/index.js",
@@ -42,16 +48,16 @@
       "default": "./build/cjs/src/abis/*.js"
     },
     "./prebuilt/*": {
-      "types": "./build/types/src/prebuilt/*.d.ts",
-      "import": "./build/esm/src/prebuilt/*.js",
-      "require": "./build/cjs/src/prebuilt/*.js",
-      "default": "./build/cjs/src/prebuilt/*.js"
+      "types": "./build/types/src/codegen/prebuilt/*.d.ts",
+      "import": "./build/esm/src/codegen/prebuilt/*.js",
+      "require": "./build/cjs/src/codegen/prebuilt/*.js",
+      "default": "./build/cjs/src/codegen/prebuilt/*.js"
     },
-    "./utils/*": {
-      "types": "./build/types/src/utils/*.d.ts",
-      "import": "./build/esm/src/utils/*.js",
-      "require": "./build/cjs/src/utils/*.js",
-      "default": "./build/cjs/src/utils/*.js"
+    "./types/subsquid": {
+      "types": "./build/types/src/codegen/subsquid.d.ts",
+      "import": "./build/esm/src/codegen/subsquid.js",
+      "require": "./build/cjs/src/codegen/subsquid.js",
+      "default": "./build/cjs/src/codegen/subsquid.js"
     },
     "./utils/markets": {
       "types": "./build/types/src/utils/markets/index.d.ts",
@@ -59,11 +65,233 @@
       "require": "./build/cjs/src/utils/markets/index.js",
       "default": "./build/cjs/src/utils/markets/index.js"
     },
-    "./types/*": {
-      "types": "./build/types/src/types/*.d.ts",
-      "import": "./build/esm/src/types/*.js",
-      "require": "./build/cjs/src/types/*.js",
-      "default": "./build/cjs/src/types/*.js"
+    "./types/markets": {
+      "types": "./build/types/src/utils/markets/types.d.ts",
+      "import": "./build/esm/src/utils/markets/types.js",
+      "require": "./build/cjs/src/utils/markets/types.js",
+      "default": "./build/cjs/src/utils/markets/types.js"
+    },
+    "./utils/prices": {
+      "types": "./build/types/src/utils/prices/index.d.ts",
+      "import": "./build/esm/src/utils/prices/index.js",
+      "require": "./build/cjs/src/utils/prices/index.js",
+      "default": "./build/cjs/src/utils/prices/index.js"
+    },
+    "./types/24h": {
+      "types": "./build/types/src/utils/24h/types.d.ts",
+      "import": "./build/esm/src/utils/24h/types.js",
+      "require": "./build/cjs/src/utils/24h/types.js",
+      "default": "./build/cjs/src/utils/24h/types.js"
+    },
+    "./utils/tokens": {
+      "types": "./build/types/src/utils/tokens/index.d.ts",
+      "import": "./build/esm/src/utils/tokens/index.js",
+      "require": "./build/cjs/src/utils/tokens/index.js",
+      "default": "./build/cjs/src/utils/tokens/index.js"
+    },
+    "./types/tokens": {
+      "types": "./build/types/src/utils/tokens/types.d.ts",
+      "import": "./build/esm/src/utils/tokens/types.js",
+      "require": "./build/cjs/src/utils/tokens/types.js",
+      "default": "./build/cjs/src/utils/tokens/types.js"
+    },
+    "./utils/orders": {
+      "types": "./build/types/src/utils/orders/index.d.ts",
+      "import": "./build/esm/src/utils/orders/index.js",
+      "require": "./build/cjs/src/utils/orders/index.js",
+      "default": "./build/cjs/src/utils/orders/index.js"
+    },
+    "./types/orders": {
+      "types": "./build/types/src/utils/orders/types.d.ts",
+      "import": "./build/esm/src/utils/orders/types.js",
+      "require": "./build/cjs/src/utils/orders/types.js",
+      "default": "./build/cjs/src/utils/orders/types.js"
+    },
+    "./utils/positions": {
+      "types": "./build/types/src/utils/positions/index.d.ts",
+      "import": "./build/esm/src/utils/positions/index.js",
+      "require": "./build/cjs/src/utils/positions/index.js",
+      "default": "./build/cjs/src/utils/positions/index.js"
+    },
+    "./types/positions": {
+      "types": "./build/types/src/utils/positions/types.d.ts",
+      "import": "./build/esm/src/utils/positions/types.js",
+      "require": "./build/cjs/src/utils/positions/types.js",
+      "default": "./build/cjs/src/utils/positions/types.js"
+    },
+    "./utils/fees": {
+      "types": "./build/types/src/utils/fees/index.d.ts",
+      "import": "./build/esm/src/utils/fees/index.js",
+      "require": "./build/cjs/src/utils/fees/index.js",
+      "default": "./build/cjs/src/utils/fees/index.js"
+    },
+    "./types/fees": {
+      "types": "./build/types/src/utils/fees/types.d.ts",
+      "import": "./build/esm/src/utils/fees/types.js",
+      "require": "./build/cjs/src/utils/fees/types.js",
+      "default": "./build/cjs/src/utils/fees/types.js"
+    },
+    "./utils/trade": {
+      "types": "./build/types/src/utils/trade/index.d.ts",
+      "import": "./build/esm/src/utils/trade/index.js",
+      "require": "./build/cjs/src/utils/trade/index.js",
+      "default": "./build/cjs/src/utils/trade/index.js"
+    },
+    "./types/trade": {
+      "types": "./build/types/src/utils/trade/types.d.ts",
+      "import": "./build/esm/src/utils/trade/types.js",
+      "require": "./build/cjs/src/utils/trade/types.js",
+      "default": "./build/cjs/src/utils/trade/types.js"
+    },
+    "./utils/swap": {
+      "types": "./build/types/src/utils/swap/index.d.ts",
+      "import": "./build/esm/src/utils/swap/index.js",
+      "require": "./build/cjs/src/utils/swap/index.js",
+      "default": "./build/cjs/src/utils/swap/index.js"
+    },
+    "./types/swap": {
+      "types": "./build/types/src/utils/swap/types.d.ts",
+      "import": "./build/esm/src/utils/swap/types.js",
+      "require": "./build/cjs/src/utils/swap/types.js",
+      "default": "./build/cjs/src/utils/swap/types.js"
+    },
+    "./utils/tradeHistory": {
+      "types": "./build/types/src/utils/tradeHistory/index.d.ts",
+      "import": "./build/esm/src/utils/tradeHistory/index.js",
+      "require": "./build/cjs/src/utils/tradeHistory/index.js",
+      "default": "./build/cjs/src/utils/tradeHistory/index.js"
+    },
+    "./types/tradeHistory": {
+      "types": "./build/types/src/utils/tradeHistory/types.d.ts",
+      "import": "./build/esm/src/utils/tradeHistory/types.js",
+      "require": "./build/cjs/src/utils/tradeHistory/types.js",
+      "default": "./build/cjs/src/utils/tradeHistory/types.js"
+    },
+    "./utils/twap": {
+      "types": "./build/types/src/utils/twap/index.d.ts",
+      "import": "./build/esm/src/utils/twap/index.js",
+      "require": "./build/cjs/src/utils/twap/index.js",
+      "default": "./build/cjs/src/utils/twap/index.js"
+    },
+    "./types/twap": {
+      "types": "./build/types/src/utils/twap/types.d.ts",
+      "import": "./build/esm/src/utils/twap/types.js",
+      "require": "./build/cjs/src/utils/twap/types.js",
+      "default": "./build/cjs/src/utils/twap/types.js"
+    },
+    "./utils/referrals": {
+      "types": "./build/types/src/utils/referrals/index.d.ts",
+      "import": "./build/esm/src/utils/referrals/index.js",
+      "require": "./build/cjs/src/utils/referrals/index.js",
+      "default": "./build/cjs/src/utils/referrals/index.js"
+    },
+    "./types/referrals": {
+      "types": "./build/types/src/utils/referrals/types.d.ts",
+      "import": "./build/esm/src/utils/referrals/types.js",
+      "require": "./build/cjs/src/utils/referrals/types.js",
+      "default": "./build/cjs/src/utils/referrals/types.js"
+    },
+    "./utils/chains": {
+      "types": "./build/types/src/utils/chains/index.d.ts",
+      "import": "./build/esm/src/utils/chains/index.js",
+      "require": "./build/cjs/src/utils/chains/index.js",
+      "default": "./build/cjs/src/utils/chains/index.js"
+    },
+    "./types/chains": {
+      "types": "./build/types/src/utils/chains/types.d.ts",
+      "import": "./build/esm/src/utils/chains/types.js",
+      "require": "./build/cjs/src/utils/chains/types.js",
+      "default": "./build/cjs/src/utils/chains/types.js"
+    },
+    "./utils/sidecarOrders": {
+      "types": "./build/types/src/utils/sidecarOrders/index.d.ts",
+      "import": "./build/esm/src/utils/sidecarOrders/index.js",
+      "require": "./build/cjs/src/utils/sidecarOrders/index.js",
+      "default": "./build/cjs/src/utils/sidecarOrders/index.js"
+    },
+    "./types/sidecarOrders": {
+      "types": "./build/types/src/utils/sidecarOrders/types.d.ts",
+      "import": "./build/esm/src/utils/sidecarOrders/types.js",
+      "require": "./build/cjs/src/utils/sidecarOrders/types.js",
+      "default": "./build/cjs/src/utils/sidecarOrders/types.js"
+    },
+    "./utils/bigmath": {
+      "types": "./build/types/src/utils/bigmath/index.d.ts",
+      "import": "./build/esm/src/utils/bigmath/index.js",
+      "require": "./build/cjs/src/utils/bigmath/index.js",
+      "default": "./build/cjs/src/utils/bigmath/index.js"
+    },
+    "./utils/numbers": {
+      "types": "./build/types/src/utils/numbers/index.d.ts",
+      "import": "./build/esm/src/utils/numbers/index.js",
+      "require": "./build/cjs/src/utils/numbers/index.js",
+      "default": "./build/cjs/src/utils/numbers/index.js"
+    },
+    "./utils/objects": {
+      "types": "./build/types/src/utils/objects/index.d.ts",
+      "import": "./build/esm/src/utils/objects/index.js",
+      "require": "./build/cjs/src/utils/objects/index.js",
+      "default": "./build/cjs/src/utils/objects/index.js"
+    },
+    "./utils/hash": {
+      "types": "./build/types/src/utils/hash/index.d.ts",
+      "import": "./build/esm/src/utils/hash/index.js",
+      "require": "./build/cjs/src/utils/hash/index.js",
+      "default": "./build/cjs/src/utils/hash/index.js"
+    },
+    "./utils/time": {
+      "types": "./build/types/src/utils/time/index.d.ts",
+      "import": "./build/esm/src/utils/time/index.js",
+      "require": "./build/cjs/src/utils/time/index.js",
+      "default": "./build/cjs/src/utils/time/index.js"
+    },
+    "./utils/buildUrl": {
+      "types": "./build/types/src/utils/buildUrl/index.d.ts",
+      "import": "./build/esm/src/utils/buildUrl/index.js",
+      "require": "./build/cjs/src/utils/buildUrl/index.js",
+      "default": "./build/cjs/src/utils/buildUrl/index.js"
+    },
+    "./utils/graphqlFetcher": {
+      "types": "./build/types/src/utils/graphqlFetcher/index.d.ts",
+      "import": "./build/esm/src/utils/graphqlFetcher/index.js",
+      "require": "./build/cjs/src/utils/graphqlFetcher/index.js",
+      "default": "./build/cjs/src/utils/graphqlFetcher/index.js"
+    },
+    "./utils/indexers": {
+      "types": "./build/types/src/utils/indexers/index.d.ts",
+      "import": "./build/esm/src/utils/indexers/index.js",
+      "require": "./build/cjs/src/utils/indexers/index.js",
+      "default": "./build/cjs/src/utils/indexers/index.js"
+    },
+    "./utils/LruCache": {
+      "types": "./build/types/src/utils/LruCache/index.d.ts",
+      "import": "./build/esm/src/utils/LruCache/index.js",
+      "require": "./build/cjs/src/utils/LruCache/index.js",
+      "default": "./build/cjs/src/utils/LruCache/index.js"
+    },
+    "./utils/abort": {
+      "types": "./build/types/src/utils/abort/index.d.ts",
+      "import": "./build/esm/src/utils/abort/index.js",
+      "require": "./build/cjs/src/utils/abort/index.js",
+      "default": "./build/cjs/src/utils/abort/index.js"
+    },
+    "./utils/common": {
+      "types": "./build/types/src/utils/common/index.d.ts",
+      "import": "./build/esm/src/utils/common/index.js",
+      "require": "./build/cjs/src/utils/common/index.js",
+      "default": "./build/cjs/src/utils/common/index.js"
+    },
+    "./utils/gelatoRelay": {
+      "types": "./build/types/src/utils/gelatoRelay/index.d.ts",
+      "import": "./build/esm/src/utils/gelatoRelay/index.js",
+      "require": "./build/cjs/src/utils/gelatoRelay/index.js",
+      "default": "./build/cjs/src/utils/gelatoRelay/index.js"
+    },
+    "./utils/types": {
+      "types": "./build/types/src/utils/types/index.d.ts",
+      "import": "./build/esm/src/utils/types/index.js",
+      "require": "./build/cjs/src/utils/types/index.js",
+      "default": "./build/cjs/src/utils/types/index.js"
     }
   },
   "scripts": {
@@ -76,7 +304,7 @@
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
-    "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c subsquid-codegen.ts && npx prettier --write src/types/subsquid.ts",
+    "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c scripts/subsquid-codegen.ts && npx prettier --write src/codegen/subsquid.ts",
     "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
     "tscheck:ci": "tsc -p tsconfig.json --noEmit",
     "lint": "cd .. && node node_modules/.bin/eslint sdk --fix --cache --cache-location .eslintcache",

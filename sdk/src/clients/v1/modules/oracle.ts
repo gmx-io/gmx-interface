@@ -1,7 +1,7 @@
 import fetch from "cross-fetch";
 
-import { MarketSdkConfig } from "types/markets";
 import { buildUrl } from "utils/buildUrl";
+import { MarketSdkConfig } from "utils/markets/types";
 
 import type { GmxSdk } from "../index";
 

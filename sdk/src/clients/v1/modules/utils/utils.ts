@@ -26,9 +26,6 @@ import {
   withdrawalGasLimitKey,
 } from "configs/dataStore";
 import { GAS_LIMITS_STATIC_CONFIG } from "configs/gasLimits";
-import type { GasLimitsConfig } from "types/fees";
-import { TokensData } from "types/tokens";
-import type { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeFeesType } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { estimateOrderOraclePriceCount } from "utils/fees/estimateOraclePriceCount";
 import {
@@ -37,7 +34,10 @@ import {
   estimateExecuteSwapOrderGasLimit,
   getExecutionFee,
 } from "utils/fees/executionFee";
+import type { GasLimitsConfig } from "utils/fees/types";
+import { TokensData } from "utils/tokens/types";
 import { getSwapCount } from "utils/trade";
+import type { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeFeesType } from "utils/trade/types";
 
 import { Module } from "../base";
 
