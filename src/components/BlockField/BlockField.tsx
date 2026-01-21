@@ -98,13 +98,19 @@ export function BlockField({
       ref={setContainerRef}
       className={cx(
         "flex items-center justify-between gap-10 rounded-4 bg-slate-800 px-8 py-[2px] leading-[24px]",
-        disabled ? "cursor-default opacity-50 pointer-events-none" : "cursor-pointer",
+        disabled ? "pointer-events-none cursor-default opacity-50" : "group cursor-pointer",
         className
       )}
       onPointerDown={disabled ? undefined : handlePointerDown}
       onClick={disabled ? undefined : handleClick}
     >
-      <div className={cx("select-none text-13 text-typography-secondary", labelClassName)}>{label}</div>
+      <div
+        className={cx("select-none text-13 text-typography-secondary", labelClassName, {
+          "group-hover:text-blue-300": !disabled,
+        })}
+      >
+        {label}
+      </div>
       <div className={cx("flex min-w-0 flex-1 justify-end", contentClassName)}>{content}</div>
     </div>
   );
