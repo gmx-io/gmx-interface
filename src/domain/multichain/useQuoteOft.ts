@@ -23,7 +23,6 @@ export function useQuoteOft({
 }): {
   data: QuoteOft | undefined;
   isLoading: boolean;
-  error: Error | undefined;
 } {
   const quoteOftCondition =
     sendParams !== undefined &&
@@ -64,6 +63,5 @@ export function useQuoteOft({
   return {
     data: quoteOftQuery.data,
     isLoading: quoteOftQuery.isLoading,
-    error: quoteOftQuery.error,
   };
 }
