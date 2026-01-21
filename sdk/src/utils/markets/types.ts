@@ -232,7 +232,10 @@ export type MarketsData = {
   [marketTokenAddress: string]: Market;
 };
 
-export type RawMarketInfo = Omit<MarketInfo, "longToken" | "shortToken" | "indexToken">;
+export type RawMarketInfo = Omit<
+  MarketInfo,
+  "longToken" | "shortToken" | "indexToken" | "claimableFundingAmountLong" | "claimableFundingAmountShort"
+>;
 
 export type RawMarketsInfoData = {
   [marketAddress: string]: RawMarketInfo;
@@ -286,6 +289,8 @@ export type ClaimableFundingData = {
 };
 
 export type MarketTicker = {
+  symbol: string;
+  marketTokenAddress: string;
   markPrice: bigint;
   high24h: bigint;
   low24h: bigint;
@@ -305,4 +310,24 @@ export type MarketTicker = {
   borrowingRateShort: bigint;
   netRateLong: bigint;
   netRateShort: bigint;
+};
+
+export type LeverageTier = {
+  maxLeverage: bigint;
+  minCollateralFactor: bigint;
+  maxPositionSize: bigint | undefined;
+};
+
+export type MarketWithTiers = {
+  symbol: string;
+  marketTokenAddress: string;
+  indexTokenAddress: string;
+  longTokenAddress: string;
+  shortTokenAddress: string;
+  isListed: boolean;
+  listingDate: number | undefined;
+  isSpotOnly: boolean;
+  leverageTiers: LeverageTier[];
+  minPositionSizeUsd: bigint;
+  minCollateralUsd: bigint;
 };

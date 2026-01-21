@@ -1,3 +1,5 @@
+import { zeroAddress } from "viem";
+
 import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
@@ -6,6 +8,7 @@ import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } f
 import type {
   ClaimableFundingData,
   ContractMarketPrices,
+  LeverageTier,
   Market,
   MarketConfig,
   MarketInfo,
@@ -13,6 +16,7 @@ import type {
   MarketsInfoData,
   MarketTicker,
   MarketValues,
+  MarketWithTiers,
   RawMarketInfo,
   RawMarketsInfoData,
 } from "./types";
@@ -344,6 +348,8 @@ export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPrice
     getMarket24Stats(dayPriceCandle);
 
   return {
+    symbol: marketInfo.name,
+    marketTokenAddress: marketInfo.marketTokenAddress,
     markPrice,
     high24h,
     low24h,
@@ -483,4 +489,80 @@ export function composeFullMarketsInfoData({
   }
 
   return data;
+}
+
+export function getMarketWithTiers(
+  marketInfo: MarketInfo,
+  constants: {
+    minCollateralUsd: bigint;
+    minPositionSizeUsd: bigint;
+  }
+): MarketWithTiers {
+  const maxLeverage = getMaxLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
+  const maxLeverageBigint = BigInt(maxLeverage);
+
+  const leverageTiers: LeverageTier[] = [
+    {
+      maxLeverage: maxLeverageBigint,
+      minCollateralFactor: marketInfo.minCollateralFactor,
+      maxPositionSize: undefined,
+    },
+  ];
+
+  return {
+    symbol: marketInfo.name,
+    marketTokenAddress: marketInfo.marketTokenAddress,
+    indexTokenAddress: marketInfo.indexTokenAddress,
+    longTokenAddress: marketInfo.longTokenAddress,
+    shortTokenAddress: marketInfo.shortTokenAddress,
+    isListed: !marketInfo.isDisabled,
+    listingDate: undefined,
+    isSpotOnly: marketInfo.isSpotOnly,
+    leverageTiers,
+    minPositionSizeUsd: constants.minPositionSizeUsd,
+    minCollateralUsd: constants.minCollateralUsd,
+  };
+}
+
+export function getMarketAddressByName(marketsInfoData: MarketsInfoData, name: string): string | undefined {
+  const poolMatch = name.match(/\[([^\]]+)\]/);
+  if (!poolMatch) {
+    return undefined;
+  }
+
+  const poolTokens = poolMatch[1].split("-");
+
+  if (poolTokens.length !== 2) {
+    return undefined;
+  }
+
+  const [longTokenSymbol, shortTokenSymbol] = poolTokens.map((s) => s.trim());
+
+  const isSpotOnly = name.startsWith("SWAP-ONLY");
+  let indexTokenSymbol: string | undefined;
+
+  if (!isSpotOnly) {
+    const indexMatch = name.match(/^([^/]+)\/USD/);
+    if (!indexMatch) {
+      return undefined;
+    }
+    indexTokenSymbol = indexMatch[1].trim();
+  }
+
+  for (const [marketAddress, marketInfo] of Object.entries(marketsInfoData)) {
+    const matchesLong =
+      marketInfo.longToken.symbol === longTokenSymbol || marketInfo.longToken.baseSymbol === longTokenSymbol;
+    const matchesShort =
+      marketInfo.shortToken.symbol === shortTokenSymbol || marketInfo.shortToken.baseSymbol === shortTokenSymbol;
+    const matchesIndex = isSpotOnly
+      ? marketInfo.isSpotOnly && marketInfo.indexTokenAddress === zeroAddress
+      : (marketInfo.indexToken.symbol === indexTokenSymbol || marketInfo.indexToken.baseSymbol === indexTokenSymbol) &&
+        !marketInfo.isSpotOnly;
+
+    if (matchesLong && matchesShort && matchesIndex) {
+      return marketAddress;
+    }
+  }
+
+  return undefined;
 }

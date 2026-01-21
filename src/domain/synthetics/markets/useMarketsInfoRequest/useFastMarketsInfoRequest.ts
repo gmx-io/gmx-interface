@@ -5,8 +5,8 @@ import { zeroAddress } from "viem";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 import { metrics } from "lib/metrics";
+import { MarketInfo as SquidMarketInfo } from "sdk/codegen/subsquid";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
-import { MarketInfo as SquidMarketInfo } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 
 import { getMarketFullName, RawMarketsInfoData } from "..";

@@ -1,8 +1,8 @@
 import { IHttp } from "utils/http/types";
 import { deserializeBigIntsInObject } from "utils/numbers";
 
-import { TokenData } from "../tokens/types";
 import { RawMarketInfo } from "./types";
+import { TokenData } from "../tokens/types";
 
 export async function fetchApiMarketsInfo(ctx: { api: IHttp }): Promise<RawMarketInfo[]> {
   const mInfos: any[] = await ctx.api.fetchJson("/markets/info");
