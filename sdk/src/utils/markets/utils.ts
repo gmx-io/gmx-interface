@@ -332,8 +332,8 @@ export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPrice
   const borrowingRateLong = getBorrowingFactorPerPeriod(marketInfo, true, SECONDS_PER_HOUR);
   const borrowingRateShort = getBorrowingFactorPerPeriod(marketInfo, false, SECONDS_PER_HOUR);
 
-  const netRateLong = fundingRateLong + borrowingRateLong;
-  const netRateShort = fundingRateShort + borrowingRateShort;
+  const netRateLong = fundingRateLong - borrowingRateLong;
+  const netRateShort = fundingRateShort - borrowingRateShort;
 
   const openInterestLong = getOpenInterestUsd(marketInfo, true);
   const openInterestShort = getOpenInterestUsd(marketInfo, false);
@@ -557,7 +557,7 @@ export function getMarketAddressByName(marketsInfoData: MarketsInfoData, name: s
     const matchesIndex = isSpotOnly
       ? marketInfo.isSpotOnly && marketInfo.indexTokenAddress === zeroAddress
       : (marketInfo.indexToken.symbol === indexTokenSymbol || marketInfo.indexToken.baseSymbol === indexTokenSymbol) &&
-        !marketInfo.isSpotOnly;
+      !marketInfo.isSpotOnly;
 
     if (matchesLong && matchesShort && matchesIndex) {
       return marketAddress;
