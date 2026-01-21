@@ -101,6 +101,7 @@ import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { TPSLInputRow } from "components/TPSLModal/TPSLInputRow";
+import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
@@ -677,6 +678,21 @@ export function OrderEditor(p: Props) {
 
   const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
 
+  const closeSizePercentage = useMemo(() => {
+    if (positionSize === undefined || positionSize === 0n) return 0;
+    const percentage = Number((sizeUsd * 100n) / positionSize);
+    return Math.min(100, Math.max(0, percentage));
+  }, [sizeUsd, positionSize]);
+
+  const handleCloseSizePercentageChange = useCallback(
+    (percentage: number) => {
+      if (positionSize === undefined || positionSize === 0n) return;
+      const formattedAmount = formatAmountFree((positionSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
+      setSizeInputValue(formattedAmount);
+    },
+    [positionSize, setSizeInputValue]
+  );
+
   const handleBack = useCallback(() => {
     if (p.onBack) {
       p.onBack();
@@ -721,6 +737,9 @@ export function OrderEditor(p: Props) {
               >
                 USD
               </BuyInputSection>
+              {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
+                <MarginPercentageSlider value={closeSizePercentage} onChange={handleCloseSizePercentageChange} />
+              )}
 
               <BuyInputSection
                 topLeftLabel={priceLabel}

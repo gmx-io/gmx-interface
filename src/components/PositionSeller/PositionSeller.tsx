@@ -86,6 +86,7 @@ import Modal from "components/Modal/Modal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
@@ -178,6 +179,20 @@ export function PositionSeller() {
   const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
+
+  const closePercentage = useMemo(() => {
+    if (maxCloseSize === 0n) return 0;
+    const percentage = Number((closeSizeUsd * 100n) / maxCloseSize);
+    return Math.min(100, Math.max(0, percentage));
+  }, [closeSizeUsd, maxCloseSize]);
+
+  const handleClosePercentageChange = useCallback(
+    (percentage: number) => {
+      const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
+      setCloseUsdInputValueRaw(formattedAmount);
+    },
+    [maxCloseSize, setCloseUsdInputValueRaw]
+  );
 
   const setReceiveTokenManually = useCallback(
     (token: Token) => {
@@ -820,7 +835,7 @@ export function PositionSeller() {
                     </div>
                   </ColorfulBanner>
                 )}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-8">
                   <BuyInputSection
                     topLeftLabel={t`Close`}
                     inputValue={closeUsdInputValue}
@@ -846,6 +861,7 @@ export function PositionSeller() {
                   >
                     USD
                   </BuyInputSection>
+                  <MarginPercentageSlider value={closePercentage} onChange={handleClosePercentageChange} />
                 </div>
               </div>
 

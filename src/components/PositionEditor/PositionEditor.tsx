@@ -45,6 +45,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { PositionEditorCollateralSelector } from "../CollateralSelector/PositionEditorCollateralSelector";
@@ -206,6 +207,34 @@ export function PositionEditor() {
 
     return maxWithdrawAmount;
   }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
+
+  const collateralPercentage = useMemo(() => {
+    if (collateralDeltaAmount === undefined || collateralDeltaAmount === 0n) return 0;
+
+    const maxAmount = isDeposit ? collateralToken?.balance : maxWithdrawAmount;
+    if (maxAmount === undefined || maxAmount === 0n) return 0;
+
+    const percentage = Number((collateralDeltaAmount * 100n) / maxAmount);
+    return Math.min(100, Math.max(0, percentage));
+  }, [collateralDeltaAmount, maxWithdrawAmount, isDeposit, collateralToken?.balance]);
+
+  const handleCollateralPercentageChange = useCallback(
+    (percentage: number) => {
+      const maxAmount = isDeposit ? collateralToken?.balance : maxWithdrawAmount;
+      if (maxAmount === undefined || maxAmount === 0n) return;
+
+      const decimals = isDeposit ? collateralToken?.decimals : position?.collateralToken?.decimals;
+      setCollateralInputValue(formatAmountFree((maxAmount * BigInt(percentage)) / 100n, decimals || 0));
+    },
+    [
+      maxWithdrawAmount,
+      isDeposit,
+      collateralToken?.balance,
+      collateralToken?.decimals,
+      position?.collateralToken?.decimals,
+      setCollateralInputValue,
+    ]
+  );
 
   const { fees, executionFee } = usePositionEditorFees({
     operation,
@@ -397,6 +426,10 @@ export function PositionEditor() {
                 collateralToken?.symbol
               )}
             </BuyInputSection>
+            {((isDeposit && collateralToken?.balance && collateralToken.balance > 0n) ||
+              (!isDeposit && maxWithdrawAmount !== undefined && maxWithdrawAmount > 0n)) && (
+              <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
+            )}
             <div className="flex flex-col gap-14">
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
