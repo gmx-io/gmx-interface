@@ -350,7 +350,6 @@ export function PositionEditor() {
               options={tabsOptions}
               type="inline"
               className="PositionEditor-tabs"
-              size="l"
               qa="operation-tabs"
             />
             <BuyInputSection

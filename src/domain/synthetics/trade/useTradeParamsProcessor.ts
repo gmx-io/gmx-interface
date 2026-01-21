@@ -75,7 +75,8 @@ export function useTradeParamsProcessor() {
 
       if (
         chainIdFromParams &&
-        (isContractsChain(Number(chainIdFromParams), isDevelopment()) || isSourceChain(Number(chainIdFromParams)))
+        (isContractsChain(Number(chainIdFromParams), isDevelopment()) ||
+          isSourceChain(Number(chainIdFromParams), chainId))
       ) {
         await switchNetwork(Number(chainIdFromParams), true);
       }

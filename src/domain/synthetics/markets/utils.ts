@@ -70,11 +70,7 @@ export function getMarketBadge(
   return market.isSpotOnly ? undefined : ([market.longToken.symbol, market.shortToken.symbol] as const);
 }
 
-export function getGlvMarketSubtitle(chainId: number, address: string) {
-  return GLV_MARKETS[chainId]?.[address]?.subtitle || "";
-}
-
-export function getGlvMarketShortening(chainId: number, address: string) {
+function getGlvMarketShortening(chainId: number, address: string) {
   return GLV_MARKETS[chainId]?.[address]?.shortening || "";
 }
 
@@ -260,7 +256,7 @@ function getDepositCapacityAmount(marketInfo: MarketInfo, isLong: boolean) {
   return bigMath.max(0n, capacityAmount);
 }
 
-export function getStrictestMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
+function getStrictestMaxPoolAmountForDeposit(marketInfo: MarketInfo, isLong: boolean) {
   const maxPoolUsdForDeposit = isLong ? marketInfo.maxLongPoolUsdForDeposit : marketInfo.maxShortPoolUsdForDeposit;
   const maxPoolAmount = isLong ? marketInfo.maxLongPoolAmount : marketInfo.maxShortPoolAmount;
   const token = isLong ? marketInfo.longToken : marketInfo.shortToken;
@@ -285,7 +281,7 @@ export function getMaxPoolUsdForSwap(marketInfo: MarketInfo, isLong: boolean) {
   return convertToUsd(maxPoolAmount, token.decimals, getMidPrice(token.prices))!;
 }
 
-export function getDepositCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
+function getDepositCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "midPrice");
   const maxPoolUsd = getStrictestMaxPoolUsdForDeposit(marketInfo, isLong);
 
@@ -415,10 +411,6 @@ export function getTotalGlvInfo({
   return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
 }
 
-export function getIsZeroPriceImpactMarket(marketInfo: MarketInfo) {
-  return marketInfo.positionImpactFactorNegative === 0n;
-}
-
 export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
   const allowedLeverage = Math.round(maxLeverage / 2 / BASIS_POINTS_DIVISOR);
 
@@ -444,8 +436,12 @@ export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
     return [0.1, 1, 2, 5, 10, 25, 50];
   } else if (allowedLeverage >= 30) {
     return [0.1, 1, 2, 5, 10, 30];
+  } else if (allowedLeverage >= 25) {
+    return [0.1, 1, 2, 5, 10, 25];
+  } else if (allowedLeverage >= 10) {
+    return [0.1, 1, 2, 5, allowedLeverage];
   } else {
-    return [0.1, 1, 2, 5, 10];
+    return [0.1, 1, 2, 5];
   }
 }
 

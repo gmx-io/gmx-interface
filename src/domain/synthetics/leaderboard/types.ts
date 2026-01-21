@@ -2,13 +2,6 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 import { LEADERBOARD_PAGES_ORDER } from "./constants";
 
-export enum PerfPeriod {
-  DAY = "24 hours",
-  WEEK = "7 days",
-  MONTH = "1 month",
-  TOTAL = "All time",
-}
-
 export type RemoteData<T> = {
   isLoading: boolean;
   data: T[];

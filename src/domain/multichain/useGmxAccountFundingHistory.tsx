@@ -7,6 +7,7 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { isValidTokenSafe } from "sdk/configs/tokens";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
 const query = /* gql */ `
@@ -49,19 +50,21 @@ async function fetchGmxAccountFundingHistory(
     multichainFunding: MultichainFundingHistoryItem[];
   };
 
-  return response.multichainFunding.map(
-    (item): MultichainFundingHistoryItem => ({
-      ...item,
-      sentAmount: BigInt(item.sentAmount),
-      receivedAmount: item.receivedAmount ? BigInt(item.receivedAmount) : undefined,
-      sentTimestamp: item.sentTimestamp,
-      receivedTimestamp: item.receivedTimestamp ? item.receivedTimestamp : undefined,
-      executedTimestamp: item.executedTimestamp ? item.executedTimestamp : undefined,
+  return response.multichainFunding
+    .filter((item) => isValidTokenSafe(chainId, item.token))
+    .map(
+      (item): MultichainFundingHistoryItem => ({
+        ...item,
+        sentAmount: BigInt(item.sentAmount),
+        receivedAmount: item.receivedAmount ? BigInt(item.receivedAmount) : undefined,
+        sentTimestamp: item.sentTimestamp,
+        receivedTimestamp: item.receivedTimestamp ? item.receivedTimestamp : undefined,
+        executedTimestamp: item.executedTimestamp ? item.executedTimestamp : undefined,
 
-      receivedTxn: item.receivedTxn ? item.receivedTxn : undefined,
-      executedTxn: item.executedTxn ? item.executedTxn : undefined,
-    })
-  );
+        receivedTxn: item.receivedTxn ? item.receivedTxn : undefined,
+        executedTxn: item.executedTxn ? item.executedTxn : undefined,
+      })
+    );
 }
 
 const STEP_ORDER: Record<MultichainFundingHistoryItem["step"], number> = {
@@ -71,7 +74,7 @@ const STEP_ORDER: Record<MultichainFundingHistoryItem["step"], number> = {
   executed: 4,
 };
 
-export function isStepGreaterOrEqual(
+function isStepGreaterOrEqual(
   step: MultichainFundingHistoryItem["step"],
   than: MultichainFundingHistoryItem["step"]
 ): boolean {

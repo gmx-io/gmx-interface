@@ -2,7 +2,7 @@ import cx from "classnames";
 import { ReactNode } from "react";
 import "./StatsTooltip.css";
 
-export type StatsTooltipRowProps = {
+type StatsTooltipRowProps = {
   textClassName?: string;
   labelClassName?: string;
   valueClassName?: string;

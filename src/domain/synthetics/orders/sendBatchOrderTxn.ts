@@ -152,7 +152,7 @@ export async function sendBatchOrderTxn({
   }
 }
 
-export const makeBatchOrderSimulation = async ({
+const makeBatchOrderSimulation = async ({
   chainId,
   signer,
   isGmxAccount,

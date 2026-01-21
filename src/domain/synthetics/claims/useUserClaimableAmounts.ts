@@ -88,7 +88,7 @@ type ClaimsConfigurationRequestConfig = MulticallRequestConfig<{
   };
 }>;
 
-export interface ClaimableAmountsResult {
+interface ClaimableAmountsResult {
   claimsConfigByDistributionId?: ClaimsConfigurationData;
   claimableAmountsDataByDistributionId?: ClaimableAmountsDataByDistributionId;
   isLoading: boolean;

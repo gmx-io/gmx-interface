@@ -1,9 +1,8 @@
 import noop from "lodash/noop";
 
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { Mode, Operation } from "domain/synthetics/markets/types";
 import { EMPTY_ARRAY } from "lib/objects";
-
-import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 
 export const PLATFORM_TOKEN_DECIMALS = 18;
 

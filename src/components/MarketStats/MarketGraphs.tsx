@@ -209,7 +209,7 @@ type GraphData = {
   snapshotTimestamp: Date;
 };
 
-export const formatPerformanceBps = (performance: number): string => {
+const formatPerformanceBps = (performance: number): string => {
   return Number((performance * 100).toFixed(2)) + "%";
 };
 

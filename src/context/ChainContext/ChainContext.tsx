@@ -8,7 +8,7 @@ import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainIdImpl } from "lib/chains/useChainIdImpl";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
-export type ChainContext = {
+type ChainContext = {
   chainId: ContractsChainId;
   /**
    * Guaranteed to be related to the settlement chain in `chainId`
@@ -25,9 +25,9 @@ if (isDevelopment()) {
 }
 const realChainId = window.ethereum?.chainId ? parseInt(window.ethereum?.chainId) : initialChainId;
 
-export const context = createContext<ChainContext>({
+const context = createContext<ChainContext>({
   chainId: initialChainId,
-  srcChainId: isSourceChain(realChainId) ? realChainId : undefined,
+  srcChainId: isSourceChain(realChainId, initialChainId) ? realChainId : undefined,
   isConnectedToChainId: false,
 });
 

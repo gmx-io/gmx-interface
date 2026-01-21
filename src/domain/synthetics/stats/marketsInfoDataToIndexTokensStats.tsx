@@ -50,17 +50,6 @@ export type IndexTokensStats = {
   [address: string]: IndexTokenStat;
 };
 
-export function bnMax(...args: bigint[]): bigint {
-  let max = args[0];
-  for (let i = 1; i < args.length; i++) {
-    if (args[i] > max) {
-      max = args[i];
-    }
-  }
-
-  return max;
-}
-
 export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoData): {
   indexMap: Partial<Record<string, IndexTokenStat>>;
   sortedByTotalPoolValue: string[];

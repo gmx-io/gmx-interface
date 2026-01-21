@@ -6,7 +6,7 @@ import { EMPTY_OBJECT } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
-export function getMultichainTransferableGasPaymentTokenAddresses(
+function getMultichainTransferableGasPaymentTokenAddresses(
   chainId: SettlementChainId,
   srcChainId: SourceChainId
 ): string[] {
