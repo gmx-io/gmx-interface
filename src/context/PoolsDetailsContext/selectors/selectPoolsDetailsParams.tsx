@@ -58,12 +58,7 @@ type PoolsDetailsParams =
   | undefined;
 
 export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams => {
-  const account = q(selectAccount);
-
-  // Early return if no account
-  if (!account) {
-    return undefined;
-  }
+  const account = q(selectAccount) ?? zeroAddress;
 
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);

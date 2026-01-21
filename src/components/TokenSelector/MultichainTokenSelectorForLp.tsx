@@ -26,7 +26,6 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import { ConnectWalletModalContent } from "./ConnectWalletModalContent";
 import { AvailableToTradeTokenList } from "./MultichainTokenSelector";
 import type { DisplayToken } from "./types";
 
@@ -44,10 +43,6 @@ type Props = {
   tokens: DisplayToken[];
 
   onSelectTokenAddress: (tokenAddress: string, isGmxAccount: boolean, srcChainId: SourceChainId | undefined) => void;
-
-  isConnected?: boolean;
-  walletIconUrls?: string[];
-  openConnectModal?: () => void;
 };
 
 export function MultichainTokenSelectorForLp({
@@ -58,9 +53,6 @@ export function MultichainTokenSelectorForLp({
   payChainId,
   className,
   label,
-  isConnected,
-  walletIconUrls,
-  openConnectModal,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -107,27 +99,15 @@ export function MultichainTokenSelectorForLp({
         label={label}
         footerContent={null}
         headerContent={
-          isConnected !== false && (
-            <SearchInput
-              value={searchKeyword}
-              setValue={setSearchKeyword}
-              className="mb-12"
-              onKeyDown={handleKeyDown}
-            />
-          )
+          <SearchInput value={searchKeyword} setValue={setSearchKeyword} className="mb-12" onKeyDown={handleKeyDown} />
         }
         contentPadding={false}
-        disableOverflowHandling={isConnected === false}
       >
-        {isConnected === false ? (
-          <ConnectWalletModalContent openConnectModal={openConnectModal} walletIconUrls={walletIconUrls} />
-        ) : (
-          <AvailableToTradeTokenList
-            chainId={chainId}
-            onSelectTokenAddress={onSelectTokenAddress}
-            tokens={availableToTradeTokenList}
-          />
-        )}
+        <AvailableToTradeTokenList
+          chainId={chainId}
+          onSelectTokenAddress={onSelectTokenAddress}
+          tokens={availableToTradeTokenList}
+        />
       </SlideModal>
       <div
         className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
