@@ -5,7 +5,7 @@ import type { TransactionResponse } from "ethers";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { ContractsChainId, getChainName } from "config/chains";
 import type { ReferralCodeStats } from "domain/referrals/types";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
@@ -80,6 +80,7 @@ export function AffiliateCodeForm({
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
+  const [rpcFailedChains, setRpcFailedChains] = useState<ContractsChainId[]>([]);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const { chainId, srcChainId } = useChainId();
   const { address: account, isConnected } = useAccount();
@@ -98,15 +99,17 @@ export function AffiliateCodeForm({
   useEffect(() => {
     let cancelled = false;
     const checkCodeTakenStatus = async () => {
-      if (error) {
+      if (error || !debouncedReferralCode) {
         setReferralCodeCheckStatus("ok");
+        setRpcFailedChains([]);
         return;
       }
-      const { takenStatus: takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
       if (cancelled) {
         return;
       }
+      setRpcFailedChains(failedChains);
       if (takenStatus === "none") {
         setReferralCodeCheckStatus("ok");
       } else {
@@ -125,35 +128,40 @@ export function AffiliateCodeForm({
     setIsProcessing(true);
 
     const trimmedCode = referralCode.trim();
-    const { takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
-    if (["all", "current", "other"].includes(takenStatus)) {
+    const {
+      takenStatus,
+      info: takenInfo,
+      failedChains,
+    } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+    setRpcFailedChains(failedChains);
+
+    if (["all", "current"].includes(takenStatus)) {
       setIsProcessing(false);
+      return;
     }
 
-    if (takenStatus === "none" || takenStatus === "other") {
-      try {
-        const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
+    try {
+      const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
 
-        if (callAfterSuccess) {
-          callAfterSuccess();
-        }
-
-        const receipt = await tx.wait();
-
-        if (receipt?.status === 1) {
-          if (recentlyAddedCodes) {
-            recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
-            setRecentlyAddedCodes(recentlyAddedCodes);
-          }
-          helperToast.success(t`Referral code created.`);
-          setReferralCode("");
-        }
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-      } finally {
-        setIsProcessing(false);
+      if (callAfterSuccess) {
+        callAfterSuccess();
       }
+
+      const receipt = await tx.wait();
+
+      if (receipt?.status === 1) {
+        if (recentlyAddedCodes) {
+          recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
+          setRecentlyAddedCodes(recentlyAddedCodes);
+        }
+        helperToast.success(t`Referral code created.`);
+        setReferralCode("");
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    } finally {
+      setIsProcessing(false);
     }
   }
 
@@ -225,6 +233,21 @@ export function AffiliateCodeForm({
         }}
       />
       {error && <p className="AffiliateCode-error">{error}</p>}
+      {rpcFailedChains.length > 0 && (
+        <AlertInfoCard type="warning" className="mb-15 text-left">
+          {rpcFailedChains.length === 1 ? (
+            <Trans>
+              Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
+              but it may already be taken on that network.
+            </Trans>
+          ) : (
+            <Trans>
+              Unable to verify code availability on {rpcFailedChains.map((id) => getChainName(id)).join(", ")}. You can
+              still create the code, but it may already be taken on those networks.
+            </Trans>
+          )}
+        </AlertInfoCard>
+      )}
       {srcChainId && (
         <AlertInfoCard className="mb-15 text-left">
           <Trans>

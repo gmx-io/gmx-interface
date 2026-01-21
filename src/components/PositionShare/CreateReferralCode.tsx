@@ -5,6 +5,7 @@ import type { TransactionResponse } from "ethers";
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { ContractsChainId, getChainName } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { registerReferralCode } from "domain/referrals";
 import { useChainId } from "lib/chains";
@@ -12,6 +13,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import {
@@ -40,6 +42,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
+  const [rpcFailedChains, setRpcFailedChains] = useState<ContractsChainId[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const createReferralCode = useCallback(
@@ -61,9 +64,10 @@ export function CreateReferralCode({ onSuccess }: Props) {
     event.preventDefault();
     setIsProcessing(true);
     try {
-      const { takenStatus } = await getReferralCodeTakenStatus(account, referralCode, chainId);
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, referralCode, chainId);
+      setRpcFailedChains(failedChains);
 
-      if (takenStatus !== "none") {
+      if (takenStatus === "all" || takenStatus === "current") {
         setIsAlreadyTaken(true);
         return;
       }
@@ -86,6 +90,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
 
   useEffect(() => {
     setIsAlreadyTaken(false);
+    setRpcFailedChains([]);
     setError(getCodeError(referralCode));
   }, [referralCode]);
 
@@ -156,37 +161,54 @@ export function CreateReferralCode({ onSuccess }: Props) {
           </Trans>
         </p>
       </div>
-      <form onSubmit={buttonState.onSubmit ?? handleSubmit} className="flex gap-8">
-        <label
-          className={cx(
-            "flex grow cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
-            error || isAlreadyTaken ? "border-red-500" : "border-slate-800"
-          )}
-        >
-          <ReferralsIcon className="size-16 text-typography-secondary" />
-          <input
-            ref={inputRef}
-            value={referralCode}
-            disabled={isProcessing || !isConnected}
-            placeholder={t`Enter referral code`}
-            className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
-            onChange={(event) => {
-              const { value } = event.target;
-              setReferralCode(value);
-            }}
-          />
-        </label>
-
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={buttonState.disabled}
-            className="min-w-[140px] justify-center"
+      <form onSubmit={buttonState.onSubmit ?? handleSubmit} className="flex flex-col gap-8">
+        <div className="flex gap-8">
+          <label
+            className={cx(
+              "flex grow cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
+              error || isAlreadyTaken ? "border-red-500" : "border-slate-800"
+            )}
           >
-            {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
-          </Button>
+            <ReferralsIcon className="size-16 text-typography-secondary" />
+            <input
+              ref={inputRef}
+              value={referralCode}
+              disabled={isProcessing || !isConnected}
+              placeholder={t`Enter referral code`}
+              className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
+              onChange={(event) => {
+                const { value } = event.target;
+                setReferralCode(value);
+              }}
+            />
+          </label>
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={buttonState.disabled}
+              className="min-w-[140px] justify-center"
+            >
+              {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
+            </Button>
+          </div>
         </div>
+        {rpcFailedChains.length > 0 && (
+          <AlertInfoCard type="warning" className="text-left" hideClose>
+            {rpcFailedChains.length === 1 ? (
+              <Trans>
+                Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
+                but it may already be taken on that network.
+              </Trans>
+            ) : (
+              <Trans>
+                Unable to verify code availability on {rpcFailedChains.map((id) => getChainName(id)).join(", ")}. You
+                can still create the code, but it may already be taken on those networks.
+              </Trans>
+            )}
+          </AlertInfoCard>
+        )}
       </form>
     </div>
   );

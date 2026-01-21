@@ -748,6 +748,11 @@ msgstr "{0} <0/><1> to </1>{1} <2/>"
 msgid "See <0>Tenderly Docs</0>."
 msgstr "See <0>Tenderly Docs</0>."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
 msgstr "Sent referral code transaction"
@@ -6724,6 +6729,11 @@ msgstr "Transaction failed."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "Decentralized Yield Products"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
+msgstr "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
