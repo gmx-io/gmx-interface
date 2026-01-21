@@ -26,7 +26,7 @@ export function useSubaccountWithdrawalAmount(
   return estimatedWithdrawalAmounts;
 }
 
-export async function getEstimatedWithdrawalAmount(provider: Provider, subaccountAddress: string, gasPrice: bigint) {
+async function getEstimatedWithdrawalAmount(provider: Provider, subaccountAddress: string, gasPrice: bigint) {
   const [value] = await Promise.all([provider.getBalance(subaccountAddress)]);
 
   const result = {

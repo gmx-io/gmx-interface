@@ -1,6 +1,8 @@
 import { SourceChainId } from "config/chains";
-import { isSourceChain, isSettlementChain } from "config/multichain";
+import { isSourceChainForAnySettlementChain, isSettlementChain } from "config/multichain";
 
 export function needSwitchToSettlementChain(walletChainId: number | undefined): walletChainId is SourceChainId {
-  return Boolean(walletChainId && isSourceChain(walletChainId) && !isSettlementChain(walletChainId));
+  return Boolean(
+    walletChainId && isSourceChainForAnySettlementChain(walletChainId) && !isSettlementChain(walletChainId)
+  );
 }

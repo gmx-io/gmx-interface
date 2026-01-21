@@ -16,7 +16,7 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import {
   formatTradeActionTimestamp,
-  formatTradeActionTimestampISO,
+  formatTradeActionTimestampUTC,
 } from "components/TradeHistory/TradeHistoryRow/utils/shared";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
@@ -42,7 +42,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
   const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
 
   const renderIsoTimestamp = useCallback(() => {
-    return formatTradeActionTimestampISO(claimAction.timestamp);
+    return formatTradeActionTimestampUTC(claimAction.timestamp);
   }, [claimAction.timestamp]);
 
   const marketContent = useMemo(() => {

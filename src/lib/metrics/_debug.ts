@@ -14,7 +14,7 @@ export enum MetricsDebugFlags {
   LogErrors = "LogErrors",
 }
 
-export type MetricsDebugState = {
+type MetricsDebugState = {
   [MetricsDebugFlags.LogFreshnessMetrics]: boolean;
   [MetricsDebugFlags.LogTimings]: boolean;
   [MetricsDebugFlags.LogEvents]: boolean;
@@ -24,7 +24,7 @@ export type MetricsDebugState = {
   [MetricsDebugFlags.LogErrors]: boolean;
 };
 
-export class MetricsDebug {
+class MetricsDebug {
   storage: Storage<MetricsDebugState>;
 
   constructor() {

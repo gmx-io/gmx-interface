@@ -27,6 +27,13 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         </ToggleSwitch>
 
         <ToggleSwitch
+          isChecked={settings.isErrorBoundaryDebugEnabled}
+          setIsChecked={settings.setIsErrorBoundaryDebugEnabled}
+        >
+          <Trans>Show Error Boundary Debug Trigger</Trans>
+        </ToggleSwitch>
+
+        <ToggleSwitch
           isChecked={settings.shouldDisableValidationForTesting}
           setIsChecked={settings.setShouldDisableValidationForTesting}
         >

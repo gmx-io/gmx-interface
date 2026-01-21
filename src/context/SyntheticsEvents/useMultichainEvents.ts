@@ -69,6 +69,7 @@ export type MultichainEventsState = {
   >;
 
   removeMultichainFundingPendingIds: (id: string | string[]) => void;
+  setMultichainFundingPendingId: (mockId: string, id: string) => void;
 };
 
 const DEFAULT_MULTICHAIN_FUNDING_STATE: PendingMultichainFunding = [];
@@ -812,13 +813,16 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         }
 
         const stubId = `<stub-${Date.now()}>`;
+        const isSameChain = submittedEvent.sourceChainId === 0;
+        const step = isSameChain ? "executed" : "submitted";
+
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
           newPendingMultichainFunding.push({
             account: currentAccount,
             id: stubId,
             operation: "deposit",
-            step: "submitted",
+            step,
             settlementChainId: chainId,
             sourceChainId: submittedEvent.sourceChainId,
             token: submittedEvent.tokenAddress,
@@ -848,20 +852,23 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         }
 
         const stubId = `<stub-${Date.now()}>`;
+        const isSameChain = submittedEvent.sourceChainId === 0;
+        const step = isSameChain ? "executed" : "submitted";
+
         setPendingMultichainFunding((prev) => {
           const newPendingMultichainFunding = structuredClone(prev);
           newPendingMultichainFunding.push({
             account: currentAccount,
             id: stubId,
             operation: "withdrawal",
-            step: "submitted",
+            step,
             settlementChainId: chainId,
             sourceChainId: submittedEvent.sourceChainId,
             token: submittedEvent.tokenAddress,
             sentAmount: submittedEvent.amount,
             sentTimestamp: nowInSeconds(),
 
-            sentTxn: undefined,
+            sentTxn: isSameChain ? submittedEvent.sentTxn : undefined,
             receivedAmount: undefined,
             receivedTxn: undefined,
             receivedTimestamp: undefined,
@@ -966,6 +973,17 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
             delete newIds[id];
           }
           return newIds;
+        });
+      },
+      setMultichainFundingPendingId: (mockId: string, id: string) => {
+        setMultichainFundingPendingIds((prev) => ({ ...prev, [mockId]: id }));
+        setPendingMultichainFunding((prev) => {
+          const newPendingMultichainFunding = structuredClone(prev);
+          const pendingMultichainFundingIndex = newPendingMultichainFunding.findIndex((item) => item.id === mockId);
+          if (pendingMultichainFundingIndex !== -1) {
+            newPendingMultichainFunding[pendingMultichainFundingIndex].id = id;
+          }
+          return newPendingMultichainFunding;
         });
       },
     }),

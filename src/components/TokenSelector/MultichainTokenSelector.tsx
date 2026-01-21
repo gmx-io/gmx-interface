@@ -4,6 +4,7 @@ import noop from "lodash/noop";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import {
+  AVALANCHE,
   getChainName,
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
   type AnyChainId,
@@ -101,7 +102,7 @@ export function MultichainTokenSelector({
     setIsModalVisible(false);
     const isGmxAccount = tokenChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID;
     const tokenSrcChainId =
-      tokenChainId !== chainId && tokenChainId !== GMX_ACCOUNT_PSEUDO_CHAIN_ID && isSourceChain(tokenChainId)
+      tokenChainId !== chainId && tokenChainId !== GMX_ACCOUNT_PSEUDO_CHAIN_ID && isSourceChain(tokenChainId, chainId)
         ? tokenChainId
         : undefined;
     propsOnSelectTokenAddress(tokenAddress, isGmxAccount, tokenSrcChainId);
@@ -124,6 +125,8 @@ export function MultichainTokenSelector({
 
   const [activeFilter, setActiveFilter] = useState<"pay" | "deposit">("pay");
 
+  const isAvalancheSettlement = chainId === AVALANCHE;
+
   const availableToTradeTokenList = useAvailableToTradeTokenList({
     activeFilter,
     srcChainId,
@@ -133,6 +136,7 @@ export function MultichainTokenSelector({
     chainId,
     multichainTokens,
     includeMultichainTokensInPay,
+    includeGmxAccountTokens: !isAvalancheSettlement,
   });
   const multichainTokenList = useMultichainTokensList({
     searchKeyword,
@@ -163,14 +167,21 @@ export function MultichainTokenSelector({
       if (srcChainId === undefined) {
         setActiveFilter("pay");
       } else {
-        if (isGmxAccountEmpty && !includeMultichainTokensInPay) {
+        if (isGmxAccountEmpty && !includeMultichainTokensInPay && !isAvalancheSettlement) {
           setActiveFilter("deposit");
         } else {
           setActiveFilter("pay");
         }
       }
     }
-  }, [includeMultichainTokensInPay, isGmxAccountEmpty, isModalVisible, setSearchKeyword, srcChainId]);
+  }, [
+    includeMultichainTokensInPay,
+    isGmxAccountEmpty,
+    isModalVisible,
+    setSearchKeyword,
+    srcChainId,
+    isAvalancheSettlement,
+  ]);
 
   const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
     return [
@@ -194,14 +205,14 @@ export function MultichainTokenSelector({
         footerContent={footerContent}
         headerContent={
           isConnected === false ? null : (
-            <div className="pb-12">
+            <div className={cx(!isAvalancheSettlement && "pb-12")}>
               <SearchInput
                 value={searchKeyword}
                 setValue={setSearchKeyword}
                 className="mb-16"
                 onKeyDown={handleKeyDown}
               />
-              {isGmxAccountEmpty && srcChainId !== undefined ? (
+              {isAvalancheSettlement ? null : isGmxAccountEmpty && srcChainId !== undefined ? (
                 <div className="text-body-medium text-typography-secondary">
                   <Trans>To begin trading on GMX deposit assets into GMX account.</Trans>
                 </div>
@@ -262,7 +273,7 @@ export function MultichainTokenSelector({
   );
 }
 
-export function useAvailableToTradeTokenList({
+function useAvailableToTradeTokenList({
   chainId,
   activeFilter,
   srcChainId,
@@ -272,6 +283,7 @@ export function useAvailableToTradeTokenList({
   extendedSortSequence,
   includeMultichainTokensInPay,
   includeSettlementChainTokens = false,
+  includeGmxAccountTokens = true,
 }: {
   chainId: ContractsChainId;
   activeFilter: "pay" | "deposit";
@@ -282,6 +294,7 @@ export function useAvailableToTradeTokenList({
   extendedSortSequence?: string[];
   includeMultichainTokensInPay?: boolean;
   includeSettlementChainTokens?: boolean;
+  includeGmxAccountTokens?: boolean;
 }) {
   return useMemo(() => {
     if (activeFilter !== "pay") {
@@ -291,15 +304,17 @@ export function useAvailableToTradeTokenList({
     const concatenatedTokens: DisplayToken[] = [];
 
     for (const token of Object.values(tokensData ?? (EMPTY_OBJECT as TokensData))) {
-      if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
-        const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
-        concatenatedTokens.push({
-          ...token,
-          balanceType: TokenBalanceType.GmxAccount,
-          chainId: GMX_ACCOUNT_PSEUDO_CHAIN_ID,
-          balance: token.gmxAccountBalance,
-          balanceUsd,
-        });
+      if (includeGmxAccountTokens) {
+        if (token.gmxAccountBalance !== undefined && (srcChainId !== undefined || token.gmxAccountBalance > 0n)) {
+          const balanceUsd = convertToUsd(token.gmxAccountBalance, token.decimals, token.prices.maxPrice) ?? 0n;
+          concatenatedTokens.push({
+            ...token,
+            balanceType: TokenBalanceType.GmxAccount,
+            chainId: GMX_ACCOUNT_PSEUDO_CHAIN_ID,
+            balance: token.gmxAccountBalance,
+            balanceUsd,
+          });
+        }
       }
 
       if (token.walletBalance !== undefined && (srcChainId === undefined || includeSettlementChainTokens)) {
@@ -418,6 +433,7 @@ export function useAvailableToTradeTokenList({
     multichainTokens,
     searchKeyword,
     tokensData,
+    includeGmxAccountTokens,
     srcChainId,
     includeSettlementChainTokens,
     chainId,

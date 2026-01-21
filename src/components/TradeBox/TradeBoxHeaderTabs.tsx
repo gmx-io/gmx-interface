@@ -42,7 +42,6 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         options={tabsOptions}
         selectedValue={tradeType}
         onChange={onTradeTypeChange}
-        size="l"
         qa="trade-direction"
         regularOptionClassname="grow"
         className="bg-slate-900"
