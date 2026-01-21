@@ -129,9 +129,10 @@ export const useGmSwapSubmitState = ({
     chainId,
     isConnected: true,
     hasOutdatedUi,
-  })[0];
+  }).buttonErrorMessage;
 
-  const [swapError, swapErrorDescription] = getGmSwapError({
+  // TODO Make all errors in validation language agnostic
+  const { buttonErrorMessage: swapError, buttonTooltipMessage: swapErrorDescription } = getGmSwapError({
     isDeposit,
     marketInfo,
     glvInfo,

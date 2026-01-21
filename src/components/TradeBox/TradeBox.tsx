@@ -1238,6 +1238,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 />
               )}
 
+              {submitButtonState.bannerErrorContent && (
+                <AlertInfoCard type="error" hideClose>
+                  {submitButtonState.bannerErrorContent}
+                </AlertInfoCard>
+              )}
+
               <div>{button}</div>
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}

@@ -1277,6 +1277,10 @@ msgstr "指値スワップ失敗"
 msgid "Failed"
 msgstr "失敗"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {formattedList} for gas in your wallet on {chainName}. <0>Buy {formattedList}</0>"
+msgstr "{chainName}のウォレット内のガス用の{formattedList}が不足しています。<0>{formattedList}を購入</0>"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
@@ -3991,7 +3995,6 @@ msgid "{daysConsidered}d Earned Fees"
 msgstr "{daysConsidered}日間の獲得手数料"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "ガス支払いのための{0}残高が不足しています"
 
@@ -5145,6 +5148,10 @@ msgstr "ブリッジTXハッシュ"
 msgid "Start unrealized pnl"
 msgstr "未実現PnL開始"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "{0}のウォレット内のガス用の{nativeTokenSymbol}が不足しています。<0>{nativeTokenSymbol}を購入</0>"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "承認が提出されました! <0>状況を確認する</0>"
@@ -5243,6 +5250,8 @@ msgid "Close {0} {1}{2}"
 msgstr "{0} {1}{2} をクローズ"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "ガス残高不足"
 

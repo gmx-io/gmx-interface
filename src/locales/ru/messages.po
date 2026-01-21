@@ -1277,6 +1277,10 @@ msgstr "Лимитный обмен не удался"
 msgid "Failed"
 msgstr "Ошибка"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {formattedList} for gas in your wallet on {chainName}. <0>Buy {formattedList}</0>"
+msgstr "Недостаточно {formattedList} для газа в вашем кошельке на {chainName}. <0>Купить {formattedList}</0>"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
@@ -3991,7 +3995,6 @@ msgid "{daysConsidered}d Earned Fees"
 msgstr "{daysConsidered}д Заработанных Комиссий"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "Недостаточно баланса {0} для оплаты газа"
 
@@ -5145,6 +5148,10 @@ msgstr "Хэш транзакции моста"
 msgid "Start unrealized pnl"
 msgstr "Начальный нереализованный PnL"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "Недостаточно {nativeTokenSymbol} для газа в вашем кошельке на {0}. <0>Купить {nativeTokenSymbol}</0>"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Одобрение подано! <0>Просмотреть статус.</0>"
@@ -5243,6 +5250,8 @@ msgid "Close {0} {1}{2}"
 msgstr "Закрыть {0} {1}{2}"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Недостаточно баланса газа"
 

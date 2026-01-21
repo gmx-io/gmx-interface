@@ -641,7 +641,10 @@ function ReferralCodeFormMultichain({
         }}
       />
       {srcChainId && (
-        <SyntheticsInfoRow label="Network Fee" value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."} />
+        <SyntheticsInfoRow
+          label={t`Network Fee`}
+          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+        />
       )}
 
       <Button variant="primary-action" type="submit" disabled={buttonState.disabled}>

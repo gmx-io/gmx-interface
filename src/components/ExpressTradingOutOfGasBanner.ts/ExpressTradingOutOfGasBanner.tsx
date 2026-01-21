@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
+import { useLocalizedList } from "lib/i18n";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getToken } from "sdk/configs/tokens";
 
@@ -23,20 +24,10 @@ export function useGasPaymentTokensText(chainId: number) {
   const multichainGasPaymentTokenSymbols = useMultichainTransferableGasPaymentTokenSymbols();
   const gasPaymentTokenSymbols = srcChainId ? multichainGasPaymentTokenSymbols : settlementGasPaymentTokenSymbols;
 
-  const gasPaymentTokensText = gasPaymentTokenSymbols.reduce((acc, symbol, index) => {
-    if (index === 0) {
-      return symbol;
-    }
-
-    if (index < gasPaymentTokenSymbols.length - 1) {
-      return `${acc}, ${symbol}`;
-    }
-
-    return `${acc} or ${symbol}`;
-  }, "");
+  const localizedList = useLocalizedList(gasPaymentTokenSymbols);
 
   return {
-    gasPaymentTokensText,
+    gasPaymentTokensText: localizedList,
     gasPaymentTokenSymbols,
   };
 }

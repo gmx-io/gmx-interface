@@ -1277,6 +1277,10 @@ msgstr "Failed Limit Swap"
 msgid "Failed"
 msgstr "Failed"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {formattedList} for gas in your wallet on {chainName}. <0>Buy {formattedList}</0>"
+msgstr "Insufficient {formattedList} for gas in your wallet on {chainName}. <0>Buy {formattedList}</0>"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
@@ -3991,7 +3995,6 @@ msgid "{daysConsidered}d Earned Fees"
 msgstr "{daysConsidered}d Earned Fees"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "Insufficient {0} balance to pay for gas"
 
@@ -5145,6 +5148,10 @@ msgstr "Bridge TX hash"
 msgid "Start unrealized pnl"
 msgstr "Start unrealized pnl"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Approval submitted! <0>View status.</0>"
@@ -5243,6 +5250,8 @@ msgid "Close {0} {1}{2}"
 msgstr "Close {0} {1}{2}"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Insufficient gas balance"
 

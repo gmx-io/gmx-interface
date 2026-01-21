@@ -1277,6 +1277,10 @@ msgstr "限价交换失败"
 msgid "Failed"
 msgstr "失败"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {formattedList} for gas in your wallet on {chainName}. <0>Buy {formattedList}</0>"
+msgstr "钱包中 {chainName} 上的 {formattedList} 不足以支付 gas。<0>购买 {formattedList}</0>"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
@@ -3991,7 +3995,6 @@ msgid "{daysConsidered}d Earned Fees"
 msgstr "{daysConsidered} 天赚取费用"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "{0} 余额不足以支付 gas"
 
@@ -5145,6 +5148,10 @@ msgstr "跨链交易哈希"
 msgid "Start unrealized pnl"
 msgstr "起始未实现 PnL"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "钱包中 {0} 上的 {nativeTokenSymbol} 不足以支付 gas。<0>购买 {nativeTokenSymbol}</0>"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "批准已提交！<0>查看状态。</0>"
@@ -5243,6 +5250,8 @@ msgid "Close {0} {1}{2}"
 msgstr "关闭 {0} {1}{2}"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Gas余额不足"
 

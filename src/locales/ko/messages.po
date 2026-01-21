@@ -1277,6 +1277,10 @@ msgstr "지정가 스왑 실패"
 msgid "Failed"
 msgstr "실패"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {formattedList} for gas in your wallet on {chainName}. <0>Buy {formattedList}</0>"
+msgstr "{chainName}의 지갑에 가스용 {formattedList}가 부족합니다. <0>{formattedList} 구매</0>"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
@@ -3991,7 +3995,6 @@ msgid "{daysConsidered}d Earned Fees"
 msgstr "{daysConsidered}일 획득 수수료"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance to pay for gas"
 msgstr "가스 지불을 위한 {0} 잔액 부족"
 
@@ -5145,6 +5148,10 @@ msgstr "브리지 TX 해시"
 msgid "Start unrealized pnl"
 msgstr "시작 미실현 PnL"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "{0}의 지갑에 가스용 {nativeTokenSymbol}가 부족합니다. <0>{nativeTokenSymbol} 구매</0>"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "승인 제출 완료! <0>상태 보기.</0>"
@@ -5243,6 +5250,8 @@ msgid "Close {0} {1}{2}"
 msgstr "{0} {1}{2} 종료"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "가스 잔액 부족"
 

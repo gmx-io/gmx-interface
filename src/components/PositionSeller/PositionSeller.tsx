@@ -420,7 +420,6 @@ export function PositionSeller() {
     });
 
     const expressError = getExpressError({
-      chainId,
       expressParams,
       tokensData,
     });
