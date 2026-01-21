@@ -1971,7 +1971,6 @@ msgstr "El valor USD de las comisiones se calcula en el momento en que se ganan 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
 msgid "Max"
 msgstr "Máx."
 
@@ -3145,6 +3144,10 @@ msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgid "Swap {0} to {1}"
 msgstr "Intercambiar {0} a {1}"
 
+#: src/components/LeverageField/LeverageField.tsx
+msgid "Adjust Leverage"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Debug values are not available"
 msgstr "Valores de depuración no disponibles"
@@ -3953,6 +3956,10 @@ msgstr "desde tu billetera"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "Número máximo de acciones permitidas antes de requerir reautorización."
+
+#: src/components/LeverageField/LeverageField.tsx
+msgid "High leverage increases risk. Trade with caution."
+msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

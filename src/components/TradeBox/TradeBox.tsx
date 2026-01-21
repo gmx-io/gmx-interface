@@ -22,7 +22,6 @@ import {
   selectExpressOrdersEnabled,
   selectGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
-  selectSettingsWarningDotVisible,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -109,7 +108,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
-import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
@@ -994,7 +992,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const keepLeverage = useSelector(selectTradeboxKeepLeverage);
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
   const setKeepLeverage = useSelector(selectTradeboxSetKeepLeverage);
-  const settingsWarningDotVisible = useSelector(selectSettingsWarningDotVisible);
 
   const tabsOptions = useMemo(() => {
     const modeToOptions = (mode: TradeMode) => ({
@@ -1021,26 +1018,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <div className="flex items-center justify-between">
             <Tabs
               options={tabsOptions}
-              type="inline"
+              type="pills"
               selectedValue={tradeMode}
               onChange={onSelectTradeMode}
               qa="trade-mode"
               className="bg-slate-900 text-13"
               regularOptionClassname="grow"
             />
-            <div className="flex items-center gap-4">
-              <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
-
-              <div className="relative">
-                <SettingsIcon
-                  className="size-16 cursor-pointer text-typography-secondary gmx-hover:text-typography-primary"
-                  onClick={() => setIsSettingsVisible(true)}
-                />
-                {settingsWarningDotVisible && (
-                  <div className="absolute bottom-6 right-3 h-6 w-6 rounded-full bg-red-400" />
-                )}
-              </div>
-            </div>
+            <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
           </div>
           <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
@@ -1054,10 +1039,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   setFocusedInput={setFocusedInput}
                   toTokenInputValue={toTokenInputValue}
                   setToTokenInputValue={setToTokenInputValue}
-                  expressOrdersEnabled={expressOrdersEnabled}
-                  gasPaymentTokenAmountForMax={gasPaymentTokenAmountForMax}
-                  isGasPaymentTokenAmountForMaxApproximate={isGasPaymentTokenAmountForMaxApproximate}
-                  isExpressLoading={submitButtonState.isExpressLoading}
                   triggerPriceInputValue={triggerPriceInputValue}
                   onTriggerPriceInputChange={handleTriggerPriceInputChange}
                 />

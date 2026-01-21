@@ -495,11 +495,6 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     [position.sizeInUsd]
   );
 
-  const handleMaxClick = useCallback(() => {
-    setClosePercentage(100);
-    setCloseSizeInput(formattedMaxCloseSize);
-  }, [formattedMaxCloseSize]);
-
   const handleEditTPSLSizeToggle = useCallback(
     (value: boolean) => {
       setEditTPSLSize(value);
@@ -817,11 +812,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             >
               {collateralToken.symbol}
             </BuyInputSection>
-            <MarginPercentageSlider
-              value={closePercentage}
-              onChange={handleSliderChange}
-              onMaxClick={closePercentage < 100 ? handleMaxClick : undefined}
-            />
+            <MarginPercentageSlider value={closePercentage} onChange={handleSliderChange} />
           </div>
         )}
 

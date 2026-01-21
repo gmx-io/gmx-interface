@@ -74,7 +74,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const fieldsColumnsClass = leverageFieldVisible ? "md:grid-cols-3" : "md:grid-cols-2";
 
   const fields = (
-    <div className="grid grid-cols-[44px_1fr_1fr] gap-8">
+    <div className="grid grid-cols-[minmax(48px,auto)_1fr_1fr] gap-8">
       {leverageFieldVisible ? (
         <LeverageField
           marks={leverageSliderMarks}

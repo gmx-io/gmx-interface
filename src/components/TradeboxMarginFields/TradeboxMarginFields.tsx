@@ -2,7 +2,6 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 
 import { SourceChainId } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectTradeboxFromToken,
   selectTradeboxFocusedInput,
@@ -12,11 +11,8 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
-import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { calculateDisplayDecimals, formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
@@ -33,10 +29,6 @@ type Props = {
   setFocusedInput: (input: "from" | "to") => void;
   toTokenInputValue: string;
   setToTokenInputValue: (value: string, resetPriceImpact: boolean) => void;
-  expressOrdersEnabled: boolean;
-  gasPaymentTokenAmountForMax?: bigint;
-  isGasPaymentTokenAmountForMaxApproximate?: boolean;
-  isExpressLoading?: boolean;
   triggerPriceInputValue?: string;
   onTriggerPriceInputChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 };
@@ -49,10 +41,6 @@ export function TradeboxMarginFields({
   setFocusedInput,
   toTokenInputValue,
   setToTokenInputValue,
-  expressOrdersEnabled,
-  gasPaymentTokenAmountForMax,
-  isGasPaymentTokenAmountForMaxApproximate,
-  isExpressLoading,
   triggerPriceInputValue,
   onTriggerPriceInputChange,
 }: Props) {
@@ -60,17 +48,13 @@ export function TradeboxMarginFields({
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const gasPaymentTokenData = useSelector(selectGasPaymentToken);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const focusedInput = useSelector(selectTradeboxFocusedInput);
 
-  const { fromTokenAddress, toTokenAddress } = useSelector(selectTradeboxState);
+  const { toTokenAddress } = useSelector(selectTradeboxState);
 
-  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const toToken = getByKey(tokensData, toTokenAddress);
-
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
 
   const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("token");
   const [sizeInputValue, setSizeInputValue] = useState<string>(toTokenInputValue);
@@ -125,21 +109,6 @@ export function TradeboxMarginFields({
     setToTokenInputValue,
   ]);
 
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
-    fromToken,
-    nativeToken,
-    fromTokenAmount,
-    fromTokenInputValue,
-    tokenBalanceType: fromToken?.balanceType,
-    minResidualAmount: getMinResidualGasPaymentTokenAmount({
-      gasPaymentToken: gasPaymentTokenData,
-      gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-      payTokenAddress: fromTokenAddress,
-      applyBuffer: !isGasPaymentTokenAmountForMaxApproximate,
-    }),
-    isLoading: expressOrdersEnabled && (isExpressLoading || gasPaymentTokenAmountForMax === undefined),
-  });
-
   const handleFromInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setFocusedInput("from");
@@ -147,13 +116,6 @@ export function TradeboxMarginFields({
     },
     [setFocusedInput, setFromTokenInputValue]
   );
-
-  const handleMaxClick = useCallback(() => {
-    if (formattedMaxAvailableAmount) {
-      setFocusedInput("from");
-      setFromTokenInputValue(formattedMaxAvailableAmount, true);
-    }
-  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
   const handlePercentageChange = useCallback(
     (percentage: number) => {
@@ -233,11 +195,7 @@ export function TradeboxMarginFields({
         />
       )}
 
-      <MarginPercentageSlider
-        value={marginPercentage}
-        onChange={handlePercentageChange}
-        onMaxClick={showClickMax ? handleMaxClick : undefined}
-      />
+      <MarginPercentageSlider value={marginPercentage} onChange={handlePercentageChange} />
     </div>
   );
 }

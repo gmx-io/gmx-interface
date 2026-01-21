@@ -76,9 +76,7 @@ export function MarginToPayField({
   return (
     <div data-qa={qa}>
       <div
-        className={cx(
-          "flex cursor-text items-center justify-between gap-8 rounded-8 border-1/2 border-slate-600 bg-slate-900 px-8 py-6"
-        )}
+        className={cx("flex cursor-text items-center justify-between gap-8 rounded-8 bg-slate-900")}
         onClick={handleBoxClick}
       >
         <div className="shrink-0 pl-4 text-12 font-medium text-typography-secondary">{t`Margin to Pay`}</div>
