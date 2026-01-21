@@ -97,11 +97,6 @@ type Props = {
   onBack?: () => void;
 };
 
-const TP_SL_OPTIONS = [
-  { value: "tp" as const, label: t`Take Profit` },
-  { value: "sl" as const, label: t`Stop Loss` },
-];
-
 export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onBack }: Props) {
   const [tpPriceInput, setTpPriceInput] = useState("");
   const [slPriceInput, setSlPriceInput] = useState("");
@@ -743,6 +738,17 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     position.sizeInUsd,
   ]);
 
+  const tpSlOptions = useMemo(() => {
+    const options: { value: "tp" | "sl"; label: React.ReactNode }[] = [];
+    if (tpDecreaseAmounts) {
+      options.push({ value: "tp", label: <Trans>Take Profit</Trans> });
+    }
+    if (slDecreaseAmounts) {
+      options.push({ value: "sl", label: <Trans>Stop Loss</Trans> });
+    }
+    return options;
+  }, [tpDecreaseAmounts, slDecreaseAmounts]);
+
   const handleBack = useCallback(() => {
     if (onBack) {
       onBack();
@@ -827,7 +833,9 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
 
         {hasPreviewData && (
           <div className="flex flex-col gap-12">
-            <Tabs options={TP_SL_OPTIONS} selectedValue={previewTab} onChange={setPreviewTab} type="block" />
+            {tpSlOptions.length > 1 && (
+              <Tabs options={tpSlOptions} selectedValue={previewTab} onChange={setPreviewTab} type="block" />
+            )}
 
             {activeDecreaseAmounts && (
               <div className="flex flex-col gap-10">
