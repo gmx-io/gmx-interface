@@ -17,7 +17,7 @@ type CommonEventParams = {
   [key in AbFlag]: boolean;
 };
 
-export type ProfileProps = {
+type ProfileProps = {
   last30DVolume?: number;
   totalVolume?: number;
   languageCode: string;
@@ -57,7 +57,7 @@ const USER_ANALYTICS_INTERACTION_IDS_STORAGE = "USER_ANALYTICS_INTERACTION_IDS_S
 
 const PROCESS_QUEUE_INTERVAL_MS = 2000;
 
-export class UserAnalytics {
+class UserAnalytics {
   commonEventParams: CommonEventParams = {} as CommonEventParams;
   debug = false;
   earlyEventsQueue: UserAnalyticsEventItem[] = [];

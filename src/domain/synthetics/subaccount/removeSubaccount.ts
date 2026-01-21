@@ -44,7 +44,7 @@ export async function removeSubaccountWalletTxn(
   });
 }
 
-export async function buildAndSignRemoveSubaccountTxn({
+async function buildAndSignRemoveSubaccountTxn({
   chainId,
   relayParamsPayload,
   subaccount,

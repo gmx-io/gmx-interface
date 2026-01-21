@@ -178,7 +178,7 @@ export function getTxnErrorToast(
   return toastParams;
 }
 
-export function getDefaultErrorMessage(errorData: ErrorData | undefined) {
+function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   if (errorData?.errorContext === "simulation") {
     return t`Execute order simulation failed.`;
   }
@@ -186,7 +186,7 @@ export function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   return t`Transaction failed`;
 }
 
-export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+function getDebugErrorMessage(errorData: ErrorData | undefined) {
   if (errorData?.contractError) {
     return `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`;
   }

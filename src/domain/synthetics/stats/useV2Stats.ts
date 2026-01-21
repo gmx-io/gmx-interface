@@ -10,7 +10,7 @@ import useUsers from "../stats/useUsers";
 import useVolumeInfo from "../stats/useVolumeInfo";
 import { useTokensDataRequest } from "../tokens";
 
-export type DashboardOverview = {
+type DashboardOverview = {
   totalGMLiquidity: bigint;
   totalLongPositionSizes: bigint;
   totalShortPositionSizes: bigint;

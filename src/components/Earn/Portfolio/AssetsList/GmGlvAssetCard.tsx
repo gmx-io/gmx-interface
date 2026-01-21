@@ -11,6 +11,7 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { Mode, Operation } from "domain/synthetics/markets/types";
 import { formatPercentage } from "lib/numbers";
 import { EarnPagePortfolioItemType, sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -18,7 +19,6 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import { Mode, Operation } from "components/GmSwap/GmSwapBox/types";
 import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -146,5 +146,3 @@ export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, mu
     </BaseAssetCard>
   );
 }
-
-export default GmGlvAssetCard;

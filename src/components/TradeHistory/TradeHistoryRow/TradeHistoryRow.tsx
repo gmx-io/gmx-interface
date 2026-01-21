@@ -133,7 +133,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSwapOrderType(tradeAction.orderType!) && marketsInfoData, minCollateralUsd.toString(), tradeAction.id]);
 
-  const renderTimestamp = useCallback(() => msg.timestampISO, [msg.timestampISO]);
+  const renderTimestamp = useCallback(() => msg.timestampUTC, [msg.timestampUTC]);
 
   const renderMarketContent = useCallback(() => {
     if (msg.indexName) {

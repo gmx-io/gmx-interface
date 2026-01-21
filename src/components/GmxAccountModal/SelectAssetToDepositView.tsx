@@ -1,9 +1,9 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { AnyChainId, getChainName, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import {
@@ -12,6 +12,8 @@ import {
   useGmxAccountModalOpen,
 } from "context/GmxAccountContext/hooks";
 import { TokenChainData } from "domain/multichain/types";
+import { useTokensDataRequest } from "domain/synthetics/tokens";
+import { TokenData, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { formatUsd } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -67,8 +69,111 @@ type DisplayTokenChainData = TokenChainData & {
   sourceChainBalanceUsd: bigint;
 };
 
+function sortByBalanceUsd(a: DisplayTokenChainData, b: DisplayTokenChainData): number {
+  if (a.sourceChainBalanceUsd === b.sourceChainBalanceUsd) {
+    return 0;
+  }
+  return a.sourceChainBalanceUsd > b.sourceChainBalanceUsd ? -1 : 1;
+}
+
+function getMultichainTokens({
+  tokenChainDataArray,
+  searchQuery,
+  selectedNetwork,
+}: {
+  tokenChainDataArray: TokenChainData[];
+  searchQuery: string;
+  selectedNetwork: number | "all";
+}): DisplayTokenChainData[] {
+  return tokenChainDataArray
+    .filter((tokenChainData) => {
+      const matchesSearch = tokenChainData.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesNetwork = selectedNetwork === "all" || tokenChainData.sourceChainId === selectedNetwork;
+      return matchesSearch && matchesNetwork;
+    })
+    .map((tokenChainData): DisplayTokenChainData => {
+      let balanceUsd = 0n;
+
+      if (tokenChainData.sourceChainPrices) {
+        balanceUsd =
+          convertToUsd(
+            tokenChainData.sourceChainBalance,
+            tokenChainData.sourceChainDecimals,
+            getMidPrice(tokenChainData.sourceChainPrices)
+          ) ?? 0n;
+      }
+
+      return {
+        ...tokenChainData,
+        sourceChainBalanceUsd: balanceUsd,
+      };
+    })
+    .sort(sortByBalanceUsd);
+}
+
+function getSettlementChainTokens({
+  settlementChainTokensData,
+  searchQuery,
+  selectedNetwork,
+  chainId,
+}: {
+  settlementChainTokensData: TokensData | undefined;
+  searchQuery: string;
+  selectedNetwork: number | "all";
+  chainId: AnyChainId;
+}): DisplayTokenChainData[] {
+  return Object.values(settlementChainTokensData || (EMPTY_OBJECT as TokensData))
+    .filter((token: TokenData) => {
+      const matchesSearch = token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesNetwork = selectedNetwork === "all" || chainId === selectedNetwork;
+      const hasBalance = token.walletBalance !== undefined && token.walletBalance > 0n;
+      return matchesSearch && matchesNetwork && hasBalance;
+    })
+    .map((token: TokenData): DisplayTokenChainData => {
+      const balanceUsd = convertToUsd(token.walletBalance, token.decimals, getMidPrice(token.prices)) ?? 0n;
+      return {
+        ...token,
+        sourceChainId: chainId as SourceChainId,
+        sourceChainDecimals: token.decimals,
+        sourceChainPrices: token.prices,
+        sourceChainBalance: token.walletBalance,
+        sourceChainBalanceUsd: balanceUsd,
+      };
+    })
+    .sort(sortByBalanceUsd);
+}
+
+function getFilteredTokens({
+  tokenChainDataArray,
+  settlementChainTokensData,
+  searchQuery,
+  selectedNetwork,
+  chainId,
+}: {
+  chainId: AnyChainId;
+  selectedNetwork: number | "all";
+  tokenChainDataArray: TokenChainData[];
+  settlementChainTokensData: TokensData | undefined;
+  searchQuery: string;
+}): DisplayTokenChainData[] {
+  const multichainTokens = getMultichainTokens({
+    tokenChainDataArray,
+    searchQuery,
+    selectedNetwork,
+  });
+
+  const settlementChainTokens = getSettlementChainTokens({
+    settlementChainTokensData,
+    searchQuery,
+    selectedNetwork,
+    chainId,
+  });
+
+  return multichainTokens.concat(settlementChainTokens);
+}
+
 export const SelectAssetToDepositView = () => {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { address: account } = useAccount();
 
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
@@ -79,50 +184,35 @@ export const SelectAssetToDepositView = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { tokenChainDataArray } = useMultichainTradeTokensRequest(chainId, account);
+  const { tokensData: settlementChainTokensData } = useTokensDataRequest(chainId, srcChainId);
 
-  const NETWORKS_FILTER = useMemo(() => {
-    const wildCard = { id: "all" as const, name: "All Networks" };
+  const networksFilter = useMemo(() => {
+    const wildCard = { id: "all" as const, name: t`All Networks` };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT).map((sourceChainId) => ({
-      id: parseInt(sourceChainId),
-      name: getChainName(parseInt(sourceChainId)),
-    }));
+    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT)
+      .map((sourceChainId) => ({
+        id: parseInt(sourceChainId),
+        name: getChainName(parseInt(sourceChainId)),
+      }))
+      .concat({
+        id: chainId,
+        name: getChainName(chainId),
+      });
 
     return [wildCard, ...chainFilters];
   }, [chainId]);
 
-  const filteredBalances: DisplayTokenChainData[] = useMemo(() => {
-    return tokenChainDataArray
-      .filter((tokenChainData) => {
-        const matchesSearch = tokenChainData.symbol.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesNetwork = selectedNetwork === "all" || tokenChainData.sourceChainId === selectedNetwork;
-        return matchesSearch && matchesNetwork;
-      })
-      .map((tokenChainData) => {
-        let balanceUsd = 0n;
-
-        if (tokenChainData.sourceChainPrices) {
-          balanceUsd =
-            convertToUsd(
-              tokenChainData.sourceChainBalance,
-              tokenChainData.sourceChainDecimals,
-              getMidPrice(tokenChainData.sourceChainPrices)
-            ) ?? 0n;
-        }
-
-        return {
-          ...tokenChainData,
-          sourceChainBalanceUsd: balanceUsd,
-        };
-      })
-      .sort((a, b) => {
-        if (a.sourceChainBalanceUsd === b.sourceChainBalanceUsd) {
-          return 0;
-        }
-
-        return a.sourceChainBalanceUsd > b.sourceChainBalanceUsd ? -1 : 1;
-      });
-  }, [tokenChainDataArray, searchQuery, selectedNetwork]);
+  const filteredTokens: DisplayTokenChainData[] = useMemo(
+    () =>
+      getFilteredTokens({
+        tokenChainDataArray,
+        settlementChainTokensData,
+        searchQuery,
+        selectedNetwork,
+        chainId,
+      }),
+    [tokenChainDataArray, settlementChainTokensData, searchQuery, selectedNetwork, chainId]
+  );
 
   return (
     <div className="flex grow flex-col overflow-y-hidden">
@@ -133,7 +223,7 @@ export const SelectAssetToDepositView = () => {
       <div className="mb-12 px-adaptive">
         <ButtonRowScrollFadeContainer>
           <div className="flex gap-4">
-            {NETWORKS_FILTER.map((network) => (
+            {networksFilter.map((network) => (
               <Button
                 key={network.id}
                 type="button"
@@ -154,7 +244,7 @@ export const SelectAssetToDepositView = () => {
       </div>
 
       <VerticalScrollFadeContainer className="flex grow flex-col overflow-y-auto">
-        {filteredBalances.map((tokenChainData) => (
+        {filteredTokens.map((tokenChainData) => (
           <TokenListItem
             key={tokenChainData.symbol + "_" + tokenChainData.sourceChainId}
             tokenChainData={tokenChainData}
@@ -165,7 +255,7 @@ export const SelectAssetToDepositView = () => {
             }}
           />
         ))}
-        {filteredBalances.length === 0 && (
+        {filteredTokens.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-typography-secondary">
             {selectedNetwork === "all" ? (
               <Trans>No assets are available for deposit</Trans>

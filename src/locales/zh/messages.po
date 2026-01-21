@@ -17,7 +17,7 @@ msgstr ""
 msgid "Unrealized Base PnL"
 msgstr "未实现基础盈亏"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Wallet not connected"
 msgstr "钱包未连接"
 
@@ -174,6 +174,10 @@ msgstr "终身 LP 奖励："
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Shows the total open interest in tokens and its notional value in USD."
+msgstr ""
+
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -277,10 +281,6 @@ msgstr "取消限价交换"
 msgid "Roadmap"
 msgstr "路线图"
 
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{seconds}s"
-msgstr "{seconds}秒"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "至"
@@ -333,7 +333,7 @@ msgstr "标记价格已更改，请考虑通过点击地址旁边的“...”图
 msgid "Funds will appear in your GMX Account soon."
 msgstr "资金很快将出现在您的 GMX 账户中。"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT Address"
 msgstr "输入 NFT 地址"
 
@@ -354,10 +354,6 @@ msgstr "止盈失败"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}."
 msgstr "将 {0} 交换为 {1}。"
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1>"
-msgstr "<0>多链</0><1>即时流动性</1>"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -433,6 +429,10 @@ msgstr "超过池最大 USD"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
 msgstr "限价低于标记价格"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Long OI"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
@@ -534,10 +534,6 @@ msgstr "Telegram 内的 GMX V2 数据分析"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High external swap impact"
 msgstr "高外部交换影响"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "90+ crypto tokens"
-msgstr "超过 90 种加密代币"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
@@ -857,7 +853,7 @@ msgstr "没有匹配的市场"
 msgid "Unstake {tokenSymbol}"
 msgstr "解除质押 {tokenSymbol}"
 
-#: src/components/InputSection/InputSection.jsx
+#: src/components/InputSection/InputSection.tsx
 msgid "MAX"
 msgstr "最大"
 
@@ -1161,7 +1157,6 @@ msgstr "购买费用"
 msgid "Current Yield Landscape"
 msgstr "当前收益格局"
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "代币"
@@ -1244,7 +1239,7 @@ msgstr "选择池"
 msgid "APR"
 msgstr "年化收益率"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Tranferring..."
 msgstr "转移中..."
 
@@ -1283,6 +1278,11 @@ msgstr "限价交换失败"
 msgid "Failed"
 msgstr "失败"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "无费用"
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
@@ -1312,13 +1312,19 @@ msgstr "最小订单：{0}"
 msgid "Wallet is not connected"
 msgstr "钱包未连接"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "100+ crypto tokens"
+msgstr "超过 100 种加密代币"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Not supported"
+msgstr "不支持"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "TWAP Swap"
 msgstr "TWAP 交换"
-
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
-msgstr "GM 是 GMX V2 市场的流动性提供者代币。累积 V2 市场生成费用的 63%。"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
@@ -1360,7 +1366,7 @@ msgstr "您遇到了哪些问题导致您的评分？"
 msgid "Receive voting power and participate in governance"
 msgstr "获得投票权并参与治理"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Address"
 msgstr "NFT 地址"
 
@@ -1382,8 +1388,8 @@ msgstr "Symbiosis"
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
 
-#: src/pages/PageNotFound/PageNotFound.jsx
-#: src/pages/PageNotFound/PageNotFound.jsx
+#: src/pages/PageNotFound/PageNotFound.tsx
+#: src/pages/PageNotFound/PageNotFound.tsx
 msgid "Page not found"
 msgstr "页面未找到"
 
@@ -1458,14 +1464,9 @@ msgstr "探索"
 msgid "Sending sell request..."
 msgstr "正在发送卖出请求…"
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
-msgstr "GMX 是实用和治理代币。它还通过回购和分配机制累积协议费用的 27%。"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer submitted."
 msgstr "转移已提交。"
 
@@ -1540,7 +1541,7 @@ msgstr "市场减少失败"
 msgid "Full market"
 msgstr "完整市场"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Wallet"
 msgstr "NFT 钱包"
 
@@ -1817,6 +1818,10 @@ msgstr "V1 接口"
 msgid "GLP Reimbursement (test)"
 msgstr "GLP 补偿（测试）"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show Error Boundary Debug Trigger"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -1966,10 +1971,6 @@ msgstr "尝试快速"
 msgid "Failed to deactivate"
 msgstr "停用失败"
 
-#: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "没有开仓，订单无法执行，除非开仓"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short Positions"
@@ -2050,6 +2051,11 @@ msgstr "系统"
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr "分享您的推荐码赚取奖励！"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
+msgstr "立即"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -2194,7 +2200,7 @@ msgstr "持有 GLV 的奖金激励是什么？"
 msgid "Day(s)"
 msgstr "天"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer NFT"
 msgstr "转移 NFT"
 
@@ -2446,10 +2452,6 @@ msgstr "市场图表"
 msgid "Buy order cancelled."
 msgstr "买入订单已取消。"
 
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign message with EOA"
-msgstr "无法使用 EOA 签署消息"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr "GMX 的 Dune Analytics"
@@ -2482,7 +2484,7 @@ msgstr "执行 TWAP 部分"
 msgid "Swap Profit Fee"
 msgstr "交换利润费用"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX."
 msgstr "GMX 的职位空缺。"
 
@@ -2523,6 +2525,10 @@ msgstr "测试网 LayerZero 扫描"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1> 理所当然地赢得了永续交易巨头的称号，其背后的原因多种多样。</0><2><3>@GMX_IO</3> 作为一个不依赖 VC 支持的项目脱颖而出。令人印象深刻的是，它已上升到首位，在 Arbitrum 链上 TVL 排名第一，为 4.8834 亿美元，在 DeFiLlama 上整体排名第 23 位... <4>查看更多</4></2>"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+msgstr "<0>多链</0><1>即时流动性</1><2>MegaETH 支持</2>"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
@@ -2762,6 +2768,10 @@ msgstr "此交换通过多个 GM 池路由，以实现最低费用和价格影�
 msgid "{0}"
 msgstr "{0}"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Depositing is not supported on Avalanche anymore."
+msgstr "不再支持在Avalanche上存款。"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show Debug Values"
 msgstr "显示调试值"
@@ -2773,10 +2783,6 @@ msgstr "基于过去 7 天的年化数据。"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr "GMX Solana 托管在另一个网站上，由不同的团队运行，因此体验可能略有不同。<0/><1/>点击下面的按钮将在新标签中打开 GMX Solana 前端。"
-
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
-msgstr "请在您的钱包界面继续签名，签名请求应出现。一旦所有签名者签名，您将能够申领。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -2928,6 +2934,11 @@ msgstr "如何在 GMX 上入门？"
 msgid "Withdrawing from subaccount..."
 msgstr "正在从子账户提取…"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "提取失败"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "总质押"
@@ -2937,6 +2948,7 @@ msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentrali
 msgstr "了解 GMX、GLV 和 GM 代币如何协同工作，为去中心化交易体验提供动力。探索每个代币的作用，发现如何通过质押或提供流动性来获得奖励——就像数万名其他 GMX 用户一样。"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3150,7 +3162,6 @@ msgstr "请切换到 <0><1/><2>Arbitrum</2></0> 或 <3><4/><5>Avalanche</5></3> 
 msgid "Search Pools"
 msgstr "搜索资金池"
 
-#: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Select Language"
 msgstr "选择语言"
@@ -3244,10 +3255,6 @@ msgstr "限价 - 做空增加"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request"
 msgstr "发送结算请求"
-
-#: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "订单无法执行，因为剩余仓位将小于 5.00 美元"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3377,18 +3384,10 @@ msgstr "{typeString} 做空 TP/SL：当达到触发价格时 {0} 一个做空仓
 msgid "Community-led Telegram groups."
 msgstr "社区主导的 Telegram 群组。"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr "{longShortText} {0} 开仓利息"
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled Funding Fees"
 msgstr "结算资金费用"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "Ends in"
-msgstr "结束于"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
@@ -3444,7 +3443,6 @@ msgstr "申领资金费用成功"
 msgid "<0>every</0> {hours} hours{0}"
 msgstr "<0>每</0> {hours} 小时{0}"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
 msgstr "外部交换失败"
@@ -3547,6 +3545,10 @@ msgstr "{gmOrGlvLabel} 购买操作失败。"
 msgid "Maximum number of days before reauthorization is required."
 msgstr "需要重新授权前的最大天数。"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet."
+msgstr "Avalanche的存款已禁用。请直接从您的Avalanche钱包进行交易。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "更新止损市价"
@@ -3569,7 +3571,7 @@ msgstr "奖金年化收益率"
 msgid "Referral code submitted."
 msgstr "推荐码已提交。"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以为项目做出贡献，请发送电子邮件至 <0>jobs@gmx.io</0>。"
 
@@ -3662,7 +3664,7 @@ msgid "Slippage is the difference between your expected and actual execution pri
 msgstr "滑点是由于价格波动导致的预期执行价格与实际执行价格之间的差异。如果滑点超过您允许的最大值，订单将不会执行。默认值可以在设置中调整。<0/><1/>低值（例如小于 -{0}）可能会在波动期间导致订单失败。<2/><3/>注意：滑点与基于未平仓合约不平衡的价格影响不同。<4>了解更多</4>。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid Receiver Address"
 msgstr "无效的接收者地址"
 
@@ -3779,6 +3781,10 @@ msgstr "您将从您的做空仓位做空 {indexSymbol}，同时从您的 {colla
 msgid "Open GMX Solana"
 msgstr "打开 GMX Solana"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "该账户作为交易者赚取的回扣。"
@@ -3855,6 +3861,10 @@ msgstr "为什么我会收到两种不同的 GLV 代币？"
 msgid "Set TP/SL"
 msgstr "设置 TP/SL"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "所有网络"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -3903,7 +3913,6 @@ msgstr "订单的触发价格。"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4113,10 +4122,6 @@ msgstr "选择代币"
 msgid "Click here to give us your feedback on GMX"
 msgstr "点击这里给我们关于 GMX 的反馈"
 
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "对市场交易者 PnL 的敞口"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "最佳"
@@ -4184,7 +4189,7 @@ msgstr "GMX 交易统计"
 msgid "Express Trading was enabled to allow the use of collateral from your GMX Account balance. You can disable it in the <0>settings</0>."
 msgstr "启用了快速交易以允许使用 GMX 账户余额中的抵押品。您可以在 <0>设置</0> 中禁用它。"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "职位"
 
@@ -4267,6 +4272,10 @@ msgstr "衍生品投资组合跟踪器"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying error"
 msgstr "购买错误"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Short OI"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
@@ -4399,10 +4408,6 @@ msgstr "生成会话失败"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "No repeated wallet confirmations"
 msgstr "无需重复钱包确认"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "This competition has ended."
-msgstr "此竞赛已结束。"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -4555,10 +4560,6 @@ msgstr "推荐"
 msgid "Decrease"
 msgstr "减少"
 
-#: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "订单无法执行，因为这将使头寸的杠杆率低于 1"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "链接已复制到剪贴板。"
@@ -4684,10 +4685,6 @@ msgstr "取消 {ordersText} 失败。"
 msgid "Vesting"
 msgstr "归属"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
-msgstr "{longShortText} {0} 储备"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "取消新创建的订单"
@@ -4700,7 +4697,7 @@ msgstr "委托"
 msgid "Harmonix"
 msgstr "Harmonix"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid NFT Address"
 msgstr "无效的 NFT 地址"
 
@@ -4764,6 +4761,10 @@ msgstr "抵押品 ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "您有一个以 {0} 作为抵押品的现有仓位。此订单对该仓位无效。<0>切换到 {1} 抵押品</0>"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "您正在提取 {0}，您的 gas 代币。快速交易需要 gas，因此请至少保留 <0>{1}</0> 在 {2} 中，或在<1>设置</1>中切换您的 gas 代币。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
@@ -4858,7 +4859,6 @@ msgstr "Shifting 仅在 {chainNames} 上可用。请切换到 {chainNames} 以�
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr "订单错误。此市场价格当前波动较大，请通过 <0>增加允许滑点</0> 在高级显示部分重试。"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "外部交换的交换价格影响阈值"
@@ -5083,10 +5083,6 @@ msgstr "GMX 代币的总流通供应量。"
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "您最多可以有 {allowedAutoCancelOrdersNumber} 个活跃的可自动取消 TP/SL 订单。额外订单必须手动取消，而现有订单仍将与其相关头寸自动关闭。"
 
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
-msgstr "无法通过提供商使用 Safe 签名。确保您的钱包支持 Safe 多签名"
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr "最高 PnL (%)"
@@ -5253,6 +5249,10 @@ msgstr "提交提款时出错"
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "无开放头寸"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
+msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
@@ -5562,7 +5562,7 @@ msgid "Today"
 msgstr "今天"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Receiver Address"
 msgstr "接收方地址"
 
@@ -5652,7 +5652,7 @@ msgstr "从 GMX 获取警报和公告，以掌握您的交易、清算风险等�
 msgid "You have an existing limit order in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "您在 {0} 市场资金池中有现有限价订单。<0>切换到 {1} 市场资金池</0>"
 
-#: src/pages/PageNotFound/PageNotFound.jsx
+#: src/pages/PageNotFound/PageNotFound.tsx
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>返回 </0><1>主页</1> <2>或 </2> <3>交易</3>"
 
@@ -5852,6 +5852,10 @@ msgstr "<0>切换至 {0} 资金池</0>以可能获得更低的净价格冲击"
 msgid "market"
 msgstr "市场"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "目前不支持将 {0} 提取到 {1}"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -5976,6 +5980,10 @@ msgstr "提交"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
 msgstr "许可已签名！"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Performance and chart data are based on UTC times."
+msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
@@ -6162,10 +6170,6 @@ msgstr "在 GLV 和 GM 中提供流动性的区别是什么？"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr "签名批准失败"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "Starts in"
-msgstr "开始于"
 
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
@@ -6390,7 +6394,7 @@ msgstr "Kudai AI 代理"
 msgid "Current Price"
 msgstr "当前价格"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT ID"
 msgstr "输入 NFT ID"
 
@@ -6581,6 +6585,18 @@ msgstr "创建推荐码"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
@@ -6780,7 +6796,7 @@ msgid "COMPETITION Airdrop"
 msgstr "竞赛空投"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter Receiver Address"
 msgstr "输入接收方地址"
 
@@ -6980,10 +6996,6 @@ msgstr "{ordersText} 已取消。"
 msgid "Select a Pay token"
 msgstr "选择支付代币"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr "可用流动性将是储备和未平仓利息的最大值与当前值之间差额的较小值。"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "正在购买"
@@ -7064,7 +7076,6 @@ msgstr "转移错误。"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7183,10 +7194,6 @@ msgstr "清算价格"
 msgid "No active management required"
 msgstr "无需主动管理"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
-msgstr "多头储备考虑了未平仓仓位的盈亏，而未平仓利息则不考虑。"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take Profit"
 msgstr "取消止盈"
@@ -7207,10 +7214,6 @@ msgstr "发送方已从 GMX 归属金库中提取所有代币"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr "资金费用结算失败"
-
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
-msgstr "GLP 是 GMX V1 市场流动性提供者代币。累积 V1 市场生成费用的 70%。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
@@ -7270,7 +7273,6 @@ msgstr "交易者"
 msgid "take profit"
 msgstr "止盈"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
 msgstr "强制外部交换"
@@ -7317,10 +7319,6 @@ msgstr "申领仓位价格影响费用成功"
 msgid "Lend out your GM tokens, and borrow against them."
 msgstr "借出您的 GM 代币并以此抵押借款。"
 
-#: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "订单规模大于仓位，只有在仓位增加时才可执行"
-
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
 msgstr "购买"
@@ -7329,7 +7327,7 @@ msgstr "购买"
 msgid "Copy technical details"
 msgstr "复制技术详情"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT ID"
 msgstr "NFT ID"
 
@@ -7369,6 +7367,11 @@ msgstr "费用年利率"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "我可以在 GMX 上构建或将其集成到我的 DeFi 应用中吗？"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a settlement network."
+msgstr "Avalanche上的GMX账户支持将很快停止。从Avalanche GMX账户开立新头寸和存入额外资金的功能不再可用。我们建议切换到Arbitrum作为结算网络。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
@@ -7481,7 +7484,7 @@ msgstr "DeFi 投资组合追踪器"
 msgid "Current Funding Fee / Day"
 msgstr "当前资金费用 / 天"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Job Openings"
 msgstr "职位空缺"
 
@@ -7616,6 +7619,10 @@ msgstr "止损盈亏"
 msgid "Market - Long Dec."
 msgstr "市场 - 多头减少"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload page"
+msgstr ""
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
@@ -7649,10 +7656,6 @@ msgstr "清算价格受费用和抵押品价值影响。"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "无可用数据"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{prefix} <0>{text}</0>"
-msgstr "{prefix} <0>{text}</0>"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "These networks support only trading directly from wallet."
@@ -7893,7 +7896,7 @@ msgstr "超过最大池子金额"
 msgid "Unknown order"
 msgstr "未知订单"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "No open positions at GMX currently"
 msgstr "目前 GMX 无未平仓位"
 
@@ -7994,7 +7997,7 @@ msgstr "{positionName} 费用已结算。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer failed."
 msgstr "转移失败。"
 
@@ -8148,9 +8151,9 @@ msgstr "请求市场减少"
 msgid "Max. Leverage exceeded"
 msgstr "超过最大杠杆"
 
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign message with smart account"
-msgstr "无法使用智能账户签署消息"
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."

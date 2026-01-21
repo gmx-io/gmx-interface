@@ -11,4 +11,3 @@ export const FEED_ID_MAP = {
   YFI_USD: "0x8a4d74003870064d41d4f84940550911fbfccf04",
   SPELL_USD: "0x8640b23468815902e011948f3ab173e1e83f9879",
 };
-export const TIMEZONE_OFFSET_SEC = -new Date().getTimezoneOffset() * 60;

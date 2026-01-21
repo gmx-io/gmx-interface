@@ -17,7 +17,7 @@ msgstr ""
 msgid "Unrealized Base PnL"
 msgstr "未実現ベースPnL"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Wallet not connected"
 msgstr "ウォレットが接続されていません"
 
@@ -174,6 +174,10 @@ msgstr "累計 LP 報酬："
 msgid "RabbitHole"
 msgstr "RabbitHole"
 
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Shows the total open interest in tokens and its notional value in USD."
+msgstr ""
+
 #: src/domain/synthetics/markets/createGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Withdrawal error."
@@ -277,10 +281,6 @@ msgstr "指値スワップのキャンセル"
 msgid "Roadmap"
 msgstr "ロードマップ"
 
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{seconds}s"
-msgstr "{seconds}秒"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "宛先"
@@ -333,7 +333,7 @@ msgstr "マーク価格が変わりました。アドレス横の「...」アイ
 msgid "Funds will appear in your GMX Account soon."
 msgstr "資金はまもなくGMXアカウントに反映されます。"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT Address"
 msgstr "NFTアドレスを入力"
 
@@ -354,10 +354,6 @@ msgstr "テイクプロフィット失敗"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}."
 msgstr "{0} を {1} にスワップしました。"
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1>"
-msgstr "<0>マルチチェーン</0><1>ジャストインタイム流動性</1>"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -433,6 +429,10 @@ msgstr "最大プールUSDを超過"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
 msgstr "指値価格がマーク価格を下回っています"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Long OI"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
@@ -534,10 +534,6 @@ msgstr "Telegram内のGMX V2データ分析"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High external swap impact"
 msgstr "高い外部スワップ影響"
-
-#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
-msgid "90+ crypto tokens"
-msgstr "90種類以上の暗号資産"
 
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates."
@@ -857,7 +853,7 @@ msgstr "一致する市場がありません"
 msgid "Unstake {tokenSymbol}"
 msgstr "{tokenSymbol}をアンステーク"
 
-#: src/components/InputSection/InputSection.jsx
+#: src/components/InputSection/InputSection.tsx
 msgid "MAX"
 msgstr "最大"
 
@@ -1161,7 +1157,6 @@ msgstr "購入手数料"
 msgid "Current Yield Landscape"
 msgstr "現在の利回り状況"
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Tokens"
 msgstr "トークン"
@@ -1244,7 +1239,7 @@ msgstr "プールを選択"
 msgid "APR"
 msgstr "APR(実質年利)"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Tranferring..."
 msgstr "移転中..."
 
@@ -1283,6 +1278,11 @@ msgstr "指値スワップ失敗"
 msgid "Failed"
 msgstr "失敗"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "No fee"
+msgstr "手数料なし"
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq. {longOrShortText} - {marketIndexName}"
 msgstr "清算 {longOrShortText} - {marketIndexName}"
@@ -1312,13 +1312,19 @@ msgstr "最低注文: {0}"
 msgid "Wallet is not connected"
 msgstr "ウォレットが接続されていません"
 
+#: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
+msgid "100+ crypto tokens"
+msgstr "100種類以上の暗号資産"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Not supported"
+msgstr "サポートされていません"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "TWAP Swap"
 msgstr "TWAPスワップ"
-
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees."
-msgstr "GMはGMX V2市場の流動性プロバイダートークンです。V2市場生成手数料の63%を蓄積します。"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
@@ -1360,7 +1366,7 @@ msgstr "評価につながった問題は何ですか？"
 msgid "Receive voting power and participate in governance"
 msgstr "投票権を取得しガバナンスに参加"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Address"
 msgstr "NFTアドレス"
 
@@ -1382,8 +1388,8 @@ msgstr "Symbiosis"
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
 
-#: src/pages/PageNotFound/PageNotFound.jsx
-#: src/pages/PageNotFound/PageNotFound.jsx
+#: src/pages/PageNotFound/PageNotFound.tsx
+#: src/pages/PageNotFound/PageNotFound.tsx
 msgid "Page not found"
 msgstr "ページが見つかりません"
 
@@ -1458,14 +1464,9 @@ msgstr "探す"
 msgid "Sending sell request..."
 msgstr "売り注文リクエストを送信中…"
 
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
-msgstr "GMXはユーティリティおよびガバナンストークンです。プロトコル手数料の27%を買戻しおよび分配メカニズムで蓄積します。"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer submitted."
 msgstr "転送が送信されました。"
 
@@ -1540,7 +1541,7 @@ msgstr "マーケット減少失敗"
 msgid "Full market"
 msgstr "フル市場"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Wallet"
 msgstr "NFTウォレット"
 
@@ -1817,6 +1818,10 @@ msgstr "V1インターフェース"
 msgid "GLP Reimbursement (test)"
 msgstr "GLP払い戻し（テスト）"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show Error Boundary Debug Trigger"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/pages/Dashboard/GmCard.tsx
@@ -1966,10 +1971,6 @@ msgstr "エクスプレスを試す"
 msgid "Failed to deactivate"
 msgstr "無効化失敗"
 
-#: src/lib/legacy.ts
-msgid "No open position, order cannot be executed unless a position is opened"
-msgstr "オープンのポジションはありません。オープンのポジションがない場合、注文は執行できません"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Short Positions"
@@ -2050,6 +2051,11 @@ msgstr "システム"
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Earn rewards by sharing your code!"
 msgstr "コードを共有して報酬を獲得！"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Instant"
+msgstr "即時"
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -2194,7 +2200,7 @@ msgstr "GLVを保有するためのボーナスインセンティブとは何で
 msgid "Day(s)"
 msgstr "日"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer NFT"
 msgstr "NFTを送信する"
 
@@ -2446,10 +2452,6 @@ msgstr "マーケットグラフ"
 msgid "Buy order cancelled."
 msgstr "買い注文がキャンセルされました。"
 
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign message with EOA"
-msgstr "EOAでメッセージに署名できません"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr "GMXのDuneアナリティクス"
@@ -2482,7 +2484,7 @@ msgstr "TWAPパートを実行"
 msgid "Swap Profit Fee"
 msgstr "スワップ利益手数料"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX."
 msgstr "GMXの求人"
 
@@ -2523,6 +2525,10 @@ msgstr "テストネット LayerZero Scan"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1> はパーペチュアル取引の巨頭としての称号を正当にも獲得し、その認識の理由は多岐にわたります。</0><2><3>@GMX_IO</3> はVC支援に頼らず道を切り開いたプロジェクトとして際立っています。驚くべきことにトップに上り詰め、ArbitrumチェーンでTVLによるNo.1スポットを488.34Mドルで確保し、DeFiLlama全体で印象的なRank #23... <4>もっと見る</4></2>"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+msgstr "<0>マルチチェーン</0><1>ジャストインタイム流動性</1><2>MegaETH サポート</2>"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
@@ -2762,6 +2768,10 @@ msgstr "このスワップは最低の手数料と価格インパクトのため
 msgid "{0}"
 msgstr "{0}"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Depositing is not supported on Avalanche anymore."
+msgstr "Avalancheへの入金はサポートされなくなりました。"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show Debug Values"
 msgstr "デバッグ値を表示"
@@ -2773,10 +2783,6 @@ msgstr "過去7日間の年換算データ。"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
 msgstr "GMX Solanaは別のウェブサイトでホストされ、別チームが運営しているため、体験が若干異なる場合があります。<0/><1/>下のボタンをクリックするとGMX Solanaフロントエンドが新しいタブで開きます。"
-
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Please continue signing on your wallet interface where the signature request should appear. You will be able to claim once all signers have signed."
-msgstr "署名リクエストが表示されるウォレットインターフェースで署名を続けてください。すべての署名者が署名したら請求可能になります。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -2928,6 +2934,11 @@ msgstr "GMXを始めるにはどうしたらいいですか？"
 msgid "Withdrawing from subaccount..."
 msgstr "サブアカウントから出金中…"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawal failed"
+msgstr "引き出し失敗"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "ステーク総額"
@@ -2937,6 +2948,7 @@ msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentrali
 msgstr "GMX、GLV、GMトークンがどのように連携して分散型取引体験を実現しているかをご覧ください。各トークンの役割を探り、数万人の他のGMXユーザーと同様に、ステーキングや流動性提供で報酬を得る方法を発見しましょう。"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3150,7 +3162,6 @@ msgstr "これらの機能を使用するには<0><1/><2>Arbitrum</2></0>また�
 msgid "Search Pools"
 msgstr "プールを検索"
 
-#: src/components/NetworkDropdown/LanguagePopupHome.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Select Language"
 msgstr "言語選択"
@@ -3244,10 +3255,6 @@ msgstr "リミット - ショート増加"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request"
 msgstr "決済リクエスト送信中"
-
-#: src/lib/legacy.ts
-msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
-msgstr "ポジション金額が$5未満になるため注文を執行できません"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3377,18 +3384,10 @@ msgstr "{typeString} ショートTP/SL: トリガー価格に達したときに�
 msgid "Community-led Telegram groups."
 msgstr "コミュニティ主導のTelegramグループ"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Open Interest"
-msgstr "{longShortText} {0} 建玉"
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled Funding Fees"
 msgstr "決済されたファンディング手数料"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "Ends in"
-msgstr "終了まで"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Please input a referral code to benefit from fee discounts."
@@ -3444,7 +3443,6 @@ msgstr "資金手数料の請求に成功"
 msgid "<0>every</0> {hours} hours{0}"
 msgstr "<0>毎</0> {hours}時間{0}"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
 msgstr "外部スワップの失敗"
@@ -3547,6 +3545,10 @@ msgstr "{gmOrGlvLabel}の購入操作に失敗しました。"
 msgid "Maximum number of days before reauthorization is required."
 msgstr "再承認が必要になるまでの最大日数。"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet."
+msgstr "Avalancheへの入金は無効になっています。Avalancheウォレットから直接取引してください。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "ストップマーケットを更新"
@@ -3569,7 +3571,7 @@ msgstr "ボーナスAPR"
 msgid "Referral code submitted."
 msgstr "リファラルコードが送信されました。"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMXは現在積極的には求人を行っていませんが、プロジェクトに貢献できると思われる方は、<0>jobs@gmx.io</0>にメールをしてください。"
 
@@ -3662,7 +3664,7 @@ msgid "Slippage is the difference between your expected and actual execution pri
 msgstr "スリッページとは、価格変動により予想約定価格と実際の約定価格の差です。スリッページが許容最大値を超えると注文は約定されません。デフォルト値は設定で調整できます。<0/><1/>低い値（例：-{0}未満）は、ボラティリティ時に注文失敗の原因となる場合があります。<2/><3/>注：スリッページは、オープンインタレストの不均衡に基づく価格影響とは異なります。<4>詳細はこちら</4>。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid Receiver Address"
 msgstr "無効な受け取りアドレス"
 
@@ -3779,6 +3781,10 @@ msgstr "ショートポジションから{indexSymbol}をショートし、{coll
 msgid "Open GMX Solana"
 msgstr "GMX Solanaを開く"
 
+#: src/pages/PoolsDetails/PoolsDetails.tsx
+msgid "Exposure to Market Traders' PnL"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates earned by this account as a trader."
 msgstr "トレーダーとしてこのアカウントが獲得したリベート"
@@ -3855,6 +3861,10 @@ msgstr "なぜ2つの異なるGLVトークンを受け取るのですか？"
 msgid "Set TP/SL"
 msgstr "TP/SLを設定"
 
+#: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
+msgid "All Networks"
+msgstr "すべてのネットワーク"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net Rate / 1h"
@@ -3903,7 +3913,6 @@ msgstr "注文のトリガー価格"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4113,10 +4122,6 @@ msgstr "トークンを選択"
 msgid "Click here to give us your feedback on GMX"
 msgstr "ここをクリックしてGMXへのフィードバックをお寄せください"
 
-#: src/pages/PoolsDetails/PoolsDetails.tsx
-msgid "Exposure to Market Traders’ PnL"
-msgstr "マーケットトレーダーの損益へのエクスポージャー"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
 msgstr "最適"
@@ -4184,7 +4189,7 @@ msgstr "GMXトレーディング統計"
 msgid "Express Trading was enabled to allow the use of collateral from your GMX Account balance. You can disable it in the <0>settings</0>."
 msgstr "GMXアカウント残高からの担保使用を許可するためエクスプレス取引が有効化されました。<0>設定</0>で無効化できます。"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "求人"
 
@@ -4267,6 +4272,10 @@ msgstr "デリバティブポートフォリオトラッカー"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying error"
 msgstr "購入エラー"
+
+#: src/components/TVChart/components/OpenInterestTooltip.tsx
+msgid "Short OI"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
@@ -4399,10 +4408,6 @@ msgstr "セッション生成に失敗"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "No repeated wallet confirmations"
 msgstr "繰り返しのウォレット確認不要"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "This competition has ended."
-msgstr "このコンペティションは終了しました。"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -4555,10 +4560,6 @@ msgstr "おすすめ"
 msgid "Decrease"
 msgstr "減少"
 
-#: src/lib/legacy.ts
-msgid "Order cannot be executed as it would reduce the position's leverage below 1"
-msgstr "レバレッジ倍率が1倍以下になるため注文を執行できません"
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
 msgstr "リンクがクリップボードにコピーされました。"
@@ -4684,10 +4685,6 @@ msgstr "{ordersText}のキャンセルに失敗しました。"
 msgid "Vesting"
 msgstr "ベスティング"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "{longShortText} {0} Reserve"
-msgstr "{longShortText} {0} 予約"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "新規作成注文をキャンセル"
@@ -4700,7 +4697,7 @@ msgstr "委任"
 msgid "Harmonix"
 msgstr "Harmonix"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid NFT Address"
 msgstr "無効なNFTアドレス"
 
@@ -4764,6 +4761,10 @@ msgstr "担保 ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "{0}を担保とする既存のポジションがあります。この注文はそのポジションには有効ではありません。<0>{1}担保に切り替える</0>"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
+msgstr "{0}、ガス・トークンを引き出しています。エクスプレストレーディングにはガスが必要なので、{2}に少なくとも<0>{1}</0>を保持するか<1>設定</1>でガス・トークンを切り替えてください。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
@@ -4858,7 +4859,6 @@ msgstr "Shiftingは{chainNames}でのみ利用可能です。稼ぎ機会にア�
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
 msgstr "注文エラー。この市場の価格が現在変動しています。<0>最大スリッページを増加</0>させて先進表示セクションで再試行してください。"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "外部スワップ閾値のスワップ価格インパクト"
@@ -5083,10 +5083,6 @@ msgstr "GMXトークンの総循環供給量。"
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "最大{allowedAutoCancelOrdersNumber}件のアクティブな自動キャンセル可能TP/SL注文を持つことができます。追加注文は手動でキャンセルする必要があり、既存のものは関連ポジションとともに自動クローズされます。"
 
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign with Safe via provider. Ensure your wallet supports Safe multisig signing"
-msgstr "プロバイダ経由でSafeに署名できません。ウォレットがSafeマルチシグ署名をサポートしていることを確認してください"
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL (%)"
 msgstr "トップPnL (%)"
@@ -5253,6 +5249,10 @@ msgstr "出金の送信エラー"
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
 msgstr "オープンのポジションはありません"
+
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload the page or report the issue if the <0/> problem persists."
+msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
@@ -5562,7 +5562,7 @@ msgid "Today"
 msgstr "今日"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Receiver Address"
 msgstr "受け取り側アドレス"
 
@@ -5652,7 +5652,7 @@ msgstr "GMXからアラートとお知らせを受け取り、取引、清算リ
 msgid "You have an existing limit order in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "{0}市場プールに既存の制限注文があります。<0>{1}市場プールに切り替え</0>"
 
-#: src/pages/PageNotFound/PageNotFound.jsx
+#: src/pages/PageNotFound/PageNotFound.tsx
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>戻る </0><1>ホームページへ</1> <2>または </2> <3>トレードへ</3>"
 
@@ -5852,6 +5852,10 @@ msgstr "ネット価格インパクトを低減するため<0>{0}プールに切
 msgid "market"
 msgstr "市場"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Withdrawing {0} to {1} is not currently supported"
+msgstr "{0}から{1}への出金は現在サポートされていません"
+
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Same as current active code"
@@ -5976,6 +5980,10 @@ msgstr "提出"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed!"
 msgstr "許可署名完了!"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Performance and chart data are based on UTC times."
+msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
@@ -6162,10 +6170,6 @@ msgstr "GLVとGMでの流動性提供の違いは？"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to sign approval"
 msgstr "承認署名に失敗"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "Starts in"
-msgstr "開始まで"
 
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
@@ -6390,7 +6394,7 @@ msgstr "Kudai AI Agent"
 msgid "Current Price"
 msgstr "現在価格"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT ID"
 msgstr "NFT IDを入力"
 
@@ -6581,6 +6585,18 @@ msgstr "コードを作成"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useDepositTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/lpTxn/useWithdrawalTransactions.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
@@ -6780,7 +6796,7 @@ msgid "COMPETITION Airdrop"
 msgstr "コンペティションエアドロップ"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter Receiver Address"
 msgstr "受け取りアドレスを入力"
 
@@ -6980,10 +6996,6 @@ msgstr "{ordersText} がキャンセルされました。"
 msgid "Select a Pay token"
 msgstr "支払いトークンを選択"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The available liquidity will be the lesser of the difference between the maximum value and the current value for both the reserve and open interest."
-msgstr "利用可能な流動性は、リザーブとオープンインタレストの両方について最大値と現在値の差分の小さい方になります。"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "購入中"
@@ -7064,7 +7076,6 @@ msgstr "シフトエラー。"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7183,10 +7194,6 @@ msgstr "清算価格"
 msgid "No active management required"
 msgstr "アクティブ運用不要"
 
-#: src/components/TVChart/components/AvailableLiquidityTooltip.tsx
-msgid "The long reserve accounts for the PnL of open positions, while the open interest does not."
-msgstr "ロングリザーブはオープンポジションのPnLを考慮しますが、オープンインタレストはしません。"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Take Profit"
 msgstr "テイクプロフィットをキャンセル"
@@ -7207,10 +7214,6 @@ msgstr "送信者がGMXベスティングボールトから全トークンを引
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr "ファンディング手数料の決済に失敗"
-
-#: src/pages/Dashboard/DashboardPageTitle.tsx
-msgid "GLP is the liquidity provider token for GMX V1 markets. Accrues 70% of the V1 markets generated fees."
-msgstr "GLPはGMX V1マーケットの流動性提供トークンです。V1マーケット生成手数料の70%を蓄積します。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
@@ -7270,7 +7273,6 @@ msgstr "トレーダー"
 msgid "take profit"
 msgstr "テイクプロフィット"
 
-#: src/components/DebugExpressSettings/DebugSwapsSettings.tsx
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
 msgstr "外部スワップを強制"
@@ -7317,10 +7319,6 @@ msgstr "ポジション価格影響手数料の請求に成功"
 msgid "Lend out your GM tokens, and borrow against them."
 msgstr "GMトークンを貸し出して借り入れ。"
 
-#: src/lib/legacy.ts
-msgid "Order size is bigger than position, will only be executable if position increases"
-msgstr "注文サイズがポジションより大きいため、ポジションが増加した場合のみ執行可能です"
-
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
 msgstr "購入"
@@ -7329,7 +7327,7 @@ msgstr "購入"
 msgid "Copy technical details"
 msgstr "技術的詳細をコピー"
 
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT ID"
 msgstr "NFT ID"
 
@@ -7369,6 +7367,11 @@ msgstr "手数料APY"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "GMXの上に構築したりDeFiアプリに統合できますか？"
+
+#: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a settlement network."
+msgstr "Avalanche上のGMXアカウントのサポートはまもなく終了します。Avalanche GMXアカウントからの新規ポジションの開設および追加資金の入金は利用できなくなりました。決済ネットワークとしてArbitrumへの切り替えをお勧めします。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
@@ -7481,7 +7484,7 @@ msgstr "DeFiポートフォリオトラッカー"
 msgid "Current Funding Fee / Day"
 msgstr "現在のファンディング手数料 / 日"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "Job Openings"
 msgstr "求人"
 
@@ -7616,6 +7619,10 @@ msgstr "ストップロスPnL"
 msgid "Market - Long Dec."
 msgstr "市場 - ロング減少"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Reload page"
+msgstr ""
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
@@ -7649,10 +7656,6 @@ msgstr "清算価格は手数料と担保価値に影響されます。"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "データなし"
-
-#: src/pages/LeaderboardPage/components/CompetitionCountdown.tsx
-msgid "{prefix} <0>{text}</0>"
-msgstr "{prefix} <0>{text}</0>"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "These networks support only trading directly from wallet."
@@ -7893,7 +7896,7 @@ msgstr "最大プール額を超えました"
 msgid "Unknown order"
 msgstr "不明な注文"
 
-#: src/pages/Jobs/Jobs.jsx
+#: src/pages/Jobs/Jobs.tsx
 msgid "No open positions at GMX currently"
 msgstr "現在GMXにオープンポジションなし"
 
@@ -7994,7 +7997,7 @@ msgstr "{positionName} 手数料が決済されました。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.jsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer failed."
 msgstr "転送失敗。"
 
@@ -8148,9 +8151,9 @@ msgstr "マーケット減少リクエスト"
 msgid "Max. Leverage exceeded"
 msgstr "最大レバレッジを超えました"
 
-#: src/components/UserIncentiveDistribution/utils.tsx
-msgid "Unable to sign message with smart account"
-msgstr "スマートアカウントでメッセージに署名できません"
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Something Went Wrong"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."

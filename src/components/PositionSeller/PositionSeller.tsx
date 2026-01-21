@@ -113,10 +113,6 @@ import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpa
 
 import "./PositionSeller.scss";
 
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
-
 const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Market]: msg`Market`,
   [OrderOption.Trigger]: msg`TP/SL`,
