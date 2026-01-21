@@ -100,7 +100,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   );
 
   const fieldsRow = (
-    <div className={cx("h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-8", fieldsColumnsClass)}>
+    <div className={cx("h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-7", fieldsColumnsClass)}>
       {isPosition || isSwap ? fields : null}
     </div>
   );
