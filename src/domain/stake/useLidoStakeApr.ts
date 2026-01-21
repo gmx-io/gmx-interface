@@ -4,7 +4,7 @@ import { LIDO_STAKE_APR_URL } from "config/lido";
 import { expandDecimals } from "lib/numbers";
 
 export const LIDO_APR_DECIMALS = 28;
-export const LIDO_APR_DIVISOR = expandDecimals(1, LIDO_APR_DECIMALS);
+const LIDO_APR_DIVISOR = expandDecimals(1, LIDO_APR_DECIMALS);
 
 export function useLidoStakeApr() {
   const { data: lidoApr } = useSWR(["lido-stake-apr"], {

@@ -63,7 +63,7 @@ type LeaderboardAccountsJson = {
   }[];
 };
 
-export type LeaderboardAccountBase = {
+type LeaderboardAccountBase = {
   account: string;
   cumsumCollateral: bigint;
   cumsumSize: bigint;
