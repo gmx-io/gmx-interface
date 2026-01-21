@@ -104,7 +104,7 @@ export function isWebsocketProvider(provider: any): provider is WebSocketProvide
   return Boolean(provider?.websocket);
 }
 
-export enum WSReadyState {
+enum WSReadyState {
   CONNECTING = 0,
   OPEN = 1,
   CLOSING = 2,

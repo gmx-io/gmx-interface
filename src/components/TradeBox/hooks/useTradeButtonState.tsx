@@ -561,7 +561,7 @@ export function useTradeboxButtonState({
   ]);
 }
 
-export function useDetectAndSetAvailableMaxLeverage({
+function useDetectAndSetAvailableMaxLeverage({
   setToTokenInputValue,
 }: {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;

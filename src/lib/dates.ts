@@ -10,7 +10,7 @@ export function formatDate(time: number) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
-export function formatDateWithComma(time: number) {
+function formatDateWithComma(time: number) {
   return formatDateFn(time * 1000, "MMM dd, yyyy");
 }
 
@@ -34,17 +34,6 @@ export function formatTVTime(date: Date) {
   return formatDateFn(date, "HH:mm");
 }
 
-export function getTimeRemaining(time: number) {
-  const now = parseInt(String(Date.now() / 1000));
-  if (time < now) {
-    return "0h 0m";
-  }
-  const diff = time - now;
-  const hours = parseInt(String(diff / (60 * 60)));
-  const minutes = parseInt(String((diff - hours * 60 * 60) / 60));
-  return `${hours}h ${minutes}m`;
-}
-
 export function isValidTimestamp(timestamp: any) {
   return new Date(timestamp).getTime() > 0;
 }
@@ -58,7 +47,7 @@ export function getDaysAgo(timestamp: number) {
   return Math.floor(diff / 86400);
 }
 
-export function toSeconds(date: Date) {
+function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
 }
 
@@ -120,16 +109,16 @@ export function useDateRange() {
 
 export const SECONDS_IN_DAY = 86400;
 
-export function floorTimestamp(timestamp: number, period: "day" | "hour") {
+function floorTimestamp(timestamp: number, period: "day" | "hour") {
   const delimiter = period === "day" ? 86400 : 3600;
   return Math.floor(timestamp / delimiter) * delimiter;
 }
 
-export function getTodayStart() {
+function getTodayStart() {
   return floorTimestamp(Date.now() / 1000, "day");
 }
 
-export function getYearStart() {
+function getYearStart() {
   return floorTimestamp(new Date(new Date().getUTCFullYear(), 0, 1, 0, 0, 0, 0).getTime() / 1000, "day");
 }
 

@@ -37,20 +37,6 @@ import "./ClaimsHistory.scss";
 
 const CLAIMS_HISTORY_PREFETCH_SIZE = 100;
 
-export type ClaimsHistoryProps = {
-  isLoading: boolean;
-  isEmpty: boolean;
-  hasFilters: boolean;
-  eventNameFilter: string[];
-  setEventNameFilter: (eventNameFilter: string[]) => void;
-  marketAddressesFilter: string[];
-  setMarketAddressesFilter: (marketAddressesFilter: string[]) => void;
-  currentPage: number;
-  setCurrentPage: (currentPage: number) => void;
-  pageCount: number;
-  currentPageData: ClaimAction[];
-};
-
 export function ClaimsHistory() {
   const chainId = useSelector(selectChainId);
   const account = useAccount();

@@ -107,7 +107,7 @@ export function mockPositionInfo(
   };
 }
 
-export const MOCK_TXN_DATA = {
+const MOCK_TXN_DATA = {
   to: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
   data: "0xabcd",
   value: 0n,

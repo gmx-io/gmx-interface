@@ -48,7 +48,7 @@ import {
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
 } from "domain/synthetics/sidecarOrders/utils";
-import type { NextPositionValues } from "domain/synthetics/trade/types";
+import type { NextPositionValues } from "domain/synthetics/trade";
 import {
   buildTpSlCreatePayloads,
   buildTpSlInputPositionData,

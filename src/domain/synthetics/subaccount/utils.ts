@@ -16,7 +16,6 @@ import { isSourceChain } from "config/multichain";
 import type {
   SignedSubacсountApproval,
   Subaccount,
-  SubaccountApproval,
   SubaccountSerializedConfig,
   SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
@@ -35,7 +34,7 @@ import {
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
-import { nowInSeconds, secondsToPeriod } from "sdk/utils/time";
+import { nowInSeconds } from "sdk/utils/time";
 import type { SubaccountGelatoRelayRouter } from "typechain-types";
 
 import { getGelatoRelayRouterDomain } from "../express";
@@ -86,7 +85,7 @@ export function getSubaccountSigner(config: SubaccountSerializedConfig, account:
   return wallet;
 }
 
-export function getMaxSubaccountActions(subaccount: {
+function getMaxSubaccountActions(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubacсountApproval | undefined;
 }): bigint {
@@ -97,7 +96,7 @@ export function getMaxSubaccountActions(subaccount: {
   return subaccount.onchainData.maxAllowedCount;
 }
 
-export function getSubaccountExpiresAt(subaccount: {
+function getSubaccountExpiresAt(subaccount: {
   onchainData: SubaccountOnchainData;
   signedApproval: SignedSubacсountApproval | undefined;
 }): bigint {
@@ -118,13 +117,6 @@ export function getRemainingSubaccountActions(subaccount: {
   return maxAllowedCount - currentActionCount;
 }
 
-export function getIsApprovalDeadlineExpired(approval: SubaccountApproval): boolean {
-  const now = BigInt(nowInSeconds());
-  const deadline = approval.deadline;
-
-  return now >= deadline;
-}
-
 export function getIsSubaccountActionsExceeded(subaccount: Subaccount, requiredActions: number) {
   return getRemainingSubaccountActions(subaccount) < bigMath.max(1n, BigInt(requiredActions));
 }
@@ -137,16 +129,10 @@ export function getRemainingSubaccountSeconds(subaccount: Subaccount): bigint {
   return bigMath.max(0n, expiresAt - now);
 }
 
-export function getRemainingSubaccountDays(subaccount: Subaccount): bigint {
-  const seconds = getRemainingSubaccountSeconds(subaccount);
-
-  return BigInt(secondsToPeriod(Number(seconds), "1d"));
-}
-
 /**
  * Returns false for empty subaccount approval
  */
-export function getIsApprovalExpired(subaccount: Subaccount): boolean {
+function getIsApprovalExpired(subaccount: Subaccount): boolean {
   const { signedApproval } = subaccount;
 
   if (getIsEmptySubaccountApproval(signedApproval)) {
@@ -289,10 +275,7 @@ export function getIsInvalidSubaccount({
   return isExpired || isNonceExpired || actionsExceeded || isApprovalInvalid;
 }
 
-export function getEmptySubaccountApproval(
-  chainId: ContractsChainId,
-  subaccountAddress: string
-): SignedSubacсountApproval {
+function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress: string): SignedSubacсountApproval {
   return {
     subaccount: subaccountAddress,
     shouldAdd: false,
@@ -310,7 +293,7 @@ export function getEmptySubaccountApproval(
   };
 }
 
-export function getIsEmptySubaccountApproval(subaccountApproval: SignedSubacсountApproval): boolean {
+function getIsEmptySubaccountApproval(subaccountApproval: SignedSubacсountApproval): boolean {
   return (
     subaccountApproval.signature === ZERO_DATA &&
     subaccountApproval.nonce === 0n &&
@@ -388,7 +371,7 @@ export function getActualApproval(params: {
   return signedApproval;
 }
 
-export function getIsSubaccountApprovalSynced(params: {
+function getIsSubaccountApprovalSynced(params: {
   chainId: ContractsChainId;
   signedApproval: SignedSubacсountApproval;
   onchainData: SubaccountOnchainData;
@@ -460,7 +443,7 @@ export async function signUpdatedSubaccountSettings({
   return signedSubaccountApproval;
 }
 
-export async function createAndSignSubaccountApproval(
+async function createAndSignSubaccountApproval(
   chainId: ContractsChainId,
   mainAccountSigner: WalletSigner,
   provider: Provider,
@@ -567,7 +550,7 @@ async function getSubaccountApprovalNonceForProvider(
   return await contract.subaccountApprovalNonces(signer.address);
 }
 
-export async function getSubaccountOnchainData({
+async function getSubaccountOnchainData({
   chainId,
   signer,
   provider,

@@ -125,7 +125,6 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
             options={longShortTabsOptions}
             selectedValue={tradeType === TradeType.Swap ? undefined : tradeType}
             onChange={onTradeTypeChange}
-            size="l"
             qa="trade-direction"
             className="grow overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
             regularOptionClassname={cx(
@@ -143,7 +142,6 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
             options={swapTabOptions}
             selectedValue={tradeType === TradeType.Swap ? TradeType.Swap : undefined}
             onChange={onTradeTypeChange}
-            size="l"
             qa="trade-direction-swap"
             className="flex-none overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
             regularOptionClassname={cx("mb-0", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}

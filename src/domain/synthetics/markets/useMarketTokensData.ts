@@ -276,7 +276,7 @@ export function useMarketTokensData(
   });
 }
 
-export function getProgressiveMarketTokensData(chainId: ContractsChainId, marketsData: MarketsData | undefined) {
+function getProgressiveMarketTokensData(chainId: ContractsChainId, marketsData: MarketsData | undefined) {
   if (!marketsData) {
     return {};
   }

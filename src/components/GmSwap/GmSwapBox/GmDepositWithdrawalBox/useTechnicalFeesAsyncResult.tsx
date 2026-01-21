@@ -3,12 +3,10 @@ import {
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
-  selectPoolsDetailsLongTokenAmount,
   selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSelectedMarketAddressForGlv,
-  selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
@@ -42,8 +40,6 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
 
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
-  const longTokenAmount = useSelector(selectPoolsDetailsLongTokenAmount);
-  const shortTokenAmount = useSelector(selectPoolsDetailsShortTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
 
   const prevPaySource = usePrevious(paySource);
@@ -79,8 +75,8 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
             srcChainId,
             firstTokenAddress,
             firstTokenAmount,
-            longTokenAmount,
-            shortTokenAmount,
+            longTokenAmount: amounts?.longTokenAmount ?? 0n,
+            shortTokenAmount: amounts?.shortTokenAmount ?? 0n,
             marketTokenAmount: marketOrGlvTokenAmount,
             operation,
             amounts,

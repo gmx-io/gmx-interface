@@ -19,8 +19,6 @@ export enum EarnTab {
   Distributions = "distributions",
 }
 
-export const EARN_TABS = Object.values(EarnTab);
-
 export function isEarnTab(value: string | null): value is EarnTab {
   return typeof value === "string" && Object.values(EarnTab).includes(value as EarnTab);
 }

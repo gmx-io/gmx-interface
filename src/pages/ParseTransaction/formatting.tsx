@@ -34,7 +34,7 @@ const ROLE_KEY_MAP: Record<string, string | undefined> = {
   "0xcdf6da7ad30d8b9afea66fb1cb11b1b7d0b50e9b30b69561a3ca52c39251360c": "CONTRIBUTOR_DISTRIBUTOR",
 };
 
-export function convertFromContractPrice(price: bigint, tokenDecimals: number) {
+function convertFromContractPrice(price: bigint, tokenDecimals: number) {
   return price * expandDecimals(1, tokenDecimals);
 }
 
@@ -101,7 +101,7 @@ export function formatAmountByField(tokenField: string | TokenGetter) {
 
 export const formatDateField = (t: bigint) => formatDateTime(Number(t)) + ` (${t})`;
 
-export function formatByMarketLongOrShortToken(isLong: boolean) {
+function formatByMarketLongOrShortToken(isLong: boolean) {
   return (t: bigint, { entries, tokensData, marketsInfoData, allEvents }: LogEntryComponentProps) => {
     let marketAddress = entries.find((entry) => entry.item === "market")?.value;
 
@@ -161,7 +161,7 @@ export const formatAmountByNativeToken = formatAmountByField(({ chainId, tokensD
   return tokensData[NATIVE_TOKENS_MAP[chainId].address];
 });
 
-export function getCollateralToken({ entries, tokensData }: LogEntryComponentProps) {
+function getCollateralToken({ entries, tokensData }: LogEntryComponentProps) {
   const collateralToken = entries.find((entry) => entry.item === "collateralToken");
 
   if (collateralToken) {
@@ -222,7 +222,7 @@ function getIndexToken({ entries, marketsInfoData, tokensData }: LogEntryCompone
   throw new Error(`Field "market" not found in event`);
 }
 
-export const formatAmountByEventField = (eventName: string, field: string | TokenGetter) => {
+const formatAmountByEventField = (eventName: string, field: string | TokenGetter) => {
   return (t: bigint, props: LogEntryComponentProps) => {
     const event = props.allEvents.find((e) => e.name === eventName);
 
@@ -258,7 +258,7 @@ export const formatPriceByIndexToken = formatPriceByField(getIndexToken);
 export const formatPriceByToken = formatPriceByField("token");
 export const formatPriceByCollateralToken = formatPriceByField("collateralToken");
 
-export const formatAmountByFieldWithDecimalsShift = (tokenField: string | TokenGetter, shift: number) =>
+const formatAmountByFieldWithDecimalsShift = (tokenField: string | TokenGetter, shift: number) =>
   formatAmountByField((props: LogEntryComponentProps) => {
     const { entries, tokensData } = props;
     const field =
@@ -280,14 +280,7 @@ export const formatAmountByFieldWithDecimalsShift = (tokenField: string | TokenG
     throw new Error("Market not found");
   });
 
-export function getMarketLongOrShortTokenByEventData(props: LogEntryComponentProps) {
-  const { entries } = props;
-  const isLong = entries.find((entry) => entry.item === "isLong")?.value as boolean;
-
-  return getMarketLongOrShortToken(isLong)(props);
-}
-
-export function getMarketLongOrShortToken(isLong: boolean) {
+function getMarketLongOrShortToken(isLong: boolean) {
   return (props: LogEntryComponentProps) => {
     const { entries, tokensData, marketsInfoData } = props;
     const marketAddress = entries.find((entry) => entry.item === "market");
