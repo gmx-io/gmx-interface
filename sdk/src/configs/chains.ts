@@ -167,12 +167,12 @@ const CONTRACTS_CHAIN_CONFIGS = {
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
-  // TODO: Verify gas configuration for MegaEth
+  // TODO: Verify gas configuration for MegaETH
   [MEGAETH]: {
     chainId: MEGAETH,
-    name: "MegaEth",
+    name: "MegaETH",
     slug: "megaeth",
-    explorerUrl: "https://megaexplorer.xyz/",
+    explorerUrl: "https://megaeth.blockscout.com/",
     nativeTokenSymbol: "ETH",
     wrappedTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDM",
@@ -294,7 +294,7 @@ export const botanix: Chain = defineChain({
 
 export const megaeth: Chain = defineChain({
   id: MEGAETH,
-  name: "MegaEth",
+  name: "MegaETH",
   nativeCurrency: {
     name: "Ether",
     symbol: "ETH",
@@ -308,7 +308,7 @@ export const megaeth: Chain = defineChain({
   blockExplorers: {
     default: {
       name: "MegaExplorer",
-      url: "https://megaexplorer.xyz",
+      url: "https://megaeth.blockscout.com",
     },
   },
   contracts: {

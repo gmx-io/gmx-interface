@@ -271,7 +271,7 @@ export const CONTRACTS = {
     Multicall: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
     LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
     ArbitrumNodeInterface: zeroAddress,
-    GelatoRelayAddress: zeroAddress, // TODO: Add Gelato relay address for MegaEth when available
+    GelatoRelayAddress: zeroAddress, // TODO: Add Gelato relay address for MegaETH when available
 
     Vault: zeroAddress,
     Reader: zeroAddress,

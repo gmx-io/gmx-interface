@@ -48,7 +48,7 @@ export const GAS_LIMITS_STATIC_CONFIG: Record<ContractsChainId, StaticGasLimitsC
     tokenPermitGasLimit: 90000n,
     gmxAccountCollateralGasLimit: 0n,
   },
-  // TODO: Verify gas limits for MegaEth
+  // TODO: Verify gas limits for MegaETH
   [MEGAETH]: {
     createOrderGasLimit: 1000000n,
     updateOrderGasLimit: 800000n,

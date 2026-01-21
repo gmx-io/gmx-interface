@@ -46,7 +46,7 @@ const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
     getTokenBySymbol(ARBITRUM_SEPOLIA, "WETH").address,
   ],
   [BOTANIX]: [getTokenBySymbol(BOTANIX, "pBTC").address],
-  // TODO: Add gas payment tokens for MegaEth when express is enabled
+  // TODO: Add gas payment tokens for MegaETH when express is enabled
   [MEGAETH]: [],
 };
 

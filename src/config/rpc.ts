@@ -436,7 +436,7 @@ function getAlchemyProvider(
       baseUrl = `botanix-mainnet.g.alchemy.com/v2`;
       break;
     case MEGAETH:
-      // TODO: Update when Alchemy supports MegaEth
+      // TODO: Update when Alchemy supports MegaETH
       baseUrl = `megaeth-mainnet.g.alchemy.com/v2`;
       break;
     case ARBITRUM_SEPOLIA:
