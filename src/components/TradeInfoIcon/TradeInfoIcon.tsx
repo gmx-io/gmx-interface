@@ -58,16 +58,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             .
           </li>
         ) : null}
-        <li className={LI_CLASS_NAME}>
-          <Trans>
-            {typeString} Long TP/SL: {getTradeTypeLabel(TradeMode.Trigger, tradePlace)} a long position when the trigger
-            price is reached.
-          </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#take-profit-and-stop-loss-orders">
-            <Trans>Read more</Trans>
-          </ExternalLink>
-          .
-        </li>
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
             <Trans>
@@ -112,16 +102,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             .
           </li>
         ) : null}
-        <li className={LI_CLASS_NAME}>
-          <Trans>
-            {typeString} Short TP/SL: {getTradeTypeLabel(TradeMode.Trigger, tradePlace)} a short position when the
-            trigger price is reached.
-          </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#take-profit-and-stop-loss-orders">
-            <Trans>Read more</Trans>
-          </ExternalLink>
-          .
-        </li>
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
             <Trans>

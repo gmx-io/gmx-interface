@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -11,21 +11,23 @@ import { PositionInfo } from "../positions";
 
 export enum OrderOption {
   Market = "Market",
-  Trigger = "Trigger",
   Twap = "TWAP",
 }
 
 export const ORDER_OPTION_TO_TRADE_MODE: Record<OrderOption, TradeMode> = {
   [OrderOption.Market]: TradeMode.Market,
-  [OrderOption.Trigger]: TradeMode.Trigger,
   [OrderOption.Twap]: TradeMode.Twap,
 };
 
 export type PositionSellerState = ReturnType<typeof usePositionSellerState>;
 
-export function usePositionSellerState(chainId: number, closingPosition: PositionInfo | undefined) {
+export function usePositionSellerState(
+  chainId: number,
+  closingPosition: PositionInfo | undefined,
+  initialOrderOption: OrderOption | undefined
+) {
   const { savedAllowedSlippage } = useSettings();
-  const [orderOption, setOrderOption] = useState<OrderOption>(OrderOption.Market);
+  const [orderOption, setOrderOption] = useState<OrderOption>(initialOrderOption ?? OrderOption.Market);
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
@@ -37,6 +39,12 @@ export function usePositionSellerState(chainId: number, closingPosition: Positio
   const [isReceiveTokenChanged, setIsReceiveTokenChanged] = useState(false);
   const [duration, setDuration] = useState<TwapDuration>(DEFAULT_TWAP_DURATION);
   const [numberOfParts, setNumberOfParts] = useState<number>(DEFAULT_TWAP_NUMBER_OF_PARTS);
+
+  useEffect(() => {
+    if (initialOrderOption !== undefined) {
+      setOrderOption(initialOrderOption);
+    }
+  }, [initialOrderOption]);
 
   const resetPositionSeller = useCallback(() => {
     setOrderOption(OrderOption.Market);

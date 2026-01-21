@@ -37,6 +37,7 @@ import type { OrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useShareSuccessClosedPosition } from "domain/synthetics/tradeHistory/useShareSuccessClosedPosition";
 import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
@@ -123,7 +124,8 @@ export function SyntheticsPage(p: Props) {
 
   const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
   const setClosingPositionKey = useCallback(
-    (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
+    (key: string | undefined, orderOption?: OrderOption) =>
+      requestAnimationFrame(() => setClosingPositionKeyRaw(key, orderOption)),
     [setClosingPositionKeyRaw]
   );
 
@@ -426,7 +428,7 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] shrink-0 max-xl:w-[36rem]">
+          <div className="w-[40rem] shrink-0">
             <TradeBoxResponsiveContainer />
 
             {isSwap && !isTwap && (

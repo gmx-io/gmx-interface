@@ -11,7 +11,7 @@ type Props<V extends BaseOptionValue> = {
   options: Option<V>[];
   selectedValue: V | undefined;
   onChange?: (value: V) => void;
-  type?: "inline" | "block" | "inline-primary";
+  type?: "inline" | "block" | "inline-primary" | "pills";
   className?: string;
   regularOptionClassname?: string;
   qa?: string;
@@ -41,7 +41,7 @@ export default function Tabs<V extends string | number>({
     >
       <div
         className={cx("flex w-full", {
-          "gap-8": type === "inline" || type === "inline-primary",
+          "gap-8": type === "inline" || type === "inline-primary" || type === "pills",
         })}
       >
         {options.map((opt) =>
@@ -51,6 +51,8 @@ export default function Tabs<V extends string | number>({
               option={opt}
               selectedValue={selectedValue}
               onOptionClick={onChange}
+              type={type}
+              commonOptionClassname={regularOptionClassname}
             />
           ) : (
             <RegularTab

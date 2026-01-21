@@ -105,7 +105,7 @@ export const trimZeroDecimals = (amount: string) => {
 export function bigintToNumber(value: bigint, decimals: number) {
   const negative = value < 0;
   if (negative) value *= -1n;
-  const precision = 10n ** BigInt(decimals);
+  const precision = expandDecimals(1, decimals);
   const int = value / precision;
   const frac = value % precision;
 
@@ -163,7 +163,7 @@ export function formatBigUsd(amount: bigint, opts: { displayDecimals?: number } 
 export function formatDeltaUsd(
   deltaUsd?: bigint,
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
+  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean; hidePercentage?: boolean } = {}
 ) {
   if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
@@ -176,7 +176,8 @@ export function formatDeltaUsd(
   const sign = getPlusOrMinusSymbol(deltaUsd, { showPlusForZero: opts.showPlusForZero });
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
-  const percentageStr = percentage !== undefined ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
+  const percentageStr =
+    percentage !== undefined && !opts.hidePercentage ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 

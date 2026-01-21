@@ -150,7 +150,7 @@ export default function BuyInputSection(props: Props) {
       <div
         className={cx(
           `text-body-small flex cursor-text flex-col justify-between gap-2 rounded-8
-          border border-slate-800 bg-slate-800 p-12`,
+          border border-slate-800 bg-slate-800 px-12 py-8`,
           {
             "bg-slate-900": isDisabled,
             "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
