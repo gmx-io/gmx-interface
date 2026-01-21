@@ -15,10 +15,8 @@
     "build-sdk": "cd ./sdk && yarn build",
     "test": "vitest",
     "test:ci": "vitest run",
-    "lint": "node node_modules/.bin/eslint src --fix --cache --cache-location .eslintcache",
-    "lint:ci": "node node_modules/.bin/eslint src --max-warnings=0",
-    "lint:fix": "node node_modules/.bin/eslint src --fix",
-    "check:ci": "yarn lint:ci && yarn test:ci && yarn tscheck:ci",
+    "lint": "node node_modules/.bin/eslint src landing --fix --cache --cache-location .eslintcache",
+    "lint:ci": "node node_modules/.bin/eslint src landing --max-warnings=0",
     "pre-commit": "yarn run lint",
     "pre-push": "vitest run",
     "prepare": "husky install && yarn lingui:prepare",
@@ -26,12 +24,14 @@
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite",
-    "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
-    "tscheck:ci": "tsc -p tsconfig.json --noEmit",
-    "clean:cache": "rm -rf .eslintcache tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
+    "tscheck": "tsc -p tsconfig.json --noEmit --incremental && tsc -p landing/tsconfig.json --noEmit --incremental",
+    "tscheck:ci": "tsc -p tsconfig.json --noEmit && tsc -p landing/tsconfig.json --noEmit",
+    "tscheck:watch": "tsc -p tsconfig.json --noEmit --incremental --watch",
+    "tscheck:watch:landing": "tsc -p landing/tsconfig.json --noEmit --incremental --watch",
+    "clean:cache": "yarn clean:lint && yarn clean:ts",
     "clean:lint": "rm -rf .eslintcache",
-    "clean:ts": "rm -rf tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
-    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss}",
+    "clean:ts": "rm -rf tsconfig.tsbuildinfo landing/tsconfig.tsbuildinfo",
+    "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss} landing/**/*.{js,ts,jsx,tsx,css,scss}",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild"
   },
@@ -187,6 +187,13 @@
       "prettier --write"
     ],
     "src/**/*.{css,scss}": [
+      "prettier --write"
+    ],
+    "landing/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix --max-warnings=0 ./landing",
+      "prettier --write"
+    ],
+    "landing/**/*.{css,scss}": [
       "prettier --write"
     ]
   },

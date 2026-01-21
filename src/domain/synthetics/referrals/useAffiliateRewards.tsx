@@ -7,10 +7,6 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 import { AffiliateRewardsData } from "./types";
 
-export type AffiliateRewardsResult = {
-  affiliateRewardsData?: AffiliateRewardsData;
-};
-
 export function useAffiliateRewards(chainId: ContractsChainId) {
   const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);

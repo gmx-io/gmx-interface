@@ -54,15 +54,7 @@ import platformTokensData from "./static/platformTokens.json";
 
 export * from "sdk/configs/multichain";
 
-export {
-  ethPoolArbitrumSepolia,
-  ethPoolOptimismSepolia,
-  ethPoolSepolia,
-  IStargateAbi,
-  usdcSgPoolArbitrumSepolia,
-  usdcSgPoolOptimismSepolia,
-  usdcSgPoolSepolia,
-};
+export { IStargateAbi };
 
 export type MultichainTokenMapping = Record<
   // settlement chain id

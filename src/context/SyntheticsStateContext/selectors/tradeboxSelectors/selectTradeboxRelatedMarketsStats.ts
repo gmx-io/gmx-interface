@@ -24,7 +24,7 @@ export type MarketLiquidityAndFeeStat = {
   liquidity: bigint;
 };
 
-export type RelatedMarketsStats = {
+type RelatedMarketsStats = {
   relatedMarketsPositionStats: {
     [marketTokenAddress: string]: MarketLiquidityAndFeeStat;
   };

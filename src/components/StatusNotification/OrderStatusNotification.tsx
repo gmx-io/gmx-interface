@@ -51,7 +51,7 @@ type Props = {
   hideTxLink?: "creation" | "execution" | "none";
 };
 
-export function OrderStatusNotification({
+function OrderStatusNotification({
   pendingOrderData,
   marketsInfoData,
   tokensData,

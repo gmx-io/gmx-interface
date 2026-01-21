@@ -10,7 +10,7 @@ import MatchaIcon from "img/ic_matcha.svg?react";
 import TransakIcon from "img/ic_tansak.svg?react";
 import UniswapIcon from "img/tokens/ic_uni.svg?react";
 
-export type BuyGmxModalButtonConfig = {
+type BuyGmxModalButtonConfig = {
   id: string;
   icon: ReactNode;
   label: ReactNode;

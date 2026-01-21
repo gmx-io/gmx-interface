@@ -9,7 +9,6 @@ import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
 import { _debugMulticall, type MulticallDebugState } from "lib/multicall/_debug";
-import { _debugRpcTracker } from "lib/rpc/_debug";
 import { getCurrentRpcUrls, getRpcTrackerByChainId } from "lib/rpc/useRpcUrls";
 import { usePrevious } from "lib/usePrevious";
 

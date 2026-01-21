@@ -17,7 +17,7 @@ import EarnIcon from "img/ic_earn.svg?react";
 import { GmGlvAssetCard } from "./GmGlvAssetCard";
 import { GmxAssetCard } from "./GmxAssetCard/GmxAssetCard";
 
-export function AssetsList({
+function AssetsList({
   chainId,
   processedData,
   hasAnyAssets,

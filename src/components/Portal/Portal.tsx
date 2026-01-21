@@ -8,7 +8,9 @@ export default function Portal({ children }) {
 
   useEffect(() => {
     root.appendChild(el);
-    return () => root.removeChild(el);
+    return () => {
+      root.removeChild(el);
+    };
   }, [root, el]);
 
   return createPortal(children, el);
