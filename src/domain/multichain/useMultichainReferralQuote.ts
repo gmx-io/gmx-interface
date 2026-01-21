@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { zeroAddress, LocalAccount } from "viem";
+import { zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { FAKE_INPUT_AMOUNT_MAP, type MultichainTokenId } from "config/multichain";
+import { FAKE_INPUT_AMOUNT_MAP, getMappedTokenId, isSettlementChain, RANDOM_WALLET } from "config/multichain";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -11,18 +11,19 @@ import {
   type RawRelayParamsPayload,
   type RelayParamsPayload,
 } from "domain/synthetics/express";
+import { signRegisterCode, signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
 import { numberToBigint } from "lib/numbers";
-import { ISigner } from "lib/transactions/iSigner";
 import { type AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { encodeReferralCode } from "sdk/utils/referrals";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { type MultichainAction } from "./codecs/CodecUiHelper";
+import { MultichainActionType, type MultichainAction } from "./codecs/CodecUiHelper";
 import { estimateMultichainDepositNetworkComposeGas } from "./estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "./getSendParams";
 import type { SendParam } from "./types";
@@ -33,40 +34,19 @@ export type MultichainReferralQuoteResult = {
   composeGas: bigint;
 };
 
-export type SignActionFn = (params: {
-  chainId: SettlementChainId;
-  srcChainId: SourceChainId;
-  signer: any; // LocalAccount;
-  relayParams: RelayParamsPayload;
-  referralCode: string;
-  shouldUseSignerMethod?: boolean;
-}) => Promise<string>;
-
-export type CreateActionFn = (params: {
-  relayParams: RelayParamsPayload;
-  signature: string;
-  referralCode: string;
-}) => MultichainAction;
-
 export function useMultichainReferralQuote({
   chainId,
   srcChainId,
-  referralCodeHex,
   depositTokenAddress,
-  sourceChainTokenId,
-  simulationSigner,
-  signAction,
-  createAction,
+  actionType,
+  referralCode,
   enabled = true,
 }: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId | undefined;
-  referralCodeHex: string | undefined;
   depositTokenAddress: string | undefined;
-  sourceChainTokenId: MultichainTokenId | undefined;
-  simulationSigner: any; // ISigner | undefined;
-  signAction: SignActionFn;
-  createAction: CreateActionFn;
+  actionType: MultichainActionType.RegisterCode | MultichainActionType.SetTraderReferralCode | undefined;
+  referralCode: string | undefined;
   enabled?: boolean;
 }): AsyncResult<MultichainReferralQuoteResult> & {
   networkFeeUsd: bigint | undefined;
@@ -74,10 +54,29 @@ export function useMultichainReferralQuote({
   const { account } = useWallet();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
+  const referralCodeHex = useMemo(() => (referralCode ? encodeReferralCode(referralCode) : undefined), [referralCode]);
+
+  const { signer } = useWallet();
+
+  const simulationSigner = useMemo(() => {
+    if (!signer?.provider) {
+      return undefined;
+    }
+    return RANDOM_WALLET.connect(signer.provider);
+  }, [signer?.provider]);
+
+  const sourceChainDepositTokenId = useMemo(() => {
+    if (depositTokenAddress === undefined || srcChainId === undefined || !isSettlementChain(chainId)) {
+      return undefined;
+    }
+
+    return getMappedTokenId(chainId as SettlementChainId, depositTokenAddress, srcChainId as SourceChainId);
+  }, [chainId, depositTokenAddress, srcChainId]);
+
   const result = useThrottledAsync(
     async ({ params: p }): Promise<MultichainReferralQuoteResult> => {
-      if (p.sourceChainTokenId === undefined) {
-        throw new Error("sourceChainTokenId is undefined");
+      if (p.sourceChainDepositTokenId === undefined) {
+        throw new Error("sourceChainDepositTokenId is undefined");
       }
 
       const rawRelayParamsPayload = getRawRelayerParams({
@@ -98,23 +97,40 @@ export function useMultichainReferralQuote({
         deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
       };
 
-      const signature = await p.signAction({
-        chainId: p.chainId,
-        srcChainId: p.srcChainId,
-        signer: p.simulationSigner,
-        relayParams,
-        referralCode: p.referralCodeHex,
-        shouldUseSignerMethod: true,
-      });
+      let signature: string;
+      if (p.actionType === MultichainActionType.RegisterCode) {
+        signature = await signRegisterCode({
+          chainId: p.chainId,
+          srcChainId: p.srcChainId,
+          signer: p.simulationSigner,
+          relayParams,
+          referralCode: p.referralCodeHex,
+          shouldUseSignerMethod: true,
+        });
+      } else if (p.actionType === MultichainActionType.SetTraderReferralCode) {
+        signature = await signSetTraderReferralCode({
+          chainId: p.chainId,
+          srcChainId: p.srcChainId,
+          signer: p.simulationSigner,
+          relayParams,
+          referralCode: p.referralCodeHex,
+          shouldUseSignerMethod: true,
+        });
+      } else {
+        throw new Error("Unsupported multichain referral action type");
+      }
 
-      const action = p.createAction({
-        relayParams,
-        signature,
-        referralCode: p.referralCodeHex,
-      });
+      const fullAction: MultichainAction = {
+        actionType: p.actionType,
+        actionData: {
+          relayParams,
+          signature,
+          referralCode: p.referralCodeHex,
+        },
+      };
 
       const composeGas = await estimateMultichainDepositNetworkComposeGas({
-        action,
+        action: fullAction,
         chainId: p.chainId,
         account: p.simulationSigner.address,
         srcChainId: p.srcChainId,
@@ -122,20 +138,22 @@ export function useMultichainReferralQuote({
         settlementChainPublicClient: getPublicClientWithRpc(p.chainId),
       });
 
-      const sourceChainStargateAddress = p.sourceChainTokenId.stargate;
+      const sourceChainStargateAddress = p.sourceChainDepositTokenId.stargate;
       const sourceChainClient = getPublicClientWithRpc(p.srcChainId);
 
       const tokenAmount =
-        FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
+        FAKE_INPUT_AMOUNT_MAP[p.sourceChainDepositTokenId.symbol] ??
+        numberToBigint(0.02, p.sourceChainDepositTokenId.decimals);
 
       const sendParamsWithRoughAmount = getMultichainTransferSendParams({
         isToGmx: true,
         dstChainId: p.chainId,
         account: p.simulationSigner.address,
+        // TODO MLTCH take into account LD
         amountLD: tokenAmount,
         srcChainId: p.srcChainId,
         composeGas,
-        action,
+        action: fullAction,
       });
 
       const [limit, oftFeeDetails] = await sourceChainClient.readContract({
@@ -146,15 +164,14 @@ export function useMultichainReferralQuote({
       });
 
       let negativeFee = 0n;
-      // REVIEW: see function stargateTransferFees
       for (const oftFeeDetail of oftFeeDetails) {
-        negativeFee += oftFeeDetail.feeAmountLD;
+        negativeFee += oftFeeDetail[0];
       }
 
       const minAmount = limit.minAmountLD === 0n ? 1n : limit.minAmountLD;
 
       let amountBeforeFee = minAmount - negativeFee;
-      amountBeforeFee = (amountBeforeFee * 15n) / 10n;
+      amountBeforeFee = amountBeforeFee * 15n;
 
       const sendParamsWithMinimumAmount: SendParam = {
         ...sendParamsWithRoughAmount,
@@ -182,21 +199,21 @@ export function useMultichainReferralQuote({
         srcChainId !== undefined &&
         globalExpressParams !== undefined &&
         simulationSigner !== undefined &&
+        actionType !== undefined &&
         referralCodeHex !== undefined &&
         account !== undefined &&
-        sourceChainTokenId !== undefined &&
+        sourceChainDepositTokenId !== undefined &&
         depositTokenAddress !== undefined
           ? {
               chainId,
               srcChainId,
               globalExpressParams,
               simulationSigner,
+              actionType,
               referralCodeHex,
               account,
-              sourceChainTokenId,
+              sourceChainDepositTokenId,
               depositTokenAddress,
-              signAction,
-              createAction,
             }
           : undefined,
     }

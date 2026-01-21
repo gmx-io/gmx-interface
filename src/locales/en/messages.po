@@ -3488,10 +3488,6 @@ msgstr "Express Trading is not available using network's native token {0}. Consi
 msgid "Total Earned"
 msgstr "Total Earned"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
-msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
-msgstr "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -7094,6 +7090,7 @@ msgid "Venus"
 msgstr "Venus"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "Referral code creation failed."
@@ -7845,6 +7842,10 @@ msgstr "long"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr "24h High"
+
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
+msgstr "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"

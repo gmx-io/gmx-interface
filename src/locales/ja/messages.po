@@ -3488,10 +3488,6 @@ msgstr "ネットワークのネイティブトークン{0}を使用したエク
 msgid "Total Earned"
 msgstr "総獲得額"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
-msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
-msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "この市場の流動性提供は{chainNames}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}に切り替えてください。"
@@ -7094,6 +7090,7 @@ msgid "Venus"
 msgstr "Venus"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "紹介コード作成に失敗しました。"
@@ -7845,6 +7842,10 @@ msgstr "ロング"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr "24時間高値"
+
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"

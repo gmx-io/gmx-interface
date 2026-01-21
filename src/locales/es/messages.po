@@ -3488,10 +3488,6 @@ msgstr "Trading Express no está disponible usando el token nativo de la red {0}
 msgid "Total Earned"
 msgstr "Total ganado"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
-msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
-msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "La provisión de liquidez para este mercado solo está disponible en {chainNames}. Por favor, cambia a {chainNames} para acceder a oportunidades de ganancias."
@@ -7094,6 +7090,7 @@ msgid "Venus"
 msgstr "Venus"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "Creación del código de referido fallida."
@@ -7845,6 +7842,10 @@ msgstr "largo"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr "Máximo 24h"
+
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"

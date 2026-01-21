@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
-import type { SourceChainId } from "config/chains";
-import type { MultichainTokenId } from "config/multichain";
+import type { SettlementChainId, SourceChainId } from "config/chains";
+import { getMappedTokenId, isSettlementChain } from "config/multichain";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
 import { EMPTY_ARRAY } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 
@@ -15,18 +16,29 @@ export type MultichainStargateApprovalResult = {
   handleApprove: () => Promise<void>;
 };
 
-// REVIEW: maybe lets just acceppt settlement chsain address?
 export function useMultichainStargateApproval({
-  srcChainId,
-  sourceChainTokenId,
+  depositTokenAddress,
   amountToApprove,
 }: {
-  srcChainId: SourceChainId | undefined;
-  sourceChainTokenId: MultichainTokenId | undefined;
+  depositTokenAddress: string | undefined;
   amountToApprove: bigint | undefined;
 }): MultichainStargateApprovalResult {
+  const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
   const [isApproving, setIsApproving] = useState(false);
+
+  const sourceChainTokenId = useMemo(() => {
+    if (
+      depositTokenAddress === undefined ||
+      srcChainId === undefined ||
+      chainId === undefined ||
+      !isSettlementChain(chainId)
+    ) {
+      return undefined;
+    }
+
+    return getMappedTokenId(chainId as SettlementChainId, depositTokenAddress, srcChainId as SourceChainId);
+  }, [chainId, depositTokenAddress, srcChainId]);
 
   const stargateSpenderAddress = sourceChainTokenId?.stargate;
   const sourceChainTokenAddress = sourceChainTokenId?.address;
@@ -58,7 +70,7 @@ export function useMultichainStargateApproval({
       permitParams: undefined,
       approveAmount: amountToApprove,
     });
-  }, [sourceChainTokenAddress, stargateSpenderAddress, srcChainId, signer]);
+  }, [sourceChainTokenAddress, stargateSpenderAddress, srcChainId, signer, amountToApprove]);
 
   return {
     needsApproval,

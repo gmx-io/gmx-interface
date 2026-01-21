@@ -1,24 +1,22 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 
-import type { SettlementChainId, SourceChainId } from "config/chains";
-import { abis } from "sdk/abis";
+import type { SettlementChainId } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
+import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
-import { useMultichainReferralParams } from "domain/multichain/useMultichainReferralParams";
+import { useMultichainReferralDepositToken } from "domain/multichain/useMultichainReferralDepositToken";
 import {
   createRelayEmptyParamsPayload,
   useMultichainReferralQuote,
-  type CreateActionFn,
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
@@ -30,12 +28,11 @@ import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-
-import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 
@@ -240,35 +237,18 @@ function ReferralCodeFormMultichain({
   const hasOutdatedUi = useHasOutdatedUi();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
-  const referralCodeHex = useMemo(() => encodeReferralCode(referralCode), [referralCode]);
-
-  const { depositTokenAddress, sourceChainTokenId, simulationSigner } = useMultichainReferralParams({
-    chainId: chainId as SettlementChainId,
-    srcChainId,
-  });
-
-  const createAction = useCallback<CreateActionFn>(
-    ({ relayParams, signature, referralCode: code }) => ({
-      actionType: MultichainActionType.SetTraderReferralCode,
-      actionData: { relayParams, signature, referralCode: code },
-    }),
-    []
-  );
+  const { depositTokenAddress, sourceChainDepositTokenId } = useMultichainReferralDepositToken();
 
   const quoteResult = useMultichainReferralQuote({
     chainId: chainId as SettlementChainId,
     srcChainId,
-    referralCodeHex,
     depositTokenAddress,
-    sourceChainTokenId,
-    simulationSigner,
-    signAction: signSetTraderReferralCode,
-    createAction,
+    actionType: MultichainActionType.SetTraderReferralCode,
+    referralCode,
   });
 
   const { needsApproval, isApproving, isAllowanceLoaded, handleApprove } = useMultichainStargateApproval({
-    srcChainId,
-    sourceChainTokenId,
+    depositTokenAddress,
     amountToApprove: quoteResult.data?.amount,
   });
 
@@ -283,7 +263,7 @@ function ReferralCodeFormMultichain({
 
     try {
       if (
-        sourceChainTokenId === undefined ||
+        sourceChainDepositTokenId === undefined ||
         globalExpressParams === undefined ||
         signer === undefined ||
         quoteResult.data === undefined
@@ -292,6 +272,8 @@ function ReferralCodeFormMultichain({
       }
 
       const relayParamsPayload = createRelayEmptyParamsPayload(chainId as SettlementChainId, globalExpressParams);
+
+      const referralCodeHex = encodeReferralCode(referralCode);
 
       const signature = await signSetTraderReferralCode({
         chainId: chainId as SettlementChainId,
@@ -320,10 +302,10 @@ function ReferralCodeFormMultichain({
         action,
       });
 
-      const sourceChainStargateAddress = sourceChainTokenId.stargate;
+      const sourceChainStargateAddress = sourceChainDepositTokenId.stargate;
 
       const value =
-        sourceChainTokenId.address === zeroAddress
+        sourceChainDepositTokenId.address === zeroAddress
           ? quoteResult.data.nativeFee + quoteResult.data.amount
           : quoteResult.data.nativeFee;
 
@@ -422,7 +404,7 @@ function ReferralCodeFormMultichain({
     };
   } else if (needsApproval) {
     buttonState = {
-      text: t`Approve ${sourceChainTokenId?.symbol}`,
+      text: t`Approve ${sourceChainDepositTokenId?.symbol}`,
       disabled: false,
       onSubmit: (event: React.FormEvent) => {
         event.preventDefault();

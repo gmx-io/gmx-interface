@@ -3488,10 +3488,6 @@ msgstr "네트워크의 네이티브 토큰 {0}을 사용한 익스프레스 거
 msgid "Total Earned"
 msgstr "총 수익"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
-msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there."
-msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "이 시장의 유동성 제공은 {chainNames}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames}으로 전환하세요."
@@ -7094,6 +7090,7 @@ msgid "Venus"
 msgstr "비너스"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "추천 코드 생성 실패."
@@ -7845,6 +7842,10 @@ msgstr "롱"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h High"
 msgstr "24시간 고점"
+
+#: src/components/Referrals/ReferralCodeWarnings.tsx
+msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
