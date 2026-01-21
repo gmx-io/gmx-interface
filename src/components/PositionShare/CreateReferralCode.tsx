@@ -226,7 +226,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
           </div>
         </div>
         {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
-          <AlertInfoCard type="info" className="text-left" hideClose>
+          <AlertInfoCard type="info" className="text-left">
             {rpcFailedChains.length === 1 ? (
               <Trans>
                 Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
