@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, useCallback, useRef } from "react";
+import { ChangeEvent, useRef } from "react";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, SourceChainId } from "config/chains";
 import { isSettlementChain } from "config/multichain";
@@ -65,19 +65,10 @@ export function MarginToPayField({
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
-  const handleBoxClick = useCallback((e: React.MouseEvent) => {
-    // Don't focus input if clicking on the token selector area
-    if ((e.target as HTMLElement).closest("[data-token-selector]")) {
-      return;
-    }
-    inputRef.current?.focus();
-  }, []);
-
   return (
     <div data-qa={qa}>
       <div
-        className={cx("flex cursor-text items-center justify-between gap-8 rounded-8 bg-slate-900")}
-        onClick={handleBoxClick}
+        className={cx("flex cursor-default items-center justify-between gap-8 rounded-8 bg-slate-900")}
       >
         <div className="shrink-0 pl-4 text-12 font-medium text-typography-secondary">{t`Margin to Pay`}</div>
 
