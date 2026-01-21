@@ -240,8 +240,6 @@ function ReferralCodeFormMultichain({
   const { depositTokenAddress, sourceChainDepositTokenId } = useMultichainReferralDepositToken();
 
   const quoteResult = useMultichainReferralQuote({
-    chainId: chainId as SettlementChainId,
-    srcChainId,
     depositTokenAddress,
     actionType: MultichainActionType.SetTraderReferralCode,
     referralCode,

@@ -8,6 +8,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getRawRelayerParams, type GlobalExpressParams, type RelayParamsPayload } from "domain/synthetics/express";
 import { signRegisterCode, signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
+import { useChainId } from "lib/chains";
 import { numberToBigint } from "lib/numbers";
 import { type AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
@@ -30,15 +31,11 @@ export type MultichainReferralQuoteResult = {
 };
 
 export function useMultichainReferralQuote({
-  chainId,
-  srcChainId,
   depositTokenAddress,
   actionType,
   referralCode,
   enabled = true,
 }: {
-  chainId: SettlementChainId;
-  srcChainId: SourceChainId | undefined;
   depositTokenAddress: string | undefined;
   actionType: MultichainActionType.RegisterCode | MultichainActionType.SetTraderReferralCode | undefined;
   referralCode: string | undefined;
@@ -46,6 +43,7 @@ export function useMultichainReferralQuote({
 }): AsyncResult<MultichainReferralQuoteResult> & {
   networkFeeUsd: bigint | undefined;
 } {
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
