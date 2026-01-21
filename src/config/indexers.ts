@@ -45,17 +45,14 @@ const INDEXER_URLS = {
 
   [BOTANIX]: {
     subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@045a75/api/graphql",
-    stats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
   },
 
-  // TODO: Update with actual MegaEth indexer URLs
   [MEGAETH]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth@37cf94/api/graphql",
     syntheticsStats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-megaeth-stats/gn",
+      "https://app.goldsky.com/project_cmgptuc4qhclc01rh9s4q554a/dashboard/subgraphs/synthetics-megaeth-stats/master-260120151613-540f334",
   },
 
   common: {
