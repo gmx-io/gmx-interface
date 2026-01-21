@@ -1740,8 +1740,8 @@ msgid "Not enough data available yet"
 msgstr "Noch nicht genügend Daten verfügbar"
 
 #: src/components/TradeBox/TradeBox.tsx
-msgid "Using high leverage increases the risk of liquidation."
-msgstr "Die Nutzung hoher Hebelwirkung erhöht das Liquidationsrisiko."
+#~ msgid "Using high leverage increases the risk of liquidation."
+#~ msgstr "Die Nutzung hoher Hebelwirkung erhöht das Liquidationsrisiko."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."

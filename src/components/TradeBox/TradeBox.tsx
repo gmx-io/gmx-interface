@@ -116,7 +116,6 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
-import { useShowHighLeverageWarning } from "./hooks/useShowHighLeverageWarning";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
@@ -269,8 +268,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           priceImpactPrecise: fees?.decreasePositionPriceImpact?.precisePercentage,
         }
   );
-
-  const { showHighLeverageWarning, dismissHighLeverageWarning } = useShowHighLeverageWarning();
 
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
 
@@ -1078,11 +1075,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </AlertInfoCard>
             )}
 
-            {showHighLeverageWarning && (
-              <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
-                <Trans>Using high leverage increases the risk of liquidation.</Trans>
-              </AlertInfoCard>
-            )}
             {isTrigger && (
               <SyntheticsInfoRow
                 label={t`Market`}

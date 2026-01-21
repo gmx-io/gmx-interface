@@ -1740,8 +1740,8 @@ msgid "Not enough data available yet"
 msgstr "아직 충분한 데이터가 없습니다"
 
 #: src/components/TradeBox/TradeBox.tsx
-msgid "Using high leverage increases the risk of liquidation."
-msgstr "높은 레버리지를 사용하면 청산 위험이 증가합니다."
+#~ msgid "Using high leverage increases the risk of liquidation."
+#~ msgstr "높은 레버리지를 사용하면 청산 위험이 증가합니다."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
