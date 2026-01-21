@@ -5,12 +5,7 @@ import type { SettlementChainId, SourceChainId } from "config/chains";
 import { FAKE_INPUT_AMOUNT_MAP, getMappedTokenId, isSettlementChain, RANDOM_WALLET } from "config/multichain";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getRawRelayerParams,
-  type GlobalExpressParams,
-  type RawRelayParamsPayload,
-  type RelayParamsPayload,
-} from "domain/synthetics/express";
+import { getRawRelayerParams, type GlobalExpressParams, type RelayParamsPayload } from "domain/synthetics/express";
 import { signRegisterCode, signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { convertToUsd, getMidPrice } from "domain/tokens";
 import { numberToBigint } from "lib/numbers";
@@ -90,7 +85,7 @@ export function useMultichainReferralQuote({
         },
         externalCalls: getEmptyExternalCallsPayload(),
         tokenPermits: [],
-      }) as RawRelayParamsPayload;
+      });
 
       const relayParams: RelayParamsPayload = {
         ...rawRelayParamsPayload,
@@ -248,7 +243,7 @@ export function createRelayEmptyParamsPayload(
     },
     externalCalls: getEmptyExternalCallsPayload(),
     tokenPermits: [],
-  }) as RawRelayParamsPayload;
+  });
 
   return {
     ...rawRelayParamsPayload,
