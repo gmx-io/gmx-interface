@@ -87,7 +87,7 @@ export default function SearchInput({
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
         className={cx(
-          "block h-full w-full rounded-8 bg-slate-800 p-[6.5px] pl-32 text-[13px] leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
+          "block h-full w-full rounded-8 bg-slate-800 p-[6.5px] pl-32 pr-32 text-[13px] leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
           {
             border: !noBorder,
             "border-blue-300": isFocused && !noBorder,
