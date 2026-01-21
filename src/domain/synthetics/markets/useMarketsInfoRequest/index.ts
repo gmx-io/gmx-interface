@@ -30,7 +30,7 @@ export function useMarketsInfoRequest(
     error: apiError,
   } = useApiMarketsInfoRequest(chainId, { enabled: isApiSdkEnabled });
 
-  const shouldFallbackToRpc = apiError || isApiStale;
+  const shouldFallbackToRpc = !isApiSdkEnabled || apiError || isApiStale;
 
   const { marketsAddresses, fastMarketInfoData, marketsData, marketsValuesData, marketsConfigsData, marketsConstants } =
     useRpcMarketsInfoRequest({
