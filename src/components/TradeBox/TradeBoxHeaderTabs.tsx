@@ -100,7 +100,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   );
 
   const fieldsRow = (
-    <div className={cx("h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-7", fieldsColumnsClass)}>
+    <div className={cx("h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-6", fieldsColumnsClass)}>
       {isPosition || isSwap ? fields : null}
     </div>
   );
@@ -119,7 +119,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   return (
     <>
       {isInCurtain && !isCurtainOpen ? null : fieldsRow}
-      <div className="flex gap-8 bg-slate-900 p-8">
+      <div className={cx("flex gap-8 bg-slate-900", isInCurtain && !isCurtainOpen ? "p-8" : "p-12")}>
         <div className="flex grow items-stretch gap-12" onClick={handleTabsClick}>
           <Tabs
             options={longShortTabsOptions}
