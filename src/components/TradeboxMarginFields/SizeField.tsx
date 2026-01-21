@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { ChangeEvent, useMemo } from "react";
 
 import { TokenData } from "domain/synthetics/tokens";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 import { TradeInputField, DisplayMode } from "./TradeInputField";
 
@@ -37,7 +37,7 @@ export function SizeField({
     } else {
       if (sizeInTokens === undefined || !indexToken) return "0";
       const visualMultiplier = BigInt(indexToken.visualMultiplier ?? 1);
-      return `${formatAmount(sizeInTokens / visualMultiplier, indexToken.decimals)} ${indexToken.symbol}`;
+      return formatTokenAmount(sizeInTokens / visualMultiplier, indexToken.decimals, indexToken.symbol);
     }
   }, [displayMode, sizeInUsd, sizeInTokens, indexToken]);
 

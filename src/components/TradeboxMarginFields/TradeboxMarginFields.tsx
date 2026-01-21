@@ -56,7 +56,7 @@ export function TradeboxMarginFields({
 
   const toToken = getByKey(tokensData, toTokenAddress);
 
-  const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("token");
+  const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("usd");
   const [sizeInputValue, setSizeInputValue] = useState<string>(toTokenInputValue);
 
   const { isLimit } = tradeFlags;

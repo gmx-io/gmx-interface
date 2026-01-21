@@ -168,11 +168,11 @@ function DisplayModeSelectorMobile({ tokenSymbol, displayMode, onDisplayModeChan
 
   return (
     <SelectorBaseMobileList>
-      <SelectorBaseMobileButton onSelect={() => handleSelect("token")}>
-        <div className={cx("py-4", { "text-blue-300": displayMode === "token" })}>{tokenSymbol}</div>
-      </SelectorBaseMobileButton>
       <SelectorBaseMobileButton onSelect={() => handleSelect("usd")}>
         <div className={cx("py-4", { "text-blue-300": displayMode === "usd" })}>USD</div>
+      </SelectorBaseMobileButton>
+      <SelectorBaseMobileButton onSelect={() => handleSelect("token")}>
+        <div className={cx("py-4", { "text-blue-300": displayMode === "token" })}>{tokenSymbol}</div>
       </SelectorBaseMobileButton>
     </SelectorBaseMobileList>
   );
