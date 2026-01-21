@@ -137,7 +137,7 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
         ref={refs.setReference}
         data-qa="leverage-slider"
         className={cx(
-          "user-select-none flex w-48 items-center justify-between gap-10 rounded-4 bg-slate-800 px-8 py-[3.5px]",
+          "user-select-none flex w-48 items-center justify-between gap-10 rounded-4 bg-slate-800 px-8",
           disabled ? "cursor-default opacity-50" : "cursor-pointer"
         )}
         onClick={handleFieldClick}
