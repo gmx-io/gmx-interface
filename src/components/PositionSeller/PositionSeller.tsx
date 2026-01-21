@@ -62,7 +62,7 @@ import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { formatAmountFree, formatDeltaUsd, formatUsd, parseValue } from "lib/numbers";
+import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, formatUsd, parseValue } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -101,6 +101,8 @@ import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
 
 import "./PositionSeller.scss";
+
+const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
 
 export type Props = {
   setPendingTxns: (txns: any) => void;
@@ -724,14 +726,56 @@ export function PositionSeller() {
     keepLeverageText
   );
 
+  const shouldHidePnlPercentage = useMemo(() => {
+    const fromPnl = position?.pnl;
+    const toPnl = nextPositionValues?.nextPnl;
+
+    if (fromPnl === undefined || toPnl === undefined) return false;
+
+    return bigMath.abs(fromPnl) > PNL_TOOLTIP_THRESHOLD && bigMath.abs(toPnl) > PNL_TOOLTIP_THRESHOLD;
+  }, [position?.pnl, nextPositionValues?.nextPnl]);
+
   const pnlRow = position && (
     <SyntheticsInfoRow
       label={t`PnL`}
       value={
-        <ValueTransition
-          from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
-          to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
-        />
+        shouldHidePnlPercentage ? (
+          <ValueTransition
+            from={
+              <TooltipWithPortal
+                handle={formatDeltaUsd(position.pnl, position.pnlPercentage, { hidePercentage: true })}
+                content={
+                  <span className={position.pnl > 0n ? "text-green-500" : "text-red-500"}>
+                    {formatPercentage(position.pnlPercentage, { signed: true })}
+                  </span>
+                }
+              />
+            }
+            to={
+              <TooltipWithPortal
+                handle={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage, {
+                  hidePercentage: true,
+                })}
+                content={
+                  <span
+                    className={
+                      nextPositionValues?.nextPnl !== undefined && nextPositionValues.nextPnl > 0n
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }
+                  >
+                    {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })}
+                  </span>
+                }
+              />
+            }
+          />
+        ) : (
+          <ValueTransition
+            from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
+            to={formatDeltaUsd(nextPositionValues?.nextPnl, nextPositionValues?.nextPnlPercentage)}
+          />
+        )
       }
     />
   );
