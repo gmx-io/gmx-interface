@@ -139,16 +139,16 @@ function DisplayModeSelectorDesktop({ tokenSymbol, displayMode, onDisplayModeCha
     <table>
       <tbody>
         <SelectorBaseDesktopRow
-          onClick={() => handleSelect("token")}
-          className={cx({ "text-blue-300": displayMode === "token" })}
-        >
-          <TableTd padding="compact-one-column">{tokenSymbol}</TableTd>
-        </SelectorBaseDesktopRow>
-        <SelectorBaseDesktopRow
           onClick={() => handleSelect("usd")}
           className={cx({ "text-blue-300": displayMode === "usd" })}
         >
           <TableTd padding="compact-one-column">USD</TableTd>
+        </SelectorBaseDesktopRow>
+        <SelectorBaseDesktopRow
+          onClick={() => handleSelect("token")}
+          className={cx({ "text-blue-300": displayMode === "token" })}
+        >
+          <TableTd padding="compact-one-column">{tokenSymbol}</TableTd>
         </SelectorBaseDesktopRow>
       </tbody>
     </table>
