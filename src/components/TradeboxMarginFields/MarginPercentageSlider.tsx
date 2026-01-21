@@ -1,9 +1,7 @@
 import cx from "classnames";
-import Slider from "rc-slider";
 import { useCallback, useMemo } from "react";
 
-import "rc-slider/assets/index.css";
-import "./MarginPercentageSlider.scss";
+import { Slider } from "components/Slider";
 
 const PERCENTAGE_MARKS = [0, 25, 50, 75, 100];
 const clampPercentage = (value: number) => {
@@ -49,7 +47,7 @@ export function MarginPercentageSlider({ value, onChange, className }: Props) {
   }, []);
 
   return (
-    <div className={cx("MarginPercentageSlider flex items-center gap-16", className)}>
+    <div className={cx("flex items-center gap-16", className)}>
       <div className="h-28 flex-1 px-4">
         <Slider min={0} max={100} step={1} onChange={handleChange} value={sliderValue} marks={marks} />
       </div>

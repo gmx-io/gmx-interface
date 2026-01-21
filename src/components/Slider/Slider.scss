@@ -1,16 +1,6 @@
-$blue: var(--color-blue-300);
-$gray: var(--color-slate-600);
+$slider-color: var(--color-blue-300);
 
-.LeverageSlider {
-  margin-top: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 0 4px;
-
-  &.slim {
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
+.Slider {
   user-select: none;
 
   .rc-slider-tooltip-inner {
@@ -20,7 +10,6 @@ $gray: var(--color-slate-600);
 
   .rc-slider-tooltip {
     z-index: 5;
-
     background: rgb(49, 54, 85);
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
   }
@@ -38,7 +27,7 @@ $gray: var(--color-slate-600);
   .rc-slider-track {
     border-radius: 0;
     height: 8px;
-    background-color: var(--color-blue-300);
+    background-color: $slider-color;
   }
 
   .rc-slider-dot {
@@ -50,12 +39,14 @@ $gray: var(--color-slate-600);
     border-width: 2;
     top: 0.5px;
   }
+
   .rc-slider-dot-active {
     border-color: var(--color-blue-300);
   }
+
   .rc-slider-handle {
     background-color: var(--color-slate-800);
-    border: solid 2px $blue;
+    border: solid 2px $slider-color;
     width: 8px;
     height: 8px;
     box-sizing: content-box;
