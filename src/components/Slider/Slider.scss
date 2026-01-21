@@ -38,6 +38,7 @@ $slider-color: var(--color-blue-300);
     box-sizing: content-box;
     border-width: 2;
     top: 0.5px;
+    border-color: var(--color-slate-800);
   }
 
   .rc-slider-dot-active {
