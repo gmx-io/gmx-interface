@@ -1937,14 +1937,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
     },
     {
-      name: "USDM",
-      symbol: "USDM",
-      address: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
-      decimals: 18,
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    },
-    {
       name: "GMX",
       symbol: "GMX",
       address: "",
