@@ -1950,6 +1950,7 @@ msgstr ""
 msgid "Max"
 msgstr ""
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr ""

@@ -1950,6 +1950,7 @@ msgstr "수수료의 USD 가치는 적립 시 계산되며 인센티브를 포�
 msgid "Max"
 msgstr "최대"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "코드 확인 중…"

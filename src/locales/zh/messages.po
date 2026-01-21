@@ -1950,6 +1950,7 @@ msgstr "费用的 USD 值在赚取时计算，不包括激励。"
 msgid "Max"
 msgstr "最大"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "正在检查代码…"

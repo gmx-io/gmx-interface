@@ -1950,6 +1950,7 @@ msgstr "The fees' USD value is calculated at the time they are earned and does n
 msgid "Max"
 msgstr "Max"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "Checking code..."

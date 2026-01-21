@@ -233,8 +233,8 @@ export function AffiliateCodeForm({
         }}
       />
       {error && <p className="AffiliateCode-error">{error}</p>}
-      {rpcFailedChains.length > 0 && (
-        <AlertInfoCard type="warning" className="mb-15 text-left">
+      {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
+        <AlertInfoCard type="info" className="mb-15 text-left">
           {rpcFailedChains.length === 1 ? (
             <Trans>
               Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,

@@ -1950,6 +1950,7 @@ msgstr "手数料のUSD価値は獲得時に計算され、インセンティブ
 msgid "Max"
 msgstr "最大"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "コードを確認中…"

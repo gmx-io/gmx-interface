@@ -9,6 +9,7 @@ import { ContractsChainId, getChainName } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { registerReferralCode } from "domain/referrals";
 import { useChainId } from "lib/chains";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
@@ -41,8 +42,9 @@ export function CreateReferralCode({ onSuccess }: Props) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
   const [rpcFailedChains, setRpcFailedChains] = useState<ContractsChainId[]>([]);
+  const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState<"ok" | "checking" | "taken">("ok");
+  const debouncedReferralCode = useDebounce(referralCode, 300);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const createReferralCode = useCallback(
@@ -60,6 +62,32 @@ export function CreateReferralCode({ onSuccess }: Props) {
     [chainId, pendingTxns, signer]
   );
 
+  useEffect(() => {
+    let cancelled = false;
+    const checkCodeTakenStatus = async () => {
+      if (error || !debouncedReferralCode) {
+        setReferralCodeCheckStatus("ok");
+        setRpcFailedChains([]);
+        return;
+      }
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      if (cancelled) {
+        return;
+      }
+      setRpcFailedChains(failedChains);
+      if (takenStatus === "none") {
+        setReferralCodeCheckStatus("ok");
+      } else {
+        setReferralCodeCheckStatus("taken");
+      }
+    };
+    setReferralCodeCheckStatus("checking");
+    checkCodeTakenStatus();
+    return () => {
+      cancelled = true;
+    };
+  }, [account, debouncedReferralCode, error, chainId]);
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsProcessing(true);
@@ -68,7 +96,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
       setRpcFailedChains(failedChains);
 
       if (takenStatus === "all" || takenStatus === "current") {
-        setIsAlreadyTaken(true);
+        setReferralCodeCheckStatus("taken");
         return;
       }
 
@@ -89,8 +117,6 @@ export function CreateReferralCode({ onSuccess }: Props) {
   }
 
   useEffect(() => {
-    setIsAlreadyTaken(false);
-    setRpcFailedChains([]);
     setError(getCodeError(referralCode));
   }, [referralCode]);
 
@@ -123,7 +149,12 @@ export function CreateReferralCode({ onSuccess }: Props) {
       text: t`Enter a code`,
       disabled: true,
     };
-  } else if (isAlreadyTaken) {
+  } else if (referralCodeCheckStatus === "checking") {
+    buttonState = {
+      text: t`Checking code...`,
+      disabled: true,
+    };
+  } else if (referralCodeCheckStatus === "taken") {
     buttonState = {
       text: t`Code already taken`,
       disabled: true,
@@ -166,7 +197,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
           <label
             className={cx(
               "flex grow cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
-              error || isAlreadyTaken ? "border-red-500" : "border-slate-800"
+              error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
             )}
           >
             <ReferralsIcon className="size-16 text-typography-secondary" />
@@ -194,8 +225,8 @@ export function CreateReferralCode({ onSuccess }: Props) {
             </Button>
           </div>
         </div>
-        {rpcFailedChains.length > 0 && (
-          <AlertInfoCard type="warning" className="text-left" hideClose>
+        {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
+          <AlertInfoCard type="info" className="text-left" hideClose>
             {rpcFailedChains.length === 1 ? (
               <Trans>
                 Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
