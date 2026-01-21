@@ -178,7 +178,7 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
                 />
               </div>
               <ColorfulBanner icon={AlertIcon}>
-                <Trans>High leverage increases risk. Trade with caution.</Trans>
+                <Trans>High leverage increases liquidation risk.</Trans>
               </ColorfulBanner>
             </div>
           </div>

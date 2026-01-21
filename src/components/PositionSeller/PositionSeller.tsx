@@ -62,7 +62,7 @@ import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, formatUsd, parseValue } from "lib/numbers";
+import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -884,14 +884,6 @@ export function PositionSeller() {
                     topLeftLabel={t`Close`}
                     inputValue={closeUsdInputValue}
                     onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                    bottomLeftValue={formatUsd(closeSizeUsd)}
-                    bottomRightLabel={t`Max`}
-                    bottomRightValue={formatUsd(maxCloseSize)}
-                    onClickMax={
-                      maxCloseSize > 0 && closeSizeUsd !== maxCloseSize
-                        ? () => setCloseUsdInputValueRaw(formatAmountFree(maxCloseSize, USD_DECIMALS))
-                        : undefined
-                    }
                     showPercentSelector
                     onPercentChange={(percentage) => {
                       const formattedAmount = formatAmountFree(

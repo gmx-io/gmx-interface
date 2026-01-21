@@ -1954,9 +1954,6 @@ msgstr "The fees' USD value is calculated at the time they are earned and does n
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 msgid "Max"
 msgstr "Max"
 
@@ -2110,6 +2107,10 @@ msgstr "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell r
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Deposited {0} into {positionText}"
+
+#: src/components/TradeboxMarginFields/PriceField.tsx
+msgid "Mark:"
+msgstr "Mark:"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -2835,6 +2836,10 @@ msgstr "V1 Arbitrum"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
+
+#: src/components/LeverageField/LeverageField.tsx
+msgid "High leverage increases liquidation risk."
+msgstr "High leverage increases liquidation risk."
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3922,8 +3927,8 @@ msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "Maximum number of actions allowed before reauthorization is required."
 
 #: src/components/LeverageField/LeverageField.tsx
-msgid "High leverage increases risk. Trade with caution."
-msgstr "High leverage increases risk. Trade with caution."
+#~ msgid "High leverage increases risk. Trade with caution."
+#~ msgstr "High leverage increases risk. Trade with caution."
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

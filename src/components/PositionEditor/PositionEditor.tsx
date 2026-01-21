@@ -21,23 +21,15 @@ import {
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
-import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { absDiffBps, formatAmountFree, formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
-import { getByKey } from "lib/objects";
+import { formatAmountFree, formatTokenAmountWithUsd } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-import {
-  NATIVE_TOKEN_ADDRESS,
-  convertTokenAddress,
-  getTokenVisualMultiplier,
-  getWrappedToken,
-} from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import { TokenBalanceType } from "sdk/types/tokens";
 
 import Button from "components/Button/Button";
@@ -70,8 +62,6 @@ export function PositionEditor() {
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
 
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-
-  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
 
   const isVisible = Boolean(position);
   const prevIsVisible = usePrevious(isVisible);
@@ -253,8 +243,7 @@ export function PositionEditor() {
     operation,
   });
 
-  const { text, tooltipContent, onSubmit, disabled, expressParams, isExpressLoading } =
-    usePositionEditorButtonState(operation);
+  const { text, tooltipContent, onSubmit, disabled, expressParams } = usePositionEditorButtonState(operation);
 
   useKey(
     "Enter",
@@ -316,39 +305,6 @@ export function PositionEditor() {
     buttonContent
   );
 
-  const maxDepositDetails = useMaxAvailableAmount({
-    fromToken: collateralToken,
-    nativeToken,
-    fromTokenAmount: collateralDeltaAmount ?? 0n,
-    fromTokenInputValue: collateralInputValue,
-    minResidualAmount: getMinResidualGasPaymentTokenAmount({
-      expressParams,
-      payTokenAddress: collateralToken?.address,
-    }),
-    isLoading: isExpressLoading,
-  });
-
-  const showMaxButton = isDeposit
-    ? maxDepositDetails.showClickMax
-    : maxWithdrawAmount !== undefined &&
-      (collateralDeltaAmount === undefined
-        ? true
-        : absDiffBps(collateralDeltaAmount, maxWithdrawAmount) > 50n); /* 0.5% */
-
-  const handleMaxButtonClick = useCallback(() => {
-    if (isDeposit) {
-      setCollateralInputValue(maxDepositDetails.formattedMaxAvailableAmount);
-    } else {
-      setCollateralInputValue(formatAmountFree(maxWithdrawAmount!, position?.collateralToken?.decimals || 0));
-    }
-  }, [
-    isDeposit,
-    maxDepositDetails.formattedMaxAvailableAmount,
-    position?.collateralToken?.decimals,
-    setCollateralInputValue,
-    maxWithdrawAmount,
-  ]);
-
   const tabsOptions = useMemo(() => {
     return Object.values(Operation).map((option) => ({
       value: option,
@@ -383,19 +339,6 @@ export function PositionEditor() {
             />
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
-              bottomLeftValue={formatUsd(collateralDeltaUsd)}
-              bottomRightLabel={t`Max`}
-              bottomRightValue={
-                isDeposit
-                  ? formatTokenAmount(collateralToken?.balance, collateralToken?.decimals, "", {
-                      useCommas: true,
-                      isStable: collateralToken?.isStable,
-                    })
-                  : formatTokenAmount(maxWithdrawAmount, position?.collateralToken?.decimals, "", {
-                      useCommas: true,
-                      isStable: position?.collateralToken?.isStable,
-                    })
-              }
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
               showPercentSelector={!isDeposit}
@@ -409,7 +352,6 @@ export function PositionEditor() {
                   );
                 }
               }}
-              onClickMax={showMaxButton ? handleMaxButtonClick : undefined}
               qa="amount-input"
             >
               {hasMultipleTokens ? (

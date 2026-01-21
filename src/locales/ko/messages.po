@@ -1954,9 +1954,6 @@ msgstr "수수료의 USD 가치는 적립 시 계산되며 인센티브를 포�
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 msgid "Max"
 msgstr "최대"
 
@@ -2110,6 +2107,10 @@ msgstr "판매 요청을 충족할 GLV 내 GM: {0} [{1}] 유동성이 충분하�
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}에 {0} 예치"
+
+#: src/components/TradeboxMarginFields/PriceField.tsx
+msgid "Mark:"
+msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -2835,6 +2836,10 @@ msgstr "V1 Arbitrum"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
+
+#: src/components/LeverageField/LeverageField.tsx
+msgid "High leverage increases liquidation risk."
+msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3922,8 +3927,8 @@ msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "재승인이 필요한 최대 허용 작업 수."
 
 #: src/components/LeverageField/LeverageField.tsx
-msgid "High leverage increases risk. Trade with caution."
-msgstr ""
+#~ msgid "High leverage increases risk. Trade with caution."
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

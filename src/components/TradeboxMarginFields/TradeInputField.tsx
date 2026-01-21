@@ -17,7 +17,7 @@ export type DisplayMode = "token" | "usd";
 
 type Props = {
   label: ReactNode;
-  alternateValue: string | undefined;
+  alternateValue: ReactNode;
   tokenSymbol?: string;
   displayMode: DisplayMode;
   onDisplayModeChange?: (mode: DisplayMode) => void;

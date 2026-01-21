@@ -81,7 +81,6 @@ import {
   formatBalanceAmount,
   formatDeltaUsd,
   formatTokenAmountWithUsd,
-  formatUsd,
   formatUsdPrice,
   parseValue,
 } from "lib/numbers";
@@ -719,21 +718,6 @@ export function OrderEditor(p: Props) {
                 topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
                 inputValue={sizeInputValue}
                 onInputValueChange={(e) => setSizeInputValue(e.target.value)}
-                bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
-                bottomRightLabel={
-                  isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined ? t`Max` : undefined
-                }
-                bottomRightValue={
-                  isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
-                }
-                onClickMax={
-                  isTriggerDecreaseOrderType(p.order.orderType) &&
-                  positionSize !== undefined &&
-                  positionSize > 0 &&
-                  sizeUsd !== positionSize
-                    ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
-                    : undefined
-                }
               >
                 USD
               </BuyInputSection>

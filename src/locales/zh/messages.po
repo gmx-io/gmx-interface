@@ -1954,9 +1954,6 @@ msgstr "费用的 USD 值在赚取时计算，不包括激励。"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 msgid "Max"
 msgstr "最大"
 
@@ -2110,6 +2107,10 @@ msgstr "GLV 中没有足够的 GM: {0} [{1}] 流动性来满足您的售卖请�
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "存款 {0} 到 {positionText}"
+
+#: src/components/TradeboxMarginFields/PriceField.tsx
+msgid "Mark:"
+msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -2835,6 +2836,10 @@ msgstr "V1 Arbitrum"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
+
+#: src/components/LeverageField/LeverageField.tsx
+msgid "High leverage increases liquidation risk."
+msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3922,8 +3927,8 @@ msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "需要重新授权前允许的最大操作数。"
 
 #: src/components/LeverageField/LeverageField.tsx
-msgid "High leverage increases risk. Trade with caution."
-msgstr ""
+#~ msgid "High leverage increases risk. Trade with caution."
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"
