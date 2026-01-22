@@ -8,18 +8,12 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { keccakString } from "sdk/utils/hash";
 
 type RawEventLogData = DecodeEventLogReturnType<typeof abis.EventEmitter, "EventLog2">["args"]["eventData"];
 
 const encodeAddress = (address: string) => encodeAbiParameters([{ type: "address" }], [address]);
 
-export const COMPOSE_DELIVERED_HASH = keccakString("ComposeDelivered(address,address,bytes32,uint16)");
-export const LZ_COMPOSE_ALERT_HASH = keccakString(
-  "LzComposeAlert(address,address,address,bytes32,uint16,uint256,uint256,bytes,bytes,bytes)"
-);
-
-export const OFT_SENT_ABI = [
+const OFT_SENT_ABI = [
   {
     inputs: [
       { indexed: true, internalType: "bytes32", name: "guid", type: "bytes32" },

@@ -692,7 +692,7 @@ export async function buildAndSignExpressBatchOrderTxn({
   };
 }
 
-export async function getBatchSignatureParams({
+async function getBatchSignatureParams({
   signer,
   relayParams,
   batchParams,
@@ -957,66 +957,6 @@ async function signBridgeOutPayload({
   return signTypedData({ signer, domain, types, typedData });
 }
 
-export async function buildAndSignSetTraderReferralCodeTxn({
-  chainId,
-  relayParamsPayload,
-  params,
-  signer,
-  emptySignature = false,
-  relayerFeeTokenAddress,
-  relayerFeeAmount,
-}: {
-  chainId: SettlementChainId;
-  relayParamsPayload: RelayParamsPayload;
-  params: BridgeOutParams;
-  signer: WalletSigner;
-  emptySignature?: boolean;
-  relayerFeeTokenAddress: string;
-  relayerFeeAmount: bigint;
-}): Promise<ExpressTxnData> {
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-  if (!srcChainId) {
-    throw new Error("No srcChainId");
-  }
-
-  const address = signer.address;
-
-  let signature: string;
-
-  if (emptySignature) {
-    signature = "0x";
-  } else {
-    signature = await signBridgeOutPayload({
-      relayParams: relayParamsPayload,
-      params,
-      signer,
-      chainId,
-      srcChainId,
-    });
-  }
-
-  const bridgeOutCallData = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
-    functionName: "bridgeOut",
-    args: [
-      {
-        ...relayParamsPayload,
-        signature,
-      },
-      address,
-      BigInt(srcChainId),
-      params,
-    ],
-  });
-
-  return {
-    callData: bridgeOutCallData,
-    to: getContract(chainId, "MultichainTransferRouter"),
-    feeToken: relayerFeeTokenAddress,
-    feeAmount: relayerFeeAmount,
-  };
-}
-
 export async function signSetTraderReferralCode({
   signer,
   relayParams,
@@ -1056,7 +996,7 @@ function updateExpressOrdersAddresses(addresses: CreateOrderPayload["addresses"]
   };
 }
 
-export async function validateSignature({
+async function validateSignature({
   signatureParams,
   signature,
   expectedAccount,

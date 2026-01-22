@@ -105,5 +105,3 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
     </div>
   );
 }
-
-export default ClaimRewardsButton;

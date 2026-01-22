@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "react-use";
 
-import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { EMPTY_OBJECT } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 
@@ -127,8 +126,4 @@ export function useLocalStorageSerializeKeySafe<
   const value = shouldSkipKey ? undefined : valueMap[serializedKey];
 
   return [value, setValue] as const;
-}
-
-export function isDebugMode() {
-  return localStorage.getItem(JSON.stringify(SHOW_DEBUG_VALUES_KEY)) === "true";
 }

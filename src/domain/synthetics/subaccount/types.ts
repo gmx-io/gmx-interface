@@ -19,7 +19,7 @@ export type Subaccount = {
   onchainData: SubaccountOnchainData;
 };
 
-export type SubaccountApproval = {
+type SubaccountApproval = {
   subaccount: string;
   nonce: bigint;
   shouldAdd: boolean;

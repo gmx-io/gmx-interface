@@ -1,7 +1,6 @@
 import * as ethers from "ethers";
 import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
 
-import { expandDecimals } from "lib/numbers";
 import { LogEntry } from "pages/ParseTransaction/types";
 import { abis } from "sdk/abis";
 import { keccakString } from "sdk/utils/hash";
@@ -52,14 +51,6 @@ function parseError(reasonBytes, shouldThrow = true) {
     }
     throw new Error(`Could not parse errorBytes ${reasonBytes}`);
   }
-}
-
-export function convertToContractPrice(price: bigint, tokenDecimals: number) {
-  return price / expandDecimals(1, tokenDecimals);
-}
-
-export function convertFromContractPrice(price: bigint, tokenDecimals: number) {
-  return price * expandDecimals(1, tokenDecimals);
 }
 
 export type ParseTransactionEvent = ReturnType<typeof parseEvent>;

@@ -24,7 +24,7 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { getBlockTimestampAndNumber, isTemporaryError } from "./simulation";
 import { isGlvEnabled } from "../markets/glv";
 
-export type PriceOverrides = {
+type PriceOverrides = {
   [address: string]: TokenPrices | undefined;
 };
 
@@ -273,7 +273,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   }
 }
 
-export function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
+function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {
   const tokenAddresses = Object.keys(tokensData);
 
   const primaryTokens: string[] = [];

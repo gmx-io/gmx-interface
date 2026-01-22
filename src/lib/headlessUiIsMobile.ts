@@ -3,7 +3,7 @@
 // This file contains functions to detect the platform the app is running on. They aren't perfect,
 // and we are making assumptions here. But it's the best we can do for now.
 
-export function isIOS() {
+function isIOS() {
   // TODO: This is not a great way to detect iOS, but it's the best I can do for now.
   // - `window.platform` is deprecated
   // - `window.userAgentData.platform` is still experimental (https://developer.mozilla.org/en-US/docs/Web/API/NavigatorUAData/platform)
@@ -18,7 +18,7 @@ export function isIOS() {
   );
 }
 
-export function isAndroid() {
+function isAndroid() {
   return /Android/gi.test(window.navigator.userAgent);
 }
 

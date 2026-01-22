@@ -218,7 +218,7 @@ function useKeysAndPricesParams(p: {
   }, [account, marketsData, tokensData]);
 }
 
-export function useOptimisticPositions(p: {
+function useOptimisticPositions(p: {
   positionsData: PositionsData | undefined;
   allPositionsKeys: string[] | undefined;
   isLoading: boolean;

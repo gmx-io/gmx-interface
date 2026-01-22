@@ -16,7 +16,7 @@ export default function NftWallet() {
   const [nftAddress, setNftAddress] = useState("");
   const [nftId, setNftId] = useState("");
   const [receiver, setReceiver] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { active, account, signer } = useWallet();
   const { chainId } = useChainId();

@@ -379,7 +379,7 @@ export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderT
   return overrides;
 }
 
-export type SimulationPrices = ReturnType<typeof getSimulationPrices>;
+type SimulationPrices = ReturnType<typeof getSimulationPrices>;
 
 export type PriceOverride = { tokenAddress: string; contractPrices?: TokenPrices; prices?: TokenPrices };
 

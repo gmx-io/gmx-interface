@@ -22,7 +22,6 @@ import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 
 import { UserReferralInfo } from "../types";
 
-export * from "./useReferralCodeFromUrl";
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
 
@@ -251,18 +250,6 @@ export function useLocalReferralCode() {
       userReferralCodeString,
     };
   }, [userReferralCode]);
-}
-
-export function getRefCodeParamString() {
-  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
-
-  if (!userReferralCode) {
-    return undefined;
-  }
-
-  const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
-
-  return `ref=${userReferralCodeString}`;
 }
 
 export function useReferrerTier(signer, chainId, account) {

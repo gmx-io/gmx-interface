@@ -51,18 +51,6 @@ export function getFallbackProvider(chainId: number) {
   });
 }
 
-export function getExpressProvider(chainId: number): JsonRpcProvider | undefined {
-  const providerUrl: string | undefined = getCurrentExpressRpcUrl(chainId);
-
-  if (!providerUrl) {
-    return;
-  }
-
-  return new ethers.JsonRpcProvider(providerUrl, chainId, {
-    staticNetwork: Network.from(chainId),
-  });
-}
-
 export function useJsonRpcProvider(chainId: number | undefined, { isExpress = false }: { isExpress?: boolean } = {}) {
   const [provider, setProvider] = useState<JsonRpcProvider>();
 

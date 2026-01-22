@@ -55,7 +55,7 @@ type ViemSigner = Client<
 /**
  * Abstraction above ethers and viem signers
  */
-export interface ISignerInterface {
+interface ISignerInterface {
   address: string;
   sendTransaction: (params: ISignerSendTransactionParams) => Promise<ISignerSendTransactionResult>;
   estimateGas: (params: ISignerEstimateGasParams) => Promise<bigint>;
