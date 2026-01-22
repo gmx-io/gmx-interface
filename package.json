@@ -114,7 +114,8 @@
     "ethers@6.12.1": "patch:ethers@npm:6.12.1#.yarn/patches/ethers-npm-6.12.1-7d4a09a25c",
     "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8",
     "viem@2.39.0": "patch:viem@npm:2.39.0#.yarn/patches/viem-npm-2.39.0-c113f391fd",
-    "date-fns": "4.1.0"
+    "date-fns": "4.1.0",
+    "lodash": "4.17.23"
   },
   "eslintConfig": {
     "extends": [
