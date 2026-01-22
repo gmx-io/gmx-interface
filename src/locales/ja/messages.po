@@ -928,10 +928,6 @@ msgstr "GMX Solanaに移動しようとしています。これは別チーム�
 msgid "Pay"
 msgstr "支払い"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "資金を引き出すには、アカウントにいくらかの {wrappedNativeTokenSymbol} が必要です。"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings."
 msgstr "設定の更新に失敗しました。"
@@ -2122,10 +2118,6 @@ msgstr "アドレス"
 msgid "Claiming successful."
 msgstr "請求に成功しました。"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Insufficient {gasPaymentTokensText} for gas in your GMX Account. <0>Deposit {gasPaymentTokensText}</0>"
-msgstr "GMXアカウント内のガス用の{gasPaymentTokensText}が不足しています。<0>{gasPaymentTokensText}を入金</0>"
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "BALANCE"
@@ -2254,6 +2246,10 @@ msgstr "ポジション"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet acceptable price. The order will fill when the condition is met."
 msgstr "実行価格が許容価格を満たしませんでした。条件が満たされたときに注文が満たされます。"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
+msgstr "<0>入金</0>または<1>購入</1>{wrappedNativeTokenSymbol}。"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -2471,6 +2467,10 @@ msgstr "リレヤーリクエストに失敗しました"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "アカウント転送"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
+msgstr "GMXアカウント内のガス用の{wrappedNativeTokenSymbol}が不足しています。"
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -3283,6 +3283,10 @@ msgstr "{0}を編集"
 msgid "Price impact rebates claimed."
 msgstr "価格影響リベートが請求されました。"
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
+msgstr "<0>{wrappedNativeTokenSymbol}を購入</0>。"
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
 msgstr "請求可能な価格インパクトリベート。<0/><1/><2>詳細を読む</2>。"
@@ -3487,10 +3491,6 @@ msgstr "総獲得額"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "この市場の流動性提供は{chainNames}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}に切り替えてください。"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "資金を引き出すには、アカウントに<0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} が必要です。"
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -5241,14 +5241,6 @@ msgstr "サイズ, $"
 msgid "Close {0} {1}{2}"
 msgstr "{0} {1}{2} をクローズ"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "ガス残高不足"
@@ -5874,10 +5866,6 @@ msgstr "利回りを自動複利化（GLPとは異なり、手動請求不要）
 msgid "Sell request sent."
 msgstr "売りリクエストが送信されました。"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
-msgstr "{wrappedNativeTokenSymbol} を入手するには<0>スワップ</0>してください。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "NFT、取引、教育イニシアチブを持つGMXコミュニティ"
@@ -6288,6 +6276,10 @@ msgstr "勝率"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "アフィリエイトボールトにesGMXトークンがあります。新アカウントに転送したい場合はこれらのトークンを引き出してください"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
+msgstr "GMXアカウント内のガス用の{tokensText}が不足しています。<0>{tokensText}を入金</0>"
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
 msgstr "これにより報酬を獲得できます。"
@@ -6653,10 +6645,6 @@ msgstr "部分ごとのサイズ"
 msgid "Insufficient {0} balance"
 msgstr "{0} 残高の不足"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
-msgstr "{wrappedNativeTokenSymbol} を入手するには<0>入金</0>または<1>スワップ</1>してください。"
-
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Sent deposit transaction"
@@ -6695,10 +6683,6 @@ msgstr "リベート"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "指値を更新"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
-msgstr "引き出しには<0/>が必要ですが、<1/>があります。<2>スワップ</2>または<3>入金</3>してGMXアカウントに{0}を追加してください。"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit order"

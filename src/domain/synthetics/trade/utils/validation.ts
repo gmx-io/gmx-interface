@@ -51,8 +51,14 @@ export enum ValidationButtonTooltipName {
 export enum ValidationBannerErrorName {
   insufficientNativeTokenBalance = "insufficientNativeTokenBalance",
   insufficientWalletGasTokenBalance = "insufficientWalletGasTokenBalance",
-  insufficientGmxAccountGasTokenBalance = "insufficientGmxAccountGasTokenBalance",
+  insufficientGmxAccountSomeGasTokenBalance = "insufficientGmxAccountSomeGasTokenBalance",
+  insufficientGmxAccountCurrentGasTokenBalance = "insufficientGmxAccountCurrentGasTokenBalance",
+  insufficientGmxAccountWntBalance = "insufficientGmxAccountWntBalance",
   insufficientSourceChainNativeTokenBalance = "insufficientSourceChainNativeTokenBalance",
+}
+
+export function getDefaultInsufficientGasMessage() {
+  return t`Insufficient gas balance`;
 }
 
 export type ValidationResult =
@@ -102,8 +108,8 @@ export function getExpressError(p: {
 
   if (isMultichainExpressError) {
     return {
-      buttonErrorMessage: t`Insufficient gas balance`,
-      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountGasTokenBalance,
+      buttonErrorMessage: getDefaultInsufficientGasMessage(),
+      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance,
     };
   }
 
@@ -118,7 +124,7 @@ export function getExpressError(p: {
 
   if (isNativeExpressError) {
     return {
-      buttonErrorMessage: t`Insufficient gas balance`,
+      buttonErrorMessage: getDefaultInsufficientGasMessage(),
       bannerErrorName: ValidationBannerErrorName.insufficientWalletGasTokenBalance,
     };
   }
@@ -1141,7 +1147,7 @@ export function getNativeGasError(p: {
 
   if (networkFee > nativeBalance) {
     return {
-      buttonErrorMessage: t`Insufficient gas balance`,
+      buttonErrorMessage: getDefaultInsufficientGasMessage(),
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
     };
   }

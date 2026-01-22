@@ -928,10 +928,6 @@ msgstr "Sie navigieren zu GMX Solana, das von einem separaten Team betrieben wir
 msgid "Pay"
 msgstr "Bezahlen"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "Sie benötigen etwas {wrappedNativeTokenSymbol} in Ihrem Konto, um Mittel abzuheben."
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings."
 msgstr "Einstellungen konnten nicht aktualisiert werden."
@@ -2122,10 +2118,6 @@ msgstr "Adresse"
 msgid "Claiming successful."
 msgstr "Einlösen erfolgreich."
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Insufficient {gasPaymentTokensText} for gas in your GMX Account. <0>Deposit {gasPaymentTokensText}</0>"
-msgstr "Unzureichendes {gasPaymentTokensText} für Gas in Ihrem GMX-Konto. <0>{gasPaymentTokensText} einzahlen</0>"
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "BALANCE"
@@ -2254,6 +2246,10 @@ msgstr "POSITION"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet acceptable price. The order will fill when the condition is met."
 msgstr "Der Ausführungspreis erfüllte nicht den akzeptablen Preis. Die Order wird ausgeführt, wenn die Bedingung erfüllt ist."
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
+msgstr "<0>Einzahlen</0> oder <1>kaufen</1> {wrappedNativeTokenSymbol}."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -2471,6 +2467,10 @@ msgstr "Relayer-Anfrage fehlgeschlagen"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "Konto übertragen"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
+msgstr "Unzureichendes {wrappedNativeTokenSymbol} für Gas in Ihrem GMX-Konto."
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -3283,6 +3283,10 @@ msgstr "{0} bearbeiten"
 msgid "Price impact rebates claimed."
 msgstr "Preisauswirkungs-Rabatte eingelöst."
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
+msgstr "<0>Kaufe</0> {wrappedNativeTokenSymbol}."
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
 msgstr "Beanspruchbare Preisimpact-Rabatte.<0/><1/><2>Mehr lesen</2>."
@@ -3487,10 +3491,6 @@ msgstr "Insgesamt verdient"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "Liquiditätsbereitstellung für diesen Markt ist nur auf {chainNames} verfügbar. Bitte wechseln Sie zu {chainNames}, um Verdienstmöglichkeiten zu nutzen."
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "Sie benötigen <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in Ihrem Konto, um Mittel abzuheben."
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -5241,14 +5241,6 @@ msgstr "Größe, $"
 msgid "Close {0} {1}{2}"
 msgstr "{0} {1}{2} schließen"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Unzureichender Gas-Saldo"
@@ -5874,10 +5866,6 @@ msgstr "und automatisch seine Rendite verzinst (im Gegensatz zu GLP, kein manuel
 msgid "Sell request sent."
 msgstr "Verkaufsanfrage gesendet."
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
-msgstr "Bitte <0>swappen</0>, um {wrappedNativeTokenSymbol} zu erhalten."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "GMX-Community mit NFTs, Trading und Bildungsinitiativen"
@@ -6288,6 +6276,10 @@ msgstr "Gewinnrate"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "Du hast esGMX-Token im Affiliate-Vault – du musst diese abziehen, wenn du sie auf das neue Konto übertragen möchtest"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
+msgstr "Unzureichendes {tokensText} für Gas in Ihrem GMX-Konto. <0>{tokensText} einzahlen</0>"
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
 msgstr "Damit kannst du Belohnungen verdienen."
@@ -6653,10 +6645,6 @@ msgstr "Größe pro Teil"
 msgid "Insufficient {0} balance"
 msgstr "Unzureichende {0}-Balance"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
-msgstr "Bitte <0>einzahlen</0> oder <1>swappen</1>, um {wrappedNativeTokenSymbol} zu erhalten."
-
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Sent deposit transaction"
@@ -6695,10 +6683,6 @@ msgstr "Rabatte"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "Limit aktualisieren"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
-msgstr "Abheben erfordert <0/>, während Sie <1/> haben. Bitte <2>swappen</2> oder <3>einzahlen</3> mehr {0} auf Ihr GMX-Konto."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit order"

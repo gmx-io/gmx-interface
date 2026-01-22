@@ -343,7 +343,7 @@ export function BridgeInModal({
           />
         </BuyInputSection>
         {sourceChainNativeFeeError?.bannerErrorName && (
-          <AlertInfoCard type="info" hideClose>
+          <AlertInfoCard type="error" hideClose>
             <ValidationBannerErrorContent
               validationBannerErrorName={sourceChainNativeFeeError.bannerErrorName}
               chainId={chainId}

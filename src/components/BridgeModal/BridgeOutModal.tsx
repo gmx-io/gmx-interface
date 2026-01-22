@@ -29,6 +29,7 @@ import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeOutTxn } from "domain/synthetics/markets/createBridgeOutTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
@@ -302,7 +303,7 @@ export function BridgeOutModal({
 
     if (errors?.isOutOfTokenError) {
       return {
-        text: errors.isOutOfTokenError.isGasPaymentToken ? t`Insufficient gas balance` : t`Insufficient balance`,
+        text: errors.isOutOfTokenError.isGasPaymentToken ? getDefaultInsufficientGasMessage() : t`Insufficient balance`,
         disabled: true,
       };
     }

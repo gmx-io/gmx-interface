@@ -928,10 +928,6 @@ msgstr "GMX Solana로 이동하려고 합니다. 별도의 팀이 운영하므�
 msgid "Pay"
 msgstr "지불"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "자금을 출금하려면 계정에 {wrappedNativeTokenSymbol}이 필요합니다."
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings."
 msgstr "설정 업데이트 실패."
@@ -2122,10 +2118,6 @@ msgstr "주소"
 msgid "Claiming successful."
 msgstr "청구 성공."
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Insufficient {gasPaymentTokensText} for gas in your GMX Account. <0>Deposit {gasPaymentTokensText}</0>"
-msgstr "GMX 계정의 가스용 {gasPaymentTokensText}가 부족합니다. <0>{gasPaymentTokensText} 입금</0>"
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "BALANCE"
@@ -2254,6 +2246,10 @@ msgstr "포지션"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet acceptable price. The order will fill when the condition is met."
 msgstr "실행 가격이 허용 가격을 충족하지 않았습니다. 조건이 충족되면 주문이 채워집니다."
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
+msgstr "<0>입금</0> 또는 <1>구매</1> {wrappedNativeTokenSymbol}."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -2471,6 +2467,10 @@ msgstr "릴레이어 요청 실패"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "계정 전송"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
+msgstr "GMX 계정의 가스용 {wrappedNativeTokenSymbol}가 부족합니다."
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -3283,6 +3283,10 @@ msgstr "{0} 편집"
 msgid "Price impact rebates claimed."
 msgstr "가격 영향 리베이트 청구됨."
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
+msgstr "<0>{wrappedNativeTokenSymbol} 구매</0>."
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
 msgstr "수령 가능한 가격 영향 리베이트.<0/><1/><2>더 읽기</2>."
@@ -3487,10 +3491,6 @@ msgstr "총 수익"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "이 시장의 유동성 제공은 {chainNames}에서만 가능합니다. 수익 기회를 이용하려면 {chainNames}으로 전환하세요."
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "자금을 출금하려면 계정에 <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol}이 필요합니다."
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -5241,14 +5241,6 @@ msgstr "크기, $"
 msgid "Close {0} {1}{2}"
 msgstr "{0} {1}{2} 종료"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "가스 잔액 부족"
@@ -5874,10 +5866,6 @@ msgstr "수익을 자동 복리화(GLP와 달리 수동 청구 필요 없음)"
 msgid "Sell request sent."
 msgstr "매도 요청 전송됨."
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
-msgstr "{wrappedNativeTokenSymbol}을 얻으려면 <0>스왑</0>하세요."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "NFT, 거래 및 교육 이니셔티브를 가진 GMX 커뮤니티"
@@ -6288,6 +6276,10 @@ msgstr "승률"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "제휴 볼트에 esGMX 토큰이 있습니다. 새 계정으로 전송하려면 이 토큰들을 출금해야 합니다"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
+msgstr "GMX 계정의 가스용 {tokensText}가 부족합니다. <0>{tokensText} 입금</0>"
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
 msgstr "보상을 받을 수 있게 합니다."
@@ -6653,10 +6645,6 @@ msgstr "부분당 크기"
 msgid "Insufficient {0} balance"
 msgstr "{0} 잔고 부족"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
-msgstr "{wrappedNativeTokenSymbol}을 얻으려면 <0>입금</0> 또는 <1>스왑</1>하세요."
-
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Sent deposit transaction"
@@ -6695,10 +6683,6 @@ msgstr "리베이트"
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "지정가 업데이트"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
-msgstr "출금에 <0/>이 필요하지만 <1/>이 있습니다. GMX 계정에 더 많은 {0}을 <2>스왑</2> 또는 <3>입금</3>하세요."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit order"

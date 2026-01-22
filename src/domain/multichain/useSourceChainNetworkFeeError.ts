@@ -1,4 +1,3 @@
-import { t } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { ContractsChainId, SourceChainId } from "config/chains";
@@ -6,7 +5,11 @@ import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUsdToNativeTokenMultichain } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
-import { ValidationBannerErrorName, ValidationResult } from "domain/synthetics/trade/utils/validation";
+import {
+  ValidationBannerErrorName,
+  ValidationResult,
+  getDefaultInsufficientGasMessage,
+} from "domain/synthetics/trade/utils/validation";
 
 export function useSourceChainNativeFeeError({
   networkFeeUsd,
@@ -44,7 +47,7 @@ export function useSourceChainNativeFeeError({
 
     if (sourceChainNativeTokenBalance < requiredAmount) {
       return {
-        buttonErrorMessage: t`Insufficient gas balance`,
+        buttonErrorMessage: getDefaultInsufficientGasMessage(),
         bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
       };
     }

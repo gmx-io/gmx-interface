@@ -45,7 +45,7 @@ import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
-import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
+import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
@@ -913,7 +913,7 @@ export const DepositView = () => {
 
     if (depositViewChain !== undefined && quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
       buttonState = {
-        text: t`Insufficient gas balance`,
+        text: getDefaultInsufficientGasMessage(),
         bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
         disabled: true,
       };

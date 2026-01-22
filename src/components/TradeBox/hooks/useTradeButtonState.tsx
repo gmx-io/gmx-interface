@@ -90,7 +90,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { TokenData } from "sdk/types/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
@@ -98,9 +98,9 @@ import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
-import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { useGasPaymentTokensText } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { InsufficientWntBanner } from "components/GmxAccountModal/InsufficientWntBanner";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -140,9 +140,7 @@ export default function InsufficientNativeTokenBalanceMessage({ chainId }: { cha
     <div>
       <Trans>
         Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(chainId)}.{" "}
-        <ColorfulButtonLink newTab color="red" to={matchaBuyTokenUrl}>
-          Buy {nativeTokenSymbol}
-        </ColorfulButtonLink>
+        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
       </Trans>
     </div>
   );
@@ -159,26 +157,40 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
     <div>
       <Trans>
         Insufficient {localizedList} for gas in your wallet on {chainName}.{" "}
-        <ColorfulButtonLink newTab color="red" to={getMatchaBuyTokenUrl(chainId, firstGasPaymentToken)}>
-          Buy {localizedList}
-        </ColorfulButtonLink>
+        <ExternalLink href={getMatchaBuyTokenUrl(chainId, firstGasPaymentToken)}>Buy {localizedList}</ExternalLink>
       </Trans>
     </div>
   );
 }
 
 // TODO move theses outside of tradebox
-export function InsufficientGmxAccountGasTokenBalanceMessage({ chainId }: { chainId: ContractsChainId }) {
+export function InsufficientGmxAccountGasTokenBalanceMessage({
+  chainId,
+  gasPaymentTokenAddress,
+}: {
+  chainId: ContractsChainId;
+  gasPaymentTokenAddress?: string;
+}) {
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
+  const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+
+  let tokensText = gasPaymentTokenAddress ? getToken(chainId, gasPaymentTokenAddress).symbol : gasPaymentTokensText;
+
+  const handleDeposit = useCallback(() => {
+    if (gasPaymentTokenAddress) {
+      setGmxAccountDepositViewTokenAddress(convertTokenAddress(chainId, gasPaymentTokenAddress, "native"));
+    }
+    setGmxAccountModalOpen("deposit");
+  }, [chainId, gasPaymentTokenAddress, setGmxAccountDepositViewTokenAddress, setGmxAccountModalOpen]);
 
   return (
     <div>
       <Trans>
-        Insufficient {gasPaymentTokensText} for gas in your GMX Account.{" "}
-        <ColorfulButtonLink color="red" onClick={() => setGmxAccountModalOpen("deposit")}>
-          Deposit {gasPaymentTokensText}
-        </ColorfulButtonLink>
+        Insufficient {tokensText} for gas in your GMX Account.{" "}
+        <button className="cursor-pointer underline underline-offset-2" onClick={handleDeposit}>
+          Deposit {tokensText}
+        </button>
       </Trans>
     </div>
   );
@@ -198,9 +210,7 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }:
     <div>
       <Trans>
         Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(srcChainId)}.{" "}
-        <ColorfulButtonLink newTab color="red" to={matchaBuyTokenUrl}>
-          Buy {nativeTokenSymbol}
-        </ColorfulButtonLink>
+        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
       </Trans>
     </div>
   );
@@ -210,10 +220,12 @@ export function ValidationBannerErrorContent({
   validationBannerErrorName,
   chainId,
   srcChainId,
+  gasPaymentTokenAddress,
 }: {
   validationBannerErrorName: ValidationBannerErrorName;
   chainId: ContractsChainId;
   srcChainId?: SourceChainId;
+  gasPaymentTokenAddress?: string;
 }) {
   switch (validationBannerErrorName) {
     case ValidationBannerErrorName.insufficientNativeTokenBalance: {
@@ -222,7 +234,7 @@ export function ValidationBannerErrorContent({
     case ValidationBannerErrorName.insufficientWalletGasTokenBalance: {
       return <InsufficientWalletGasTokenBalanceMessage chainId={chainId} />;
     }
-    case ValidationBannerErrorName.insufficientGmxAccountGasTokenBalance: {
+    case ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance: {
       return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} />;
     }
     case ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance: {
@@ -232,7 +244,19 @@ export function ValidationBannerErrorContent({
 
       return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={srcChainId} />;
     }
+    case ValidationBannerErrorName.insufficientGmxAccountWntBalance: {
+      return <InsufficientWntBanner chainId={chainId} />;
+    }
+    case ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance: {
+      return (
+        <InsufficientGmxAccountGasTokenBalanceMessage
+          chainId={chainId}
+          gasPaymentTokenAddress={gasPaymentTokenAddress}
+        />
+      );
+    }
     default: {
+      const _never: never = validationBannerErrorName;
       return null;
     }
   }

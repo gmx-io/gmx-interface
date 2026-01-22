@@ -31,11 +31,13 @@ import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technic
 import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import {
+  getCommonError,
+  getDefaultInsufficientGasMessage,
+  getGmSwapError,
   takeValidationResult,
   ValidationBannerErrorName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
-import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -451,8 +453,8 @@ function useExpressError({
 
     if (totalRequired > gmxAccountBalance) {
       return {
-        buttonErrorMessage: t`Insufficient gas balance`,
-        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountGasTokenBalance,
+        buttonErrorMessage: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance,
       };
     }
 

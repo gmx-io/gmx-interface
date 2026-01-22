@@ -190,6 +190,16 @@ async function estimateArbitraryGasLimit({
         ],
       },
       {
+        address: gasPaymentParams.relayerFeeTokenAddress,
+        code: OVERRIDE_ERC20_BYTECODE,
+        state: [
+          {
+            slot: RANDOM_SLOT,
+            value: zeroHash,
+          },
+        ],
+      },
+      {
         address: getContract(chainId, "LayerZeroProvider"),
         balance: SIMULATED_MULTICHAIN_BALANCE,
       },
@@ -481,10 +491,10 @@ export function useArbitraryError(
     if (isInsufficientMultichainBalance) {
       return {
         isOutOfTokenError: {
-          tokenAddress: error.args[1],
-          isGasPaymentToken: error.args[1] === gasPaymentTokenAddress,
-          balance: error.args[2],
-          requiredAmount: error.args[3],
+          tokenAddress: error.args.token,
+          isGasPaymentToken: error.args.token === gasPaymentTokenAddress,
+          balance: error.args.balance,
+          requiredAmount: error.args.amount,
         },
       };
     }
