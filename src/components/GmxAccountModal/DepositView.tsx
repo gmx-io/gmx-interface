@@ -9,8 +9,8 @@ import { Hex, decodeErrorResult, encodeEventTopics, toHex, zeroAddress } from "v
 import { useAccount, useChains } from "wagmi";
 
 import {
-  AnyChainId,
   AVALANCHE,
+  AnyChainId,
   SettlementChainId,
   SourceChainId,
   getChainName,
@@ -68,7 +68,6 @@ import {
 } from "lib/metrics";
 import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
-import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
@@ -128,7 +127,6 @@ export const DepositView = () => {
 
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
-  const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
 
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
@@ -378,7 +376,6 @@ export const DepositView = () => {
   const quoteOft = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
-    fromChainProvider: sourceChainProvider,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
   });

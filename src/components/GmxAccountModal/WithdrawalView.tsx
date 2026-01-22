@@ -523,8 +523,6 @@ export const WithdrawalView = () => {
   const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
   const gasPaymentToken = useSelector(selectGasPaymentToken);
 
-  const { provider } = useJsonRpcProvider(chainId);
-
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
   }, [selectedTokenAddress, tokensData]);
@@ -591,7 +589,6 @@ export const WithdrawalView = () => {
   const quoteOft = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainProvider: provider,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });

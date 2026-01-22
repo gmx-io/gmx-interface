@@ -854,10 +854,6 @@ msgstr "一致する市場がありません"
 msgid "Unstake {tokenSymbol}"
 msgstr "{tokenSymbol}をアンステーク"
 
-#: src/components/InputSection/InputSection.tsx
-msgid "MAX"
-msgstr "最大"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr "このネットワークに中央集権取引所が利用できません。"

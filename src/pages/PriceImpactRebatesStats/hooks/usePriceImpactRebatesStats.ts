@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
-import { getAddress } from "ethers";
 import { useEffect, useState } from "react";
 import { useLatest } from "react-use";
+import { getAddress } from "viem";
 
 import { MarketInfo, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TokenData, useTokensDataRequest } from "domain/synthetics/tokens";

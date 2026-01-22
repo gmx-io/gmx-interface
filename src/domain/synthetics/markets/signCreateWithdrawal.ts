@@ -2,7 +2,8 @@ import type { AbstractSigner, Wallet } from "ethers";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import { TransferRequests } from "domain/multichain/types";
+import type { TransferRequests } from "domain/multichain/types";
+import type { ISigner } from "lib/transactions/iSigner";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 
@@ -17,9 +18,9 @@ export async function signCreateWithdrawal({
   relayParams,
   transferRequests,
   params,
-  shouldUseSignerMethod = false,
+  shouldUseSignerMethod,
 }: {
-  signer: AbstractSigner | WalletSigner | Wallet;
+  signer: AbstractSigner | WalletSigner | Wallet | ISigner;
   relayParams: RelayParamsPayload;
   transferRequests: TransferRequests;
   params: CreateWithdrawalParams;

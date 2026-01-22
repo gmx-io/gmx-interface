@@ -1,8 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Contract } from "ethers";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { encodeFunctionData, zeroAddress } from "viem";
+import { createWalletClient, encodeFunctionData, publicActions, zeroAddress } from "viem";
 import { usePublicClient } from "wagmi";
 
 import {
@@ -10,8 +9,7 @@ import {
   FAKE_INPUT_AMOUNT_MAP,
   getMappedTokenId,
   isSettlementChain,
-  IStargateAbi,
-  RANDOM_WALLET,
+  RANDOM_ACCOUNT,
 } from "config/multichain";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -32,14 +30,17 @@ import { helperToast } from "lib/helperToast";
 import { formatUsd, numberToBigint } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendWalletTransaction } from "lib/transactions";
+import { ISigner } from "lib/transactions/iSigner";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
+import { getPublicClientWithRpc, getRpcTransport } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
+import { getViemChain } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { encodeReferralCode } from "sdk/utils/referrals";
 import { nowInSeconds } from "sdk/utils/time";
-import type { IStargate } from "typechain-types-stargate";
 
 import Button from "components/Button/Button";
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
@@ -253,12 +254,18 @@ function ReferralCodeFormMultichain({
   const hasOutdatedUi = useHasOutdatedUi();
 
   const simulationSigner = useMemo(() => {
-    if (!signer?.provider) {
+    if (srcChainId === undefined) {
       return;
     }
 
-    return RANDOM_WALLET.connect(signer?.provider);
-  }, [signer?.provider]);
+    return ISigner.fromViemSigner(
+      createWalletClient({
+        chain: getViemChain(srcChainId),
+        account: RANDOM_ACCOUNT,
+        transport: getRpcTransport(srcChainId, "default"),
+      }).extend(publicActions)
+    );
+  }, [srcChainId]);
 
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
@@ -344,8 +351,6 @@ function ReferralCodeFormMultichain({
 
       const sourceChainStargateAddress = p.sourceChainTokenId.stargate;
 
-      const iStargateInstance = new Contract(sourceChainStargateAddress, IStargateAbi, signer) as unknown as IStargate;
-
       const tokenAmount =
         FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
 
@@ -360,7 +365,14 @@ function ReferralCodeFormMultichain({
         action,
       });
 
-      const [limit, oftFeeDetails] = await iStargateInstance.quoteOFT(sendParamsWithRoughAmount);
+      const sourceChainPublicClient = getPublicClientWithRpc(p.srcChainId);
+
+      const [limit, oftFeeDetails] = await sourceChainPublicClient.readContract({
+        address: sourceChainStargateAddress,
+        abi: abis.IStargate,
+        functionName: "quoteOFT",
+        args: [sendParamsWithRoughAmount],
+      });
 
       let negativeFee = 0n;
       for (const oftFeeDetail of oftFeeDetails) {
@@ -379,7 +391,12 @@ function ReferralCodeFormMultichain({
         minAmountLD: 0n,
       };
 
-      const quoteSend = await iStargateInstance.quoteSend(sendParamsWithMinimumAmount, false);
+      const quoteSend = await sourceChainPublicClient.readContract({
+        address: sourceChainStargateAddress,
+        abi: abis.IStargate,
+        functionName: "quoteSend",
+        args: [sendParamsWithMinimumAmount, false],
+      });
 
       return {
         nativeFee: quoteSend.nativeFee,
@@ -498,7 +515,7 @@ function ReferralCodeFormMultichain({
         to: sourceChainStargateAddress,
         signer: signer,
         callData: encodeFunctionData({
-          abi: IStargateAbi,
+          abi: abis.IStargate,
           functionName: "sendToken",
           args: [sendParams, { nativeFee: result.data.nativeFee, lzTokenFee: 0n }, account],
         }),
