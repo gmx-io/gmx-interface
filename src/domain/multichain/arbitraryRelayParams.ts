@@ -190,21 +190,24 @@ async function estimateArbitraryGasLimit({
         ],
       },
       {
-        address: gasPaymentParams.relayerFeeTokenAddress,
-        code: OVERRIDE_ERC20_BYTECODE,
-        state: [
-          {
-            slot: RANDOM_SLOT,
-            value: zeroHash,
-          },
-        ],
-      },
-      {
         address: getContract(chainId, "LayerZeroProvider"),
         balance: SIMULATED_MULTICHAIN_BALANCE,
       },
     ],
   };
+
+  if (gasPaymentParams.relayerFeeTokenAddress !== gasPaymentParams.gasPaymentTokenAddress) {
+    params.stateOverride!.push({
+      address: gasPaymentParams.relayerFeeTokenAddress,
+      code: OVERRIDE_ERC20_BYTECODE,
+      state: [
+        {
+          slot: RANDOM_SLOT,
+          value: zeroHash,
+        },
+      ],
+    });
+  }
 
   const gasLimit = await fallbackCustomError(
     async () => client.estimateGas(params).then(applyGasLimitBuffer),
