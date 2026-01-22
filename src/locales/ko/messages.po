@@ -2430,7 +2430,6 @@ msgid "Launch App"
 msgstr "앱 실행하기"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claiming affiliate rewards failed"
 msgstr "제휴 보상 청구 실패"
 

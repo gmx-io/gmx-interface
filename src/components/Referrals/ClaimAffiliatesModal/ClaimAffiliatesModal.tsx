@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
+import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -164,6 +165,8 @@ function OutOfTokenErrorAlert({
 }) {
   const history = useHistory();
   const { chainId } = useChainId();
+  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
+  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
   if (!errors?.isOutOfTokenError || !token) {
     return null;
@@ -204,7 +207,8 @@ function OutOfTokenErrorAlert({
             className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
             onClick={() => {
               onClose();
-              history.push(`/account?action=deposit&token=${convertTokenAddress(chainId, token.address, "native")}`);
+              setDepositViewTokenAddress(convertTokenAddress(chainId, token.address, "native"));
+              setGmxAccountModalOpen("deposit");
             }}
           >
             deposit

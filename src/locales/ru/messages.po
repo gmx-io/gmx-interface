@@ -2430,7 +2430,6 @@ msgid "Launch App"
 msgstr "Запустить Приложение"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claiming affiliate rewards failed"
 msgstr "Не удалось получить вознаграждения партнера"
 
