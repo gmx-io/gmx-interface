@@ -80,7 +80,7 @@
     "crypto-js": "4.2.0",
     "graphql": "15.8.0",
     "isomorphic-performance": "5.1.1",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
