@@ -744,6 +744,11 @@ msgstr "{0} <0/><1> zu </1>{1} <2/>"
 msgid "See <0>Tenderly Docs</0>."
 msgstr "Siehe <0>Tenderly-Dokumentation</0>."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
 msgstr "Empfehlungscode-Transaktion gesendet"
@@ -1927,6 +1932,7 @@ msgstr "Der USD-Wert der Gebühren wird zum Zeitpunkt ihrer Erhebung berechnet u
 msgid "Max"
 msgstr "Max"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "Code wird überprüft…"
@@ -2106,6 +2112,10 @@ msgstr "Derzeit keine weiteren Möglichkeiten auf Botanix. Wechsle zu Arbitrum o
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "Kein Swap-Pfad verfügbar. <0>Swappe {0} zu STBTC</0>, um {1} als Kollateral zu verwenden."
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -5145,10 +5155,6 @@ msgstr "Start unrealisierter PnL"
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Genehmigung übermittelt! <0>Status anzeigen.</0>"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "Der mögliche Netto-Preis-Impact beim Schließen dieser Position könnte im Verhältnis zu deinem eingesetzten Collateral hoch sein. Erwäge, den Hebel zu reduzieren. <0>Mehr erfahren</0>."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "Die kaufbaren Limit für den Pool GM: {0} in {1} [{2}] wurde erreicht. Bitte reduziere die Kaufgröße, wähle einen anderen GM-Token oder verschiebe die GM-Token in einen anderen Pool und versuche es erneut."
@@ -6667,6 +6673,11 @@ msgstr "Transaktion fehlgeschlagen."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "Dezentralisierte Yield-Produkte"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
+msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
