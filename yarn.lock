@@ -5887,10 +5887,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.14.198":
-  version: 4.14.198
-  resolution: "@types/lodash@npm:4.14.198"
-  checksum: 10/2bd7e82245cf0c66169ed074a2e625da644335a29f65c0c37d501cf66d09d8a0e92408e9e0ce4ee5133343e5b27267e6a132ca38a9ded837d4341be8a3cf8008
+"@types/lodash@npm:4.17.23":
+  version: 4.17.23
+  resolution: "@types/lodash@npm:4.17.23"
+  checksum: 10/05935534a44aadef67c2158b2fb4a042a226970088106a40ddc67e4f063783149fe5cf02279d7dd4a1e72c98d9189b9430face659645dbf77270f8c4c3e387f5
   languageName: node
   linkType: hard
 
@@ -11484,7 +11484,7 @@ __metadata:
     "@testing-library/jest-dom": "npm:5.16.1"
     "@testing-library/react": "npm:11.2.7"
     "@testing-library/user-event": "npm:12.8.3"
-    "@types/lodash": "npm:4.14.198"
+    "@types/lodash": "npm:4.17.23"
     "@types/node": "npm:18.7.13"
     "@types/react": "npm:18.2.64"
     "@types/react-date-range": "npm:1.4.9"
@@ -11529,7 +11529,7 @@ __metadata:
     husky: "npm:7.0.4"
     immer: "npm:10.1.1"
     lint-staged: "npm:12.3.4"
-    lodash: "npm:4.17.21"
+    lodash: "npm:4.17.23"
     postcss: "npm:8.4.41"
     prettier: "npm:3.2.5"
     prettier-plugin-tailwindcss: "npm:0.6.5"
@@ -13092,7 +13092,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.21, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.21":
+"lodash@npm:4.17.23":
+  version: 4.17.23
+  resolution: "lodash@npm:4.17.23"
+  checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10/c08619c038846ea6ac754abd6dd29d2568aa705feb69339e836dfa8d8b09abbb2f859371e86863eda41848221f9af43714491467b5b0299122431e202bb0c532
