@@ -97,6 +97,18 @@ import { calculateNetworkFeeDetails } from "./calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useMultichainTradeTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
 
+const valueSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={96}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
+
 const useIsFirstDeposit = () => {
   const [enabled, setEnabled] = useState(true);
   const [isFirstDeposit, setIsFirstDeposit] = useState(false);
@@ -253,7 +265,7 @@ export const DepositView = () => {
     unwrappedSelectedTokenAddress,
   ]);
 
-  const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
+  const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
@@ -348,7 +360,7 @@ export const DepositView = () => {
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n || amountLD === undefined || amountLD <= 0n;
 
-  const { composeGas } = useMultichainDepositNetworkComposeGas({
+  const { composeGas, isLoading: isComposeGasLoading } = useMultichainDepositNetworkComposeGas({
     tokenAddress: depositViewTokenAddress,
   });
 
@@ -373,7 +385,7 @@ export const DepositView = () => {
     });
   }, [account, amountLD, depositViewChain, composeGas, settlementChainId]);
 
-  const quoteOft = useQuoteOft({
+  const { data: quoteOft, isLoading: isQuoteOftLoading } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
@@ -404,7 +416,7 @@ export const DepositView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const quoteSendNativeFee = useQuoteSendNativeFee({
+  const { data: quoteSendNativeFee, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
@@ -444,6 +456,7 @@ export const DepositView = () => {
               settlementChainId,
             }
           : undefined,
+      withLoading: true,
     }
   );
 
@@ -1006,6 +1019,18 @@ export const DepositView = () => {
     sameChainNetworkFeeDetails,
   ]);
 
+  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
+
+  const areMultichainFeesLoading = isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading;
+
+  const isNetworkFeeLoading =
+    shouldShowInfoRowPlaceholder &&
+    (depositViewChain === settlementChainId ? sameChainNetworkFeeAsyncResult.isLoading : areMultichainFeesLoading);
+
+  const isDepositFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
+
+  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountUsdLoading;
+
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
@@ -1145,11 +1170,23 @@ export const DepositView = () => {
       {depositViewTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow label={<Trans>Estimated Time</Trans>} value={estimatedTimeValue} />
-          <SyntheticsInfoRow label={<Trans>Network Fee</Trans>} value={networkFeeValue} />
-          <SyntheticsInfoRow label={<Trans>Deposit Fee</Trans>} value={depositFeeValue} />
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Deposit Fee</Trans>}
+            value={isDepositFeeLoading ? valueSkeleton : depositFeeValue}
+          />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
-            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+            value={
+              isGmxBalanceLoading ? (
+                valueSkeleton
+              ) : (
+                <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+              )
+            }
           />
         </div>
       )}
