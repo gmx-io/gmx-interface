@@ -880,6 +880,27 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // XAUT/USD [WBTC-USDC]
+    "0xAbDb2530E24f0736DfbF6dA2600B52Bd6455acDd": {
+      marketTokenAddress: "0xAbDb2530E24f0736DfbF6dA2600B52Bd6455acDd",
+      indexTokenAddress: "0xcF558864c6B130Ce76d20641D008ebd4871eDED0",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // LIT/USD [WETH-USDC]
+    "0x044dFE01863CE85f9ECd5639eE5485c90AC320FC": {
+      marketTokenAddress: "0x044dFE01863CE85f9ECd5639eE5485c90AC320FC",
+      indexTokenAddress: "0xE6172EecBB07F197F52bb73d74daa0e19C31c4Db",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // IP/USD [WBTC-USDC]
+    "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a": {
+      marketTokenAddress: "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a",
+      indexTokenAddress: "0xe7304E9F4ca383BD6312a5179cdC7B40B96A6F5a",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
