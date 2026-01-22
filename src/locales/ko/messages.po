@@ -744,6 +744,11 @@ msgstr "{0} <0/><1> to </1>{1} <2/>"
 msgid "See <0>Tenderly Docs</0>."
 msgstr "<0>Tenderly 문서</0>를 참조하세요."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
 msgstr "추천 코드 거래 전송됨"
@@ -1927,6 +1932,7 @@ msgstr "수수료의 USD 가치는 적립 시 계산되며 인센티브를 포�
 msgid "Max"
 msgstr "최대"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "코드 확인 중…"
@@ -2106,6 +2112,10 @@ msgstr "현재 Botanix에는 추가 기회가 없습니다. 더 많은 기회를
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "스왑 경로 없음. {1}을 담보로 사용하려면 <0>{0}을 STBTC로 스왑</0>."
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -5145,10 +5155,6 @@ msgstr "시작 미실현 PnL"
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "승인 제출 완료! <0>상태 보기.</0>"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "포지션 청산 시 적용될 수 있는 순 가격 영향이 사용 중인 담보 금액에 비해 높을 수 있습니다. 레버리지를 줄이는 것을 고려하세요. <0>자세히 보기</0>."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "풀 GM: {1} [{2}]의 {0} 구매 가능 상한에 도달했습니다. 구매 크기를 줄이거나 다른 GM 토큰을 선택하거나 GM 토큰을 다른 풀로 이전한 후 다시 시도해주세요."
@@ -6667,6 +6673,11 @@ msgstr "거래 실패."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "분산 수익 제품"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
+msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."

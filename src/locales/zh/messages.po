@@ -744,6 +744,11 @@ msgstr "{0} <0/><1> 到 </1>{1} <2/>"
 msgid "See <0>Tenderly Docs</0>."
 msgstr "查看 <0>Tenderly 文档</0>。"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
 msgstr "已发送推荐码交易"
@@ -1927,6 +1932,7 @@ msgstr "费用的 USD 值在赚取时计算，不包括激励。"
 msgid "Max"
 msgstr "最大"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "正在检查代码…"
@@ -2106,6 +2112,10 @@ msgstr "Botanix 当前暂无更多机会。请切换至 Arbitrum 或 Avalanche �
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "没有可用交换路径。<0>交换 {0} 到 STBTC</0> 以使用 {1} 作为抵押品。"
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -5145,10 +5155,6 @@ msgstr "起始未实现 PnL"
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "批准已提交！<0>查看状态。</0>"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "平仓时可能应用的潜在净价格冲击相对于您使用的抵押品金额可能较高。请考虑降低杠杆。<0>了解更多</0>。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "池 GM: {0} 在 {1} [{2}] 的可买入上限已达到。请减少买入大小、选择不同的 GM 代币，或将 GM 代币转移到不同的池并重试。"
@@ -6667,6 +6673,11 @@ msgstr "交易失败。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "去中心化收益产品"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
+msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
