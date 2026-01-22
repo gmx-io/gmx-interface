@@ -6279,6 +6279,11 @@ msgstr "Minute(s)"
 msgid "Start Unrealized Fees"
 msgstr "Start Unrealized Fees"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Please deposit funds or switch to a different network."
+msgstr "You need USDC or ETH on {0} to create a referral code via GMX Account. Please deposit funds or switch to a different network."
+
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "V2 trading"
 msgstr "V2 trading"
@@ -7362,6 +7367,11 @@ msgstr "Transaction failed due to execution fee validation.<0/><1/>{suggestText}
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Completed"
 msgstr "Completed"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "No tokens on source chain"
+msgstr "No tokens on source chain"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx

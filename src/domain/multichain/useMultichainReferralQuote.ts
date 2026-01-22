@@ -151,7 +151,7 @@ export function useMultichainReferralQuote({
 
       let negativeFee = 0n;
       for (const oftFeeDetail of oftFeeDetails) {
-        negativeFee += oftFeeDetail[0];
+        negativeFee += oftFeeDetail.feeAmountLD;
       }
 
       const minAmount = limit.minAmountLD === 0n ? 1n : limit.minAmountLD;

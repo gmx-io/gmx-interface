@@ -220,7 +220,12 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
   const hasOutdatedUi = useHasOutdatedUi();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
-  const { depositTokenAddress, sourceChainDepositTokenId } = useMultichainReferralDepositToken();
+  const {
+    depositTokenAddress,
+    sourceChainDepositTokenId,
+    hasNoTokensOnSourceChain,
+    isLoading: isTokensLoading,
+  } = useMultichainReferralDepositToken();
 
   const quoteResult = useMultichainReferralQuote({
     depositTokenAddress,
@@ -377,7 +382,10 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     if (referralCodeCheckStatus === "taken") {
       return { text: t`Code already taken`, disabled: true };
     }
-    if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
+    if (hasNoTokensOnSourceChain) {
+      return { text: t`No tokens on source chain`, disabled: true };
+    }
+    if (isTokensLoading || quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
       return {
         text: t`Loading...`,
         disabled: true,
@@ -408,6 +416,8 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     error,
     isValidating,
     referralCodeCheckStatus,
+    hasNoTokensOnSourceChain,
+    isTokensLoading,
     quoteResult.isLoading,
     quoteResult.data,
     isAllowanceLoaded,
@@ -457,6 +467,8 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       error={error}
       referralCodeCheckStatus={referralCodeCheckStatus}
       rpcFailedChains={rpcFailedChains}
+      hasNoTokensOnSourceChain={hasNoTokensOnSourceChain}
+      srcChainId={srcChainId}
       isProcessing={isSubmitting}
       isConnected={isConnected}
       buttonState={buttonState}
@@ -472,6 +484,8 @@ function CreateReferralCodeLayout({
   error,
   referralCodeCheckStatus,
   rpcFailedChains,
+  hasNoTokensOnSourceChain,
+  srcChainId,
   isProcessing,
   isConnected,
   buttonState,
@@ -483,6 +497,8 @@ function CreateReferralCodeLayout({
   error: string | undefined | null;
   referralCodeCheckStatus: "ok" | "checking" | "taken";
   rpcFailedChains?: ContractsChainId[];
+  hasNoTokensOnSourceChain?: boolean;
+  srcChainId?: number;
   isProcessing: boolean;
   isConnected: boolean;
   buttonState: {
@@ -569,6 +585,14 @@ function CreateReferralCodeLayout({
                 can still create the code, but it may already be taken on those networks.
               </Trans>
             )}
+          </AlertInfoCard>
+        )}
+        {hasNoTokensOnSourceChain && srcChainId && (
+          <AlertInfoCard type="warning" className="text-left" hideClose>
+            <Trans>
+              You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Please
+              deposit funds or switch to a different network.
+            </Trans>
           </AlertInfoCard>
         )}
       </form>

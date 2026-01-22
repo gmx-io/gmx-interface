@@ -149,7 +149,12 @@ function AffiliateCodeFormMultichain({
   const hasOutdatedUi = useHasOutdatedUi();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
-  const { depositTokenAddress, sourceChainDepositTokenId } = useMultichainReferralDepositToken();
+  const {
+    depositTokenAddress,
+    sourceChainDepositTokenId,
+    hasNoTokensOnSourceChain,
+    isLoading: isTokensLoading,
+  } = useMultichainReferralDepositToken();
 
   const quoteResult = useMultichainReferralQuote({
     depositTokenAddress,
@@ -308,7 +313,12 @@ function AffiliateCodeFormMultichain({
       text: t`Code already taken`,
       disabled: true,
     };
-  } else if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
+  } else if (hasNoTokensOnSourceChain) {
+    buttonState = {
+      text: t`No tokens on source chain`,
+      disabled: true,
+    };
+  } else if (isTokensLoading || quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
     buttonState = {
       text: t`Loading...`,
       disabled: true,
@@ -410,6 +420,14 @@ function AffiliateCodeFormMultichain({
               still create the code, but it may already be taken on those networks.
             </Trans>
           )}
+        </AlertInfoCard>
+      )}
+      {hasNoTokensOnSourceChain && srcChainId && (
+        <AlertInfoCard type="warning" className="text-left" hideClose>
+          <Trans>
+            You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Please deposit
+            funds or switch to a different network.
+          </Trans>
         </AlertInfoCard>
       )}
 

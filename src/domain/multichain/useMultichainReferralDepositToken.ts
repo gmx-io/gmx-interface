@@ -15,10 +15,15 @@ import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hook
 export function useMultichainReferralDepositToken(): {
   depositTokenAddress: string | undefined;
   sourceChainDepositTokenId: MultichainTokenId | undefined;
+  hasNoTokensOnSourceChain: boolean;
+  isLoading: boolean;
 } {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
+  const { tokenChainDataArray: multichainTokens, isBalanceDataLoading } = useMultichainTradeTokensRequest(
+    chainId,
+    account
+  );
 
   const depositTokenAddress = useMemo(() => {
     if (srcChainId === undefined) {
@@ -43,6 +48,14 @@ export function useMultichainReferralDepositToken(): {
     return tokens[0].address;
   }, [chainId, multichainTokens, srcChainId]);
 
+  const hasNoTokensOnSourceChain = useMemo(() => {
+    if (srcChainId === undefined || isBalanceDataLoading) {
+      return false;
+    }
+
+    return depositTokenAddress === undefined;
+  }, [srcChainId, isBalanceDataLoading, depositTokenAddress]);
+
   const sourceChainDepositTokenId = useMemo(() => {
     if (depositTokenAddress === undefined || srcChainId === undefined || !isSettlementChain(chainId)) {
       return undefined;
@@ -54,5 +67,7 @@ export function useMultichainReferralDepositToken(): {
   return {
     depositTokenAddress,
     sourceChainDepositTokenId,
+    hasNoTokensOnSourceChain,
+    isLoading: isBalanceDataLoading,
   };
 }
