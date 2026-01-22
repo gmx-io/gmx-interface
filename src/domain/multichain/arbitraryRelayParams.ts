@@ -1,10 +1,18 @@
 import { useMemo } from "react";
-import { encodeAbiParameters, encodePacked, EstimateGasParameters, keccak256, PublicClient, toHex } from "viem";
+import {
+  encodeAbiParameters,
+  encodePacked,
+  EstimateGasParameters,
+  keccak256,
+  PublicClient,
+  toHex,
+  zeroHash,
+} from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
-import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
+import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
@@ -169,6 +177,21 @@ async function estimateArbitraryGasLimit({
             value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
           },
         ],
+      },
+      // TODO do this conditionally to not load user's traffic
+      {
+        address: gasPaymentParams.gasPaymentTokenAddress,
+        code: OVERRIDE_ERC20_BYTECODE,
+        state: [
+          {
+            slot: RANDOM_SLOT,
+            value: zeroHash,
+          },
+        ],
+      },
+      {
+        address: getContract(chainId, "LayerZeroProvider"),
+        balance: SIMULATED_MULTICHAIN_BALANCE,
       },
     ],
   };

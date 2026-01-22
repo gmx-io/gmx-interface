@@ -8,15 +8,7 @@ import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, encodeEventTopics, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
-import {
-  AnyChainId,
-  AVALANCHE,
-  SettlementChainId,
-  SourceChainId,
-  getChainName,
-  getViemChain,
-  isTestnetChain,
-} from "config/chains";
+import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -53,6 +45,7 @@ import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
@@ -89,6 +82,7 @@ import { getTxnErrorToast } from "components/Errors/errorToasts";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { ValidationBannerErrorContent } from "components/TradeBox/hooks/useTradeButtonState";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
@@ -842,6 +836,7 @@ export const DepositView = () => {
 
   let buttonState: {
     text: React.ReactNode;
+    bannerErrorName?: ValidationBannerErrorName;
     disabled?: boolean;
     onClick?: () => void;
   } = {
@@ -907,10 +902,9 @@ export const DepositView = () => {
     const value = isNative ? amountLD : 0n;
 
     if (depositViewChain !== undefined && quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
-      const nativeTokenSymbol = getViemChain(depositViewChain).nativeCurrency.symbol;
-
       buttonState = {
-        text: t`Insufficient ${nativeTokenSymbol} balance`,
+        text: t`Insufficient gas balance`,
+        bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
         disabled: true,
       };
     }
@@ -1141,6 +1135,15 @@ export const DepositView = () => {
               <span className="numbers">{lowerLimitFormatted}</span>.
             </Trans>
           </div>
+        </AlertInfoCard>
+      )}
+      {buttonState.bannerErrorName && (
+        <AlertInfoCard type="error" className="mt-8" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={buttonState.bannerErrorName}
+            chainId={settlementChainId}
+            srcChainId={depositViewChain}
+          />
         </AlertInfoCard>
       )}
       <div className="h-32 shrink-0 grow" />

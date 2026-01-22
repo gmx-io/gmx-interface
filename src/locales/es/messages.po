@@ -607,7 +607,6 @@ msgid "in liquidity"
 msgstr "en liquidez"
 
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
 msgstr "Saldo de gas insuficiente, por favor deposita más {gasPaymentTokensText}."
 
@@ -1277,10 +1276,6 @@ msgstr "Intercambio Límite Fallido"
 msgid "Failed"
 msgstr "Fallida"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Insufficient {formattedList} for gas in your wallet on {chainName}. <0>Buy {formattedList}</0>"
-msgstr "Insuficiente {formattedList} para gas en tu billetera en {chainName}. <0>Comprar {formattedList}</0>"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
@@ -1476,10 +1471,6 @@ msgstr "Transferencia enviada."
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "Recompensas en {nativeTokenSymbol}:"
-
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-msgid "Insufficient {symbol} balance"
-msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
@@ -2125,6 +2116,10 @@ msgstr "Dirección"
 msgid "Claiming successful."
 msgstr "Reclamación exitosa."
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {gasPaymentTokensText} for gas in your GMX Account. <0>Deposit {gasPaymentTokensText}</0>"
+msgstr "Insuficiente {gasPaymentTokensText} para gas en tu Cuenta GMX. <0>Depositar {gasPaymentTokensText}</0>"
+
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "BALANCE"
@@ -2243,8 +2238,6 @@ msgid "Allow {0} to be spent"
 msgstr "Permitir gastar {0}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
 
@@ -2954,6 +2947,7 @@ msgstr "Descubre cómo los tokens GMX, GLV y GM trabajan juntos para potenciar u
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network Fee"
 msgstr "Comisión de Red"
 
@@ -3994,10 +3988,6 @@ msgstr "<0>Botanix</0> actualmente solo soporta"
 msgid "{daysConsidered}d Earned Fees"
 msgstr "Comisiones Ganadas en {daysConsidered}d"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Insufficient {0} balance to pay for gas"
-msgstr "Saldo de {0} insuficiente para pagar gas"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "Reserva adicional requerida:"
@@ -4407,7 +4397,6 @@ msgid "Discover GMX Earn"
 msgstr "Descubre GMX Earn"
 
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Depositar {gasPaymentTokensText}"
 
@@ -5149,6 +5138,7 @@ msgid "Start unrealized pnl"
 msgstr "PnL no realizado inicial"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
 msgstr "Insuficiente {nativeTokenSymbol} para gas en tu billetera en {0}. <0>Comprar {nativeTokenSymbol}</0>"
 
@@ -5250,6 +5240,12 @@ msgid "Close {0} {1}{2}"
 msgstr "Cerrar {0} {1}{2}"
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/domain/multichain/useSourceChainNetworkFeeError.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
@@ -6643,7 +6639,6 @@ msgid "Size per part"
 msgstr "Tamaño por parte"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6689,10 +6684,6 @@ msgstr "Comisión Máxima de Red incluye comisiones para órdenes adicionales. S
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
 msgstr "Reembolsos"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Insufficient {nativeTokenSymbol} balance"
-msgstr "Saldo de {nativeTokenSymbol} insuficiente"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
@@ -7883,6 +7874,10 @@ msgstr "Conteo Máximo de Acciones Alcanzado. <0>Haz clic aquí</0> para actuali
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
+msgstr "Insuficiente {localizedList} para gas en tu billetera en {chainName}. <0>Comprar {localizedList}</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"

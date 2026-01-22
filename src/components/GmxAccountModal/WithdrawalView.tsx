@@ -1110,7 +1110,7 @@ export const WithdrawalView = () => {
       !expressTxnParamsAsyncResult.isLoading
     ) {
       buttonState = {
-        text: t`Insufficient ${gasPaymentToken?.symbol} balance to pay for gas`,
+        text: t`Insufficient gas balance`,
         disabled: true,
       };
     } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
@@ -1120,7 +1120,7 @@ export const WithdrawalView = () => {
       };
     } else if (showWntWarning && !expressTxnParamsAsyncResult.isLoading) {
       buttonState = {
-        text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
+        text: t`Insufficient gas balance`,
         disabled: true,
       };
     } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {

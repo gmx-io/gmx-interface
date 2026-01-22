@@ -38,6 +38,7 @@ import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
+import { ValidationBannerErrorContent } from "components/TradeBox/hooks/useTradeButtonState";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -277,7 +278,7 @@ export function BridgeInModal({
 
     if (sourceChainNativeFeeError) {
       return {
-        text: sourceChainNativeFeeError.buttonText,
+        text: sourceChainNativeFeeError.buttonErrorMessage,
         disabled: true,
       };
     }
@@ -341,9 +342,13 @@ export function BridgeInModal({
             hideTabs
           />
         </BuyInputSection>
-        {sourceChainNativeFeeError?.warningText && (
+        {sourceChainNativeFeeError?.bannerErrorName && (
           <AlertInfoCard type="info" hideClose>
-            {sourceChainNativeFeeError.warningText}
+            <ValidationBannerErrorContent
+              validationBannerErrorName={sourceChainNativeFeeError.bannerErrorName}
+              chainId={chainId}
+              srcChainId={bridgeInChain}
+            />
           </AlertInfoCard>
         )}
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>

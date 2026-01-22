@@ -50,10 +50,11 @@ export function useLocalizedList(items: string[]) {
   if (LIST_FORMATTER_CACHE[i18n.locale]) {
     formatList = LIST_FORMATTER_CACHE[i18n.locale];
   } else {
-    formatList = new Intl.ListFormat(i18n.locale, {
+    const intl = new Intl.ListFormat(i18n.locale, {
       style: "long",
       type: "disjunction",
-    }).format;
+    });
+    formatList = intl.format.bind(intl);
     LIST_FORMATTER_CACHE[i18n.locale] = formatList;
   }
 

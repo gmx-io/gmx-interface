@@ -4,7 +4,15 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
-import { AVALANCHE, BOTANIX, ContractsChainId, getChainName, SettlementChainId } from "config/chains";
+import {
+  AVALANCHE,
+  BOTANIX,
+  ContractsChainId,
+  getChainName,
+  getViemChain,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
@@ -143,7 +151,7 @@ export default function InsufficientNativeTokenBalanceMessage({ chainId }: { cha
 // TODO move theses outside of tradebox
 export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId: ContractsChainId }) {
   const gasPaymentTokens = getGasPaymentTokens(chainId);
-  const localizedList = useLocalizedList(gasPaymentTokens.map((token) => getToken(chainId, token)?.symbol));
+  const localizedList = useLocalizedList(gasPaymentTokens.map((token) => getToken(chainId, token).symbol));
   const chainName = getChainName(chainId);
   const firstGasPaymentToken = gasPaymentTokens[0];
 
@@ -174,6 +182,60 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({ chainId }: { chai
       </Trans>
     </div>
   );
+}
+
+export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }: { srcChainId: SourceChainId }) {
+  const nativeToken = getViemChain(srcChainId).nativeCurrency;
+
+  if (!nativeToken) {
+    return null;
+  }
+
+  const nativeTokenSymbol = nativeToken.symbol;
+  const matchaBuyTokenUrl = getMatchaBuyTokenUrl(srcChainId, zeroAddress);
+
+  return (
+    <div>
+      <Trans>
+        Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(srcChainId)}.{" "}
+        <ColorfulButtonLink newTab color="red" to={matchaBuyTokenUrl}>
+          Buy {nativeTokenSymbol}
+        </ColorfulButtonLink>
+      </Trans>
+    </div>
+  );
+}
+
+export function ValidationBannerErrorContent({
+  validationBannerErrorName,
+  chainId,
+  srcChainId,
+}: {
+  validationBannerErrorName: ValidationBannerErrorName;
+  chainId: ContractsChainId;
+  srcChainId?: SourceChainId;
+}) {
+  switch (validationBannerErrorName) {
+    case ValidationBannerErrorName.insufficientNativeTokenBalance: {
+      return <InsufficientNativeTokenBalanceMessage chainId={chainId} />;
+    }
+    case ValidationBannerErrorName.insufficientWalletGasTokenBalance: {
+      return <InsufficientWalletGasTokenBalanceMessage chainId={chainId} />;
+    }
+    case ValidationBannerErrorName.insufficientGmxAccountGasTokenBalance: {
+      return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} />;
+    }
+    case ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance: {
+      if (!srcChainId) {
+        return null;
+      }
+
+      return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={srcChainId} />;
+    }
+    default: {
+      return null;
+    }
+  }
 }
 
 export function useTradeboxButtonState({
@@ -321,7 +383,7 @@ export function useTradeboxButtonState({
       tokensData,
     });
 
-    const validationResult = takeValidationResult([commonError, tradeError, expressError, nativeGasError]);
+    const validationResult = takeValidationResult(commonError, tradeError, expressError, nativeGasError);
 
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipName) {
@@ -368,21 +430,9 @@ export function useTradeboxButtonState({
       }
     }
 
-    let bannerErrorContent: ReactNode = null;
-    switch (validationResult.bannerErrorName) {
-      case ValidationBannerErrorName.insufficientNativeTokenBalance: {
-        bannerErrorContent = <InsufficientNativeTokenBalanceMessage chainId={chainId} />;
-        break;
-      }
-      case ValidationBannerErrorName.insufficientWalletGasTokenBalance: {
-        bannerErrorContent = <InsufficientWalletGasTokenBalanceMessage chainId={chainId} />;
-        break;
-      }
-      case ValidationBannerErrorName.insufficientGmxAccountGasTokenBalance: {
-        bannerErrorContent = <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} />;
-        break;
-      }
-    }
+    const bannerErrorContent = validationResult.bannerErrorName ? (
+      <ValidationBannerErrorContent validationBannerErrorName={validationResult.bannerErrorName} chainId={chainId} />
+    ) : null;
 
     return {
       buttonErrorText: validationResult.buttonErrorMessage,

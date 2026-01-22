@@ -53,6 +53,7 @@ export enum ValidationBannerErrorName {
   insufficientNativeTokenBalance = "insufficientNativeTokenBalance",
   insufficientWalletGasTokenBalance = "insufficientWalletGasTokenBalance",
   insufficientGmxAccountGasTokenBalance = "insufficientGmxAccountGasTokenBalance",
+  insufficientSourceChainNativeTokenBalance = "insufficientSourceChainNativeTokenBalance",
 }
 
 export type ValidationResult =
@@ -1149,9 +1150,9 @@ export function getNativeGasError(p: {
   return {};
 }
 
-export function takeValidationResult(validationResults: ValidationResult[]): ValidationResult {
+export function takeValidationResult(...validationResults: (ValidationResult | undefined)[]): ValidationResult {
   for (const validationResult of validationResults) {
-    if (validationResult.buttonErrorMessage) {
+    if (validationResult && validationResult.buttonErrorMessage) {
       return validationResult;
     }
   }
