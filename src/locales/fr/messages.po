@@ -2662,10 +2662,6 @@ msgstr "Stop Market - Augmentation Long"
 msgid "Enter your feedback here."
 msgstr "Entrez votre avis ici."
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "Vous retirez {0}, votre jeton de gas. Du gas est requis pour ce retrait, veuillez donc conserver au moins <0>{1}</0> en {2} ou changer votre jeton de gas dans <1>les paramètres</1>."
-
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
 msgstr "L'ordre sera exécuté s'il y a suffisamment de liquidité et que le prix d'exécution garantit que vous recevrez le montant minimum à recevoir."
@@ -4744,10 +4740,6 @@ msgstr "Collatéral ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "Vous avez une position existante avec {0} comme collatéral. Cet ordre ne sera pas valide pour cette position. <0>Passer au collatéral {1}</0>"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "Vous retirez {0}, votre jeton de gas. Du gas est requis pour le trading express, veuillez donc conserver au moins <0>{1}</0> en {2} ou changer votre jeton de gas dans <1>les paramètres</1>."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."

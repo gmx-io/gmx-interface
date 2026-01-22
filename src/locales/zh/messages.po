@@ -2662,10 +2662,6 @@ msgstr "止损市价 - 做多增加"
 msgid "Enter your feedback here."
 msgstr "在此输入您的反馈。"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "您正在提取 {0}，您的 gas 代币。此提取需要 gas，因此请至少保留 <0>{1}</0> 在 {2} 中，或在<1>设置</1>中切换您的 gas 代币。"
-
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
 msgstr "如果有足够的流动性且执行价格保证您收到最低收到金额，则订单将被执行。"
@@ -4744,10 +4740,6 @@ msgstr "抵押品 ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "您有一个以 {0} 作为抵押品的现有仓位。此订单对该仓位无效。<0>切换到 {1} 抵押品</0>"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "您正在提取 {0}，您的 gas 代币。快速交易需要 gas，因此请至少保留 <0>{1}</0> 在 {2} 中，或在<1>设置</1>中切换您的 gas 代币。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."

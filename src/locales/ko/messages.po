@@ -2662,10 +2662,6 @@ msgstr "스탑 마켓 - 롱 증가"
 msgid "Enter your feedback here."
 msgstr "여기에 피드백을 입력하세요."
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "{0}, 가스 토큰을 출금 중입니다. 이 출금에 가스가 필요하므로 {2}에 최소 <0>{1}</0>을 유지하거나 <1>설정</1>에서 가스 토큰을 전환하세요."
-
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
 msgstr "충분한 유동성이 있고 실행 가격이 최소 수령액을 보장할 경우 주문이 실행됩니다."
@@ -4744,10 +4740,6 @@ msgstr "담보 ({0})"
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "{0}을(를) 담보로 하는 기존 포지션이 있습니다. 이 주문은 해당 포지션에 유효하지 않습니다. <0>{1} 담보로 전환</0>"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "{0}, 가스 토큰을 출금 중입니다. 익스프레스 트레이딩에 가스가 필요하므로 {2}에 최소 <0>{1}</0>을 유지하거나 <1>설정</1>에서 가스 토큰을 전환하세요."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
