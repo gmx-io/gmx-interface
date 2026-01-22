@@ -34,7 +34,6 @@ import {
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectExpressGlobalParams,
@@ -526,7 +525,7 @@ export const WithdrawalView = () => {
   const networks = useGmxAccountWithdrawNetworks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
-  const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
+  const { gasTokenBuffer } = useUsdGasTokenBuffer();
   const gasPaymentToken = useSelector(selectGasPaymentToken);
 
   const selectedToken = useMemo(() => {
@@ -995,50 +994,6 @@ export const WithdrawalView = () => {
     wntFee,
   ]);
 
-  const shouldShowMinRecommendedAmount = useMemo(() => {
-    if (
-      selectedToken === undefined ||
-      selectedToken.gmxAccountBalance === undefined ||
-      selectedToken.gmxAccountBalance === 0n ||
-      withdrawalViewChain === undefined ||
-      account === undefined ||
-      inputAmount === undefined ||
-      inputAmount <= 0n
-    ) {
-      return false;
-    }
-
-    const canSelectedTokenBeUsedAsGasPaymentToken = getGasPaymentTokens(chainId).includes(selectedToken.address);
-
-    if (!canSelectedTokenBeUsedAsGasPaymentToken) {
-      return false;
-    }
-
-    if (gasPaymentToken?.address !== selectedToken.address) {
-      return false;
-    }
-
-    const buffer = convertToTokenAmount(
-      gasTokenBufferWarningThreshold,
-      gasPaymentToken.decimals,
-      getMidPrice(gasPaymentToken.prices)
-    )!;
-
-    const maxAmount = bigMath.max(selectedToken.gmxAccountBalance - inputAmount - buffer, 0n);
-
-    return maxAmount === 0n;
-  }, [
-    account,
-    chainId,
-    gasPaymentToken?.address,
-    gasPaymentToken?.decimals,
-    gasPaymentToken?.prices,
-    gasTokenBufferWarningThreshold,
-    inputAmount,
-    selectedToken,
-    withdrawalViewChain,
-  ]);
-
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
   const isInsufficientBalance =
     selectedToken?.gmxAccountBalance !== undefined &&
@@ -1416,30 +1371,6 @@ export const WithdrawalView = () => {
             </AlertInfoCard>
           )}
 
-          {shouldShowMinRecommendedAmount && (
-            <AlertInfoCard type="info" className="my-4">
-              <div>
-                {isSameChain ? (
-                  <Trans>
-                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for express trading, so
-                    please keep at least{" "}
-                    <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-                    {selectedToken?.symbol} or switch your gas token in{" "}
-                    <WarningSettingsButton>settings</WarningSettingsButton>.
-                  </Trans>
-                ) : (
-                  <Trans>
-                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
-                    please keep at least{" "}
-                    <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-                    {selectedToken?.symbol} or switch your gas token in{" "}
-                    <WarningSettingsButton>settings</WarningSettingsButton>.
-                  </Trans>
-                )}
-              </div>
-            </AlertInfoCard>
-          )}
-
           {buttonState.bannerErrorName && (
             <AlertInfoCard type="error" className="mt-8" hideClose>
               <ValidationBannerErrorContent
@@ -1587,23 +1518,4 @@ async function simulateWithdraw({
       relayRouterAddress: to as Address,
     });
   }, "simulation");
-}
-
-function WarningSettingsButton({ children }: { children: React.ReactNode }) {
-  const { setIsSettingsVisible } = useSettings();
-  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-
-  return (
-    <span
-      className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
-      onClick={() => {
-        setIsSettingsVisible(true);
-        setTimeout(() => {
-          setIsVisibleOrView(false);
-        }, 200);
-      }}
-    >
-      {children}
-    </span>
-  );
 }
