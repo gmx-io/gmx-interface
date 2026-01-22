@@ -22,6 +22,7 @@ import {
   useMultichainReferralQuote,
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
+import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import type { ReferralCodeStats } from "domain/referrals/types";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
 import { useChainId } from "lib/chains";
@@ -165,6 +166,14 @@ function AffiliateCodeFormMultichain({
   const { needsApproval, isApproving, isAllowanceLoaded, handleApprove } = useMultichainStargateApproval({
     depositTokenAddress,
     amountToApprove: quoteResult.data?.amount,
+  });
+
+  const sourceChainNativeFeeError = useSourceChainNativeFeeError({
+    networkFeeUsd: quoteResult.networkFeeUsd,
+    paySource: "sourceChain",
+    chainId: chainId as ContractsChainId,
+    srcChainId,
+    paySourceChainNativeTokenAmount: 0n,
   });
 
   async function handleSubmit(event: React.FormEvent) {
@@ -318,6 +327,11 @@ function AffiliateCodeFormMultichain({
       text: t`No tokens on source chain`,
       disabled: true,
     };
+  } else if (sourceChainNativeFeeError) {
+    buttonState = {
+      text: sourceChainNativeFeeError.buttonText,
+      disabled: true,
+    };
   } else if (isTokensLoading || quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
     buttonState = {
       text: t`Loading...`,
@@ -428,6 +442,11 @@ function AffiliateCodeFormMultichain({
             You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Please deposit
             funds or switch to a different network.
           </Trans>
+        </AlertInfoCard>
+      )}
+      {sourceChainNativeFeeError && (
+        <AlertInfoCard type="warning" className="text-left" hideClose>
+          {sourceChainNativeFeeError.warningText}
         </AlertInfoCard>
       )}
 

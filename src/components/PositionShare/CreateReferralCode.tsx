@@ -23,6 +23,7 @@ import {
   useMultichainReferralQuote,
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
+import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { registerReferralCode } from "domain/referrals";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
 import { useChainId } from "lib/chains";
@@ -238,6 +239,14 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     amountToApprove: quoteResult.data?.amount,
   });
 
+  const sourceChainNativeFeeError = useSourceChainNativeFeeError({
+    networkFeeUsd: quoteResult.networkFeeUsd,
+    paySource: "sourceChain",
+    chainId: chainId as ContractsChainId,
+    srcChainId,
+    paySourceChainNativeTokenAmount: 0n,
+  });
+
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -385,6 +394,9 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     if (hasNoTokensOnSourceChain) {
       return { text: t`No tokens on source chain`, disabled: true };
     }
+    if (sourceChainNativeFeeError) {
+      return { text: sourceChainNativeFeeError.buttonText, disabled: true };
+    }
     if (isTokensLoading || quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
       return {
         text: t`Loading...`,
@@ -417,6 +429,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     isValidating,
     referralCodeCheckStatus,
     hasNoTokensOnSourceChain,
+    sourceChainNativeFeeError,
     isTokensLoading,
     quoteResult.isLoading,
     quoteResult.data,
@@ -469,6 +482,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       rpcFailedChains={rpcFailedChains}
       hasNoTokensOnSourceChain={hasNoTokensOnSourceChain}
       srcChainId={srcChainId}
+      sourceChainNativeFeeError={sourceChainNativeFeeError}
       isProcessing={isSubmitting}
       isConnected={isConnected}
       buttonState={buttonState}
@@ -486,6 +500,7 @@ function CreateReferralCodeLayout({
   rpcFailedChains,
   hasNoTokensOnSourceChain,
   srcChainId,
+  sourceChainNativeFeeError,
   isProcessing,
   isConnected,
   buttonState,
@@ -499,6 +514,7 @@ function CreateReferralCodeLayout({
   rpcFailedChains?: ContractsChainId[];
   hasNoTokensOnSourceChain?: boolean;
   srcChainId?: number;
+  sourceChainNativeFeeError?: { buttonText: string; warningText: string };
   isProcessing: boolean;
   isConnected: boolean;
   buttonState: {
@@ -593,6 +609,11 @@ function CreateReferralCodeLayout({
               You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Please
               deposit funds or switch to a different network.
             </Trans>
+          </AlertInfoCard>
+        )}
+        {sourceChainNativeFeeError && (
+          <AlertInfoCard type="warning" className="text-left" hideClose>
+            {sourceChainNativeFeeError.warningText}
           </AlertInfoCard>
         )}
       </form>
