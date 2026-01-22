@@ -215,6 +215,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState<"ok" | "taken" | "checking">("ok");
+  const [rpcFailedChains, setRpcFailedChains] = useState<ContractsChainId[]>([]);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const hasOutdatedUi = useHasOutdatedUi();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
@@ -422,13 +423,15 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       if (debouncedReferralCode === "" || !REFERRAL_CODE_REGEX.test(debouncedReferralCode) || error) {
         setIsValidating(false);
         setReferralCodeCheckStatus("ok");
+        setRpcFailedChains([]);
         return;
       }
 
       setIsValidating(true);
       setReferralCodeCheckStatus("checking");
-      const { takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       if (!cancelled) {
+        setRpcFailedChains(failedChains);
         if (takenStatus === "none" || takenStatus === "other") {
           setReferralCodeCheckStatus("ok");
         } else {
@@ -453,6 +456,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       setReferralCode={setReferralCode}
       error={error}
       referralCodeCheckStatus={referralCodeCheckStatus}
+      rpcFailedChains={rpcFailedChains}
       isProcessing={isSubmitting}
       isConnected={isConnected}
       buttonState={buttonState}

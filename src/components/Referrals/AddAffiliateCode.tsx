@@ -144,6 +144,7 @@ function AffiliateCodeFormMultichain({
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState<"ok" | "taken" | "checking">("ok");
+  const [rpcFailedChains, setRpcFailedChains] = useState<ContractsChainId[]>([]);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const hasOutdatedUi = useHasOutdatedUi();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
@@ -335,13 +336,15 @@ function AffiliateCodeFormMultichain({
       if (debouncedReferralCode === "" || !REFERRAL_CODE_REGEX.test(debouncedReferralCode) || error) {
         setIsValidating(false);
         setReferralCodeCheckStatus("ok");
+        setRpcFailedChains([]);
         return;
       }
 
       setIsValidating(true);
       setReferralCodeCheckStatus("checking");
-      const { takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       if (!cancelled) {
+        setRpcFailedChains(failedChains);
         if (takenStatus === "none" || takenStatus === "other") {
           setReferralCodeCheckStatus("ok");
         } else {
@@ -393,6 +396,21 @@ function AffiliateCodeFormMultichain({
           label="Network Fee"
           value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
+      )}
+      {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
+        <AlertInfoCard type="info" className="text-left">
+          {rpcFailedChains.length === 1 ? (
+            <Trans>
+              Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
+              but it may already be taken on that network.
+            </Trans>
+          ) : (
+            <Trans>
+              Unable to verify code availability on {rpcFailedChains.map((id) => getChainName(id)).join(", ")}. You can
+              still create the code, but it may already be taken on those networks.
+            </Trans>
+          )}
+        </AlertInfoCard>
       )}
 
       <Button variant="primary-action" className="w-full" type="submit" disabled={buttonState.disabled}>
