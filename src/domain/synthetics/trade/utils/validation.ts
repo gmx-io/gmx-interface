@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
-import { ethers } from "ethers";
-import { zeroAddress } from "viem";
+import { maxUint256, zeroAddress } from "viem";
 
 import {
   AnyChainId,
@@ -560,7 +559,7 @@ export function getDecreaseError(p: {
       return { buttonErrorMessage: t`Enter a trigger price` };
     }
 
-    if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== ethers.MaxUint256) {
+    if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== maxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
         return { buttonErrorMessage: t`Trigger price below liq. price` };
       }
@@ -654,7 +653,7 @@ export function getEditCollateralError(p: {
   }
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
-    if (position?.isLong && nextLiqPrice < ethers.MaxUint256 && position?.markPrice < nextLiqPrice) {
+    if (position?.isLong && nextLiqPrice < maxUint256 && position?.markPrice < nextLiqPrice) {
       return { buttonErrorMessage: t`Invalid liq. price` };
     }
 

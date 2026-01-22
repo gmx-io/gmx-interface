@@ -79,6 +79,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
@@ -1012,6 +1013,7 @@ export function PositionSeller() {
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
+                  maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
                 />
 
                 {!isTwap && (

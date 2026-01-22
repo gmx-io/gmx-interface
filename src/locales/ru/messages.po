@@ -743,6 +743,11 @@ msgstr "{0} <0/><1> до </1>{1} <2/>"
 msgid "See <0>Tenderly Docs</0>."
 msgstr "См. <0>документацию Tenderly</0>."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
 msgstr "Отправлена транзакция реферального кода"
@@ -852,10 +857,6 @@ msgstr "Нет совпадающих рынков"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake {tokenSymbol}"
 msgstr "Вывести из стейкинга {tokenSymbol}"
-
-#: src/components/InputSection/InputSection.tsx
-msgid "MAX"
-msgstr "МАКС"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
@@ -1926,6 +1927,7 @@ msgstr "Стоимость комиссий в USD рассчитывается 
 msgid "Max"
 msgstr "Макс"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "Проверка кода…"
@@ -2105,6 +2107,10 @@ msgstr "На Botanix сейчас нет дополнительных возмо
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "Нет пути обмена. <0>Обменяйте {0} на STBTC</0>, чтобы использовать {1} как залог."
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -5146,10 +5152,6 @@ msgstr "Недостаточно {nativeTokenSymbol} для газа в ваше
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Одобрение подано! <0>Просмотреть статус.</0>"
 
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "Чистое ценовое воздействие при закрытии этой позиции может быть высоким относительно используемого обеспечения. Рассмотрите снижение плеча. <0>Подробнее</0>."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
 msgstr "Достигнут лимит покупки для пула GM: {0} в {1} [{2}]. Пожалуйста, уменьшите размер покупки, выберите другой токен GM или сдвиньте токены GM в другой пул и попробуйте снова."
@@ -6675,6 +6677,11 @@ msgstr "Транзакция не удалась."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "Децентрализованные продукты доходности"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
+msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
