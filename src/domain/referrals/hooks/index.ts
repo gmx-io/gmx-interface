@@ -1,18 +1,19 @@
 import { gql } from "@apollo/client";
-import { BigNumberish, ethers, isAddress, Signer } from "ethers";
+import { BigNumberish, ethers, isAddress, Network, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { Hash, zeroAddress } from "viem";
+import { Hash, withRetry, zeroAddress } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { callContract, contractFetcher } from "lib/contracts";
+import { withFallback } from "lib/FallbackTracker/withFallback";
 import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { basisPointsToFloat } from "lib/numbers";
-import { getProvider } from "lib/rpc";
+import { getCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -164,10 +165,29 @@ export async function getReferralCodeOwner(chainId: ContractsChainId, referralCo
   if (referralStorageAddress === zeroAddress) {
     return zeroAddress;
   }
-  const provider = getProvider(undefined, chainId);
-  const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);
-  const codeOwner = await contract.codeOwners(referralCode);
-  return codeOwner;
+
+  const { primary, fallbacks } = getCurrentRpcUrls(chainId);
+  const endpoints = [primary, ...fallbacks];
+  const network = Network.from(chainId);
+
+  return withFallback({
+    endpoints,
+    fn: async (rpcUrl: string) => {
+      const provider = new ethers.JsonRpcProvider(rpcUrl, chainId, { staticNetwork: network });
+      const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);
+
+      return withRetry(
+        async () => {
+          const codeOwner = await contract.codeOwners(referralCode);
+          return codeOwner as string;
+        },
+        {
+          delay: 200,
+          retryCount: 2,
+        }
+      );
+    },
+  });
 }
 
 export function useUserReferralCode(signer, chainId, account, skipLocalReferralCode = false) {
