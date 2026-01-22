@@ -1,33 +1,27 @@
 import { Trans, t } from "@lingui/macro";
-import { BaseContract, ethers } from "ethers";
 import { ReactNode } from "react";
-import { withRetry } from "viem";
+import { ContractFunctionParameters, encodeFunctionData, withRetry } from "viem";
 
-import {
-  getContract,
-  getExchangeRouterContract,
-  getGlvRouterContract,
-  getMulticallContract,
-  getZeroAddressContract,
-} from "config/contracts";
+import { getContract } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
+import { decodeErrorFromViemError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
-import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapQuote } from "sdk/types/trade";
-import { CustomErrorName, extractDataFromError, extractTxnError } from "sdk/utils/errors";
-import { OracleUtils } from "typechain-types/ExchangeRouter";
+import { CustomErrorName } from "sdk/utils/errors";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
+import { getBlockTimestampAndNumber, isTemporaryError } from "./simulation";
 import { isGlvEnabled } from "../markets/glv";
 
 type PriceOverrides = {
@@ -62,30 +56,20 @@ export type SimulateExecuteParams = {
  * @deprecated use simulateExecution instead
  */
 export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateExecuteParams) {
-  const provider = getProvider(undefined, chainId);
+  const client = getPublicClientWithRpc(chainId);
 
   const multicallAddress = getContract(chainId, "Multicall");
-
-  const multicall = getMulticallContract(chainId, provider);
-  const exchangeRouter = getExchangeRouterContract(chainId, provider);
-  const glvRouter = isGlvEnabled(chainId) ? getGlvRouterContract(chainId, provider) : getZeroAddressContract(provider);
+  const useGlvRouter = isGlvEnabled(chainId);
 
   let blockTimestamp: bigint;
-  let blockTag: string | number;
+  let blockNumber: bigint | undefined;
 
   if (p.blockTimestampData) {
     blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
-    blockTag = "latest";
   } else {
-    const result = await multicall.blockAndAggregate.staticCall([
-      { target: multicallAddress, callData: multicall.interface.encodeFunctionData("getCurrentBlockTimestamp") },
-    ]);
-    const returnValues = multicall.interface.decodeFunctionResult(
-      "getCurrentBlockTimestamp",
-      result.returnData[0].returnData
-    );
-    blockTimestamp = returnValues[0];
-    blockTag = Number(result.blockNumber);
+    const result = await getBlockTimestampAndNumber(client, multicallAddress);
+    blockTimestamp = result.blockTimestamp;
+    blockNumber = result.blockNumber;
   }
 
   const { primaryTokens, primaryPrices } = getSimulationPrices(chainId, p.tokensData, p.primaryPriceOverrides);
@@ -93,13 +77,20 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   const method = p.method || "simulateExecuteLatestOrder";
 
   const isGlv = method === "simulateExecuteLatestGlvDeposit" || method === "simulateExecuteLatestGlvWithdrawal";
+  if (isGlv && !useGlvRouter) {
+    throw new Error("GlvRouter is not enabled for this chain");
+  }
 
   const simulationPriceParams = {
     primaryTokens: primaryTokens,
     primaryPrices: primaryPrices,
     minTimestamp: priceTimestamp,
     maxTimestamp: priceTimestamp,
-  } as OracleUtils.SimulatePricesParamsStruct;
+  } satisfies ContractFunctionParameters<
+    typeof abis.ExchangeRouter,
+    "payable",
+    "simulateExecuteLatestWithdrawal"
+  >["args"][0];
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
@@ -109,30 +100,51 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestWithdrawal", [
-        simulationPriceParams,
-        p.swapPricingType,
-      ])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestWithdrawal",
+        args: [simulationPriceParams, p.swapPricingType],
+      })
     );
   } else if (method === "simulateExecuteLatestDeposit") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestDeposit", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestDeposit",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestOrder") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestOrder", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestOrder",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestShift") {
     simulationPayloadData.push(
-      exchangeRouter.interface.encodeFunctionData("simulateExecuteLatestShift", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestShift",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestGlvDeposit") {
     simulationPayloadData.push(
-      glvRouter.interface.encodeFunctionData("simulateExecuteLatestGlvDeposit", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.GlvRouter,
+        functionName: "simulateExecuteLatestGlvDeposit",
+        args: [simulationPriceParams],
+      })
     );
   } else if (method === "simulateExecuteLatestGlvWithdrawal") {
     simulationPayloadData.push(
-      glvRouter.interface.encodeFunctionData("simulateExecuteLatestGlvWithdrawal", [simulationPriceParams])
+      encodeFunctionData({
+        abi: abis.GlvRouter,
+        functionName: "simulateExecuteLatestGlvWithdrawal",
+        args: [simulationPriceParams],
+      })
     );
   } else {
     throw new Error(`Unknown method: ${method}`);
@@ -141,10 +153,17 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   let errorTitle = p.errorTitle || t`Execute order simulation failed.`;
 
   const tenderlyConfig = getTenderlyConfig();
-  const router = isGlv ? glvRouter : exchangeRouter;
+  const routerAddress = isGlv ? getContract(chainId, "GlvRouter") : getContract(chainId, "ExchangeRouter");
+  const routerAbi = isGlv ? abis.GlvRouter : abis.ExchangeRouter;
 
   if (tenderlyConfig) {
-    await simulateTxWithTenderly(chainId, router as BaseContract, p.account, "multicall", [simulationPayloadData], {
+    await simulateTxWithTenderly({
+      chainId,
+      address: routerAddress,
+      abi: routerAbi,
+      account: p.account,
+      method: "multicall",
+      params: [simulationPayloadData],
       value: p.value,
       comment: `calling ${method}`,
     });
@@ -153,33 +172,36 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   try {
     await withRetry(
       () => {
-        return router.multicall.staticCall(simulationPayloadData, {
+        return client.simulateContract({
+          address: routerAddress,
+          abi: routerAbi,
+          functionName: "multicall",
+          args: [simulationPayloadData],
           value: p.value,
-          blockTag,
-          from: p.account,
+          account: p.account,
+          blockNumber: blockNumber,
         });
       },
       {
         retryCount: 2,
         delay: 200,
         shouldRetry: ({ error }) => {
-          const [message] = extractTxnError(error);
-          return message?.includes("unsupported block number") ?? false;
+          return isTemporaryError(error);
         },
       }
     );
   } catch (txnError) {
-    const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
     let msg: React.ReactNode = undefined;
 
     try {
-      const errorData = extractDataFromError(txnError?.info?.error?.message) ?? extractDataFromError(txnError?.message);
-      const error = new Error("No data found in error.");
-      error.cause = txnError;
-      if (!errorData) throw error;
+      const parsedError = decodeErrorFromViemError(txnError);
+      if (!parsedError) {
+        const error = new Error("No data found in error.");
+        error.cause = txnError;
+        throw error;
+      }
 
-      const parsedError = customErrors.interface.parseError(errorData);
-      const isSimulationPassed = parsedError?.name === "EndOfOracleSimulation";
+      const isSimulationPassed = parsedError.name === CustomErrorName.EndOfOracleSimulation;
 
       if (isSimulationPassed) {
         if (p.metricId) {
@@ -192,18 +214,12 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         sendTxnErrorMetric(p.metricId, txnError, "simulation");
       }
 
-      const parsedArgs = Object.keys(parsedError?.args ?? []).reduce((acc, k) => {
-        if (!Number.isNaN(Number(k))) {
-          return acc;
-        }
-        acc[k] = parsedError?.args[k].toString();
-        return acc;
-      }, {});
+      const parsedArgs = parsedError.args;
 
       let errorContent: ReactNode = errorTitle;
       if (
-        parsedError?.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
-        parsedError?.name === CustomErrorName.InsufficientSwapOutputAmount
+        parsedError.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
+        parsedError.name === CustomErrorName.InsufficientSwapOutputAmount
       ) {
         errorContent = (
           <Trans>
@@ -229,9 +245,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
           {p.additionalErrorParams?.content}
           <br />
           <br />
-          <ToastifyDebug
-            error={`${txnError?.info?.error?.message ?? parsedError?.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
-          />
+          <ToastifyDebug error={`${parsedError.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`} />
         </div>
       );
     } catch (parsingError) {

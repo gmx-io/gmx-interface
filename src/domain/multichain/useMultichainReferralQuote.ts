@@ -49,14 +49,7 @@ export function useMultichainReferralQuote({
 
   const referralCodeHex = useMemo(() => (referralCode ? encodeReferralCode(referralCode) : undefined), [referralCode]);
 
-  const { signer } = useWallet();
-
-  const simulationSigner = useMemo(() => {
-    if (!signer?.provider) {
-      return undefined;
-    }
-    return RANDOM_WALLET.connect(signer.provider);
-  }, [signer?.provider]);
+  const simulationSigner = RANDOM_WALLET;
 
   const sourceChainDepositTokenId = useMemo(() => {
     if (depositTokenAddress === undefined || srcChainId === undefined || !isSettlementChain(chainId)) {

@@ -1,6 +1,14 @@
+import {
+  CallExecutionError,
+  ContractFunctionExecutionError,
+  ContractFunctionRevertedError,
+  InvalidInputRpcError,
+  RpcRequestError,
+  InsufficientFundsError,
+} from "viem";
 import { describe, expect, it } from "vitest";
 
-import { parseError, ErrorLike } from "utils/errors";
+import { ErrorLike, parseError } from "utils/errors";
 import { TxErrorType } from "utils/errors/transactionsErrors";
 
 describe("parseError", () => {
@@ -333,6 +341,69 @@ describe("parseError", () => {
           errorSource: "getCallStaticError",
           isAdditionalValidationPassed: false,
           additionalValidationType: "tryCallStatic",
+        })
+      );
+    });
+  });
+
+  describe("viem errors", () => {
+    it("should handle viem ContractFunctionExecutionError", () => {
+      const error = new ContractFunctionExecutionError(
+        new ContractFunctionRevertedError({
+          abi: [],
+          functionName: "test_function",
+          data: "0x4e48dcda",
+          message: "test message",
+        }),
+        {
+          abi: [],
+          functionName: "test_function",
+        }
+      );
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          contractError: "EndOfOracleSimulation",
+        })
+      );
+    });
+
+    it("should handle viem InsufficientFundsError", () => {
+      const error = new ContractFunctionExecutionError(
+        new CallExecutionError(
+          new InsufficientFundsError({
+            cause: new InvalidInputRpcError(
+              new InvalidInputRpcError(
+                new RpcRequestError({
+                  error: {
+                    message:
+                      "err: insufficient funds for gas * price + value: address 0x6f9f3106F0209dc560A53C6808f8BF32E38468C3 have 4174472651641805 want 10000000000000000000 (supplied gas 1100000000)",
+                    code: -32000,
+                  },
+                  body: {},
+                  url: "https://example.com",
+                })
+              )
+            ),
+          }),
+          {}
+        ),
+        {
+          abi: [],
+          functionName: "test_function",
+        }
+      );
+
+      const result = parseError(error);
+
+      expect(result).toEqual(
+        expect.objectContaining({
+          txErrorType: TxErrorType.NotEnoughFunds,
+          isUserError: true,
+          isUserRejectedError: false,
+          errorGroup: "Txn Error: NOT_ENOUGH_FUNDS",
         })
       );
     });

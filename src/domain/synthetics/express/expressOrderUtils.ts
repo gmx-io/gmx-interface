@@ -965,7 +965,7 @@ export async function signSetTraderReferralCode({
   srcChainId,
   shouldUseSignerMethod,
 }: {
-  signer: AbstractSigner;
+  signer: AbstractSigner | ISigner;
   relayParams: RelayParamsPayload;
   referralCode: string;
   chainId: ContractsChainId;
@@ -996,7 +996,7 @@ export async function signRegisterCode({
   srcChainId,
   shouldUseSignerMethod,
 }: {
-  signer: AbstractSigner;
+  signer: AbstractSigner | ISigner;
   relayParams: RelayParamsPayload;
   referralCode: string;
   chainId: ContractsChainId;

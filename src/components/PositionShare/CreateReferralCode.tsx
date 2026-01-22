@@ -7,6 +7,7 @@ import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId } from "config/chains";
+import { ContractsChainId, getChainName } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -35,6 +36,7 @@ import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "components/Referrals/referralsHelper";
@@ -71,8 +73,10 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
 
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | undefined>();
-  const [isAlreadyTaken, setIsAlreadyTaken] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [rpcFailedChains, setRpcFailedChains] = useState<ContractsChainId[]>([]);
+  const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState<"ok" | "checking" | "taken">("ok");
+  const debouncedReferralCode = useDebounce(referralCode, 300);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const createReferralCode = useCallback(
@@ -90,15 +94,42 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
     [chainId, pendingTxns, signer]
   );
 
+  useEffect(() => {
+    let cancelled = false;
+    const checkCodeTakenStatus = async () => {
+      if (error || !debouncedReferralCode) {
+        setReferralCodeCheckStatus("ok");
+        setRpcFailedChains([]);
+        return;
+      }
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      if (cancelled) {
+        return;
+      }
+      setRpcFailedChains(failedChains);
+      if (takenStatus === "none") {
+        setReferralCodeCheckStatus("ok");
+      } else {
+        setReferralCodeCheckStatus("taken");
+      }
+    };
+    setReferralCodeCheckStatus("checking");
+    checkCodeTakenStatus();
+    return () => {
+      cancelled = true;
+    };
+  }, [account, debouncedReferralCode, error, chainId]);
+
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       setIsProcessing(true);
       try {
-        const { takenStatus } = await getReferralCodeTakenStatus(account, referralCode, chainId);
+        const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, referralCode, chainId);
+        setRpcFailedChains(failedChains);
 
-        if (takenStatus !== "none") {
-          setIsAlreadyTaken(true);
+        if (takenStatus === "all" || takenStatus === "current") {
+          setReferralCodeCheckStatus("taken");
           return;
         }
 
@@ -121,7 +152,6 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
   );
 
   useEffect(() => {
-    setIsAlreadyTaken(false);
     setError(getCodeError(referralCode));
   }, [referralCode]);
 
@@ -146,7 +176,10 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
     if (!referralCode) {
       return { text: t`Enter a code`, disabled: true };
     }
-    if (isAlreadyTaken) {
+    if (referralCodeCheckStatus === "checking") {
+      return { text: t`Checking code...`, disabled: true };
+    }
+    if (referralCodeCheckStatus === "taken") {
       return { text: t`Code already taken`, disabled: true };
     }
     return {
@@ -154,14 +187,15 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
       disabled: Boolean(error),
       onSubmit: handleSubmit,
     };
-  }, [isConnected, openConnectModal, isProcessing, referralCode, isAlreadyTaken, error, handleSubmit]);
+  }, [isConnected, openConnectModal, isProcessing, referralCode, referralCodeCheckStatus, error, handleSubmit]);
 
   return (
     <CreateReferralCodeLayout
       referralCode={referralCode}
       setReferralCode={setReferralCode}
       error={error}
-      isAlreadyTaken={isAlreadyTaken}
+      referralCodeCheckStatus={referralCodeCheckStatus}
+      rpcFailedChains={rpcFailedChains}
       isProcessing={isProcessing}
       isConnected={isConnected}
       buttonState={buttonState}
@@ -418,7 +452,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       referralCode={referralCode}
       setReferralCode={setReferralCode}
       error={error}
-      isAlreadyTaken={referralCodeCheckStatus === "taken"}
+      referralCodeCheckStatus={referralCodeCheckStatus}
       isProcessing={isSubmitting}
       isConnected={isConnected}
       buttonState={buttonState}
@@ -432,7 +466,8 @@ function CreateReferralCodeLayout({
   referralCode,
   setReferralCode,
   error,
-  isAlreadyTaken,
+  referralCodeCheckStatus,
+  rpcFailedChains,
   isProcessing,
   isConnected,
   buttonState,
@@ -441,8 +476,9 @@ function CreateReferralCodeLayout({
 }: {
   referralCode: string;
   setReferralCode: (code: string) => void;
-  error: string | undefined;
-  isAlreadyTaken: boolean;
+  error: string | undefined | null;
+  referralCodeCheckStatus: "ok" | "checking" | "taken";
+  rpcFailedChains?: ContractsChainId[];
   isProcessing: boolean;
   isConnected: boolean;
   buttonState: {
@@ -480,7 +516,7 @@ function CreateReferralCodeLayout({
           <label
             className={cx(
               "flex grow cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
-              error || isAlreadyTaken ? "border-red-500" : "border-slate-800"
+              error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
             )}
           >
             <ReferralsIcon className="size-16 text-typography-secondary" />
@@ -515,6 +551,21 @@ function CreateReferralCodeLayout({
             </span>
             <span>{formatUsd(networkFeeUsd)}</span>
           </div>
+        )}
+        {rpcFailedChains && rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
+          <AlertInfoCard type="info" className="text-left">
+            {rpcFailedChains.length === 1 ? (
+              <Trans>
+                Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
+                but it may already be taken on that network.
+              </Trans>
+            ) : (
+              <Trans>
+                Unable to verify code availability on {rpcFailedChains.map((id) => getChainName(id)).join(", ")}. You
+                can still create the code, but it may already be taken on those networks.
+              </Trans>
+            )}
+          </AlertInfoCard>
         )}
       </form>
     </div>

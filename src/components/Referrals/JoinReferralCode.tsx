@@ -235,6 +235,7 @@ function ReferralCodeFormMultichain({
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const hasOutdatedUi = useHasOutdatedUi();
+
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
   const { depositTokenAddress, sourceChainDepositTokenId } = useMultichainReferralDepositToken();

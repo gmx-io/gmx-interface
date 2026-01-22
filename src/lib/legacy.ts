@@ -1,6 +1,7 @@
 import { t } from "@lingui/macro";
-import { ethers } from "ethers";
 import mapKeys from "lodash/mapKeys";
+import { zeroAddress, zeroHash } from "viem";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
 import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
@@ -11,10 +12,8 @@ import { PRODUCTION_HOST } from "config/links";
 import { isValidTimestamp } from "./dates";
 import { PRECISION, bigNumberify, calculateDisplayDecimals, expandDecimals, formatAmount } from "./numbers";
 
-const { ZeroAddress } = ethers;
-
 // use a random placeholder account instead of the zero address as the zero address might have tokens
-export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
+export const PLACEHOLDER_ACCOUNT = privateKeyToAccount(generatePrivateKey()).address;
 
 const SECONDS_PER_YEAR = 31536000n;
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
@@ -72,8 +71,8 @@ export function getPositionKey(
   isLong: boolean,
   nativeTokenAddress?: string
 ) {
-  const tokenAddress0 = collateralTokenAddress === ZeroAddress ? nativeTokenAddress : collateralTokenAddress;
-  const tokenAddress1 = indexTokenAddress === ZeroAddress ? nativeTokenAddress : indexTokenAddress;
+  const tokenAddress0 = collateralTokenAddress === zeroAddress ? nativeTokenAddress : collateralTokenAddress;
+  const tokenAddress1 = indexTokenAddress === zeroAddress ? nativeTokenAddress : indexTokenAddress;
   return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
@@ -605,10 +604,10 @@ export function getPageTitle(data) {
 }
 
 export function isHashZero(value) {
-  return value === ethers.ZeroHash;
+  return value === zeroHash;
 }
 export function isAddressZero(value) {
-  return value === ethers.ZeroAddress;
+  return value === zeroAddress;
 }
 
 export function getHomeUrl() {

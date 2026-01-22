@@ -431,7 +431,7 @@ const FundingHistorySection = () => {
       </div>
       {Boolean(fundingHistory?.length) && (
         <div className="px-adaptive">
-          <SearchInput value={searchQuery} setValue={setSearchQuery} size="m" />
+          <SearchInput value={searchQuery} setValue={setSearchQuery} />
         </div>
       )}
       <VerticalScrollFadeContainer className="flex grow flex-col">
