@@ -32,8 +32,8 @@ export const appEventsData: EventData[] = [
   {
     id: "xaut-lit-ip-arbitrum-listing",
     isActive: true,
-    startDate: "22 Jan 2026, 13:00",
-    endDate: "29 Jan 2026, 10:00",
+    startDate: "23 Jan 2026, 12:00",
+    endDate: "30 Jan 2026, 12:00",
     title: "XAUT (Tether Gold), LIT and IP markets added on Arbitrum",
     bodyText: (
       <>
