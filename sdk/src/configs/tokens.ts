@@ -1229,6 +1229,8 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Tether Gold",
       symbol: "XAUT",
+      assetSymbol: "XAUT",
+      baseSymbol: "XAUT",
       address: "0x7624cccCc59361D583F28BEC40D37e7771d2ef5D",
       isSynthetic: true,
       decimals: 18,
