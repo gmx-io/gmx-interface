@@ -7,6 +7,7 @@ import {
   getLayerZeroEndpointId,
   getMultichainTokenId,
   getStargatePoolAddress,
+  RANDOM_WALLET,
 } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
@@ -58,7 +59,7 @@ type PoolsDetailsParams =
   | undefined;
 
 export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams => {
-  const account = q(selectAccount) ?? zeroAddress;
+  const account = q(selectAccount) ?? RANDOM_WALLET.address;
 
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);

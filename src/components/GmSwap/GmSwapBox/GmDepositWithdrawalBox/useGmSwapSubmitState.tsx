@@ -47,6 +47,7 @@ interface Props {
   shortTokenLiquidityUsd?: bigint | undefined;
   shouldDisableValidation?: boolean;
   technicalFees: TechnicalGmFees | undefined;
+  technicalFeesError: Error | undefined;
   logicalFees: GmSwapFees | undefined;
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
@@ -72,6 +73,7 @@ type SubmitButtonState = {
 export const useGmSwapSubmitState = ({
   logicalFees,
   technicalFees,
+  technicalFeesError,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
   shouldDisableValidation,
@@ -328,7 +330,7 @@ export const useGmSwapSubmitState = ({
       };
     }
 
-    if (!technicalFees || isLoading) {
+    if ((!technicalFees && !technicalFeesError) || isLoading) {
       return {
         text: (
           <>
@@ -343,11 +345,13 @@ export const useGmSwapSubmitState = ({
     return {
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
+      disabled: Boolean(technicalFeesError),
     };
   }, [
     account,
     isAllowanceLoading,
     technicalFees,
+    technicalFeesError,
     error,
     isApproving,
     tokensToApproveSymbols,
