@@ -8,7 +8,7 @@ export type TokenAddressTypesMap = {
 
 export type ContractPrice = bigint & { __brand: "contractPrice" };
 
-export type TokenCategory = "meme" | "layer1" | "layer2" | "defi";
+export type TokenCategory = "meme" | "layer1" | "layer2" | "defi" | "rwa";
 
 // Static token data
 export type Token = {

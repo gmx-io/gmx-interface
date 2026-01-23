@@ -6158,6 +6158,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "Годовое:"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "RWA"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "Выполнение запроса на покупку…"
