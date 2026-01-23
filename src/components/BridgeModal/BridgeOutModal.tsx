@@ -66,6 +66,7 @@ export function BridgeOutModal({
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
 }) {
   const { chainId, srcChainId } = useChainId();
+  const hasOutdatedUi = useHasOutdatedUi();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [bridgeOutChain, setBridgeOutChain] = useState<SourceChainId | undefined>(srcChainId);
   const [bridgeOutInputValue, setBridgeOutInputValue] = useState("");
@@ -77,6 +78,7 @@ export function BridgeOutModal({
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
   const isGlv = isGlvInfo(glvOrMarketInfo);
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gasPaymentToken = getTokenData(tokensData, gasPaymentTokenAddress);
 
   const marketTokenDecimals = isGlv ? glvOrMarketInfo?.glvToken.decimals : marketToken?.decimals;
   let marketTokenPrice: bigint | undefined = undefined;
@@ -162,6 +164,8 @@ export function BridgeOutModal({
     enabled: isVisible,
   });
 
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+
   const sendParams = useMemo(() => {
     if (!bridgeOutChain || !account || bridgeOutAmount === undefined || bridgeOutAmount <= 0n) {
       return;
@@ -186,6 +190,19 @@ export function BridgeOutModal({
 
   const networkFeeUsd = useMemo(() => {
     if (
+      errors?.isOutOfTokenError?.isGasPaymentToken &&
+      errors?.isOutOfTokenError?.requiredAmount !== undefined &&
+      gasPaymentToken !== undefined &&
+      gasPaymentToken.decimals !== undefined
+    ) {
+      return convertToUsd(
+        errors.isOutOfTokenError.requiredAmount,
+        gasPaymentToken.decimals,
+        gasPaymentToken.prices.maxPrice
+      );
+    }
+
+    if (
       transferNativeFee === undefined ||
       tokensData === undefined ||
       tokensData[zeroAddress] === undefined ||
@@ -207,10 +224,14 @@ export function BridgeOutModal({
     )!;
 
     return relayFeeUsd + transferNativeFeeUsd;
-  }, [transferNativeFee, tokensData, expressTxnParamsAsyncResult.data]);
-
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
-  const hasOutdatedUi = useHasOutdatedUi();
+  }, [
+    errors?.isOutOfTokenError?.isGasPaymentToken,
+    errors?.isOutOfTokenError?.requiredAmount,
+    gasPaymentToken,
+    transferNativeFee,
+    tokensData,
+    expressTxnParamsAsyncResult.data,
+  ]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

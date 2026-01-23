@@ -1061,7 +1061,7 @@ export const WithdrawalView = () => {
         text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
         disabled: true,
       };
-    } else if (!expressTxnParamsAsyncResult.data || expressTxnParamsAsyncResult.isLoading) {
+    } else if (!expressTxnParamsAsyncResult.data) {
       buttonState = {
         text: (
           <>
