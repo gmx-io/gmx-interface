@@ -2157,6 +2157,8 @@ export function getNormalizedTokenSymbol(tokenSymbol: string) {
     return tokenSymbol.substr(1);
   } else if (["PBTC", "STBTC"].includes(tokenSymbol)) {
     return "BTC";
+  } else if (tokenSymbol === "XAUT") {
+    return "XAUT.v2";
   } else if (tokenSymbol.includes(".")) {
     return tokenSymbol.split(".")[0];
   }
