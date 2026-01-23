@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { useAccount } from "wagmi";
 
-import { BOTANIX, getExplorerUrl } from "config/chains";
+import { AVALANCHE, BOTANIX, getExplorerUrl } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -332,6 +332,8 @@ const BalanceSection = () => {
 
 const ActionButtons = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const { chainId } = useChainId();
+  const isAvalancheSettlement = chainId === AVALANCHE;
 
   const handleDepositClick = () => {
     setIsVisibleOrView("deposit");
@@ -341,20 +343,42 @@ const ActionButtons = () => {
     setIsVisibleOrView("withdraw");
   };
 
+  const depositButton = (
+    <Button
+      variant="secondary"
+      size="medium"
+      className={cx("flex-grow basis-1/2", {
+        "!text-typography-primary": !isAvalancheSettlement,
+        "w-full": isAvalancheSettlement,
+      })}
+      onClick={handleDepositClick}
+      disabled={isAvalancheSettlement}
+    >
+      <Trans>Deposit</Trans>
+    </Button>
+  );
+
   return (
     <div className="flex gap-12">
+      {isAvalancheSettlement ? (
+        <TooltipWithPortal
+          content={
+            <Trans>Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet.</Trans>
+          }
+          as="div"
+          position="bottom"
+          variant="none"
+          className="!flex-grow basis-1/2"
+        >
+          {depositButton}
+        </TooltipWithPortal>
+      ) : (
+        depositButton
+      )}
       <Button
         variant="secondary"
         size="medium"
-        className="flex-1 !text-typography-primary"
-        onClick={handleDepositClick}
-      >
-        <Trans>Deposit</Trans>
-      </Button>
-      <Button
-        variant="secondary"
-        size="medium"
-        className="flex-1 !text-typography-primary"
+        className="flex-grow basis-1/2 !text-typography-primary"
         onClick={handleWithdrawClick}
       >
         <Trans>Withdraw</Trans>
@@ -407,7 +431,7 @@ const FundingHistorySection = () => {
       </div>
       {Boolean(fundingHistory?.length) && (
         <div className="px-adaptive">
-          <SearchInput value={searchQuery} setValue={setSearchQuery} size="m" />
+          <SearchInput value={searchQuery} setValue={setSearchQuery} />
         </div>
       )}
       <VerticalScrollFadeContainer className="flex grow flex-col">

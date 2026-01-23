@@ -1,6 +1,9 @@
 import { Listbox } from "@headlessui/react";
 import cx from "classnames";
 
+import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 type Primitive = string | number;
@@ -18,6 +21,8 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   placeholder,
   slim = false,
   variant,
+  itemDisabled,
+  itemDisabledMessage,
 }: {
   value: Id | undefined;
   onChange: (value: Id) => void;
@@ -27,6 +32,8 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   placeholder?: string;
   slim?: boolean;
   variant?: "ghost";
+  itemDisabled?: (option: Option) => boolean;
+  itemDisabledMessage?: (option: Option) => string;
 } & WithConditionalItemKey<Id, Option>) => {
   return (
     <Listbox value={value ?? null} onChange={onChange}>
@@ -54,21 +61,34 @@ export const DropdownSelector = <Id extends Primitive, Option>({
             "border-1/2 border-slate-600 bg-slate-800"
           )}
         >
-          {options.map((option) => (
-            <Listbox.Option
-              key={itemKey ? itemKey(option) : (option as Primitive)}
-              value={itemKey ? itemKey(option) : (option as Primitive)}
-              className={({ active, selected }) =>
-                cx(
-                  "cursor-pointer",
-                  slim ? "text-body-medium p-4" : "text-body-large px-14 py-8",
-                  (active || selected) && (variant === "ghost" ? "bg-fill-surfaceHover" : "bg-fill-surfaceHover")
-                )
-              }
-            >
-              <Item option={option} />
-            </Listbox.Option>
-          ))}
+          {options.map((option) => {
+            const isDisabled = itemDisabled?.(option);
+            const disabledMessage = itemDisabledMessage?.(option);
+            const Wrapper = isDisabled && disabledMessage ? TooltipWithPortal : NoopWrapper;
+
+            return (
+              <Listbox.Option
+                key={itemKey ? itemKey(option) : (option as Primitive)}
+                value={itemKey ? itemKey(option) : (option as Primitive)}
+                className="p-0"
+                disabled={isDisabled}
+              >
+                {({ active, selected, disabled }) => (
+                  <Wrapper variant="none" as="div" position="bottom" content={disabledMessage}>
+                    <div
+                      className={cx(
+                        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+                        slim ? "text-body-medium p-4" : "text-body-large px-14 py-8",
+                        (active || selected) && "bg-fill-surfaceHover"
+                      )}
+                    >
+                      <Item option={option} />
+                    </div>
+                  </Wrapper>
+                )}
+              </Listbox.Option>
+            );
+          })}
         </Listbox.Options>
       </div>
     </Listbox>

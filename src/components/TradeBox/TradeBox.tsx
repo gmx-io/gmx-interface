@@ -4,7 +4,7 @@ import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 
-import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
+import { AVALANCHE, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
@@ -89,6 +89,7 @@ import useWallet from "lib/wallets/useWallet";
 import { EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER } from "sdk/configs/express";
 import { getToken, isUsdBasedStableToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/types/trade";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -1038,6 +1039,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     isGmxAccount: isFromTokenGmxAccount,
   });
 
+  const shouldShowAvalancheGmxAccountWarning = isFromTokenGmxAccount && chainId === AVALANCHE;
+
   const showSectionBetweenInputsAndButton =
     isPosition ||
     priceImpactWarningState.shouldShowWarning ||
@@ -1045,7 +1048,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     (isSwap && isLimit) ||
     isTwap ||
     maxAutoCancelOrdersWarning ||
-    shouldShowOneClickTradingWarning;
+    shouldShowOneClickTradingWarning ||
+    shouldShowAvalancheGmxAccountWarning;
 
   const tabsOptions = useMemo(() => {
     const modeToOptions = (mode: TradeMode) => ({
@@ -1118,6 +1122,15 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             {showSectionBetweenInputsAndButton && (
               <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
+                {shouldShowAvalancheGmxAccountWarning && (
+                  <AlertInfoCard type="error" hideClose>
+                    <Trans>
+                      Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and
+                      depositing additional funds to Avalanche GMX accounts is no longer available. We recommend
+                      switching to Arbitrum as a settlement network.
+                    </Trans>
+                  </AlertInfoCard>
+                )}
                 {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
                   <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
                     <Trans>
@@ -1223,6 +1236,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
                   externalSwapFeeItem={fees?.externalSwapFee}
+                  maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
                 />
               )}
 

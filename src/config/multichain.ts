@@ -1,5 +1,4 @@
 import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
-import { abi as IStargateAbi } from "@stargatefinance/stg-evm-sdk-v2/artifacts/src/interfaces/IStargate.sol/IStargate.json";
 import { address as ethPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolNative.json";
 import { address as usdcPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDC.json";
 import { address as usdtPoolArbitrum } from "@stargatefinance/stg-evm-sdk-v2/deployments/arbitrum-mainnet/StargatePoolUSDT.json";
@@ -20,12 +19,12 @@ import { address as usdcSgPoolOptimismSepolia } from "@stargatefinance/stg-evm-s
 import { address as ethPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolNative.json";
 import { address as usdcSgPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDC.json";
 import { address as usdtPoolSepolia } from "@stargatefinance/stg-evm-sdk-v2/deployments/sepolia-testnet/StargatePoolUSDT.json";
-import { Wallet } from "ethers";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 import uniq from "lodash/uniq";
 import type { Abi, Hex } from "viem";
-import { zeroAddress } from "viem";
+import { maxUint256, zeroAddress } from "viem";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 import {
   AnyChainId,
@@ -33,8 +32,9 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   ContractsChainId,
+  SETTLEMENT_CHAIN_IDS,
+  SETTLEMENT_CHAIN_IDS_DEV,
   SettlementChainId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -46,22 +46,13 @@ import {
 import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
-import { isSettlementChain, isSourceChain, SOURCE_CHAINS } from "sdk/configs/multichain";
+import { ISigner } from "lib/transactions/iSigner";
+import { isSettlementChain, isSourceChain } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
 import platformTokensData from "./static/platformTokens.json";
 
 export * from "sdk/configs/multichain";
-
-export {
-  ethPoolArbitrumSepolia,
-  ethPoolOptimismSepolia,
-  ethPoolSepolia,
-  IStargateAbi,
-  usdcSgPoolArbitrumSepolia,
-  usdcSgPoolOptimismSepolia,
-  usdcSgPoolSepolia,
-};
 
 export type MultichainTokenMapping = Record<
   // settlement chain id
@@ -93,6 +84,10 @@ export type MultichainTokenId = {
   isTestnet?: boolean;
   isPlatformToken?: boolean;
 };
+
+export const SETTLEMENT_CHAINS: SettlementChainId[] = isDevelopment()
+  ? (SETTLEMENT_CHAIN_IDS_DEV as unknown as SettlementChainId[])
+  : (SETTLEMENT_CHAIN_IDS as unknown as SettlementChainId[]);
 
 const TOKEN_GROUPS: Partial<Record<string, Partial<Record<SourceChainId | SettlementChainId, MultichainTokenId>>>> = {
   ["USDC"]: {
@@ -311,12 +306,6 @@ function addMultichainPlatformTokenConfig(
   }
 }
 
-export const DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT = false;
-
-if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  SOURCE_CHAINS.push(ARBITRUM_SEPOLIA as SourceChainId, ARBITRUM as SourceChainId, AVALANCHE as SourceChainId);
-}
-
 export const MULTI_CHAIN_TOKEN_MAPPING = {} as MultichainTokenMapping;
 export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
 export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
@@ -360,11 +349,11 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 
     for (const sourceChainIdString in TOKEN_GROUPS[tokenSymbol]) {
       const sourceChainId = parseInt(sourceChainIdString) as SettlementChainId | SourceChainId;
-      if (!isSourceChain(sourceChainId)) {
+      if (!isSourceChain(sourceChainId, settlementChainId)) {
         continue;
       }
 
-      if (!isDevelopment() && (settlementChainId as number) === (sourceChainId as number)) {
+      if ((settlementChainId as number) === (sourceChainId as number)) {
         continue;
       }
 
@@ -397,21 +386,6 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     }
   }
 }
-
-export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChainId> = {
-  [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [SOURCE_OPTIMISM_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [SOURCE_SEPOLIA]: ARBITRUM_SEPOLIA,
-  [SOURCE_ETHEREUM_MAINNET]: ARBITRUM,
-  [SOURCE_BASE_MAINNET]: ARBITRUM,
-  [SOURCE_BSC_MAINNET]: ARBITRUM,
-  [BOTANIX]: ARBITRUM,
-
-  // Stubs
-  [ARBITRUM]: ARBITRUM, // ARBITRUM,
-  [AVALANCHE]: ARBITRUM, // AVALANCHE,
-  [AVALANCHE_FUJI]: ARBITRUM_SEPOLIA,
-};
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {
   return CHAIN_ID_TO_TOKEN_ID_MAP[chainId]?.[tokenAddress];
@@ -451,12 +425,11 @@ export const MULTICALLS_MAP: Record<SourceChainId, string> = {
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BSC_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [ARBITRUM]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [AVALANCHE]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [ARBITRUM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [AVALANCHE_FUJI]: "0xca11bde05977b3631167028862be2a173976ca11",
 };
-
-if (isDevelopment() && DEBUG_MULTICHAIN_SAME_CHAIN_DEPOSIT) {
-  MULTICALLS_MAP[ARBITRUM_SEPOLIA as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
-  MULTICALLS_MAP[ARBITRUM as SourceChainId] = "0xca11bde05977b3631167028862be2a173976ca11";
-}
 
 /**
  * Compiled bytecode for MockUnlimitedToken
@@ -469,6 +442,7 @@ export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string>
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", // USDC.SG
   [ARBITRUM]: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", // USDC
   [AVALANCHE]: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E", // USDC
+  [AVALANCHE_FUJI]: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F", // USDC
 };
 
 export const MULTICHAIN_FUNDING_SLIPPAGE_BPS = 50;
@@ -484,6 +458,7 @@ export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, 
   [SOURCE_BASE_MAINNET]: 30184,
   [AVALANCHE]: 30106,
   [SOURCE_BSC_MAINNET]: 30102,
+  [AVALANCHE_FUJI]: 40106,
 };
 
 export const ENDPOINT_ID_TO_CHAIN_ID: Partial<Record<LayerZeroEndpointId, SettlementChainId | SourceChainId>> =
@@ -497,7 +472,13 @@ export const FAKE_INPUT_AMOUNT_MAP: Record<string, bigint> = {
 };
 
 export const RANDOM_SLOT = "0x23995301f0ea59f7cace2ae906341fc4662f3f5d23f124431ee3520d1070148c";
-export const RANDOM_WALLET = Wallet.createRandom();
+export const RANDOM_ACCOUNT = privateKeyToAccount(generatePrivateKey());
+export const RANDOM_WALLET: ISigner = ISigner.fromPrivateKeyAccount(RANDOM_ACCOUNT);
+
+/**
+ * Uses maxUint256 / 100n to avoid number overflows in EVM operations.
+ */
+export const SIMULATED_MULTICHAIN_BALANCE = maxUint256 / 100n;
 
 export function getSourceChainDecimalsMapped(
   chainId: ContractsChainId,

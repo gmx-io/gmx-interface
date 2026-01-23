@@ -5,6 +5,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { OrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
 import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens/utils";
+import { tryDecodeCustomError } from "lib/errors";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatBalanceAmount } from "lib/numbers";
 import type { Token, TokenInfo } from "sdk/types/tokens";
@@ -16,11 +17,10 @@ import {
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
-  formatTradeActionTimestampISO,
+  formatTradeActionTimestampUTC,
   getErrorTooltipTitle,
   infoRow,
   lines,
-  tryGetError,
 } from "./shared";
 import { getActionTitle } from "../../keys";
 
@@ -111,7 +111,7 @@ export const formatSwapMessage = (
 
   let actionText = getActionTitle(tradeAction.orderType, tradeAction.eventName, Boolean(tradeAction.twapParams));
 
-  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampISO">;
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC">;
 
   const ot = tradeAction.orderType;
   const ev = tradeAction.eventName;
@@ -137,7 +137,7 @@ export const formatSwapMessage = (
         swapToTokenAmount: toExecutionAmountText,
       };
     } else {
-      const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+      const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
       const errorComment = error
         ? lines({
             text: getErrorTooltipTitle(error.name, false),
@@ -193,7 +193,7 @@ export const formatSwapMessage = (
       swapToTokenAmount: toExecutionAmountText,
     };
   } else if (ot === OrderType.LimitSwap && ev === TradeActionType.OrderFrozen) {
-    const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
     const outputAmount = error?.args?.outputAmount as bigint | undefined;
     const ratio =
       outputAmount !== undefined
@@ -261,7 +261,7 @@ export const formatSwapMessage = (
       swapToTokenAmount: toExecutionAmountText,
     };
   } else if (ot === OrderType.MarketSwap && ev === TradeActionType.OrderCancelled) {
-    const error = tradeAction.reasonBytes ? tryGetError(tradeAction.reasonBytes) ?? undefined : undefined;
+    const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
     const outputAmount = error?.args?.outputAmount as bigint | undefined;
     const ratio =
       outputAmount !== undefined
@@ -304,7 +304,7 @@ export const formatSwapMessage = (
     market: market,
     fullMarket: fullMarket,
     timestamp: formatTradeActionTimestamp(tradeAction.timestamp, relativeTimestamp),
-    timestampISO: formatTradeActionTimestampISO(tradeAction.timestamp),
+    timestampUTC: formatTradeActionTimestampUTC(tradeAction.timestamp),
     acceptablePrice: `${acceptablePriceInequality}${acceptableRate}`,
     executionPrice: executionRate,
     fullMarketNames,

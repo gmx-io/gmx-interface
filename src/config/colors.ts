@@ -81,4 +81,7 @@ export const colors: ColorTree = {
     secondary: { light: "#696D96", dark: "#a0a3c4" },
     inactive: { light: "#C4C4D5", dark: "#3E4361" },
   },
+  stroke: {
+    primary: { light: "#D4D4E2", dark: "#363a59" },
+  },
 };

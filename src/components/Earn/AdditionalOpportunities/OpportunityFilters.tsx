@@ -17,7 +17,7 @@ import { OpportunityTag, useOpportunityTagLabels } from "./useOpportunities";
 
 export type OpportunityFilterValue = "for-me" | "all" | OpportunityTag;
 
-export const TAG_FILTER_ORDER: OpportunityTag[] = [
+const TAG_FILTER_ORDER: OpportunityTag[] = [
   "lending-and-borrowing",
   "looping",
   "delta-neutral-vaults",
@@ -37,7 +37,7 @@ const FILTER_ANALYTICS_EVENT_LABELS: Record<OpportunityFilterValue, EarnPageOppo
   "yield-trading": "YieldTrading",
 };
 
-export function OpportunityFilters({
+function OpportunityFilters({
   activeFilter,
   search,
   onSearchChange,

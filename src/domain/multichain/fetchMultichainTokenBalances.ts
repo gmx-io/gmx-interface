@@ -62,7 +62,7 @@ export async function fetchMultichainTokenBalances({
   return result;
 }
 
-export async function fetchSourceChainTokenBalances({
+async function fetchSourceChainTokenBalances({
   sourceChainId,
   account,
   sourceChainTokenIdMap,

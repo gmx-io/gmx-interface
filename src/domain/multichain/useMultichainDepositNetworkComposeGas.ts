@@ -18,6 +18,7 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
   tokenAddress?: string;
 }): {
   composeGas: bigint | undefined;
+  isLoading: boolean;
 } {
   const { chainId } = useChainId();
   const [depositViewChain] = useGmxAccountDepositViewChain();
@@ -61,5 +62,6 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
 
   return {
     composeGas,
+    isLoading: composeGasQuery.isLoading,
   };
 }
