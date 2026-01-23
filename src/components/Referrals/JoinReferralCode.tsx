@@ -1,52 +1,38 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { createWalletClient, encodeFunctionData, publicActions, zeroAddress } from "viem";
-import { usePublicClient } from "wagmi";
+import { useEffect, useRef, useState } from "react";
+import { encodeFunctionData, zeroAddress } from "viem";
 
-import {
-  CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
-  FAKE_INPUT_AMOUNT_MAP,
-  getMappedTokenId,
-  isSettlementChain,
-  RANDOM_ACCOUNT,
-} from "config/multichain";
+import type { SettlementChainId } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
-import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
+import { useMultichainReferralDepositToken } from "domain/multichain/useMultichainReferralDepositToken";
+import {
+  createRelayEmptyParamsPayload,
+  useMultichainReferralQuote,
+} from "domain/multichain/useMultichainReferralQuote";
+import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
-import { getRawRelayerParams, RawRelayParamsPayload, RelayParamsPayload } from "domain/synthetics/express";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
-import { convertToUsd, getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import { formatUsd, numberToBigint } from "lib/numbers";
-import { useJsonRpcProvider } from "lib/rpc";
+import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { ISigner } from "lib/transactions/iSigner";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc, getRpcTransport } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
-import { getViemChain } from "sdk/configs/chains";
-import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { encodeReferralCode } from "sdk/utils/referrals";
-import { nowInSeconds } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
-import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-
-import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
 
@@ -242,203 +228,28 @@ function ReferralCodeFormMultichain({
 }) {
   const { chainId, srcChainId } = useChainId();
   const { account, signer } = useWallet();
-  const { provider } = useJsonRpcProvider(chainId);
   const [referralCode, setReferralCode] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const debouncedReferralCode = useDebounce(referralCode, 300);
-  const settlementChainPublicClient = usePublicClient({ chainId });
-  const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
   const hasOutdatedUi = useHasOutdatedUi();
-
-  const simulationSigner = useMemo(() => {
-    if (srcChainId === undefined) {
-      return;
-    }
-
-    return ISigner.fromViemSigner(
-      createWalletClient({
-        chain: getViemChain(srcChainId),
-        account: RANDOM_ACCOUNT,
-        transport: getRpcTransport(srcChainId, "default"),
-      }).extend(publicActions)
-    );
-  }, [srcChainId]);
 
   const globalExpressParams = useSelector(selectExpressGlobalParams);
 
-  const referralCodeHex = useMemo(() => encodeReferralCode(referralCode), [referralCode]);
+  const { depositTokenAddress, sourceChainDepositTokenId } = useMultichainReferralDepositToken();
 
-  const depositTokenAddress = useMemo(() => {
-    const tokens = multichainTokens.filter(
-      (token) =>
-        token.sourceChainId === srcChainId && token.sourceChainBalance !== undefined && token.sourceChainBalance > 0n
-    );
+  const quoteResult = useMultichainReferralQuote({
+    depositTokenAddress,
+    actionType: MultichainActionType.SetTraderReferralCode,
+    referralCode,
+  });
 
-    if (tokens.length === 0) {
-      return;
-    }
-
-    const preferredToken = tokens.find((token) => token.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[chainId]);
-
-    if (preferredToken) {
-      return preferredToken.address;
-    }
-
-    return tokens[0].address;
-  }, [chainId, multichainTokens, srcChainId]);
-
-  const sourceChainTokenId = useMemo(() => {
-    if (depositTokenAddress === undefined || srcChainId === undefined || !isSettlementChain(chainId)) {
-      return;
-    }
-
-    return getMappedTokenId(chainId, depositTokenAddress, srcChainId);
-  }, [chainId, depositTokenAddress, srcChainId]);
-
-  const result = useThrottledAsync(
-    async ({ params: p }) => {
-      if (p.sourceChainTokenId === undefined) {
-        throw new Error("sourceChainTokenId is undefined");
-      }
-
-      const rawRelayParamsPayload = getRawRelayerParams({
-        chainId: p.chainId,
-        gasPaymentTokenAddress: p.globalExpressParams.gasPaymentTokenAddress,
-        relayerFeeTokenAddress: p.globalExpressParams.relayerFeeTokenAddress,
-        feeParams: {
-          feeToken: p.globalExpressParams.relayerFeeTokenAddress,
-          feeAmount: 0n,
-          feeSwapPath: [],
-        },
-        externalCalls: getEmptyExternalCallsPayload(),
-        tokenPermits: [],
-      }) as RawRelayParamsPayload;
-
-      const relayParams: RelayParamsPayload = {
-        ...rawRelayParamsPayload,
-        deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      };
-
-      const signature = await signSetTraderReferralCode({
-        chainId: p.chainId,
-        srcChainId: p.srcChainId,
-        signer: p.simulationSigner,
-        relayParams,
-        referralCode: p.referralCodeHex,
-        shouldUseSignerMethod: true,
-      });
-
-      const action: MultichainAction = {
-        actionType: MultichainActionType.SetTraderReferralCode,
-        actionData: {
-          relayParams,
-          signature,
-          referralCode: p.referralCodeHex,
-        },
-      };
-
-      const composeGas = await estimateMultichainDepositNetworkComposeGas({
-        action,
-        chainId: p.chainId,
-        account: p.simulationSigner.address,
-        srcChainId: p.srcChainId,
-        tokenAddress: p.depositTokenAddress,
-        settlementChainPublicClient: p.settlementChainPublicClient,
-      });
-
-      const sourceChainStargateAddress = p.sourceChainTokenId.stargate;
-
-      const tokenAmount =
-        FAKE_INPUT_AMOUNT_MAP[p.sourceChainTokenId.symbol] ?? numberToBigint(0.02, p.sourceChainTokenId.decimals);
-
-      const sendParamsWithRoughAmount = getMultichainTransferSendParams({
-        isToGmx: true,
-        dstChainId: p.chainId,
-        account: p.simulationSigner.address,
-        // TODO MLTCH take into account LD
-        amountLD: tokenAmount,
-        srcChainId: p.srcChainId,
-        composeGas,
-        action,
-      });
-
-      const sourceChainPublicClient = getPublicClientWithRpc(p.srcChainId);
-
-      const [limit, oftFeeDetails] = await sourceChainPublicClient.readContract({
-        address: sourceChainStargateAddress,
-        abi: abis.IStargate,
-        functionName: "quoteOFT",
-        args: [sendParamsWithRoughAmount],
-      });
-
-      let negativeFee = 0n;
-      for (const oftFeeDetail of oftFeeDetails) {
-        negativeFee += oftFeeDetail[0];
-      }
-
-      const minAmount = limit.minAmountLD === 0n ? 1n : limit.minAmountLD;
-
-      let amountBeforeFee = minAmount - negativeFee;
-      amountBeforeFee = (amountBeforeFee * 15n) / 10n;
-
-      const sendParamsWithMinimumAmount: SendParam = {
-        ...sendParamsWithRoughAmount,
-
-        amountLD: amountBeforeFee,
-        minAmountLD: 0n,
-      };
-
-      const quoteSend = await sourceChainPublicClient.readContract({
-        address: sourceChainStargateAddress,
-        abi: abis.IStargate,
-        functionName: "quoteSend",
-        args: [sendParamsWithMinimumAmount, false],
-      });
-
-      return {
-        nativeFee: quoteSend.nativeFee,
-        amount: amountBeforeFee,
-        composeGas,
-      };
-    },
-    {
-      throttleMs: 1000,
-      params:
-        provider !== undefined &&
-        srcChainId !== undefined &&
-        settlementChainPublicClient !== undefined &&
-        globalExpressParams !== undefined &&
-        simulationSigner !== undefined &&
-        referralCodeHex !== undefined &&
-        account !== undefined &&
-        sourceChainTokenId !== undefined &&
-        depositTokenAddress !== undefined
-          ? {
-              provider,
-              chainId,
-              srcChainId,
-              settlementChainPublicClient,
-              globalExpressParams,
-              simulationSigner,
-              referralCodeHex,
-              account,
-              sourceChainTokenId,
-              depositTokenAddress,
-            }
-          : undefined,
-    }
-  );
-
-  const networkFeeUsd = useMemo(() => {
-    if (result.data === undefined || globalExpressParams?.tokensData[zeroAddress].prices === undefined) {
-      return;
-    }
-
-    return convertToUsd(result.data.nativeFee, 18, getMidPrice(globalExpressParams?.tokensData[zeroAddress].prices));
-  }, [globalExpressParams?.tokensData, result.data]);
+  const { needsApproval, isApproving, isAllowanceLoaded, handleApprove } = useMultichainStargateApproval({
+    depositTokenAddress,
+    amountToApprove: quoteResult.data?.amount,
+  });
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -451,35 +262,20 @@ function ReferralCodeFormMultichain({
 
     try {
       if (
-        sourceChainTokenId === undefined ||
-        provider === undefined ||
+        sourceChainDepositTokenId === undefined ||
         globalExpressParams === undefined ||
         signer === undefined ||
-        result.data === undefined
+        quoteResult.data === undefined
       ) {
         throw new Error("Missing required parameters");
       }
 
-      const rawRelayParamsPayload = getRawRelayerParams({
-        chainId: chainId,
-        gasPaymentTokenAddress: globalExpressParams.gasPaymentTokenAddress,
-        relayerFeeTokenAddress: globalExpressParams.relayerFeeTokenAddress,
-        feeParams: {
-          feeToken: globalExpressParams.relayerFeeTokenAddress,
-          feeAmount: 0n,
-          feeSwapPath: [],
-        },
-        externalCalls: getEmptyExternalCallsPayload(),
-        tokenPermits: [],
-      });
+      const relayParamsPayload = createRelayEmptyParamsPayload(chainId as SettlementChainId, globalExpressParams);
 
-      const relayParamsPayload: RelayParamsPayload = {
-        ...rawRelayParamsPayload,
-        deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      };
+      const referralCodeHex = encodeReferralCode(referralCode);
 
       const signature = await signSetTraderReferralCode({
-        chainId,
+        chainId: chainId as SettlementChainId,
         srcChainId,
         signer,
         relayParams: relayParamsPayload,
@@ -499,25 +295,27 @@ function ReferralCodeFormMultichain({
         dstChainId: chainId,
         account,
         srcChainId,
-        amountLD: result.data.amount,
-        composeGas: result.data.composeGas,
+        amountLD: quoteResult.data.amount,
+        composeGas: quoteResult.data.composeGas,
         isToGmx: true,
         action,
       });
 
-      const sourceChainStargateAddress = sourceChainTokenId.stargate;
+      const sourceChainStargateAddress = sourceChainDepositTokenId.stargate;
 
       const value =
-        sourceChainTokenId.address === zeroAddress ? result.data.nativeFee + result.data.amount : result.data.nativeFee;
+        sourceChainDepositTokenId.address === zeroAddress
+          ? quoteResult.data.nativeFee + quoteResult.data.amount
+          : quoteResult.data.nativeFee;
 
       const txnResult = await sendWalletTransaction({
         chainId: srcChainId,
         to: sourceChainStargateAddress,
-        signer: signer,
+        signer,
         callData: encodeFunctionData({
           abi: abis.IStargate,
           functionName: "sendToken",
-          args: [sendParams, { nativeFee: result.data.nativeFee, lzTokenFee: 0n }, account],
+          args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
         }),
         value,
         msg: t`Sent referral code transaction`,
@@ -563,6 +361,11 @@ function ReferralCodeFormMultichain({
       text: t`Page outdated, please refresh`,
       disabled: true,
     };
+  } else if (isApproving) {
+    buttonState = {
+      text: t`Approving...`,
+      disabled: true,
+    };
   } else if (isEdit && debouncedReferralCode === userReferralCodeString) {
     buttonState = {
       text: t`Same as current active code`,
@@ -593,15 +396,19 @@ function ReferralCodeFormMultichain({
       text: t`Referral code does not exist`,
       disabled: true,
     };
-  } else if (result.isLoading || !result.data) {
+  } else if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
     buttonState = {
-      text: (
-        <>
-          <Trans>Loading...</Trans>
-          <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
+      text: t`Loading...`,
       disabled: true,
+    };
+  } else if (needsApproval) {
+    buttonState = {
+      text: t`Approve ${sourceChainDepositTokenId?.symbol}`,
+      disabled: false,
+      onSubmit: (event: React.FormEvent) => {
+        event.preventDefault();
+        handleApprove();
+      },
     };
   } else if (isEdit) {
     buttonState = {
@@ -660,7 +467,7 @@ function ReferralCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network Fee`}
-          value={networkFeeUsd !== undefined ? formatUsd(networkFeeUsd) : "..."}
+          value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
       )}
 

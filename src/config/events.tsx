@@ -30,6 +30,19 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "xaut-lit-ip-arbitrum-listing",
+    isActive: true,
+    startDate: "23 Jan 2026, 11:00",
+    endDate: "30 Jan 2026, 10:00",
+    title: "XAUT (Tether Gold), LIT and IP markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+  },
+  {
     id: "listing-01-09-26",
     isActive: true,
     startDate: "09 Jan 2026, 10:00",
