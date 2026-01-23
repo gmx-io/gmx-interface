@@ -1229,9 +1229,9 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Tether Gold",
       symbol: "XAUT",
-      address: "0xcF558864c6B130Ce76d20641D008ebd4871eDED0",
+      address: "0x7624cccCc59361D583F28BEC40D37e7771d2ef5D",
       isSynthetic: true,
-      decimals: 6,
+      decimals: 18,
       priceDecimals: 2,
       categories: ["rwa"],
       imageUrl: "https://assets.coingecko.com/coins/images/10481/standard/Tether_Gold.png?1696510471",
