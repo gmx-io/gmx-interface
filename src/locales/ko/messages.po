@@ -6182,6 +6182,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "연간화:"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "RWA"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "매수 요청을 실행하는 중…"
