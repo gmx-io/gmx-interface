@@ -505,6 +505,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x3600592DdEd7e6E0B05029DfB637fFc5A85D6f6B": {
       enabled: true,
     },
+    // XAUT/USD [WBTC-USDC] (deprecated)
+    "0xAbDb2530E24f0736DfbF6dA2600B52Bd6455acDd": {
+      enabled: true,
+    },
     // XAUT/USD [WBTC-USDC]
     "0xeb28aD1a2e497F4Acc5D9b87e7B496623C93061E": {
       enabled: true,

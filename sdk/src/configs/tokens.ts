@@ -1227,8 +1227,18 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/8834/standard/CHZ_Token_updated.png?1696508986",
     },
     {
+      name: "Tether Gold (deprecated)",
+      symbol: "XAUT.deprecated",
+      address: "0xcF558864c6B130Ce76d20641D008ebd4871eDED0",
+      isSynthetic: true,
+      decimals: 6,
+      priceDecimals: 2,
+      categories: ["rwa"],
+      imageUrl: "https://assets.coingecko.com/coins/images/10481/standard/Tether_Gold.png?1696510471",
+    },
+    {
       name: "Tether Gold",
-      symbol: "XAUT",
+      symbol: "XAUT.v2",
       address: "0x7624cccCc59361D583F28BEC40D37e7771d2ef5D",
       isSynthetic: true,
       decimals: 18,
@@ -2157,8 +2167,8 @@ export function getNormalizedTokenSymbol(tokenSymbol: string) {
     return tokenSymbol.substr(1);
   } else if (["PBTC", "STBTC"].includes(tokenSymbol)) {
     return "BTC";
-  } else if (tokenSymbol === "XAUT") {
-    return "XAUT.v2";
+  } else if (tokenSymbol.includes("XAUT")) {
+    return tokenSymbol;
   } else if (tokenSymbol.includes(".")) {
     return tokenSymbol.split(".")[0];
   }

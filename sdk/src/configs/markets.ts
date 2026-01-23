@@ -880,6 +880,13 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // XAUT/USD [WBTC-USDC] (deprecated)
+    "0xAbDb2530E24f0736DfbF6dA2600B52Bd6455acDd": {
+      marketTokenAddress: "0xAbDb2530E24f0736DfbF6dA2600B52Bd6455acDd",
+      indexTokenAddress: "0xcF558864c6B130Ce76d20641D008ebd4871eDED0",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
     // XAUT/USD [WBTC-USDC]
     "0xeb28aD1a2e497F4Acc5D9b87e7B496623C93061E": {
       marketTokenAddress: "0xeb28aD1a2e497F4Acc5D9b87e7B496623C93061E",
