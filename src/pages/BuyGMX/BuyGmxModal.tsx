@@ -25,11 +25,6 @@ const DIRECT_BUY_PATH = "/trade/swap";
 const ARB_USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const ARB_GMX_ADDRESS = getContract(ARBITRUM, "GMX");
 
-/**
- * Pre-sets trade options in localStorage for Arbitrum before network switch.
- * This ensures Swap mode with USDC -> GMX is applied after chain change,
- * as useTradeboxState reads from localStorage when chainId changes.
- */
 function setArbitrumSwapToGmxOptions() {
   const key = JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM));
   const existingRaw = localStorage.getItem(key);
