@@ -10,7 +10,7 @@ import { getOrderActionText } from "./TradeHistoryRow/utils/shared";
 
 type OrderTypes = keyof typeof OrderType;
 
-export const actionTextMapBase: Partial<
+const actionTextMapBase: Partial<
   Record<`${OrderTypes | "Deposit" | "Withdraw" | "Twap" | "TwapSwap"}-${TradeActionType}`, MessageDescriptor>
 > = {
   "MarketSwap-OrderCreated": msg`Request Market Swap`,
@@ -84,7 +84,7 @@ export const actionTextMap: Partial<
   "Withdraw-OrderCancelled": msg`Failed Withdraw`,
 };
 
-export function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
+function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
   switch (orderType) {
     case OrderType.MarketSwap:
       return "MarketSwap";

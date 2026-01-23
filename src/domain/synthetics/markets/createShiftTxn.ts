@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
+import { Abi, ContractFunctionParameters, encodeFunctionData, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -9,7 +10,6 @@ import { OrderMetricId } from "lib/metrics/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { IShiftUtils } from "typechain-types/ExchangeRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -52,8 +52,8 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
         {
           addresses: {
             receiver: p.account,
-            callbackContract: ethers.ZeroAddress,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            callbackContract: zeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
             fromMarket: p.fromMarketTokenAddress,
             toMarket: p.toMarketTokenAddress,
           },
@@ -61,12 +61,18 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
           executionFee: p.executionFee,
           callbackGasLimit: 0n,
           dataList: [],
-        } satisfies IShiftUtils.CreateShiftParamsStruct,
-      ],
+        },
+      ] satisfies ContractFunctionParameters<typeof abis.ExchangeRouter, "payable", "createShift">["args"],
     },
   ];
 
-  const encodedPayload = multicall.map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.map((call) =>
+    encodeFunctionData({
+      abi: abis.ExchangeRouter as Abi,
+      functionName: call!.method,
+      args: call!.params,
+    })
+  );
 
   const simulationPromise = !p.skipSimulation
     ? simulateExecuteTxn(chainId, {

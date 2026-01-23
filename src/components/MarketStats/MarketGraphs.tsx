@@ -209,7 +209,7 @@ type GraphData = {
   snapshotTimestamp: Date;
 };
 
-export const formatPerformanceBps = (performance: number): string => {
+const formatPerformanceBps = (performance: number): string => {
   return Number((performance * 100).toFixed(2)) + "%";
 };
 
@@ -381,9 +381,8 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
 
     return (
       <div
-        className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
-      bg-[linear-gradient(0deg,var(--color-slate-800),var(--color-slate-800))] px-12 py-8 bg-blend-overlay
-      shadow-lg`}
+        className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)] bg-slate-800
+      px-12 py-8 mix-blend-overlay shadow-lg`}
       >
         <span className=" text-typography-secondary">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
         <span className="numbers">{formatValue(item.value)}</span>

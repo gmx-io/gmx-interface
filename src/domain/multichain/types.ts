@@ -57,7 +57,7 @@ export type OFTReceipt = {
 
 export type QuoteOft = {
   limit: OFTLimit;
-  oftFeeDetails: OFTFeeDetail[];
+  oftFeeDetails: readonly OFTFeeDetail[] | OFTFeeDetail[];
   receipt: OFTReceipt;
 };
 

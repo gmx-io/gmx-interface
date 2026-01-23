@@ -25,4 +25,3 @@ createRoot(document.getElementById("root")!).render(
 // to log results (for example: reportWebVitals(console.info))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-export { formatTokenAmount, formatTokenAmountWithUsd, formatUsd } from "./lib/numbers";

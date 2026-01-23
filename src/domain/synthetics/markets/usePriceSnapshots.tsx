@@ -40,14 +40,6 @@ type PriceQuery = {
   prices: PriceSnapshot[];
 };
 
-export type PriceData = {
-  [tokenAddress: string]: PriceSnapshot[];
-};
-
-export type PriceDataMapped = {
-  [tokenAddress: string]: Record<number, PriceSnapshot>;
-};
-
 export function usePriceSnapshots({
   chainId,
   period,
