@@ -21,15 +21,6 @@ export function getIsLargeAccount() {
   return isLargeAccount;
 }
 
-export function setIsLargeAccount(value: boolean) {
-  isLargeAccount = value;
-  localStorage.setItem(JSON.stringify(IS_LARGE_ACCOUNT_KEY), value.toString());
-}
-
-export function resetIsLargeAccount() {
-  isLargeAccount = getIsLargeAccountStoredValue();
-}
-
 export function useIsLargeAccountTracker(account?: string) {
   const isCurrentAccountLarge = useIsLargeAccountData(account);
   const [isCurrentAccountLargeStoredValue, setIsCurrentAccountLargeStoredValue] = useLocalStorageSerializeKey<boolean>(

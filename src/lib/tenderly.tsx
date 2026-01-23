@@ -1,16 +1,24 @@
-import { BaseContract, Provider } from "ethers";
-import { numberToHex, type StateOverride } from "viem";
+import { Provider } from "ethers";
+import {
+  Abi,
+  AbiStateMutability,
+  ContractFunctionName,
+  ContractFunctionParameters,
+  encodeFunctionData,
+  numberToHex,
+  type StateOverride,
+} from "viem";
 
 import { isDevelopment } from "config/env";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import { getGasLimit } from "./contracts";
-import { estimateGasLimit } from "./gas/estimateGasLimit";
+import { applyGasLimitBuffer, estimateGasLimit } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
 import { ISigner } from "./transactions/iSigner";
+import { getPublicClientWithRpc } from "./wallets/rainbowKitConfig";
 
 export type TenderlyConfig = {
   accountSlug: string;
@@ -84,65 +92,86 @@ export async function simulateCallDataWithTenderly({
   });
 }
 
-export const simulateTxWithTenderly = async (
-  chainId: number,
-  contract: BaseContract,
-  account: string,
-  method: string,
-  params: any,
-  opts: {
-    gasLimit?: bigint;
-    value?: bigint;
-    comment: string;
-    stateOverride?: StateOverride;
-  }
-) => {
+export async function simulateTxWithTenderly<
+  abi extends Abi,
+  method extends ContractFunctionName<abi>,
+  params extends ContractFunctionParameters<abi, AbiStateMutability, method>["args"],
+>({
+  chainId,
+  address,
+  abi,
+  account,
+  method,
+  params,
+  gasLimit,
+  value,
+  comment,
+  stateOverride,
+}: {
+  chainId: number;
+  address: string;
+  abi: abi;
+  account: string;
+  method: method;
+  params: params;
+  gasLimit?: bigint;
+  value?: bigint;
+  comment: string;
+  stateOverride?: StateOverride;
+}) {
+  const publicClient = getPublicClientWithRpc(chainId);
   const config = getTenderlyConfig();
 
   if (!config) {
     throw new Error("Tenderly config not found");
   }
 
-  if (!contract.runner?.provider) {
-    throw new Error("No provider found");
-  }
-
-  const blockNumber = await contract.runner?.provider?.getBlockNumber();
-
-  if (!blockNumber) {
-    throw new Error("No block number found");
-  }
-
   const provider = getProvider(undefined, chainId);
   const gasPriceData = await getGasPrice(provider, chainId);
 
-  let gasLimit: bigint | undefined;
+  let finalGasLimit: bigint | undefined;
 
   // estimateGas might fail cos of incorrect tx params,
   // have to simulate tx without gasLimit in that case
   try {
-    gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
+    finalGasLimit = gasLimit
+      ? gasLimit
+      : await publicClient
+          .estimateGas({
+            to: address,
+            data: encodeFunctionData({
+              abi: abi as Abi,
+              functionName: method as string,
+              args: params as any,
+            }),
+            value,
+            account,
+          })
+          .then(applyGasLimitBuffer);
   } catch (e) {
-    gasLimit = undefined;
-    //
+    finalGasLimit = undefined;
   }
 
   const result = await processSimulation({
     from: account,
-    to: typeof contract.target === "string" ? contract.target : await contract.target.getAddress(),
-    data: await contract.interface.encodeFunctionData(method, params),
+    to: address,
+    data: encodeFunctionData({
+      abi: abi as Abi,
+      functionName: method as string,
+      args: params as any,
+    }),
     gasPriceData,
     chainId,
     config,
-    gasLimit,
-    value: opts.value ?? 0n,
-    blockNumber,
-    comment: opts.comment,
-    stateOverride: opts.stateOverride,
+    gasLimit: finalGasLimit,
+    value: value ?? 0n,
+    blockNumber: undefined,
+    comment,
+    stateOverride,
   });
 
   return result;
-};
+}
 
 async function processSimulation({
   chainId,

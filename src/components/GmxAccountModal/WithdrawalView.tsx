@@ -89,7 +89,7 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
@@ -115,6 +115,18 @@ const USD_GAS_TOKEN_BUFFER_MAINNET = expandDecimals(4, USD_DECIMALS);
 const USD_GAS_TOKEN_WARNING_THRESHOLD_MAINNET = expandDecimals(3, USD_DECIMALS);
 const USD_GAS_TOKEN_BUFFER_TESTNET = expandDecimals(10, USD_DECIMALS);
 const USD_GAS_TOKEN_WARNING_THRESHOLD_TESTNET = expandDecimals(9, USD_DECIMALS);
+
+const valueSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={96}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
 
 function useUsdGasTokenBuffer(): {
   gasTokenBuffer: bigint;
@@ -523,8 +535,6 @@ export const WithdrawalView = () => {
   const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
   const gasPaymentToken = useSelector(selectGasPaymentToken);
 
-  const { provider } = useJsonRpcProvider(chainId);
-
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
   }, [selectedTokenAddress, tokensData]);
@@ -557,7 +567,7 @@ export const WithdrawalView = () => {
 
   const tokenOptions = useMemo(() => getWithdrawalTokenOptions({ chainId, tokensData }), [chainId, tokensData]);
 
-  const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
+  const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo(() => {
     if (selectedToken === undefined || inputAmount === undefined || inputAmountUsd === undefined) {
@@ -588,10 +598,9 @@ export const WithdrawalView = () => {
     });
   }, [isSameChain, account, inputAmount, withdrawalViewChain]);
 
-  const quoteOft = useQuoteOft({
+  const { data: quoteOft, isLoading: isQuoteOftLoading } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainProvider: provider,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
@@ -620,7 +629,7 @@ export const WithdrawalView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const nativeFee = useQuoteSendNativeFee({
+  const { data: nativeFee, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
@@ -674,7 +683,7 @@ export const WithdrawalView = () => {
     return false;
   }, [baseSendParams, isSameChain]);
 
-  const baseNativeFee = useQuoteSendNativeFee({
+  const { data: baseNativeFee } = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
@@ -761,6 +770,7 @@ export const WithdrawalView = () => {
               chainId,
             }
           : undefined,
+      withLoading: true,
     }
   );
 
@@ -1150,11 +1160,23 @@ export const WithdrawalView = () => {
     }
   }
 
-  const hasValidSelectedToken =
-    selectedTokenAddress !== undefined && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
   useEffect(
     function fallbackWithdrawTokens() {
-      if (hasValidSelectedToken || !withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
+      const hasSelectedTokenAddress = selectedTokenAddress !== undefined;
+      if (!hasSelectedTokenAddress) {
+        return;
+      }
+
+      const isValidSameChainToken = isSameChain && isValidTokenSafe(chainId, selectedTokenAddress);
+
+      const isValidMultichainToken =
+        !isSameChain && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
+
+      if (isValidSameChainToken || isValidMultichainToken) {
+        return;
+      }
+
+      if (!withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
         return;
       }
 
@@ -1204,7 +1226,15 @@ export const WithdrawalView = () => {
         setSelectedTokenAddress(maxBalanceSettlementChainTokenAddress);
       }
     },
-    [chainId, hasValidSelectedToken, isVisibleOrView, setSelectedTokenAddress, tokensData, withdrawalViewChain]
+    [
+      chainId,
+      isSameChain,
+      isVisibleOrView,
+      selectedTokenAddress,
+      setSelectedTokenAddress,
+      tokensData,
+      withdrawalViewChain,
+    ]
   );
 
   const isTestnet = isTestnetChain(chainId);
@@ -1272,6 +1302,20 @@ export const WithdrawalView = () => {
       />
     );
   }, [isSameChain, protocolFeeUsd, selectedTokenSettlementChainTokenId, protocolFeeAmount, selectedToken?.symbol]);
+
+  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
+
+  const areMultichainFeesLoading = isQuoteOftLoading || isQuoteSendNativeFeeLoading;
+
+  const isNetworkFeeLoading =
+    shouldShowInfoRowPlaceholder &&
+    (isSameChain
+      ? sameChainNetworkFeeAsyncResult.isLoading
+      : areMultichainFeesLoading || !expressTxnParamsAsyncResult.data);
+
+  const isWithdrawFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
+
+  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountUsdLoading;
 
   const networkItemDisabledMessage = useCallback(
     (option: { id: number; name: string; disabled?: boolean | string }) => {
@@ -1508,11 +1552,23 @@ export const WithdrawalView = () => {
             valueClassName="numbers"
             value={estimatedTimeValue}
           />
-          <SyntheticsInfoRow label={<Trans>Network Fee</Trans>} value={networkFeeValue} />
-          <SyntheticsInfoRow label={<Trans>Withdraw Fee</Trans>} value={withdrawFeeValue} />
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Withdraw Fee</Trans>}
+            value={isWithdrawFeeLoading ? valueSkeleton : withdrawFeeValue}
+          />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
-            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+            value={
+              isGmxBalanceLoading ? (
+                valueSkeleton
+              ) : (
+                <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+              )
+            }
           />
         </div>
       )}

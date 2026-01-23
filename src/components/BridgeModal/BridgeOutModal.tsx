@@ -171,7 +171,7 @@ export function BridgeOutModal({
     });
   }, [bridgeOutChain, account, bridgeOutAmount, chainId]);
 
-  const transferNativeFee = useQuoteSendNativeFee({
+  const { data: transferNativeFee } = useQuoteSendNativeFee({
     fromChainId: chainId,
     toChainId: bridgeOutChain,
     sendParams,
