@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
+import { useMemo } from "react";
 import { useMedia } from "react-use";
 
 import { ContractsChainId } from "config/chains";
@@ -16,6 +17,11 @@ import EarnIcon from "img/ic_earn.svg?react";
 
 import { GmGlvAssetCard } from "./GmGlvAssetCard";
 import { GmxAssetCard } from "./GmxAssetCard/GmxAssetCard";
+
+type AssetItem =
+  | { type: "gmx"; usdValue: bigint }
+  | { type: "esGmx"; usdValue: bigint }
+  | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint };
 
 function AssetsList({
   chainId,
@@ -53,6 +59,32 @@ function AssetsList({
 
   const { account } = useWallet();
 
+  const sortedAssets = useMemo(() => {
+    const assets: AssetItem[] = [];
+
+    if (hasGmx && processedData) {
+      const gmxUsdValue = (processedData.gmxBalanceUsd ?? 0n) + (processedData.gmxInStakedGmxUsd ?? 0n);
+      assets.push({ type: "gmx", usdValue: gmxUsdValue });
+    }
+
+    if (hasEsGmx && processedData) {
+      const esGmxUsdValue = (processedData.esGmxBalanceUsd ?? 0n) + (processedData.esGmxInStakedGmxUsd ?? 0n);
+      assets.push({ type: "esGmx", usdValue: esGmxUsdValue });
+    }
+
+    for (const info of gmGlvAssets) {
+      const tokenAddress = getGlvOrMarketAddress(info);
+      const usdValue = multichainMarketTokensBalances?.[tokenAddress]?.totalBalanceUsd ?? 0n;
+      assets.push({ type: "gmGlv", info, usdValue });
+    }
+
+    return assets.sort((a, b) => {
+      if (b.usdValue > a.usdValue) return 1;
+      if (b.usdValue < a.usdValue) return -1;
+      return 0;
+    });
+  }, [hasGmx, hasEsGmx, processedData, gmGlvAssets, multichainMarketTokensBalances]);
+
   return (
     <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
       <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
@@ -68,26 +100,36 @@ function AssetsList({
               : "md:grid-cols-2 min-[1300px]:grid-cols-3 min-[1460px]:grid-cols-4"
           )}
         >
-          {hasGmx && processedData ? <GmxAssetCard processedData={processedData} /> : null}
-          {hasEsGmx && processedData ? <GmxAssetCard processedData={processedData} esGmx /> : null}
-          {gmGlvAssets.map((info) => (
-            <GmGlvAssetCard
-              key={getGlvOrMarketAddress(info)}
-              marketInfo={info}
-              chainId={chainId}
-              totalFeeApy={
-                isGlvInfo(info)
-                  ? getByKey(glvTotalApyData, info.glvTokenAddress)
-                  : getByKey(marketsTotalApyData, info.marketTokenAddress)
-              }
-              feeApy30d={
-                isGlvInfo(info)
-                  ? getByKey(glv30dApyData, info.glvTokenAddress)
-                  : getByKey(markets30dApyData, info.marketTokenAddress)
-              }
-              multichainMarketTokenBalances={multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]}
-            />
-          ))}
+          {sortedAssets.map((asset) => {
+            if (asset.type === "gmx" && processedData) {
+              return <GmxAssetCard key="gmx" processedData={processedData} />;
+            }
+            if (asset.type === "esGmx" && processedData) {
+              return <GmxAssetCard key="esGmx" processedData={processedData} esGmx />;
+            }
+            if (asset.type === "gmGlv") {
+              const info = asset.info;
+              return (
+                <GmGlvAssetCard
+                  key={getGlvOrMarketAddress(info)}
+                  marketInfo={info}
+                  chainId={chainId}
+                  totalFeeApy={
+                    isGlvInfo(info)
+                      ? getByKey(glvTotalApyData, info.glvTokenAddress)
+                      : getByKey(marketsTotalApyData, info.marketTokenAddress)
+                  }
+                  feeApy30d={
+                    isGlvInfo(info)
+                      ? getByKey(glv30dApyData, info.glvTokenAddress)
+                      : getByKey(markets30dApyData, info.marketTokenAddress)
+                  }
+                  multichainMarketTokenBalances={multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]}
+                />
+              );
+            }
+            return null;
+          })}
         </div>
       )}
 
