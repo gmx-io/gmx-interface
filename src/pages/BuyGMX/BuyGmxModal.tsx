@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
 import { getSyntheticsTradeOptionsKey } from "config/localStorage";
+import { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
 import { useChainId } from "lib/chains";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
@@ -30,7 +31,7 @@ function setArbitrumSwapToGmxOptions() {
   const existingRaw = localStorage.getItem(key);
   const existing = existingRaw ? JSON.parse(existingRaw) : {};
 
-  const updated = {
+  const updated: StoredTradeOptions = {
     ...existing,
     tradeType: TradeType.Swap,
     tradeMode: TradeMode.Market,
