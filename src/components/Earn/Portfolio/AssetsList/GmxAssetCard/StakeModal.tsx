@@ -1,7 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ZeroAddress, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { zeroAddress } from "viem";
 
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
@@ -17,6 +18,7 @@ import { callContract } from "lib/contracts";
 import { StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, limitDecimals, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -97,6 +99,7 @@ export function StakeModal(props: {
   const [isApproving, setIsApproving] = useState(false);
   const isMetamaskMobile = useIsMetamaskMobile();
   const icons = getIcons(chainId);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const stakeAmount = useMemo(() => parseValue(stakeValue, 18), [stakeValue]);
   const unstakeAmount = useMemo(() => parseValue(unstakeValue, 18), [unstakeValue]);
@@ -119,7 +122,7 @@ export function StakeModal(props: {
   }, [isVisible, setStakeValue, setUnstakeValue]);
 
   const needApproval =
-    stakeFarmAddress !== ZeroAddress &&
+    stakeFarmAddress !== zeroAddress &&
     tokenAllowance !== undefined &&
     stakeAmount !== undefined &&
     stakeAmount > tokenAllowance;
@@ -153,11 +156,14 @@ export function StakeModal(props: {
   }, [unstakeAmount, unstakeMaxAmount]);
 
   const isStakePrimaryEnabled = useMemo(
-    () => !stakeError && !isApproving && !isStaking && !isUndelegatedGovToken,
-    [stakeError, isApproving, isStaking, isUndelegatedGovToken]
+    () => !stakeError && !isApproving && !isStaking && !isUndelegatedGovToken && !hasOutdatedUi,
+    [stakeError, isApproving, isStaking, isUndelegatedGovToken, hasOutdatedUi]
   );
 
-  const isUnstakePrimaryEnabled = useMemo(() => !unstakeError && !isUnstaking, [unstakeError, isUnstaking]);
+  const isUnstakePrimaryEnabled = useMemo(
+    () => !unstakeError && !isUnstaking && !hasOutdatedUi,
+    [unstakeError, isUnstaking, hasOutdatedUi]
+  );
 
   const handleStake = useCallback(() => {
     if (needApproval) {
@@ -233,6 +239,10 @@ export function StakeModal(props: {
   }, [setUnstakeValue, unstakeMaxAmount]);
 
   const primaryText = useMemo(() => {
+    if (hasOutdatedUi) {
+      return t`Page outdated, please refresh`;
+    }
+
     if (activeTab === "stake") {
       if (stakeError) {
         return stakeError;
@@ -257,7 +267,17 @@ export function StakeModal(props: {
       return <Trans>Unstaking</Trans>;
     }
     return <Trans>Unstake</Trans>;
-  }, [activeTab, isApproving, isStaking, isUnstaking, needApproval, tokenSymbol, stakeError, unstakeError]);
+  }, [
+    activeTab,
+    hasOutdatedUi,
+    isApproving,
+    isStaking,
+    isUnstaking,
+    needApproval,
+    tokenSymbol,
+    stakeError,
+    unstakeError,
+  ]);
 
   const isPrimaryEnabled = activeTab === "stake" ? isStakePrimaryEnabled : isUnstakePrimaryEnabled;
 

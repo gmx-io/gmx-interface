@@ -1,6 +1,6 @@
 import orderBy from "lodash/orderBy";
 
-import { ContractsChainId, getChainName } from "config/chains";
+import { getChainName } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEBUG_RPC_ENDPOINTS_KEY, RPC_DEBUG_STATE_KEY } from "config/localStorage";
 import { getProviderNameFromUrl } from "config/rpc";
@@ -15,30 +15,13 @@ export enum RpcDebugFlags {
   DebugAlchemy = "debugAlchemy",
 }
 
-export type RpcDebugState = {
+type RpcDebugState = {
   [RpcDebugFlags.LogRpcTracker]: boolean;
   [RpcDebugFlags.DebugLargeAccount]: boolean;
   [RpcDebugFlags.DebugAlchemy]: boolean;
 };
 
-export type OldRpcTrackerDebugStats = {
-  url: string;
-  isPrimary: string;
-  isValid: string;
-  responseTime: number | null;
-  blockNumber: number | null;
-  purpose: string | undefined;
-  isPublic: string;
-};
-
-export type OldRpcTrackerState = {
-  primary: string;
-  secondary: string;
-  debugStats: OldRpcTrackerDebugStats[];
-  timestamp: number;
-};
-
-export type DebugRpcEndpoint = {
+type DebugRpcEndpoint = {
   url: string;
   isPublic: boolean;
   purpose: string;
@@ -50,12 +33,10 @@ type DebugRpcEndpointsState = {
 
 class RpcTrackerDebug {
   storage: Storage<RpcDebugState>;
-  oldRpcTrackerState: Map<number, OldRpcTrackerState>;
   debugRpcEndpointsStorage: Storage<DebugRpcEndpointsState>;
 
   constructor() {
     this.storage = new Storage<RpcDebugState>(RPC_DEBUG_STATE_KEY);
-    this.oldRpcTrackerState = new Map();
     this.debugRpcEndpointsStorage = new Storage<DebugRpcEndpointsState>(DEBUG_RPC_ENDPOINTS_KEY);
   }
 
@@ -122,14 +103,6 @@ class RpcTrackerDebug {
     console.table(orderBy(debugStats, ["responseTime"], ["asc"]));
     // eslint-disable-next-line no-console
     console.groupEnd();
-  }
-
-  setOldRpcTrackerState(chainId: number, state: OldRpcTrackerState) {
-    this.oldRpcTrackerState.set(chainId as ContractsChainId, state);
-  }
-
-  getOldRpcTrackerState(chainId: number): OldRpcTrackerState | undefined {
-    return this.oldRpcTrackerState.get(chainId as ContractsChainId);
   }
 
   setDebugRpcEndpoint(chainId: number, url: string, isPublic: boolean, purpose: string) {

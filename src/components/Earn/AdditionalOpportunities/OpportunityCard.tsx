@@ -18,7 +18,7 @@ type Props = {
   tokensData: TokensData | undefined;
 };
 
-export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Props) {
+function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Props) {
   const { name, description, tags, assets: tokens, link } = opportunity;
 
   const opportunityTagLabels = useOpportunityTagLabels();

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { getIsFlagEnabled } from "config/ab";
 import { getProviderNameFromUrl } from "config/rpc";
 import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
 import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
@@ -10,7 +9,6 @@ import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { FreshnessMetricId } from "lib/metrics/types";
 import { _debugMulticall, type MulticallDebugState } from "lib/multicall/_debug";
-import { _debugRpcTracker } from "lib/rpc/_debug";
 import { getCurrentRpcUrls, getRpcTrackerByChainId } from "lib/rpc/useRpcUrls";
 import { usePrevious } from "lib/usePrevious";
 
@@ -108,59 +106,35 @@ export default function RpcDebug() {
   // Update all RPC stats
   useEffect(() => {
     const updateStats = () => {
-      const isNewTracker = getIsFlagEnabled("testRpcFallbackUpdates");
+      const tracker = getRpcTrackerByChainId(chainId);
 
-      if (isNewTracker) {
-        const tracker = getRpcTrackerByChainId(chainId);
-
-        if (!tracker) {
-          setAllRpcStats([]);
-          return;
-        }
-
-        const fallbackTracker = tracker.fallbackTracker;
-
-        // Update all RPC stats
-        const allStats = fallbackTracker.getEndpointsStats();
-        const statsWithDetails = allStats.map((stats) => {
-          const rpcConfig = tracker.getRpcConfig(stats.endpoint);
-          // Get latest responseTime (first in checkResults array, which is sorted from newest to oldest)
-          const latestCheckResult = stats.checkResults[0];
-          return {
-            endpoint: stats.endpoint,
-            providerName: getProviderNameFromUrl(stats.endpoint),
-            purpose: rpcConfig?.purpose ?? "unknown",
-            isPublic: rpcConfig?.isPublic ?? false,
-            failureCount: stats.failureTimestamps?.length ?? 0,
-            banTime: stats.banned?.timestamp,
-            responseTime: latestCheckResult?.success ? latestCheckResult.stats?.responseTime : undefined,
-            blockNumber: latestCheckResult?.success ? latestCheckResult.stats?.blockNumber : undefined,
-            isPrimary: stats.endpoint === primaryRpc,
-            isSecondary: fallbacks.includes(stats.endpoint),
-          };
-        });
-        setAllRpcStats(statsWithDetails);
-      } else {
-        // Use old tracker state from debug tracker
-        const oldTrackerState = _debugRpcTracker?.getOldRpcTrackerState(chainId);
-        if (oldTrackerState?.debugStats && oldTrackerState.debugStats.length > 0) {
-          const statsWithDetails = oldTrackerState.debugStats.map((stat) => ({
-            endpoint: stat.url,
-            providerName: getProviderNameFromUrl(stat.url),
-            purpose: stat.purpose ?? "unknown",
-            isPublic: stat.isPublic === "yes",
-            failureCount: 0,
-            banTime: undefined,
-            responseTime: stat.responseTime ?? undefined,
-            blockNumber: stat.blockNumber ?? undefined,
-            isPrimary: stat.url === oldTrackerState.primary,
-            isSecondary: stat.url === oldTrackerState.secondary,
-          }));
-          setAllRpcStats(statsWithDetails);
-        } else {
-          setAllRpcStats([]);
-        }
+      if (!tracker) {
+        setAllRpcStats([]);
+        return;
       }
+
+      const fallbackTracker = tracker.fallbackTracker;
+
+      // Update all RPC stats
+      const allStats = fallbackTracker.getEndpointsStats();
+      const statsWithDetails = allStats.map((stats) => {
+        const rpcConfig = tracker.getRpcConfig(stats.endpoint);
+        // Get latest responseTime (first in checkResults array, which is sorted from newest to oldest)
+        const latestCheckResult = stats.checkResults[0];
+        return {
+          endpoint: stats.endpoint,
+          providerName: getProviderNameFromUrl(stats.endpoint),
+          purpose: rpcConfig?.purpose ?? "unknown",
+          isPublic: rpcConfig?.isPublic ?? false,
+          failureCount: stats.failureTimestamps?.length ?? 0,
+          banTime: stats.banned?.timestamp,
+          responseTime: latestCheckResult?.success ? latestCheckResult.stats?.responseTime : undefined,
+          blockNumber: latestCheckResult?.success ? latestCheckResult.stats?.blockNumber : undefined,
+          isPrimary: stats.endpoint === primaryRpc,
+          isSecondary: fallbacks.includes(stats.endpoint),
+        };
+      });
+      setAllRpcStats(statsWithDetails);
     };
 
     updateStats();

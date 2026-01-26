@@ -7,7 +7,11 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
-import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets";
+import {
+  getAvailableUsdLiquidityForPosition,
+  getOpenInterestForBalance,
+  getOpenInterestInTokens,
+} from "domain/synthetics/markets";
 import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -76,7 +80,10 @@ export const selectChartHeaderInfo = createSelector((q) => {
     fundingRateShort,
     openInterestLong: longUsdInterest,
     openInterestShort: shortUsdInterest,
+    openInterestLongInTokens: getOpenInterestInTokens(marketInfo, true),
+    openInterestShortInTokens: getOpenInterestInTokens(marketInfo, false),
     decimals: marketInfo.indexToken.decimals,
+    indexTokenSymbol: marketInfo.indexToken.symbol,
     longOpenInterestPercentage,
     shortOpenInterestPercentage,
   };

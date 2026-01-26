@@ -1,10 +1,13 @@
+import { t } from "@lingui/macro";
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { helperToast } from "lib/helperToast";
 import { useJsonRpcProvider } from "lib/rpc";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
@@ -14,7 +17,6 @@ import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from 
 import {
   makeSelectOrderErrorByOrderKey,
   makeSelectOrdersWithErrorsByPositionKey,
-  selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
 import { useSelector } from "../utils";
@@ -30,8 +32,6 @@ export const usePositionOrdersWithErrors = (positionKey: string | undefined) => 
   return useSelector(selector);
 };
 
-export const useOrderErrorsByOrderKeyMap = () => useSelector(selectOrderErrorsByOrderKeyMap);
-
 export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 
 export function useCancelOrder(order: OrderInfo) {
@@ -43,11 +43,16 @@ export function useCancelOrder(order: OrderInfo) {
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const subaccount = useSelector(selectSubaccountForChainAction);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(order.key);
 
   const onCancelOrder = useCallback(
     async function cancelOrder() {
+      if (hasOutdatedUi) {
+        helperToast.error(t`Page outdated, please refresh`);
+        return;
+      }
       if (!signer || !provider) return;
 
       setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
@@ -90,6 +95,7 @@ export function useCancelOrder(order: OrderInfo) {
     [
       chainId,
       globalExpressParams,
+      hasOutdatedUi,
       makeOrderTxnCallback,
       order,
       provider,

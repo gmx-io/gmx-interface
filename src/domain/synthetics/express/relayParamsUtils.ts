@@ -151,6 +151,7 @@ export function getRelayerFeeParams({
         marketsInfoData: undefined,
         chainId,
         externalSwapQuoteParams: undefined,
+        allowSameTokenSwap: false,
       });
     }
 
@@ -204,7 +205,6 @@ export function getRawRelayerParams({
   feeParams,
   externalCalls,
   tokenPermits,
-  // marketsInfoData,
 }: {
   chainId: ContractsChainId;
   gasPaymentTokenAddress: string;
@@ -212,7 +212,6 @@ export function getRawRelayerParams({
   feeParams: RelayFeePayload;
   externalCalls: ExternalCallsPayload;
   tokenPermits: SignedTokenPermit[];
-  // marketsInfoData: MarketsInfoData;
 }): RawRelayParamsPayload {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
@@ -220,7 +219,6 @@ export function getRawRelayerParams({
     feeSwapPath: feeParams.feeSwapPath,
     gasPaymentTokenAddress,
     relayerFeeTokenAddress,
-    // marketsInfoData,
   });
 
   const relayParamsPayload: RawRelayParamsPayload = {

@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
 
-import {
-  getCurrentRpcUrls as old_getCurrentRpcUrls,
-  trackRpcProviders as old_trackRpcProviders,
-  useCurrentRpcUrls as old_useCurrentRpcUrls,
-} from "ab/testRpcFallbackUpdates/disabled/oldRpcTracker";
-import { getIsFlagEnabled } from "config/ab";
 import { CONTRACTS_CHAIN_IDS, ContractsChainId, isContractsChain, SOURCE_CHAIN_IDS } from "config/chains";
 import {
   getExpressRpcUrl,
@@ -21,92 +15,98 @@ import { RpcTracker } from "lib/rpc/RpcTracker";
 
 import { _debugRpcTracker } from "./_debug";
 
-const RPC_TRACKERS_BY_KEY: Record<string, RpcTracker> = {};
-const RPC_TRACKER_KEYS_BY_CHAIN_ID: Record<number, string> = {};
-let isInitialized = false;
+class RpcTrackersRegistry {
+  private static instance: RpcTrackersRegistry | null = null;
 
-function initRpcTrackers() {
-  if (isInitialized) {
-    return;
+  trackersByKey: Record<string, RpcTracker> = {};
+  trackerKeysByChainId: Record<number, string> = {};
+  isInitialized = false;
+
+  static getInstance(): RpcTrackersRegistry {
+    if (!RpcTrackersRegistry.instance) {
+      RpcTrackersRegistry.instance = new RpcTrackersRegistry();
+      RpcTrackersRegistry.instance.init();
+    }
+    return RpcTrackersRegistry.instance;
   }
 
-  const networkStatusObserver = NetworkStatusObserver.getInstance();
-  const chainIds = CONTRACTS_CHAIN_IDS.concat(SOURCE_CHAIN_IDS);
+  init() {
+    if (this.isInitialized) {
+      return;
+    }
 
-  for (const chainId of chainIds) {
-    const config = isContractsChain(chainId)
-      ? RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS
-      : RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS;
+    const networkStatusObserver = NetworkStatusObserver.getInstance();
+    const chainIds = CONTRACTS_CHAIN_IDS.concat(SOURCE_CHAIN_IDS);
 
-    const tracker = new RpcTracker({
-      ...config,
-      chainId: chainId as ContractsChainId,
-      networkStatusObserver,
-    });
+    for (const chainId of chainIds) {
+      const config = isContractsChain(chainId)
+        ? RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS
+        : RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS;
 
-    RPC_TRACKERS_BY_KEY[tracker.trackerKey] = tracker;
-    RPC_TRACKER_KEYS_BY_CHAIN_ID[chainId] = tracker.trackerKey;
+      const tracker = new RpcTracker({
+        ...config,
+        chainId: chainId as ContractsChainId,
+        networkStatusObserver,
+      });
 
-    subscribeForRpcTrackerMetrics(tracker);
-    _debugRpcTracker?.subscribeForRpcTrackerDebugging(tracker);
+      this.trackersByKey[tracker.trackerKey] = tracker;
+      this.trackerKeysByChainId[chainId] = tracker.trackerKey;
 
-    tracker.fallbackTracker.startTracking();
+      subscribeForRpcTrackerMetrics(tracker);
+      _debugRpcTracker?.subscribeForRpcTrackerDebugging(tracker);
+
+      tracker.fallbackTracker.startTracking();
+    }
+
+    this.isInitialized = true;
   }
 
-  isInitialized = true;
-}
+  getRpcTracker(trackerKey: string): RpcTracker | undefined {
+    return this.trackersByKey[trackerKey];
+  }
 
-if (getIsFlagEnabled("testRpcFallbackUpdates")) {
-  initRpcTrackers();
-} else {
-  old_trackRpcProviders({ warmUp: true });
-}
+  getRpcTrackerByChainId(chainId: number): RpcTracker | undefined {
+    const trackerKey = this.trackerKeysByChainId[chainId];
+    return this.getRpcTracker(trackerKey);
+  }
 
-export const getCurrentRpcUrls = getIsFlagEnabled("testRpcFallbackUpdates")
-  ? _getCurrentRpcUrls
-  : old_getCurrentRpcUrls;
+  getCurrentRpcUrls(chainId: number) {
+    // Would never happen in normal flow, but added for multichain localStorage safety
+    if (chainId === undefined) {
+      return { primary: undefined, fallbacks: [], trackerKey: "unknown", endpointsStats: [] };
+    }
 
-export const useCurrentRpcUrls = getIsFlagEnabled("testRpcFallbackUpdates")
-  ? _useCurrentRpcUrls
-  : old_useCurrentRpcUrls;
+    const tracker = this.getRpcTrackerByChainId(chainId);
+    if (tracker) {
+      return tracker.pickCurrentRpcUrls();
+    }
 
-export function getRpcTracker(trackerKey: string): RpcTracker | undefined {
-  return RPC_TRACKERS_BY_KEY[trackerKey];
+    // Check rpc providers existence to throw an error if no providers are configured for chainId
+    const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((p) => p.url);
+    const privateRpcProviders = getIsLargeAccount()
+      ? getRpcProviders(chainId, "largeAccount")?.map((p) => p.url)
+      : getRpcProviders(chainId, "fallback")?.map((p) => p.url);
+
+    let primary = defaultRpcProviders[0];
+
+    if (!primary) {
+      throw new Error(`No RPC providers found for chainId: ${chainId}`);
+    }
+
+    const fallbacks = [...defaultRpcProviders, ...(privateRpcProviders ?? [])].filter(
+      (url) => url !== primary && url !== undefined
+    );
+
+    return { primary, fallbacks, trackerKey: "unknown", endpointsStats: [] };
+  }
 }
 
 export function getRpcTrackerByChainId(chainId: number): RpcTracker | undefined {
-  const trackerKey = RPC_TRACKER_KEYS_BY_CHAIN_ID[chainId];
-  return getRpcTracker(trackerKey);
+  return RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId);
 }
 
-function _getCurrentRpcUrls(chainId: number) {
-  // Would never happen in normal flow, but added for multichain localStorage safety
-  if (chainId === undefined) {
-    return { primary: undefined, fallbacks: [], trackerKey: "unknown", endpointsStats: [] };
-  }
-
-  const tracker = getRpcTrackerByChainId(chainId);
-  if (tracker) {
-    return tracker.pickCurrentRpcUrls();
-  }
-
-  // Check rpc providers existence to throw an error if no providers are configured for chainId
-  const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((p) => p.url);
-  const privateRpcProviders = getIsLargeAccount()
-    ? getRpcProviders(chainId, "largeAccount")?.map((p) => p.url)
-    : getRpcProviders(chainId, "fallback")?.map((p) => p.url);
-
-  let primary = defaultRpcProviders[0];
-
-  if (!primary) {
-    throw new Error(`No RPC providers found for chainId: ${chainId}`);
-  }
-
-  const fallbacks = [...defaultRpcProviders, ...(privateRpcProviders ?? [])].filter(
-    (url) => url !== primary && url !== undefined
-  );
-
-  return { primary, fallbacks, trackerKey: "unknown", endpointsStats: [] };
+export function getCurrentRpcUrls(chainId: number) {
+  return RpcTrackersRegistry.getInstance().getCurrentRpcUrls(chainId);
 }
 
 export function getCurrentExpressRpcUrl(chainId: number) {
@@ -117,12 +117,12 @@ export function getCurrentExpressRpcUrl(chainId: number) {
   return getExpressRpcUrl(chainId);
 }
 
-function _useCurrentRpcUrls(chainId: number): { primary: string; fallbacks: string[] } {
+export function useCurrentRpcUrls(chainId: number): { primary: string; fallbacks: string[] } {
   const [bestRpcUrls, setBestRpcUrls] = useState<{
     primary: string;
     fallbacks: string[];
   }>(() => {
-    const result = _getCurrentRpcUrls(chainId);
+    const result = getCurrentRpcUrls(chainId);
     return {
       primary: result.primary,
       fallbacks: result.fallbacks,
@@ -132,7 +132,7 @@ function _useCurrentRpcUrls(chainId: number): { primary: string; fallbacks: stri
   useEffect(() => {
     let isMounted = true;
 
-    const result = _getCurrentRpcUrls(chainId);
+    const result = getCurrentRpcUrls(chainId);
     setBestRpcUrls({
       primary: result.primary,
       fallbacks: result.fallbacks,

@@ -25,7 +25,7 @@ import { FindSwapPath, getAcceptablePriceInfo, getMaxSwapPathLiquidity, getSwapA
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 
-export function getSwapOrderTitle(p: {
+function getSwapOrderTitle(p: {
   initialCollateralToken: Token;
   targetCollateralToken: Token;
   initialCollateralAmount: bigint;
@@ -47,12 +47,7 @@ export function getSwapOrderTitle(p: {
   return t`Swap ${fromTokenText} for ${toTokenText}`;
 }
 
-export function getPositionOrderTitle(p: {
-  orderType: OrderType;
-  isLong: boolean;
-  indexToken: Token;
-  sizeDeltaUsd: bigint;
-}) {
+function getPositionOrderTitle(p: { orderType: OrderType; isLong: boolean; indexToken: Token; sizeDeltaUsd: bigint }) {
   const { orderType, isLong, indexToken, sizeDeltaUsd } = p;
 
   const longShortText = isLong ? t`Long` : t`Short`;
@@ -447,6 +442,7 @@ function getIsMaxLeverageError({
     marketsInfoData: undefined,
     externalSwapQuoteParams: undefined,
     chainId,
+    allowSameTokenSwap: false,
   });
   const markPrice = order.marketInfo.indexToken.prices.minPrice;
   const sizeDeltaUsd = order.sizeDeltaUsd;

@@ -65,8 +65,8 @@ export function LeaveHomepageRedirectModal({
           </p>
           <p>
             <Trans>
-              Alternative links can be found in the <a href="https://docs.gmx.io/docs/frontends">docs</a>. By
-              clicking Agree you accept the <a href="https://gmx.io/#/terms-and-conditions">T&Cs</a> and{" "}
+              Alternative links can be found in the <a href="https://docs.gmx.io/docs/frontends">docs</a>. By clicking
+              Agree you accept the <a href="https://gmx.io/#/terms-and-conditions">T&Cs</a> and{" "}
               <a href="https://gmx.io/#/referral-terms">Referral T&Cs</a>.
             </Trans>
           </p>

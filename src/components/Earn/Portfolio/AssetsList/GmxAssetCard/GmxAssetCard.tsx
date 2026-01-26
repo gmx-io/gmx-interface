@@ -294,5 +294,3 @@ function GmxAssetCardOptionsDropdown() {
     </Menu>
   );
 }
-
-export default GmxAssetCard;

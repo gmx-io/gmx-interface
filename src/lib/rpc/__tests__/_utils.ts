@@ -1,7 +1,5 @@
 import { encodeAbiParameters } from "viem";
-import { vi } from "vitest";
 
-import * as rpcConfigModule from "config/rpc";
 import type { RpcConfig } from "config/rpc";
 import type { CheckResult, EndpointStats } from "lib/FallbackTracker";
 import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "lib/FallbackTracker/const";
@@ -11,7 +9,7 @@ import { ARBITRUM } from "sdk/configs/chains";
 
 import type { RpcCheckResult, RpcTrackerParams } from "../RpcTracker";
 
-export const testChainId = ARBITRUM;
+const testChainId = ARBITRUM;
 
 export const testRpcConfigs = {
   defaultPrimary: {
@@ -85,7 +83,7 @@ export const createMockRpcTrackerParams = (overrides?: {
     : {}),
 });
 
-export const createMockRpcCheckResult = (overrides?: Partial<RpcCheckResult>): RpcCheckResult => ({
+const createMockRpcCheckResult = (overrides?: Partial<RpcCheckResult>): RpcCheckResult => ({
   responseTime: 100,
   blockNumber: 1000000,
   ...overrides,
@@ -152,9 +150,3 @@ export const createMockBlockAndAggregateResponse = (
 
   return { result: encodedResult };
 };
-
-export function mockGetRpcProvidersWithTestConfigs(configsToReturn: RpcConfig[]) {
-  vi.spyOn(rpcConfigModule, "getRpcProviders").mockImplementation((chainId: number, purpose: string) => {
-    return configsToReturn.filter((config) => config.purpose === purpose);
-  });
-}

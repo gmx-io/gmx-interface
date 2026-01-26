@@ -43,6 +43,7 @@ import { useInterviewNotification } from "domain/synthetics/userFeedback/useInte
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
+import { helperToast } from "lib/helperToast";
 import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useMeasureComponentMountTime } from "lib/metrics/useMeasureComponentMountTime";
@@ -50,6 +51,7 @@ import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -61,6 +63,7 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
+import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
@@ -368,36 +371,46 @@ export function SyntheticsPage(p: Props) {
               />
 
               {listSection === ListSection.Positions && (
-                <PositionList
-                  onOrdersClick={handlePositionListOrdersClick}
-                  onSelectPositionClick={onSelectPositionClick}
-                  onClosePositionClick={setClosingPositionKey}
-                  openSettings={openSettings}
-                  onCancelOrder={onCancelOrder}
-                />
+                <ErrorBoundary id="SyntheticsPage-PositionList" variant="block">
+                  <PositionList
+                    onOrdersClick={handlePositionListOrdersClick}
+                    onSelectPositionClick={onSelectPositionClick}
+                    onClosePositionClick={setClosingPositionKey}
+                    openSettings={openSettings}
+                    onCancelOrder={onCancelOrder}
+                  />
+                </ErrorBoundary>
               )}
               {listSection === ListSection.Orders && (
-                <OrderList
-                  selectedOrdersKeys={selectedOrderKeys}
-                  setSelectedOrderKeys={setSelectedOrderKeys}
-                  selectedPositionOrderKey={selectedPositionOrderKey}
-                  setSelectedPositionOrderKey={setSelectedPositionOrderKey}
-                  marketsDirectionsFilter={marketsDirectionsFilter}
-                  setMarketsDirectionsFilter={setMarketsDirectionsFilter}
-                  orderTypesFilter={orderTypesFilter}
-                  setOrderTypesFilter={setOrderTypesFilter}
-                  onCancelSelectedOrders={onCancelSelectedOrders}
-                  onSelectOrderClick={onSelectOrderClick}
-                />
+                <ErrorBoundary id="SyntheticsPage-OrderList" variant="block">
+                  <OrderList
+                    selectedOrdersKeys={selectedOrderKeys}
+                    setSelectedOrderKeys={setSelectedOrderKeys}
+                    selectedPositionOrderKey={selectedPositionOrderKey}
+                    setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                    marketsDirectionsFilter={marketsDirectionsFilter}
+                    setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                    orderTypesFilter={orderTypesFilter}
+                    setOrderTypesFilter={setOrderTypesFilter}
+                    onCancelSelectedOrders={onCancelSelectedOrders}
+                    onSelectOrderClick={onSelectOrderClick}
+                  />
+                </ErrorBoundary>
               )}
-              {listSection === ListSection.Trades && <TradeHistory account={account} />}
+              {listSection === ListSection.Trades && (
+                <ErrorBoundary id="SyntheticsPage-TradeHistory" variant="block">
+                  <TradeHistory account={account} />
+                </ErrorBoundary>
+              )}
               {listSection === ListSection.Claims && (
-                <Claims
-                  setIsSettling={setIsSettling}
-                  isSettling={isSettling}
-                  setPendingTxns={setPendingTxns}
-                  allowedSlippage={savedAllowedSlippage}
-                />
+                <ErrorBoundary id="SyntheticsPage-Claims" variant="block">
+                  <Claims
+                    setIsSettling={setIsSettling}
+                    isSettling={isSettling}
+                    setPendingTxns={setPendingTxns}
+                    allowedSlippage={savedAllowedSlippage}
+                  />
+                </ErrorBoundary>
               )}
             </div>
           )}
@@ -430,7 +443,7 @@ export function SyntheticsPage(p: Props) {
             data-qa="trade-table-small"
             ref={tabsContentTabletRef}
           >
-            <div className="overflow-x-auto scrollbar-hide">
+            <div className="shrink-0 overflow-x-auto scrollbar-hide">
               <Tabs
                 options={tabsOptions}
                 selectedValue={listSection}
@@ -449,36 +462,46 @@ export function SyntheticsPage(p: Props) {
             </div>
 
             {listSection === ListSection.Positions && (
-              <PositionList
-                onOrdersClick={handlePositionListOrdersClick}
-                onSelectPositionClick={onSelectPositionClick}
-                onClosePositionClick={setClosingPositionKey}
-                openSettings={openSettings}
-                onCancelOrder={onCancelOrder}
-              />
+              <ErrorBoundary id="SyntheticsPage-PositionList-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <PositionList
+                  onOrdersClick={handlePositionListOrdersClick}
+                  onSelectPositionClick={onSelectPositionClick}
+                  onClosePositionClick={setClosingPositionKey}
+                  openSettings={openSettings}
+                  onCancelOrder={onCancelOrder}
+                />
+              </ErrorBoundary>
             )}
             {listSection === ListSection.Orders && (
-              <OrderList
-                selectedOrdersKeys={selectedOrderKeys}
-                setSelectedOrderKeys={setSelectedOrderKeys}
-                selectedPositionOrderKey={selectedPositionOrderKey}
-                setSelectedPositionOrderKey={setSelectedPositionOrderKey}
-                marketsDirectionsFilter={marketsDirectionsFilter}
-                setMarketsDirectionsFilter={setMarketsDirectionsFilter}
-                orderTypesFilter={orderTypesFilter}
-                setOrderTypesFilter={setOrderTypesFilter}
-                onCancelSelectedOrders={onCancelSelectedOrders}
-                onSelectOrderClick={onSelectOrderClick}
-              />
+              <ErrorBoundary id="SyntheticsPage-OrderList-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <OrderList
+                  selectedOrdersKeys={selectedOrderKeys}
+                  setSelectedOrderKeys={setSelectedOrderKeys}
+                  selectedPositionOrderKey={selectedPositionOrderKey}
+                  setSelectedPositionOrderKey={setSelectedPositionOrderKey}
+                  marketsDirectionsFilter={marketsDirectionsFilter}
+                  setMarketsDirectionsFilter={setMarketsDirectionsFilter}
+                  orderTypesFilter={orderTypesFilter}
+                  setOrderTypesFilter={setOrderTypesFilter}
+                  onCancelSelectedOrders={onCancelSelectedOrders}
+                  onSelectOrderClick={onSelectOrderClick}
+                />
+              </ErrorBoundary>
             )}
-            {listSection === ListSection.Trades && <TradeHistory account={account} />}
+            {listSection === ListSection.Trades && (
+              <ErrorBoundary id="SyntheticsPage-TradeHistory-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <TradeHistory account={account} />
+              </ErrorBoundary>
+            )}
             {listSection === ListSection.Claims && (
-              <Claims
-                setIsSettling={setIsSettling}
-                isSettling={isSettling}
-                setPendingTxns={setPendingTxns}
-                allowedSlippage={savedAllowedSlippage}
-              />
+              <ErrorBoundary id="SyntheticsPage-Claims-Mobile" variant="block" wrapperClassName="rounded-t-8">
+                <Claims
+                  setIsSettling={setIsSettling}
+                  isSettling={isSettling}
+                  setPendingTxns={setPendingTxns}
+                  allowedSlippage={savedAllowedSlippage}
+                />
+              </ErrorBoundary>
             )}
           </div>
         )}
@@ -509,6 +532,7 @@ function useOrdersControl() {
   const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
@@ -522,6 +546,10 @@ function useOrdersControl() {
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
+      if (hasOutdatedUi) {
+        helperToast.error(t`Page outdated, please refresh`);
+        return;
+      }
       if (!signer || !provider) return;
       const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
       const orderKeys = orders.flatMap(getOrderKeys);
@@ -568,6 +596,7 @@ function useOrdersControl() {
     [
       chainId,
       globalExpressParams,
+      hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
       provider,
@@ -581,6 +610,10 @@ function useOrdersControl() {
 
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
+      if (hasOutdatedUi) {
+        helperToast.error(t`Page outdated, please refresh`);
+        return;
+      }
       if (!signer || !provider) return;
       const order = getByKey(ordersInfoData, key);
       if (!order) return;
@@ -624,6 +657,7 @@ function useOrdersControl() {
     [
       chainId,
       globalExpressParams,
+      hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
       provider,

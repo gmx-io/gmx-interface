@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { ethers } from "ethers";
+import { maxUint256 } from "viem";
 
 import {
   AnyChainId,
@@ -43,7 +43,6 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 
-export type ValidationTooltipName = "maxLeverage";
 export type ValidationResult =
   | [errorMessage: undefined]
   | [errorMessage: string]
@@ -133,10 +132,6 @@ export function getSwapError(p: {
 
   if (!fromToken || !toToken) {
     return [t`Select a token`];
-  }
-
-  if (fromToken.address === toToken.address) {
-    return [t`Select different tokens`];
   }
 
   if (fromTokenAmount === undefined || fromUsd === undefined || fromTokenAmount <= 0 || fromUsd <= 0) {
@@ -518,7 +513,7 @@ export function getDecreaseError(p: {
       return [t`Enter a trigger price`];
     }
 
-    if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== ethers.MaxUint256) {
+    if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== maxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
         return [t`Trigger price below liq. price`];
       }
@@ -610,7 +605,7 @@ export function getEditCollateralError(p: {
   }
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
-    if (position?.isLong && nextLiqPrice < ethers.MaxUint256 && position?.markPrice < nextLiqPrice) {
+    if (position?.isLong && nextLiqPrice < maxUint256 && position?.markPrice < nextLiqPrice) {
       return [t`Invalid liq. price`];
     }
 
@@ -640,19 +635,6 @@ export function getEditCollateralError(p: {
   }
 
   return [undefined];
-}
-
-export function decreasePositionSizeByLeverageDiff(
-  currentLeverage: bigint,
-  targetLeverage: bigint,
-  sizeDeltaUsd: bigint
-) {
-  return bigMath.mulDiv(
-    bigMath.mulDiv(sizeDeltaUsd, targetLeverage, currentLeverage),
-    // 2% slipage
-    98n,
-    100n
-  );
 }
 
 function getTokenBalanceByPaySource(

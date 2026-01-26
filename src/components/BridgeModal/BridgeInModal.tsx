@@ -25,10 +25,12 @@ import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { EMPTY_OBJECT } from "lib/objects";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
@@ -173,7 +175,9 @@ export function BridgeInModal({
     paySource: "sourceChain",
     chainId,
     srcChainId: bridgeInChain,
+    paySourceChainNativeTokenAmount: undefined,
   });
+  const hasOutdatedUi = useHasOutdatedUi();
 
   useEffect(() => {
     if (bridgeInChain !== undefined || !multichainMarketTokenBalances?.balances) {
@@ -183,7 +187,7 @@ export function BridgeInModal({
     const firstChainWithBalance = Object.entries(multichainMarketTokenBalances.balances).find(([chainIdStr, data]) => {
       const chainIdNum = Number(chainIdStr);
       if (
-        !isSourceChain(chainIdNum) ||
+        !isSourceChain(chainIdNum, chainId) ||
         (chainIdNum as number) === chainId ||
         (chainIdNum as number) === GMX_ACCOUNT_PSEUDO_CHAIN_ID
       ) {
@@ -226,6 +230,13 @@ export function BridgeInModal({
   };
 
   const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
+    if (hasOutdatedUi) {
+      return {
+        text: t`Page outdated, please refresh`,
+        disabled: true,
+      };
+    }
+
     if (isCreatingTxn) {
       return {
         text: (
@@ -266,7 +277,7 @@ export function BridgeInModal({
 
     if (sourceChainNativeFeeError) {
       return {
-        text: sourceChainNativeFeeError,
+        text: sourceChainNativeFeeError.buttonText,
         disabled: true,
       };
     }
@@ -276,6 +287,7 @@ export function BridgeInModal({
       disabled: false,
     };
   }, [
+    hasOutdatedUi,
     isCreatingTxn,
     bridgeInInputValue,
     bridgeInChain,
@@ -318,7 +330,7 @@ export function BridgeInModal({
             paySource={"sourceChain"}
             label={t`Deposit`}
             onSelectTokenAddress={(newBridgeInChain) => {
-              if (!isSourceChain(newBridgeInChain)) {
+              if (!isSourceChain(newBridgeInChain, chainId)) {
                 return;
               }
               setBridgeInChain(newBridgeInChain);
@@ -329,6 +341,11 @@ export function BridgeInModal({
             hideTabs
           />
         </BuyInputSection>
+        {sourceChainNativeFeeError?.warningText && (
+          <AlertInfoCard type="info" hideClose>
+            {sourceChainNativeFeeError.warningText}
+          </AlertInfoCard>
+        )}
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}
         </Button>

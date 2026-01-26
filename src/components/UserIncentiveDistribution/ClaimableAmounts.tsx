@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
@@ -15,6 +15,7 @@ import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synt
 import { useTokenBalances } from "domain/synthetics/tokens";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -36,6 +37,7 @@ export default function ClaimableAmounts() {
   const { claimsConfigByDistributionId, claimableAmountsDataByDistributionId, isLoading, onClaimed } =
     useUserClaimableAmounts(chainId, account);
   const settings = useSettings();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const [isClaiming, setIsClaiming] = useState(false);
   const [selectedDistributionIds, setSelectedDistributionIds] = useState<string[]>([]);
@@ -168,9 +170,12 @@ export default function ClaimableAmounts() {
 
     isButtonDisabled = !hasAvailableFundsToCoverExecutionFee;
 
-    let buttonText = <Trans>Claim funds</Trans>;
+    let buttonText: React.ReactNode = <Trans>Claim funds</Trans>;
 
-    if (isClaiming) {
+    if (hasOutdatedUi) {
+      buttonText = t`Page outdated, please refresh`;
+      isButtonDisabled = true;
+    } else if (isClaiming) {
       buttonText = <Trans>Claiming...</Trans>;
     }
 
@@ -196,6 +201,7 @@ export default function ClaimableAmounts() {
     settings.executionFeeBufferBps,
     userNativeTokenBalance,
     executionFee,
+    hasOutdatedUi,
     isClaiming,
     selectedDistributionIds,
     totalFundsToClaimUsd,
@@ -273,7 +279,7 @@ export default function ClaimableAmounts() {
 
       {displayInsufficientGasAlert ? (
         <AlertInfoCard type="warning" hideClose>
-          <Trans>Insufficient gas for network fees</Trans>
+          <Trans>Insufficient gas for network fees.</Trans>
         </AlertInfoCard>
       ) : null}
 

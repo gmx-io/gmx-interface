@@ -134,7 +134,6 @@ export function GmList({
           </Trans>
           <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
-              size="s"
               className="w-full *:!text-body-medium md:max-w-[260px]"
               value={searchText}
               setValue={setSearchText}

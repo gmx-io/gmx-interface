@@ -1,6 +1,8 @@
 #!/bin/sh
+set -e
 . "$(dirname "$0")/_/husky.sh"
 
 yarn lingui:generate
 yarn lint-staged
 yarn tscheck
+git add src/locales/

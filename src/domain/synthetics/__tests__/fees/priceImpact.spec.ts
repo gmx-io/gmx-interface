@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { parseUnits } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { applyImpactFactor } from "domain/synthetics/fees";
@@ -41,9 +41,9 @@ describe("applyImpactFactor", () => {
   ]) {
     it(`should keep difference >1/1e10 from the contract value: ${expected}`, () => {
       const result = applyImpactFactor(
-        ethers.parseUnits(String(diffUsd), 30),
-        ethers.parseUnits(String(impactFactor), 30),
-        ethers.parseUnits(String(exponentFactor), 30)
+        parseUnits(String(diffUsd), 30),
+        parseUnits(String(impactFactor), 30),
+        parseUnits(String(exponentFactor), 30)
       );
 
       const _expected = BigInt(expected);

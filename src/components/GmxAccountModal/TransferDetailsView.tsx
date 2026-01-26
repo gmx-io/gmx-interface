@@ -18,7 +18,7 @@ import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatAmountFree } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -65,17 +65,33 @@ export const TransferDetailsView = () => {
     }
   }, [selectedTransfer]);
 
-  const sourceChainName = selectedTransfer ? getChainName(selectedTransfer.sourceChainId) : undefined;
-
   const token = selectedTransfer ? getToken(chainId, selectedTransfer.token) : undefined;
 
+  let sourceChainId: number | undefined;
+  let initialChainId: number | undefined;
+  if (selectedTransfer) {
+    if (selectedTransfer.sourceChainId === 0) {
+      sourceChainId = selectedTransfer.settlementChainId;
+      initialChainId = selectedTransfer.settlementChainId;
+    } else {
+      sourceChainId = selectedTransfer.sourceChainId;
+      if (selectedTransfer.operation === "deposit") {
+        initialChainId = selectedTransfer.sourceChainId;
+      } else {
+        initialChainId = selectedTransfer.settlementChainId;
+      }
+    }
+  }
+
+  const sourceChainName = sourceChainId ? getChainName(sourceChainId) : undefined;
+
   const handleRepeatTransaction = () => {
-    if (!selectedTransfer || !token) {
+    if (!selectedTransfer || !token || !sourceChainId) {
       return;
     }
 
     if (selectedTransfer.operation === "deposit") {
-      setGmxAccountDepositViewChain(selectedTransfer.sourceChainId as SourceChainId);
+      setGmxAccountDepositViewChain(sourceChainId as SourceChainId);
       setGmxAccountDepositViewTokenAddress(selectedTransfer.token);
       setGmxAccountDepositViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
       setGmxAccountModalOpen("deposit");
@@ -83,8 +99,8 @@ export const TransferDetailsView = () => {
     }
 
     if (selectedTransfer.operation === "withdrawal") {
-      setGmxAccountWithdrawalViewChain(selectedTransfer.sourceChainId as SourceChainId);
-      setGmxAccountWithdrawalViewTokenAddress(selectedTransfer.token);
+      setGmxAccountWithdrawalViewChain(sourceChainId as SourceChainId);
+      setGmxAccountWithdrawalViewTokenAddress(convertTokenAddress(chainId, selectedTransfer.token, "wrapped"));
       setGmxAccountWithdrawalViewTokenInputValue(formatAmountFree(selectedTransfer.sentAmount, token.decimals));
       setGmxAccountModalOpen("withdraw");
     }
@@ -92,15 +108,15 @@ export const TransferDetailsView = () => {
 
   const addressLabel = selectedTransfer ? shortenAddressOrEns(selectedTransfer.account, 13) : undefined;
 
-  const networkLabel = selectedTransfer && (
+  const networkLabel = selectedTransfer && sourceChainId && (
     <span>
       <img
-        src={CHAIN_ID_TO_NETWORK_ICON[selectedTransfer.sourceChainId]}
+        src={CHAIN_ID_TO_NETWORK_ICON[sourceChainId]}
         width={20}
         height={20}
         className="-my-5 inline-block size-20 rounded-full align-baseline"
       />{" "}
-      {getChainName(selectedTransfer.sourceChainId)}
+      {getChainName(sourceChainId)}
     </span>
   );
 
@@ -110,7 +126,7 @@ export const TransferDetailsView = () => {
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
         <AlertInfoCard type="error">
-          <Trans>Your deposit of from {sourceChainName} was not executed due to an error</Trans>
+          <Trans>Your deposit of from {sourceChainName} was not executed due to an error.</Trans>
         </AlertInfoCard>
       ) : null}
       <SyntheticsInfoRow
@@ -125,23 +141,13 @@ export const TransferDetailsView = () => {
           </Trans>
         }
       />
-      {selectedTransfer?.sentTxn && (
+      {selectedTransfer?.sentTxn && initialChainId && (
         <SyntheticsInfoRow
-          label={
-            CHAIN_ID_TO_EXPLORER_NAME[
-              selectedTransfer.operation === "deposit"
-                ? selectedTransfer.sourceChainId
-                : selectedTransfer.settlementChainId
-            ]
-          }
+          label={CHAIN_ID_TO_EXPLORER_NAME[initialChainId]}
           value={
             <ExternalLink
               className="!no-underline"
-              href={
-                selectedTransfer.operation === "deposit"
-                  ? CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.sourceChainId](selectedTransfer.sentTxn)
-                  : CHAIN_ID_TO_TX_URL_BUILDER[selectedTransfer.settlementChainId](selectedTransfer.sentTxn)
-              }
+              href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId](selectedTransfer.sentTxn)}
             >
               <div className="flex items-center gap-4">
                 {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
@@ -151,7 +157,7 @@ export const TransferDetailsView = () => {
           }
         />
       )}
-      {selectedTransfer?.sentTxn && (
+      {selectedTransfer?.sentTxn && selectedTransfer.sourceChainId !== 0 && (
         <SyntheticsInfoRow
           label={isTestnet ? <Trans>Testnet LayerZero Scan</Trans> : <Trans>LayerZero Scan</Trans>}
           value={

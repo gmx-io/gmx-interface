@@ -79,6 +79,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
@@ -112,10 +113,6 @@ import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
 
 import "./PositionSeller.scss";
-
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
 
 const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Market]: msg`Market`,
@@ -454,7 +451,7 @@ export function PositionSeller() {
     }
 
     if (isSubmitting) {
-      return t`Creating order`;
+      return t`Creating order...`;
     }
   }, [
     account,
@@ -824,7 +821,7 @@ export function PositionSeller() {
   const buttonState = useMemo(() => {
     if (!isAllowanceLoaded) {
       return {
-        text: t`Loading`,
+        text: t`Loading...`,
         disabled: true,
       };
     }
@@ -833,7 +830,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Loading Express params`}
+            {t`Loading Express params...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -1017,6 +1014,7 @@ export function PositionSeller() {
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
+                  maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
                 />
 
                 {!isTwap && (

@@ -90,14 +90,14 @@ function makeExpressTxnResultWaiter(res: { taskId: string }) {
 
 const GELATO_API = "https://api.gelato.digital";
 
-export const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
+const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
   [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
   [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
   [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
   [ARBITRUM_SEPOLIA]: "nx5nyAg4h2kI_64YtOuPt7LSPDEXo4u8eJY_idF9xDw_",
 };
 
-export async function sendTxnToGelato({
+async function sendTxnToGelato({
   chainId,
   target,
   data,
@@ -148,10 +148,7 @@ export async function sendTxnToGelato({
 
 const finalStatuses = [TaskState.ExecSuccess, TaskState.ExecReverted, TaskState.Cancelled];
 
-export async function pollGelatoTask(
-  taskId: string,
-  cb: (status: GelatoTaskStatus | undefined, error?: Error) => void
-) {
+async function pollGelatoTask(taskId: string, cb: (status: GelatoTaskStatus | undefined, error?: Error) => void) {
   const pollInterval = 500;
   const maxAttempts = 60;
 

@@ -38,6 +38,8 @@ import {
   getTokenVisualMultiplier,
   getWrappedToken,
 } from "sdk/configs/tokens";
+import { TokenBalanceType } from "sdk/types/tokens";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -123,6 +125,7 @@ export function PositionEditor() {
               ...tokenData,
               isGmxAccount: false,
               balance: tokenData.walletBalance,
+              balanceType: TokenBalanceType.Wallet,
             },
           ];
         }
@@ -132,11 +135,13 @@ export function PositionEditor() {
             ...tokenData,
             isGmxAccount: true,
             balance: tokenData.gmxAccountBalance,
+            balanceType: TokenBalanceType.GmxAccount,
           },
           {
             ...tokenData,
             isGmxAccount: false,
-            balance: tokenData.balance,
+            balance: tokenData.walletBalance,
+            balanceType: TokenBalanceType.Wallet,
           },
         ];
       })
@@ -346,7 +351,6 @@ export function PositionEditor() {
               options={tabsOptions}
               type="inline"
               className="PositionEditor-tabs"
-              size="l"
               qa="operation-tabs"
             />
             <BuyInputSection
@@ -399,6 +403,7 @@ export function PositionEditor() {
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
+                maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
               />
 
               <div>{button}</div>

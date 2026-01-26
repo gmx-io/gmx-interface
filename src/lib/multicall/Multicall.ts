@@ -7,7 +7,6 @@ import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import { withFallback } from "lib/FallbackTracker/withFallback";
 import type {
   MulticallErrorEvent,
-  MulticallFallbackRpcModeCounter,
   MulticallRequestCounter,
   MulticallRequestTiming,
   MulticallTimeoutEvent,
@@ -16,19 +15,12 @@ import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metric
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
 import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { sleepWithSignal } from "lib/sleep";
-import { SlidingWindowFallbackSwitcher } from "lib/slidingWindowFallbackSwitcher";
 import { AbiId, abis as allAbis } from "sdk/abis";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
 
 export const MAX_PRIMARY_TIMEOUT = 20_000;
-
-export type MulticallProviderUrls = {
-  primary: string;
-  secondary: string;
-  trackerKey: string;
-};
 
 export class Multicall {
   static instances: {
@@ -61,31 +53,6 @@ export class Multicall {
       chain: getViemChain(chainId) as Chain,
     });
   }
-
-  // TODO: Remove after AB
-  fallbackRpcSwitcher = new SlidingWindowFallbackSwitcher({
-    fallbackTimeout: 60 * 1000, // 1 minute
-    restoreTimeout: 5 * 60 * 1000, // 5 minutes
-    eventsThreshold: 3,
-    onFallback: () => {
-      emitMetricCounter<MulticallFallbackRpcModeCounter>({
-        event: "multicall.fallbackRpcMode.on",
-        data: {
-          chainId: this.chainId,
-          isInMainThread: !isWebWorker,
-        },
-      });
-    },
-    onRestore: () => {
-      emitMetricCounter<MulticallFallbackRpcModeCounter>({
-        event: "multicall.fallbackRpcMode.off",
-        data: {
-          chainId: this.chainId,
-          isInMainThread: !isWebWorker,
-        },
-      });
-    },
-  });
 
   getClient: (options?: { forceFallback?: boolean }) => ReturnType<typeof Multicall.getViemClient>;
 
@@ -149,12 +116,7 @@ export class Multicall {
       });
     });
 
-    let providerUrl: string;
-    if (this.abFlags.testRpcFallbackUpdates) {
-      providerUrl = providerUrls.primary;
-    } else {
-      providerUrl = this.fallbackRpcSwitcher?.isFallbackMode ? providerUrls.fallbacks[0] : providerUrls.primary;
-    }
+    const providerUrl = providerUrls.primary;
 
     const sendCounterEvent = (
       event: "call" | "timeout" | "error",
@@ -251,11 +213,6 @@ export class Multicall {
 
     return withFallback({
       endpoints: [providerUrl, ...providerUrls.fallbacks],
-      onFallback: () => {
-        if (!this.abFlags.testRpcFallbackUpdates) {
-          this.fallbackRpcSwitcher?.trigger();
-        }
-      },
       fn: async (providerUrl: string) => {
         const isFallback = providerUrl !== providerUrls.primary;
 
@@ -336,10 +293,6 @@ export class Multicall {
             }
           })
           .catch((_viemError) => {
-            if (!this.fallbackRpcSwitcher?.isFallbackMode) {
-              this.fallbackRpcSwitcher?.trigger();
-            }
-
             const e = new Error(_viemError.message.slice(0, 150));
             // eslint-disable-next-line no-console
             console.groupCollapsed("multicall error:");

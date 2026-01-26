@@ -43,7 +43,6 @@ export const requestIncreasePosition = prepare({
       isWrapped: true,
       baseSymbol: "AVAX",
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
@@ -67,7 +66,6 @@ export const requestIncreasePosition = prepare({
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       prices: {
         minPrice: {
@@ -425,7 +423,6 @@ export const requestIncreasePosition = prepare({
     isWrapped: true,
     baseSymbol: "AVAX",
     imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
     explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     prices: {
       minPrice: {
@@ -449,7 +446,6 @@ export const requestIncreasePosition = prepare({
     decimals: 6,
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
@@ -521,7 +517,6 @@ export const withdraw1Usd = prepare({
       isWrapped: true,
       baseSymbol: "AVAX",
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/avalanche",
       explorerUrl: "https://testnet.snowtrace.io/address/0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
       prices: {
         minPrice: {
@@ -545,7 +540,6 @@ export const withdraw1Usd = prepare({
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       prices: {
         minPrice: {
@@ -901,7 +895,6 @@ export const withdraw1Usd = prepare({
     decimals: 6,
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
@@ -925,7 +918,6 @@ export const withdraw1Usd = prepare({
     decimals: 6,
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
@@ -997,8 +989,6 @@ export const deposit1Usd = prepare({
       decimals: 18,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/weth",
-      coingeckoSymbol: "WETH",
       explorerUrl: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
       prices: {
         minPrice: {
@@ -1022,7 +1012,6 @@ export const deposit1Usd = prepare({
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
       explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
       prices: {
         minPrice: {
@@ -1047,7 +1036,6 @@ export const deposit1Usd = prepare({
       address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
       isSynthetic: true,
       isShortable: true,
-      coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
       prices: {
         minPrice: {
           type: "bigint",
@@ -1349,7 +1337,6 @@ export const deposit1Usd = prepare({
     address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
     isSynthetic: true,
     isShortable: true,
-    coingeckoUrl: "https://www.coingecko.com/en/coins/dogecoin",
     prices: {
       minPrice: {
         type: "bigint",
@@ -1370,7 +1357,6 @@ export const deposit1Usd = prepare({
     decimals: 6,
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
     explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     prices: {
       minPrice: {
@@ -1394,7 +1380,6 @@ export const deposit1Usd = prepare({
     decimals: 6,
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/dai",
     explorerUrl: "https://testnet.snowtrace.io/address/0x51290cb93bE5062A6497f16D9cd3376Adf54F920",
     prices: {
       minPrice: {
@@ -1465,7 +1450,6 @@ export const createOrderDecreaseLong = prepare({
       address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
@@ -1489,7 +1473,6 @@ export const createOrderDecreaseLong = prepare({
       address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
@@ -1513,7 +1496,6 @@ export const createOrderDecreaseLong = prepare({
       address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
@@ -1820,7 +1802,6 @@ export const createOrderDecreaseLong = prepare({
     address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     isShortable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     prices: {
       minPrice: {
@@ -1846,7 +1827,6 @@ export const createOrderDecreaseLong = prepare({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -1870,7 +1850,6 @@ export const createOrderDecreaseLong = prepare({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -1941,7 +1920,6 @@ export const cancelOrderIncreaseLong = prepare({
       isWrapped: true,
       baseSymbol: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
       explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       prices: {
         minPrice: {
@@ -1961,7 +1939,6 @@ export const cancelOrderIncreaseLong = prepare({
       address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
@@ -2306,7 +2283,6 @@ export const cancelOrderIncreaseLong = prepare({
     isWrapped: true,
     baseSymbol: "ETH",
     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
@@ -2330,7 +2306,6 @@ export const cancelOrderIncreaseLong = prepare({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -2400,7 +2375,6 @@ export const createOrderIncreaseLong = prepare({
       address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
@@ -2424,7 +2398,6 @@ export const createOrderIncreaseLong = prepare({
       address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
@@ -2448,7 +2421,6 @@ export const createOrderIncreaseLong = prepare({
       address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
       prices: {
         minPrice: {
@@ -2754,7 +2726,6 @@ export const createOrderIncreaseLong = prepare({
     address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     isShortable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     prices: {
       minPrice: {
@@ -2781,7 +2752,6 @@ export const createOrderIncreaseLong = prepare({
     isWrapped: true,
     baseSymbol: "ETH",
     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
@@ -2805,7 +2775,6 @@ export const createOrderIncreaseLong = prepare({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -2853,504 +2822,6 @@ export const createOrderIncreaseLong = prepare({
   },
 });
 
-export const executeOrderDecreaseShort = prepare({
-  id: "0x6e9697b809b21bfb9d9411e25ba56c4261b5c3ec0e7fef0b2ea0bbda7fbead08:21",
-  eventName: "OrderExecuted",
-  account: "0x20437fb99dee29c9a4786b02bf1a3afc445fd86b",
-  marketAddress: "0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50",
-  marketInfo: {
-    marketTokenAddress: "0xc7Abb2C5f3BF3CEB389dF0Eecd6120D451170B50",
-    indexTokenAddress: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
-    longTokenAddress: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
-    shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    isSameCollaterals: false,
-    isSpotOnly: false,
-    name: "UNI/USD [UNI-USDC]",
-    data: "",
-    isDisabled: false,
-    longToken: {
-      name: "Uniswap",
-      symbol: "UNI",
-      decimals: 18,
-      priceDecimals: 3,
-      address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
-      isStable: false,
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
-      explorerUrl: "https://arbiscan.io/token/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
-      isV1Available: true,
-      prices: {
-        minPrice: {
-          type: "bigint",
-          hex: "0x37fa420444a91d9f2738000000",
-        },
-        maxPrice: {
-          type: "bigint",
-          hex: "0x37fa420444a91d9f2738000000",
-        },
-      },
-      balance: {
-        type: "bigint",
-        hex: "0x00",
-      },
-    },
-    shortToken: {
-      name: "USD Coin",
-      symbol: "USDC",
-      decimals: 6,
-      address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      isStable: true,
-      isV1Available: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-      explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-      prices: {
-        minPrice: {
-          type: "bigint",
-          hex: "0x0c9ed9e4fd69ace1175c000000",
-        },
-        maxPrice: {
-          type: "bigint",
-          hex: "0x0c9f2c9cd04674edea40000000",
-        },
-      },
-      balance: {
-        type: "bigint",
-        hex: "0x00",
-      },
-    },
-    indexToken: {
-      name: "Uniswap",
-      symbol: "UNI",
-      decimals: 18,
-      priceDecimals: 3,
-      address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
-      isStable: false,
-      isShortable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
-      explorerUrl: "https://arbiscan.io/token/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
-      isV1Available: true,
-      prices: {
-        minPrice: {
-          type: "bigint",
-          hex: "0x37fa420444a91d9f2738000000",
-        },
-        maxPrice: {
-          type: "bigint",
-          hex: "0x37fa420444a91d9f2738000000",
-        },
-      },
-      balance: {
-        type: "bigint",
-        hex: "0x00",
-      },
-    },
-    longInterestUsd: {
-      type: "bigint",
-      hex: "0x1017b29a87aef2c2dfdbd6250e8900",
-    },
-    shortInterestUsd: {
-      type: "bigint",
-      hex: "0x147ca563e6e0f32e0ce8450633fe00",
-    },
-    longInterestInTokens: {
-      type: "bigint",
-      hex: "0x041736afe154b9225b4e",
-    },
-    shortInterestInTokens: {
-      type: "bigint",
-      hex: "0x0530d46f460dd236bac5",
-    },
-    longPoolAmount: {
-      type: "bigint",
-      hex: "0x0b88871494a7f6e0f503",
-    },
-    shortPoolAmount: {
-      type: "bigint",
-      hex: "0x37d03302ad",
-    },
-    maxLongPoolAmount: {
-      type: "bigint",
-      hex: "0x2a5a058fc295ed000000",
-    },
-    maxShortPoolAmount: {
-      type: "bigint",
-      hex: "0xe8d4a51000",
-    },
-    poolValueMin: {
-      type: "bigint",
-      hex: "0x5b00b68a9d61dbcca6c2e6daa5c67b",
-    },
-    poolValueMax: {
-      type: "bigint",
-      hex: "0x5b01e51b19215a1d157e88ec75c67b",
-    },
-    reserveFactorLong: {
-      type: "bigint",
-      hex: "0x0b5c0e8d21d902d61fa0000000",
-    },
-    reserveFactorShort: {
-      type: "bigint",
-      hex: "0x0b5c0e8d21d902d61fa0000000",
-    },
-    openInterestReserveFactorLong: {
-      type: "bigint",
-      hex: "0x0a18f07d736b90be5500000000",
-    },
-    openInterestReserveFactorShort: {
-      type: "bigint",
-      hex: "0x0a18f07d736b90be5500000000",
-    },
-    maxOpenInterestLong: {
-      type: "bigint",
-      hex: "0x02f050fe938943acc45f65568000000000",
-    },
-    maxOpenInterestShort: {
-      type: "bigint",
-      hex: "0x02f050fe938943acc45f65568000000000",
-    },
-    totalBorrowingFees: {
-      type: "bigint",
-      hex: "0x03c3d50e11d11c240f986ac62c22",
-    },
-    positionImpactPoolAmount: {
-      type: "bigint",
-      hex: "0x6e0193264483494926",
-    },
-    swapImpactPoolAmountLong: {
-      type: "bigint",
-      hex: "0x019e1440a0cfa14930",
-    },
-    swapImpactPoolAmountShort: {
-      type: "bigint",
-      hex: "0x03d40b91",
-    },
-    borrowingFactorLong: {
-      type: "bigint",
-      hex: "0x01fd933494aa5fe00000",
-    },
-    borrowingFactorShort: {
-      type: "bigint",
-      hex: "0x01fd933494aa5fe00000",
-    },
-    borrowingExponentFactorLong: {
-      type: "bigint",
-      hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    borrowingExponentFactorShort: {
-      type: "bigint",
-      hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    fundingFactor: {
-      type: "bigint",
-      hex: "0x043c33c1937564800000",
-    },
-    fundingExponentFactor: {
-      type: "bigint",
-      hex: "0x0c9f2c9cd04674edea40000000",
-    },
-    maxPnlFactorForTradersLong: {
-      type: "bigint",
-      hex: "0x0a18f07d736b90be5500000000",
-    },
-    maxPnlFactorForTradersShort: {
-      type: "bigint",
-      hex: "0x0a18f07d736b90be5500000000",
-    },
-    minCollateralFactor: {
-      type: "bigint",
-      hex: "0x204fce5e3e25026110000000",
-    },
-    minCollateralFactorForOpenInterestLong: {
-      type: "bigint",
-      hex: "0x0878678326eac9000000",
-    },
-    minCollateralFactorForOpenInterestShort: {
-      type: "bigint",
-      hex: "0x0878678326eac9000000",
-    },
-    claimableFundingAmountLong: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    claimableFundingAmountShort: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    positionFeeFactorForBalanceWasImproved: {
-      type: "bigint",
-      hex: "0x019d971e4fe8401e74000000",
-    },
-    positionFeeFactorForBalanceWasNotImproved: {
-      type: "bigint",
-      hex: "0x024306c4097859c43c000000",
-    },
-    positionImpactFactorPositive: {
-      type: "bigint",
-      hex: "0x032d26d12e980b600000",
-    },
-    positionImpactFactorNegative: {
-      type: "bigint",
-      hex: "0x065a4da25d3016c00000",
-    },
-    maxPositionImpactFactorPositive: {
-      type: "bigint",
-      hex: "0x204fce5e3e25026110000000",
-    },
-    maxPositionImpactFactorNegative: {
-      type: "bigint",
-      hex: "0x204fce5e3e25026110000000",
-    },
-    maxPositionImpactFactorForLiquidations: {
-      type: "bigint",
-      hex: "0x204fce5e3e25026110000000",
-    },
-    positionImpactExponentFactorPositive: {
-      type: "bigint",
-      hex: "0x193e5939a08ce9dbd480000000",
-    },
-    positionImpactExponentFactorNegative: {
-      type: "bigint",
-      hex: "0x193e5939a08ce9dbd480000000",
-    },
-    swapFeeFactorForBalanceWasImproved: {
-      type: "bigint",
-      hex: "0x019d971e4fe8401e74000000",
-    },
-    swapFeeFactorForBalanceWasNotImproved: {
-      type: "bigint",
-      hex: "0x024306c4097859c43c000000",
-    },
-    swapImpactFactorPositive: {
-      type: "bigint",
-      hex: "0x032d26d12e980b600000",
-    },
-    swapImpactFactorNegative: {
-      type: "bigint",
-      hex: "0x065a4da25d3016c00000",
-    },
-    swapImpactExponentFactor: {
-      type: "bigint",
-      hex: "0x193e5939a08ce9dbd480000000",
-    },
-    borrowingFactorPerSecondForLongs: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    borrowingFactorPerSecondForShorts: {
-      type: "bigint",
-      hex: "0xe225821848d7e4b086",
-    },
-    fundingFactorPerSecond: {
-      type: "bigint",
-      hex: "0x823f100ae82f0c04c2",
-    },
-    longsPayShorts: false,
-    virtualPoolAmountForLongToken: {
-      type: "bigint",
-      hex: "0x0b88871494a7f6e0f503",
-    },
-    virtualPoolAmountForShortToken: {
-      type: "bigint",
-      hex: "0x37d03302ad",
-    },
-    virtualInventoryForPositions: {
-      type: "bigint",
-      hex: "0x0464f2c95f32006b2d0c6ee1257500",
-    },
-    virtualMarketId: "0xac74a8ce840f9f11faaa15bd01a21a95ded2d6d1e2f3de883ef04c6f7e604ef4",
-    virtualLongTokenId: "0xd6f594c665cfd695fe0f7241434c3e44f7d3b0e20145e97654d944d26203ddb8",
-    virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
-    maxLongPoolUsdForDeposit: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    maxShortPoolUsdForDeposit: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    fundingIncreaseFactorPerSecond: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    fundingDecreaseFactorPerSecond: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    thresholdForStableFunding: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    thresholdForDecreaseFunding: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    minFundingFactorPerSecond: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    maxFundingFactorPerSecond: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    minPositionImpactPoolAmount: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    positionImpactPoolDistributionRate: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    minCollateralFactorForLiquidation: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    maxLendableImpactFactor: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    maxLendableImpactFactorForWithdrawals: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    maxLendableImpactUsd: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    lentPositionImpactPoolAmount: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    atomicSwapFeeFactor: {
-      type: "bigint",
-      hex: "0x00",
-    },
-    useOpenInterestInTokensForBalance: true,
-  } satisfies ToMock<MarketInfo>,
-  indexToken: {
-    name: "Uniswap",
-    symbol: "UNI",
-    decimals: 18,
-    priceDecimals: 3,
-    address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
-    isStable: false,
-    isShortable: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/uniswap",
-    explorerUrl: "https://arbiscan.io/token/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
-    isV1Available: true,
-    prices: {
-      minPrice: {
-        type: "bigint",
-        hex: "0x37fa420444a91d9f2738000000",
-      },
-      maxPrice: {
-        type: "bigint",
-        hex: "0x37fa420444a91d9f2738000000",
-      },
-    },
-    balance: {
-      type: "bigint",
-      hex: "0x00",
-    },
-  },
-  swapPath: [],
-  initialCollateralTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-  initialCollateralToken: {
-    name: "USD Coin",
-    symbol: "USDC",
-    decimals: 6,
-    address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    isStable: true,
-    isV1Available: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-    explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    prices: {
-      minPrice: {
-        type: "bigint",
-        hex: "0x0c9ed9e4fd69ace1175c000000",
-      },
-      maxPrice: {
-        type: "bigint",
-        hex: "0x0c9f2c9cd04674edea40000000",
-      },
-    },
-    balance: {
-      type: "bigint",
-      hex: "0x00",
-    },
-  },
-  targetCollateralToken: {
-    name: "USD Coin",
-    symbol: "USDC",
-    decimals: 6,
-    address: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    isStable: true,
-    isV1Available: true,
-    imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
-    explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
-    prices: {
-      minPrice: {
-        type: "bigint",
-        hex: "0x0c9ed9e4fd69ace1175c000000",
-      },
-      maxPrice: {
-        type: "bigint",
-        hex: "0x0c9f2c9cd04674edea40000000",
-      },
-    },
-    balance: {
-      type: "bigint",
-      hex: "0x00",
-    },
-  },
-  initialCollateralDeltaAmount: {
-    type: "bigint",
-    hex: "0x114bdee8",
-  },
-  sizeDeltaUsd: {
-    type: "bigint",
-    hex: "0x01ad2b2f4644d50d6f2fcc16800000",
-  },
-  triggerPrice: {
-    type: "bigint",
-    hex: "0x38681e2851e2cea73e08000000",
-  },
-  acceptablePrice: {
-    type: "bigint",
-    hex: "0x38f884dbec4e090a31da000000",
-  },
-  executionPrice: {
-    type: "bigint",
-    hex: "0x3889a30e650b6e74c4f1780000",
-  },
-  minOutputAmount: {
-    type: "bigint",
-    hex: "0x00",
-  },
-  indexTokenPriceMin: {
-    type: "bigint",
-    hex: "0x3857628d95c4c587fc90000000",
-  },
-  indexTokenPriceMax: {
-    type: "bigint",
-    hex: "0x3865679947fa383c96ba400000",
-  },
-  orderType: 3,
-  orderKey: "0x848a25a2920b3bdc669c37c01f05aa58a5a3a3c078e0d9185897d5dec24d3768",
-  isLong: true,
-  reason: null,
-  timestamp: 1693500686,
-  transaction: {
-    hash: "0x6e9697b809b21bfb9d9411e25ba56c4261b5c3ec0e7fef0b2ea0bbda7fbead08",
-    __typename: "Transaction",
-  },
-});
-
 export const executeOrderIncreaseLong = prepare({
   id: "0xf57f245966c3313a01526c6b86406e3af5d61eedcf380e4595fabfab1c5d0d7e:24",
   eventName: "OrderExecuted",
@@ -3373,7 +2844,6 @@ export const executeOrderIncreaseLong = prepare({
       priceDecimals: 3,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/arbitrum",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
       prices: {
         minPrice: {
@@ -3398,7 +2868,6 @@ export const executeOrderIncreaseLong = prepare({
       isStable: true,
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
@@ -3422,7 +2891,6 @@ export const executeOrderIncreaseLong = prepare({
       priceDecimals: 3,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/arbitrum",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
       prices: {
         minPrice: {
@@ -3728,7 +3196,6 @@ export const executeOrderIncreaseLong = prepare({
     priceDecimals: 3,
     address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
     imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/arbitrum",
     explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
     prices: {
       minPrice: {
@@ -3755,7 +3222,6 @@ export const executeOrderIncreaseLong = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
@@ -3780,7 +3246,6 @@ export const executeOrderIncreaseLong = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
@@ -3866,7 +3331,6 @@ export const frozenOrderIncreaseShort = prepare({
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       isV1Available: true,
       prices: {
@@ -3892,7 +3356,6 @@ export const frozenOrderIncreaseShort = prepare({
       isStable: true,
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
@@ -3917,7 +3380,6 @@ export const frozenOrderIncreaseShort = prepare({
       decimals: 8,
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
       explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       prices: {
         minPrice: {
           type: "bigint",
@@ -4219,7 +3681,6 @@ export const frozenOrderIncreaseShort = prepare({
     decimals: 8,
     imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
     explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     prices: {
       minPrice: {
         type: "bigint",
@@ -4240,7 +3701,6 @@ export const frozenOrderIncreaseShort = prepare({
     address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/token/0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
     isV1Available: true,
     prices: {
@@ -4266,7 +3726,6 @@ export const frozenOrderIncreaseShort = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
@@ -4341,7 +3800,6 @@ export const undefinedOrder = prepare({
       isWrapped: true,
       baseSymbol: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
       isV1Available: true,
       prices: {
         minPrice: {
@@ -4366,7 +3824,6 @@ export const undefinedOrder = prepare({
       isStable: true,
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
@@ -4390,7 +3847,6 @@ export const undefinedOrder = prepare({
       priceDecimals: 4,
       address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
       isSynthetic: true,
       prices: {
         minPrice: {
@@ -4692,7 +4148,6 @@ export const undefinedOrder = prepare({
     priceDecimals: 4,
     address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
     imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/xrp",
     isSynthetic: true,
     prices: {
       minPrice: {
@@ -4715,7 +4170,6 @@ export const undefinedOrder = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
@@ -4740,7 +4194,6 @@ export const undefinedOrder = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
@@ -4812,7 +4265,6 @@ export const liquidated = prepare({
       isStable: false,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
       explorerUrl: "https://arbiscan.io/token/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
       isV1Available: true,
       prices: {
@@ -4838,7 +4290,6 @@ export const liquidated = prepare({
       isStable: true,
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: {
@@ -4864,7 +4315,6 @@ export const liquidated = prepare({
       isStable: false,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
       explorerUrl: "https://arbiscan.io/token/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
       isV1Available: true,
       prices: {
@@ -5173,7 +4623,6 @@ export const liquidated = prepare({
     isStable: false,
     isShortable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/chainlink",
     explorerUrl: "https://arbiscan.io/token/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
     isV1Available: true,
     prices: {
@@ -5201,7 +4650,6 @@ export const liquidated = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
@@ -5226,7 +4674,6 @@ export const liquidated = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: {
@@ -5357,7 +4804,6 @@ export const increaseLongETH = prepare({
       isWrapped: true,
       baseSymbol: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
       explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
       prices: {
         minPrice: {
@@ -5381,7 +4827,6 @@ export const increaseLongETH = prepare({
       address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
       prices: {
         minPrice: {
@@ -5738,7 +5183,6 @@ export const increaseLongETH = prepare({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -5762,7 +5206,6 @@ export const increaseLongETH = prepare({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -5843,7 +5286,6 @@ export const requestSwap = prepareSwap({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -5868,7 +5310,6 @@ export const requestSwap = prepareSwap({
     isWrapped: true,
     baseSymbol: "ETH",
     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
@@ -5944,7 +5385,6 @@ export const executeSwap = prepareSwap({
     address: "0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://goerli.arbiscan.io/address/0x04FC936a15352a1b15b3B9c56EA002051e3DB3e5",
     prices: {
       minPrice: {
@@ -5996,7 +5436,6 @@ export const executeOrderSwap = prepareSwap({
     address: "0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     isShortable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     explorerUrl: "https://goerli.arbiscan.io/address/0xCcF73F4Dcbbb573296BFA656b754Fe94BB957d62",
     prices: {
       minPrice: {
@@ -6021,7 +5460,6 @@ export const executeOrderSwap = prepareSwap({
     isWrapped: true,
     baseSymbol: "ETH",
     imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/ethereum",
     explorerUrl: "https://goerli.arbiscan.io/address/0xe39Ab88f8A4777030A534146A9Ca3B52bd5D43A3",
     prices: {
       minPrice: {
@@ -6070,8 +5508,6 @@ export const failedSwap = prepareSwap({
     decimals: 18,
     isShortable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/weth",
-    coingeckoSymbol: "WETH",
     explorerUrl: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     prices: {
       minPrice: {
@@ -6095,7 +5531,6 @@ export const failedSwap = prepareSwap({
     decimals: 6,
     isStable: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     prices: {
       minPrice: {
@@ -6214,7 +5649,6 @@ export const createOrderStopMarketLong = prepare({
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       isV1Available: true,
       prices: {
@@ -6231,7 +5665,6 @@ export const createOrderStopMarketLong = prepare({
       isStable: true,
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: { type: "bigint", value: "999892396085279625000000000000" },
@@ -6247,7 +5680,6 @@ export const createOrderStopMarketLong = prepare({
       decimals: 8,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       prices: {
         minPrice: { type: "bigint", value: "95699884797904795000000000000000000" },
         maxPrice: { type: "bigint", value: "95699884797904795000000000000000000" },
@@ -6287,7 +5719,6 @@ export const createOrderStopMarketLong = prepare({
     decimals: 8,
     categories: ["layer1"],
     imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     prices: {
       minPrice: { type: "bigint", value: "95699884797904795000000000000000000" },
       maxPrice: { type: "bigint", value: "95699884797904795000000000000000000" },
@@ -6304,7 +5735,6 @@ export const createOrderStopMarketLong = prepare({
     isPlatformTradingToken: true,
     categories: ["defi"],
     imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/gmx",
     explorerUrl: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
     prices: {
       minPrice: { type: "bigint", value: "19092370152335000000000000000000" },
@@ -6320,7 +5750,6 @@ export const createOrderStopMarketLong = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: { type: "bigint", value: "999892396085279625000000000000" },
@@ -6440,7 +5869,6 @@ export const executeOrderStopMarketLong = prepare({
       isShortable: true,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       explorerUrl: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       isV1Available: true,
       prices: {
@@ -6457,7 +5885,6 @@ export const executeOrderStopMarketLong = prepare({
       isStable: true,
       isV1Available: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
       explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
       prices: {
         minPrice: { type: "bigint", value: "999880000000000000000000000000" },
@@ -6473,7 +5900,6 @@ export const executeOrderStopMarketLong = prepare({
       decimals: 8,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
-      coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
       prices: {
         minPrice: { type: "bigint", value: "95424505866460967500000000000000000" },
         maxPrice: { type: "bigint", value: "95424505866460967500000000000000000" },
@@ -6513,7 +5939,6 @@ export const executeOrderStopMarketLong = prepare({
     decimals: 8,
     categories: ["layer1"],
     imageUrl: "https://assets.coingecko.com/coins/images/1/small/bitcoin.png?1547033579",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/bitcoin",
     prices: {
       minPrice: { type: "bigint", value: "95424505866460967500000000000000000" },
       maxPrice: { type: "bigint", value: "95424505866460967500000000000000000" },
@@ -6530,7 +5955,6 @@ export const executeOrderStopMarketLong = prepare({
     isPlatformTradingToken: true,
     categories: ["defi"],
     imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/gmx",
     explorerUrl: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
     prices: {
       minPrice: { type: "bigint", value: "19035080492977000000000000000000" },
@@ -6546,7 +5970,6 @@ export const executeOrderStopMarketLong = prepare({
     isStable: true,
     isV1Available: true,
     imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-    coingeckoUrl: "https://www.coingecko.com/en/coins/usd-coin",
     explorerUrl: "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     prices: {
       minPrice: { type: "bigint", value: "999880000000000000000000000000" },

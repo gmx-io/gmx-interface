@@ -30,6 +30,45 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "xaut-lit-ip-arbitrum-listing",
+    isActive: true,
+    startDate: "23 Jan 2026, 11:00",
+    endDate: "30 Jan 2026, 10:00",
+    title: "XAUT (Tether Gold), LIT and IP markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+  },
+  {
+    id: "listing-01-09-26",
+    isActive: true,
+    startDate: "09 Jan 2026, 10:00",
+    endDate: "16 Jan 2026, 12:00",
+    title: "AR, DASH, JTO, SYRUP and CHZ markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span> or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+  },
+  {
+    id: "mon-sky-zec-listing",
+    isActive: true,
+    startDate: "22 Dec 2025, 16:10",
+    endDate: "29 Dec 2025, 16:10",
+    title: "MON (Monad), SKY and ZEC (Zcash) markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+  },
+  {
     id: "open-interest-calculation-update",
     isActive: true,
     startDate: "19 Dec 2025, 08:00",

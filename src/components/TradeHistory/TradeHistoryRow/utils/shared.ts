@@ -1,14 +1,12 @@
+import { tz } from "@date-fns/tz";
 import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import type { Locale as DateLocale } from "date-fns";
-import format from "date-fns/format";
-import formatISO from "date-fns/formatISO";
-import formatRelative from "date-fns/formatRelative";
-import dateEn from "date-fns/locale/en-US";
-import { BytesLike, ethers } from "ethers";
+import { format } from "date-fns/format";
+import { formatRelative } from "date-fns/formatRelative";
+import { enUS as dateEn } from "date-fns/locale/en-US";
 import words from "lodash/words";
 
-import { abis } from "sdk/abis";
 import { TradeActionType } from "sdk/types/tradeHistory";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
@@ -86,7 +84,7 @@ export type RowDetails = {
   actionComment?: TooltipContent;
   isActionError?: boolean;
   timestamp: string;
-  timestampISO: string;
+  timestampUTC: string;
   market: string;
   fullMarket?: string;
   indexName?: string;
@@ -121,9 +119,9 @@ const CUSTOM_DATE_LOCALES = Object.fromEntries(
 
     const customDateLocale = {
       ...dateLocale,
-      formatRelative: (...args) => {
+      formatRelative: (...args: Parameters<typeof originalFormatRelative>) => {
         const token = args[0];
-        // @see docs for patterns https://date-fns.org/v3.6.0/docs/format
+        // @see docs for patterns https://date-fns.org/v4.1.0/docs/format
 
         if (token === "other" || !originalFormatRelative) {
           return "dd MMM yyyy, HH:mm";
@@ -160,25 +158,13 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
   });
 }
 
-export function formatTradeActionTimestampISO(timestamp: number) {
-  return formatISO(new Date(timestamp * 1000), { representation: "complete" });
+export function formatTradeActionTimestampUTC(timestamp: number) {
+  return `UTC: ${format(timestamp * 1000, "yyyy-MM-dd HH:mm:ss", {
+    in: tz("UTC"),
+  })}`;
 }
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
-const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
-
-export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErrors.interface.parseError> | undefined {
-  let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
-
-  try {
-    error = customErrors.interface.parseError(reasonBytes);
-  } catch (error) {
-    return undefined;
-  }
-
-  return error;
-}
 
 export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {

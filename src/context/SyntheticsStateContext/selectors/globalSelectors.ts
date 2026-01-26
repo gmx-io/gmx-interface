@@ -14,7 +14,6 @@ export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positio
 export const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
 export const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
 export const selectTokensData = (s: SyntheticsState) => s.globals.tokensDataResult.tokensData;
-export const selectPricesUpdatedAt = (s: SyntheticsState) => s.globals.tokensDataResult.pricesUpdatedAt;
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
@@ -40,7 +39,7 @@ export const selectProgressiveDepositMarketTokensDataWithoutGlv = createSelector
 });
 
 export const selectIsFirstOrder = (s: SyntheticsState) => s.globals.isFirstOrder;
-export const selectFeatures = (s: SyntheticsState) => s.features;
+const selectFeatures = (s: SyntheticsState) => s.features;
 export const selectIsSponsoredCallAvailable = (s: SyntheticsState) =>
   s.sponsoredCallBalanceData?.isSponsoredCallAllowed ?? false;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
@@ -57,7 +56,7 @@ const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
 };
 
 export const selectIsRelayRouterEnabled = makeSelectEnabledFeature("relayRouterEnabled");
-export const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
+const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
 
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
@@ -75,24 +74,19 @@ export const selectGlvAndMarketsInfoData = createSelector((q) => {
   };
 });
 
-export const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minCollateralUsd;
-export const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minPositionSizeUsd;
+const selectMinCollateralUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minCollateralUsd;
+const selectMinPositionSizeUsd = (s: SyntheticsState) => s.globals.positionsConstants?.minPositionSizeUsd;
 export const selectMaxAutoCancelOrders = (s: SyntheticsState) => s.globals.positionsConstants?.maxAutoCancelOrders;
 
 export const selectClosingPositionKey = (s: SyntheticsState) => s.globals.closingPositionKey;
-export const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.setClosingPositionKey;
+const selectSetClosingPositionKey = (s: SyntheticsState) => s.globals.setClosingPositionKey;
 
-export const selectMissedCoinsModalPlace = (s: SyntheticsState) => s.globals.missedCoinsModalPlace;
-export const selectSetMissedCoinsModalPlace = (s: SyntheticsState) => s.globals.setMissedCoinsModalPlace;
-
-export const selectIsCandlesLoaded = (s: SyntheticsState) => s.globals.isCandlesLoaded;
 export const selectSetIsCandlesLoaded = (s: SyntheticsState) => s.globals.setIsCandlesLoaded;
 
 export const selectGasLimits = (s: SyntheticsState) => s.globals.gasLimits;
 export const selectGasPrice = (s: SyntheticsState) => s.globals.gasPrice;
 
 export const selectKeepLeverage = (s: SyntheticsState) => s.globals.keepLeverage ?? true;
-export const selectSetKeepLeverage = (s: SyntheticsState) => s.globals.setKeepLeverage;
 
 export const selectLastWeekAccountStats = (s: SyntheticsState) => s.globals.lastWeekAccountStats;
 export const selectLastMonthAccountStats = (s: SyntheticsState) => s.globals.lastMonthAccountStats;
@@ -113,7 +107,7 @@ export const selectClosingPositionKeyState = createSelectorDeprecated(
   (closingPositionKey, setClosingPositionKey) => [closingPositionKey, setClosingPositionKey] as const
 );
 
-export const selectPositiveFeePositions = createSelector((q) => {
+const selectPositiveFeePositions = createSelector((q) => {
   const positionsInfoData = q(selectPositionsInfoData);
   return Object.values(positionsInfoData || {}).filter((position) => position.pendingClaimableFundingFeesUsd > 0);
 });
@@ -190,3 +184,6 @@ export const selectIsAutoCancelTPSLEnabled = (s: SyntheticsState) => s.settings.
 
 export const selectMultichainMarketTokensBalancesResult = (s: SyntheticsState) =>
   s.globals.multichainMarketTokensBalancesResult;
+
+export const selectMultichainMarketTokensBalancesIsLoading = (s: SyntheticsState) =>
+  s.globals.multichainMarketTokensBalancesResult?.isLoading ?? false;

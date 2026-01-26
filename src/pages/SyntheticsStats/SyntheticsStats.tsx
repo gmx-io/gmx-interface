@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { format } from "date-fns";
-import { ethers } from "ethers";
+import { zeroAddress, zeroHash } from "viem";
 
 import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
@@ -15,6 +15,7 @@ import {
   getMaxPoolUsdForSwap,
   getMaxReservedUsd,
   getOpenInterestForBalance,
+  getOpenInterestUsd,
   getPoolUsdWithoutPnl,
   getReservedUsd,
   getStrictestMaxPoolUsdForDeposit,
@@ -65,10 +66,10 @@ export function SyntheticsStats() {
     if (a.indexTokenAddress === b.indexTokenAddress) {
       return 0;
     }
-    if (a.indexTokenAddress === ethers.ZeroAddress) {
+    if (a.indexTokenAddress === zeroAddress) {
       return 1;
     }
-    if (b.indexTokenAddress === ethers.ZeroAddress) {
+    if (b.indexTokenAddress === zeroAddress) {
       return -1;
     }
     return 0;
@@ -218,7 +219,7 @@ export function SyntheticsStats() {
                                 label="Virtual Market Id"
                                 value={
                                   <div className="debug-key">
-                                    {market.virtualMarketId !== ethers.ZeroHash ? market.virtualMarketId : "-"}
+                                    {market.virtualMarketId !== zeroHash ? market.virtualMarketId : "-"}
                                   </div>
                                 }
                                 showDollar={false}
@@ -228,7 +229,7 @@ export function SyntheticsStats() {
                                 label="Virtual Long Token Id"
                                 value={
                                   <div className="debug-key">
-                                    {market.virtualLongTokenId !== ethers.ZeroHash ? market.virtualLongTokenId : "-"}
+                                    {market.virtualLongTokenId !== zeroHash ? market.virtualLongTokenId : "-"}
                                   </div>
                                 }
                                 showDollar={false}
@@ -238,7 +239,7 @@ export function SyntheticsStats() {
                                 label="Virtual Short Token Id"
                                 value={
                                   <div className="debug-key">
-                                    {market.virtualShortTokenId !== ethers.ZeroHash ? market.virtualShortTokenId : "-"}
+                                    {market.virtualShortTokenId !== zeroHash ? market.virtualShortTokenId : "-"}
                                   </div>
                                 }
                                 showDollar={false}
@@ -682,7 +683,7 @@ export function SyntheticsStats() {
                         maxLiquidityLong,
                         reservedUsdLong,
                         maxReservedUsdLong,
-                        getOpenInterestForBalance(market, true),
+                        getOpenInterestUsd(market, true),
                         maxOpenInterestLong,
                         market.longToken,
                       ]
@@ -692,7 +693,7 @@ export function SyntheticsStats() {
                         maxLiquidityShort,
                         reservedUsdShort,
                         maxReservedUsdShort,
-                        getOpenInterestForBalance(market, false),
+                        getOpenInterestUsd(market, false),
                         maxOpenInterestShort,
                         market.shortToken,
                       ];
@@ -718,7 +719,10 @@ export function SyntheticsStats() {
                           }
                           renderContent={() => (
                             <>
-                              <StatsTooltipRow label={`Reserved Long`} value={formatAmount(reservedUsd, 30, 0, true)} />
+                              <StatsTooltipRow
+                                label={`Reserved ${isLongLabel}`}
+                                value={formatAmount(reservedUsd, 30, 0, true)}
+                              />
                               <StatsTooltipRow
                                 label={`Max Reserved ${isLongLabel}`}
                                 value={formatAmount(maxReservedUsd, 30, 0, true)}

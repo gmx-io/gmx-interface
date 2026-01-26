@@ -4,7 +4,7 @@ import { safeAddGlobalListener } from "lib/safeListenner/safeAddListener";
 
 import { EndpointStats } from "./FallbackTracker";
 
-export type FallbackTrackerEventsTypes = {
+type FallbackTrackerEventsTypes = {
   // Incomming
   reportEndpointFailure: {
     endpoint: string;

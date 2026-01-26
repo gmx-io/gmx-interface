@@ -1,7 +1,8 @@
 import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
+import { useAccount } from "wagmi";
 
-import { BOTANIX, getChainName } from "config/chains";
+import { AVALANCHE, BOTANIX, getChainName } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -11,6 +12,7 @@ import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks"
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { SettlementChainWarningContainer } from "domain/multichain/SettlementChainWarningContainer";
+import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
@@ -59,12 +61,15 @@ export function TradingSettings({
   onClose,
 }: TradingSettingsProps) {
   const { chainId, srcChainId } = useChainId();
+  const { isConnected } = useAccount();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
   const isGeminiWallet = useIsGeminiWallet();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
+  const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
   const isExpressTradingDisabled =
     (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain || isGeminiWallet;
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
@@ -173,7 +178,7 @@ export function TradingSettings({
         </>
       )}
 
-      {srcChainId && (
+      {srcChainId && !isAvalancheEmpty && isConnected && (
         <SettingsSection className="mt-2">
           <div className="flex items-center justify-between">
             <TooltipWithPortal
@@ -219,10 +224,19 @@ export function TradingSettings({
         <InputSetting
           title={<Trans>Default Allowed Slippage</Trans>}
           description={
-            <Trans>
-              The maximum allowed percentage difference between the mark price and the execution price for market
-              orders.
-            </Trans>
+            <div>
+              <Trans>
+                Slippage is the difference between your expected and actual execution price due to price volatility.
+                Orders won't execute if slippage exceeds your allowed maximum.
+                <br />
+                <br />
+                Note: slippage is different from price impact, which is based on open interest imbalances.
+              </Trans>{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">
+                <Trans>Read more</Trans>
+              </ExternalLink>
+              .
+            </div>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
           value={parseFloat(String(settings.savedAllowedSlippage))}

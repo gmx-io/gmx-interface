@@ -1,7 +1,12 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmx-io/gmx-interface",
+    "directory": "sdk"
+  },
   "main": "./build/cjs/src/index.js",
   "module": "./build/esm/src/index.js",
   "types": "./build/types/src/index.d.ts",
@@ -48,12 +53,19 @@
     "prepare": "ts-patch install -s",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:multicall": "vitest run --config vitest.multicall.config.ts",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
     "build:types": "tsc -p tsconfig.json --emitDeclarationOnly",
     "build:subsquid": "./node_modules/@graphql-codegen/cli/cjs/bin.js -c subsquid-codegen.ts && npx prettier --write src/types/subsquid.ts",
-    "tscheck": "tsc -p tsconfig.json --noEmit",
+    "tscheck": "tsc -p tsconfig.json --noEmit --incremental",
+    "tscheck:ci": "tsc -p tsconfig.json --noEmit",
+    "lint": "cd .. && node node_modules/.bin/eslint sdk --fix --cache --cache-location .eslintcache",
+    "lint:ci": "cd .. && node node_modules/.bin/eslint sdk --max-warnings=0",
     "clean": "rm -rf build/**/*.tsbuildinfo",
+    "clean:cache": "rm -rf ../.eslintcache ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
+    "clean:lint": "rm -rf ../.eslintcache",
+    "clean:ts": "rm -rf ../tsconfig.tsbuildinfo build/**/*.tsbuildinfo",
     "build": "rm -rf build && yarn build:subsquid && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean"
   },
   "publishConfig": {
@@ -68,14 +80,14 @@
     "crypto-js": "4.2.0",
     "graphql": "15.8.0",
     "isomorphic-performance": "5.1.1",
-    "lodash": "4.17.21",
+    "lodash": "4.17.23",
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
     "viem": "^2.37.1"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
+    "@babel/plugin-transform-private-property-in-object": "^7.25.9",
     "@graphql-codegen/cli": "5.0.6",
     "@graphql-codegen/client-preset": "4.8.1",
     "@graphql-codegen/typescript": "4.1.6",
@@ -87,13 +99,14 @@
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",
     "viem": "2.39.0",
-    "vitest": "3.0.4"
+    "vitest": "^3.0.5"
   },
   "files": [
     "build"
   ],
   "packageManager": "yarn@3.1.0",
   "resolutions": {
-    "viem@2.39.0": "patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd"
+    "viem@2.39.0": "patch:viem@npm:2.39.0#../.yarn/patches/viem-npm-2.39.0-c113f391fd",
+    "lodash": "4.17.23"
   }
 }

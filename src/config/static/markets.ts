@@ -473,6 +473,50 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x065577D05c3D4C11505ed7bc97BBF85d462A6A6f": {
       enabled: true,
     },
+    // MON/USD [WETH-USDC]
+    "0x66AB9D61A0124b61C8892A4ac687Ac48DbA8ff2c": {
+      enabled: true,
+    },
+    // ZEC/USD [WBTC.e-USDC]
+    "0x587759c237acCa739bCE3911647BacF56C876E60": {
+      enabled: true,
+    },
+    // SKY/USD [WETH-USDC]
+    "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf": {
+      enabled: true,
+    },
+    // AR/USD [WBTC-USDC]
+    "0xfa19f7d23a475575BD0270AE7de4FC6852442945": {
+      enabled: true,
+    },
+    // DASH/USD [WBTC-USDC]
+    "0x728Ff0679c89267434D6EF1824c8C8eED4aC3DBC": {
+      enabled: true,
+    },
+    // JTO/USD [WBTC-USDC]
+    "0x3B4689d69516b9D4b1aaf7545c6fC4d3ED70b70b": {
+      enabled: true,
+    },
+    // SYRUP/USD [WETH-USDC]
+    "0x8965e821c7C8c09c6eB3Cb9cCf7Eb6f386441EA2": {
+      enabled: true,
+    },
+    // CHZ/USD [WETH-USDC]
+    "0x3600592DdEd7e6E0B05029DfB637fFc5A85D6f6B": {
+      enabled: true,
+    },
+    // XAUT/USD [WBTC-USDC]
+    "0xeb28aD1a2e497F4Acc5D9b87e7B496623C93061E": {
+      enabled: true,
+    },
+    // LIT/USD [WETH-USDC]
+    "0x044dFE01863CE85f9ECd5639eE5485c90AC320FC": {
+      enabled: true,
+    },
+    // IP/USD [WBTC-USDC]
+    "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

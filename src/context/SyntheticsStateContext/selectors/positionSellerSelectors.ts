@@ -5,17 +5,10 @@ import {
   getMinCollateralFactorForPosition,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import {
-  applySlippageToPrice,
-  findAllReachableTokens,
-  getMarkPrice,
-  getSwapAmountsByFromValue,
-  getTradeFees,
-} from "domain/synthetics/trade";
+import { findAllReachableTokens, getMarkPrice, getSwapAmountsByFromValue, getTradeFees } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { mustNeverExist } from "lib/types";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
@@ -43,19 +36,17 @@ import {
 } from "./tradeSelectors";
 
 export const selectPositionSeller = (state: SyntheticsState) => state.positionSeller;
-export const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
-export const selectPositionSellerTriggerPriceInputValue = (state: SyntheticsState) =>
+const selectPositionSellerOrderOption = (state: SyntheticsState) => state.positionSeller.orderOption;
+const selectPositionSellerTriggerPriceInputValue = (state: SyntheticsState) =>
   state.positionSeller.triggerPriceInputValue;
-export const selectPositionSellerKeepLeverageRaw = (state: SyntheticsState) => state.positionSeller.keepLeverage;
-export const selectPositionSellerSelectedTriggerAcceptablePriceImpactBps = (state: SyntheticsState) =>
+const selectPositionSellerKeepLeverageRaw = (state: SyntheticsState) => state.positionSeller.keepLeverage;
+const selectPositionSellerSelectedTriggerAcceptablePriceImpactBps = (state: SyntheticsState) =>
   state.positionSeller.selectedTriggerAcceptablePriceImpactBps;
-export const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) =>
-  state.positionSeller.closeUsdInputValue;
+const selectPositionSellerCloseUsdInputValue = (state: SyntheticsState) => state.positionSeller.closeUsdInputValue;
 const selectPositionSellerReceiveTokenAddress = (state: SyntheticsState) => state.positionSeller.receiveTokenAddress;
-export const selectPositionSellerAllowedSlippage = (state: SyntheticsState) => state.positionSeller.allowedSlippage;
-export const selectPositionSellerReceiveTokenAddressChanged = (state: SyntheticsState) =>
+const selectPositionSellerReceiveTokenAddressChanged = (state: SyntheticsState) =>
   state.positionSeller.isReceiveTokenChanged;
-export const selectPositionSellerNumberOfParts = (state: SyntheticsState) => state.positionSeller.numberOfParts;
+const selectPositionSellerNumberOfParts = (state: SyntheticsState) => state.positionSeller.numberOfParts;
 export const selectPositionSellerPosition = createSelector((q) => {
   const positionKey = q(selectClosingPositionKey);
   return q((s) => (positionKey ? selectPositionsInfoData(s)?.[positionKey] : undefined));
@@ -63,8 +54,7 @@ export const selectPositionSellerPosition = createSelector((q) => {
 
 export const selectPositionSellerSetDefaultReceiveToken = (state: SyntheticsState) =>
   state.positionSeller.setDefaultReceiveToken;
-export const selectPositionSellerDefaultReceiveToken = (state: SyntheticsState) =>
-  state.positionSeller.defaultReceiveToken;
+const selectPositionSellerDefaultReceiveToken = (state: SyntheticsState) => state.positionSeller.defaultReceiveToken;
 
 export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
@@ -174,28 +164,6 @@ export const selectPositionSellerLeverageDisabledByCollateral = createSelector((
   );
 });
 
-export const selectPositionSellerAcceptablePrice = createSelector((q) => {
-  const position = q(selectPositionSellerPosition);
-  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
-
-  if (!position || decreaseAmounts?.acceptablePrice === undefined) {
-    return undefined;
-  }
-
-  const orderOption = q(selectPositionSellerOrderOption);
-  const allowedSlippage = q(selectPositionSellerAllowedSlippage);
-
-  if (orderOption === OrderOption.Market) {
-    return applySlippageToPrice(allowedSlippage, decreaseAmounts.acceptablePrice, false, position.isLong);
-  } else if (orderOption === OrderOption.Trigger) {
-    return decreaseAmounts.acceptablePrice;
-  } else if (orderOption === OrderOption.Twap) {
-    return decreaseAmounts.acceptablePrice;
-  } else {
-    mustNeverExist(orderOption);
-  }
-});
-
 export const selectPositionSellerMarkPrice = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 
@@ -297,7 +265,7 @@ export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
   return q(selectMakeLiquidityPath);
 });
 
-export const selectPositionSellerFindSwapPath = createSelector((q) => {
+const selectPositionSellerFindSwapPath = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const receiveTokenAddress = q(selectPositionSellerReceiveToken)?.address;
   const selectFindSwapPath = makeSelectFindSwapPath(position?.collateralTokenAddress, receiveTokenAddress);
@@ -368,6 +336,7 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
     marketsInfoData,
     chainId,
     externalSwapQuoteParams: undefined,
+    allowSameTokenSwap: false,
   });
 });
 

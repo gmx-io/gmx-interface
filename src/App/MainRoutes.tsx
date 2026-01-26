@@ -35,21 +35,21 @@ import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
-export const UiPage = () => (
+const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyUiPage />
   </Suspense>
 );
 
 const LazyRpcDebug = lazy(() => import("pages/RpcDebug/RpcDebug"));
-export const RpcDebugPage = () => (
+const RpcDebugPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyRpcDebug />
   </Suspense>
 );
 
 const LazyDebugOracleKeeper = lazy(() => import("pages/DebugOracleKeeper/DebugOracleKeeper"));
-export const OracleDebugPage = () => (
+const OracleDebugPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyDebugOracleKeeper />
   </Suspense>
@@ -58,7 +58,7 @@ export const OracleDebugPage = () => (
 const LazyTestPermits = lazy(() =>
   import("pages/TestPermits/TestPermits").then((module) => ({ default: module.TestPermits }))
 );
-export const TestPermitsPage = () => (
+const TestPermitsPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyTestPermits />
   </Suspense>
@@ -67,7 +67,7 @@ export const TestPermitsPage = () => (
 const LazyAccountEvents = lazy(() =>
   import("pages/AccountEvents/AccountEvents").then((module) => ({ default: module.AccountEvents }))
 );
-export const AccountEventsPage = () => (
+const AccountEventsPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyAccountEvents />
   </Suspense>
@@ -76,7 +76,7 @@ export const AccountEventsPage = () => (
 const LazyDecodeError = lazy(() =>
   import("pages/DecodeError/DecodeError").then((module) => ({ default: module.DecodeError }))
 );
-export const DecodeErrorPage = () => (
+const DecodeErrorPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyDecodeError />
   </Suspense>
@@ -218,6 +218,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/complete_account_transfer/:sender/:receiver">
         <CompleteAccountTransfer />
       </Route>
+      <Route exact path="/rpc-debug" key="rpc-debug">
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="rpcDebug">
+          <RpcDebugPage />
+        </SyntheticsStateContextProvider>
+      </Route>
+      <Route exact path="/oracle-keeper-debug" key="oracle-keeper-debug">
+        <OracleDebugPage />
+      </Route>
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
@@ -230,14 +238,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
-        </Route>,
-        <Route exact path="/rpc-debug" key="rpc-debug">
-          <SyntheticsStateContextProvider skipLocalReferralCode pageType="rpcDebug">
-            <RpcDebugPage />
-          </SyntheticsStateContextProvider>
-        </Route>,
-        <Route exact path="/oracle-keeper-debug" key="oracle-keeper-debug">
-          <OracleDebugPage />
         </Route>,
       ]}
       <Route path="*">

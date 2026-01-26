@@ -15,6 +15,12 @@ export default defineConfig(({ mode }) => {
     worker: {
       format: "es",
     },
+    optimizeDeps: {
+      include: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
+      esbuildOptions: {
+        target: "es2020",
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -55,7 +61,6 @@ export default defineConfig(({ mode }) => {
         locales: path.resolve(__dirname, "src/locales"),
         pages: path.resolve(__dirname, "src/pages"),
         styles: path.resolve(__dirname, "src/styles"),
-        "typechain-types": path.resolve(__dirname, "src/typechain-types"),
         prebuilt: path.resolve(__dirname, "src/prebuilt"),
         sdk: path.resolve(__dirname, "sdk/src"),
       },
@@ -78,7 +83,12 @@ export default defineConfig(({ mode }) => {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
       exclude: ["./autotests", "node_modules", "./sdk"],
-      setupFiles: ["@vitest/web-worker"],
+      setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
+      server: {
+        deps: {
+          inline: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
+        },
+      },
     },
   };
 });

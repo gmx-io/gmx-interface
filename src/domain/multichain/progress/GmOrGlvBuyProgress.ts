@@ -1,11 +1,10 @@
 import { decodeEventLog, encodeEventTopics, getAbiItem } from "viem";
 
 import { ContractsChainId } from "config/chains";
+import { Operation } from "domain/synthetics/markets/types";
 import { Token } from "domain/tokens";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
-
-import { Operation } from "components/GmSwap/GmSwapBox/types";
 
 import { fetchLogsInTx } from "./fetchLogsInTx";
 import { getOrWaitLogs } from "./getOrWaitLogs";
@@ -21,7 +20,7 @@ type GmOrGlvBuyGroup = undefined;
 
 const GM_OR_GLV_BUY_GROUPS: GmOrGlvBuyGroup[] = [];
 
-export abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOrGlvBuyStep, GmOrGlvBuyGroup> {
+abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOrGlvBuyStep, GmOrGlvBuyGroup> {
   abstract isGlv: boolean;
 
   override readonly steps = GM_OR_GLV_BUY_STEPS;
