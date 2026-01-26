@@ -30,10 +30,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { getAddress } from "viem";
 
-import type { SourceChainId, SettlementChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 
-import { AVALANCHE_FUJI, ARBITRUM_SEPOLIA, SOURCE_SEPOLIA, SOURCE_OPTIMISM_SEPOLIA } from "../sdk/src/configs/chainIds";
-import { SETTLEMENT_CHAINS, SOURCE_CHAINS } from "../sdk/src/configs/multichain";
+import { ARBITRUM_SEPOLIA, AVALANCHE_FUJI, SOURCE_OPTIMISM_SEPOLIA, SOURCE_SEPOLIA } from "../sdk/src/configs/chainIds";
+import { SETTLEMENT_CHAIN_IDS_DEV, SOURCE_CHAIN_IDS } from "../sdk/src/configs/chains";
 
 type DeploymentData = {
   address: string;
@@ -150,7 +150,7 @@ function generatePlatformTokens(gmxLayerZeroPath: string): PlatformTokens {
     process.exit(1);
   }
 
-  const allowedChains = [...SETTLEMENT_CHAINS, ...SOURCE_CHAINS];
+  const allowedChains = [...SETTLEMENT_CHAIN_IDS_DEV, ...SOURCE_CHAIN_IDS];
 
   const chainFolders = fs
     .readdirSync(deploymentsPath, { withFileTypes: true })
@@ -217,7 +217,7 @@ function generatePlatformTokens(gmxLayerZeroPath: string): PlatformTokens {
 
   for (const { baseSymbol, deployments } of Object.values(baseSymbolMap)) {
     const settlementDeployment = deployments.find(({ chainId }) =>
-      SETTLEMENT_CHAINS.includes(chainId as SettlementChainId)
+      SETTLEMENT_CHAIN_IDS_DEV.includes(chainId as SettlementChainId)
     );
 
     if (!settlementDeployment) {
@@ -269,10 +269,18 @@ function main(): void {
   fs.writeFileSync(outputPath, JSON.stringify(platformTokens, null, 2) + "\n", "utf8");
 
   console.log(`\n✓ Generated platform tokens JSON at: ${outputPath}`);
-  console.log(`✓ Found ${Object.keys(platformTokens).length} token symbols`);
+  
+  const totalTokenSymbols = new Set([
+    ...Object.keys(platformTokens.mainnets),
+    ...Object.keys(platformTokens.testnets),
+  ]).size;
+  console.log(`✓ Found ${totalTokenSymbols} token symbols`);
 
-  const totalEntries = Object.values(platformTokens).reduce((sum, chains) => sum + Object.keys(chains).length, 0);
-  console.log(`✓ Total chain entries: ${totalEntries}`);
+  const totalChainEntries = [
+    ...Object.values(platformTokens.mainnets),
+    ...Object.values(platformTokens.testnets),
+  ].reduce((sum, tokenChains) => sum + Object.keys(tokenChains).length, 0);
+  console.log(`✓ Total chain entries: ${totalChainEntries}`);
 }
 
 main();
