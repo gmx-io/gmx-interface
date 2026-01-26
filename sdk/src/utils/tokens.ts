@@ -172,20 +172,29 @@ export function getTokensRatioByMinOutputAmountAndTriggerPrice(p: {
   const adjustedToAmount = (minOutputAmount * PRECISION) / expandDecimals(1, toToken.decimals);
   const adjustedMinOutputAmount = (minOutputAmount * PRECISION) / expandDecimals(1, toToken.decimals);
 
-  [smallestToken, largestToken, largestAmount, smallestAmount] =
-    adjustedFromAmount > adjustedToAmount
+  const areBothStablecoins = fromToken.isStable && toToken.isStable;
+  const isFromAmountLarger = adjustedFromAmount > adjustedToAmount;
+
+  if (areBothStablecoins) {
+    smallestToken = fromToken;
+    largestToken = toToken;
+    largestAmount = adjustedFromAmount;
+    smallestAmount = adjustedToAmount;
+  } else {
+    [smallestToken, largestToken, largestAmount, smallestAmount] = isFromAmountLarger
       ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
       : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
+  }
   ratio = smallestAmount > 0 ? (largestAmount * PRECISION) / smallestAmount : 0n;
 
   if (triggerPrice === 0n) {
     allowedSwapSlippageBps = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS;
     acceptablePrice = ratio;
   } else {
-    const outputAtTriggerPrice =
-      adjustedFromAmount > adjustedToAmount
-        ? (adjustedFromAmount * PRECISION) / triggerPrice
-        : (adjustedFromAmount * triggerPrice) / PRECISION;
+    const shouldDivide = areBothStablecoins ? true : isFromAmountLarger;
+    const outputAtTriggerPrice = shouldDivide
+      ? (adjustedFromAmount * PRECISION) / triggerPrice
+      : (adjustedFromAmount * triggerPrice) / PRECISION;
 
     allowedSwapSlippageBps =
       ((outputAtTriggerPrice - adjustedMinOutputAmount) * BASIS_POINTS_DIVISOR_BIGINT) / outputAtTriggerPrice;

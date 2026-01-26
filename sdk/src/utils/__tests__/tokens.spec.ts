@@ -234,6 +234,35 @@ describe("getTokensRatioByMinOutputAmountAndTriggerPrice", () => {
     expect(result.ratio).toBe(100n);
     expect(result.allowedSwapSlippageBps).toBe(9999n);
   });
+
+  it("for stablecoin pairs: largestToken is always toToken (fixed order)", () => {
+    const usdcToken = { symbol: "USDC", decimals: 6, isStable: true } as Token;
+    const usdtToken = { symbol: "USDT", decimals: 6, isStable: true } as Token;
+
+    const result1 = getTokensRatioByMinOutputAmountAndTriggerPrice({
+      fromToken: usdcToken,
+      toToken: usdtToken,
+      fromTokenAmount: expandDecimals(100n, 6),
+      toTokenAmount: expandDecimals(99n, 6),
+      triggerPrice: 0n,
+      minOutputAmount: expandDecimals(99n, 6),
+    });
+
+    expect(result1.largestToken).toBe(usdtToken);
+    expect(result1.smallestToken).toBe(usdcToken);
+
+    const result2 = getTokensRatioByMinOutputAmountAndTriggerPrice({
+      fromToken: usdcToken,
+      toToken: usdtToken,
+      fromTokenAmount: expandDecimals(99n, 6),
+      toTokenAmount: expandDecimals(100n, 6),
+      triggerPrice: 0n,
+      minOutputAmount: expandDecimals(100n, 6),
+    });
+
+    expect(result2.largestToken).toBe(usdtToken);
+    expect(result2.smallestToken).toBe(usdcToken);
+  });
 });
 
 describe("getTokensRatioByPrice", () => {
