@@ -62,7 +62,7 @@ export interface TradeboxAdvancedOptions {
   limitOrTPSL: boolean;
 }
 
-type StoredTradeOptions = {
+export type StoredTradeOptions = {
   tradeType: TradeType;
   tradeMode: TradeMode;
   tokens: {
