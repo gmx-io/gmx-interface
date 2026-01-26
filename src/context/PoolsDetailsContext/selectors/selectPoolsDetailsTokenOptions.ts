@@ -155,7 +155,7 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
 
     result.push(createDisplayToken(token, chainId, token.walletBalance ?? 0n));
 
-    if (chainId !== AVALANCHE) {
+    if (chainId !== AVALANCHE && tokenAddress !== zeroAddress) {
       result.push(createDisplayToken(token, GMX_ACCOUNT_PSEUDO_CHAIN_ID, token.gmxAccountBalance ?? 0n));
     }
   }
