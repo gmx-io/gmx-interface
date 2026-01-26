@@ -40,10 +40,10 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "components/Referrals/referralsHelper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { ValidationBannerErrorContent } from "components/TradeBox/hooks/useTradeButtonState";
 
 import ReferralsIcon from "img/referrals.svg?react";
 

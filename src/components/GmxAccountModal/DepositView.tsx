@@ -78,10 +78,10 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ValidationBannerErrorContent } from "components/TradeBox/hooks/useTradeButtonState";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
@@ -391,6 +391,7 @@ export const DepositView = () => {
     amountLD,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSourceChainTokenId?.decimals,
+    enabled: depositViewChain !== settlementChainId,
   });
 
   const sendParamsWithSlippage: SendParam | undefined = useMemo(() => {

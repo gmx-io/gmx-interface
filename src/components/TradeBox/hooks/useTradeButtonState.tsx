@@ -4,15 +4,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
-import {
-  AVALANCHE,
-  BOTANIX,
-  ContractsChainId,
-  getChainName,
-  getViemChain,
-  SettlementChainId,
-  SourceChainId,
-} from "config/chains";
+import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { get1InchSwapUrlFromAddresses } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
@@ -73,15 +65,13 @@ import {
   getIsMaxLeverageExceeded,
   getNativeGasError,
   takeValidationResult,
-  ValidationBannerErrorName,
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
-import { useLocalizedList, useLocalizedMap } from "lib/i18n";
-import { getMatchaBuyTokenUrl } from "lib/matcha";
+import { useLocalizedMap } from "lib/i18n";
 import { formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
@@ -89,8 +79,7 @@ import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { getGasPaymentTokens } from "sdk/configs/express";
-import { convertTokenAddress, getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/types/fees";
 import { TokenData } from "sdk/types/tokens";
 import { TradeMode, TradeType } from "sdk/types/trade";
@@ -98,9 +87,8 @@ import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
-import { useGasPaymentTokensText } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { InsufficientWntBanner } from "components/GmxAccountModal/InsufficientWntBanner";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -124,143 +112,6 @@ type TradeboxButtonState = {
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
 };
-
-// TODO move theses outside of tradebox
-export default function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: ContractsChainId }) {
-  const nativeToken = getToken(chainId, zeroAddress);
-
-  if (!nativeToken) {
-    return null;
-  }
-
-  const nativeTokenSymbol = nativeToken.symbol;
-  const matchaBuyTokenUrl = getMatchaBuyTokenUrl(chainId, zeroAddress);
-
-  return (
-    <div>
-      <Trans>
-        Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(chainId)}.{" "}
-        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
-      </Trans>
-    </div>
-  );
-}
-
-// TODO move theses outside of tradebox
-export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId: ContractsChainId }) {
-  const gasPaymentTokens = getGasPaymentTokens(chainId);
-  const localizedList = useLocalizedList(gasPaymentTokens.map((token) => getToken(chainId, token).symbol));
-  const chainName = getChainName(chainId);
-  const firstGasPaymentToken = gasPaymentTokens[0];
-
-  return (
-    <div>
-      <Trans>
-        Insufficient {localizedList} for gas in your wallet on {chainName}.{" "}
-        <ExternalLink href={getMatchaBuyTokenUrl(chainId, firstGasPaymentToken)}>Buy {localizedList}</ExternalLink>
-      </Trans>
-    </div>
-  );
-}
-
-// TODO move theses outside of tradebox
-export function InsufficientGmxAccountGasTokenBalanceMessage({
-  chainId,
-  gasPaymentTokenAddress,
-}: {
-  chainId: ContractsChainId;
-  gasPaymentTokenAddress?: string;
-}) {
-  const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
-  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
-  const [, setGmxAccountDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
-
-  let tokensText = gasPaymentTokenAddress ? getToken(chainId, gasPaymentTokenAddress).symbol : gasPaymentTokensText;
-
-  const handleDeposit = useCallback(() => {
-    if (gasPaymentTokenAddress) {
-      setGmxAccountDepositViewTokenAddress(convertTokenAddress(chainId, gasPaymentTokenAddress, "native"));
-    }
-    setGmxAccountModalOpen("deposit");
-  }, [chainId, gasPaymentTokenAddress, setGmxAccountDepositViewTokenAddress, setGmxAccountModalOpen]);
-
-  return (
-    <div>
-      <Trans>
-        Insufficient {tokensText} for gas in your GMX Account.{" "}
-        <button className="cursor-pointer underline underline-offset-2" onClick={handleDeposit}>
-          Deposit {tokensText}
-        </button>
-      </Trans>
-    </div>
-  );
-}
-
-export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }: { srcChainId: SourceChainId }) {
-  const nativeToken = getViemChain(srcChainId).nativeCurrency;
-
-  if (!nativeToken) {
-    return null;
-  }
-
-  const nativeTokenSymbol = nativeToken.symbol;
-  const matchaBuyTokenUrl = getMatchaBuyTokenUrl(srcChainId, zeroAddress);
-
-  return (
-    <div>
-      <Trans>
-        Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(srcChainId)}.{" "}
-        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
-      </Trans>
-    </div>
-  );
-}
-
-export function ValidationBannerErrorContent({
-  validationBannerErrorName,
-  chainId,
-  srcChainId,
-  gasPaymentTokenAddress,
-}: {
-  validationBannerErrorName: ValidationBannerErrorName;
-  chainId: ContractsChainId;
-  srcChainId?: SourceChainId;
-  gasPaymentTokenAddress?: string;
-}) {
-  switch (validationBannerErrorName) {
-    case ValidationBannerErrorName.insufficientNativeTokenBalance: {
-      return <InsufficientNativeTokenBalanceMessage chainId={chainId} />;
-    }
-    case ValidationBannerErrorName.insufficientWalletGasTokenBalance: {
-      return <InsufficientWalletGasTokenBalanceMessage chainId={chainId} />;
-    }
-    case ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance: {
-      return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} />;
-    }
-    case ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance: {
-      if (!srcChainId) {
-        return null;
-      }
-
-      return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={srcChainId} />;
-    }
-    case ValidationBannerErrorName.insufficientGmxAccountWntBalance: {
-      return <InsufficientWntBanner chainId={chainId} />;
-    }
-    case ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance: {
-      return (
-        <InsufficientGmxAccountGasTokenBalanceMessage
-          chainId={chainId}
-          gasPaymentTokenAddress={gasPaymentTokenAddress}
-        />
-      );
-    }
-    default: {
-      const _never: never = validationBannerErrorName;
-      return null;
-    }
-  }
-}
 
 export function useTradeboxButtonState({
   account,

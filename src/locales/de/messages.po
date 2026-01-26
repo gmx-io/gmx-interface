@@ -238,7 +238,7 @@ msgstr "Pools, die Liquidität für spezifische GMX-Märkte bereitstellen, unter
 msgid "In progress"
 msgstr "In Bearbeitung"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "Kaufe {gasPaymentTokensText}"
@@ -605,7 +605,7 @@ msgstr "Diese Meldung 30 Tage lang nicht mehr anzeigen."
 msgid "in liquidity"
 msgstr "In Liquidität"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
 msgstr "Unzureichendes Gas-Guthaben, bitte mehr {gasPaymentTokensText} einzahlen."
 
@@ -1734,7 +1734,7 @@ msgstr "GMX"
 msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 msgstr "Kaufe GMX von Uniswap oder direkt auf GMX (stelle sicher, Arbitrum auszuwählen):"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "Express- und One-Click-Trading sind aufgrund unzureichenden Gas-Guthabens nicht verfügbar."
@@ -4414,7 +4414,7 @@ msgstr "Shorts Netto-Rate / 1h"
 msgid "Discover GMX Earn"
 msgstr "Entdecke GMX Earn"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} einzahlen"
 
@@ -5156,8 +5156,8 @@ msgstr "Bridge-TX-Hash"
 msgid "Start unrealized pnl"
 msgstr "Start unrealisierter PnL"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
 msgstr "Unzureichendes {nativeTokenSymbol} für Gas in Ihrer Wallet auf {0}. <0>Kaufe {nativeTokenSymbol}</0>"
 
@@ -6306,7 +6306,7 @@ msgstr "Gewinnrate"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "Du hast esGMX-Token im Affiliate-Vault – du musst diese abziehen, wenn du sie auf das neue Konto übertragen möchtest"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
 msgstr "Unzureichendes {tokensText} für Gas in Ihrem GMX-Konto. <0>{tokensText} einzahlen</0>"
 
@@ -7911,7 +7911,7 @@ msgstr "Max. Aktionsanzahl erreicht. <0>Hier klicken</0> zum Aktualisieren."
 msgid "{column}"
 msgstr "{column}"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
 msgstr "Unzureichendes {localizedList} für Gas in Ihrer Wallet auf {chainName}. <0>Kaufe {localizedList}</0>"
 

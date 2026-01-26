@@ -140,6 +140,7 @@ async function estimateArbitraryGasLimit({
   subaccount,
   chainId,
   account,
+  overrideWnt = false,
 }: {
   chainId: ContractsChainId;
   client: PublicClient;
@@ -148,6 +149,7 @@ async function estimateArbitraryGasLimit({
   expressTransactionBuilder: ExpressTransactionBuilder;
   subaccount: Subaccount | undefined;
   account: string;
+  overrideWnt?: boolean;
 }): Promise<bigint> {
   const { txnData: baseTxnData } = await expressTransactionBuilder({
     relayParams: rawRelayParamsPayload,
@@ -178,7 +180,11 @@ async function estimateArbitraryGasLimit({
           },
         ],
       },
-      // TODO do this conditionally to not load user's traffic
+    ],
+  };
+
+  if (overrideWnt) {
+    params.stateOverride!.push(
       {
         address: gasPaymentParams.gasPaymentTokenAddress,
         code: OVERRIDE_ERC20_BYTECODE,
@@ -192,21 +198,21 @@ async function estimateArbitraryGasLimit({
       {
         address: getContract(chainId, "LayerZeroProvider"),
         balance: SIMULATED_MULTICHAIN_BALANCE,
-      },
-    ],
-  };
+      }
+    );
 
-  if (gasPaymentParams.relayerFeeTokenAddress !== gasPaymentParams.gasPaymentTokenAddress) {
-    params.stateOverride!.push({
-      address: gasPaymentParams.relayerFeeTokenAddress,
-      code: OVERRIDE_ERC20_BYTECODE,
-      state: [
-        {
-          slot: RANDOM_SLOT,
-          value: zeroHash,
-        },
-      ],
-    });
+    if (gasPaymentParams.relayerFeeTokenAddress !== gasPaymentParams.gasPaymentTokenAddress) {
+      params.stateOverride!.push({
+        address: gasPaymentParams.relayerFeeTokenAddress,
+        code: OVERRIDE_ERC20_BYTECODE,
+        state: [
+          {
+            slot: RANDOM_SLOT,
+            value: zeroHash,
+          },
+        ],
+      });
+    }
   }
 
   const gasLimit = await fallbackCustomError(
@@ -356,6 +362,7 @@ export function useArbitraryRelayParamsAndPayload({
   gasPaymentTokenAsCollateralAmount,
   withLoading = true,
   requireValidations = true,
+  overrideWnt,
 }: {
   expressTransactionBuilder: ExpressTransactionBuilder | undefined;
   isGmxAccount: boolean;
@@ -364,6 +371,7 @@ export function useArbitraryRelayParamsAndPayload({
   gasPaymentTokenAsCollateralAmount?: bigint;
   withLoading?: boolean;
   requireValidations?: boolean;
+  overrideWnt?: boolean;
 }): AsyncResult<ExpressTxnParams> {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
@@ -400,6 +408,7 @@ export function useArbitraryRelayParamsAndPayload({
         rawRelayParamsPayload: rawBaseRelayParamsPayload,
         gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
         subaccount: p.subaccount,
+        overrideWnt: p.overrideWnt,
       }).catch((error) => {
         metrics.pushError(error, "expressArbitrary.estimateGas");
         throw error;
@@ -450,6 +459,7 @@ export function useArbitraryRelayParamsAndPayload({
               executionFeeAmount,
               gasPaymentTokenAsCollateralAmount,
               requireValidations,
+              overrideWnt,
             }
           : undefined,
       forceRecalculate,

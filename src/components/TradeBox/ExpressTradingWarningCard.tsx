@@ -10,13 +10,13 @@ import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/s
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
+import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { usePrevious } from "lib/usePrevious";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
-import { useGasPaymentTokensText } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";

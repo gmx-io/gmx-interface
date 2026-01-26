@@ -95,11 +95,11 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { ValidationBannerErrorContent } from "components/TradeBox/hooks/useTradeButtonState";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -603,6 +603,7 @@ export const WithdrawalView = () => {
     amountLD: inputAmount,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSettlementChainTokenId?.decimals,
+    enabled: !isSameChain,
   });
 
   const baseSendParams = useMemo(() => {
@@ -778,6 +779,8 @@ export const WithdrawalView = () => {
     expressTransactionBuilder,
     isGmxAccount: true,
     requireValidations: false,
+    overrideWnt: !isSameChain,
+    enabled: !isSameChain,
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
@@ -1149,6 +1152,23 @@ export const WithdrawalView = () => {
       tokensData,
       withdrawalViewChain,
     ]
+  );
+
+  useEffect(
+    function fallbackWithdrawalViewChain() {
+      if (withdrawalViewChain === undefined || isVisibleOrView !== "withdraw" || filteredNetworks.length === 0) {
+        return;
+      }
+
+      const isValidWithdrawalViewChain = filteredNetworks.map((network) => network.id).includes(withdrawalViewChain);
+
+      if (isValidWithdrawalViewChain) {
+        return;
+      }
+
+      setWithdrawalViewChain(undefined);
+    },
+    [withdrawalViewChain, isSameChain, isVisibleOrView, filteredNetworks, setWithdrawalViewChain]
   );
 
   const isTestnet = isTestnetChain(chainId);

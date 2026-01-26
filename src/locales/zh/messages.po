@@ -238,7 +238,7 @@ msgstr "向特定 GMX 市场提供流动性的资金池，支持 <0/> 单资产�
 msgid "In progress"
 msgstr "进行中"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "购买 {gasPaymentTokensText}"
@@ -605,7 +605,7 @@ msgstr "30 天内不再显示此消息。"
 msgid "in liquidity"
 msgstr "流动性中"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
 msgstr "Gas 余额不足，请存入更多 {gasPaymentTokensText}。"
 
@@ -1734,7 +1734,7 @@ msgstr "GMX"
 msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 msgstr "从 Uniswap 购买 GMX 或直接在 GMX 上购买（确保选择 Arbitrum）："
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "由于 Gas 余额不足，快速和一键交易不可用。"
@@ -4414,7 +4414,7 @@ msgstr "做空净率 / 1h"
 msgid "Discover GMX Earn"
 msgstr "探索 GMX Earn"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
 
@@ -5156,8 +5156,8 @@ msgstr "跨链交易哈希"
 msgid "Start unrealized pnl"
 msgstr "起始未实现 PnL"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
 msgstr "钱包中 {0} 上的 {nativeTokenSymbol} 不足以支付 gas。<0>购买 {nativeTokenSymbol}</0>"
 
@@ -6306,7 +6306,7 @@ msgstr "胜率"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "您的联盟金库中有 esGMX 代币，如需转移到新账户则必须先提取这些代币"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
 msgstr "您的 GMX 账户中用于 gas 的 {tokensText} 不足。<0>存入 {tokensText}</0>"
 
@@ -7911,7 +7911,7 @@ msgstr "达到最大操作次数。<0>点击这里</0> 更新。"
 msgid "{column}"
 msgstr "{column}"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
 msgstr "钱包中 {chainName} 上的 {localizedList} 不足以支付 gas。<0>购买 {localizedList}</0>"
 

@@ -238,7 +238,7 @@ msgstr "특정 GMX 시장에 유동성을 제공하는 풀, <0/> 단일 자산 �
 msgid "In progress"
 msgstr "진행 중"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 구매"
@@ -605,7 +605,7 @@ msgstr "30일 동안 해당 메시지 다시보지 않기"
 msgid "in liquidity"
 msgstr "유동성 내"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
 msgstr "가스 잔액 부족. {gasPaymentTokensText}를 더 입금해 주세요."
 
@@ -1734,7 +1734,7 @@ msgstr "GMX"
 msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 msgstr "Uniswap 또는 GMX에서 직접 GMX 구매(Arbitrum 선택 확인):"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "가스 잔고 부족으로 익스프레스 및 원클릭 트레이딩 사용 불가."
@@ -4414,7 +4414,7 @@ msgstr "숏 순율 / 1시간"
 msgid "Discover GMX Earn"
 msgstr "GMX Earn 탐색"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 입금"
 
@@ -5156,8 +5156,8 @@ msgstr "브리지 TX 해시"
 msgid "Start unrealized pnl"
 msgstr "시작 미실현 PnL"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
 msgstr "{0}의 지갑에 가스용 {nativeTokenSymbol}가 부족합니다. <0>{nativeTokenSymbol} 구매</0>"
 
@@ -6306,7 +6306,7 @@ msgstr "승률"
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "제휴 볼트에 esGMX 토큰이 있습니다. 새 계정으로 전송하려면 이 토큰들을 출금해야 합니다"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
 msgstr "GMX 계정의 가스용 {tokensText}가 부족합니다. <0>{tokensText} 입금</0>"
 
@@ -7911,7 +7911,7 @@ msgstr "최대 액션 수 도달. <0>여기 클릭</0>하여 업데이트."
 msgid "{column}"
 msgstr "{column}"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
 msgstr "{chainName}의 지갑에 가스용 {localizedList}가 부족합니다. <0>{localizedList} 구매</0>"
 

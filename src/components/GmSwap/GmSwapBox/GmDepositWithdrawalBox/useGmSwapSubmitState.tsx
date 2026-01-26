@@ -44,7 +44,7 @@ import useWallet from "lib/wallets/useWallet";
 import { GmSwapFees } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { ValidationBannerErrorContent } from "components/TradeBox/hooks/useTradeButtonState";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 

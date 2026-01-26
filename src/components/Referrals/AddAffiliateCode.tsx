@@ -38,8 +38,8 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import { ValidationBannerErrorContent } from "components/TradeBox/hooks/useTradeButtonState";
 
 import {
   getCodeError,
