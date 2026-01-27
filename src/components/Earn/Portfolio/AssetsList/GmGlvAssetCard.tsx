@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import Skeleton from "react-loading-skeleton";
 
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { MultichainMarketTokenBalances } from "domain/multichain/types";
@@ -110,8 +111,26 @@ export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, mu
       }
     >
       <div className="flex flex-col gap-12">
-        <SyntheticsInfoRow label={<Trans>Total Fee APY</Trans>} value={formatPercentage(totalFeeApy, { bps: false })} />
-        <SyntheticsInfoRow label={<Trans>30d Fee APY</Trans>} value={formatPercentage(feeApy30d, { bps: false })} />
+        <SyntheticsInfoRow
+          label={<Trans>Total Fee APY</Trans>}
+          value={
+            totalFeeApy === undefined ? (
+              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
+            ) : (
+              formatPercentage(totalFeeApy, { bps: false })
+            )
+          }
+        />
+        <SyntheticsInfoRow
+          label={<Trans>30d Fee APY</Trans>}
+          value={
+            feeApy30d === undefined ? (
+              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
+            ) : (
+              formatPercentage(feeApy30d, { bps: false })
+            )
+          }
+        />
         <SyntheticsInfoRow
           label={<Trans>Balance</Trans>}
           value={

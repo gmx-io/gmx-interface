@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
@@ -46,6 +47,9 @@ function RewardsBar({
   const stakedGmxUsd = (processedData?.gmxInStakedGmxUsd ?? 0n) + (processedData?.esGmxInStakedGmxUsd ?? 0n);
   const totalInvestmentUsd = stakedGmxUsd + totalGmInfo.balanceUsd + totalGlvInfo.balanceUsd;
 
+  const isInvestmentValueLoading =
+    processedData === undefined || marketTokensData === undefined || multichainMarketTokensBalances === undefined;
+
   return (
     <div className="rounded-8 bg-slate-900 p-20 text-typography-primary">
       <div className="flex flex-col gap-16 lg:flex-row lg:items-start lg:justify-between">
@@ -55,7 +59,13 @@ function RewardsBar({
               <span className="text-12 font-medium text-typography-secondary">
                 <Trans>Total Investment Value</Trans>
               </span>
-              <span className="text-body-large font-medium numbers">{formatUsd(totalInvestmentUsd)}</span>
+              <span className="text-body-large font-medium numbers">
+                {isInvestmentValueLoading ? (
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+                ) : (
+                  formatUsd(totalInvestmentUsd)
+                )}
+              </span>
             </div>
 
             <div className="flex flex-col gap-2">
@@ -203,12 +213,21 @@ function TotalEarned({
   }, [nativeTokenSymbol, processedData, userEarnings, chainId]);
 
   const totalEarnedUsd = (processedData?.cumulativeTotalRewardsUsd ?? 0n) + (userEarnings?.allMarkets.total ?? 0n);
+  const isLoading = processedData === undefined;
 
   return (
     <Tooltip
       disabled={!earnedTooltipContent}
       content={earnedTooltipContent}
-      handle={<span className="text-body-large font-medium numbers">{formatUsd(totalEarnedUsd)}</span>}
+      handle={
+        <span className="text-body-large font-medium numbers">
+          {isLoading ? (
+            <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+          ) : (
+            formatUsd(totalEarnedUsd)
+          )}
+        </span>
+      }
     />
   );
 }
@@ -223,17 +242,26 @@ function TotalPendingRewards({
   chainId: ContractsChainId;
 }) {
   const totalPendingRewardsUsd = processedData?.totalRewardsUsd ?? 0n;
+  const isLoading = processedData === undefined;
 
   const hasNativeRewards = (processedData?.totalNativeTokenRewards ?? 0n) > 0n;
   const hasEsGmxRewards = (processedData?.totalEsGmxRewards ?? 0n) > 0n;
 
+  const skeletonElement = (
+    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+  );
+
   if (chainId === BOTANIX) {
-    return <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>;
+    return (
+      <span className="text-body-large font-medium numbers">
+        {isLoading ? skeletonElement : formatUsd(totalPendingRewardsUsd)}
+      </span>
+    );
   }
 
   return (
     <TooltipWithPortal
-      handle={formatUsd(totalPendingRewardsUsd)}
+      handle={isLoading ? skeletonElement : formatUsd(totalPendingRewardsUsd)}
       handleClassName="text-body-large font-medium numbers"
       content={
         <div className="flex flex-col">
