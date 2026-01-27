@@ -1,6 +1,7 @@
 import { plural, t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
 import { ReactNode } from "react";
+import { encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
@@ -21,7 +22,13 @@ export async function cancelOrdersTxn(chainId: ContractsChainId, signer: Signer,
 
   const orderKeys = p.orders.flatMap((o) => (isTwapOrder(o) ? o.orders.map((o) => o.key as string) : o.key));
 
-  const multicall = createCancelEncodedPayload({ router, orderKeys });
+  const multicall = orderKeys.filter(Boolean).map((orderKey) =>
+    encodeFunctionData({
+      abi: abis.ExchangeRouter,
+      functionName: "cancelOrder",
+      args: [orderKey],
+    })
+  );
 
   const count = p.orders.length;
 
@@ -37,14 +44,4 @@ export async function cancelOrdersTxn(chainId: ContractsChainId, signer: Signer,
     setPendingTxns: p.setPendingTxns,
     detailsMsg: p.detailsMsg,
   });
-}
-
-function createCancelEncodedPayload({
-  router,
-  orderKeys = [],
-}: {
-  router: ethers.Contract;
-  orderKeys: (string | null)[];
-}) {
-  return orderKeys.filter(Boolean).map((orderKey) => router.interface.encodeFunctionData("cancelOrder", [orderKey]));
 }

@@ -438,7 +438,6 @@ msgstr ""
 msgid "sell"
 msgstr "vendre"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "Passer à {0}"
@@ -744,6 +743,12 @@ msgstr "{0} <0/><1> à </1>{1} <2/>"
 msgid "See <0>Tenderly Docs</0>."
 msgstr "Voir la <0>documentation Tenderly</0>."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
 msgstr "Transaction de code de parrainage envoyée"
@@ -854,10 +859,6 @@ msgstr "Aucun marché correspondant"
 msgid "Unstake {tokenSymbol}"
 msgstr "Unstaker {tokenSymbol}"
 
-#: src/components/InputSection/InputSection.tsx
-msgid "MAX"
-msgstr "MAX"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr "Aucun exchange centralisé disponible pour ce réseau."
@@ -879,6 +880,8 @@ msgid "Disable Share Modal PnL Check"
 msgstr "Désactiver la vérification PnL dans la fenêtre de partage"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "Code déjà pris"
@@ -1931,6 +1934,9 @@ msgstr "La valeur USD des frais est calculée au moment où ils sont gagnés et 
 msgid "Max"
 msgstr "Max"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "Vérification du code…"
@@ -2110,6 +2116,10 @@ msgstr "Aucune opportunité supplémentaire pour le moment sur Botanix. Passez s
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "Aucun chemin de swap disponible. <0>Échanger {0} vers STBTC</0> pour utiliser {1} comme collatéral."
+
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2591,6 +2601,8 @@ msgstr "Transaction envoyée."
 msgid "Exposure to Backing Tokens"
 msgstr "Exposition aux tokens de soutien"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "Création en cours…"
@@ -2950,6 +2962,7 @@ msgstr "Découvrez comment les tokens GMX, GLV et GM fonctionnent ensemble pour 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Network Fee"
 msgstr "Frais de réseau"
 
@@ -4191,6 +4204,11 @@ msgstr "Emplois"
 msgid "Decentralized Options Strategies"
 msgstr "Stratégies d'options décentralisées"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Creating referral code"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "Vous avez une position existante avec {0} comme garantie. Cette action ne s'appliquera pas à cette position. <0>Passer à la garantie {1}</0>"
@@ -4288,6 +4306,9 @@ msgid "Net Price Impact"
 msgstr "Impact de Prix Net"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4380,6 +4401,7 @@ msgid "Create Stop Loss"
 msgstr "Créer Stop Loss"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4785,6 +4807,9 @@ msgid "Yield Farming"
 msgstr "Yield Farming"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Approbation en cours…"
@@ -4878,6 +4903,8 @@ msgstr "Échanger {0}"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -5148,10 +5175,6 @@ msgstr "PnL non réalisé de départ"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Approbation soumise ! <0>Voir le statut.</0>"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "L’impact net potentiel sur le prix qui s’appliquera à la clôture de cette position peut être élevé par rapport au montant de collatéral utilisé. Envisagez de réduire l’effet de levier. <0>En savoir plus</0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
@@ -5713,6 +5736,12 @@ msgstr "Entrez le montant de dépôt"
 msgid "Update Stop Loss"
 msgstr "Mettre à jour le Stop Loss"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Approve {0}"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "Long {0} maximal dépassé"
@@ -5976,6 +6005,8 @@ msgid "More info"
 msgstr "Plus d’infos"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
@@ -6127,6 +6158,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "Annualisé :"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "RWA"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "Exécution de la demande d'achat…"
@@ -6247,6 +6282,11 @@ msgstr "Minute(s)"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized Fees"
 msgstr "Frais non réalisés de départ"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Please deposit funds or switch to a different network."
+msgstr ""
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "V2 trading"
@@ -6551,6 +6591,7 @@ msgstr "Meme"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Create code"
 msgstr "Créer un code"
 
@@ -6672,6 +6713,12 @@ msgstr "Transaction échouée."
 msgid "Decentralized Yield Products"
 msgstr "Produits de yield décentralisés"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
+msgstr ""
+
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 msgstr "Frais de réseau maximal inclut les frais pour les ordres supplémentaires. Il sera renvoyé en totalité sur votre compte s'ils ne se déclenchent pas et sont annulés. <0>Lire plus</0>."
@@ -6733,6 +6780,11 @@ msgstr "Approbation échouée."
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX rewards:"
 msgstr "Récompenses GMX :"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Referral code created!"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6853,6 +6905,8 @@ msgstr "Échange échoué."
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderList/OrderList.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7064,6 +7118,7 @@ msgstr "Pool"
 msgid "Venus"
 msgstr "Venus"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
@@ -7316,6 +7371,11 @@ msgstr "La transaction a échoué en raison de la validation du frais d’exécu
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Completed"
 msgstr "Terminé"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "No tokens on source chain"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
@@ -7811,7 +7871,7 @@ msgstr "Haut sur 24h"
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
-msgstr "Ce code n'est pas encore enregistré sur {nonTakenNetworkNames}, vous ne recevrez pas de rabais là-bas.<0/><1/>Changez de réseau pour créer ce code sur {nonTakenNetworkNames}."
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
@@ -7892,6 +7952,8 @@ msgstr "Récompenses GMX stakées :"
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Prix d'exécution pour augmenter les longs et<0/>diminuer les shorts."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "It will take a couple of minutes to be reflected. Please check back later."
 msgstr "Cela prendra quelques minutes pour être reflété. Veuillez vérifier plus tard."
@@ -8316,10 +8378,6 @@ msgstr "Mettre à jour la partie TWAP"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "Comment GLV gagne-t-il du rendement, et où voir mes gains ?"
-
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "Please switch to {0} to create your referral code. It will work across all other networks."
-msgstr "Veuillez passer à {0} pour créer votre code de parrainage. Il fonctionnera sur tous les autres réseaux."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
