@@ -36,6 +36,24 @@
         "stargate": "0x8c92eaE643040fF0Fb65B423433001c176cB0bb6"
       }
     },
+    "<GM-BTC-BTC-6b9A77>": {
+      "1": {
+        "address": "0x5Ece4d3F43D3BD8cBffc1d2CE851E7605D403D3C",
+        "stargate": "0x5Ece4d3F43D3BD8cBffc1d2CE851E7605D403D3C"
+      },
+      "56": {
+        "address": "0x2e6Bf9Bdd2A7872bDae170C13F34d64692f842C1",
+        "stargate": "0x2e6Bf9Bdd2A7872bDae170C13F34d64692f842C1"
+      },
+      "8453": {
+        "address": "0x5E922D32c7278f6c5621a016c03055c54C97D27b",
+        "stargate": "0x5E922D32c7278f6c5621a016c03055c54C97D27b"
+      },
+      "42161": {
+        "address": "0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77",
+        "stargate": "0x661E1faD17124471a59c37E9c4590BA809599f30"
+      }
+    },
     "<GM-WBTC-USDC-170703>": {
       "1": {
         "address": "0x91dd54AA8BA9Dfde8b956Cfb709a7c418f870e21",
@@ -70,6 +88,24 @@
       "42161": {
         "address": "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
         "stargate": "0xfcff5015627B8ce9CeAA7F5b38a6679F65fE39a7"
+      }
+    },
+    "<GM-WETH-WETH-2ac541>": {
+      "1": {
+        "address": "0x0B335e18Ab68Ccd2E8946A6E785D8bE65F413103",
+        "stargate": "0x0B335e18Ab68Ccd2E8946A6E785D8bE65F413103"
+      },
+      "56": {
+        "address": "0x5Ece4d3F43D3BD8cBffc1d2CE851E7605D403D3C",
+        "stargate": "0x5Ece4d3F43D3BD8cBffc1d2CE851E7605D403D3C"
+      },
+      "8453": {
+        "address": "0x47dFf0cbE239c02479C5944b9F4F3Ade8a212457",
+        "stargate": "0x47dFf0cbE239c02479C5944b9F4F3Ade8a212457"
+      },
+      "42161": {
+        "address": "0x450bb6774Dd8a756274E0ab4107953259d2ac541",
+        "stargate": "0x0110424A21D5DF818f4a789E5d9d9141a4E29A3C"
       }
     }
   },

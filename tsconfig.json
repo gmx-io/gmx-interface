@@ -23,6 +23,7 @@
     "baseUrl": "./src",
     "paths": {
       "sdk": ["../sdk/src/index.ts"],
+      "sdk/codegen/*": ["../sdk/codegen/*"],
       "sdk/*": ["../sdk/src/*"]
     }
   },

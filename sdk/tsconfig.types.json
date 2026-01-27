@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./build/esm",
-    "module": "esnext"
+    "outDir": "./build/types",
+    "module": "esnext",
+    "emitDeclarationOnly": true
   },
   "include": ["../viem-override.d.ts", "./src", "./codegen", "./src/**/*.json", "./codegen/**/*.json"],
   "exclude": ["./scripts"]

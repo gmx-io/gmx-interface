@@ -47,10 +47,9 @@ import { isDevelopment } from "config/env";
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
+import platformTokensData from "sdk/codegen/platformTokens.json";
 import { isSettlementChain, isSourceChain } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
-
-import platformTokensData from "./static/platformTokens.json";
 
 export * from "sdk/configs/multichain";
 
