@@ -1192,7 +1192,7 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
 export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) => {
   const selectedCollateralAddress = q(selectTradeboxCollateralTokenAddress);
   const tokensData = q(selectTokensData);
-  const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
+  const symbol = getByKey(tokensData, selectedCollateralAddress)?.symbol;
 
   return symbol;
 });
