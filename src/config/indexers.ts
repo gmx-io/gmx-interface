@@ -52,7 +52,7 @@ const INDEXER_URLS = {
   [MEGAETH]: {
     subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth@37cf94/api/graphql",
     syntheticsStats:
-      "https://app.goldsky.com/project_cmgptuc4qhclc01rh9s4q554a/dashboard/subgraphs/synthetics-megaeth-stats/master-260120151613-540f334/gn",
+      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-megaeth-stats/master-260120151613-540f334/gn",
   },
 
   common: {
