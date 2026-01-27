@@ -965,7 +965,7 @@ export async function signSetTraderReferralCode({
   srcChainId,
   shouldUseSignerMethod,
 }: {
-  signer: AbstractSigner;
+  signer: AbstractSigner | ISigner;
   relayParams: RelayParamsPayload;
   referralCode: string;
   chainId: ContractsChainId;
@@ -974,6 +974,37 @@ export async function signSetTraderReferralCode({
 }) {
   const types = {
     SetTraderReferralCode: [
+      { name: "referralCode", type: "bytes32" },
+      { name: "relayParams", type: "bytes32" },
+    ],
+  };
+
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
+  const typedData = {
+    referralCode: referralCode,
+    relayParams: hashRelayParams(relayParams),
+  };
+
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
+}
+
+export async function signRegisterCode({
+  signer,
+  relayParams,
+  referralCode,
+  chainId,
+  srcChainId,
+  shouldUseSignerMethod,
+}: {
+  signer: AbstractSigner | ISigner;
+  relayParams: RelayParamsPayload;
+  referralCode: string;
+  chainId: ContractsChainId;
+  srcChainId: SourceChainId;
+  shouldUseSignerMethod?: boolean;
+}) {
+  const types = {
+    RegisterCode: [
       { name: "referralCode", type: "bytes32" },
       { name: "relayParams", type: "bytes32" },
     ],

@@ -165,6 +165,7 @@ export function useTokensFavorites(key: TokenFavoriteKey): TokenFavoritesState {
 export const tokensFavoritesTabOptions: TokenFavoritesTabOption[] = [
   "all",
   "favorites",
+  "rwa",
   "defi",
   "meme",
   "layer1",
@@ -181,4 +182,5 @@ export const tokensFavoritesTabOptionLabels: Record<TokenFavoritesTabOption, Mes
   layer1: msg`Layer 1`,
   layer2: msg`Layer 2`,
   defi: msg`DeFi`,
+  rwa: msg`RWA`,
 };

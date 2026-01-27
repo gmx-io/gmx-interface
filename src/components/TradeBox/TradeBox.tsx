@@ -89,6 +89,7 @@ import useWallet from "lib/wallets/useWallet";
 import { EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER } from "sdk/configs/express";
 import { getToken, isUsdBasedStableToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/utils/trade/types";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -1235,6 +1236,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
                   externalSwapFeeItem={fees?.externalSwapFee}
+                  maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
                 />
               )}
 

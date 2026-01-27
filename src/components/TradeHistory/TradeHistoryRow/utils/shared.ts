@@ -5,10 +5,8 @@ import type { Locale as DateLocale } from "date-fns";
 import { format } from "date-fns/format";
 import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
-import { BytesLike, ethers } from "ethers";
 import words from "lodash/words";
 
-import { abis } from "sdk/abis";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
@@ -45,9 +43,9 @@ export type TooltipString =
   | undefined
   | string
   | {
-      text: string | undefined;
-      state?: TooltipState;
-    };
+    text: string | undefined;
+    state?: TooltipState;
+  };
 
 export function numberToState(value: bigint | undefined): TooltipState {
   if (value === undefined) {
@@ -67,9 +65,9 @@ export type Line =
   | TooltipString
   | TooltipString[]
   | {
-      key: string;
-      value: TooltipString;
-    };
+    key: string;
+    value: TooltipString;
+  };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
   return args;
@@ -167,20 +165,6 @@ export function formatTradeActionTimestampUTC(timestamp: number) {
 }
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
-
-const customErrors = new ethers.Contract(ethers.ZeroAddress, abis.CustomErrors);
-
-export function tryGetError(reasonBytes: BytesLike): ReturnType<typeof customErrors.interface.parseError> | undefined {
-  let error: ReturnType<typeof customErrors.interface.parseError> | undefined;
-
-  try {
-    error = customErrors.interface.parseError(reasonBytes);
-  } catch (error) {
-    return undefined;
-  }
-
-  return error;
-}
 
 export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {

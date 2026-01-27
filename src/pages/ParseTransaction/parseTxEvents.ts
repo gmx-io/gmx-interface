@@ -3,8 +3,9 @@ import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } fro
 
 import { LogEntry } from "pages/ParseTransaction/types";
 import { abis } from "sdk/abis";
+import { keccakString } from "sdk/utils/hash";
 
-const PANIC_SIGNATURE4 = ethers.id("Panic(uint256)").slice(0, 10);
+const PANIC_SIGNATURE4 = keccakString("Panic(uint256)").slice(0, 10);
 const PANIC_MAP = {
   0x00: "generic compiler inserted panics",
   0x01: "call assert with an argument that evaluates to false",

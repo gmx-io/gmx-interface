@@ -61,7 +61,6 @@ export default defineConfig(({ mode }) => {
         locales: path.resolve(__dirname, "src/locales"),
         pages: path.resolve(__dirname, "src/pages"),
         styles: path.resolve(__dirname, "src/styles"),
-        "typechain-types": path.resolve(__dirname, "src/typechain-types"),
         prebuilt: path.resolve(__dirname, "src/prebuilt"),
         sdk: path.resolve(__dirname, "sdk/src"),
       },

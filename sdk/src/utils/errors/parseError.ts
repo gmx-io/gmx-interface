@@ -1,5 +1,12 @@
 import cryptoJs from "crypto-js";
-import { Abi, decodeErrorResult } from "viem";
+import {
+  Abi,
+  AbiParameterToPrimitiveType,
+  ContractErrorName,
+  decodeErrorResult,
+  ExtractAbiItem,
+  BaseError as ViemBaseError,
+} from "viem";
 
 import { abis } from "abis";
 
@@ -11,6 +18,31 @@ import {
   getIsUserError,
   getIsUserRejectedError,
 } from "./transactionsErrors";
+
+export function extractErrorDataFromViemError(error: any): string | undefined {
+  if (!("walk" in error && typeof error.walk === "function")) {
+    return undefined;
+  }
+
+  let data: string | undefined;
+  (error as ViemBaseError).walk((e: any) => {
+    if (typeof e?.data === "string") {
+      data = e.data;
+      return true;
+    }
+    if (typeof e?.data?.data === "string") {
+      data = e.data.data;
+      return true;
+    }
+    if (typeof e?.raw === "string") {
+      data = e.raw;
+      return true;
+    }
+    return false;
+  });
+
+  return data;
+}
 
 export type OrderErrorContext =
   | "simulation"
@@ -150,17 +182,25 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
       //
     }
 
-    if (errorMessage) {
-      const errorData = extractDataFromError(errorMessage) ?? extractDataFromError((error as any)?.message);
-      if (errorData) {
-        const parsedError = decodeErrorResult({
-          abi: abis.CustomErrors as Abi,
-          data: errorData,
-        });
+    if (!contractError) {
+      const errorData =
+        (error && typeof error === "object" ? extractErrorDataFromViemError(error) : undefined) ??
+        extractDataFromError(errorMessage) ??
+        extractDataFromError((error as any)?.message);
 
-        if (parsedError) {
-          contractError = parsedError.errorName;
-          contractErrorArgs = parsedError.args;
+      if (errorData) {
+        try {
+          const parsedError = decodeErrorResult({
+            abi: abis.CustomErrors as Abi,
+            data: errorData,
+          });
+
+          if (parsedError) {
+            contractError = parsedError.errorName;
+            contractErrorArgs = parsedError.args;
+          }
+        } catch {
+          //
         }
       }
     }
@@ -244,28 +284,56 @@ export function isCustomError(error: Error | undefined): error is CustomError {
   return (error as CustomError)?.isGmxCustomError === true;
 }
 
-export function getCustomError(error: Error): CustomError | Error {
-  const data = (error as any)?.info?.error?.data ?? (error as any)?.data;
+export type ParsedCustomError = {
+  name: string;
+  args?: {
+    [key in ExtractAbiItem<
+      typeof abis.CustomErrors,
+      ContractErrorName<typeof abis.CustomErrors>
+    >["inputs"][number]["name"]]: AbiParameterToPrimitiveType<
+      Extract<
+        ExtractAbiItem<typeof abis.CustomErrors, ContractErrorName<typeof abis.CustomErrors>>["inputs"][number],
+        {
+          name: key;
+        }
+      >,
+      "inputs"
+    >;
+  };
+};
 
-  let prettyErrorName = error.name;
-  let prettyErrorMessage = error.message;
-  let prettyErrorArgs: any = undefined;
-
+export function tryDecodeCustomError(reasonBytes: string): ParsedCustomError | undefined {
   try {
-    const parsedError = decodeErrorResult({
+    const decoded = decodeErrorResult({
       abi: abis.CustomErrors,
-      data: data,
+      data: reasonBytes,
     });
 
-    prettyErrorArgs = parsedError.args;
+    // Convert args array to key-value dictionary for backward compatibility
+    if (
+      decoded.args &&
+      Array.isArray(decoded.args) &&
+      decoded.abiItem &&
+      "inputs" in decoded.abiItem &&
+      decoded.abiItem.inputs
+    ) {
+      const argsDict: Record<string, any> = {};
+      for (const [index, input] of decoded.abiItem.inputs.entries()) {
+        argsDict[input.name] = decoded.args[index];
+      }
+      return { name: decoded.errorName, args: argsDict as any };
+    }
 
-    prettyErrorName = parsedError.errorName;
-    prettyErrorMessage = JSON.stringify(parsedError, null, 2);
-  } catch (decodeError) {
-    return error;
+    return { name: decoded.errorName, args: undefined };
+  } catch {
+    return undefined;
   }
+}
 
-  const prettyError = new CustomError({ name: prettyErrorName, message: prettyErrorMessage, args: prettyErrorArgs });
-
-  return prettyError;
+export function decodeErrorFromViemError(error: any): ParsedCustomError | undefined {
+  const data = extractErrorDataFromViemError(error);
+  if (!data) {
+    return undefined;
+  }
+  return tryDecodeCustomError(data);
 }
