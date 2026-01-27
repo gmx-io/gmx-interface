@@ -1,3 +1,4 @@
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
@@ -12,6 +13,8 @@ import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
+
+import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
@@ -58,6 +61,7 @@ function AssetsList({
   const shouldUseFlex = (cardsCount < 3 && isEnoughSpaceFor2Columns) || (cardsCount < 4 && isEnoughSpaceFor3Columns);
 
   const { account } = useWallet();
+  const { openConnectModal } = useConnectModal();
 
   const sortedAssets = useMemo(() => {
     const assets: AssetItem[] = [];
@@ -134,7 +138,7 @@ function AssetsList({
       )}
 
       {!hasAnyAssets && (
-        <div className="flex h-full flex-col items-center justify-center gap-8 p-20">
+        <div className="flex h-full flex-col items-center justify-center gap-12 p-20">
           <EarnIcon className="size-20 text-blue-300" />
           <span className="text-body-small text-center font-medium text-typography-secondary">
             {account ? (
@@ -147,6 +151,11 @@ function AssetsList({
               <Trans>Please connect your wallet to see your assets.</Trans>
             )}
           </span>
+          {!account && openConnectModal && (
+            <ConnectWalletButton onClick={openConnectModal}>
+              <Trans>Connect Wallet</Trans>
+            </ConnectWalletButton>
+          )}
         </div>
       )}
     </section>
