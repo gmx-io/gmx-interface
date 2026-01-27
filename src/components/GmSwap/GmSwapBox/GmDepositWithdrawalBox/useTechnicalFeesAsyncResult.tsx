@@ -27,7 +27,12 @@ import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { absDiffBps } from "sdk/utils/numbers";
 
-export function useTechnicalFees(): TechnicalGmFees | undefined {
+export type TechnicalFeesResult = {
+  data: TechnicalGmFees | undefined;
+  error: Error | undefined;
+};
+
+export function useTechnicalFees(): TechnicalFeesResult {
   const { chainId, srcChainId } = useChainId();
 
   const operation = useSelector(selectPoolsDetailsOperation);
@@ -90,5 +95,8 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
     resetOnForceRecalculate: true,
   });
 
-  return technicalFeesAsyncResult.data;
+  return {
+    data: technicalFeesAsyncResult.data,
+    error: technicalFeesAsyncResult.error,
+  };
 }
