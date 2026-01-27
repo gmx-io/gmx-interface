@@ -204,6 +204,15 @@ function TotalEarned({
               showDollar={false}
               value={<span className="text-body-medium numbers">{formatUsd(userEarnings.allMarkets.total)}</span>}
             />
+            <StatsTooltipRow
+              label={<Trans>GLV Vaults:</Trans>}
+              showDollar={false}
+              value={
+                <span className="text-body-medium text-typography-secondary">
+                  <Trans>coming soon</Trans>
+                </span>
+              }
+            />
           </div>
         </div>
       );
