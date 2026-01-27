@@ -6,11 +6,12 @@
  * Cloned https://github.com/gmx-io/layer-zero repository
  *
  * Usage:
- *   yarn tsx scripts/generate-platform-tokens.ts <layer-zero-path>
+ *   yarn tsx sdk/scripts/generate-platform-tokens.ts <layer-zero-path>
  *
  * Example:
- *   yarn tsx scripts/generate-platform-tokens.ts ../layer-zero
- *   yarn tsx scripts/generate-platform-tokens.ts /path/to/layer-zero
+ *   # Relative to monorepo root
+ *   yarn tsx sdk/scripts/generate-platform-tokens.ts ../layer-zero
+ *   yarn tsx sdk/scripts/generate-platform-tokens.ts /path/to/layer-zero
  *
  *
  * Expected folder structure:
@@ -30,10 +31,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { getAddress } from "viem";
 
-import type { SettlementChainId, SourceChainId } from "config/chains";
-
-import { ARBITRUM_SEPOLIA, AVALANCHE_FUJI, SOURCE_OPTIMISM_SEPOLIA, SOURCE_SEPOLIA } from "../sdk/src/configs/chainIds";
-import { SETTLEMENT_CHAIN_IDS_DEV, SOURCE_CHAIN_IDS } from "../sdk/src/configs/chains";
+import { ARBITRUM_SEPOLIA, AVALANCHE_FUJI, SOURCE_OPTIMISM_SEPOLIA, SOURCE_SEPOLIA } from "../src/configs/chainIds";
+import type { SettlementChainId, SourceChainId } from "../src/configs/chains";
+import { SETTLEMENT_CHAIN_IDS_DEV, SOURCE_CHAIN_IDS } from "../src/configs/chains";
 
 type DeploymentData = {
   address: string;
@@ -264,16 +264,14 @@ function main(): void {
 
   const platformTokens = generatePlatformTokens(gmxLayerZeroPath);
 
-  const outputPath = path.join(__dirname, "..", "src", "config", "static", "platformTokens.json");
+  const outputPath = path.join(__dirname, "..", "codegen", "platformTokens.json");
 
   fs.writeFileSync(outputPath, JSON.stringify(platformTokens, null, 2) + "\n", "utf8");
 
   console.log(`\n✓ Generated platform tokens JSON at: ${outputPath}`);
-  
-  const totalTokenSymbols = new Set([
-    ...Object.keys(platformTokens.mainnets),
-    ...Object.keys(platformTokens.testnets),
-  ]).size;
+
+  const totalTokenSymbols = new Set([...Object.keys(platformTokens.mainnets), ...Object.keys(platformTokens.testnets)])
+    .size;
   console.log(`✓ Found ${totalTokenSymbols} token symbols`);
 
   const totalChainEntries = [
