@@ -2524,8 +2524,8 @@ msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading j
 msgstr "<0><1>$GMX</1> ha ganado justamente su título como el gigante del trading perpetuo, y las razones detrás de este reconocimiento son múltiples.</0><2><3>@GMX_IO</3> se destaca como un proyecto que ha navegado su camino sin depender de respaldo VC. Notablemente, ha ascendido a la cima, asegurando el puesto No. #1 por TVL en la Cadena Arbitrum a $488.34M y un impresionante Rank #23 general en DeFiLlama... <4>ver más</4></2>"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
-msgstr "<0>Multicadena</0><1>Liquidez Justo a Tiempo</1><2>Soporte de MegaETH</2>"
+#~ msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+#~ msgstr "<0>Multicadena</0><1>Liquidez Justo a Tiempo</1><2>Soporte de MegaETH</2>"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
@@ -6505,6 +6505,10 @@ msgstr "Posiciones Principales"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Reservas"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH Support</1><2>Just in Time Liquidity</2>"
+msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx

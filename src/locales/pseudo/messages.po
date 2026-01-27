@@ -2524,8 +2524,8 @@ msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading j
 msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
-msgstr ""
+#~ msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+#~ msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
@@ -6504,6 +6504,10 @@ msgstr ""
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
+msgstr ""
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH Support</1><2>Just in Time Liquidity</2>"
 msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx

@@ -2524,8 +2524,8 @@ msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading j
 msgstr "<0><1>$GMX</1> 理所当然地赢得了永续交易巨头的称号，其背后的原因多种多样。</0><2><3>@GMX_IO</3> 作为一个不依赖 VC 支持的项目脱颖而出。令人印象深刻的是，它已上升到首位，在 Arbitrum 链上 TVL 排名第一，为 4.8834 亿美元，在 DeFiLlama 上整体排名第 23 位... <4>查看更多</4></2>"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
-msgstr "<0>多链</0><1>即时流动性</1><2>MegaETH 支持</2>"
+#~ msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+#~ msgstr "<0>多链</0><1>即时流动性</1><2>MegaETH 支持</2>"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
@@ -6505,6 +6505,10 @@ msgstr "最高头寸"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "池"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH Support</1><2>Just in Time Liquidity</2>"
+msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx

@@ -2524,8 +2524,8 @@ msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading j
 msgstr "<0><1>$GMX</1>는 영구 거래 거물로서의 타이틀을 정당하게 얻었으며, 이 인정 뒤에는 여러 이유가 있습니다.</0><2><3>@GMX_IO</3>는 VC 지원 없이 경로를 탐색한 프로젝트로 돋보입니다. 놀랍게도 TVL 기준 Arbitrum Chain에서 $488.34M으로 1위를 차지하고 DeFiLlama에서 전체 랭킹 23위를 차지했습니다... <4>더 보기</4></2>"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
-msgstr "<0>멀티체인</0><1>Just in Time Liquidity</1><2>MegaETH 지원</2>"
+#~ msgid "<0>Multichain</0><1>Just in Time Liquidity</1><2>MegaETH Support</2>"
+#~ msgstr "<0>멀티체인</0><1>Just in Time Liquidity</1><2>MegaETH 지원</2>"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
@@ -6505,6 +6505,10 @@ msgstr "상위 포지션"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "풀"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH Support</1><2>Just in Time Liquidity</2>"
+msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
