@@ -317,7 +317,9 @@ export function useGmMarketsApy(
       }, {} as MarketTokensAPRData);
 
       const marketsTokensApyData = Object.entries(apys.markets).reduce((acc, [address, { baseApy }]) => {
-        acc[address] = numberToBigint(baseApy, 30);
+        if (marketAddresses.includes(address)) {
+          acc[address] = numberToBigint(baseApy, 30);
+        }
         return acc;
       }, {} as MarketTokensAPRData);
 
@@ -327,7 +329,9 @@ export function useGmMarketsApy(
         }, 0n) / BigInt(marketAddresses.length);
 
       const glvApyInfoData = Object.entries(apys.glvs).reduce((acc, [address, { baseApy }]) => {
-        acc[address] = numberToBigint(baseApy, 30);
+        if (marketAddresses.includes(address)) {
+          acc[address] = numberToBigint(baseApy, 30);
+        }
         return acc;
       }, {} as MarketTokensAPRData);
 
