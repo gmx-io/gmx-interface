@@ -23,6 +23,7 @@ export default defineConfig({
       codegen: path.resolve(__dirname, "./src/codegen"),
       abis: path.resolve(__dirname, "./src/abis"),
       clients: path.resolve(__dirname, "./src/clients"),
+      test: path.resolve(__dirname, "./src/test"),
     },
   },
 });
