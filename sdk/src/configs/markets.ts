@@ -6,7 +6,7 @@ import { zeroAddress } from "viem";
 
 import type { ERC20Address, NativeTokenSupportedAddress, Token } from "types/tokens";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
 import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
@@ -1244,6 +1244,15 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
       longTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
       shortTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
+    },
+  },
+  [MEGAETH]: {
+    // ETH/USD [WETH-WETH]
+    "0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7": {
+      marketTokenAddress: "0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7",
+      indexTokenAddress: "0x4200000000000000000000000000000000000006",
+      longTokenAddress: "0x4200000000000000000000000000000000000006",
+      shortTokenAddress: "0x4200000000000000000000000000000000000006",
     },
   },
 };
