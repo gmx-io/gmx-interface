@@ -3,12 +3,12 @@ import { Abi, Address, decodeErrorResult, encodeFunctionData, withRetry } from "
 import { abis } from "abis";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress } from "configs/tokens";
+import { extractTxnError } from "utils/errors";
 import { SwapPricingType } from "utils/orders/types";
+import { convertToContractPrice, getTokenData } from "utils/tokens";
 import { TokenPrices, TokensData } from "utils/tokens/types";
 
 import type { GmxSdk } from ".";
-import { extractTxnError } from "../../utils/errors";
-import { convertToContractPrice, getTokenData } from "../../utils/tokens";
 
 export type PriceOverrides = {
   [address: string]: TokenPrices | undefined;

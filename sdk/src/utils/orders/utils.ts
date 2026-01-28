@@ -1,9 +1,19 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS } from "configs/factors";
+import { bigMath } from "utils/bigmath";
+import { MarketsInfoData } from "utils/markets/types";
+import { getByKey } from "utils/objects";
+import { getPositionKey, parsePositionKey } from "utils/positions";
+import { getOrderThresholdType } from "utils/prices";
 import { getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapStats";
+import {
+  convertToTokenAmount,
+  convertToUsd,
+  getTokensRatioByAmounts,
+  getTokensRatioByMinOutputAmountAndTriggerPrice,
+  parseContractPrice,
+} from "utils/tokens";
+import { Token, TokensData } from "utils/tokens/types";
 
-import { bigMath } from "../bigmath";
-import { MarketsInfoData } from "../markets/types";
-import { getByKey } from "../objects";
 import {
   Order,
   OrderInfo,
@@ -14,16 +24,6 @@ import {
   SwapPricingType,
   TwapOrderInfo,
 } from "./types";
-import { getPositionKey, parsePositionKey } from "../positions";
-import { getOrderThresholdType } from "../prices";
-import {
-  convertToTokenAmount,
-  convertToUsd,
-  getTokensRatioByAmounts,
-  getTokensRatioByMinOutputAmountAndTriggerPrice,
-  parseContractPrice,
-} from "../tokens";
-import { Token, TokensData } from "../tokens/types";
 
 export function isMarketOrderType(orderType: OrderType) {
   return [OrderType.MarketDecrease, OrderType.MarketIncrease, OrderType.MarketSwap].includes(orderType);

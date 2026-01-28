@@ -1,12 +1,10 @@
 import { describe, expect, it, vi, beforeEach, Mock } from "vitest";
 
+import { bigMath } from "utils/bigmath";
+import { getPositionFee, getPriceImpactForPosition } from "utils/fees";
+import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { expandDecimals, USD_DECIMALS } from "utils/numbers";
-import { Token } from "utils/tokens/types";
-
-import { bigMath } from "../bigmath";
-import { getPositionFee, getPriceImpactForPosition } from "../fees";
-import { getCappedPoolPnl, getMarketPnl, getPoolUsdWithoutPnl } from "../markets";
 import {
   getEntryPrice,
   getLeverage,
@@ -17,8 +15,9 @@ import {
   getPositionPnlUsd,
   getPositionValueUsd,
   parsePositionKey,
-} from "../positions";
-import { convertToUsd, getIsEquivalentTokens } from "../tokens";
+} from "utils/positions";
+import { convertToUsd, getIsEquivalentTokens } from "utils/tokens";
+import { Token } from "utils/tokens/types";
 
 vi.mock("../markets", () => ({
   ...vi.importActual("../markets"),

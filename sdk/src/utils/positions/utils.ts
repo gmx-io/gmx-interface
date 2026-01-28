@@ -1,6 +1,5 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-
-import { bigMath } from "../bigmath";
+import { bigMath } from "utils/bigmath";
 import {
   capPositionImpactUsdByMaxImpactPool,
   capPositionImpactUsdByMaxPriceImpactFactor,
@@ -8,14 +7,15 @@ import {
   getPositionFee,
   getPriceImpactForPosition,
   getProportionalPendingImpactValues,
-} from "../fees";
-import { getCappedPoolPnl, getMarketPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "../markets";
-import { MarketInfo } from "../markets/types";
-import { applyFactor, expandDecimals, PRECISION } from "../numbers";
+} from "utils/fees";
+import { getCappedPoolPnl, getMarketPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "utils/markets";
+import { MarketInfo } from "utils/markets/types";
+import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
+import { UserReferralInfo } from "utils/referrals/types";
+import { convertToUsd, getIsEquivalentTokens } from "utils/tokens";
+import { Token, TokenData } from "utils/tokens/types";
+
 import { PositionInfoLoaded } from "./types";
-import { UserReferralInfo } from "../referrals/types";
-import { convertToUsd, getIsEquivalentTokens } from "../tokens";
-import { Token, TokenData } from "../tokens/types";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;

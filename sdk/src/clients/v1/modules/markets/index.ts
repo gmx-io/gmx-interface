@@ -1,5 +1,6 @@
 import { zeroAddress } from "viem";
 
+import { Module } from "clients/v1/modules/base";
 import { getContract } from "configs/contracts";
 import { USE_OPEN_INTEREST_IN_TOKENS_FOR_BALANCE } from "configs/dataStore";
 import { convertTokenAddress, getToken } from "configs/tokens";
@@ -20,8 +21,6 @@ import {
 import { ClaimableFundingData, MarketsData, MarketSdkConfig, MarketsInfoData, MarketValues } from "utils/markets/types";
 import { getByKey } from "utils/objects";
 import { TokensData } from "utils/tokens/types";
-
-import { Module } from "../base";
 
 export class Markets extends Module {
   private async getClaimableFundingData() {

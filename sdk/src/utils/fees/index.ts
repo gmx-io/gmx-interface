@@ -1,12 +1,12 @@
 import { HIGH_PRICE_IMPACT_BPS } from "configs/factors";
+import { bigMath } from "utils/bigmath";
+import { getOpenInterestForBalance } from "utils/markets";
+import { MarketInfo } from "utils/markets/types";
+import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
+import { SwapPricingType } from "utils/orders/types";
+import { SwapStats } from "utils/trade/types";
 
 import { FeeItem } from "./types";
-import { bigMath } from "../bigmath";
-import { getOpenInterestForBalance } from "../markets";
-import { MarketInfo } from "../markets/types";
-import { applyFactor, getBasisPoints, PRECISION } from "../numbers";
-import { SwapPricingType } from "../orders/types";
-import { SwapStats } from "../trade/types";
 
 export * from "./types";
 export * from "./estimateOraclePriceCount";

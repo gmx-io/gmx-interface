@@ -1,5 +1,11 @@
+import {
+  ExternalSwapAggregator,
+  ExternalSwapPath,
+  ExternalSwapQuote,
+  ExternalSwapQuoteParams,
+} from "utils/trade/types";
+
 import { getBotanixStakingExternalSwapQuote } from "./botanixStaking";
-import { ExternalSwapAggregator, ExternalSwapPath, ExternalSwapQuote, ExternalSwapQuoteParams } from "../trade/types";
 
 export const getExternalSwapQuoteByPath = ({
   amountIn,

@@ -1,9 +1,8 @@
 import { Abi, Address } from "viem";
 
 import { abis } from "abis";
+import type { GmxSdk } from "clients/v1";
 import { getWrappedToken } from "configs/tokens";
-
-import type { GmxSdk } from "../../../index";
 
 export type WrapOrUnwrapParams = {
   amount: bigint;

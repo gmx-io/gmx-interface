@@ -38,8 +38,8 @@ import {
   getTokenVisualMultiplier,
   getWrappedToken,
 } from "sdk/configs/tokens";
-import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";

@@ -1,7 +1,7 @@
-import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "../fees/types";
-import { DecreasePositionSwapType, OrderType } from "../orders/types";
-import { SwapStrategyForIncreaseOrders } from "../swap/types";
-import { TokensData } from "../tokens/types";
+import { ExternalSwapFeeItem, FeeItem, SwapFeeItem } from "utils/fees/types";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
+import { SwapStrategyForIncreaseOrders } from "utils/swap/types";
+import { TokensData } from "utils/tokens/types";
 
 export enum TradeType {
   Long = "Long",

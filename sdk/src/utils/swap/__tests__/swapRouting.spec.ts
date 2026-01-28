@@ -2,11 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
 import type { MarketConfig } from "configs/markets";
+import { mockMarketsInfoData, mockTokensData } from "test/mock";
 import { bigMath } from "utils/bigmath";
 import { SwapPricingType } from "utils/orders/types";
-
-import { mockMarketsInfoData, mockTokensData } from "../../../test/mock";
-import { buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
+import { buildMarketsAdjacencyGraph } from "utils/swap/buildMarketsAdjacencyGraph";
 import {
   createMarketEdgeLiquidityGetter,
   createNaiveSwapEstimator,
@@ -16,7 +15,7 @@ import {
   getMaxLiquidityMarketForTokenEdge,
   getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
-} from "../swapRouting";
+} from "utils/swap/swapRouting";
 
 const dollar = 10n ** BigInt(USD_DECIMALS);
 

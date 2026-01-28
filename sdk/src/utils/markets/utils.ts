@@ -4,6 +4,13 @@ import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import type { DayPriceCandle } from "utils/24h/types";
+import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
+import { applyFactor, PRECISION } from "utils/numbers";
+import { getByKey } from "utils/objects";
+import { periodToSeconds } from "utils/time";
+import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "utils/tokens";
+import type { Token, TokenPrices, TokensData } from "utils/tokens/types";
 
 import type {
   ClaimableFundingData,
@@ -20,13 +27,6 @@ import type {
   RawMarketInfo,
   RawMarketsInfoData,
 } from "./types";
-import type { DayPriceCandle } from "../24h/types";
-import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "../fees";
-import { applyFactor, PRECISION } from "../numbers";
-import { getByKey } from "../objects";
-import { periodToSeconds } from "../time";
-import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "../tokens";
-import type { Token, TokenPrices, TokensData } from "../tokens/types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
@@ -557,7 +557,7 @@ export function getMarketAddressByName(marketsInfoData: MarketsInfoData, name: s
     const matchesIndex = isSpotOnly
       ? marketInfo.isSpotOnly && marketInfo.indexTokenAddress === zeroAddress
       : (marketInfo.indexToken.symbol === indexTokenSymbol || marketInfo.indexToken.baseSymbol === indexTokenSymbol) &&
-      !marketInfo.isSpotOnly;
+        !marketInfo.isSpotOnly;
 
     if (matchesLong && matchesShort && matchesIndex) {
       return marketAddress;

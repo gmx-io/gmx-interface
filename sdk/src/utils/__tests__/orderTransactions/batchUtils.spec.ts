@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { mockExternalSwap } from "test/mock";
 import { expandDecimals, parseValue, USD_DECIMALS } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
 import {
@@ -18,8 +19,6 @@ import {
 } from "utils/orderTransactions";
 import { ERC20Address } from "utils/tokens/types";
 import { ExternalSwapQuote } from "utils/trade/types";
-
-import { mockExternalSwap } from "../../../test/mock";
 
 // Common tokens and addresses
 const CHAIN_ID = ARBITRUM;

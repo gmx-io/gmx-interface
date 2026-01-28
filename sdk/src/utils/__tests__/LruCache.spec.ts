@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { LRUCache } from "../LruCache";
+import { LRUCache } from "utils/LruCache";
 
 describe("LruCache", () => {
   it("should store and retrieve values", () => {

@@ -1,5 +1,6 @@
 import { zeroAddress, zeroHash } from "viem";
 
+import { Module } from "clients/v1/modules/base";
 import type { MulticallRequestConfig } from "clients/v1/multicall";
 import { BOTANIX } from "configs/chains";
 import { getContract } from "configs/contracts";
@@ -38,8 +39,6 @@ import { decodeReferralCode } from "utils/referrals";
 import { UserReferralInfo } from "utils/referrals/types";
 import { convertToTokenAmount, convertToUsd } from "utils/tokens";
 import { TokensData } from "utils/tokens/types";
-
-import { Module } from "../base";
 
 type PositionsResult = {
   positionsData?: PositionsData;

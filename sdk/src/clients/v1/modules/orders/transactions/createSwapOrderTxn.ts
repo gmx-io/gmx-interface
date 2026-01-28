@@ -1,6 +1,7 @@
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import { abis } from "abis";
+import type { GmxSdk } from "clients/v1";
 import { simulateExecuteOrder } from "clients/v1/simulateExecuteOrder";
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "configs/tokens";
@@ -8,8 +9,6 @@ import { isMarketOrderType } from "utils/orders";
 import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { TokensData } from "utils/tokens/types";
 import { applySlippageToMinOut } from "utils/trade";
-
-import type { GmxSdk } from "../../..";
 
 export type SwapOrderParams = {
   fromTokenAddress: string;

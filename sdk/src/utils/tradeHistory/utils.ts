@@ -1,14 +1,15 @@
 import { getAddress } from "viem";
 
-import type { TradeAction as SubsquidTradeAction } from "../../codegen/subsquid";
-import type { MarketsInfoData } from "../markets/types";
-import { getByKey } from "../objects";
-import { isIncreaseOrderType, isSwapOrderType } from "../orders";
-import { TradeActionType } from "./types";
-import { getSwapPathOutputAddresses } from "../swap/swapStats";
-import { parseContractPrice } from "../tokens";
+import type { TradeAction as SubsquidTradeAction } from "codegen/subsquid";
+import type { MarketsInfoData } from "utils/markets/types";
+import { getByKey } from "utils/objects";
+import { isIncreaseOrderType, isSwapOrderType } from "utils/orders";
+import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
+import { parseContractPrice } from "utils/tokens";
+import { Token, TokensData } from "utils/tokens/types";
+
 import type { PositionTradeAction, SwapTradeAction } from "./types";
-import { Token, TokensData } from "../tokens/types";
+import { TradeActionType } from "./types";
 
 export function createRawTradeActionTransformer(
   marketsInfoData: MarketsInfoData,

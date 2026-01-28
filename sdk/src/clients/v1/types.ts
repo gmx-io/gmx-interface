@@ -1,9 +1,8 @@
 import type { PublicClient, WalletClient } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
-
-import type { MarketSdkConfig } from "../../utils/markets/types";
-import type { Token } from "../../utils/tokens/types";
+import type { MarketSdkConfig } from "utils/markets/types";
+import type { Token } from "utils/tokens/types";
 
 export interface GmxSdkConfig {
   /** Chain ID */

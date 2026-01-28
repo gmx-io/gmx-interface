@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { TOKENS } from "configs/tokens";
-
 import {
   getMarketFullName,
   getMarketIndexName,
@@ -21,10 +20,10 @@ import {
   getOpenInterestUsd,
   getOpenInterestInTokens,
   getPriceForPnl,
-} from "../markets";
-import { MarketInfo } from "../markets/types";
-import { expandDecimals } from "../numbers";
-import { Token, TokensData } from "../tokens/types";
+} from "utils/markets";
+import { MarketInfo } from "utils/markets/types";
+import { expandDecimals } from "utils/numbers";
+import { Token, TokensData } from "utils/tokens/types";
 
 function getToken(symbol: string) {
   return TOKENS[ARBITRUM].find((token) => token.symbol === symbol) as Token;

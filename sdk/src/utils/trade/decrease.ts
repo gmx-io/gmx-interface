@@ -1,6 +1,7 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee } from "utils/fees";
+import { MarketInfo } from "utils/markets/types";
 import {
   applyFactor,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -10,6 +11,7 @@ import {
   USD_DECIMALS,
   MaxUint256,
 } from "utils/numbers";
+import { DecreasePositionSwapType, OrderType, SwapPricingType } from "utils/orders/types";
 import {
   getLeverage,
   getLiquidationPrice,
@@ -17,21 +19,19 @@ import {
   getNetPriceImpactDeltaUsdForDecrease,
   getPositionPnlUsd,
 } from "utils/positions";
+import { PositionInfo, PositionInfoLoaded } from "utils/positions/types";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
   getOrderThresholdType,
 } from "utils/prices";
+import { UserReferralInfo } from "utils/referrals/types";
 import { getSwapStats } from "utils/swap";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
+import { TokenData } from "utils/tokens/types";
 
 import { DecreasePositionAmounts, NextPositionValues } from "./types";
-import { MarketInfo } from "../markets/types";
-import { DecreasePositionSwapType, OrderType, SwapPricingType } from "../orders/types";
-import { PositionInfo, PositionInfoLoaded } from "../positions/types";
-import { UserReferralInfo } from "../referrals/types";
-import { TokenData } from "../tokens/types";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;

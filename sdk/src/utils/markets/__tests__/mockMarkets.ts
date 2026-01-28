@@ -1,13 +1,12 @@
 import { zeroAddress } from "viem";
 
 import { USD_DECIMALS } from "configs/factors";
+import { usdToToken } from "test/mock";
 import { getMarketFullName } from "utils/markets";
 import { MarketInfo, MarketsData, MarketsInfoData } from "utils/markets/types";
 import { expandDecimals } from "utils/numbers";
 import { getTokenData } from "utils/tokens";
 import { TokensData } from "utils/tokens/types";
-
-import { usdToToken } from "../../../test/mock";
 
 /**
  * @param marketKeys - array of market keys in the following format: indexToken-longToken-shortToken

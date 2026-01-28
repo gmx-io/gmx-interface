@@ -1,6 +1,5 @@
+import { Module } from "clients/v1/modules/base";
 import { getContract } from "configs/contracts";
-
-import { Module } from "../base";
 
 export class Accounts extends Module {
   get govTokenAddress() {

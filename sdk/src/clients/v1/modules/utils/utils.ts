@@ -1,5 +1,6 @@
 import { withRetry } from "viem";
 
+import { Module } from "clients/v1/modules/base";
 import {
   ContractsChainId,
   getExecutionFeeConfig,
@@ -38,8 +39,6 @@ import type { GasLimitsConfig } from "utils/fees/types";
 import { TokensData } from "utils/tokens/types";
 import { getSwapCount } from "utils/trade";
 import type { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeFeesType } from "utils/trade/types";
-
-import { Module } from "../base";
 
 const DEFAULT_UI_FEE_RECEIVER_ACCOUNT = "0xff00000000000000000000000000000000000001";
 

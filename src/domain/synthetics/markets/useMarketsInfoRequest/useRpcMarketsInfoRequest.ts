@@ -71,8 +71,7 @@ function useMarketsValuesRequest({
   tokensData: TokensData | undefined;
 }) {
   const { data: marketsValuesData } = useMulticall(chainId, `useMarketsValuesRequest`, {
-    key:
-      !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? [...marketsAddresses] : null,
+    key: !isDependenciesLoading && marketsAddresses?.length && marketsAddresses.length > 0 ? marketsAddresses : null,
 
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
     clearUnusedKeys: true,

@@ -1,6 +1,6 @@
-import { MarketInfo } from "../markets/types";
-import { TokenData, TokensRatio, TokensRatioAndSlippage } from "../tokens/types";
-import { SwapPathStats, TriggerThresholdType } from "../trade/types";
+import { MarketInfo } from "utils/markets/types";
+import { TokenData, TokensRatio, TokensRatioAndSlippage } from "utils/tokens/types";
+import { SwapPathStats, TriggerThresholdType } from "utils/trade/types";
 
 export enum OrderType {
   // the order will be cancelled if the minOutputAmount cannot be fulfilled

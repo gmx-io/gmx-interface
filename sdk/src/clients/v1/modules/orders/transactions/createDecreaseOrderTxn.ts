@@ -1,6 +1,7 @@
 import { Abi, encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
 import { abis } from "abis";
+import type { GmxSdk } from "clients/v1";
 import { simulateExecuteOrder } from "clients/v1/simulateExecuteOrder";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
@@ -11,7 +12,6 @@ import type { Token, TokensData } from "utils/tokens/types";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 
 import type { PriceOverrides } from "./createIncreaseOrderTxn";
-import type { GmxSdk } from "../../../index";
 
 export type DecreaseOrderParams = {
   account: string;

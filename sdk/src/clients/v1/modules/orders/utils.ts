@@ -1,5 +1,6 @@
 import { Address, isAddressEqual } from "viem";
 
+import type { GmxSdk } from "clients/v1";
 import type { MarketFilterLongShortDirection, MarketFilterLongShortItemData } from "clients/v1/modules/trades/trades";
 import type { MulticallRequestConfig, MulticallResult } from "clients/v1/multicall";
 import type { ContractsChainId } from "configs/chains";
@@ -12,11 +13,9 @@ import type { GasLimitsConfig } from "utils/fees/types";
 import type { MarketsInfoData } from "utils/markets/types";
 import { isIncreaseOrderType, isLimitOrderType, isSwapOrderType, isTriggerDecreaseOrderType } from "utils/orders";
 import { DecreasePositionSwapType, Order, OrderType } from "utils/orders/types";
+import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "utils/sidecarOrders/types";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import type { TokensData } from "utils/tokens/types";
-
-import { SidecarLimitOrderEntry, SidecarSlTpOrderEntry } from "../../../../utils/sidecarOrders/types";
-import type { GmxSdk } from "../../index";
 
 export const getOrderExecutionFee = (
   sdk: GmxSdk,

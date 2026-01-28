@@ -1,4 +1,4 @@
-import { SUBSQUID_PAGINATION_LIMIT } from "../../configs/batch";
+import { SUBSQUID_PAGINATION_LIMIT } from "configs/batch";
 
 export type GraphQlFilters =
   | {

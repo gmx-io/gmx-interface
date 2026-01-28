@@ -1,10 +1,9 @@
 import { describe, it, expect } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
+import { getFundingFactorPerPeriod } from "utils/fees";
 import type { MarketInfo } from "utils/markets/types";
 import { numberToBigint } from "utils/numbers";
-
-import { getFundingFactorPerPeriod } from "../fees";
 
 const dollar = 10n ** BigInt(USD_DECIMALS);
 const eightMillion = 8_000_000n;

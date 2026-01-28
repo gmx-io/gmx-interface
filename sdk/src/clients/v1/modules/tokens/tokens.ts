@@ -1,10 +1,9 @@
+import { Module } from "clients/v1/modules/base";
 import type { ContractCallsConfig } from "clients/v1/multicall";
 import { getContract } from "configs/contracts";
 import { NATIVE_TOKEN_ADDRESS, getToken, getTokensMap, getV2Tokens, getWrappedToken } from "configs/tokens";
 import { parseContractPrice } from "utils/tokens";
 import { TokenBalancesData, TokenPricesData, TokensData, Token as TToken } from "utils/tokens/types";
-
-import { Module } from "../base";
 
 type TokenPricesDataResult = {
   pricesData?: TokenPricesData;

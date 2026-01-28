@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { GmxSdk } from "clients/v1";
 import { arbitrumSdk, arbitrumSdkConfig } from "clients/v1/testUtil";
-
-import { GmxSdk } from "../..";
 
 describe("Tokens", () => {
   it("should be able to fetch tokens", { timeout: 90_000 }, async () => {

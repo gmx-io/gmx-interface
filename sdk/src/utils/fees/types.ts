@@ -1,5 +1,5 @@
-import { Token } from "../tokens/types";
-import { ExternalSwapAggregator } from "../trade/types";
+import { Token } from "utils/tokens/types";
+import { ExternalSwapAggregator } from "utils/trade/types";
 
 export type ExecutionFee = {
   feeUsd: bigint;

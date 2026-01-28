@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { mockMarketsInfoData, mockTokensData, usdToToken } from "test/mock";
 import { GasLimitsConfig } from "utils/fees/types";
+import { MarketInfo } from "utils/markets/types";
 import { expandDecimals } from "utils/numbers";
 import { SwapPricingType } from "utils/orders/types";
 import { getSwapPathStats } from "utils/swap";
@@ -16,9 +18,6 @@ import {
   getNaiveBestMarketSwapPathsFromTokenSwapPaths,
   getTokenSwapPathsForTokenPair,
 } from "utils/swap/swapRouting";
-
-import { mockMarketsInfoData, mockTokensData, usdToToken } from "../../../test/mock";
-import { MarketInfo } from "../../markets/types";
 
 const marketKeys = [
   "ETH-ETH-USDC",

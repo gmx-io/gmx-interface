@@ -1,6 +1,6 @@
-import { MarketInfo } from "../markets/types";
-import { OrderType } from "../orders/types";
-import { TokenData } from "../tokens/types";
+import { MarketInfo } from "utils/markets/types";
+import { OrderType } from "utils/orders/types";
+import { TokenData } from "utils/tokens/types";
 
 export enum TradeActionType {
   OrderCreated = "OrderCreated",

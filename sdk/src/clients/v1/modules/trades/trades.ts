@@ -1,6 +1,8 @@
 import merge from "lodash/merge";
 import type { Address } from "viem";
 
+import type { GmxSdk } from "clients/v1";
+import { Module } from "clients/v1/modules/base";
 import { TradeAction as SubsquidTradeAction } from "codegen/subsquid";
 import { getWrappedToken } from "configs/tokens";
 import graphqlFetcher from "utils/graphqlFetcher";
@@ -12,9 +14,6 @@ import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
 import { TokensData } from "utils/tokens/types";
 import { createRawTradeActionTransformer } from "utils/tradeHistory";
 import { PositionTradeAction, TradeAction, TradeActionType } from "utils/tradeHistory/types";
-
-import type { GmxSdk } from "../..";
-import { Module } from "../base";
 
 export type MarketFilterLongShortDirection = "long" | "short" | "swap" | "any";
 export type MarketFilterLongShortItemData = {

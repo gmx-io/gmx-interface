@@ -1,13 +1,12 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
-
-import { bigMath } from "../bigmath";
-import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "../fees";
-import { MarketInfo } from "../markets/types";
-import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "../numbers";
-import { OrderType } from "../orders/types";
-import { convertToTokenAmount } from "../tokens";
-import { TokenPrices } from "../tokens/types";
-import { TriggerThresholdType } from "../trade/types";
+import { bigMath } from "utils/bigmath";
+import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "utils/fees";
+import { MarketInfo } from "utils/markets/types";
+import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
+import { OrderType } from "utils/orders/types";
+import { convertToTokenAmount } from "utils/tokens";
+import { TokenPrices } from "utils/tokens/types";
+import { TriggerThresholdType } from "utils/trade/types";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
   const { prices, isIncrease, isLong } = p;

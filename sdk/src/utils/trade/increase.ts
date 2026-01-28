@@ -9,7 +9,9 @@ import {
   getPriceImpactForPosition,
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
+import { OrderType } from "utils/orders/types";
 import {
   getEntryPrice,
   getLeverage,
@@ -17,14 +19,18 @@ import {
   getPositionPnlUsd,
   getPriceImpactDiffUsd,
 } from "utils/positions";
+import { PositionInfo } from "utils/positions/types";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
   getOrderThresholdType,
 } from "utils/prices";
+import { UserReferralInfo } from "utils/referrals/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
+import { ExternalSwapStrategy, NoSwapStrategy } from "utils/swap/types";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getTokensRatioByPrice } from "utils/tokens";
+import { TokenData, TokensRatio } from "utils/tokens/types";
 
 import {
   ExternalSwapQuote,
@@ -35,12 +41,6 @@ import {
   SwapOptimizationOrderArray,
   TriggerThresholdType,
 } from "./types";
-import { MarketInfo, MarketsInfoData } from "../markets/types";
-import { OrderType } from "../orders/types";
-import { PositionInfo } from "../positions/types";
-import { UserReferralInfo } from "../referrals/types";
-import { ExternalSwapStrategy, NoSwapStrategy } from "../swap/types";
-import { TokenData, TokensRatio } from "../tokens/types";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;

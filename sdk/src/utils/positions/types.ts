@@ -1,5 +1,5 @@
-import type { Market, MarketInfo } from "../markets/types";
-import type { TokenData } from "../tokens/types";
+import type { Market, MarketInfo } from "utils/markets/types";
+import type { TokenData } from "utils/tokens/types";
 
 export type Position = {
   key: string;

@@ -4,6 +4,7 @@ import { ARBITRUM } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { MOCK_GAS_PRICE, mockExternalSwap } from "test/mock";
 import { parseValue, USD_DECIMALS } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
 import {
@@ -13,8 +14,6 @@ import {
   IncreasePositionOrderParams,
   UpdateOrderParams,
 } from "utils/orderTransactions";
-
-import { MOCK_GAS_PRICE, mockExternalSwap } from "../../../test/mock";
 
 beforeAll(() => {
   vi.spyOn(Math, "random").mockReturnValue(0.5);

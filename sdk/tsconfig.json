@@ -29,7 +29,8 @@
       "abis/*": ["abis/*"],
       "abis": ["abis/index"],
       "codegen/*": ["codegen/*"],
-      "clients/*": ["clients/*"]
+      "clients/*": ["clients/*"],
+      "test/*": ["test/*"]
     },
     "plugins": [
       { "transform": "typescript-transform-paths" },

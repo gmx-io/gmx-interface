@@ -1,5 +1,5 @@
-import { OrderTxnType, PositionOrderInfo } from "../orders/types";
-import { DecreasePositionAmounts, IncreasePositionAmounts } from "../trade/types";
+import { OrderTxnType, PositionOrderInfo } from "utils/orders/types";
+import { DecreasePositionAmounts, IncreasePositionAmounts } from "utils/trade/types";
 
 export type GroupPrefix = "sl" | "tp" | "limit";
 

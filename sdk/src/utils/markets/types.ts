@@ -1,4 +1,4 @@
-import type { TokenData } from "../tokens/types";
+import type { TokenData } from "utils/tokens/types";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
 

@@ -1,4 +1,4 @@
-import { ExternalSwapQuote, SwapPathStats } from "../trade/types";
+import { ExternalSwapQuote, SwapPathStats } from "utils/trade/types";
 
 type BaseSwapStrategy = {
   amountIn: bigint;

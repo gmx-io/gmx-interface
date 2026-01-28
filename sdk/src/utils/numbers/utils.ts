@@ -1,6 +1,6 @@
 import { formatUnits, parseUnits } from "viem";
 
-import { bigMath } from "../bigmath";
+import { bigMath } from "utils/bigmath";
 
 export type Numeric = number | bigint;
 export type BigNumberish = string | Numeric;

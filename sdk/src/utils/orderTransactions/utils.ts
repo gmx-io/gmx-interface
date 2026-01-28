@@ -7,19 +7,18 @@ import ERC20ABI from "abis/Token";
 import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-
-import { ExecutionFee } from "../fees/types";
-import { expandDecimals, MaxUint256, USD_DECIMALS } from "../numbers";
-import { getByKey } from "../objects";
-import { isIncreaseOrderType, isSwapOrderType } from "../orders";
-import { DecreasePositionSwapType, OrderType } from "../orders/types";
-import { convertToContractPrice, convertToUsd } from "../tokens";
-import { ContractPrice, ERC20Address, TokensData } from "../tokens/types";
-import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
-import { ExternalSwapQuote } from "../trade/types";
-import { getTwapValidFromTime } from "../twap";
-import { TwapOrderParams } from "../twap/types";
-import { createTwapUiFeeReceiver } from "../twap/uiFeeReceiver";
+import { ExecutionFee } from "utils/fees/types";
+import { expandDecimals, MaxUint256, USD_DECIMALS } from "utils/numbers";
+import { getByKey } from "utils/objects";
+import { isIncreaseOrderType, isSwapOrderType } from "utils/orders";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
+import { convertToContractPrice, convertToUsd } from "utils/tokens";
+import { ContractPrice, ERC20Address, TokensData } from "utils/tokens/types";
+import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
+import { ExternalSwapQuote } from "utils/trade/types";
+import { getTwapValidFromTime } from "utils/twap";
+import { TwapOrderParams } from "utils/twap/types";
+import { createTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
 
 export type ExchangeRouterCall = {
   method: string;

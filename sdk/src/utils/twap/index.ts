@@ -1,8 +1,8 @@
 import { DEFAULT_TWAP_NUMBER_OF_PARTS, MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "configs/twap";
 import { isSwapOrderType } from "utils/orders";
+import { OrderType } from "utils/orders/types";
 
 import { TwapDuration } from "./types";
-import { OrderType } from "../orders/types";
 
 export * from "./types";
 

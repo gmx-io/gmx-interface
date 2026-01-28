@@ -1,7 +1,7 @@
 import { AbiId, abis as allAbis } from "abis";
+import { sleep } from "utils/common";
 
 import type { GmxSdk } from ".";
-import { sleep } from "../../utils/common";
 
 export const MAX_TIMEOUT = 40000;
 export const MAX_CALLS_PER_BATCH = 1000;

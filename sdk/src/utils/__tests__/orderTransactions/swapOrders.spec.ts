@@ -5,6 +5,7 @@ import { ARBITRUM } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { MOCK_GAS_PRICE } from "test/mock";
 import { parseValue } from "utils/numbers";
 import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import {
@@ -17,8 +18,6 @@ import {
 } from "utils/orderTransactions";
 import { ContractPrice, ERC20Address } from "utils/tokens/types";
 import { decodeTwapUiFeeReceiver } from "utils/twap/uiFeeReceiver";
-
-import { MOCK_GAS_PRICE } from "../../../test/mock";
 
 beforeAll(() => {
   // Mock Math.random to return a consistent value

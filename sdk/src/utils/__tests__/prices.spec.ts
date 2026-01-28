@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { OrderType } from "utils/orders/types";
+import { getMarkPrice, getOrderThresholdType, getShouldUseMaxPrice } from "utils/prices";
 import { TokenPrices } from "utils/tokens/types";
 import { TriggerThresholdType } from "utils/trade/types";
-
-import { getMarkPrice, getOrderThresholdType, getShouldUseMaxPrice } from "../prices";
 
 describe("getMarkPrice", () => {
   it("returns maxPrice if getShouldUseMaxPrice => true", () => {

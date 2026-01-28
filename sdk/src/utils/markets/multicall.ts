@@ -6,9 +6,9 @@ import { CLAIMABLE_FUNDING_AMOUNT, MAX_PNL_FACTOR_FOR_TRADERS_KEY } from "config
 import { hashDataMap } from "utils/hash";
 import { getContractMarketPrices, getOiInTokensFromRawValues, getOiUsdFromRawValues } from "utils/markets";
 import { getByKey } from "utils/objects";
+import type { TokensData } from "utils/tokens/types";
 
 import type { MarketConfig, MarketValues, MarketsData } from "./types";
-import type { TokensData } from "../tokens/types";
 
 type MulticallResponse = {
   data: Record<string, any>;

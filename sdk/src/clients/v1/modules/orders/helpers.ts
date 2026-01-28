@@ -1,3 +1,4 @@
+import type { GmxSdk } from "clients/v1";
 import type { GasLimitsConfig } from "utils/fees/types";
 import { MarketsInfoData } from "utils/markets/types";
 import { getByKey } from "utils/objects";
@@ -8,8 +9,6 @@ import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "uti
 import { TokenData, TokensData, TokensRatio } from "utils/tokens/types";
 import { getIncreasePositionAmounts } from "utils/trade/increase";
 import { SwapAmounts, SwapOptimizationOrderArray } from "utils/trade/types";
-
-import type { GmxSdk } from "../..";
 
 /** Base Optional params for helpers, allows to avoid calling markets, tokens and uiFeeFactor methods if they are already passed */
 interface BaseOptionalParams {

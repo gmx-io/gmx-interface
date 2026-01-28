@@ -10,9 +10,9 @@ import {
   getViemChain,
 } from "configs/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
+import { bigMath } from "utils/bigmath";
 
 import type { GmxSdk } from "./index";
-import { bigMath } from "../../utils/bigmath";
 
 async function getGasPrice(client: PublicClient, chainId: number) {
   let maxFeePerGas = getMaxFeePerGas(chainId as ContractsChainId);
