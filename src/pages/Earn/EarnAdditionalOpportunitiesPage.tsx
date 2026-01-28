@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { BOTANIX } from "config/chains";
 import {
@@ -14,6 +14,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import useWallet from "lib/wallets/useWallet";
 import { TokensData } from "sdk/types/tokens";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
@@ -30,6 +31,7 @@ import {
   useOpportunities,
   useOpportunityTagLabels,
 } from "components/Earn/AdditionalOpportunities/useOpportunities";
+import Loader from "components/Loader/Loader";
 
 import EarnPageLayout from "./EarnPageLayout";
 
@@ -68,13 +70,14 @@ const collectUserTokenAssets = (tokensData: TokensData | undefined): Opportunity
 };
 
 export default function EarnAdditionalOpportunitiesPage() {
+  const history = useHistory();
   const { chainId, srcChainId } = useChainId();
+  const { account } = useWallet();
   const { data: processedData } = useStakingProcessedData();
   const tokensData = useSelector(selectTokensData);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
 
-  const [activeFilter, setActiveFilter] = useState<OpportunityFilterValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isBannerDismissed, setIsBannerDismissed] = useLocalStorageSerializeKey(
     "additional-opportunities-banner-dismissed",
@@ -87,14 +90,19 @@ export default function EarnAdditionalOpportunitiesPage() {
 
   const { filter: filterParam } = useParams<{ filter: string | undefined }>();
 
-  useEffect(() => {
-    if (filterParam) {
-      const filter = AVAILABLE_FILTERS.find((tag) => tag === filterParam);
-      if (filter) {
-        setActiveFilter(filter);
-      }
+  const isUserDataLoaded = useMemo(() => {
+    if (!account) return true;
+
+    return !!marketsInfoData && !!tokensData && !!marketTokensData;
+  }, [account, marketsInfoData, tokensData, marketTokensData]);
+
+  const activeFilter = useMemo<OpportunityFilterValue>(() => {
+    if (filterParam && AVAILABLE_FILTERS.includes(filterParam as OpportunityFilterValue)) {
+      return filterParam as OpportunityFilterValue;
     }
-  }, [filterParam]);
+
+    return account ? "for-me" : "all";
+  }, [filterParam, account]);
 
   const userAssets = useMemo(() => {
     const userAssetKeys = new Set<string>();
@@ -117,6 +125,19 @@ export default function EarnAdditionalOpportunitiesPage() {
   const allOpportunities = useOpportunities();
 
   const opportunityTagLabels = useOpportunityTagLabels();
+
+  const hasForMeOpportunities = useMemo(() => {
+    return allOpportunities.some((opportunity) =>
+      opportunity.assets.some((asset) => userAssets.has(getOpportunityAssetKey(asset)))
+    );
+  }, [allOpportunities, userAssets]);
+
+  useEffect(() => {
+    if (!filterParam && isUserDataLoaded) {
+      const defaultFilter = hasForMeOpportunities ? "for-me" : "all";
+      history.replace(`/earn/additional_opportunities/${defaultFilter}`);
+    }
+  }, [filterParam, hasForMeOpportunities, isUserDataLoaded, history]);
 
   const filteredOpportunities = useMemo(() => {
     let list = allOpportunities;
@@ -200,7 +221,9 @@ export default function EarnAdditionalOpportunitiesPage() {
           </ColorfulBanner>
         )}
 
-        {filteredOpportunities.length > 0 ? (
+        {activeFilter === "for-me" && !isUserDataLoaded ? (
+          <Loader />
+        ) : filteredOpportunities.length > 0 ? (
           <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
             {filteredOpportunities.map((opportunity) => (
               <OpportunityCard
