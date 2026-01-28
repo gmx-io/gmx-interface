@@ -357,6 +357,7 @@ msgstr "{0}을 {1}로 스왑했습니다."
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
 msgstr "청구에 필요한 매개변수가 없습니다. 몇 초 후 다시 시도하세요."
 
@@ -2126,6 +2127,7 @@ msgstr ""
 msgid "Address"
 msgstr "주소"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2442,6 +2444,10 @@ msgstr "최대 부분 수: {MAX_TWAP_NUMBER_OF_PARTS}"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "앱 실행하기"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming affiliate rewards failed"
+msgstr "제휴 보상 청구 실패"
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
@@ -2963,6 +2969,7 @@ msgstr "GMX, GLV 및 GM 토큰이 어떻게 협력하여 탈중앙화 거래 경
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Network Fee"
 msgstr "네트워크 수수료"
 
@@ -6676,6 +6683,7 @@ msgstr "부분당 크기"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7983,6 +7991,10 @@ msgstr "주소가 클립보드에 복사되었습니다."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "잔여 담보 {0} USD 미만"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr "청구에는 <0/>이 필요하지만 현재 <1/>을 보유하고 있습니다. GMX 계정에 {0}을 더 <2>교환</2>하거나 <3>입금</3>해 주세요."
 
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
