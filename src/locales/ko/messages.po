@@ -1011,10 +1011,6 @@ msgstr "시가총액"
 msgid "Average leverage used."
 msgstr "사용된 평균 레버리지."
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Rewards"
-msgstr "GMX 보상"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
 msgstr "유동성 제공자를 위한 GMX 개선을 위해 귀하의 통찰을 원합니다. 보안 이유로 먼저 연락하지 않습니다. 공식 텔레그램 계정으로 \"I’m a Liquidity Provider\" 메시지를 보내주세요:"
@@ -1589,10 +1585,6 @@ msgstr "순 가치"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr "{balanceFormatted}을 메인 계정으로 출금했습니다."
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Token"
-msgstr "GMX 토큰"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1941,7 +1933,6 @@ msgstr "최대"
 msgid "Checking code..."
 msgstr "코드 확인 중…"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -2954,10 +2945,6 @@ msgstr "출금 실패"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "총 스테이킹"
-
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like tens of thousands of other GMX users."
-msgstr "GMX, GLV 및 GM 토큰이 어떻게 협력하여 탈중앙화 거래 경험을 제공하는지 알아보세요. 각 토큰의 역할을 탐색하고, 수만 명의 다른 GMX 사용자처럼 스테이킹하거나 유동성을 제공하여 보상을 받는 방법을 발견하세요."
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -4231,10 +4218,6 @@ msgstr "스탑 마켓 실패"
 msgid "Address copied to your clipboard"
 msgstr "주소가 클립보드에 복사되었습니다"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "Documentation"
-msgstr "문서"
-
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -4426,16 +4409,11 @@ msgstr "반복적인 지갑 확인 없음"
 msgid "Shorts Net Rate / 1h"
 msgstr "숏 순율 / 1시간"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Discover GMX Earn"
-msgstr "GMX Earn 탐색"
-
 #: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 입금"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
