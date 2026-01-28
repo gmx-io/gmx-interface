@@ -7,6 +7,7 @@ import {
   selectChainId,
   selectRawSubaccount,
   selectSrcChainId,
+  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -19,6 +20,7 @@ import {
   getIsSubaccountNonceExpired,
 } from "domain/synthetics/subaccount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 export function useExpressTradingWarnings({
@@ -35,6 +37,8 @@ export function useExpressTradingWarnings({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const tokensData = useSelector(selectTokensData);
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const rawSubaccount = useSelector(selectRawSubaccount);
 
@@ -56,7 +60,11 @@ export function useExpressTradingWarnings({
       isExpressTransactionAvailable && rawSubaccount && getIsSubaccountNonceExpired(rawSubaccount),
     shouldShowAllowedActionsWarning:
       isExpressTransactionAvailable && rawSubaccount && getIsSubaccountActionsExceeded(rawSubaccount, 1),
-    shouldShowOutOfGasPaymentBalanceWarning: expressParams?.gasPaymentValidations.isOutGasTokenBalance,
+    shouldShowOutOfGasPaymentBalanceWarning:
+      expressParams?.gasPaymentValidations.isOutGasTokenBalance &&
+      !isGmxAccount &&
+      nativeToken?.walletBalance !== undefined &&
+      nativeToken.walletBalance > expressParams.gasPaymentParams.totalRelayerFeeTokenAmount,
     shouldShowSubaccountApprovalInvalidWarning:
       isExpressTransactionAvailable &&
       rawSubaccount &&

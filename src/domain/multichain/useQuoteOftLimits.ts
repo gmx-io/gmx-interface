@@ -8,14 +8,25 @@ export function useQuoteOftLimits({
   amountLD,
   isStable,
   decimals,
+  enabled,
 }: {
   quoteOft: QuoteOft | undefined;
   amountLD: bigint | undefined;
   isStable: boolean | undefined;
   decimals: number | undefined;
+  enabled: boolean;
 }) {
   const lastMinAmountLD = useRef<bigint | undefined>(undefined);
   const lastMaxAmountLD = useRef<bigint | undefined>(undefined);
+
+  if (!enabled) {
+    return {
+      isBelowLimit: false,
+      lowerLimitFormatted: undefined,
+      isAboveLimit: false,
+      upperLimitFormatted: undefined,
+    };
+  }
 
   if (quoteOft) {
     lastMaxAmountLD.current = quoteOft.limit.maxAmountLD;

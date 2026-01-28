@@ -25,6 +25,7 @@ import { useMultichainStargateApproval } from "domain/multichain/useMultichainSt
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import type { ReferralCodeStats } from "domain/referrals/types";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
+import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
@@ -37,6 +38,7 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 import {
@@ -281,6 +283,7 @@ function AffiliateCodeFormMultichain({
 
   let buttonState: {
     text: React.ReactNode;
+    bannerErrorName?: ValidationBannerErrorName;
     disabled?: boolean;
     onSubmit?: (event: React.FormEvent) => void;
   } = {
@@ -329,7 +332,8 @@ function AffiliateCodeFormMultichain({
     };
   } else if (sourceChainNativeFeeError) {
     buttonState = {
-      text: sourceChainNativeFeeError.buttonText,
+      text: sourceChainNativeFeeError.buttonErrorMessage,
+      bannerErrorName: sourceChainNativeFeeError.bannerErrorName,
       disabled: true,
     };
   } else if (isTokensLoading || quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
@@ -444,9 +448,13 @@ function AffiliateCodeFormMultichain({
           </Trans>
         </AlertInfoCard>
       )}
-      {sourceChainNativeFeeError && (
-        <AlertInfoCard type="warning" className="text-left" hideClose>
-          {sourceChainNativeFeeError.warningText}
+      {buttonState.bannerErrorName && (
+        <AlertInfoCard type="error" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={buttonState.bannerErrorName}
+            chainId={chainId}
+            srcChainId={srcChainId}
+          />
         </AlertInfoCard>
       )}
 

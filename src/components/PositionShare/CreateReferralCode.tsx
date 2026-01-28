@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { type TransactionResponse } from "ethers";
@@ -6,7 +6,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "re
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import type { SettlementChainId } from "config/chains";
+import type { SettlementChainId, SourceChainId } from "config/chains";
 import { ContractsChainId, getChainName } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -26,6 +26,7 @@ import { useMultichainStargateApproval } from "domain/multichain/useMultichainSt
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { registerReferralCode } from "domain/referrals";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
+import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
@@ -39,6 +40,7 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "components/Referrals/referralsHelper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -192,6 +194,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
 
   return (
     <CreateReferralCodeLayout
+      chainId={chainId}
       referralCode={referralCode}
       setReferralCode={setReferralCode}
       error={error}
@@ -357,6 +360,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
 
   const buttonState = useMemo((): {
     text: React.ReactNode;
+    bannerErrorName?: ValidationBannerErrorName;
     disabled: boolean;
     onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   } => {
@@ -395,7 +399,11 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       return { text: t`No tokens on source chain`, disabled: true };
     }
     if (sourceChainNativeFeeError) {
-      return { text: sourceChainNativeFeeError.buttonText, disabled: true };
+      return {
+        text: sourceChainNativeFeeError.buttonErrorMessage,
+        bannerErrorName: sourceChainNativeFeeError.bannerErrorName,
+        disabled: true,
+      };
     }
     if (isTokensLoading || quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
       return {
@@ -475,6 +483,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
 
   return (
     <CreateReferralCodeLayout
+      chainId={chainId}
       referralCode={referralCode}
       setReferralCode={setReferralCode}
       error={error}
@@ -482,7 +491,6 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       rpcFailedChains={rpcFailedChains}
       hasNoTokensOnSourceChain={hasNoTokensOnSourceChain}
       srcChainId={srcChainId}
-      sourceChainNativeFeeError={sourceChainNativeFeeError}
       isProcessing={isSubmitting}
       isConnected={isConnected}
       buttonState={buttonState}
@@ -493,32 +501,33 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
 }
 
 function CreateReferralCodeLayout({
+  chainId,
+  srcChainId,
   referralCode,
   setReferralCode,
   error,
   referralCodeCheckStatus,
   rpcFailedChains,
   hasNoTokensOnSourceChain,
-  srcChainId,
-  sourceChainNativeFeeError,
   isProcessing,
   isConnected,
   buttonState,
   inputRef,
   networkFeeUsd,
 }: {
+  chainId: ContractsChainId;
+  srcChainId?: SourceChainId;
   referralCode: string;
   setReferralCode: (code: string) => void;
   error: string | undefined | null;
   referralCodeCheckStatus: "ok" | "checking" | "taken";
   rpcFailedChains?: ContractsChainId[];
   hasNoTokensOnSourceChain?: boolean;
-  srcChainId?: number;
-  sourceChainNativeFeeError?: { buttonText: string; warningText: string };
   isProcessing: boolean;
   isConnected: boolean;
   buttonState: {
     text: React.ReactNode;
+    bannerErrorName?: ValidationBannerErrorName;
     disabled: boolean;
     onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   };
@@ -611,9 +620,13 @@ function CreateReferralCodeLayout({
             </Trans>
           </AlertInfoCard>
         )}
-        {sourceChainNativeFeeError && (
-          <AlertInfoCard type="warning" className="text-left" hideClose>
-            {sourceChainNativeFeeError.warningText}
+        {buttonState.bannerErrorName && (
+          <AlertInfoCard type="error" hideClose>
+            <ValidationBannerErrorContent
+              validationBannerErrorName={buttonState.bannerErrorName}
+              chainId={chainId}
+              srcChainId={srcChainId}
+            />
           </AlertInfoCard>
         )}
       </form>

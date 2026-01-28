@@ -466,7 +466,7 @@ function ReferralCodeFormMultichain({
       />
       {srcChainId && (
         <SyntheticsInfoRow
-          label="Network Fee"
+          label={t`Network Fee`}
           value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
       )}

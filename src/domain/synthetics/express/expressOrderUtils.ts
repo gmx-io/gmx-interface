@@ -357,7 +357,10 @@ export async function estimateExpressParams({
         ) {
           // In this cases simulation will fail
           if (throwOnInvalid) {
-            throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError();
+            throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
+              balance: isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance,
+              requiredAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
+            });
           }
           return undefined;
         }

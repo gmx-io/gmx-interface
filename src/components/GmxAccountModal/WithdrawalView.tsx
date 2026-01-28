@@ -4,7 +4,6 @@ import cx from "classnames";
 import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useHistory } from "react-router-dom";
 import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
@@ -26,18 +25,15 @@ import {
   isSettlementChain,
   MULTI_CHAIN_TOKEN_MAPPING,
   MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS,
-  MULTICHAIN_FUNDING_SLIPPAGE_BPS,
+  RANDOM_ACCOUNT,
 } from "config/multichain";
 import {
-  useGmxAccountDepositViewTokenAddress,
-  useGmxAccountDepositViewTokenInputValue,
   useGmxAccountModalOpen,
   useGmxAccountSettlementChainId,
   useGmxAccountWithdrawalViewChain,
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectExpressGlobalParams,
@@ -64,6 +60,7 @@ import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrder
 import { ExpressTransactionBuilder, ExpressTxnParams, RawRelayParamsPayload } from "domain/synthetics/express/types";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, sortTokenDataByBalance, TokenData } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
@@ -92,13 +89,13 @@ import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
-import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -108,7 +105,6 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { InsufficientWntBanner } from "./InsufficientWntBanner";
 import { wrapChainAction } from "./wrapChainAction";
 
 const USD_GAS_TOKEN_BUFFER_MAINNET = expandDecimals(4, USD_DECIMALS);
@@ -515,14 +511,11 @@ function useWithdrawViewTransactions({
 }
 
 export const WithdrawalView = () => {
-  const history = useHistory();
   const { chainId } = useChainId();
   const [withdrawalViewChain, setWithdrawalViewChain] = useGmxAccountWithdrawalViewChain();
   const isSameChain = withdrawalViewChain === chainId;
   const { address: account } = useAccount();
-  const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
-  const [, setDepositViewTokenInputValue] = useGmxAccountDepositViewTokenInputValue();
-  const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [isVisibleOrView] = useGmxAccountModalOpen();
   const [inputValue, setInputValue] = useGmxAccountWithdrawalViewTokenInputValue();
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
 
@@ -532,7 +525,7 @@ export const WithdrawalView = () => {
   const networks = useGmxAccountWithdrawNetworks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
-  const { gasTokenBuffer, gasTokenBufferWarningThreshold } = useUsdGasTokenBuffer();
+  const { gasTokenBuffer } = useUsdGasTokenBuffer();
   const gasPaymentToken = useSelector(selectGasPaymentToken);
 
   const selectedToken = useMemo(() => {
@@ -610,34 +603,11 @@ export const WithdrawalView = () => {
     amountLD: inputAmount,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSettlementChainTokenId?.decimals,
-  });
-
-  const sendParamsWithSlippage: SendParam | undefined = useMemo(() => {
-    if (!quoteOft || !sendParamsWithoutSlippage) {
-      return undefined;
-    }
-
-    const { receipt } = quoteOft;
-
-    const minAmountLD = applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, receipt.amountReceivedLD as bigint);
-
-    const newSendParams: SendParam = {
-      ...sendParamsWithoutSlippage,
-      minAmountLD,
-    };
-
-    return newSendParams;
-  }, [sendParamsWithoutSlippage, quoteOft]);
-
-  const { data: nativeFee, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
-    sendParams: sendParamsWithSlippage,
-    fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
-    fromChainId: chainId,
-    toChainId: withdrawalViewChain,
+    enabled: !isSameChain,
   });
 
   const baseSendParams = useMemo(() => {
-    if (isSameChain || !withdrawalViewChain || !account) {
+    if (isSameChain || !withdrawalViewChain) {
       return;
     }
 
@@ -656,13 +626,12 @@ export const WithdrawalView = () => {
 
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
-      account,
+      account: RANDOM_ACCOUNT.address,
       amountLD: fakeInputAmount,
       isToGmx: false,
       srcChainId: chainId,
     });
   }, [
-    account,
     chainId,
     isSameChain,
     selectedTokenSettlementChainTokenId?.decimals,
@@ -683,7 +652,7 @@ export const WithdrawalView = () => {
     return false;
   }, [baseSendParams, isSameChain]);
 
-  const { data: baseNativeFee } = useQuoteSendNativeFee({
+  const { data: baseNativeFee, isLoading: isBaseNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
@@ -696,7 +665,7 @@ export const WithdrawalView = () => {
     protocolFeeAmount,
     networkFee: bridgeNetworkFee,
   } = useMultichainQuoteFeeUsd({
-    quoteSendNativeFee: nativeFee,
+    quoteSendNativeFee: baseNativeFee,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
     sourceChainId: chainId,
@@ -810,6 +779,8 @@ export const WithdrawalView = () => {
     expressTransactionBuilder,
     isGmxAccount: true,
     requireValidations: false,
+    overrideWnt: !isSameChain,
+    enabled: !isSameChain,
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
@@ -876,8 +847,6 @@ export const WithdrawalView = () => {
       networkFeeInGasPaymentToken: gasPaymentTokenAmount + bridgeNetworkFeeInGasPaymentToken,
     };
   }, [bridgeNetworkFee, bridgeNetworkFeeUsd, gasPaymentToken, gasPaymentTokenAmount, relayFeeAmount, relayerFeeToken]);
-
-  const [showWntWarning, setShowWntWarning] = useState(false);
   const [lastValidNetworkFees, setLastValidNetworkFees] = useState({
     wntFee,
     networkFeeUsd,
@@ -901,36 +870,35 @@ export const WithdrawalView = () => {
     }
   }, [wntFee, networkFeeUsd, networkFeeInGasPaymentToken, wntFeeUsd]);
 
-  useEffect(() => {
-    if (wrappedNativeTokenAddress === zeroAddress) {
-      setShowWntWarning(false);
-      return;
-    }
-
-    if (!wrappedNativeToken || wrappedNativeToken.gmxAccountBalance === undefined) {
-      return;
+  const showWntWarning = useMemo(() => {
+    if (
+      wrappedNativeTokenAddress === zeroAddress ||
+      !wrappedNativeToken ||
+      wrappedNativeToken.gmxAccountBalance === undefined
+    ) {
+      return false;
     }
 
     if (wrappedNativeToken.gmxAccountBalance === 0n) {
-      setShowWntWarning(true);
-      return;
+      return true;
     }
 
-    const someWntFee = wntFee ?? lastValidNetworkFees.wntFee;
+    const someWntFee = wntFee ?? lastValidNetworkFees.wntFee ?? baseNativeFee;
 
     if (someWntFee === undefined) {
-      return;
+      return false;
     }
 
     const value = (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount : 0n) ?? 0n;
 
-    setShowWntWarning(wrappedNativeToken.gmxAccountBalance - value < someWntFee);
+    return wrappedNativeToken.gmxAccountBalance - value < someWntFee;
   }, [
-    wrappedNativeToken,
-    wntFee,
-    unwrappedSelectedTokenAddress,
+    baseNativeFee,
     inputAmount,
     lastValidNetworkFees.wntFee,
+    unwrappedSelectedTokenAddress,
+    wntFee,
+    wrappedNativeToken,
     wrappedNativeTokenAddress,
   ]);
 
@@ -1029,50 +997,6 @@ export const WithdrawalView = () => {
     wntFee,
   ]);
 
-  const shouldShowMinRecommendedAmount = useMemo(() => {
-    if (
-      selectedToken === undefined ||
-      selectedToken.gmxAccountBalance === undefined ||
-      selectedToken.gmxAccountBalance === 0n ||
-      withdrawalViewChain === undefined ||
-      account === undefined ||
-      inputAmount === undefined ||
-      inputAmount <= 0n
-    ) {
-      return false;
-    }
-
-    const canSelectedTokenBeUsedAsGasPaymentToken = getGasPaymentTokens(chainId).includes(selectedToken.address);
-
-    if (!canSelectedTokenBeUsedAsGasPaymentToken) {
-      return false;
-    }
-
-    if (gasPaymentToken?.address !== selectedToken.address) {
-      return false;
-    }
-
-    const buffer = convertToTokenAmount(
-      gasTokenBufferWarningThreshold,
-      gasPaymentToken.decimals,
-      getMidPrice(gasPaymentToken.prices)
-    )!;
-
-    const maxAmount = bigMath.max(selectedToken.gmxAccountBalance - inputAmount - buffer, 0n);
-
-    return maxAmount === 0n;
-  }, [
-    account,
-    chainId,
-    gasPaymentToken?.address,
-    gasPaymentToken?.decimals,
-    gasPaymentToken?.prices,
-    gasTokenBufferWarningThreshold,
-    inputAmount,
-    selectedToken,
-    withdrawalViewChain,
-  ]);
-
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
   const isInsufficientBalance =
     selectedToken?.gmxAccountBalance !== undefined &&
@@ -1081,6 +1005,7 @@ export const WithdrawalView = () => {
 
   let buttonState: {
     text: React.ReactNode;
+    bannerErrorName?: ValidationBannerErrorName;
     disabled?: boolean;
     onClick?: () => void;
   } = {
@@ -1115,39 +1040,31 @@ export const WithdrawalView = () => {
     };
   } else if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) !== chainId) {
     if (
-      (expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
-        errors?.isOutOfTokenError?.isGasPaymentToken) &&
-      !expressTxnParamsAsyncResult.isLoading
+      expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
+      errors?.isOutOfTokenError?.isGasPaymentToken
     ) {
       buttonState = {
-        text: t`Insufficient ${gasPaymentToken?.symbol} balance to pay for gas`,
+        text: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
         disabled: true,
       };
-    } else if (errors?.isOutOfTokenError && !expressTxnParamsAsyncResult.isLoading) {
+    } else if (showWntWarning) {
+      buttonState = {
+        text: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountWntBalance,
+        disabled: true,
+      };
+    } else if (errors?.isOutOfTokenError) {
       buttonState = {
         text: t`Insufficient ${isOutOfTokenErrorToken?.symbol} balance`,
         disabled: true,
       };
-    } else if (showWntWarning && !expressTxnParamsAsyncResult.isLoading) {
-      buttonState = {
-        text: t`Insufficient ${wrappedNativeToken?.symbol} balance`,
-        disabled: true,
-      };
-    } else if (expressTxnParamsAsyncResult.error && !expressTxnParamsAsyncResult.isLoading) {
+    } else if (expressTxnParamsAsyncResult.error) {
       buttonState = {
         text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
         disabled: true,
       };
-    } else if (
-      // We do not show loading state if we have valid params
-      // But show loading periodically if the params are not valid to show the user some action
-      !expressTxnParamsAsyncResult.data ||
-      (expressTxnParamsAsyncResult.isLoading &&
-        (!expressTxnParamsAsyncResult.data.gasPaymentValidations.isValid ||
-          showWntWarning ||
-          errors?.isOutOfTokenError ||
-          expressTxnParamsAsyncResult.error))
-    ) {
+    } else if (!expressTxnParamsAsyncResult.data) {
       buttonState = {
         text: (
           <>
@@ -1176,7 +1093,7 @@ export const WithdrawalView = () => {
         return;
       }
 
-      if (!withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView === false) {
+      if (!withdrawalViewChain || !isSettlementChain(chainId) || isVisibleOrView !== "withdraw") {
         return;
       }
 
@@ -1235,6 +1152,23 @@ export const WithdrawalView = () => {
       tokensData,
       withdrawalViewChain,
     ]
+  );
+
+  useEffect(
+    function fallbackWithdrawalViewChain() {
+      if (withdrawalViewChain === undefined || isVisibleOrView !== "withdraw" || filteredNetworks.length === 0) {
+        return;
+      }
+
+      const isValidWithdrawalViewChain = filteredNetworks.map((network) => network.id).includes(withdrawalViewChain);
+
+      if (isValidWithdrawalViewChain) {
+        return;
+      }
+
+      setWithdrawalViewChain(undefined);
+    },
+    [withdrawalViewChain, isSameChain, isVisibleOrView, filteredNetworks, setWithdrawalViewChain]
   );
 
   const isTestnet = isTestnetChain(chainId);
@@ -1305,7 +1239,7 @@ export const WithdrawalView = () => {
 
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
-  const areMultichainFeesLoading = isQuoteOftLoading || isQuoteSendNativeFeeLoading;
+  const areMultichainFeesLoading = isQuoteOftLoading || isBaseNativeFeeLoading;
 
   const isNetworkFeeLoading =
     shouldShowInfoRowPlaceholder &&
@@ -1457,88 +1391,15 @@ export const WithdrawalView = () => {
             </AlertInfoCard>
           )}
 
-          {shouldShowMinRecommendedAmount && (
-            <AlertInfoCard type="info" className="my-4">
-              <div>
-                {isSameChain ? (
-                  <Trans>
-                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for express trading, so
-                    please keep at least{" "}
-                    <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-                    {selectedToken?.symbol} or switch your gas token in{" "}
-                    <WarningSettingsButton>settings</WarningSettingsButton>.
-                  </Trans>
-                ) : (
-                  <Trans>
-                    You're withdrawing {selectedToken?.symbol}, your gas token. Gas is required for this withdrawal, so
-                    please keep at least{" "}
-                    <span className="numbers">{formatUsd(gasTokenBuffer, { displayDecimals: 0 })}</span> in{" "}
-                    {selectedToken?.symbol} or switch your gas token in{" "}
-                    <WarningSettingsButton>settings</WarningSettingsButton>.
-                  </Trans>
-                )}
-              </div>
+          {buttonState.bannerErrorName && (
+            <AlertInfoCard type="error" className="mt-8" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={buttonState.bannerErrorName}
+                chainId={chainId}
+                srcChainId={withdrawalViewChain}
+                gasPaymentTokenAddress={gasPaymentToken?.address}
+              />
             </AlertInfoCard>
-          )}
-
-          {errors?.isOutOfTokenError &&
-            !errors.isOutOfTokenError.isGasPaymentToken &&
-            isOutOfTokenErrorToken !== undefined && (
-              <AlertInfoCard type="info" className="my-4">
-                <div>
-                  <Trans>
-                    Withdrawing requires{" "}
-                    <Amount
-                      amount={errors.isOutOfTokenError.requiredAmount ?? 0n}
-                      decimals={isOutOfTokenErrorToken.decimals}
-                      isStable={isOutOfTokenErrorToken.isStable}
-                      symbol={isOutOfTokenErrorToken.symbol}
-                    />{" "}
-                    while you have{" "}
-                    <Amount
-                      amount={isOutOfTokenErrorToken.gmxAccountBalance ?? 0n}
-                      decimals={isOutOfTokenErrorToken.decimals}
-                      isStable={isOutOfTokenErrorToken.isStable}
-                      symbol={isOutOfTokenErrorToken.symbol}
-                    />
-                    . Please{" "}
-                    <span
-                      className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
-                      onClick={() => {
-                        setIsVisibleOrView(false);
-                        history.push(`/trade/swap?to=${isOutOfTokenErrorToken.symbol}`);
-                      }}
-                    >
-                      swap
-                    </span>{" "}
-                    or{" "}
-                    <span
-                      className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
-                      onClick={() => {
-                        setDepositViewTokenAddress(
-                          convertTokenAddress(chainId, isOutOfTokenErrorToken.address, "native")
-                        );
-                        if (errors?.isOutOfTokenError?.requiredAmount !== undefined) {
-                          setDepositViewTokenInputValue(
-                            formatAmountFree(errors.isOutOfTokenError.requiredAmount, isOutOfTokenErrorToken.decimals)
-                          );
-                        }
-                        setIsVisibleOrView("deposit");
-                      }}
-                    >
-                      deposit
-                    </span>{" "}
-                    more {isOutOfTokenErrorToken?.symbol} to your GMX account.
-                  </Trans>
-                </div>
-              </AlertInfoCard>
-            )}
-
-          {showWntWarning && !(errors?.isOutOfTokenError?.tokenAddress === wrappedNativeTokenAddress) && (
-            <InsufficientWntBanner
-              neededAmount={wntFee ?? lastValidNetworkFees.wntFee}
-              neededAmountUsd={wntFeeUsd ?? lastValidNetworkFees.wntFeeUsd}
-            />
           )}
         </>
       )}
@@ -1677,23 +1538,4 @@ async function simulateWithdraw({
       relayRouterAddress: to as Address,
     });
   }, "simulation");
-}
-
-function WarningSettingsButton({ children }: { children: React.ReactNode }) {
-  const { setIsSettingsVisible } = useSettings();
-  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-
-  return (
-    <span
-      className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
-      onClick={() => {
-        setIsSettingsVisible(true);
-        setTimeout(() => {
-          setIsVisibleOrView(false);
-        }, 200);
-      }}
-    >
-      {children}
-    </span>
-  );
 }

@@ -16,16 +16,14 @@ import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
+import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { getNativeToken } from "sdk/configs/tokens";
 
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
-import {
-  ExpressTradingOutOfGasBanner,
-  useGasPaymentTokensText,
-} from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
+import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";

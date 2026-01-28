@@ -100,7 +100,7 @@ export const useBestGmPoolAddressForGlv = ({
       const longTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, true);
       const shortTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, false);
 
-      const [error] = getGmSwapError({
+      const errorResult = getGmSwapError({
         isDeposit,
         marketInfo,
         glvInfo,
@@ -127,6 +127,7 @@ export const useBestGmPoolAddressForGlv = ({
         srcChainId,
         isMarketTokenDeposit,
       });
+      const error = errorResult.buttonErrorMessage;
 
       return {
         isValid: error === undefined,
