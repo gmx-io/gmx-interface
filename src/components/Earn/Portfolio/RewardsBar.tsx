@@ -33,7 +33,7 @@ function RewardsBar({
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings, isLoading: isUserEarningsLoading } = useUserEarnings(chainId, srcChainId);
 
   const totalGmInfo = useMemo(
     () => getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances }),
@@ -76,6 +76,7 @@ function RewardsBar({
                 processedData={processedData}
                 nativeTokenSymbol={nativeTokenSymbol}
                 userEarnings={userEarnings}
+                isUserEarningsLoading={isUserEarningsLoading}
                 chainId={chainId}
               />
             </div>
@@ -111,11 +112,13 @@ function TotalEarned({
   processedData,
   nativeTokenSymbol,
   userEarnings,
+  isUserEarningsLoading,
   chainId,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
   userEarnings: UserEarningsData | null;
+  isUserEarningsLoading: boolean;
   chainId: ContractsChainId;
 }) {
   const earnedTooltipContent = useMemo(() => {
@@ -125,7 +128,7 @@ function TotalEarned({
 
     const stakingRows: ReactNode[] = [];
 
-    if (chainId !== BOTANIX) {
+    if (chainId !== BOTANIX && (processedData.cumulativeGmxRewards ?? 0n) > 0n) {
       stakingRows.push(
         <StatsTooltipRow
           key="gmx"
@@ -218,27 +221,31 @@ function TotalEarned({
       );
     }
 
+    if (tooltipSections.length === 0) {
+      return null;
+    }
+
     return <div className="flex flex-col gap-8">{tooltipSections}</div>;
   }, [nativeTokenSymbol, processedData, userEarnings, chainId]);
 
   const totalEarnedUsd = (processedData?.cumulativeTotalRewardsUsd ?? 0n) + (userEarnings?.allMarkets.total ?? 0n);
-  const isLoading = processedData === undefined;
+  const isLoading = processedData === undefined || isUserEarningsLoading;
 
-  return (
-    <Tooltip
-      disabled={!earnedTooltipContent}
-      content={earnedTooltipContent}
-      handle={
-        <span className="text-body-large font-medium numbers">
-          {isLoading ? (
-            <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
-          ) : (
-            formatUsd(totalEarnedUsd)
-          )}
-        </span>
-      }
-    />
+  const valueElement = (
+    <span className="text-body-large font-medium numbers">
+      {isLoading ? (
+        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={65} className="leading-base" />
+      ) : (
+        formatUsd(totalEarnedUsd)
+      )}
+    </span>
   );
+
+  if (!earnedTooltipContent) {
+    return valueElement;
+  }
+
+  return <Tooltip content={earnedTooltipContent} handle={valueElement} />;
 }
 
 function TotalPendingRewards({

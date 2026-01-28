@@ -110,7 +110,7 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
   const { account } = useWallet();
   const marketsTokensAPRData = useGmMarketsApy(chainId, srcChainId, { period: "7d" }).marketsTokensApyData;
 
-  const { data } = useSWR<UserEarningsData | null>(key, {
+  const { data, isLoading } = useSWR<UserEarningsData | null>(key, {
     fetcher: async (): Promise<UserEarningsData | null> => {
       if (!account) {
         return null;
@@ -236,7 +236,14 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
       return result;
     },
   });
-  return data ?? null;
+
+  const areDependenciesLoading = !marketTokensData || !marketsInfoData;
+  const isDataLoading = isLoading || areDependenciesLoading;
+
+  return {
+    userEarnings: data ?? null,
+    isLoading: isDataLoading,
+  };
 };
 
 function calcEndOfPeriodIncome(latestBalanceChange: BalanceChange, latestCumulativeFeeUsdPerGmToken: bigint): bigint {

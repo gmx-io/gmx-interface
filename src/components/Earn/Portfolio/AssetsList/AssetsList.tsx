@@ -1,5 +1,5 @@
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Trans } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
