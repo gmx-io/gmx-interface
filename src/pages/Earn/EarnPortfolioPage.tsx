@@ -22,7 +22,7 @@ import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
-  const { account } = useWallet();
+  const { account, status } = useWallet();
   const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
 
   const { chainId, srcChainId } = useChainId();
@@ -84,10 +84,14 @@ export default function EarnPortfolioPage() {
 
   const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets;
 
+  const isWalletInitializing = status === "connecting" || status === "reconnecting";
+
   return (
     <EarnPageLayout>
-      {processedData && <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />}
-      {processedData ? (
+      {processedData && !isWalletInitializing && (
+        <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
+      )}
+      {processedData && !isWalletInitializing ? (
         <>
           {hasAnyAssets && (
             <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">

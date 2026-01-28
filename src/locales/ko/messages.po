@@ -2038,6 +2038,7 @@ msgstr "시장 - 숏 증가"
 msgid "Deposit in progress"
 msgstr "입금 진행 중"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -2934,6 +2935,10 @@ msgstr "세션 생성 중..."
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "GMX를 어떻게 시작하나요?"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "coming soon"
+msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -5517,6 +5522,10 @@ msgstr "여기에 답변을 입력하세요."
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GLV Vaults:"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "전송을 완료하려면 연결된 계정을 {receiver}(으)로 전환해야 합니다."
@@ -7250,6 +7259,7 @@ msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>이 작업으로 {1}% 적은 보상을 받습니다.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "확인 중..."
 
@@ -7286,6 +7296,10 @@ msgstr "스테이킹됨"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "트레이더"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Withdraw and Unreserve GMX"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"

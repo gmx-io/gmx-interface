@@ -168,25 +168,30 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   let tokenBalances: Record<number, Record<string, bigint>> | undefined;
   let isLoaded = false;
   let timeoutId: number | undefined;
+  let isCancelled = false;
 
   const fetchAndScheduleNext = () => {
     fetchMultichainTokenBalances({
       settlementChainId,
       account,
       progressCallback: (chainId, tokensChainData) => {
+        if (isCancelled) return;
         tokenBalances = { ...tokenBalances, [chainId]: tokensChainData };
-        options.next(null, { tokenBalances, isLoading: isLoaded ? false : true });
+        options.next(null, { tokenBalances, isLoading: true });
       },
       tokens,
       specificChainId,
     })
       .then((finalTokenBalances) => {
+        if (isCancelled) return;
+        tokenBalances = finalTokenBalances;
         if (!isLoaded) {
           isLoaded = true;
           options.next(null, { tokenBalances: finalTokenBalances, isLoading: false });
         }
       })
       .finally(() => {
+        if (isCancelled) return;
         timeoutId = window.setTimeout(fetchAndScheduleNext, FREQUENT_UPDATE_INTERVAL);
       });
   };
@@ -194,6 +199,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   fetchAndScheduleNext();
 
   return () => {
+    isCancelled = true;
     if (timeoutId !== undefined) {
       window.clearTimeout(timeoutId);
     }

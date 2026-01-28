@@ -2038,6 +2038,7 @@ msgstr "Markt - Short Zun."
 msgid "Deposit in progress"
 msgstr "Einzahlung wird bearbeitet"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -2934,6 +2935,10 @@ msgstr "Sitzung generieren..."
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
 msgstr "Wie starte ich auf GMX?"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "coming soon"
+msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -5517,6 +5522,10 @@ msgstr "Geben Sie Ihre Antwort hier ein."
 msgid "Max amount exceeded"
 msgstr "Maximalbetrag überschritten"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GLV Vaults:"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "Um die Übertragung abzuschließen, musst du dein verbundenes Konto auf {receiver} wechseln."
@@ -7250,6 +7259,7 @@ msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>Du wirst {1}% weniger Belohnungen mit dieser Aktion verdienen.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "Bestätigen..."
 
@@ -7286,6 +7296,10 @@ msgstr "Gestaket"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Trader"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Withdraw and Unreserve GMX"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
