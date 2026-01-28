@@ -469,18 +469,18 @@ export function useArbitraryRelayParamsAndPayload({
   return expressTxnParamsAsyncResult;
 }
 
+export type ArbitraryExpressError = {
+  isOutOfTokenError?: {
+    tokenAddress: string;
+    isGasPaymentToken: boolean;
+    balance?: bigint;
+    requiredAmount?: bigint;
+  };
+};
+
 export function useArbitraryError(
   error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined
-):
-  | {
-      isOutOfTokenError?: {
-        tokenAddress: string;
-        isGasPaymentToken: boolean;
-        balance?: bigint;
-        requiredAmount?: bigint;
-      };
-    }
-  | undefined {
+): ArbitraryExpressError | undefined {
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
 
   return useMemo(() => {

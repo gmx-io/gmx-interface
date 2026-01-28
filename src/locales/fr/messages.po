@@ -357,6 +357,7 @@ msgstr "Échangé {0} contre {1}."
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
 msgstr "Aucun paramètre nécessaire pour réclamer. Réessayez dans quelques secondes."
 
@@ -2117,6 +2118,7 @@ msgstr ""
 msgid "Address"
 msgstr "Adresse"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2435,6 +2437,10 @@ msgstr "Nombre maximum de parties : {MAX_TWAP_NUMBER_OF_PARTS}"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch App"
 msgstr "Lancer l'application"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming affiliate rewards failed"
+msgstr "Échec de la réclamation des récompenses d'affiliation"
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
@@ -2956,6 +2962,7 @@ msgstr "Découvrez comment les tokens GMX, GLV et GM fonctionnent ensemble pour 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network Fee"
 msgstr "Frais de réseau"
@@ -6664,6 +6671,7 @@ msgid "Size per part"
 msgstr "Taille par partie"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7963,6 +7971,10 @@ msgstr "Adresse copiée dans votre presse-papiers."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "Collatéral restant inférieur à {0} USD"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr "La réclamation nécessite <0/> alors que vous avez <1/>. Veuillez <2>échanger</2> ou <3>déposer</3> plus de {0} sur votre compte GMX."
 
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
