@@ -21,7 +21,7 @@ import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { AnyChainId, BOTANIX } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
-import { MarketInfo, MarketTokensAPRData } from "sdk/types/markets";
+import { MarketInfo, MarketTokensAPRData } from "sdk/utils/markets/types";
 import { getByKey } from "sdk/utils/objects";
 
 import APRLabel from "components/APRLabel/APRLabel";

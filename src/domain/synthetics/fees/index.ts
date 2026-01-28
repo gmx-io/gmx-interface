@@ -1,4 +1,4 @@
-export * from "sdk/types/fees";
+export * from "sdk/utils/fees/types";
 export * from "sdk/utils/fees";
 
 export * from "./utils";

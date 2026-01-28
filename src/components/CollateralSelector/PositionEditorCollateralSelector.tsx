@@ -7,7 +7,7 @@ import { ContractsChainId, GMX_ACCOUNT_PSEUDO_CHAIN_ID, getChainName } from "con
 import { getChainIcon } from "config/icons";
 import type { TokenData } from "domain/synthetics/tokens/types";
 import { formatBalanceAmount } from "lib/numbers";
-import { TokenBalanceType } from "sdk/types/tokens";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import { TableTd } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";

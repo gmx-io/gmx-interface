@@ -1,14 +1,13 @@
 import { maxUint256 } from "viem";
 
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { MarketInfo, MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { SwapPathStats, SwapStats } from "types/trade";
-
-import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "../fees";
-import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "../markets";
-import { getByKey } from "../objects";
-import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
+import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "utils/fees";
+import { getAvailableUsdLiquidityForCollateral, getOppositeCollateral, getTokenPoolType } from "utils/markets";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
+import { getByKey } from "utils/objects";
+import { SwapPricingType } from "utils/orders/types";
+import { convertToTokenAmount, convertToUsd, getMidPrice } from "utils/tokens";
+import { SwapPathStats, SwapStats } from "utils/trade/types";
 
 export function getSwapCapacityUsd(marketInfo: MarketInfo, isLong: boolean) {
   const poolAmount = isLong ? marketInfo.longPoolAmount : marketInfo.shortPoolAmount;

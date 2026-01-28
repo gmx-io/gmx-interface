@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export * from "sdk/types/orders";
+export * from "sdk/utils/orders/types";
 
 export type OrderError = {
   msg: ReactNode;

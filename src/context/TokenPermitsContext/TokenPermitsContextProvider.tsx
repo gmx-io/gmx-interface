@@ -6,7 +6,7 @@ import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
-import { SignedTokenPermit } from "sdk/types/tokens";
+import { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];

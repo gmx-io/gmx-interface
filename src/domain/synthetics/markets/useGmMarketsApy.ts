@@ -15,14 +15,13 @@ import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
-import { useTokensDataRequest } from "../tokens";
 import { isGlvEnabled, isGlvInfo } from "./glv";
 import { GlvAndGmMarketsInfoData, MarketTokensAPRData } from "./types";
 import { useGlvMarketsInfo } from "./useGlvMarkets";
 import { useMarketsInfoRequest } from "./useMarketsInfoRequest";
 import { useMarketTokensData } from "./useMarketTokensData";
-import { convertToUsd } from "../tokens/utils";
+import { useLiquidityProvidersIncentives } from "../common/useIncentiveStats";
+import { useTokensDataRequest, convertToUsd } from "../tokens";
 
 type GmGlvTokensAPRResult = {
   glvApyInfoData: MarketTokensAPRData;

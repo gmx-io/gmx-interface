@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
-import type { MarketsGraph } from "../buildMarketsAdjacencyGraph";
-import { findSwapPathsBetweenTokens } from "../findSwapPathsBetweenTokens";
+import type { MarketsGraph } from "utils/swap/buildMarketsAdjacencyGraph";
+import { findSwapPathsBetweenTokens } from "utils/swap/findSwapPathsBetweenTokens";
 
 describe("findSwapPathsBetweenTokens", () => {
   it("should find direct swap routes between tokens", () => {

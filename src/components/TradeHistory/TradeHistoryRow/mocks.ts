@@ -1,6 +1,6 @@
 import { PositionTradeAction, SwapTradeAction } from "domain/synthetics/tradeHistory";
 import { deserializeBigIntsInObject } from "lib/numbers";
-import { MarketInfo } from "sdk/types/markets";
+import { MarketInfo } from "sdk/utils/markets/types";
 
 type ToMock<T> = {
   [K in keyof T]: T[K] extends bigint | undefined

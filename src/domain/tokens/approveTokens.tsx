@@ -10,7 +10,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import TokenAbi from "sdk/abis/Token";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
-import { InfoTokens, TokenInfo } from "sdk/types/tokens";
+import { InfoTokens, TokenInfo } from "sdk/utils/tokens/types";
 
 import { getInvalidPermitSignatureToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";

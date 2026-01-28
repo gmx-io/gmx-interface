@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { Position as SquidPosition } from "sdk/types/subsquid";
+import { Position as SquidPosition } from "sdk/codegen/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "./constants";

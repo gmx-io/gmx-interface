@@ -5,7 +5,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { mustNeverExist } from "lib/types";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
-import { TokensData } from "sdk/types/tokens";
+import { TokensData } from "sdk/utils/tokens/types";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

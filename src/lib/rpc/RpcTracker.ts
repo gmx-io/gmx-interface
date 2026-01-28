@@ -16,9 +16,9 @@ import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { fetchBlockNumber, fetchEthCall } from "lib/rpc/fetchRpc";
 import { abis } from "sdk/abis";
+import { HASHED_MARKET_CONFIG_KEYS } from "sdk/codegen/prebuilt";
 import { getContract } from "sdk/configs/contracts";
 import { getMarketsByChainId } from "sdk/configs/markets";
-import { HASHED_MARKET_CONFIG_KEYS } from "sdk/prebuilt";
 
 export type RpcTrackerConfig = FallbackTrackerConfig & {
   // Omit RPC if block number is higher than second best block

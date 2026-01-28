@@ -1,11 +1,9 @@
 import { InfoTokens, SignedTokenPermit, TokenBalanceType, TokenInfo } from "domain/tokens";
 import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
-import { getTokenData } from "sdk/utils/tokens";
+import { getTokenData, TokensAllowanceData } from "sdk/utils/tokens";
 
-import { TokenData, TokensAllowanceData, TokensData, TokenToSpendParams } from "./types";
-
-export * from "sdk/utils/tokens";
+import { TokenData, TokensData, TokenToSpendParams } from "./types";
 
 export function getNeedTokenApprove(
   tokenAllowanceData: TokensAllowanceData | undefined,

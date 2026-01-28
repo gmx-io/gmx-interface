@@ -1,7 +1,7 @@
 import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 const AVAILABLE_TRADE_MODES = {
   [TradeType.Long]: [

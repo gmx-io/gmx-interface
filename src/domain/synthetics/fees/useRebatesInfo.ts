@@ -6,7 +6,7 @@ import { getAddress } from "viem";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
-import { ClaimableCollateral } from "sdk/types/subsquid";
+import { ClaimableCollateral } from "sdk/codegen/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 import { nowInSeconds } from "sdk/utils/time";
 

@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 
 import { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { sendEarnOpportunityClickedEvent } from "lib/userAnalytics/earnEvents";
-import { TokensData } from "sdk/types/tokens";
+import { TokensData } from "sdk/utils/tokens/types";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";

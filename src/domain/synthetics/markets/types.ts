@@ -1,19 +1,10 @@
 import { TokenData } from "domain/synthetics/tokens";
 import type { ERC20Address } from "domain/tokens";
-import { Market, MarketInfo, MarketPoolTokens } from "sdk/types/markets";
+import { Market, MarketInfo, MarketPoolTokens } from "sdk/utils/markets/types";
 
-export * from "sdk/types/markets";
+export * from "sdk/utils/markets/types";
 
-export type FastMarketInfo = Omit<
-  Omit<MarketInfo, keyof MarketPoolTokens | keyof Market>,
-  "useOpenInterestInTokensForBalance"
-> & {
-  marketTokenAddress: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
-  indexTokenAddress: string;
-  useOpenInterestInTokensForBalance: boolean;
-};
+export type FastMarketInfo = Omit<MarketInfo, keyof MarketPoolTokens | keyof Market>;
 
 export type FastMarketInfoData = {
   [address: string]: FastMarketInfo;

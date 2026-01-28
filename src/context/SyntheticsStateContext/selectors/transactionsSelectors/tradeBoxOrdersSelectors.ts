@@ -1,6 +1,6 @@
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { OrderType } from "sdk/types/orders";
+import { OrderType } from "sdk/utils/orders/types";
 import {
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,

@@ -14,7 +14,7 @@ import type { ERC20Address } from "domain/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { TokenData, TokensData } from "../tokens";
-import { convertToTokenAmount, convertToUsd } from "../tokens/utils";
+import { convertToTokenAmount, convertToUsd } from "../tokens";
 
 export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, gmToken?: TokenData) {
   if (!gmToken) {

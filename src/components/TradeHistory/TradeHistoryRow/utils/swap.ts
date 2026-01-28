@@ -4,12 +4,13 @@ import type { MarketInfo, MarketsInfoData } from "domain/synthetics/markets/type
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
-import { adaptToV1TokenInfo, getTokensRatioByAmounts } from "domain/synthetics/tokens/utils";
+import { adaptToV1TokenInfo } from "domain/synthetics/tokens/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import { getExchangeRateDisplay } from "lib/legacy";
 import { formatBalanceAmount } from "lib/numbers";
-import type { Token, TokenInfo } from "sdk/types/tokens";
-import { SwapTradeAction, TradeActionType } from "sdk/types/tradeHistory";
+import { getTokensRatioByAmounts } from "sdk/utils/tokens";
+import type { Token, TokenInfo } from "sdk/utils/tokens/types";
+import { SwapTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import {
   INEQUALITY_GT,

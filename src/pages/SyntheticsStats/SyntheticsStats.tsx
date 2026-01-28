@@ -196,11 +196,11 @@ export function SyntheticsStats() {
                 const maxReservedUsdShort = getMaxReservedUsd(market, false);
                 const maxOpenInterestShort = getMaxOpenInterestUsd(market, false);
 
-                const borrowingRateLong = getBorrowingFactorPerPeriod(market, true, 60 * 60 * 100);
-                const borrowingRateShort = getBorrowingFactorPerPeriod(market, false, 60 * 60 * 100);
+                const borrowingRateLong = getBorrowingFactorPerPeriod(market, true, BigInt(60 * 60 * 100));
+                const borrowingRateShort = getBorrowingFactorPerPeriod(market, false, BigInt(60 * 60 * 100));
 
-                const fundingAprLong = getFundingFactorPerPeriod(market, true, CHART_PERIODS["1h"]) * 100n;
-                const fundingAprShort = getFundingFactorPerPeriod(market, false, CHART_PERIODS["1h"]) * 100n;
+                const fundingAprLong = getFundingFactorPerPeriod(market, true, BigInt(CHART_PERIODS["1h"])) * 100n;
+                const fundingAprShort = getFundingFactorPerPeriod(market, false, BigInt(CHART_PERIODS["1h"])) * 100n;
 
                 const marketKinkModelBorrowingData = kinkMarketsBorrowingRatesData[market.marketTokenAddress];
 

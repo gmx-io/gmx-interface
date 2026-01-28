@@ -1,5 +1,5 @@
-import type { SwapPaths } from "types/trade";
 import { objectKeysDeep } from "utils/objects";
+import type { SwapPaths } from "utils/trade/types";
 
 import type { MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import { MAX_EDGE_PATH_LENGTH } from "./constants";

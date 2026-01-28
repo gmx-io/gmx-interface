@@ -1,9 +1,18 @@
 import { maxUint256 } from "viem";
 
-import { GasLimitsConfig } from "types/fees";
-import { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { TokensData } from "types/tokens";
+import { bigMath } from "utils/bigmath";
+import { estimateOrderOraclePriceCount, getExecutionFee } from "utils/fees";
+import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGasBySwapCount";
+import { GasLimitsConfig } from "utils/fees/types";
+import { getAvailableUsdLiquidityForCollateral, getTokenPoolType } from "utils/markets";
+import { MarketsInfoData } from "utils/markets/types";
+import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
+import { getByKey } from "utils/objects";
+import { SwapPricingType } from "utils/orders/types";
+import { MarketsGraph } from "utils/swap/buildMarketsAdjacencyGraph";
+import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "utils/swap/constants";
+import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "utils/swap/preparedSwapData";
+import { TokensData } from "utils/tokens/types";
 import {
   MarketEdge,
   MarketEdgeLiquidityGetter,
@@ -11,16 +20,7 @@ import {
   NaiveSwapEstimator,
   SwapEstimator,
   SwapPaths,
-} from "types/trade";
-import { bigMath } from "utils/bigmath";
-import { estimateOrderOraclePriceCount, getExecutionFee } from "utils/fees";
-import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGasBySwapCount";
-import { getAvailableUsdLiquidityForCollateral, getTokenPoolType } from "utils/markets";
-import { PRECISION, PRECISION_DECIMALS, bigintToNumber } from "utils/numbers";
-import { getByKey } from "utils/objects";
-import { MarketsGraph } from "utils/swap/buildMarketsAdjacencyGraph";
-import { DEFAULT_NAIVE_TOP_PATHS_COUNT } from "utils/swap/constants";
-import { MARKETS_ADJACENCY_GRAPH, REACHABLE_TOKENS, TOKEN_SWAP_PATHS } from "utils/swap/preparedSwapData";
+} from "utils/trade/types";
 
 import { getSwapStats } from "./swapStats";
 

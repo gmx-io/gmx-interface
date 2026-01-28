@@ -24,7 +24,7 @@ import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { ProgressiveTokensData } from "sdk/types/tokens";
+import { ProgressiveTokensData } from "sdk/utils/tokens/types";
 
 import { isGlvEnabled } from "./glv";
 import { GlvInfoData, MarketsData } from "./types";

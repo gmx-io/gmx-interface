@@ -1,8 +1,7 @@
 import { describe, it, expect } from "vitest";
 
 import type { MarketConfig } from "configs/markets";
-
-import { buildMarketsAdjacencyGraph } from "../buildMarketsAdjacencyGraph";
+import { buildMarketsAdjacencyGraph } from "utils/swap/buildMarketsAdjacencyGraph";
 
 describe("buildMarketsAdjacencyGraph", () => {
   it("should build graph for single market", () => {

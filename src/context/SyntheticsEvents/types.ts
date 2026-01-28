@@ -6,8 +6,8 @@ import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubacсountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
-import type { SignedTokenPermit } from "sdk/types/tokens";
-import type { ExternalSwapQuote } from "sdk/types/trade";
+import type { SignedTokenPermit } from "sdk/utils/tokens/types";
+import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import type { MultichainEventsState } from "./useMultichainEvents";
 

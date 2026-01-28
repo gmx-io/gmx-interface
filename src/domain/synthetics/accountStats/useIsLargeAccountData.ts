@@ -7,7 +7,7 @@ import { USD_DECIMALS } from "config/factors";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { AccountStat } from "sdk/types/subsquid";
+import { AccountStat } from "sdk/codegen/subsquid";
 import { bigMath } from "sdk/utils/bigmath";
 
 const LARGE_ACCOUNT_CHAINS = [ARBITRUM, AVALANCHE];

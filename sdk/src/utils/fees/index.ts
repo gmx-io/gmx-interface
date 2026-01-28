@@ -1,15 +1,18 @@
 import { HIGH_PRICE_IMPACT_BPS } from "configs/factors";
-import { FeeItem } from "types/fees";
-import { MarketInfo } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { SwapStats } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getOpenInterestForBalance } from "utils/markets";
+import { MarketInfo } from "utils/markets/types";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
+import { SwapPricingType } from "utils/orders/types";
+import { SwapStats } from "utils/trade/types";
 
+import { FeeItem } from "./types";
+
+export * from "./types";
 export * from "./estimateOraclePriceCount";
 export * from "./executionFee";
 export * from "./priceImpact";
+export * from "./getNaiveEstimatedGasBySwapCount";
 
 export function getSwapFee(
   marketInfo: MarketInfo,
@@ -49,7 +52,7 @@ export function getPositionFee(
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);
 
   if (!referralInfo) {
-    return { positionFeeUsd, discountUsd: 0n, totalRebateUsd: 0n };
+    return { positionFeeUsd, discountUsd: 0n, totalRebateUsd: 0n, uiFeeUsd };
   }
 
   const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
@@ -65,7 +68,7 @@ export function getPositionFee(
   };
 }
 
-export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
+export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: bigint) {
   const { fundingFactorPerSecond, longsPayShorts } = marketInfo;
 
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
@@ -81,11 +84,9 @@ export function getFundingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolea
   }
 
   if ((longsPayShorts && isLong) || (!longsPayShorts && !isLong)) {
-    // paying side
-    return fundingForPayingSide * BigInt(periodInSeconds) * -1n;
+    return fundingForPayingSide * periodInSeconds * -1n;
   } else {
-    // receiving side
-    return fundingForReceivingSide * BigInt(periodInSeconds);
+    return fundingForReceivingSide * periodInSeconds;
   }
 }
 
@@ -93,26 +94,26 @@ export function getFundingFeeRateUsd(
   marketInfo: MarketInfo,
   isLong: boolean,
   sizeInUsd: bigint,
-  periodInSeconds: number
+  periodInSeconds: bigint
 ) {
   const factor = getFundingFactorPerPeriod(marketInfo, isLong, periodInSeconds);
 
   return applyFactor(sizeInUsd, factor);
 }
 
-export function getBorrowingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: number) {
+export function getBorrowingFactorPerPeriod(marketInfo: MarketInfo, isLong: boolean, periodInSeconds: bigint) {
   const factorPerSecond = isLong
     ? marketInfo.borrowingFactorPerSecondForLongs
     : marketInfo.borrowingFactorPerSecondForShorts;
 
-  return factorPerSecond * BigInt(periodInSeconds || 1);
+  return factorPerSecond * periodInSeconds;
 }
 
 export function getBorrowingFeeRateUsd(
   marketInfo: MarketInfo,
   isLong: boolean,
   sizeInUsd: bigint,
-  periodInSeconds: number
+  periodInSeconds: bigint
 ) {
   const factor = getBorrowingFactorPerPeriod(marketInfo, isLong, periodInSeconds);
 

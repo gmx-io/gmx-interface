@@ -1,3 +1,3 @@
 export * from "./utils";
-export * from "sdk/types/tokens";
+export * from "sdk/utils/tokens/types";
 export * from "./approveTokens";

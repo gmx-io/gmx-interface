@@ -1,12 +1,12 @@
 import { ContractsChainId, getExcessiveExecutionFee, getHighExecutionFee, getMinExecutionFeeUsd } from "configs/chains";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "types/fees";
-import { DecreasePositionSwapType } from "types/orders";
-import { TokenData, TokensData } from "types/tokens";
 import { bigMath } from "utils/bigmath";
+import { ExecutionFee, GasLimitsConfig, L1ExpressOrderGasReference } from "utils/fees/types";
 import { applyFactor, expandDecimals } from "utils/numbers";
+import { DecreasePositionSwapType } from "utils/orders/types";
 import { convertBetweenTokens, convertToTokenAmount, convertToUsd, getTokenData } from "utils/tokens";
+import { TokenData, TokensData } from "utils/tokens/types";
 
 export function getExecutionFee(
   chainId: number,

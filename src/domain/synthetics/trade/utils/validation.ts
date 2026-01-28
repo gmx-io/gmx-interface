@@ -31,6 +31,7 @@ import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, 
 import { getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS, getToken } from "sdk/configs/tokens";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   ExternalSwapQuote,
   GmSwapFees,
@@ -38,8 +39,7 @@ import {
   SwapPathStats,
   TradeFees,
   TriggerThresholdType,
-} from "sdk/types/trade";
-import { bigMath } from "sdk/utils/bigmath";
+} from "sdk/utils/trade/types";
 
 import { getMaxUsdBuyableAmountInMarketWithGm, getSellableInfoGlvInMarket, isGlvInfo } from "../../markets/glv";
 

@@ -9,8 +9,8 @@ import { helperToast } from "lib/helperToast";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
+import { OrderInfo } from "sdk/utils/orders/types";
 
 import { selectExpressGlobalParams } from "../selectors/expressSelectors";
 import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from "../selectors/globalSelectors";

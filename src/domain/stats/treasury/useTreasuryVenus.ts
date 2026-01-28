@@ -8,10 +8,10 @@ import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import type { ContractCallConfig } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getVenusDeployment, type VenusDeployment, VENUS_EXCHANGE_RATE_DECIMALS } from "sdk/configs/venus";
-import type { MarketsData } from "sdk/types/markets";
-import type { Token } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import type { MarketsData } from "sdk/utils/markets/types";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
+import type { Token } from "sdk/utils/tokens/types";
 
 import { TREASURY_EMPTY_RESULT } from "./constants";
 import { sumBalancesFromCalls } from "./shared";
