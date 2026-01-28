@@ -49,8 +49,8 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
     if (!data?.updatedAt) {
       return true;
     }
-    let requestedAt = data.updatedAt + REFRESH_INTERVAL;
-    return Date.now() - requestedAt > API_STALE_MS;
+    const timeSinceLastUpdate = Date.now() - data.updatedAt;
+    return timeSinceLastUpdate > REFRESH_INTERVAL + API_STALE_MS;
   }, [data?.updatedAt]);
 
   useEffect(() => {
