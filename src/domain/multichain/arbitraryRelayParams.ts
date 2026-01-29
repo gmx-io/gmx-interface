@@ -140,6 +140,7 @@ async function estimateArbitraryGasLimit({
   subaccount,
   chainId,
   account,
+  additionalBalanceOverrideTokens,
   overrideWnt = false,
 }: {
   chainId: ContractsChainId;
@@ -149,6 +150,7 @@ async function estimateArbitraryGasLimit({
   expressTransactionBuilder: ExpressTransactionBuilder;
   subaccount: Subaccount | undefined;
   account: string;
+  additionalBalanceOverrideTokens?: string[];
   overrideWnt?: boolean;
 }): Promise<bigint> {
   const { txnData: baseTxnData } = await expressTransactionBuilder({
@@ -162,6 +164,20 @@ async function estimateArbitraryGasLimit({
     [baseTxnData.callData, getContract(chainId, "GelatoRelayAddress"), baseTxnData.feeToken, baseTxnData.feeAmount]
   );
 
+  const tokensToOverride = new Set([gasPaymentParams.gasPaymentTokenAddress]);
+  if (additionalBalanceOverrideTokens) {
+    for (const token of additionalBalanceOverrideTokens) {
+      if (token) {
+        tokensToOverride.add(token);
+      }
+    }
+  }
+
+  const stateDiff = Array.from(tokensToOverride).map((tokenAddress) => ({
+    slot: calculateMappingSlot(multichainBalanceKey(account, tokenAddress), DATASTORE_SLOT_INDEXES.uintValues),
+    value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
+  }));
+
   const params: EstimateGasParameters = {
     account: GMX_SIMULATION_ORIGIN,
     to: baseTxnData.to,
@@ -170,15 +186,7 @@ async function estimateArbitraryGasLimit({
     stateOverride: [
       {
         address: getContract(chainId, "DataStore"),
-        stateDiff: [
-          {
-            slot: calculateMappingSlot(
-              multichainBalanceKey(account, gasPaymentParams.gasPaymentTokenAddress),
-              DATASTORE_SLOT_INDEXES.uintValues
-            ),
-            value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
-          },
-        ],
+        stateDiff,
       },
     ],
   };
@@ -231,6 +239,7 @@ export async function estimateArbitraryRelayFee({
   expressTransactionBuilder,
   gasPaymentParams,
   subaccount,
+  additionalBalanceOverrideTokens,
 }: {
   chainId: ContractsChainId;
   client: PublicClient;
@@ -239,6 +248,7 @@ export async function estimateArbitraryRelayFee({
   gasPaymentParams: GasPaymentParams;
   subaccount: Subaccount | undefined;
   account: string;
+  additionalBalanceOverrideTokens?: string[];
 }) {
   const gasLimit = await estimateArbitraryGasLimit({
     chainId,
@@ -248,6 +258,7 @@ export async function estimateArbitraryRelayFee({
     gasPaymentParams,
     expressTransactionBuilder,
     subaccount,
+    additionalBalanceOverrideTokens,
   });
 
   const fee = await gelatoRelay.getEstimatedFee(

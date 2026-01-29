@@ -38,6 +38,7 @@ import {
   ValidationBannerErrorName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -56,6 +57,7 @@ interface Props {
   shortTokenLiquidityUsd?: bigint | undefined;
   shouldDisableValidation?: boolean;
   technicalFees: TechnicalGmFees | undefined;
+  technicalFeesError: Error | undefined;
   logicalFees: GmSwapFees | undefined;
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
@@ -81,6 +83,7 @@ type SubmitButtonState = {
 export const useGmSwapSubmitState = ({
   logicalFees,
   technicalFees,
+  technicalFeesError,
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
   shouldDisableValidation,
@@ -353,7 +356,7 @@ export const useGmSwapSubmitState = ({
       };
     }
 
-    if (!technicalFees || isLoading) {
+    if ((!technicalFees && !technicalFeesError) || isLoading) {
       return {
         text: (
           <>
@@ -361,6 +364,29 @@ export const useGmSwapSubmitState = ({
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
+        disabled: true,
+      };
+    }
+
+    if (technicalFeesError) {
+      let errorText: string;
+
+      if (isCustomError(technicalFeesError)) {
+        const errorName = technicalFeesError.name;
+
+        if (errorName === "InsufficientMultichainBalance") {
+          errorText = t`Insufficient balance`;
+        } else if (errorName === "MaxPoolAmountExceeded" || errorName === "MaxPoolAmountForDepositExceeded") {
+          errorText = t`Max pool amount exceeded`;
+        } else {
+          errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
+        }
+      } else {
+        errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
+      }
+
+      return {
+        text: errorText,
         disabled: true,
       };
     }
@@ -373,6 +399,8 @@ export const useGmSwapSubmitState = ({
     account,
     isAvalancheGmxAccountWarning,
     isAllowanceLoading,
+    technicalFees,
+    technicalFeesError,
     error.buttonErrorMessage,
     error.buttonTooltipMessage,
     error.bannerErrorName,
@@ -381,7 +409,6 @@ export const useGmSwapSubmitState = ({
     isAllowanceLoaded,
     glvInfo,
     isSubmitting,
-    technicalFees,
     isLoading,
     isDeposit,
     onSubmit,
