@@ -31,9 +31,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { getAddress } from "viem";
 
-import { ARBITRUM_SEPOLIA, AVALANCHE_FUJI, SOURCE_OPTIMISM_SEPOLIA, SOURCE_SEPOLIA } from "../src/configs/chainIds";
 import type { SettlementChainId, SourceChainId } from "../src/configs/chains";
-import { SETTLEMENT_CHAIN_IDS_DEV, SOURCE_CHAIN_IDS } from "../src/configs/chains";
+import { isTestnetChain, SETTLEMENT_CHAIN_IDS_DEV, SOURCE_CHAIN_IDS } from "../src/configs/chains";
 
 type DeploymentData = {
   address: string;
@@ -68,10 +67,6 @@ type PlatformTokens = {
     };
   };
 };
-
-function isTestnetChain(chainId: number): boolean {
-  return [AVALANCHE_FUJI, ARBITRUM_SEPOLIA, SOURCE_SEPOLIA, SOURCE_OPTIMISM_SEPOLIA].includes(chainId);
-}
 
 // @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
