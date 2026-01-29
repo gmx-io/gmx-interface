@@ -56,7 +56,7 @@ function RewardsBar({
         <div className="flex gap-28 max-lg:flex-col max-lg:gap-16">
           <div className="flex shrink-0 gap-28 max-lg:grid max-lg:grid-cols-2 max-lg:gap-12">
             <div className="flex flex-col gap-2">
-              <span className="text-12 font-medium text-typography-secondary">
+              <span className="text-body-small font-medium text-typography-secondary">
                 <Trans>Total Investment Value</Trans>
               </span>
               <span className="text-body-large font-medium numbers">
@@ -69,7 +69,7 @@ function RewardsBar({
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-12 font-medium text-typography-secondary">
+              <span className="text-body-small font-medium text-typography-secondary">
                 <Trans>Total Earned</Trans>
               </span>
               <TotalEarned
@@ -86,7 +86,7 @@ function RewardsBar({
 
           <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
             <div className="flex flex-col gap-2">
-              <span className="text-12 font-medium text-typography-secondary">
+              <span className="text-body-small font-medium text-typography-secondary">
                 <Trans>Total Pending Rewards</Trans>
               </span>
               <TotalPendingRewards
@@ -187,7 +187,7 @@ function TotalEarned({
     if (stakingRows.length > 0) {
       tooltipSections.push(
         <div key="staking" className="flex flex-col gap-8">
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-body-medium font-medium text-typography-secondary">
             <Trans>Lifetime staking rewards:</Trans>
           </span>
           <div className="flex flex-col">{stakingRows}</div>
@@ -198,7 +198,7 @@ function TotalEarned({
     if (userEarnings && userEarnings.allMarkets.total > 0n) {
       tooltipSections.push(
         <div key="lp" className="flex flex-col gap-8">
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-body-medium font-medium text-typography-secondary">
             <Trans>Lifetime LP rewards:</Trans>
           </span>
           <div className="flex flex-col">

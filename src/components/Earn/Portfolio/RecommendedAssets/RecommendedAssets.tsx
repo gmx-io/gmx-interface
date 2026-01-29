@@ -148,7 +148,7 @@ export function RecommendedAssets({
   return (
     <section className="flex flex-col gap-8">
       <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
-      <h2 className="flex items-center gap-4 pb-12 pt-20 text-24 font-medium text-typography-primary">
+      <h2 className="text-h2 flex items-center gap-4 pb-12 pt-20 text-typography-primary">
         <BoltGradientIcon className="inline-block size-20" />
         <Trans>Recommended</Trans>
       </h2>
