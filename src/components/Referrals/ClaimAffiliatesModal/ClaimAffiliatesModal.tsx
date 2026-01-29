@@ -37,7 +37,7 @@ import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
-import type { TokenData } from "sdk/types/tokens";
+import type { TokenData } from "sdk/utils/tokens/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";

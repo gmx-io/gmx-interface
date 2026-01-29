@@ -1,12 +1,8 @@
-import { zeroAddress } from "viem";
-
 import { USD_DECIMALS } from "configs/factors";
-import { MarketInfo, MarketsData, MarketsInfoData } from "types/markets";
-import { Token, TokenData, TokensData } from "types/tokens";
-import { ExternalSwapAggregator, ExternalSwapQuote } from "types/trade";
-import { getMarketFullName } from "utils/markets";
 import { expandDecimals } from "utils/numbers";
-import { convertToTokenAmount, getTokenData } from "utils/tokens";
+import { convertToTokenAmount } from "utils/tokens";
+import { Token, TokenData, TokensData } from "utils/tokens/types";
+import { ExternalSwapAggregator, ExternalSwapQuote } from "utils/trade/types";
 
 export function usdToToken(usd: number, token: TokenData) {
   return convertToTokenAmount(expandDecimals(usd, USD_DECIMALS), token.decimals, token.prices?.minPrice)!;
@@ -135,166 +131,11 @@ export function mockTokensData(overrides: { [symbol: string]: Partial<TokenData>
 
   return tokens;
 }
+
 /**
  * @param marketKeys - array of market keys in the following format: indexToken-longToken-shortToken
  */
-
-export function mockMarketsData(marketKeys: string[]): MarketsData {
-  return marketKeys.reduce((acc, key) => {
-    const [indexTokenAddress, longTokenAddress, shortTokenAddress] = key.split("-");
-
-    acc[key] = {
-      marketTokenAddress: key,
-      indexTokenAddress,
-      longTokenAddress,
-      shortTokenAddress,
-      isSameCollaterals: longTokenAddress === shortTokenAddress,
-      isSpotOnly: indexTokenAddress === "SPOT",
-      data: "",
-      name: "Test Market",
-    };
-
-    return acc;
-  }, {} as MarketsData);
-}
-
-export function mockMarketsInfoData(
-  tokensData: TokensData,
-  marketKeys: string[],
-  overrides: { [marketKey: string]: Partial<MarketInfo> } = {}
-): MarketsInfoData {
-  return marketKeys.reduce((acc, key) => {
-    const [indexTokenAddress, longTokenAddress, shortTokenAddress] = key.split("-");
-
-    const indexToken = getTokenData(tokensData, indexTokenAddress)!;
-    const longToken = getTokenData(tokensData, longTokenAddress)!;
-    const shortToken = getTokenData(tokensData, shortTokenAddress)!;
-
-    const isSpotOnly = indexTokenAddress === "SPOT";
-
-    acc[key] = {
-      isDisabled: false,
-
-      marketTokenAddress: key,
-      indexTokenAddress,
-      longTokenAddress,
-      shortTokenAddress,
-
-      isSameCollaterals: longTokenAddress === shortTokenAddress,
-      isSpotOnly,
-
-      name: getMarketFullName({ longToken, shortToken, indexToken, isSpotOnly }),
-
-      longToken,
-      shortToken,
-      indexToken,
-
-      longPoolAmount: usdToToken(1000, longToken),
-      shortPoolAmount: usdToToken(1000, shortToken),
-
-      maxLongPoolAmount: usdToToken(10000, longToken),
-      maxShortPoolAmount: usdToToken(10000, shortToken),
-      maxLongPoolUsdForDeposit: usdToToken(10000, longToken),
-      maxShortPoolUsdForDeposit: usdToToken(10000, shortToken),
-
-      poolValueMax: expandDecimals(2000, USD_DECIMALS),
-      poolValueMin: expandDecimals(2000, USD_DECIMALS),
-
-      reserveFactorLong: expandDecimals(5, 29),
-      reserveFactorShort: expandDecimals(5, 29),
-
-      openInterestReserveFactorLong: expandDecimals(5, 29),
-      openInterestReserveFactorShort: expandDecimals(5, 29),
-
-      maxOpenInterestLong: expandDecimals(5, 29),
-      maxOpenInterestShort: expandDecimals(5, 29),
-
-      positionImpactPoolAmount: usdToToken(1000, indexToken),
-      positionImpactPoolDistributionRate: 0n,
-      minPositionImpactPoolAmount: 0n,
-
-      swapImpactPoolAmountLong: usdToToken(1000, longToken),
-      swapImpactPoolAmountShort: usdToToken(1000, shortToken),
-
-      positionFeeFactorForBalanceWasImproved: expandDecimals(5, 26),
-      positionFeeFactorForBalanceWasNotImproved: expandDecimals(5, 26),
-      positionImpactFactorPositive: expandDecimals(2, 23),
-      positionImpactFactorNegative: expandDecimals(1, 23),
-      maxPositionImpactFactorPositive: expandDecimals(2, 23),
-      maxPositionImpactFactorNegative: expandDecimals(1, 23),
-      maxPositionImpactFactorForLiquidations: expandDecimals(1, 23),
-      maxLendableImpactFactor: expandDecimals(1, 23),
-      maxLendableImpactFactorForWithdrawals: expandDecimals(1, 23),
-      maxLendableImpactUsd: expandDecimals(1, 23),
-      lentPositionImpactPoolAmount: expandDecimals(1, 23),
-      positionImpactExponentFactorPositive: expandDecimals(2, 30),
-      positionImpactExponentFactorNegative: expandDecimals(2, 30),
-      useOpenInterestInTokensForBalance: true,
-
-      swapFeeFactorForBalanceWasImproved: expandDecimals(2, 27),
-      swapFeeFactorForBalanceWasNotImproved: expandDecimals(2, 27),
-
-      atomicSwapFeeFactor: expandDecimals(2, 27),
-
-      swapImpactFactorPositive: expandDecimals(2, 23),
-      swapImpactFactorNegative: expandDecimals(1, 23),
-      swapImpactExponentFactor: expandDecimals(2, 30),
-
-      withdrawalFeeFactorBalanceWasImproved: expandDecimals(2, 27),
-      withdrawalFeeFactorBalanceWasNotImproved: expandDecimals(2, 27),
-
-      // MarketInfo
-      borrowingFactorPerSecondForLongs: 0n,
-      borrowingFactorPerSecondForShorts: 0n,
-
-      borrowingExponentFactorLong: 0n,
-      borrowingExponentFactorShort: 0n,
-      fundingFactor: 0n,
-      fundingExponentFactor: 0n,
-      fundingIncreaseFactorPerSecond: 0n,
-      fundingDecreaseFactorPerSecond: 0n,
-      maxFundingFactorPerSecond: 0n,
-      minFundingFactorPerSecond: 0n,
-      thresholdForDecreaseFunding: 0n,
-      thresholdForStableFunding: 0n,
-
-      totalBorrowingFees: 0n,
-      minCollateralFactor: 0n,
-      minCollateralFactorForLiquidation: 0n,
-
-      minCollateralFactorForOpenInterestLong: 0n,
-      minCollateralFactorForOpenInterestShort: 0n,
-
-      borrowingFactorLong: 0n,
-      borrowingFactorShort: 0n,
-
-      fundingFactorPerSecond: 0n,
-      longsPayShorts: false,
-
-      longInterestUsd: expandDecimals(500, USD_DECIMALS),
-      shortInterestUsd: expandDecimals(500, USD_DECIMALS),
-      longInterestInTokens: usdToToken(500, indexToken),
-      shortInterestInTokens: usdToToken(500, indexToken),
-
-      maxPnlFactorForTradersLong: expandDecimals(1, 30),
-      maxPnlFactorForTradersShort: expandDecimals(1, 30),
-
-      data: "",
-
-      virtualPoolAmountForLongToken: 0n,
-      virtualPoolAmountForShortToken: 0n,
-      virtualInventoryForPositions: 0n,
-
-      virtualMarketId: zeroAddress,
-      virtualLongTokenId: zeroAddress,
-      virtualShortTokenId: zeroAddress,
-
-      ...(overrides[key] || {}),
-    };
-
-    return acc;
-  }, {} as MarketsInfoData);
-}
+export { mockMarketsData, mockMarketsInfoData } from "utils/markets/__tests__/mockMarkets";
 
 export function mockExternalSwap({
   inToken,

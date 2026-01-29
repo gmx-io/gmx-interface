@@ -22,7 +22,7 @@ import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue, PRECISION
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
-import { AprSnapshot, Price as PriceSnapshot } from "sdk/types/subsquid";
+import { AprSnapshot, Price as PriceSnapshot } from "sdk/codegen/subsquid";
 
 import Tabs from "components/Tabs/Tabs";
 

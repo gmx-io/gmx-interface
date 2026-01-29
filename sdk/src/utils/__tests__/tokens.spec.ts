@@ -2,9 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { TOKENS } from "configs/tokens";
-import { Token, TokensData } from "types/tokens";
-
-import { expandDecimals, PRECISION } from "../numbers";
+import { expandDecimals, PRECISION } from "utils/numbers";
 import {
   parseContractPrice,
   convertToContractPrice,
@@ -17,7 +15,8 @@ import {
   getTokensRatioByAmounts,
   getTokensRatioByMinOutputAmountAndTriggerPrice,
   getTokensRatioByPrice,
-} from "../tokens";
+} from "utils/tokens";
+import { Token, TokensData } from "utils/tokens/types";
 
 function getToken(symbol: string) {
   return TOKENS[ARBITRUM].find((token) => token.symbol === symbol) as Token;
