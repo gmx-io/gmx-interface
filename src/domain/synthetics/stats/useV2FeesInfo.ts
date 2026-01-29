@@ -1,12 +1,11 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
 
-import { PositionFeesInfoWithPeriod, SwapFeesInfoWithPeriod } from "sdk/types/subsquid";
-
 import { getCurrentEpochStartedTimestamp } from "domain/stats";
 import { getWeekAgoTimestamp } from "domain/stats/getWeekAgoTimestamp";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { PositionFeesInfoWithPeriod, SwapFeesInfoWithPeriod } from "sdk/codegen/subsquid";
 
 const totalFeeQuery = gql`
   query totalFeesInfo {
