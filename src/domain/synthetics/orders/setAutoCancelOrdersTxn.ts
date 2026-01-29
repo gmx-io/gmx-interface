@@ -7,7 +7,7 @@ import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
-import { OrderType } from "sdk/types/orders";
+import { OrderType } from "sdk/utils/orders/types";
 import {
   buildUpdateOrderMulticall,
   buildUpdateOrderPayload,

@@ -6,7 +6,7 @@ import { isIncreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { Token } from "domain/tokens";
 import { formatDateTime } from "lib/dates";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
-import { OrderType, TwapOrderInfo } from "sdk/types/orders";
+import { OrderType, TwapOrderInfo } from "sdk/utils/orders/types";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 

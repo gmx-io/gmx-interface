@@ -175,6 +175,10 @@ export function atomicSwapFeeFactorKey(market: string) {
   return hashData(["bytes32", "address"], [ATOMIC_SWAP_FEE_FACTOR_KEY, market]);
 }
 
+export function withdrawalFeeFactorKey(market: string, forBalanceWasImproved: boolean) {
+  return hashData(["bytes32", "address", "bool"], [WITHDRAWAL_FEE_FACTOR_KEY, market, forBalanceWasImproved]);
+}
+
 export function openInterestKey(market: string, collateralToken: string, isLong: boolean) {
   return hashData(["bytes32", "address", "address", "bool"], [OPEN_INTEREST_KEY, market, collateralToken, isLong]);
 }

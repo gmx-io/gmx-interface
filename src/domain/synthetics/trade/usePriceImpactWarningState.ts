@@ -6,9 +6,9 @@ import { HIGH_SWAP_PROFIT_FEE_BPS, USD_DECIMALS } from "config/factors";
 import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-import type { FeeItem } from "sdk/types/fees";
-import type { TradeFlags } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+import type { FeeItem } from "sdk/utils/fees/types";
+import type { TradeFlags } from "sdk/utils/trade/types";
 
 import { getIsHighSwapImpact, getIsHighCollateralImpact, getIsHighExternalSwapFees } from "./utils/warnings";
 

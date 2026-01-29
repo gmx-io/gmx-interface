@@ -6,8 +6,8 @@ import { getServerUrl } from "config/backend";
 import type { ContractsChainId } from "config/chains";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { PerformanceInfo, useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { MarketInfo } from "sdk/codegen/subsquid";
 import { ARBITRUM, AVALANCHE } from "sdk/configs/chainIds";
-import { MarketInfo } from "sdk/types/subsquid";
 
 export type PoolsData = {
   glvApy: number;

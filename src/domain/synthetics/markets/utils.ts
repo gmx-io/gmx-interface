@@ -18,10 +18,10 @@ import {
 
 import { getCappedPositionImpactUsd } from "../fees";
 import { PositionInfo } from "../positions";
+import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
 import { TokenData, TokensData } from "../tokens/types";
-import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens/utils";
 
 export * from "sdk/utils/markets";
 

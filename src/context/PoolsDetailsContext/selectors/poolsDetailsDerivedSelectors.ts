@@ -27,7 +27,7 @@ import {
   MARKETS,
 } from "sdk/configs/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
-import { SwapPricingType } from "sdk/types/orders";
+import { SwapPricingType } from "sdk/utils/orders/types";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
 

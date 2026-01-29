@@ -37,22 +37,23 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
       <ModalWithPortal
         isVisible={isModalOpen}
         setIsVisible={setIsModalOpen}
-        label={t`GMX Solana`}
+        label={t`GMTrade`}
         contentClassName="!max-w-[420px]"
       >
         <div className="flex flex-col gap-16">
           <p className="mb-8 text-15 text-typography-secondary">
             <Trans>
-              GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.
+              GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the
+              experience may vary slightly.
               <br />
               <br />
-              Clicking on the button below will open the GMX Solana frontend in a new tab.
+              Clicking on the button below will open GMTrade in a new tab.
             </Trans>
           </p>
 
-          <ExternalLink href="https://gmxsol.io/trade" className="!no-underline">
+          <ExternalLink href="https://gmtrade.xyz" className="!no-underline">
             <Button variant="primary-action" className="w-full">
-              <Trans>Open GMX Solana</Trans>
+              <Trans>Open GMTrade</Trans>
             </Button>
           </ExternalLink>
         </div>

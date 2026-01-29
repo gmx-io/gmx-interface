@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { combineAbortSignals } from "../abort";
+import { combineAbortSignals } from "utils/abort";
 
 describe("combineAbortSignals", () => {
   it("should return an AbortController", () => {

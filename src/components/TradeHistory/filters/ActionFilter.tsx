@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { OrderType } from "domain/synthetics/orders/types";
 import { defined } from "lib/guards";
-import { TradeActionType } from "sdk/types/tradeHistory";
+import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
 
