@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { DOCS_LINKS } from "config/links";
 import { FeeItem } from "domain/synthetics/fees";
 import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { formatUsd } from "lib/numbers";
+import { formatPercentage, formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -16,6 +16,7 @@ export type Props = {
   swapProfitFee?: FeeItem;
   externalSwapFeeItem?: FeeItem;
   executionFeeUsd?: bigint;
+  maxNegativeImpactBps?: bigint;
 };
 
 export function HighPriceImpactOrFeesWarningCard({
@@ -24,21 +25,24 @@ export function HighPriceImpactOrFeesWarningCard({
   swapProfitFee,
   externalSwapFeeItem,
   executionFeeUsd,
+  maxNegativeImpactBps,
 }: Props) {
   const warnings = useMemo(() => {
     const warnings: { id: string; key: React.ReactNode; value?: React.ReactNode; tooltipContent?: React.ReactNode }[] =
       [];
 
-    if (priceImpactWarningState.shouldShowWarningForCollateral) {
+    const formattedCap = formatPercentage(maxNegativeImpactBps, { displayDecimals: 1 });
+
+    if (priceImpactWarningState.shouldShowWarningForCollateral && formattedCap) {
       warnings.push({
         id: "high-impact-on-collateral",
         key: t`High Net Price Impact`,
         value: undefined,
         tooltipContent: (
           <Trans>
-            The potential net price impact that will apply when closing this position may be high compared to the amount
-            of collateral you're using. Consider reducing leverage.{" "}
-            <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
+            High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
+            collateral. Consider reducing leverage. <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>
+            .
           </Trans>
         ),
       });
@@ -97,6 +101,7 @@ export function HighPriceImpactOrFeesWarningCard({
     executionFeeUsd,
     swapPriceImpact?.deltaUsd,
     swapProfitFee?.deltaUsd,
+    maxNegativeImpactBps,
   ]);
 
   if (!priceImpactWarningState.shouldShowWarning) {

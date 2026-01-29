@@ -10,10 +10,10 @@ import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";

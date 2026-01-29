@@ -155,7 +155,7 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
   });
 });
 
-const DEFAULT_TRADE_ERROR: ValidationResult = [undefined];
+const DEFAULT_TRADE_ERROR: ValidationResult = {};
 export const selectTradeboxTradeTypeError = createSelector((q) => {
   const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
   let tradeError: ValidationResult = DEFAULT_TRADE_ERROR;

@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { minInt256 } from "viem";
 
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
@@ -9,10 +9,11 @@ import {
   getOpenInterestForBalance,
   getUsedLiquidity,
 } from "domain/synthetics/markets";
-import { TokenData, getMidPrice } from "domain/synthetics/tokens";
+import { TokenData } from "domain/synthetics/tokens";
 import { CHART_PERIODS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+import { getMidPrice } from "sdk/utils/tokens";
 
 const MIN_OI_CAP_THRESHOLD_USD = expandDecimals(10000, USD_DECIMALS);
 
@@ -83,8 +84,8 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
         totalUsedLiquidity: 0n,
         totalMaxLiquidity: 0n,
         marketsStats: [],
-        bestNetFeeLong: ethers.MinInt256,
-        bestNetFeeShort: ethers.MinInt256,
+        bestNetFeeLong: minInt256,
+        bestNetFeeShort: minInt256,
         bestNetFeeLongMarketAddress: marketInfo.marketTokenAddress,
         bestNetFeeShortMarketAddress: marketInfo.marketTokenAddress,
         totalOpenInterestLong: 0n,
@@ -97,10 +98,10 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
 
     const poolValueUsd = marketInfo.poolValueMax;
 
-    const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
-    const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
-    const borrowingRateLong = -1n * getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
-    const borrowingRateShort = -1n * getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
+    const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
+    const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, BigInt(CHART_PERIODS["1h"]));
+    const borrowingRateLong = -1n * getBorrowingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
+    const borrowingRateShort = -1n * getBorrowingFactorPerPeriod(marketInfo, false, BigInt(CHART_PERIODS["1h"]));
 
     const [longUsedLiquidity, longMaxLiquidity] = getUsedLiquidity(marketInfo, true);
 

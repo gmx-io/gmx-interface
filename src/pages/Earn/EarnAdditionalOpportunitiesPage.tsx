@@ -13,7 +13,7 @@ import { GlvAndGmMarketsInfoData, useMarketTokensData } from "domain/synthetics/
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
-import { TokensData } from "sdk/types/tokens";
+import { TokensData } from "sdk/utils/tokens/types";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import OpportunityCard from "components/Earn/AdditionalOpportunities/OpportunityCard";

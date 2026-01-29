@@ -1,9 +1,7 @@
-import { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { SwapStrategyForSwapOrders } from "types/swapStrategy";
-import { TokenData } from "types/tokens";
-import { ExternalSwapQuoteParams, SwapOptimizationOrderArray } from "types/trade";
 import { bigMath } from "utils/bigmath";
+import { MarketsInfoData } from "utils/markets/types";
+import { SwapPricingType } from "utils/orders/types";
+import { SwapStrategyForSwapOrders } from "utils/swap/types";
 import {
   convertToTokenAmount,
   convertToUsd,
@@ -14,6 +12,8 @@ import {
   getIsWrap,
   getMidPrice,
 } from "utils/tokens";
+import { TokenData } from "utils/tokens/types";
+import { ExternalSwapQuoteParams, SwapOptimizationOrderArray } from "utils/trade/types";
 
 import { getAvailableExternalSwapPaths } from "./externalSwapPath";
 import { getExternalSwapQuoteByPath } from "./externalSwapQuoteByPath";

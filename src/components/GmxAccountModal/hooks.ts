@@ -122,20 +122,23 @@ export function useAvailableToTradeAssetMultichainRequest(
   srcChainId: SourceChainId | undefined
 ): {
   gmxAccountUsd: bigint | undefined;
+  isLoading: boolean;
 } {
-  const { tokensData, isGmxAccountBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
+  const { tokensData, isGmxAccountBalancesLoaded, error } = useTokensDataRequest(chainId, srcChainId);
+  const isLoading = !isGmxAccountBalancesLoaded && !error;
 
   if (!tokensData || !isGmxAccountBalancesLoaded) {
-    return { gmxAccountUsd: undefined };
+    return { gmxAccountUsd: undefined, isLoading: false };
   }
 
   const gmxAccountUsd = getTotalGmxAccountUsdFromTokensData(tokensData);
 
-  return { gmxAccountUsd };
+  return { gmxAccountUsd, isLoading };
 }
 
 export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
+  isLoading: boolean;
 } {
   const { chainId, srcChainId } = useChainId();
   return useAvailableToTradeAssetMultichainRequest(chainId, srcChainId);

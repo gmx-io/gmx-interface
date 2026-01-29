@@ -48,10 +48,10 @@ import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import { BOTANIX } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
-import { TokenBalanceType } from "sdk/types/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
 
 import { selectIsExpressTransactionAvailable } from "../expressSelectors";
@@ -1199,7 +1199,7 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
 export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) => {
   const selectedCollateralAddress = q(selectTradeboxCollateralTokenAddress);
   const tokensData = q(selectTokensData);
-  const symbol = tokensData?.[selectedCollateralAddress]?.symbol;
+  const symbol = getByKey(tokensData, selectedCollateralAddress)?.symbol;
 
   return symbol;
 });

@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
 import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
@@ -34,8 +35,8 @@ import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
   selectTradeboxIsFromTokenGmxAccount,
-  selectTradeboxIsTPSLEnabled,
   selectTradeboxIsStakeOrUnstake,
+  selectTradeboxIsTPSLEnabled,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxLeverage,
   selectTradeboxPayAmount,
@@ -58,25 +59,35 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { getApprovalRequirements } from "domain/synthetics/tokens/utils";
 import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
-import { getCommonError, getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import {
+  getCommonError,
+  getExpressError,
+  getIsMaxLeverageExceeded,
+  getNativeGasError,
+  takeValidationResult,
+  ValidationButtonTooltipName,
+  ValidationResult,
+} from "domain/synthetics/trade/utils/validation";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { formatAmountFree } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
-import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
-import { TokenData } from "sdk/types/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
+import { ExecutionFee } from "sdk/utils/fees/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { TokenData } from "sdk/utils/tokens/types";
+import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
+import { mustNeverExist } from "sdk/utils/types";
 
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -92,6 +103,7 @@ interface TradeboxButtonStateOptions {
 type TradeboxButtonState = {
   text: ReactNode;
   tooltipContent: ReactNode | null;
+  bannerErrorContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => Promise<void>;
   slippageInputId: string;
@@ -156,6 +168,7 @@ export function useTradeboxButtonState({
     setPendingTxns,
   });
 
+  // TODO move this to a separate hook
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
     if (isFromTokenGmxAccount) {
       return { tokensToApprove: [], isAllowanceLoaded: true };
@@ -214,7 +227,27 @@ export function useTradeboxButtonState({
 
   const tradeError = useSelector(selectTradeboxTradeTypeError);
 
-  const { buttonErrorText, tooltipContent } = useMemo(() => {
+  const nativeGasError = useMemo((): ValidationResult => {
+    if (gasPaymentToken && expressParams?.gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
+      return {};
+    }
+
+    return getNativeGasError({
+      networkFee: totalExecutionFee?.feeTokenAmount,
+      nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
+    });
+  }, [
+    expressParams?.gasPaymentParams?.gasPaymentTokenAmount,
+    gasPaymentToken,
+    tokensData,
+    totalExecutionFee?.feeTokenAmount,
+  ]);
+
+  const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
+    buttonErrorText: string | undefined;
+    tooltipContent: ReactNode | null;
+    bannerErrorContent: ReactNode | null;
+  } => {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
@@ -222,18 +255,16 @@ export function useTradeboxButtonState({
     });
 
     const expressError = getExpressError({
-      chainId,
       expressParams,
       tokensData,
     });
 
-    const buttonErrorText = commonError[0] || tradeError[0] || expressError[0];
-    const tooltipName = commonError[1] || tradeError[1] || expressError[1];
+    const validationResult = takeValidationResult(commonError, tradeError, expressError, nativeGasError);
 
     let tooltipContent: ReactNode = null;
-    if (tooltipName) {
-      switch (tooltipName) {
-        case "maxLeverage": {
+    if (validationResult.buttonTooltipName) {
+      switch (validationResult.buttonTooltipName) {
+        case ValidationButtonTooltipName.maxLeverage: {
           tooltipContent = (
             <>
               {isLeverageSliderEnabled ? (
@@ -252,14 +283,13 @@ export function useTradeboxButtonState({
 
           break;
         }
-
-        case "liqPrice > markPrice":
+        case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
           tooltipContent = (
             <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
           );
           break;
-
-        case "noSwapPath":
+        }
+        case ValidationButtonTooltipName.noSwapPath: {
           tooltipContent = (
             <NoSwapPathTooltipContent
               collateralToken={collateralToken}
@@ -269,13 +299,22 @@ export function useTradeboxButtonState({
             />
           );
           break;
+        }
 
         default:
-          mustNeverExist(tooltipName);
+          mustNeverExist(validationResult.buttonTooltipName);
       }
     }
 
-    return { buttonErrorText, tooltipContent };
+    const bannerErrorContent = validationResult.bannerErrorName ? (
+      <ValidationBannerErrorContent validationBannerErrorName={validationResult.bannerErrorName} chainId={chainId} />
+    ) : null;
+
+    return {
+      buttonErrorText: validationResult.buttonErrorMessage,
+      tooltipContent,
+      bannerErrorContent,
+    };
   }, [
     chainId,
     account,
@@ -283,6 +322,7 @@ export function useTradeboxButtonState({
     expressParams,
     tokensData,
     tradeError,
+    nativeGasError,
     collateralToken,
     fromToken,
     toToken,
@@ -401,9 +441,10 @@ export function useTradeboxButtonState({
     }
   }, [isApproving, tokensToApprove]);
 
-  return useMemo(() => {
+  return useMemo((): TradeboxButtonState => {
     const commonState = {
       tooltipContent,
+      bannerErrorContent,
       onSubmit,
       slippageInputId,
       expressParams,
@@ -532,6 +573,7 @@ export function useTradeboxButtonState({
     };
   }, [
     tooltipContent,
+    bannerErrorContent,
     onSubmit,
     slippageInputId,
     expressParams,

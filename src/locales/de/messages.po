@@ -168,6 +168,11 @@ msgstr "esGMX-Belohnungen:"
 msgid ""
 msgstr ""
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMTrade"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
@@ -245,7 +250,7 @@ msgstr "Pools, die Liquidität für spezifische GMX-Märkte bereitstellen, unter
 msgid "In progress"
 msgstr "In Bearbeitung"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "Kaufe {gasPaymentTokensText}"
@@ -368,6 +373,7 @@ msgstr "{0} gegen {1} getauscht."
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
 msgstr "Keine notwendigen Parameter zum Einlösen. Versuchen Sie es in ein paar Sekunden erneut."
 
@@ -448,7 +454,6 @@ msgstr ""
 msgid "sell"
 msgstr "verkaufen"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainButtons.tsx
 msgid "Switch to {0}"
 msgstr "Wechseln zu {0}"
@@ -493,6 +498,10 @@ msgstr "Treasury"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click?"
 msgstr "Möchtest du schneller mit One-Click handeln?"
+
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "Clicking on the button below will open GMTrade in a new tab."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
@@ -616,8 +625,7 @@ msgstr "Diese Meldung 30 Tage lang nicht mehr anzeigen."
 msgid "in liquidity"
 msgstr "In Liquidität"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
 msgstr "Unzureichendes Gas-Guthaben, bitte mehr {gasPaymentTokensText} einzahlen."
 
@@ -760,6 +768,12 @@ msgstr "{0} <0/><1> zu </1>{1} <2/>"
 msgid "See <0>Tenderly Docs</0>."
 msgstr "Siehe <0>Tenderly-Dokumentation</0>."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Sent referral code transaction"
 msgstr "Empfehlungscode-Transaktion gesendet"
@@ -870,14 +884,6 @@ msgstr "Keine Märkte passen"
 msgid "Unstake {tokenSymbol}"
 msgstr "{tokenSymbol} unstaken"
 
-#: src/components/InputSection/InputSection.tsx
-msgid "MAX"
-msgstr "MAX"
-
-#: src/components/TPSLModal/TPSLInputRow.tsx
-msgid "Stop Loss Price"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr "Keine zentralisierten Exchanges für dieses Netzwerk verfügbar."
@@ -899,6 +905,8 @@ msgid "Disable Share Modal PnL Check"
 msgstr "PnL-Prüfung im Teilen-Dialog deaktivieren"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "Code bereits vergeben"
@@ -934,10 +942,6 @@ msgstr "Dieser Wert könnte auf anderen Websites höher sein, da das Kollateral 
 msgid "Rewards"
 msgstr "Rewards"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "You're about to navigate to GMX Solana, which is operated by a separate team, so the experience may vary slightly."
-msgstr "Sie navigieren zu GMX Solana, das von einem separaten Team betrieben wird, daher kann die Erfahrung leicht variieren."
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -949,10 +953,6 @@ msgstr "Sie navigieren zu GMX Solana, das von einem separaten Team betrieben wir
 #: src/components/TradeboxMarginFields/MarginToPayField.tsx
 msgid "Pay"
 msgstr "Bezahlen"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "Sie benötigen etwas {wrappedNativeTokenSymbol} in Ihrem Konto, um Mittel abzuheben."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings."
@@ -1508,10 +1508,6 @@ msgstr "Transfer eingereicht."
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "{nativeTokenSymbol}-Belohnungen:"
 
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-msgid "Insufficient {symbol} balance"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "Unzureichende Empfangs-Token-Liquidität"
@@ -1771,7 +1767,7 @@ msgstr "GMX"
 msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 msgstr "Kaufe GMX von Uniswap oder direkt auf GMX (stelle sicher, Arbitrum auszuwählen):"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "Express- und One-Click-Trading sind aufgrund unzureichenden Gas-Guthabens nicht verfügbar."
@@ -1957,6 +1953,9 @@ msgstr "Der USD-Wert der Gebühren wird zum Zeitpunkt ihrer Erhebung berechnet u
 msgid "Max"
 msgstr "Max"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Checking code..."
 msgstr "Code wird überprüft…"
@@ -2108,8 +2107,8 @@ msgstr "Es gibt nicht genügend GM: {0} [{1}]-Liquidität in GLV, um deine Verka
 msgid "Deposited {0} into {positionText}"
 msgstr "Eingezahlt {0} in {positionText}"
 
-#: src/components/TradeboxMarginFields/PriceField.tsx
-msgid "Mark:"
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
 msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
@@ -2141,11 +2140,16 @@ msgstr "Derzeit keine weiteren Möglichkeiten auf Botanix. Wechsle zu Arbitrum o
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "Kein Swap-Pfad verfügbar. <0>Swappe {0} zu STBTC</0>, um {1} als Kollateral zu verwenden."
 
+#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
+msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Address"
 msgstr "Adresse"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2270,8 +2274,6 @@ msgid "Allow {0} to be spent"
 msgstr "Erlaube, dass {0} ausgegeben wird"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
 
@@ -2282,6 +2284,10 @@ msgstr "POSITION"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet acceptable price. The order will fill when the condition is met."
 msgstr "Der Ausführungspreis erfüllte nicht den akzeptablen Preis. Die Order wird ausgeführt, wenn die Bedingung erfüllt ist."
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
+msgstr "<0>Einzahlen</0> oder <1>kaufen</1> {wrappedNativeTokenSymbol}."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -2460,6 +2466,10 @@ msgstr "Maximale Anzahl von Teilen: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "App starten"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming affiliate rewards failed"
+msgstr "Einlösen von Partnerbelohnungen fehlgeschlagen"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Verfügbar zum Zahlen"
@@ -2495,6 +2505,10 @@ msgstr "Relayer-Anfrage fehlgeschlagen"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "Konto übertragen"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
+msgstr "Unzureichendes {wrappedNativeTokenSymbol} für Gas in Ihrem GMX-Konto."
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -2622,6 +2636,8 @@ msgstr "Transaktion gesendet."
 msgid "Exposure to Backing Tokens"
 msgstr "Exposition gegenüber Backing-Tokens"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Creating..."
@@ -2692,10 +2708,6 @@ msgstr "Stop Market - Long Erhöhung"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Enter your feedback here."
 msgstr "Geben Sie Ihr Feedback hier ein."
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "Sie heben {0} ab, Ihr Gas-Token. Gas ist für diese Abhebung erforderlich, bitte behalten Sie mindestens <0>{1}</0> in {2} oder wechseln Sie Ihr Gas-Token in <1>den Einstellungen</1>."
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
@@ -2804,10 +2816,6 @@ msgstr "Debug-Werte anzeigen"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Annualisierte Daten basierend auf den letzten 7 Tagen."
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
-msgstr "GMX Solana wird auf einer anderen Website gehostet und von einem anderen Team betrieben, daher kann die Erfahrung leicht variieren.<0/><1/>Durch Klicken auf die Schaltfläche unten wird das GMX Solana-Frontend in einem neuen Tab geöffnet."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -2988,6 +2996,9 @@ msgstr "Erfahre, wie GMX-, GLV- und GM-Token zusammenwirken, um ein dezentrales 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network Fee"
 msgstr "Netzwerkgebühr"
 
@@ -3319,6 +3330,10 @@ msgstr "{0} bearbeiten"
 msgid "Price impact rebates claimed."
 msgstr "Preisauswirkungs-Rabatte eingelöst."
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
+msgstr "<0>Kaufe</0> {wrappedNativeTokenSymbol}."
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
 msgstr "Beanspruchbare Preisimpact-Rabatte.<0/><1/><2>Mehr lesen</2>."
@@ -3532,10 +3547,6 @@ msgstr "Insgesamt verdient"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "Liquiditätsbereitstellung für diesen Markt ist nur auf {chainNames} verfügbar. Bitte wechseln Sie zu {chainNames}, um Verdienstmöglichkeiten zu nutzen."
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "Sie benötigen <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in Ihrem Konto, um Mittel abzuheben."
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3822,11 +3833,6 @@ msgstr "TRADING Airdrop"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "Du wirst {indexSymbol} aus deiner Short-Position short sein, während du {collateralSymbol} aus deinem {collateralSymbol}-Kollateral long bist. Das kann für delta-neutrale Strategien nützlich sein, um Finanzierungsgebühren zu verdienen."
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "Open GMX Solana"
-msgstr "GMX Solana öffnen"
-
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Market Traders' PnL"
 msgstr ""
@@ -4047,11 +4053,6 @@ msgstr "<0>Botanix</0> unterstützt derzeit nur"
 msgid "{daysConsidered}d Earned Fees"
 msgstr "{daysConsidered} Tage verdiente Gebühren"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Insufficient {0} balance to pay for gas"
-msgstr "Unzureichendes {0}-Guthaben, um Gas zu bezahlen"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "Zusätzliche Reserve erforderlich:"
@@ -4248,7 +4249,12 @@ msgstr "Jobs"
 msgid "Decentralized Options Strategies"
 msgstr "Dezentrale Optionsstrategien"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Creating referral code"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "Sie haben eine bestehende Position mit {0} als Collateral. Diese Aktion gilt nicht für diese Position. <0>Wechseln zu {1} Collateral</0>"
 
@@ -4337,6 +4343,11 @@ msgstr ""
 msgid "Create Limit"
 msgstr "Limit erstellen"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Error simulating deposit"
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "Übertragung bereits gestartet"
@@ -4359,6 +4370,9 @@ msgid "Net Price Impact"
 msgstr "Netto-Preisauswirkung"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Enter a code"
@@ -4453,6 +4467,7 @@ msgstr "Stop-Loss erstellen"
 
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -4475,8 +4490,7 @@ msgstr "Shorts Netto-Rate / 1h"
 msgid "Discover GMX Earn"
 msgstr "Entdecke GMX Earn"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} einzahlen"
 
@@ -4822,10 +4836,6 @@ msgstr "Kollateral ({0})"
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "Du hast eine bestehende Position mit {0} als Collateral. Diese Order ist für diese Position nicht gültig. <0>Wechsle zu {1}-Collateral</0>"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "Sie heben {0} ab, Ihr Gas-Token. Gas ist für Express-Trading erforderlich, bitte behalten Sie mindestens <0>{1}</0> in {2} oder wechseln Sie Ihr Gas-Token in <1>den Einstellungen</1>."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "Du wirst {0}% mehr Belohnungen mit dieser Aktion verdienen."
@@ -4860,6 +4870,9 @@ msgid "Yield Farming"
 msgstr "Yield Farming"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Genehmige…"
@@ -4903,11 +4916,6 @@ msgstr "Order-Typ"
 msgid "Are you sure you want to skip creating a referral code?"
 msgstr "Bist du sicher, dass du das Erstellen eines Referral-Codes überspringen möchtest?"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX Solana"
-msgstr "GMX Solana"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "Shifting ist nur auf {chainNames} verfügbar. Bitte wechseln Sie zu {chainNames}, um Verdienstmöglichkeiten zu nutzen."
@@ -4945,6 +4953,8 @@ msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von {forma
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -5208,17 +5218,14 @@ msgstr "Bridge-TX-Hash"
 msgid "Start unrealized pnl"
 msgstr "Start unrealisierter PnL"
 
-#: src/components/TPSLModal/TPSLOrdersList.tsx
-msgid "Size (% of Position)"
-msgstr ""
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "Unzureichendes {nativeTokenSymbol} für Gas in Ihrer Wallet auf {0}. <0>Kaufe {nativeTokenSymbol}</0>"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Genehmigung übermittelt! <0>Status anzeigen.</0>"
-
-#: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
-msgid "The potential net price impact that will apply when closing this position may be high compared to the amount of collateral you're using. Consider reducing leverage. <0>Read more</0>."
-msgstr "Der mögliche Netto-Preis-Impact beim Schließen dieser Position könnte im Verhältnis zu deinem eingesetzten Collateral hoch sein. Erwäge, den Hebel zu reduzieren. <0>Mehr erfahren</0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
@@ -5309,7 +5316,7 @@ msgstr "Größe, $"
 msgid "Close {0} {1}{2}"
 msgstr "{0} {1}{2} schließen"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Unzureichender Gas-Saldo"
 
@@ -5787,6 +5794,12 @@ msgstr "Einzahlungsbetrag eingeben"
 msgid "Update Stop Loss"
 msgstr "Stop Loss aktualisieren"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
+msgid "Approve {0}"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
 msgstr "Max {0} Long überschritten"
@@ -5941,10 +5954,6 @@ msgstr "und automatisch seine Rendite verzinst (im Gegensatz zu GLP, kein manuel
 msgid "Sell request sent."
 msgstr "Verkaufsanfrage gesendet."
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
-msgstr "Bitte <0>swappen</0>, um {wrappedNativeTokenSymbol} zu erhalten."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "GMX-Community mit NFTs, Trading und Bildungsinitiativen"
@@ -5960,6 +5969,10 @@ msgstr "<0><1>#GMX V2</1>'s OI sieht großartig aus</0><2>GMX V2 > GMX V1 + Kwen
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "Wir wollen deine Einblicke, um GMX zu verbessern. Aus Sicherheitsgründen kontaktieren wir dich nicht zuerst. Bitte sende die Nachricht \"I have feedback\" an einen unserer offiziellen Accounts:"
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open GMTrade in a new tab."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -6045,6 +6058,8 @@ msgstr "Weiter"
 msgid "More info"
 msgstr "Mehr Infos"
 
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -6193,6 +6208,10 @@ msgstr "D2.Finance"
 msgid "Annualized:"
 msgstr "Annualisiert:"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "RWA"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "Kaufanfrage wird ausgeführt…"
@@ -6315,6 +6334,11 @@ msgstr "Minute(n)"
 msgid "Start Unrealized Fees"
 msgstr "Start unrealisierte Gebühren"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Please deposit funds or switch to a different network."
+msgstr ""
+
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "V2 trading"
 msgstr "V2-Trading"
@@ -6351,6 +6375,10 @@ msgstr "Gewinnrate"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "Du hast esGMX-Token im Affiliate-Vault – du musst diese abziehen, wenn du sie auf das neue Konto übertragen möchtest"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
+msgstr "Unzureichendes {tokensText} für Gas in Ihrem GMX-Konto. <0>{tokensText} einzahlen</0>"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
@@ -6626,6 +6654,7 @@ msgstr "Meme"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Create code"
 msgstr "Code erstellen"
 
@@ -6713,7 +6742,7 @@ msgid "Size per part"
 msgstr "Größe pro Teil"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6725,10 +6754,6 @@ msgstr "Größe pro Teil"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "Unzureichende {0}-Balance"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
-msgstr "Bitte <0>einzahlen</0> oder <1>swappen</1>, um {wrappedNativeTokenSymbol} zu erhalten."
 
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
@@ -6751,6 +6776,12 @@ msgstr "Transaktion fehlgeschlagen."
 msgid "Decentralized Yield Products"
 msgstr "Dezentralisierte Yield-Produkte"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
+msgstr ""
+
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they don't trigger and are cancelled. <0>Read more</0>."
 msgstr "Max. Netzwerkgebühr umfasst Gebühren für zusätzliche Orders. Sie wird vollständig auf dein Konto zurückgesendet, wenn sie nicht ausgelöst werden und storniert sind. <0>Mehr lesen</0>."
@@ -6760,22 +6791,16 @@ msgstr "Max. Netzwerkgebühr umfasst Gebühren für zusätzliche Orders. Sie wir
 msgid "Rebates"
 msgstr "Rabatte"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Insufficient {nativeTokenSymbol} balance"
-msgstr "Unzureichender {nativeTokenSymbol}-Saldo"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "Limit aktualisieren"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
-msgstr "Abheben erfordert <0/>, während Sie <1/> haben. Bitte <2>swappen</2> oder <3>einzahlen</3> mehr {0} auf Ihr GMX-Konto."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit order"
 msgstr "Order bearbeiten"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "Fehler bei der Simulation der Abhebung"
@@ -6812,6 +6837,11 @@ msgstr "Genehmigung fehlgeschlagen."
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GMX rewards:"
 msgstr "GMX-Belohnungen:"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "Referral code created!"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -6933,6 +6963,8 @@ msgstr "Tausch fehlgeschlagen."
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderList/OrderList.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7151,6 +7183,7 @@ msgid "Venus"
 msgstr "Venus"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/PositionShare/CreateReferralCode.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code creation failed."
 msgstr "Erstellung des Referral-Codes fehlgeschlagen."
@@ -7325,6 +7358,11 @@ msgstr "Trader"
 msgid "take profit"
 msgstr "Take-Profit"
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMTrade"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
 msgstr "Externe Tausche erzwingen"
@@ -7405,6 +7443,11 @@ msgstr "Transaktion aufgrund fehlgeschlagener Ausführungsgebühren-Validierung 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Completed"
 msgstr "Abgeschlossen"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
+msgid "No tokens on source chain"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/ReferralTerms/ReferralTerms.tsx
@@ -7906,7 +7949,7 @@ msgstr "24h Hoch"
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.<0/><1/>Switch your network to create this code on {nonTakenNetworkNames}."
-msgstr "Dieser Code ist noch nicht auf {nonTakenNetworkNames} registriert, du wirst dort keine Rebates erhalten.<0/><1/>Wechsle dein Netzwerk, um diesen Code auf {nonTakenNetworkNames} zu erstellen."
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
@@ -7941,6 +7984,7 @@ msgstr "Einzahlungsgebühr"
 msgid "Enter a new size or price"
 msgstr "Neue Größe oder Preis eingeben"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool amount exceeded"
@@ -7966,6 +8010,10 @@ msgstr "Max. Aktionsanzahl erreicht. <0>Hier klicken</0> zum Aktualisieren."
 msgid "{column}"
 msgstr "{column}"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
+msgstr "Unzureichendes {localizedList} für Gas in Ihrer Wallet auf {chainName}. <0>Kaufe {localizedList}</0>"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
 msgstr "Sicher vor <0/> Liquidationen bleiben"
@@ -7983,6 +8031,8 @@ msgstr "Gestakte GMX-Belohnungen:"
 msgid "Execution prices for increasing longs and<0/>decreasing shorts."
 msgstr "Ausführungspreise für das Erhöhen von Longs und<0/>Verringern von Shorts."
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "It will take a couple of minutes to be reflected. Please check back later."
 msgstr "Es dauert ein paar Minuten, bis es widergespiegelt wird. Bitte später überprüfen."
@@ -8008,6 +8058,10 @@ msgstr "Adresse in Ihre Zwischenablage kopiert."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "Verbleibendes Kollateral unter {0} USD"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr "Einlösen erfordert <0/>, während Sie <1/> haben. Bitte <2>tauschen</2> Sie mehr {0} oder <3>zahlen</3> Sie mehr {0} auf Ihr GMX-Konto ein."
 
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
@@ -8407,10 +8461,6 @@ msgstr "TWAP-Teil aktualisieren"
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "Wie verdient GLV Rendite, und wo sehe ich meine Einnahmen?"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "Please switch to {0} to create your referral code. It will work across all other networks."
-msgstr "Bitte wechseln Sie zu {0}, um Ihren Empfehlungscode zu erstellen. Er funktioniert über alle anderen Netzwerke."
-
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete Account Transfer"
@@ -8465,6 +8515,7 @@ msgstr "DeBank"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"
