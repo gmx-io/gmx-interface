@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "configs/factors";
-
-const ONE_USD = 1000000000000000000000000000000n;
-
 import {
   applyFactor,
   basisPointsToFloat,
@@ -27,7 +24,9 @@ import {
   roundWithDecimals,
   roundUpMagnitudeDivision,
   toBigNumberWithDecimals,
-} from "../numbers";
+} from "utils/numbers";
+
+const ONE_USD = 1000000000000000000000000000000n;
 
 describe("numbers utils", () => {
   it("constants", () => {
@@ -278,19 +277,19 @@ describe("formatUsdPrice", () => {
   it("should calculate correct decimals if displayDecimals not passed", () =>
     // prettier-ignore
     {
-      expect(formatUsdPrice(ONE_USD * 10000n)).toBe(                 "$\u200a10,000.00");
-      expect(formatUsdPrice(ONE_USD * 1000n)).toBe(                  "$\u200a1,000.00");
-      expect(formatUsdPrice(ONE_USD * 100n)).toBe(                   "$\u200a100.000");
-      expect(formatUsdPrice(ONE_USD * 10n)).toBe(                    "$\u200a10.0000");
-      expect(formatUsdPrice(ONE_USD)).toBe(                          "$\u200a1.0000");
-      expect(formatUsdPrice(ONE_USD / 10n)).toBe(                    "$\u200a0.10000");
-      expect(formatUsdPrice(ONE_USD / 100n)).toBe(                   "$\u200a0.010000");
-      expect(formatUsdPrice(ONE_USD / 1000n)).toBe(                  "$\u200a0.0010000");
-      expect(formatUsdPrice(ONE_USD / 10_000n)).toBe(                "$\u200a0.0001000");
-      expect(formatUsdPrice(ONE_USD / 100_000n)).toBe(               "$\u200a0.00001000");
-      expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe(         "$\u200a0.000000001");
-      expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe( "<\u00a0$\u200a0.000000001");
-    });
+    expect(formatUsdPrice(ONE_USD * 10000n)).toBe("$\u200a10,000.00");
+    expect(formatUsdPrice(ONE_USD * 1000n)).toBe("$\u200a1,000.00");
+    expect(formatUsdPrice(ONE_USD * 100n)).toBe("$\u200a100.000");
+    expect(formatUsdPrice(ONE_USD * 10n)).toBe("$\u200a10.0000");
+    expect(formatUsdPrice(ONE_USD)).toBe("$\u200a1.0000");
+    expect(formatUsdPrice(ONE_USD / 10n)).toBe("$\u200a0.10000");
+    expect(formatUsdPrice(ONE_USD / 100n)).toBe("$\u200a0.010000");
+    expect(formatUsdPrice(ONE_USD / 1000n)).toBe("$\u200a0.0010000");
+    expect(formatUsdPrice(ONE_USD / 10_000n)).toBe("$\u200a0.0001000");
+    expect(formatUsdPrice(ONE_USD / 100_000n)).toBe("$\u200a0.00001000");
+    expect(formatUsdPrice(ONE_USD / 1_000_000_000n)).toBe("$\u200a0.000000001");
+    expect(formatUsdPrice(ONE_USD / 10_000_000_000n)).toBe("<\u00a0$\u200a0.000000001");
+  });
 });
 
 describe("formatAmountHuman", () => {
@@ -325,21 +324,21 @@ describe("formatBalanceAmount", () => {
   it("should display balance amount", () =>
     // prettier-ignore
     {
-    expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe(                "1,000.00");
-    expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe(                             "-");
-    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, {showZero: true})).toBe("0.0000");
-    expect(formatBalanceAmount(ONE_USD * 1n, USD_DECIMALS)).toBe(                   "1.0000");
-    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS)).toBe(                  "0.10000");
-    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS)).toBe(                 "0.010000");
-    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS)).toBe(               "0.0010000");
-    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS)).toBe(              "0.0001000");
-    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS)).toBe(             "0.00001000");
-    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS)).toBe(           "0.000001000");
-    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS)).toBe(          "0.000000100");
-    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe(         "0.000000010");
-    expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS)).toBe(       "1.00e-9");
-    expect(formatBalanceAmount(ONE_USD / 1_000_000_000_000n, USD_DECIMALS)).toBe(   "1.00e-12");
-    expect(formatBalanceAmount(ONE_USD * -1n, USD_DECIMALS)).toBe(                 "-1.0000");
+    expect(formatBalanceAmount(ONE_USD * 1000n, USD_DECIMALS)).toBe("1,000.00");
+    expect(formatBalanceAmount(0n, USD_DECIMALS)).toBe("-");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { showZero: true })).toBe("0.0000");
+    expect(formatBalanceAmount(ONE_USD * 1n, USD_DECIMALS)).toBe("1.0000");
+    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS)).toBe("0.10000");
+    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS)).toBe("0.010000");
+    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS)).toBe("0.0010000");
+    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS)).toBe("0.0001000");
+    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS)).toBe("0.00001000");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS)).toBe("0.000001000");
+    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS)).toBe("0.000000100");
+    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS)).toBe("0.000000010");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS)).toBe("1.00e-9");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000_000_000n, USD_DECIMALS)).toBe("1.00e-12");
+    expect(formatBalanceAmount(ONE_USD * -1n, USD_DECIMALS)).toBe("-1.0000");
   });
 
   it("should display balance amount with symbol", () => {
@@ -352,20 +351,20 @@ describe("formatBalanceAmount", () => {
   it("should display balance of stable token correctly", () =>
     // prettier-ignore
     {
-    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, undefined, { isStable: true })).toBe(                 "1.00");
-    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS, undefined, { isStable: true })).toBe(           "0.10");
-    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS, undefined, { isStable: true })).toBe(          "0.010");
-    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(        "0.0010");
-    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(       "0.00010");
-    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(      "0.000010");
-    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(    "0.0000010");
-    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(   "0.00000010");
-    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe(  "0.000000010");
+    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, undefined, { isStable: true })).toBe("1.00");
+    expect(formatBalanceAmount(ONE_USD / 10n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.10");
+    expect(formatBalanceAmount(ONE_USD / 100n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.010");
+    expect(formatBalanceAmount(ONE_USD / 1_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.0010");
+    expect(formatBalanceAmount(ONE_USD / 10_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.00010");
+    expect(formatBalanceAmount(ONE_USD / 100_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.000010");
+    expect(formatBalanceAmount(ONE_USD / 1_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.0000010");
+    expect(formatBalanceAmount(ONE_USD / 10_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.00000010");
+    expect(formatBalanceAmount(ONE_USD / 100_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("0.000000010");
     expect(formatBalanceAmount(ONE_USD / 1_000_000_000n, USD_DECIMALS, undefined, { isStable: true })).toBe("1.00e-9");
-    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { isStable: true, showZero: true })).toBe(      "0.00");
-    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, undefined, { isStable: true, signed: true })).toBe(  "+1.00");
-    expect(formatBalanceAmount(-ONE_USD, USD_DECIMALS, undefined, { isStable: true, signed: true })).toBe( "-1.00");
-    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { isStable: true, showZero: false })).toBe(     "-");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { isStable: true, showZero: true })).toBe("0.00");
+    expect(formatBalanceAmount(ONE_USD, USD_DECIMALS, undefined, { isStable: true, signed: true })).toBe("+1.00");
+    expect(formatBalanceAmount(-ONE_USD, USD_DECIMALS, undefined, { isStable: true, signed: true })).toBe("-1.00");
+    expect(formatBalanceAmount(0n, USD_DECIMALS, undefined, { isStable: true, showZero: false })).toBe("-");
   });
 });
 
@@ -445,28 +444,28 @@ describe("formatTokenAmount", () => {
   it("should adjust decimals based on amount magnitude (non-stable)", () =>
     // prettier-ignore
     {
-      expect(formatTokenAmount(ONE_TOKEN * 1000n, TOKEN_DECIMALS)).toBe(    "1000.00");
-      expect(formatTokenAmount(ONE_TOKEN * 100n, TOKEN_DECIMALS)).toBe(     "100.000");
-      expect(formatTokenAmount(ONE_TOKEN * 10n, TOKEN_DECIMALS)).toBe(      "10.0000");
-      expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS)).toBe(            "1.0000");
-      expect(formatTokenAmount(ONE_TOKEN / 10n, TOKEN_DECIMALS)).toBe(      "0.10000");
-      expect(formatTokenAmount(ONE_TOKEN / 100n, TOKEN_DECIMALS)).toBe(     "0.010000");
-      expect(formatTokenAmount(ONE_TOKEN / 1000n, TOKEN_DECIMALS)).toBe(    "0.0010000");
-      expect(formatTokenAmount(ONE_TOKEN / 10000n, TOKEN_DECIMALS)).toBe(   "0.0001000");
-    });
+    expect(formatTokenAmount(ONE_TOKEN * 1000n, TOKEN_DECIMALS)).toBe("1000.00");
+    expect(formatTokenAmount(ONE_TOKEN * 100n, TOKEN_DECIMALS)).toBe("100.000");
+    expect(formatTokenAmount(ONE_TOKEN * 10n, TOKEN_DECIMALS)).toBe("10.0000");
+    expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS)).toBe("1.0000");
+    expect(formatTokenAmount(ONE_TOKEN / 10n, TOKEN_DECIMALS)).toBe("0.10000");
+    expect(formatTokenAmount(ONE_TOKEN / 100n, TOKEN_DECIMALS)).toBe("0.010000");
+    expect(formatTokenAmount(ONE_TOKEN / 1000n, TOKEN_DECIMALS)).toBe("0.0010000");
+    expect(formatTokenAmount(ONE_TOKEN / 10000n, TOKEN_DECIMALS)).toBe("0.0001000");
+  });
 
   it("should adjust decimals based on amount magnitude (stable)", () =>
     // prettier-ignore
     {
-      expect(formatTokenAmount(ONE_TOKEN * 1000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(  "1000.00");
-      expect(formatTokenAmount(ONE_TOKEN * 100n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(   "100.00");
-      expect(formatTokenAmount(ONE_TOKEN * 10n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(    "10.00");
-      expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(          "1.00");
-      expect(formatTokenAmount(ONE_TOKEN / 10n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(    "0.10");
-      expect(formatTokenAmount(ONE_TOKEN / 100n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(   "0.010");
-      expect(formatTokenAmount(ONE_TOKEN / 1000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe(  "0.0010");
-      expect(formatTokenAmount(ONE_TOKEN / 10000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe( "0.00010");
-    });
+    expect(formatTokenAmount(ONE_TOKEN * 1000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("1000.00");
+    expect(formatTokenAmount(ONE_TOKEN * 100n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("100.00");
+    expect(formatTokenAmount(ONE_TOKEN * 10n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("10.00");
+    expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("1.00");
+    expect(formatTokenAmount(ONE_TOKEN / 10n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("0.10");
+    expect(formatTokenAmount(ONE_TOKEN / 100n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("0.010");
+    expect(formatTokenAmount(ONE_TOKEN / 1000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("0.0010");
+    expect(formatTokenAmount(ONE_TOKEN / 10000n, TOKEN_DECIMALS, undefined, { isStable: true })).toBe("0.00010");
+  });
 
   it("should respect explicit displayDecimals override", () => {
     expect(formatTokenAmount(ONE_TOKEN, TOKEN_DECIMALS, undefined, { displayDecimals: 2 })).toBe("1.00");

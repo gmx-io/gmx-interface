@@ -23,12 +23,11 @@
     "baseUrl": "./src",
     "paths": {
       "sdk": ["../../sdk/src/index.ts"],
-      "sdk/codegen/*": ["../../sdk/codegen/*"],
       "sdk/*": ["../../sdk/src/*"],
       "landing/*": ["./*"],
       "*": ["../../src/*"]
     }
   },
   "references": [{ "path": "../sdk" }],
-  "include": ["src", "../sdk/src", "../sdk/codegen", "../src", "../viem-override.d.ts"]
+  "include": ["src", "../sdk/src", "../src", "../viem-override.d.ts"]
 }

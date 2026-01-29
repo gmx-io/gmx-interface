@@ -7,7 +7,6 @@ import { suppressConsole } from "lib/__testUtils__/_utils";
 import { abis } from "sdk/abis";
 import { SOURCE_SEPOLIA } from "sdk/configs/chains";
 import * as marketsModule from "sdk/configs/markets";
-import * as prebuiltModule from "sdk/prebuilt";
 
 import { RpcTracker } from "../RpcTracker";
 import { createMockRpcTrackerParams, createMockBlockAndAggregateResponse } from "./_utils";
@@ -374,8 +373,6 @@ describe("RpcTracker - checkRpc", () => {
     it("should handle missing probeFieldKey", async () => {
       const params = createMockRpcTrackerParams();
       const tracker = new RpcTracker(params);
-
-      vi.spyOn(prebuiltModule, "HASHED_MARKET_CONFIG_KEYS", "get").mockReturnValue({});
 
       const publicProviders = rpcConfigModule.getRpcProviders(params.chainId, "default").filter((p) => p?.isPublic);
       const publicProvider = publicProviders[0];

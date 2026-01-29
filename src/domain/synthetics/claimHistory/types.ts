@@ -1,4 +1,4 @@
-import { Token } from "sdk/types/tokens";
+import { Token } from "sdk/utils/tokens/types";
 
 import { MarketInfo } from "../markets";
 

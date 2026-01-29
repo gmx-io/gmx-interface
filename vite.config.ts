@@ -62,7 +62,6 @@ export default defineConfig(({ mode }) => {
         pages: path.resolve(__dirname, "src/pages"),
         styles: path.resolve(__dirname, "src/styles"),
         prebuilt: path.resolve(__dirname, "src/prebuilt"),
-        "sdk/codegen": path.resolve(__dirname, "sdk/codegen"),
         sdk: path.resolve(__dirname, "sdk/src"),
       },
     },

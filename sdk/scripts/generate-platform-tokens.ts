@@ -264,7 +264,7 @@ function main(): void {
 
   const platformTokens = generatePlatformTokens(gmxLayerZeroPath);
 
-  const outputPath = path.join(__dirname, "..", "codegen", "platformTokens.json");
+  const outputPath = path.join(__dirname, "..", "src", "codegen", "platformTokens.json");
 
   fs.writeFileSync(outputPath, JSON.stringify(platformTokens, null, 2) + "\n", "utf8");
 

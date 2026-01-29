@@ -9,8 +9,8 @@ import { selectGlvInfo, selectMarketsInfoData } from "context/SyntheticsStateCon
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
+import type { ClaimableAmount } from "sdk/codegen/subsquid";
 import { ContractsChainId } from "sdk/configs/chains";
-import type { ClaimableAmount } from "sdk/types/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 import { getMarketPoolName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";

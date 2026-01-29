@@ -4,6 +4,6 @@
     "outDir": "./build/cjs",
     "module": "commonjs"
   },
-  "include": ["../viem-override.d.ts", "./src", "./codegen", "./src/**/*.json", "./codegen/**/*.json"],
+  "include": ["../viem-override.d.ts", "./src", "./src/**/*.json"],
   "exclude": ["./scripts"]
 }

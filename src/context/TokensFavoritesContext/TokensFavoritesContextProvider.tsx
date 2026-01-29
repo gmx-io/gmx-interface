@@ -6,7 +6,7 @@ import { PropsWithChildren, createContext, useCallback, useContext, useMemo } fr
 import { TOKEN_FAVORITES_PREFERENCE_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
-import type { TokenCategory } from "sdk/types/tokens";
+import type { TokenCategory } from "sdk/utils/tokens/types";
 
 export type TokenFavoritesTabOption = "all" | "favorites" | TokenCategory;
 export type TokenFavoritesType = "gm" | "index";

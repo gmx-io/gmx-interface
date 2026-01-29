@@ -12,8 +12,8 @@ import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEst
 import type { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import type { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
 import type { NativeTokenSupportedAddress, ERC20Address, TokensData } from "domain/tokens";
-import type { ExecutionFee, GasLimitsConfig } from "sdk/types/fees";
-import { type DepositAmounts, WithdrawalAmounts } from "sdk/types/trade";
+import type { ExecutionFee, GasLimitsConfig } from "sdk/utils/fees/types";
+import { type DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
 
 import { Operation } from "../types";
 
