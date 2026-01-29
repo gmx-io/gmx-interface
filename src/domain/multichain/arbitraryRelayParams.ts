@@ -1,10 +1,18 @@
 import { useMemo } from "react";
-import { encodeAbiParameters, encodePacked, EstimateGasParameters, keccak256, PublicClient, toHex } from "viem";
+import {
+  encodeAbiParameters,
+  encodePacked,
+  EstimateGasParameters,
+  keccak256,
+  PublicClient,
+  toHex,
+  zeroHash,
+} from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
-import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
+import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
@@ -133,6 +141,7 @@ async function estimateArbitraryGasLimit({
   chainId,
   account,
   additionalBalanceOverrideTokens,
+  overrideWnt = false,
 }: {
   chainId: ContractsChainId;
   client: PublicClient;
@@ -142,6 +151,7 @@ async function estimateArbitraryGasLimit({
   subaccount: Subaccount | undefined;
   account: string;
   additionalBalanceOverrideTokens?: string[];
+  overrideWnt?: boolean;
 }): Promise<bigint> {
   const { txnData: baseTxnData } = await expressTransactionBuilder({
     relayParams: rawRelayParamsPayload,
@@ -180,6 +190,38 @@ async function estimateArbitraryGasLimit({
       },
     ],
   };
+
+  if (overrideWnt) {
+    params.stateOverride!.push(
+      {
+        address: gasPaymentParams.gasPaymentTokenAddress,
+        code: OVERRIDE_ERC20_BYTECODE,
+        state: [
+          {
+            slot: RANDOM_SLOT,
+            value: zeroHash,
+          },
+        ],
+      },
+      {
+        address: getContract(chainId, "LayerZeroProvider"),
+        balance: SIMULATED_MULTICHAIN_BALANCE,
+      }
+    );
+
+    if (gasPaymentParams.relayerFeeTokenAddress !== gasPaymentParams.gasPaymentTokenAddress) {
+      params.stateOverride!.push({
+        address: gasPaymentParams.relayerFeeTokenAddress,
+        code: OVERRIDE_ERC20_BYTECODE,
+        state: [
+          {
+            slot: RANDOM_SLOT,
+            value: zeroHash,
+          },
+        ],
+      });
+    }
+  }
 
   const gasLimit = await fallbackCustomError(
     async () => client.estimateGas(params).then(applyGasLimitBuffer),
@@ -331,6 +373,7 @@ export function useArbitraryRelayParamsAndPayload({
   gasPaymentTokenAsCollateralAmount,
   withLoading = true,
   requireValidations = true,
+  overrideWnt,
 }: {
   expressTransactionBuilder: ExpressTransactionBuilder | undefined;
   isGmxAccount: boolean;
@@ -339,6 +382,7 @@ export function useArbitraryRelayParamsAndPayload({
   gasPaymentTokenAsCollateralAmount?: bigint;
   withLoading?: boolean;
   requireValidations?: boolean;
+  overrideWnt?: boolean;
 }): AsyncResult<ExpressTxnParams> {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
@@ -375,6 +419,7 @@ export function useArbitraryRelayParamsAndPayload({
         rawRelayParamsPayload: rawBaseRelayParamsPayload,
         gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
         subaccount: p.subaccount,
+        overrideWnt: p.overrideWnt,
       }).catch((error) => {
         metrics.pushError(error, "expressArbitrary.estimateGas");
         throw error;
@@ -425,6 +470,7 @@ export function useArbitraryRelayParamsAndPayload({
               executionFeeAmount,
               gasPaymentTokenAsCollateralAmount,
               requireValidations,
+              overrideWnt,
             }
           : undefined,
       forceRecalculate,
@@ -434,18 +480,18 @@ export function useArbitraryRelayParamsAndPayload({
   return expressTxnParamsAsyncResult;
 }
 
+export type ArbitraryExpressError = {
+  isOutOfTokenError?: {
+    tokenAddress: string;
+    isGasPaymentToken: boolean;
+    balance?: bigint;
+    requiredAmount?: bigint;
+  };
+};
+
 export function useArbitraryError(
   error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined
-):
-  | {
-      isOutOfTokenError?: {
-        tokenAddress: string;
-        isGasPaymentToken: boolean;
-        balance?: bigint;
-        requiredAmount?: bigint;
-      };
-    }
-  | undefined {
+): ArbitraryExpressError | undefined {
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
 
   return useMemo(() => {
@@ -469,10 +515,10 @@ export function useArbitraryError(
     if (isInsufficientMultichainBalance) {
       return {
         isOutOfTokenError: {
-          tokenAddress: error.args[1],
-          isGasPaymentToken: error.args[1] === gasPaymentTokenAddress,
-          balance: error.args[2],
-          requiredAmount: error.args[3],
+          tokenAddress: error.args.token,
+          isGasPaymentToken: error.args.token === gasPaymentTokenAddress,
+          balance: error.args.balance,
+          requiredAmount: error.args.amount,
         },
       };
     }

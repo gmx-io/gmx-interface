@@ -434,7 +434,6 @@ export function OrderEditor(p: Props) {
       }
 
       const expressError = getExpressError({
-        chainId,
         expressParams,
         tokensData,
       });
@@ -456,7 +455,6 @@ export function OrderEditor(p: Props) {
     minOutputAmount,
     isRatioInverted,
     markRatio,
-    chainId,
     expressParams,
     tokensData,
   ]);

@@ -1,0 +1,21 @@
+import { describe, expect, it } from "vitest";
+
+import { arbitrumSdk } from "clients/v1/testUtil";
+
+describe("Positions", () => {
+  describe("read", () => {
+    it("should be able to get orders", { timeout: 90_000 }, async () => {
+      const { marketsInfoData, tokensData } = (await arbitrumSdk.markets.getMarketsInfo()) ?? {};
+
+      if (!tokensData || !marketsInfoData) {
+        throw new Error("Tokens data or markets info is not available");
+      }
+
+      const orders = await arbitrumSdk.orders.getOrders({
+        marketsInfoData,
+        tokensData,
+      });
+      expect(orders).toBeDefined();
+    });
+  });
+});

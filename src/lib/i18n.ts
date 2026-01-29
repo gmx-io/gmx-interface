@@ -40,3 +40,23 @@ export function useLocalizedMap<T extends Record<string, MessageDescriptor>>(map
 
   return useMemo(() => mapValues(map, (value) => _(value)), [_, map]);
 }
+
+const LIST_FORMATTER_CACHE: Record<string, Intl.ListFormat["format"]> = {};
+
+export function useLocalizedList(items: string[]) {
+  const { i18n } = useLingui();
+
+  let formatList: Intl.ListFormat["format"];
+  if (LIST_FORMATTER_CACHE[i18n.locale]) {
+    formatList = LIST_FORMATTER_CACHE[i18n.locale];
+  } else {
+    const intl = new Intl.ListFormat(i18n.locale, {
+      style: "long",
+      type: "disjunction",
+    });
+    formatList = intl.format.bind(intl);
+    LIST_FORMATTER_CACHE[i18n.locale] = formatList;
+  }
+
+  return formatList(items);
+}

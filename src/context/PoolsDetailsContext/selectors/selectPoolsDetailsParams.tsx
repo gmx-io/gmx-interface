@@ -45,9 +45,9 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
-import { WithdrawalAmounts } from "sdk/types/trade";
 import { nowInSeconds } from "sdk/utils/time";
 import { applySlippageToMinOut } from "sdk/utils/trade/trade";
+import { WithdrawalAmounts } from "sdk/utils/trade/types";
 
 import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts";
 

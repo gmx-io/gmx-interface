@@ -9,7 +9,7 @@ import useWallet from "lib/wallets/useWallet";
 import type { AnyChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import type { TokensAllowanceData } from "./types";
+import type { TokensAllowanceData } from ".";
 
 export type TokenAllowanceResult = {
   tokensAllowanceData?: TokensAllowanceData;

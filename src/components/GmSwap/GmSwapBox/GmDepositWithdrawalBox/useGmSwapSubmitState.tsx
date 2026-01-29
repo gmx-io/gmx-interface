@@ -30,13 +30,22 @@ import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "doma
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
-import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
+import {
+  getCommonError,
+  getDefaultInsufficientGasMessage,
+  getGmSwapError,
+  takeValidationResult,
+  ValidationBannerErrorName,
+  ValidationResult,
+} from "domain/synthetics/trade/utils/validation";
 import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
-import { GmSwapFees } from "sdk/types/trade";
 import { bigMath } from "sdk/utils/bigmath";
+import { GmSwapFees } from "sdk/utils/trade/types";
+
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -68,7 +77,7 @@ type SubmitButtonState = {
   isAllowanceLoaded?: boolean;
   isAllowanceLoading?: boolean;
   errorDescription?: string;
-  warningText?: string;
+  bannerErrorContent?: React.ReactNode;
 };
 
 export const useGmSwapSubmitState = ({
@@ -132,9 +141,10 @@ export const useGmSwapSubmitState = ({
     chainId,
     isConnected: true,
     hasOutdatedUi,
-  })[0];
+  });
 
-  const [swapError, swapErrorDescription] = getGmSwapError({
+  // TODO Make all errors in validation language agnostic
+  const swapError = getGmSwapError({
     isDeposit,
     marketInfo,
     glvInfo,
@@ -159,7 +169,7 @@ export const useGmSwapSubmitState = ({
     isPair,
     chainId,
     srcChainId,
-    marketToken: marketToken,
+    marketToken,
   });
 
   const expressError = useExpressError({
@@ -218,7 +228,7 @@ export const useGmSwapSubmitState = ({
     paySourceChainNativeTokenAmount,
   });
 
-  const formattedEstimationError = useMemo(() => {
+  const formattedEstimationError = useMemo((): ValidationResult | undefined => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
         const { symbol, decimals } = gasPaymentToken;
@@ -238,10 +248,14 @@ export const useGmSwapSubmitState = ({
         const totalRequired = collateralAmount + (estimationError.params?.requiredAmount ?? 0n);
         const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
 
-        return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
+        return {
+          buttonErrorMessage: t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`,
+        };
       }
     } else if (estimationError) {
-      return estimationError.name;
+      return {
+        buttonErrorMessage: estimationError.name,
+      };
     }
 
     return undefined;
@@ -255,8 +269,13 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   ]);
 
-  const error =
-    commonError || swapError || expressError || sourceChainNativeFeeError?.buttonText || formattedEstimationError;
+  const error = takeValidationResult(
+    commonError,
+    swapError,
+    expressError,
+    sourceChainNativeFeeError,
+    formattedEstimationError
+  );
 
   const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
 
@@ -290,15 +309,21 @@ export const useGmSwapSubmitState = ({
       };
     }
 
-    if (error) {
+    if (error.buttonErrorMessage) {
       return {
-        text: error,
+        text: error.buttonErrorMessage,
         disabled: !shouldDisableValidation,
         onSubmit: onSubmit,
         isAllowanceLoaded,
         isAllowanceLoading,
-        errorDescription: swapErrorDescription,
-        warningText: sourceChainNativeFeeError?.warningText,
+        errorDescription: error.buttonTooltipMessage,
+        bannerErrorContent: error.bannerErrorName ? (
+          <ValidationBannerErrorContent
+            validationBannerErrorName={error.bannerErrorName}
+            chainId={chainId}
+            srcChainId={srcChainId}
+          />
+        ) : null,
       };
     }
 
@@ -372,25 +397,27 @@ export const useGmSwapSubmitState = ({
     };
   }, [
     account,
+    isAvalancheGmxAccountWarning,
     isAllowanceLoading,
     technicalFees,
     technicalFeesError,
-    error,
+    error.buttonErrorMessage,
+    error.buttonTooltipMessage,
+    error.bannerErrorName,
     isApproving,
     tokensToApproveSymbols,
     isAllowanceLoaded,
     glvInfo,
     isSubmitting,
+    isLoading,
     isDeposit,
     onSubmit,
     onConnectAccount,
     shouldDisableValidation,
-    swapErrorDescription,
-    sourceChainNativeFeeError?.warningText,
+    chainId,
+    srcChainId,
     approve,
     operation,
-    isLoading,
-    isAvalancheGmxAccountWarning,
   ]);
 };
 
@@ -414,7 +441,7 @@ function useExpressError({
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   isDeposit: boolean;
-}): string | undefined {
+}): ValidationResult | undefined {
   return useMemo(() => {
     if (paySource !== "gmxAccount" || !technicalFees || !gasPaymentToken || !gasPaymentTokenAddress) {
       return undefined;
@@ -452,12 +479,10 @@ function useExpressError({
     const totalRequired = collateralAmount + gasPaymentTokenAmount;
 
     if (totalRequired > gmxAccountBalance) {
-      const { symbol, decimals } = gasPaymentToken;
-
-      const availableFormatted = formatBalanceAmount(gmxAccountBalance, decimals);
-      const requiredFormatted = formatBalanceAmount(totalRequired, decimals);
-
-      return t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`;
+      return {
+        buttonErrorMessage: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance,
+      };
     }
 
     return undefined;
