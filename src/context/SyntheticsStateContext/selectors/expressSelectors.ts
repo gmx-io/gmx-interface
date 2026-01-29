@@ -75,8 +75,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     !marketsInfoData ||
     !gasLimits ||
     gasPrice === undefined ||
-    bufferBps === undefined ||
-    gasPaymentAllowance?.isLoading
+    bufferBps === undefined
   ) {
     return undefined;
   }

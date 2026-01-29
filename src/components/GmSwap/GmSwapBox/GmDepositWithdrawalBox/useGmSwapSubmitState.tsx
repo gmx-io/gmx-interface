@@ -31,6 +31,7 @@ import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technic
 import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import { getCommonError, getGmSwapError } from "domain/synthetics/trade/utils/validation";
+import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -342,10 +343,32 @@ export const useGmSwapSubmitState = ({
       };
     }
 
+    if (technicalFeesError) {
+      let errorText: string;
+
+      if (isCustomError(technicalFeesError)) {
+        const errorName = technicalFeesError.name;
+
+        if (errorName === "InsufficientMultichainBalance") {
+          errorText = t`Insufficient balance`;
+        } else if (errorName === "MaxPoolAmountExceeded" || errorName === "MaxPoolAmountForDepositExceeded") {
+          errorText = t`Max pool amount exceeded`;
+        } else {
+          errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
+        }
+      } else {
+        errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
+      }
+
+      return {
+        text: errorText,
+        disabled: true,
+      };
+    }
+
     return {
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
       onSubmit,
-      disabled: Boolean(technicalFeesError),
     };
   }, [
     account,
