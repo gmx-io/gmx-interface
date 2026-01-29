@@ -7,7 +7,7 @@ import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
 import words from "lodash/words";
 
-import { TradeActionType } from "sdk/types/tradeHistory";
+import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
 

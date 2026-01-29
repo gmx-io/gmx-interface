@@ -12,7 +12,7 @@ import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { getCategoryTokenAddresses, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { ProgressiveTokensData } from "sdk/types/tokens";
+import { ProgressiveTokensData } from "sdk/utils/tokens/types";
 
 import type { SortField } from "./GmList";
 import { sortGmTokensByField } from "./sortGmTokensByField";

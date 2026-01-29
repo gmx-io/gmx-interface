@@ -39,7 +39,7 @@ import { selectMultichainMarketTokenBalances } from "./selectMultichainMarketTok
 function createDisplayToken(
   token: TokenData,
   chainIdForToken: AnyChainId | GmxAccountPseudoChainId,
-  balance: bigint,
+  balance: bigint | undefined = 0n,
   isMarketToken = false
 ): DisplayToken {
   const balanceUsd = token.prices ? convertToUsd(balance, token.decimals, getMidPrice(token.prices)) ?? 0n : 0n;
@@ -153,13 +153,10 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
     const token = marketAndTradeTokensData?.[tokenAddress];
     if (!token) continue;
 
-    if (token.walletBalance !== undefined && token.walletBalance !== 0n) {
-      result.push(createDisplayToken(token, chainId, token.walletBalance));
-    }
-    if (chainId !== AVALANCHE) {
-      if (token.gmxAccountBalance !== undefined && token.gmxAccountBalance !== 0n) {
-        result.push(createDisplayToken(token, GMX_ACCOUNT_PSEUDO_CHAIN_ID, token.gmxAccountBalance));
-      }
+    result.push(createDisplayToken(token, chainId, token.walletBalance));
+
+    if (chainId !== AVALANCHE && tokenAddress !== zeroAddress) {
+      result.push(createDisplayToken(token, GMX_ACCOUNT_PSEUDO_CHAIN_ID, token.gmxAccountBalance ?? 0n));
     }
   }
 

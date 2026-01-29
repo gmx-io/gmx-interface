@@ -124,6 +124,10 @@ async function calculateGmxAccountDepositTechnicalFees(
     expressTransactionBuilder: expressTransactionBuilder,
     gasPaymentParams: params.baseRelayFeeSwapParams.gasPaymentParams,
     subaccount: undefined,
+    additionalBalanceOverrideTokens: [
+      castedParams.addresses.initialLongToken,
+      castedParams.addresses.initialShortToken,
+    ],
   });
 
   const relayFeeUsd = convertToUsd(
@@ -227,6 +231,10 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     }
   };
 
+  const glvOrMarketTokenAddress = params.isGlv
+    ? (params.rawParams as RawCreateGlvWithdrawalParams).addresses.glv
+    : (params.rawParams as RawCreateWithdrawalParams).addresses.market;
+
   const relayFee = await estimateArbitraryRelayFee({
     account: params.rawParams.addresses.receiver,
     chainId: params.chainId,
@@ -235,6 +243,7 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     expressTransactionBuilder: expressTransactionBuilder,
     gasPaymentParams: params.baseRelayFeeSwapParams.gasPaymentParams,
     subaccount: undefined,
+    additionalBalanceOverrideTokens: [glvOrMarketTokenAddress],
   });
 
   const relayFeeUsd = convertToUsd(

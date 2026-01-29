@@ -8,7 +8,7 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
-import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens/utils";
+import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenData } from "domain/tokens";
 import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";

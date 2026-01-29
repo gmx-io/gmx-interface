@@ -185,10 +185,14 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/referrals">
-        <Referrals />
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
+          <Referrals />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/referrals/:account">
-        <Referrals />
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
+          <Referrals />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/nft_wallet">
         <NftWallet />
