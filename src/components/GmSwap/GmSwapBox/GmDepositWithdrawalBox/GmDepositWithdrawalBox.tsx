@@ -635,7 +635,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarning={shouldShowWarning}
                 shouldShowWarningForPosition={shouldShowWarningForPosition}
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-                insufficientGasWarningText={submitState.warningText}
+                bannerErrorContent={submitState.bannerErrorContent}
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
               />
             </div>
