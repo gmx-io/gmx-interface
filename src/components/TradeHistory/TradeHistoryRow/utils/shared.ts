@@ -43,9 +43,9 @@ export type TooltipString =
   | undefined
   | string
   | {
-    text: string | undefined;
-    state?: TooltipState;
-  };
+      text: string | undefined;
+      state?: TooltipState;
+    };
 
 export function numberToState(value: bigint | undefined): TooltipState {
   if (value === undefined) {
@@ -65,9 +65,9 @@ export type Line =
   | TooltipString
   | TooltipString[]
   | {
-    key: string;
-    value: TooltipString;
-  };
+      key: string;
+      value: TooltipString;
+    };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
   return args;
