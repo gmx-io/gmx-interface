@@ -3,7 +3,5 @@
   "compilerOptions": {
     "outDir": "./build/esm",
     "module": "esnext"
-  },
-  "include": ["../viem-override.d.ts", "./src", "./src/**/*.json"],
-  "exclude": ["./scripts"]
+  }
 }

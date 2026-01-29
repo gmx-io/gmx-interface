@@ -37,5 +37,5 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
-  "include": ["../viem-override.d.ts", "./src", "./src/**/*.json", "./scripts"]
+  "include": ["./src", "./src/**/*.json", "./scripts", "../viem-override.d.ts"]
 }

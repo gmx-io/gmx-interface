@@ -73,6 +73,7 @@ function isTestnetChain(chainId: number): boolean {
   return [AVALANCHE_FUJI, ARBITRUM_SEPOLIA, SOURCE_SEPOLIA, SOURCE_OPTIMISM_SEPOLIA].includes(chainId);
 }
 
+// @ts-ignore
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

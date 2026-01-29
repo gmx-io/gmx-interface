@@ -3,7 +3,5 @@
   "compilerOptions": {
     "outDir": "./build/cjs",
     "module": "commonjs"
-  },
-  "include": ["../viem-override.d.ts", "./src", "./src/**/*.json"],
-  "exclude": ["./scripts"]
+  }
 }
