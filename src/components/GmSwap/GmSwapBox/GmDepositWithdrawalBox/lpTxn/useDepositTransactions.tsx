@@ -52,7 +52,7 @@ import { createMultichainGlvDepositTxn } from "domain/synthetics/markets/createM
 import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSourceChainDepositTxn";
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
-import { ERC20Address, NativeTokenSupportedAddress, TokenBalanceType } from "domain/tokens";
+import { ERC20Address, TokenBalanceType } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
@@ -249,14 +249,28 @@ export const useDepositTransactions = ({
           return;
         }
 
-        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
+        if (longTokenAddress !== shortTokenAddress && longTokenAmount > 0n && shortTokenAmount > 0n) {
           throw new Error("Pay source sourceChain does not support both long and short token deposits");
         }
 
-        let tokenAddress: ERC20Address | NativeTokenSupportedAddress =
-          longTokenAmount! > 0n ? longTokenAddress! : shortTokenAddress!;
-        tokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
-        const tokenAmount = longTokenAmount! > 0n ? longTokenAmount! : shortTokenAmount!;
+        if (longTokenAddress === undefined || shortTokenAddress === undefined) {
+          throw new Error("Long or short token address is not set");
+        }
+
+        let tokenAddress: ERC20Address;
+        let tokenAmount: bigint;
+        if (longTokenAddress === shortTokenAddress) {
+          tokenAddress = longTokenAddress;
+          tokenAmount = longTokenAmount + shortTokenAmount;
+        } else if (longTokenAmount > 0n) {
+          tokenAddress = longTokenAddress;
+          tokenAmount = longTokenAmount;
+        } else if (shortTokenAmount > 0n) {
+          tokenAddress = shortTokenAddress;
+          tokenAmount = shortTokenAmount;
+        } else {
+          throw new Error("No token amount specified for deposit");
+        }
 
         const fees = technicalFees?.kind === "sourceChain" && technicalFees.isDeposit ? technicalFees.fees : undefined;
         if (!fees) {
@@ -420,7 +434,7 @@ export const useDepositTransactions = ({
           return;
         }
 
-        if (longTokenAmount! > 0n && shortTokenAmount! > 0n) {
+        if (longTokenAddress !== shortTokenAddress && longTokenAmount > 0n && shortTokenAmount > 0n) {
           throw new Error("Pay source sourceChain does not support both long and short token deposits");
         }
 
@@ -438,6 +452,9 @@ export const useDepositTransactions = ({
         if ((rawParams as RawCreateGlvDepositParams).isMarketTokenDeposit) {
           tokenAddress = (rawParams as RawCreateGlvDepositParams).addresses.market;
           tokenAmount = marketTokenAmount;
+        } else if (longTokenAddress === shortTokenAddress) {
+          tokenAddress = longTokenAddress;
+          tokenAmount = longTokenAmount + shortTokenAmount;
         } else if (longTokenAmount > 0n) {
           tokenAddress = longTokenAddress;
           tokenAmount = longTokenAmount;
