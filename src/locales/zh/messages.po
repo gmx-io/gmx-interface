@@ -2080,6 +2080,10 @@ msgstr "GLV 中没有足够的 GM: {0} [{1}] 流动性来满足您的售卖请�
 msgid "Deposited {0} into {positionText}"
 msgstr "存款 {0} 到 {positionText}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "30d Performance APY"
+msgstr ""
+
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -4080,10 +4084,6 @@ msgstr "{typeString} 做多限价：当价格低于触发价格时 {0} 一个做
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "{0} 需要作为抵押品。<0/><1/>在 GMX 内未找到 {1} 到 {2} 的交换路径。<2/><3/><4>您可以在 1inch 上购买 {3}。</4>"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "Total Fee APY"
-msgstr "总费用年化收益率"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
 msgstr "{gmOrGlvLabel} 桥接到"
@@ -5763,7 +5763,6 @@ msgstr "永续合约聚合器"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1 小时"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5902,6 +5901,10 @@ msgstr "<0><1>#GMX V2</1> 的 OI 看起来很棒</0><2>GMX V2 > GMX V1 + Kwenta 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "我们希望您的见解帮助改进 GMX。出于安全原因，我们不会先联系您。请将消息“我有反馈”发送到我们的任何官方账户："
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Total Performance APY"
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -7527,6 +7530,7 @@ msgstr "激活 1CT（一键交易）"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "奖金年利率将作为 {airdropTokenTitle} 代币空投。<0>阅读更多</0>。"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7768,10 +7772,6 @@ msgstr "<0>在领取前委托您未委托的 {0} GMX DAO</0> 投票权。"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
 msgstr "申领资金"
-
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "30d Fee APY"
-msgstr "30 天费用年化收益率"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"

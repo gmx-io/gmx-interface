@@ -30,23 +30,21 @@ export default function EarnPortfolioPage() {
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
-  const { marketsTokensApyData: marketsTotalApyData, glvApyInfoData: glvTotalApyData } = useGmMarketsApy(
-    chainId,
-    srcChainId,
-    { period: "total" }
-  );
-
-  const { marketsTokensApyData: markets30dApyData, glvApyInfoData: glv30dApyData } = useGmMarketsApy(
-    chainId,
-    srcChainId,
-    { period: "30d" }
-  );
-
   const { marketsTokensApyData: markets90dApyData, glvApyInfoData: glv90dApyData } = useGmMarketsApy(
     chainId,
     srcChainId,
     { period: "90d" }
   );
+
+  const { performance: performanceTotal } = usePerformanceAnnualized({
+    chainId,
+    period: "total",
+  });
+
+  const { performance: performance30d } = usePerformanceAnnualized({
+    chainId,
+    period: "30d",
+  });
 
   const { performance: performance90d } = usePerformanceAnnualized({
     chainId,
@@ -102,10 +100,8 @@ export default function EarnPortfolioPage() {
                 hasGmx={hasGmxAssets}
                 hasEsGmx={hasEsGmxAssets}
                 gmGlvAssets={gmGlvAssets}
-                glvTotalApyData={glvTotalApyData}
-                marketsTotalApyData={marketsTotalApyData}
-                glv30dApyData={glv30dApyData}
-                markets30dApyData={markets30dApyData}
+                performanceTotal={performanceTotal}
+                performance30d={performance30d}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
               />
             </ErrorBoundary>
@@ -131,10 +127,8 @@ export default function EarnPortfolioPage() {
                 hasGmx={hasGmxAssets}
                 hasEsGmx={hasEsGmxAssets}
                 gmGlvAssets={gmGlvAssets}
-                glvTotalApyData={glvTotalApyData}
-                marketsTotalApyData={marketsTotalApyData}
-                glv30dApyData={glv30dApyData}
-                markets30dApyData={markets30dApyData}
+                performanceTotal={performanceTotal}
+                performance30d={performance30d}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
               />
             </ErrorBoundary>

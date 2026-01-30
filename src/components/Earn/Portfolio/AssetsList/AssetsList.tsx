@@ -7,8 +7,7 @@ import { useMedia } from "react-use";
 import { ContractsChainId } from "config/chains";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { MarketTokensAPRData } from "domain/synthetics/markets/types";
+import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -34,10 +33,8 @@ function AssetsList({
   hasEsGmx,
   gmGlvAssets,
 
-  glvTotalApyData,
-  marketsTotalApyData,
-  glv30dApyData,
-  markets30dApyData,
+  performanceTotal,
+  performance30d,
   multichainMarketTokensBalances,
 }: {
   chainId: ContractsChainId;
@@ -46,10 +43,8 @@ function AssetsList({
   hasGmx: boolean;
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
-  glvTotalApyData: MarketTokensAPRData | undefined;
-  marketsTotalApyData: MarketTokensAPRData | undefined;
-  glv30dApyData: MarketTokensAPRData | undefined;
-  markets30dApyData: MarketTokensAPRData | undefined;
+  performanceTotal: PerformanceData | undefined;
+  performance30d: PerformanceData | undefined;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
   const cardsCount = (hasGmx ? 1 : 0) + (hasEsGmx ? 1 : 0) + gmGlvAssets.length;
@@ -118,16 +113,8 @@ function AssetsList({
                   key={getGlvOrMarketAddress(info)}
                   marketInfo={info}
                   chainId={chainId}
-                  totalFeeApy={
-                    isGlvInfo(info)
-                      ? getByKey(glvTotalApyData, info.glvTokenAddress)
-                      : getByKey(marketsTotalApyData, info.marketTokenAddress)
-                  }
-                  feeApy30d={
-                    isGlvInfo(info)
-                      ? getByKey(glv30dApyData, info.glvTokenAddress)
-                      : getByKey(markets30dApyData, info.marketTokenAddress)
-                  }
+                  totalPerformanceApy={getByKey(performanceTotal, getGlvOrMarketAddress(info))}
+                  performanceApy30d={getByKey(performance30d, getGlvOrMarketAddress(info))}
                   multichainMarketTokenBalances={multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]}
                 />
               );

@@ -2080,6 +2080,10 @@ msgstr "판매 요청을 충족할 GLV 내 GM: {0} [{1}] 유동성이 충분하�
 msgid "Deposited {0} into {positionText}"
 msgstr "{positionText}에 {0} 예치"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "30d Performance APY"
+msgstr ""
+
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -4080,10 +4084,6 @@ msgstr "{typeString} 롱 지정가: 가격이 트리거 가격 아래로 떨어�
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "담보에 {0}이 필요합니다.<0/><1/>GMX 내에서 {1}에서 {2}로 스왑 경로가 없습니다.<2/><3/><4>1inch에서 {3} 구매 가능.</4>"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "Total Fee APY"
-msgstr "총 수수료 APY"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
 msgstr "{gmOrGlvLabel} 브리징 중"
@@ -5763,7 +5763,6 @@ msgstr "퍼페추얼 애그리게이터"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1시간"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5902,6 +5901,10 @@ msgstr "<0><1>#GMX V2</1>의 OI가 훌륭합니다</0><2>GMX V2 > GMX V1 + Kwent
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "GMX 개선을 돕기 위해 귀하의 통찰을 원합니다. 보안 이유로 먼저 연락하지 않습니다. 공식 계정에 \"피드백이 있습니다\" 메시지를 보내주세요:"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Total Performance APY"
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -7527,6 +7530,7 @@ msgstr "1CT (원클릭 거래) 활성화"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "보너스 APR은 {airdropTokenTitle} 토큰으로 에어드랍됩니다. <0>더 읽기</0>."
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7768,10 +7772,6 @@ msgstr "<0>청구 전 위임되지 않은 {0} GMX DAO</0> 투표권 위임."
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
 msgstr "자금 청구"
-
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "30d Fee APY"
-msgstr "30일 수수료 APY"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
