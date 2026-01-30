@@ -460,6 +460,7 @@ export function BridgeOutModal({
               chainId={chainId}
               srcChainId={bridgeOutChain}
               gasPaymentTokenAddress={gasPaymentTokenAddress}
+              onBeforeDeposit={() => setIsVisible(false)}
             />
           </AlertInfoCard>
         )}
