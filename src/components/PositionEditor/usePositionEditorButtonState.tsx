@@ -359,7 +359,6 @@ export function usePositionEditorButtonState(operation: Operation): {
     });
 
     const expressError = getExpressError({
-      chainId,
       expressParams,
       tokensData,
     });

@@ -1,11 +1,11 @@
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
 import type { GlobalExpressParams } from "domain/synthetics/express";
-import { getByKey } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
-import { SwapPricingType } from "sdk/types/orders";
-import type { FindSwapPath } from "sdk/types/trade";
+import { SwapPricingType } from "sdk/utils/orders/types";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
+import type { FindSwapPath } from "sdk/utils/trade/types";
 
 import { createSelector } from "../utils";
 import {
@@ -71,7 +71,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     (hasL1Gas && !l1Reference) ||
     !gasPaymentToken ||
     !relayerFeeToken ||
-    !gasPaymentAllowance?.tokensAllowanceData ||
     !tokensData ||
     !marketsInfoData ||
     !gasLimits ||
@@ -90,7 +89,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     isSponsoredCall: isSponsoredCallAvailable,
     findFeeSwapPath,
     tokenPermits,
-    gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
+    gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,
     bufferBps,
     gasPrice,
     gasLimits,

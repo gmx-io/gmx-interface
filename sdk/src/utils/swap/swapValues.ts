@@ -1,13 +1,10 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { InternalSwapStrategy, NoSwapStrategy } from "types/swapStrategy";
-import type { TokenData, TokensRatio } from "types/tokens";
-import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "types/trade";
-import { ExternalSwapQuoteParams, SwapRoute } from "types/trade";
 import { bigMath } from "utils/bigmath";
 import { getTotalSwapVolumeFromSwapStats } from "utils/fees";
+import { MarketsInfoData } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
+import { SwapPricingType } from "utils/orders/types";
+import { InternalSwapStrategy, NoSwapStrategy } from "utils/swap/types";
 import {
   convertToTokenAmount,
   convertToUsd,
@@ -18,6 +15,9 @@ import {
   getIsUnwrap,
   getIsWrap,
 } from "utils/tokens";
+import type { TokenData, TokensRatio } from "utils/tokens/types";
+import type { FindSwapPath, SwapAmounts, SwapOptimizationOrderArray } from "utils/trade/types";
+import { ExternalSwapQuoteParams, SwapRoute } from "utils/trade/types";
 
 import { buildReverseSwapStrategy, buildSwapStrategy } from "./buildSwapStrategy";
 

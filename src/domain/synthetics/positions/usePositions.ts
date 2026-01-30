@@ -17,11 +17,11 @@ import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
-import type { ContractMarketPrices, MarketsData } from "sdk/types/markets";
-import type { PositionsData } from "sdk/types/positions";
-import type { TokensData } from "sdk/types/tokens";
 import { getContractMarketPrices } from "sdk/utils/markets";
+import type { ContractMarketPrices, MarketsData } from "sdk/utils/markets/types";
 import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
+import type { PositionsData } from "sdk/utils/positions/types";
+import type { TokensData } from "sdk/utils/tokens/types";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 

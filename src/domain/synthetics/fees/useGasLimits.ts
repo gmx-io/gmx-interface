@@ -19,7 +19,7 @@ import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { GAS_LIMITS_STATIC_CONFIG } from "sdk/configs/gasLimits";
-import type { GasLimitsConfig } from "sdk/types/fees";
+import type { GasLimitsConfig } from "sdk/utils/fees/types";
 
 export function useGasLimits(chainId: ContractsChainId): GasLimitsConfig | undefined {
   const { data } = useMulticall(chainId, "useGasLimitsConfig", {
