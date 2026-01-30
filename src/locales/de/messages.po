@@ -1181,8 +1181,10 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "Kopiert"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Deposit to GMX Account"
 msgstr "Einzahlung auf GMX-Konto"
 
@@ -1663,7 +1665,8 @@ msgstr "Kombinierte Stop-Losses sind am Maximum (100 %). Verringere bestehende W
 msgid "4-18 Places"
 msgstr "4-18 Plätze"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Your deposit is in progress"
 msgstr "Deine Einzahlung wird bearbeitet"
 
@@ -1684,7 +1687,8 @@ msgstr "Dieser Token akkumuliert automatisch Gebühren aus Leverage-Trading und 
 msgid "Withdrew {0} from {positionText}"
 msgstr "Abgehoben {0} von {positionText}"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select Asset to Deposit"
 msgstr "Asset zum Einzahlen auswählen"
 
@@ -3056,7 +3060,8 @@ msgstr "Hoher Netto-Preis-Impact"
 msgid "Lev."
 msgstr "Hebel."
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Available to Trade Assets"
 msgstr "Verfügbare Assets zum Handeln"
 
@@ -5386,7 +5391,8 @@ msgstr "Marktverringerung"
 msgid "Updating {orderText}..."
 msgstr "{orderText} wird aktualisiert…"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdrawal from GMX Account"
 msgstr "Abhebung vom GMX-Konto"
 
@@ -5547,7 +5553,8 @@ msgstr "Vom Netzwerk"
 msgid "My assets"
 msgstr "Meine Assets"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "Vom GMX-Konto abheben"
 
@@ -7051,7 +7058,8 @@ msgstr "Anspruch bestätigen"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
@@ -7309,7 +7317,8 @@ msgstr "Wähle, ob du von dezentralen oder zentralen Exchanges kaufst."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"

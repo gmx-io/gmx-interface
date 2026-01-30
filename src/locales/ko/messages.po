@@ -1181,8 +1181,10 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "복사됨"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Deposit to GMX Account"
 msgstr "GMX 계정에 입금"
 
@@ -1663,7 +1665,8 @@ msgstr "결합 손절이 최대(100%)입니다. 더 많은 주문을 추가하�
 msgid "4-18 Places"
 msgstr "4-18위"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Your deposit is in progress"
 msgstr "입금 진행 중"
 
@@ -1684,7 +1687,8 @@ msgstr "이 토큰은 {marketName} 마켓의 레버리지 트레이딩 및 스�
 msgid "Withdrew {0} from {positionText}"
 msgstr "{positionText}에서 {0} 인출"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select Asset to Deposit"
 msgstr "입금할 자산 선택"
 
@@ -3056,7 +3060,8 @@ msgstr "높은 순 가격 영향"
 msgid "Lev."
 msgstr "레버리지"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Available to Trade Assets"
 msgstr "거래 가능한 자산"
 
@@ -5386,7 +5391,8 @@ msgstr "시장 감소"
 msgid "Updating {orderText}..."
 msgstr "{orderText} 업데이트 중…"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdrawal from GMX Account"
 msgstr "GMX 계정에서 출금"
 
@@ -5547,7 +5553,8 @@ msgstr "보내는 네트워크"
 msgid "My assets"
 msgstr "내 자산"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "GMX 계정에서 출금"
 
@@ -7051,7 +7058,8 @@ msgstr "수령 확인"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
@@ -7309,7 +7317,8 @@ msgstr "탈중앙화 또는 중앙화 거래소에서 구매 선택."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
