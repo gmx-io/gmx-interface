@@ -4410,10 +4410,6 @@ msgstr "Без повторных подтверждений кошелька"
 msgid "Shorts Net Rate / 1h"
 msgstr "Чистая Ставка Шортов / 1ч"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-#~ msgid "Discover GMX Earn"
-#~ msgstr "Откройте GMX Earn"
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Внести {gasPaymentTokensText}"
@@ -6140,6 +6136,10 @@ msgstr "Реализованное воздействие свопа"
 msgid "1st Place"
 msgstr "1-е место"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -7376,7 +7376,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "Условия рефералов"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "APY комиссий"

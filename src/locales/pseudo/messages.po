@@ -4410,10 +4410,6 @@ msgstr ""
 msgid "Shorts Net Rate / 1h"
 msgstr ""
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-#~ msgid "Discover GMX Earn"
-#~ msgstr ""
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr ""
@@ -6140,6 +6136,10 @@ msgstr ""
 msgid "1st Place"
 msgstr ""
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr ""
@@ -7376,7 +7376,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr ""
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr ""

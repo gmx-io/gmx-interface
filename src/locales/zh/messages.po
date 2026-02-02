@@ -4410,10 +4410,6 @@ msgstr "无需重复钱包确认"
 msgid "Shorts Net Rate / 1h"
 msgstr "做空净率 / 1h"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-#~ msgid "Discover GMX Earn"
-#~ msgstr "探索 GMX Earn"
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
@@ -6140,6 +6136,10 @@ msgstr "已实现互换价格冲击"
 msgid "1st Place"
 msgstr "第一名"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -7376,7 +7376,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "推荐条款"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "费用年利率"

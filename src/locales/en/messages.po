@@ -4410,10 +4410,6 @@ msgstr "No repeated wallet confirmations"
 msgid "Shorts Net Rate / 1h"
 msgstr "Shorts Net Rate / 1h"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-#~ msgid "Discover GMX Earn"
-#~ msgstr "Discover GMX Earn"
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Deposit {gasPaymentTokensText}"
@@ -6140,6 +6136,10 @@ msgstr "Realized Swap Impact"
 msgid "1st Place"
 msgstr "1st Place"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr "Performance APY"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -7376,7 +7376,6 @@ msgstr "No tokens on source chain"
 msgid "Referral Terms"
 msgstr "Referral Terms"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "Fee APY"

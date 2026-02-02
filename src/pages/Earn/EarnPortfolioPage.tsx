@@ -7,7 +7,6 @@ import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlat
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
@@ -29,12 +28,6 @@ export default function EarnPortfolioPage() {
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
-
-  const { marketsTokensApyData: markets90dApyData, glvApyInfoData: glv90dApyData } = useGmMarketsApy(
-    chainId,
-    srcChainId,
-    { period: "90d" }
-  );
 
   const { performance: performanceTotal } = usePerformanceAnnualized({
     chainId,
@@ -106,14 +99,12 @@ export default function EarnPortfolioPage() {
               />
             </ErrorBoundary>
           )}
-          {glv90dApyData && markets90dApyData && performance90d && marketTokensData && (
+          {performance90d && marketTokensData && marketsInfoData && (
             <ErrorBoundary id="EarnPortfolio-RecommendedAssets" variant="block" wrapperClassName="rounded-t-8">
               <RecommendedAssets
                 hasGmxAssets={hasGmxAssets}
                 marketsInfoData={marketsInfoData}
                 marketTokensData={marketTokensData}
-                marketsApyInfo={markets90dApyData}
-                glvsApyInfo={glv90dApyData}
                 performance={performance90d}
               />
             </ErrorBoundary>

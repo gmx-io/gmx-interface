@@ -4410,10 +4410,6 @@ msgstr "繰り返しのウォレット確認不要"
 msgid "Shorts Net Rate / 1h"
 msgstr "1時間あたりのショートネットレート"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-#~ msgid "Discover GMX Earn"
-#~ msgstr "GMX Earnを発見"
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText}を入金"
@@ -6140,6 +6136,10 @@ msgstr "実現スワップインパクト"
 msgid "1st Place"
 msgstr "1位"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -7376,7 +7376,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "紹介規約"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "手数料APY"

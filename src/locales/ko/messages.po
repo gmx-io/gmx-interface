@@ -4410,10 +4410,6 @@ msgstr "반복적인 지갑 확인 없음"
 msgid "Shorts Net Rate / 1h"
 msgstr "숏 순율 / 1시간"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-#~ msgid "Discover GMX Earn"
-#~ msgstr "GMX Earn 탐색"
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 입금"
@@ -6140,6 +6136,10 @@ msgstr "실현된 스왑 영향"
 msgid "1st Place"
 msgstr "1위"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -7376,7 +7376,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "추천 약관"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "수수료 APY"
