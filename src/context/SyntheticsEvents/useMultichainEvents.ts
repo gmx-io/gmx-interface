@@ -191,7 +191,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
       const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
       if (settlementChainId !== chainId) {
-        return;
+        continue;
       }
       const stargatePoolAddress = info.sender;
       const sourceChainTokenId = getByKey(tokenIdByStargate, stargatePoolAddress);
