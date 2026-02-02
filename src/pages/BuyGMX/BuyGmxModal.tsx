@@ -12,7 +12,7 @@ import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
-import { TradeMode, TradeType } from "sdk/types/trade";
+import { TradeMode, TradeType } from "sdk/utils/trade";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
