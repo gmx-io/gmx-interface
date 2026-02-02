@@ -45,10 +45,16 @@ const getRecommendedGlvs = ({
 
   const glvs = Object.values(marketsInfoData)
     .filter((info): info is GlvInfo => {
-      return isGlvInfo(info) && (typeof info.glvToken.balance === "undefined" || info.glvToken.balance <= 0n);
-    })
-    .filter((info) => {
+      if (!isGlvInfo(info)) {
+        return false;
+      }
+
+      if (typeof info.glvToken.balance !== "undefined" && info.glvToken.balance > 0n) {
+        return false;
+      }
+
       const glvPerformance = getByKey(performance, info.glvTokenAddress);
+
       return typeof glvPerformance !== "undefined" && glvPerformance > 0n;
     })
     .sort((a, b) => {
