@@ -135,6 +135,8 @@ export function usePositions(
     },
   });
 
+
+  
   // Fallback: when getAccountPositionInfoList reverts (e.g. PriceImpactLargerThanOrderSize),
   // read raw positions via getAccountPositions which skips execution price calculation
   const { data: fallbackPositionsData } = useMulticall(chainId, "usePositionsFallback", {
