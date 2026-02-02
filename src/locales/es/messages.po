@@ -1182,9 +1182,8 @@ msgid "Copied"
 msgstr "Copiado"
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr "Depositar en Cuenta GMX"
 
@@ -3060,8 +3059,7 @@ msgstr "Impacto neto alto en el precio"
 msgid "Lev."
 msgstr "Apal."
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to Trade Assets"
 msgstr "Activos Disponibles para Operar"
 
@@ -5391,8 +5389,7 @@ msgstr "Disminución del Mercado"
 msgid "Updating {orderText}..."
 msgstr "Actualizando {orderText}…"
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Withdrawal from GMX Account"
 msgstr "Retiro de Cuenta GMX"
 
@@ -7058,8 +7055,7 @@ msgstr "Confirmar Reclamación"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"

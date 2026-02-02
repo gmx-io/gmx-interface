@@ -1182,9 +1182,8 @@ msgid "Copied"
 msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr ""
 
@@ -3060,8 +3059,7 @@ msgstr ""
 msgid "Lev."
 msgstr ""
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to Trade Assets"
 msgstr ""
 
@@ -5391,8 +5389,7 @@ msgstr ""
 msgid "Updating {orderText}..."
 msgstr ""
 
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Withdrawal from GMX Account"
 msgstr ""
 
@@ -7058,8 +7055,7 @@ msgstr ""
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
-#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"

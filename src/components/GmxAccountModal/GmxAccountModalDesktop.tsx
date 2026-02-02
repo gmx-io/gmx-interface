@@ -1,26 +1,21 @@
 import { Trans } from "@lingui/macro";
-import { memo, type KeyboardEvent, type ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
-import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
-import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
-import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
-import { useChainId } from "lib/chains";
+import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { userAnalytics } from "lib/userAnalytics";
 import { OneClickPromotionEvent } from "lib/userAnalytics/types";
 
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SlideModal } from "components/Modal/SlideModal";
 
-import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
-
 import { AvailableToTradeAssetsView } from "./AvailableToTradeAssetsView";
 import { DepositStatusView } from "./DepositStatusView";
 import { DepositView } from "./DepositView";
+import { AvailableToTradeAssetsTitle, TransferDetailsTitle, WithdrawalScreen } from "./GmxAccountModalShared";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
 import { TransferDetailsView } from "./TransferDetailsView";
-import { WithdrawalView } from "./WithdrawalView";
 
 const MAIN_VIEWS = ["main", "availableToTradeAssets", "transferDetails"] as const;
 const OVERLAY_VIEWS = ["deposit", "withdraw", "depositStatus", "selectAssetToDeposit"] as const;
@@ -36,40 +31,6 @@ function isOverlayView(view: GmxAccountModalView): view is OverlayView {
   return OVERLAY_VIEWS.includes(view as OverlayView);
 }
 
-function TitleRow({ children }: { children: ReactNode }) {
-  return <div className="flex items-center gap-8">{children}</div>;
-}
-
-function BackButton({ onClick }: { onClick: () => void }) {
-  const onKeyDown = (e: KeyboardEvent<SVGSVGElement>) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      onClick();
-    }
-  };
-
-  return (
-    <ArrowLeftIcon
-      className="size-20 text-slate-100 outline-none"
-      tabIndex={0}
-      role="button"
-      onClick={onClick}
-      onKeyDown={onKeyDown}
-    />
-  );
-}
-
-function TitleWithBack({ backTo, children }: { backTo: GmxAccountModalView; children: ReactNode }) {
-  const [, setModalState] = useGmxAccountModalOpen();
-
-  return (
-    <TitleRow>
-      <BackButton onClick={() => setModalState(backTo)} />
-      {children}
-    </TitleRow>
-  );
-}
-
 const SLIDE_MODAL_LABELS: Record<MainView, ReactNode> = {
   main: <Trans>GMX Account</Trans>,
   availableToTradeAssets: <AvailableToTradeAssetsTitle />,
@@ -82,39 +43,6 @@ const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
   depositStatus: <Trans>Your deposit is in progress</Trans>,
   selectAssetToDeposit: <Trans>Select Asset to Deposit</Trans>,
 };
-
-function AvailableToTradeAssetsTitle() {
-  const { srcChainId } = useChainId();
-
-  return (
-    <TitleWithBack backTo="main">
-      {srcChainId !== undefined ? <Trans>GMX Account Balance</Trans> : <Trans>Available to Trade Assets</Trans>}
-    </TitleWithBack>
-  );
-}
-
-function TransferDetailsTitle() {
-  const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
-  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
-
-  return (
-    <TitleWithBack backTo="main">
-      {selectedTransfer?.operation === "withdrawal" ? (
-        <Trans>Withdrawal from GMX Account</Trans>
-      ) : (
-        <Trans>Deposit to GMX Account</Trans>
-      )}
-    </TitleWithBack>
-  );
-}
-
-function WithdrawalScreen() {
-  return (
-    <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="gmxAccount">
-      <WithdrawalView />
-    </SyntheticsStateContextProvider>
-  );
-}
 
 function OverlayContent({ view }: { view: OverlayView }) {
   switch (view) {
