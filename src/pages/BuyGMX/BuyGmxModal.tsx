@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
 import { getSyntheticsTradeOptionsKey } from "config/localStorage";
+import { selectTradeboxSetTradeConfig } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
 import { useChainId } from "lib/chains";
 import { metrics } from "lib/metrics";
@@ -26,7 +28,7 @@ const DIRECT_BUY_PATH = "/trade/swap";
 const ARB_USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const ARB_GMX_ADDRESS = getContract(ARBITRUM, "GMX");
 
-function setArbitrumSwapToGmxOptions() {
+function setArbitrumSwapToGmxOptionsInLocalStorage() {
   const key = JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM));
   const existingRaw = localStorage.getItem(key);
   const existing = existingRaw ? JSON.parse(existingRaw) : {};
@@ -56,6 +58,7 @@ export function BuyGmxModal({
   const { active } = useWallet();
   const history = useHistory();
   const [isSwitching, setIsSwitching] = useState(false);
+  const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
 
   const handleBuyDirectClick = async (event: MouseEvent) => {
     event.preventDefault();
@@ -64,14 +67,20 @@ export function BuyGmxModal({
       return;
     }
 
-    // Pre-set trade options in localStorage for Arbitrum before navigation/network switch.
-    // This ensures the correct Swap mode with USDC -> GMX is applied after chain change.
-    setArbitrumSwapToGmxOptions();
-
     if (chainId === ARBITRUM) {
+      setTradeConfig({
+        tradeType: TradeType.Swap,
+        tradeMode: TradeMode.Market,
+        fromTokenAddress: ARB_USDC_ADDRESS,
+        toTokenAddress: ARB_GMX_ADDRESS,
+      });
       history.push(DIRECT_BUY_PATH);
       return;
     }
+
+    // When on a different chain, the tradebox state is scoped to that chain,
+    // so we write directly to Arbitrum's localStorage key before switching.
+    setArbitrumSwapToGmxOptionsInLocalStorage();
 
     setIsSwitching(true);
 
