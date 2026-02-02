@@ -25,6 +25,44 @@ type AssetItem =
   | { type: "esGmx"; usdValue: bigint }
   | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint };
 
+function getSortedAssets({
+  hasGmx,
+  processedData,
+  hasEsGmx,
+  gmGlvAssets,
+  multichainMarketTokensBalances,
+}: {
+  hasGmx: boolean;
+  processedData: StakingProcessedData | undefined;
+  hasEsGmx: boolean;
+  gmGlvAssets: GlvOrMarketInfo[];
+  multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+}) {
+  const assets: AssetItem[] = [];
+
+  if (hasGmx && processedData) {
+    const gmxUsdValue = (processedData.gmxBalanceUsd ?? 0n) + (processedData.gmxInStakedGmxUsd ?? 0n);
+    assets.push({ type: "gmx", usdValue: gmxUsdValue });
+  }
+
+  if (hasEsGmx && processedData) {
+    const esGmxUsdValue = (processedData.esGmxBalanceUsd ?? 0n) + (processedData.esGmxInStakedGmxUsd ?? 0n);
+    assets.push({ type: "esGmx", usdValue: esGmxUsdValue });
+  }
+
+  for (const info of gmGlvAssets) {
+    const tokenAddress = getGlvOrMarketAddress(info);
+    const usdValue = multichainMarketTokensBalances?.[tokenAddress]?.totalBalanceUsd ?? 0n;
+    assets.push({ type: "gmGlv", info, usdValue });
+  }
+
+  return assets.sort((a, b) => {
+    if (b.usdValue > a.usdValue) return 1;
+    if (b.usdValue < a.usdValue) return -1;
+    return 0;
+  });
+}
+
 function AssetsList({
   chainId,
   processedData,
@@ -59,28 +97,12 @@ function AssetsList({
   const { openConnectModal } = useConnectModal();
 
   const sortedAssets = useMemo(() => {
-    const assets: AssetItem[] = [];
-
-    if (hasGmx && processedData) {
-      const gmxUsdValue = (processedData.gmxBalanceUsd ?? 0n) + (processedData.gmxInStakedGmxUsd ?? 0n);
-      assets.push({ type: "gmx", usdValue: gmxUsdValue });
-    }
-
-    if (hasEsGmx && processedData) {
-      const esGmxUsdValue = (processedData.esGmxBalanceUsd ?? 0n) + (processedData.esGmxInStakedGmxUsd ?? 0n);
-      assets.push({ type: "esGmx", usdValue: esGmxUsdValue });
-    }
-
-    for (const info of gmGlvAssets) {
-      const tokenAddress = getGlvOrMarketAddress(info);
-      const usdValue = multichainMarketTokensBalances?.[tokenAddress]?.totalBalanceUsd ?? 0n;
-      assets.push({ type: "gmGlv", info, usdValue });
-    }
-
-    return assets.sort((a, b) => {
-      if (b.usdValue > a.usdValue) return 1;
-      if (b.usdValue < a.usdValue) return -1;
-      return 0;
+    return getSortedAssets({
+      hasGmx,
+      processedData,
+      hasEsGmx,
+      gmGlvAssets,
+      multichainMarketTokensBalances,
     });
   }, [hasGmx, hasEsGmx, processedData, gmGlvAssets, multichainMarketTokensBalances]);
 
