@@ -25,7 +25,13 @@ function SwapButton({ chainId, children }: { chainId: ContractsChainId; children
   );
 }
 
-function DepositButton({ children, onBeforeDeposit }: { children: React.ReactNode; onBeforeDeposit?: () => void }) {
+function DepositButton({
+  children,
+  onBeforeNavigation,
+}: {
+  children: React.ReactNode;
+  onBeforeNavigation?: () => void;
+}) {
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const [, setDepositViewTokenAddress] = useGmxAccountDepositViewTokenAddress();
 
@@ -33,7 +39,7 @@ function DepositButton({ children, onBeforeDeposit }: { children: React.ReactNod
     <span
       className="text-body-small cursor-pointer text-13 font-medium underline underline-offset-2"
       onClick={() => {
-        onBeforeDeposit?.();
+        onBeforeNavigation?.();
         setGmxAccountModalOpen("deposit");
         setDepositViewTokenAddress(zeroAddress);
       }}
@@ -45,10 +51,10 @@ function DepositButton({ children, onBeforeDeposit }: { children: React.ReactNod
 
 export function InsufficientWntBanner({
   chainId,
-  onBeforeDeposit,
+  onBeforeNavigation,
 }: {
   chainId: ContractsChainId;
-  onBeforeDeposit?: () => void;
+  onBeforeNavigation?: () => void;
 }) {
   const wrappedNativeToken = getWrappedToken(chainId);
   const wrappedNativeTokenSymbol = wrappedNativeToken.symbol;
@@ -63,7 +69,7 @@ export function InsufficientWntBanner({
   if (hasWeth) {
     secondLine = (
       <Trans>
-        <DepositButton onBeforeDeposit={onBeforeDeposit}>Deposit</DepositButton> or{" "}
+        <DepositButton onBeforeNavigation={onBeforeNavigation}>Deposit</DepositButton> or{" "}
         <SwapButton chainId={chainId}>buy</SwapButton> {wrappedNativeTokenSymbol}.
       </Trans>
     );

@@ -53,11 +53,11 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
 export function InsufficientGmxAccountGasTokenBalanceMessage({
   chainId,
   gasPaymentTokenAddress,
-  onBeforeDeposit,
+  onBeforeNavigation,
 }: {
   chainId: ContractsChainId;
   gasPaymentTokenAddress?: string;
-  onBeforeDeposit?: () => void;
+  onBeforeNavigation?: () => void;
 }) {
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
@@ -66,12 +66,18 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({
   let tokensText = gasPaymentTokenAddress ? getToken(chainId, gasPaymentTokenAddress).symbol : gasPaymentTokensText;
 
   const handleDeposit = useCallback(() => {
-    onBeforeDeposit?.();
+    onBeforeNavigation?.();
     if (gasPaymentTokenAddress) {
       setGmxAccountDepositViewTokenAddress(convertTokenAddress(chainId, gasPaymentTokenAddress, "native"));
     }
     setGmxAccountModalOpen("deposit");
-  }, [chainId, gasPaymentTokenAddress, onBeforeDeposit, setGmxAccountDepositViewTokenAddress, setGmxAccountModalOpen]);
+  }, [
+    chainId,
+    gasPaymentTokenAddress,
+    onBeforeNavigation,
+    setGmxAccountDepositViewTokenAddress,
+    setGmxAccountModalOpen,
+  ]);
 
   return (
     <div>
@@ -110,13 +116,13 @@ export function ValidationBannerErrorContent({
   chainId,
   srcChainId,
   gasPaymentTokenAddress,
-  onBeforeDeposit,
+  onBeforeNavigation,
 }: {
   validationBannerErrorName: ValidationBannerErrorName;
   chainId: ContractsChainId;
   srcChainId?: SourceChainId;
   gasPaymentTokenAddress?: string;
-  onBeforeDeposit?: () => void;
+  onBeforeNavigation?: () => void;
 }) {
   switch (validationBannerErrorName) {
     case ValidationBannerErrorName.insufficientNativeTokenBalance: {
@@ -126,7 +132,7 @@ export function ValidationBannerErrorContent({
       return <InsufficientWalletGasTokenBalanceMessage chainId={chainId} />;
     }
     case ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance: {
-      return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} onBeforeDeposit={onBeforeDeposit} />;
+      return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} onBeforeNavigation={onBeforeNavigation} />;
     }
     case ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance: {
       if (!srcChainId) {
@@ -136,14 +142,14 @@ export function ValidationBannerErrorContent({
       return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={srcChainId} />;
     }
     case ValidationBannerErrorName.insufficientGmxAccountWntBalance: {
-      return <InsufficientWntBanner chainId={chainId} onBeforeDeposit={onBeforeDeposit} />;
+      return <InsufficientWntBanner chainId={chainId} onBeforeNavigation={onBeforeNavigation} />;
     }
     case ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance: {
       return (
         <InsufficientGmxAccountGasTokenBalanceMessage
           chainId={chainId}
           gasPaymentTokenAddress={gasPaymentTokenAddress}
-          onBeforeDeposit={onBeforeDeposit}
+          onBeforeNavigation={onBeforeNavigation}
         />
       );
     }
