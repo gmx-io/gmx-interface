@@ -367,6 +367,7 @@ export function StakeModal(props: {
             onInputValueChange={(e) =>
               activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)
             }
+            maxDecimals={18}
           >
             <div className="flex items-center gap-4 py-8">
               <img

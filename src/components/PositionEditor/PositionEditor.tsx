@@ -383,6 +383,7 @@ export function PositionEditor() {
               }}
               onClickMax={showMaxButton ? handleMaxButtonClick : undefined}
               qa="amount-input"
+              maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
             >
               {hasMultipleTokens ? (
                 <PositionEditorCollateralSelector

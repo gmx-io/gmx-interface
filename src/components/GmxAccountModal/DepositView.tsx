@@ -1116,6 +1116,7 @@ export const DepositView = () => {
               className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
                          focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
               placeholder="0.00"
+              maxDecimals={selectedTokenSourceChainDecimals}
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>

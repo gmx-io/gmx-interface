@@ -410,6 +410,7 @@ export function BridgeOutModal({
                 }
               : undefined
           }
+          maxDecimals={marketTokenDecimals}
         >
           <span className="inline-flex items-center">
             <TokenIcon

@@ -96,11 +96,41 @@ export function numberToBigint(value: number, decimals: number) {
 }
 
 export const trimZeroDecimals = (amount: string) => {
-  if (parseFloat(amount) === parseInt(amount)) {
-    return parseInt(amount).toString();
+  if (!amount.includes(".")) {
+    return normalizeInteger(amount);
   }
-  return amount;
+
+  const isNegative = amount.startsWith("-");
+  const unsignedAmount = isNegative ? amount.slice(1) : amount;
+  const [integerPartRaw, fractionPartRaw = ""] = unsignedAmount.split(".");
+
+  const integerPart = integerPartRaw.replace(/^0+/, "") || "0";
+  const fractionPart = fractionPartRaw.replace(/0+$/, "");
+
+  const baseValue = fractionPart.length ? `${integerPart}.${fractionPart}` : integerPart;
+
+  if (baseValue === "0") {
+    return "0";
+  }
+
+  return isNegative ? `-${baseValue}` : baseValue;
 };
+
+function normalizeInteger(value: string) {
+  if (!value) {
+    return "0";
+  }
+
+  const isNegative = value.startsWith("-");
+  const unsigned = isNegative ? value.slice(1) : value;
+  const stripped = unsigned.replace(/^0+/, "") || "0";
+
+  if (stripped === "0") {
+    return "0";
+  }
+
+  return isNegative ? `-${stripped}` : stripped;
+}
 
 export function bigintToNumber(value: bigint, decimals: number) {
   const negative = value < 0;
@@ -668,14 +698,21 @@ export function bigNumberify(n?: BigNumberish | null | undefined) {
   }
 }
 
-export const parseValue = (value: string, tokenDecimals: number) => {
-  const pValue = parseFloat(value);
+const DECIMAL_REGEX = /^-?\d*(?:\.\d*)?$/;
 
-  if (isNaN(pValue)) {
+export const parseValue = (value: string, tokenDecimals: number) => {
+  if (value === undefined || value === null) {
     return undefined;
   }
-  value = limitDecimals(value, tokenDecimals);
-  const amount = parseUnits(value, tokenDecimals);
+
+  const normalizedValue = value.toString().replace(/,/g, "").trim();
+
+  if (!normalizedValue || !DECIMAL_REGEX.test(normalizedValue)) {
+    return undefined;
+  }
+
+  const limitedValue = limitDecimals(normalizedValue, tokenDecimals);
+  const amount = parseUnits(limitedValue, tokenDecimals);
   return bigNumberify(amount);
 };
 

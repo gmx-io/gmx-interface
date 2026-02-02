@@ -1,6 +1,8 @@
 import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, RefObject } from "react";
 
+import { limitDecimals } from "lib/numbers";
+
 function escapeSpecialRegExpChars(string: string): string {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -19,6 +21,7 @@ type Props = {
   qa?: string;
   isDisabled?: boolean;
   inputId?: string;
+  maxDecimals?: number;
 };
 
 function NumberInput({
@@ -33,6 +36,7 @@ function NumberInput({
   qa,
   inputId,
   isDisabled = false,
+  maxDecimals,
 }: Props) {
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     if (!onValueChange) return;
@@ -43,6 +47,10 @@ function NumberInput({
     }
 
     if (newValue === "" || inputRegex.test(escapeSpecialRegExpChars(newValue))) {
+      if (maxDecimals !== undefined) {
+        newValue = limitDecimals(newValue, maxDecimals);
+      }
+
       e.target.value = newValue;
       onValueChange(e);
     }
@@ -61,7 +69,6 @@ function NumberInput({
       autoComplete="off"
       autoCorrect="off"
       minLength={1}
-      maxLength={15}
       spellCheck="false"
       onFocus={onFocus}
       onBlur={onBlur}
