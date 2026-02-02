@@ -13,7 +13,6 @@ import type {
 } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
-import { serializeMulticallErrors } from "lib/multicall/utils";
 import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { sleepWithSignal } from "lib/sleep";
 import { AbiId, abis as allAbis } from "sdk/abis";
@@ -290,9 +289,7 @@ export class Multicall {
             if (processed.success) {
               return processed;
             } else {
-              // eslint-disable-next-line no-console
-              console.error("Multicall full errors:", processed.errors);
-              throw new Error(`Multicall failed: ${serializeMulticallErrors(processed.errors)}`);
+              throw new Error("Multicall failed");
             }
           })
           .catch((_viemError) => {
