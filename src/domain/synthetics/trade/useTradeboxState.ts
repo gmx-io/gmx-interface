@@ -21,9 +21,9 @@ import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, isSimilarToken } from "sdk/configs/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
-import { TwapDuration } from "sdk/types/twap";
 import { createTradeFlags } from "sdk/utils/trade";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
+import { TwapDuration } from "sdk/utils/twap/types";
 
 import { MarketsData, MarketsInfoData } from "../markets";
 import { chooseSuitableMarket } from "../markets/chooseSuitableMarket";
@@ -62,7 +62,7 @@ export interface TradeboxAdvancedOptions {
   limitOrTPSL: boolean;
 }
 
-type StoredTradeOptions = {
+export type StoredTradeOptions = {
   tradeType: TradeType;
   tradeMode: TradeMode;
   tokens: {

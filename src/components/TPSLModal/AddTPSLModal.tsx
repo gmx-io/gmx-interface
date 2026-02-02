@@ -64,7 +64,6 @@ import {
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
-import { SidecarSlTpOrderEntry } from "sdk/types/sidecarOrders";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import {
@@ -72,6 +71,7 @@ import {
   DecreasePositionOrderParams,
   getBatchTotalExecutionFee,
 } from "sdk/utils/orderTransactions";
+import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";

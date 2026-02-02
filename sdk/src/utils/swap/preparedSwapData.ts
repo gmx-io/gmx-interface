@@ -1,5 +1,5 @@
 import { MARKETS } from "configs/markets";
-import { SwapPaths } from "types/trade";
+import { SwapPaths } from "utils/trade/types";
 
 import { MarketsGraph, buildMarketsAdjacencyGraph } from "./buildMarketsAdjacencyGraph";
 import { findReachableTokens } from "./findReachableTokens";

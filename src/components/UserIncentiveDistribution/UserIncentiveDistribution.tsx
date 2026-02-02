@@ -21,8 +21,8 @@ import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
+import { Distribution } from "sdk/codegen/subsquid";
 import { getTokens } from "sdk/configs/tokens";
-import { Distribution } from "sdk/types/subsquid";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";

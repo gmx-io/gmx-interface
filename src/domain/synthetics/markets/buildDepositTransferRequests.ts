@@ -55,10 +55,25 @@ export function buildDepositTransferRequests({
   }
 
   if (paySource === "sourceChain") {
-    let tokenAddress =
-      longTokenAmount !== undefined && longTokenAmount > 0n ? initialLongTokenAddress : initialShortTokenAddress;
+    let tokenAddress: string;
+    let amount: bigint;
 
-    let amount = longTokenAmount !== undefined && longTokenAmount > 0n ? longTokenAmount : shortTokenAmount!;
+    if (initialLongTokenAddress === undefined || initialShortTokenAddress === undefined) {
+      return undefined;
+    }
+
+    if (initialLongTokenAddress === initialShortTokenAddress) {
+      tokenAddress = initialLongTokenAddress;
+      amount = (longTokenAmount ?? 0n) + (shortTokenAmount ?? 0n);
+    } else if (longTokenAmount !== undefined && longTokenAmount > 0n) {
+      tokenAddress = initialLongTokenAddress;
+      amount = longTokenAmount;
+    } else if (shortTokenAmount !== undefined && shortTokenAmount > 0n) {
+      tokenAddress = initialShortTokenAddress;
+      amount = shortTokenAmount;
+    } else {
+      return undefined;
+    }
 
     const estimatedReceivedAmount =
       technicalFees?.kind === "sourceChain" && technicalFees.isDeposit

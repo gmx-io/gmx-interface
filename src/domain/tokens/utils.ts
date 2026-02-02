@@ -1,7 +1,7 @@
 import { BOTANIX, ContractsChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import type { TokenData } from "domain/synthetics/tokens";
-import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 

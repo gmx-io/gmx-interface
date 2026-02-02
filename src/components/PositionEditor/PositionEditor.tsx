@@ -30,7 +30,8 @@ import { useLocalizedMap } from "lib/i18n";
 import { formatAmountFree, formatTokenAmountWithUsd } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { convertTokenAddress, getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
-import { TokenBalanceType } from "sdk/types/tokens";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -377,6 +378,7 @@ export function PositionEditor() {
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
+                maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
               />
 
               <div>{button}</div>

@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { useMulticall } from "lib/multicall";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import type { MulticallRequestConfig } from "sdk/clients/v1/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import {
   maxAllowedSubaccountActionCountKey,
@@ -12,7 +13,6 @@ import {
   subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
-import type { MulticallRequestConfig } from "sdk/utils/multicall";
 
 export type SubaccountOnchainData = {
   active: boolean;

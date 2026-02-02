@@ -84,6 +84,7 @@
     "local-rules/no-logical-bigint": "off",
 
     "es-x/no-bigint": "off",
+    "es-x/no-optional-catch-binding": "off",
     "es-x/no-optional-chaining": "off",
     "es-x/no-import-meta": "off",
     "es-x/no-dynamic-import": "off",
@@ -161,6 +162,16 @@
     },
     {
       "files": ["scripts/**"],
+      "rules": {
+        "no-restricted-globals": "off"
+      }
+    },
+    {
+      "files": ["./sdk/scripts/**/*.ts", "./sdk/scripts/**/*.js"],
+      "env": {
+        "node": true,
+        "browser": false
+      },
       "rules": {
         "no-restricted-globals": "off"
       }

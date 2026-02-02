@@ -1,5 +1,5 @@
-import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
+import { ContractFunctionParameters, zeroAddress } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -16,12 +16,12 @@ import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-import type { ContractMarketPrices, MarketsData } from "sdk/types/markets";
-import type { PositionsData } from "sdk/types/positions";
-import type { TokensData } from "sdk/types/tokens";
+import { abis } from "sdk/abis";
 import { getContractMarketPrices } from "sdk/utils/markets";
+import type { ContractMarketPrices, MarketsData } from "sdk/utils/markets/types";
 import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
-import type { SyntheticsReader } from "typechain-types/SyntheticsReader";
+import type { PositionsData } from "sdk/utils/positions/types";
+import type { TokensData } from "sdk/utils/tokens/types";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
 
@@ -80,10 +80,14 @@ export function usePositions(
                 keysAndPrices.marketsKeys,
                 keysAndPrices.marketsPrices,
                 // uiFeeReceiver
-                ethers.ZeroAddress,
-                0,
-                1000,
-              ] satisfies Parameters<SyntheticsReader["getAccountPositionInfoList"]>,
+                zeroAddress,
+                0n,
+                1000n,
+              ] satisfies ContractFunctionParameters<
+                typeof abis.SyntheticsReader,
+                "view",
+                "getAccountPositionInfoList"
+              >["args"],
             },
           },
         },

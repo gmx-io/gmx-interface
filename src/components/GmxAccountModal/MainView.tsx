@@ -25,7 +25,7 @@ import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
-import { Token } from "sdk/types/tokens";
+import { Token } from "sdk/utils/tokens/types";
 
 import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";
@@ -431,7 +431,7 @@ const FundingHistorySection = () => {
       </div>
       {Boolean(fundingHistory?.length) && (
         <div className="px-adaptive">
-          <SearchInput value={searchQuery} setValue={setSearchQuery} size="m" />
+          <SearchInput value={searchQuery} setValue={setSearchQuery} />
         </div>
       )}
       <VerticalScrollFadeContainer className="flex grow flex-col">

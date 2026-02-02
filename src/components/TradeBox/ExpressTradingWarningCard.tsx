@@ -6,18 +6,17 @@ import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
-import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { selectUpdateSubaccountSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { useChainId } from "lib/chains";
+import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { usePrevious } from "lib/usePrevious";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
-import { useGasPaymentTokensText } from "components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
@@ -40,9 +39,8 @@ export function ExpressTradingWarningCard({
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
   const history = useHistory();
-  const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
 
-  const { chainId, srcChainId } = useChainId();
+  const { chainId } = useChainId();
 
   const [, setNativeTokenWarningHidden] = useLocalStorageSerializeKey(
     EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
@@ -138,22 +136,12 @@ export function ExpressTradingWarningCard({
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
-    if (srcChainId) {
-      icon = ExpressIcon;
-      content = <Trans>Insufficient gas balance, please deposit more {gasPaymentTokensText}.</Trans>;
-      buttonText = <Trans>Deposit {gasPaymentTokensText}</Trans>;
-
-      onClick = () => {
-        setGmxAccountModalOpen("deposit");
-      };
-    } else {
-      icon = ExpressIcon;
-      content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
-      buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
-      onClick = () => {
-        history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
-      };
-    }
+    icon = ExpressIcon;
+    content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance.</Trans>;
+    buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
+    onClick = () => {
+      history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
+    };
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
     content = (
