@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { memo, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
@@ -57,7 +57,7 @@ function OverlayContent({ view }: { view: OverlayView }) {
   }
 }
 
-export const GmxAccountModalDesktop = memo(function GmxAccountModalDesktop({ account }: { account: string }) {
+export function GmxAccountModalDesktop({ account }: { account: string }) {
   const [modalState, setModalState] = useGmxAccountModalOpen();
 
   const isOpen = modalState !== false;
@@ -114,4 +114,4 @@ export const GmxAccountModalDesktop = memo(function GmxAccountModalDesktop({ acc
       )}
     </>
   );
-});
+}

@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { memo, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
@@ -64,7 +64,7 @@ const SLIDE_MODAL_LABELS: Record<Exclude<GmxAccountModalView, "depositStatus">, 
   selectAssetToDeposit: <SelectAssetToDepositTitle />,
 };
 
-export const GmxAccountModalMobile = memo(function GmxAccountModalMobile({ account }: { account: string }) {
+export function GmxAccountModalMobile({ account }: { account: string }) {
   const [modalState, setModalState] = useGmxAccountModalOpen();
 
   const isOpen = modalState !== false;
@@ -116,4 +116,4 @@ export const GmxAccountModalMobile = memo(function GmxAccountModalMobile({ accou
       )}
     </>
   );
-});
+}
