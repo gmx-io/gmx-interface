@@ -17,7 +17,10 @@ export function useQuoteOft({
   fromStargateAddress: string | undefined;
   fromChainId: AnyChainId | undefined;
   toChainId: AnyChainId | undefined;
-}): QuoteOft | undefined {
+}): {
+  data: QuoteOft | undefined;
+  isLoading: boolean;
+} {
   const quoteOftCondition =
     sendParams !== undefined &&
     fromStargateAddress !== undefined &&
@@ -55,7 +58,8 @@ export function useQuoteOft({
     }
   );
 
-  const quoteOft = quoteOftQuery.data;
-
-  return quoteOft;
+  return {
+    data: quoteOftQuery.data,
+    isLoading: quoteOftQuery.isLoading,
+  };
 }

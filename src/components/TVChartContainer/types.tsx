@@ -1,4 +1,4 @@
-import type { OrderType } from "sdk/types/orders";
+import type { OrderType } from "sdk/utils/orders/types";
 
 export enum LineStyle {
   Solid = 0,

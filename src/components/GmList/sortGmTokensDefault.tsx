@@ -2,7 +2,7 @@ import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import type { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { ProgressiveTokenData, ProgressiveTokensData } from "sdk/types/tokens";
+import { ProgressiveTokenData, ProgressiveTokensData } from "sdk/utils/tokens/types";
 
 /**
  * Sorts GM tokens by:

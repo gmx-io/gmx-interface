@@ -15,8 +15,8 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { ExternalSwapQuote } from "sdk/types/trade";
 import { CustomErrorName } from "sdk/utils/errors";
+import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";

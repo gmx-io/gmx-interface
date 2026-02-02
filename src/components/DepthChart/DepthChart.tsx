@@ -798,8 +798,46 @@ function useDepthChartPricesData(
     // open short
     if (!isLeftEmpty) {
       const leftInc = (leftMax - DOLLAR) / SIDE_POINTS_COUNT;
+
+      // Skip if increment is zero (would cause infinite loop for markets with very low liquidity)
+      if (leftInc === 0n) {
+        // Just add single point at leftMax if it's greater than DOLLAR
+        if (leftMax > DOLLAR) {
+          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, leftMax, false, true, {
+            fallbackToZero: true,
+            shouldCapNegativeImpact: true,
+          });
+
+          const executionPrice = getDepthChartExecutionPrice({
+            isIncrease: true,
+            isLong: false,
+            priceImpactUsd,
+            sizeDeltaUsd: leftMax,
+            triggerPrice: marketInfo.indexToken.prices.minPrice,
+            visualMultiplier,
+          })!;
+
+          data.push({
+            leftOpaqueSize: leftMax <= leftMin ? bigintToNumber(leftMax, USD_DECIMALS) : null,
+            leftOpaqueSizeBigInt: leftMax <= leftMin ? leftMax : null,
+            executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+            size: bigintToNumber(leftMax, USD_DECIMALS),
+            priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+            rightOpaqueSize: null,
+            rightOpaqueSizeBigInt: null,
+            rightTransparentSize: null,
+            rightTransparentSizeBigInt: null,
+            leftTransparentSize: leftMax > leftMin ? bigintToNumber(leftMax, USD_DECIMALS) : null,
+            leftTransparentSizeBigInt: leftMax > leftMin ? leftMax : null,
+            sizeBigInt: leftMax,
+            executionPriceBigInt: executionPrice,
+            priceImpactBigInt: priceImpactUsd,
+          });
+        }
+      }
+
       // from left to center
-      for (let positionSize = leftMax; positionSize >= DOLLAR; positionSize -= leftInc) {
+      for (let positionSize = leftMax; leftInc > 0n && positionSize >= DOLLAR; positionSize -= leftInc) {
         const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(
           marketInfo,
           positionSize,
@@ -912,8 +950,45 @@ function useDepthChartPricesData(
     if (!isRightEmpty) {
       const rightInc = (rightMax - DOLLAR) / SIDE_POINTS_COUNT;
 
+      // Skip if increment is zero (would cause infinite loop for markets with very low liquidity)
+      if (rightInc === 0n) {
+        // Just add single point at rightMax if it's greater than DOLLAR
+        if (rightMax > DOLLAR) {
+          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, rightMax, true, true, {
+            fallbackToZero: true,
+            shouldCapNegativeImpact: true,
+          });
+
+          const executionPrice = getDepthChartExecutionPrice({
+            isIncrease: true,
+            isLong: true,
+            priceImpactUsd,
+            sizeDeltaUsd: rightMax,
+            triggerPrice: marketInfo.indexToken.prices.maxPrice,
+            visualMultiplier,
+          })!;
+
+          data.push({
+            executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
+            rightOpaqueSize: rightMax <= rightMin ? bigintToNumber(rightMax, USD_DECIMALS) : null,
+            rightOpaqueSizeBigInt: rightMax <= rightMin ? rightMax : null,
+            size: bigintToNumber(rightMax, USD_DECIMALS),
+            priceImpact: bigintToNumber(priceImpactUsd, USD_DECIMALS),
+            leftOpaqueSize: null,
+            leftOpaqueSizeBigInt: null,
+            rightTransparentSize: rightMax > rightMin ? bigintToNumber(rightMax, USD_DECIMALS) : null,
+            rightTransparentSizeBigInt: rightMax > rightMin ? rightMax : null,
+            leftTransparentSize: null,
+            leftTransparentSizeBigInt: null,
+            sizeBigInt: rightMax,
+            executionPriceBigInt: executionPrice,
+            priceImpactBigInt: priceImpactUsd,
+          });
+        }
+      }
+
       // from right max to center
-      for (let positionSize = rightMax; positionSize >= DOLLAR; positionSize -= rightInc) {
+      for (let positionSize = rightMax; rightInc > 0n && positionSize >= DOLLAR; positionSize -= rightInc) {
         const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(
           marketInfo,
           positionSize,
