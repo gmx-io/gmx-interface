@@ -58,7 +58,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
     <div className="my-15 rounded-4 bg-slate-900 text-left">
       <div className="flex flex-col gap-16 p-20 text-16">
         <span className="text-h2">
-          <Trans>GM Pools</Trans>
+          <Trans>GM pools</Trans>
         </span>
 
         <div className="max-w-[260px]">

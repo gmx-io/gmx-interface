@@ -329,7 +329,7 @@ function AffiliatesStats({
           title={
             <div className="referral-table-header">
               <p className="title text-body-large">
-                <Trans>Referral Codes</Trans>{" "}
+                <Trans>Referral codes</Trans>{" "}
                 <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-typography-secondary">
                   {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                 </span>

@@ -23,10 +23,9 @@ export default function EarnFaq() {
           question={<Trans>What's the difference between providing liquidity in GLV or GM?</Trans>}
           answer={
             <Trans>
-              Both GLV and GM let you earn auto-compounding fees from three revenue sources. GM tokens provide liquidity
-              to a single market. GLV vaults hold multiple GM tokens with auto-rebalancing across markets sharing the
-              same backing tokens (e.g., ETH-USDC or BTC-USDC). Choose GM for isolated exposure to one market, or GLV
-              for passive yield across multiple high-utilization pools.
+              GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets.
+              Both auto-compound your returns. Choose GM for single-market exposure, or GLV to diversify across multiple
+              pools.
             </Trans>
           }
         />
@@ -44,7 +43,7 @@ export default function EarnFaq() {
           question={<Trans>What networks are supported?</Trans>}
           answer={
             <Trans>
-              GMX staking is available on Avalanche and Arbitrum. Different GLV vaults and GM tokens are available on
+              GMX staking is available on Arbitrum and Avalanche. Different GLV vaults and GM tokens are available on
               each chain. Visit the Pools page to see the liquidity options for your connected network.
             </Trans>
           }

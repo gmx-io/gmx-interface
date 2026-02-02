@@ -77,7 +77,7 @@ export function GlvList({
 
   return (
     <PoolsCard
-      title={t`GLV Vaults`}
+      title={t`GLV vaults`}
       className="shrink-0"
       description={<Trans>Yield-optimized vaults supplying liquidity across multiple GMX markets.</Trans>}
     >

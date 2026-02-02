@@ -125,7 +125,7 @@ export function GmList({
 
   return (
     <PoolsCard
-      title={t`GM Pools`}
+      title={t`GM pools`}
       className="grow"
       description={
         <div className="flex flex-col gap-16">

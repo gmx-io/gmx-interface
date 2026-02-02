@@ -269,7 +269,7 @@ export function TradingSettings({
             description={
               <div>
                 <Trans>
-                  Max network fee includes buffer for gas spikes. Unused fees refunded. Only applies to GMX V2.
+                  Max network fee includes buffer for gas spikes. Unused fees refunded.
                 </Trans>
                 <br />
                 <br />

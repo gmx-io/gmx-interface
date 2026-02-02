@@ -471,7 +471,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in GM Pools.</Trans>
+                      <Trans>Total value of tokens in GM pools.</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
