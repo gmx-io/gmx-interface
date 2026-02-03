@@ -19,7 +19,6 @@ import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -122,7 +121,6 @@ export function ClaimModal(props: {
   const isPrimaryEnabled =
     !isClaiming &&
     !isApproving &&
-    !needApproval &&
     !isUndelegatedGovToken &&
     hasAnyPendingRewards &&
     isAnySelectedToClaim &&
@@ -138,8 +136,11 @@ export function ClaimModal(props: {
     if (!isAnySelectedToClaim) {
       return <Trans>Select rewards to claim</Trans>;
     }
-    if (needApproval || isApproving) {
+    if (isApproving) {
       return <Trans>Pending GMX approval</Trans>;
+    }
+    if (needApproval) {
+      return <Trans>Approve GMX to be spent</Trans>;
     }
     if (isClaiming) {
       return <Trans>Claiming...</Trans>;
@@ -285,16 +286,6 @@ export function ClaimModal(props: {
           />
         )}
       </div>
-      {(needApproval || isApproving) && (
-        <div className="mb-12">
-          <ApproveTokenButton
-            tokenAddress={gmxAddress}
-            spenderAddress={stakedGmxTrackerAddress}
-            tokenSymbol={"GMX"}
-            isApproved={!needApproval}
-          />
-        </div>
-      )}
       {isUndelegatedGovToken ? (
         <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
           <Trans>

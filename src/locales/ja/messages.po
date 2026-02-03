@@ -876,6 +876,10 @@ msgstr "このネットワークに中央集権取引所が利用できません
 msgid "Invalid slippage value"
 msgstr "無効なスリッページ値"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "5%のキャッシュバックを獲得し、コミュニティに取引ごとに5%オフを提供しましょう。より高いリファラルティアでさらに多くのメリットが解除されます。<0>詳細はこちら</0>。"
@@ -2237,7 +2241,6 @@ msgstr "スワップ"
 msgid "Creating order..."
 msgstr "注文を作成中…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx

@@ -876,6 +876,10 @@ msgstr "Нет централизованных бирж для этой сет�
 msgid "Invalid slippage value"
 msgstr "Недопустимое значение скольжения"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "Получите 5% возврат и дайте вашему сообществу 5% скидку на каждую сделку. Более высокие реферальные уровни открывают ещё больше. <0>Подробнее</0>."
@@ -2237,7 +2241,6 @@ msgstr "Обмены"
 msgid "Creating order..."
 msgstr "Создание ордера…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx

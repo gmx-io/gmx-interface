@@ -15,7 +15,6 @@ import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
@@ -207,10 +206,6 @@ export default function BeginAccountTransfer() {
     if (isTransferring) {
       return false;
     }
-
-    if (needFeeGmxTrackerApproval) {
-      return false;
-    }
     return true;
   };
 
@@ -219,24 +214,39 @@ export default function BeginAccountTransfer() {
     if (error) {
       return error;
     }
-    if (needApproval) {
-      return t`Approve GMX`;
-    }
     if (isApproving) {
       return t`Approving...`;
     }
+    if (needApproval) {
+      return t`Approve GMX`;
+    }
+    if (needFeeGmxTrackerApproval) {
+      if (!isReadyForSbfGmxTokenApproval) {
+        return t`Pending Transfer Approval`;
+      }
+      return t`Allow all my tokens to be transferred to a new account`;
+    }
     if (isTransferring) {
       return t`Transferring`;
-    }
-
-    if (needFeeGmxTrackerApproval) {
-      return t`Pending Transfer Approval`;
     }
 
     return t`Begin Transfer`;
   };
 
   const onClickPrimary = () => {
+    if (needFeeGmxTrackerApproval && isReadyForSbfGmxTokenApproval) {
+      approveTokens({
+        setIsApproving,
+        signer,
+        tokenAddress: feeGmxTrackerAddress,
+        spender: parsedReceiver,
+        chainId,
+        permitParams: undefined,
+        approveAmount: feeGmxTrackerBalance,
+      });
+      return;
+    }
+
     if (needApproval) {
       approveTokens({
         setIsApproving,
@@ -380,19 +390,6 @@ export default function BeginAccountTransfer() {
             <Trans>Receiver has not staked GLP tokens before</Trans>
           </ValidationRow>
         </div>
-
-        {isReadyForSbfGmxTokenApproval && needFeeGmxTrackerApproval && (
-          <>
-            <ApproveTokenButton
-              tokenAddress={feeGmxTrackerAddress}
-              tokenSymbol={"sbfGMX"}
-              customLabel={t`Allow all my tokens to be transferred to a new account`}
-              spenderAddress={parsedReceiver}
-              approveAmount={feeGmxTrackerBalance}
-            />
-            <br />
-          </>
-        )}
 
         <Button
           variant="primary-action"
