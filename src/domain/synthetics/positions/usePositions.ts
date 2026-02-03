@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ContractFunctionParameters, zeroAddress } from "viem";
+import { zeroAddress } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -16,7 +16,6 @@ import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
-import { abis } from "sdk/abis";
 import { getContractMarketPrices } from "sdk/utils/markets";
 import type { ContractMarketPrices, MarketsData } from "sdk/utils/markets/types";
 import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
@@ -83,11 +82,7 @@ export function usePositions(
                 zeroAddress,
                 0n,
                 1000n,
-              ] satisfies ContractFunctionParameters<
-                typeof abis.SyntheticsReader,
-                "view",
-                "getAccountPositionInfoList"
-              >["args"],
+              ],
             },
           },
         },
@@ -140,11 +135,80 @@ export function usePositions(
     },
   });
 
+  // Fallback: when getAccountPositionInfoList reverts (e.g. PriceImpactLargerThanOrderSize),
+  // read raw positions via getAccountPositions which skips execution price calculation
+  const { data: fallbackPositionsData } = useMulticall(chainId, "usePositionsFallback", {
+    key: positionsError && account ? [account, "fallback"] : null,
+
+    refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
+    clearUnusedKeys: true,
+    keepPreviousData: true,
+
+    request: (requestChainId) => ({
+      reader: {
+        contractAddress: getContract(requestChainId, "SyntheticsReader"),
+        abiId: "SyntheticsReader",
+        calls: {
+          positions: {
+            methodName: "getAccountPositions",
+            params: [getContract(requestChainId, "DataStore"), account!, 0n, 1000n],
+          },
+        },
+      },
+    }),
+
+    parseResponse: (res, chainId) => {
+      const positions = res.data.reader.positions.returnValues;
+
+      freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
+
+      return positions.reduce((positionsMap: PositionsData, position: any) => {
+        const { addresses, numbers, flags } = position;
+        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
+
+        if (numbers.increasedAtTime == 0n) {
+          return positionsMap;
+        }
+
+        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+        const contractPositionKey = hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
+
+        positionsMap[positionKey] = {
+          key: positionKey,
+          contractKey: contractPositionKey,
+          account,
+          marketAddress,
+          collateralTokenAddress,
+          sizeInUsd: numbers.sizeInUsd,
+          sizeInTokens: numbers.sizeInTokens,
+          collateralAmount: numbers.collateralAmount,
+          increasedAtTime: numbers.increasedAtTime,
+          decreasedAtTime: numbers.decreasedAtTime,
+          isLong: flags.isLong,
+          pendingBorrowingFeesUsd: 0n,
+          fundingFeeAmount: 0n,
+          claimableLongTokenAmount: 0n,
+          claimableShortTokenAmount: 0n,
+          pendingImpactAmount: numbers.pendingImpactAmount,
+          pnl: 0n,
+          positionFeeAmount: 0n,
+          traderDiscountAmount: 0n,
+          uiFeeAmount: 0n,
+          data: "",
+        };
+
+        return positionsMap;
+      }, {} as PositionsData);
+    },
+  });
+
+  const effectivePositionsData = positionsData || fallbackPositionsData;
+
   useEffect(() => {
-    if (positionsData && disableBatching) {
+    if (effectivePositionsData && disableBatching) {
       setDisableBatching(false);
     }
-  }, [disableBatching, positionsData]);
+  }, [disableBatching, effectivePositionsData]);
 
   useEffect(() => {
     if (!positionsKey) {
@@ -153,14 +217,14 @@ export function usePositions(
   }, [positionsKey, chainId]);
 
   const optimisticPositionsData = useOptimisticPositions({
-    positionsData: positionsData,
+    positionsData: effectivePositionsData,
     allPositionsKeys: keysAndPrices?.allPositionsKeys,
-    isLoading,
+    isLoading: isLoading && !fallbackPositionsData,
   });
 
   return {
     positionsData: optimisticPositionsData,
-    error: positionsError,
+    error: effectivePositionsData ? undefined : positionsError,
   };
 }
 
