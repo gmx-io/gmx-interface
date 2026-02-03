@@ -362,7 +362,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     chainId,
   ]);
 
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+  const { formattedMaxAvailableAmount, showClickMax, maxAvailableAmount } = useMaxAvailableAmount({
     fromToken,
     nativeToken,
     fromTokenAmount,
@@ -1038,6 +1038,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   setToTokenInputValue={setToTokenInputValue}
                   triggerPriceInputValue={triggerPriceInputValue}
                   onTriggerPriceInputChange={handleTriggerPriceInputChange}
+                  maxAvailableAmount={maxAvailableAmount}
                 />
               )}
               {isTrigger && renderDecreaseSizeInput()}

@@ -33,6 +33,7 @@ export function useMaxAvailableAmount({
 )): {
   formattedBalance: string;
   formattedMaxAvailableAmount: string;
+  maxAvailableAmount: bigint;
   showClickMax: boolean;
 } {
   const { chainId } = useChainId();
@@ -45,7 +46,7 @@ export function useMaxAvailableAmount({
     : undefined;
 
   if (fromToken === undefined || fromTokenBalance === undefined || fromTokenBalance === 0n || isLoading) {
-    return { formattedBalance: "", formattedMaxAvailableAmount: "", showClickMax: false };
+    return { formattedBalance: "", formattedMaxAvailableAmount: "", maxAvailableAmount: 0n, showClickMax: false };
   }
 
   const minNativeTokenBalance =
@@ -88,5 +89,5 @@ export function useMaxAvailableAmount({
     ? !isFromTokenInputValueNearMax
     : fromTokenInputValue !== formattedMaxAvailableAmount && maxAvailableAmount > 0n;
 
-  return { formattedBalance, formattedMaxAvailableAmount, showClickMax };
+  return { formattedBalance, formattedMaxAvailableAmount, maxAvailableAmount, showClickMax };
 }

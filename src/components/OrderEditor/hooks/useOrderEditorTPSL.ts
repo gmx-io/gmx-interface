@@ -61,8 +61,8 @@ import {
   getCollateralDeltaAmount,
   getCollateralDeltaUsd,
 } from "domain/tpsl/utils";
-import { DecreasePositionAmounts } from "sdk/types/trade";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { DecreasePositionAmounts } from "sdk/utils/trade/types";
 
 export function useOrderEditorTPSL() {
   const orderInfo = useSelector(selectOrderEditorOrder);
