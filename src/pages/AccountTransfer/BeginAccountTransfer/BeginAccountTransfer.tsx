@@ -7,7 +7,7 @@ import { isAddress, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -46,6 +46,7 @@ export default function BeginAccountTransfer() {
   if (isAddress(receiver, { strict: false })) {
     parsedReceiver = receiver;
   }
+  const hasValidReceiver = parsedReceiver !== zeroAddress;
 
   const gmxAddress = getContract(chainId, "GMX");
   const gmxVesterAddress = getContract(chainId, "GmxVester");
@@ -128,6 +129,32 @@ export default function BeginAccountTransfer() {
   });
   const gmxAllowance = gmxAllowanceData?.[gmxAddress];
 
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
+
+  const { tokensAllowanceData: feeGmxAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: parsedReceiver,
+    tokenAddresses: [feeGmxTrackerAddress],
+  });
+
+  const { data: feeGmxTrackerBalance } = useSWR(
+    active && [active, chainId, feeGmxTrackerAddress, "balanceOf", account],
+    {
+      fetcher: contractFetcher(signer, "Token"),
+      refreshInterval: 1000,
+    }
+  );
+
+  const needFeeGmxTrackerApproval = useMemo(
+    () =>
+      Boolean(
+        hasValidReceiver &&
+          feeGmxTrackerBalance !== undefined &&
+          feeGmxAllowanceData &&
+          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance, [])
+      ),
+    [feeGmxTrackerAddress, feeGmxTrackerBalance, hasValidReceiver, feeGmxAllowanceData]
+  );
+
   const { data: gmxStaked } = useSWR(
     active && [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
@@ -206,6 +233,9 @@ export default function BeginAccountTransfer() {
     if (isTransferring) {
       return false;
     }
+    if (hasValidReceiver && !feeGmxAllowanceData) {
+      return false;
+    }
     return true;
   };
 
@@ -234,19 +264,6 @@ export default function BeginAccountTransfer() {
   };
 
   const onClickPrimary = () => {
-    if (needFeeGmxTrackerApproval && isReadyForSbfGmxTokenApproval) {
-      approveTokens({
-        setIsApproving,
-        signer,
-        tokenAddress: feeGmxTrackerAddress,
-        spender: parsedReceiver,
-        chainId,
-        permitParams: undefined,
-        approveAmount: feeGmxTrackerBalance,
-      });
-      return;
-    }
-
     if (needApproval) {
       approveTokens({
         setIsApproving,
@@ -256,6 +273,19 @@ export default function BeginAccountTransfer() {
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+      });
+      return;
+    }
+
+    if (needFeeGmxTrackerApproval && isReadyForSbfGmxTokenApproval) {
+      approveTokens({
+        setIsApproving,
+        signer,
+        tokenAddress: feeGmxTrackerAddress,
+        spender: parsedReceiver,
+        chainId,
+        permitParams: undefined,
+        approveAmount: feeGmxTrackerBalance,
       });
       return;
     }
@@ -278,30 +308,6 @@ export default function BeginAccountTransfer() {
 
   const completeTransferLink = `/complete_account_transfer/${account}/${parsedReceiver}`;
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`;
-
-  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
-
-  const { tokensAllowanceData: feeGmxAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: parsedReceiver,
-    tokenAddresses: [feeGmxTrackerAddress],
-  });
-  const { balancesData } = useTokenBalances(chainId, {
-    overrideTokenList: [{ address: feeGmxTrackerAddress }],
-    refreshInterval: 1000,
-  });
-
-  const feeGmxTrackerBalance = balancesData?.[feeGmxTrackerAddress];
-  const needFeeGmxTrackerApproval = useMemo(
-    () =>
-      Boolean(
-        parsedReceiver &&
-          feeGmxTrackerBalance !== undefined &&
-          parsedReceiver !== zeroAddress &&
-          feeGmxAllowanceData &&
-          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance, [])
-      ),
-    [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, feeGmxAllowanceData]
-  );
 
   return (
     <AppPageLayout>
