@@ -305,7 +305,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         });
 
         cleanups.push(() => {
-          debugLog("unsubscribing from OFTSent events for", chainId);
+          debugLog("unsubscribing from OFTSent events for", sourceChainId);
           unsubscribeFromOftSentEvents();
         });
       }
