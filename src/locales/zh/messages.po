@@ -1181,8 +1181,9 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "已复制"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr "存入 GMX 账户"
 
@@ -1663,7 +1664,8 @@ msgstr "组合止损已达到最大 (100%)。减少现有值以添加更多订�
 msgid "4-18 Places"
 msgstr "4-18 名"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Your deposit is in progress"
 msgstr "您的存款进行中"
 
@@ -1684,7 +1686,8 @@ msgstr "此代币从 {marketName} 市场的杠杆交易和交换中自动累积�
 msgid "Withdrew {0} from {positionText}"
 msgstr "从 {positionText} 提取 {0}"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select Asset to Deposit"
 msgstr "选择要存入的资产"
 
@@ -3056,7 +3059,7 @@ msgstr "净价格冲击较高"
 msgid "Lev."
 msgstr "杠杆"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to Trade Assets"
 msgstr "可用交易资产"
 
@@ -5386,7 +5389,7 @@ msgstr "市场减少"
 msgid "Updating {orderText}..."
 msgstr "正在更新 {orderText}…"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Withdrawal from GMX Account"
 msgstr "从 GMX 账户提取"
 
@@ -5547,7 +5550,8 @@ msgstr "从网络"
 msgid "My assets"
 msgstr "我的资产"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "从 GMX 账户提取"
 
@@ -7051,7 +7055,7 @@ msgstr "确认领取"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
@@ -7309,7 +7313,8 @@ msgstr "选择从去中心化或中心化交易所购买。"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
