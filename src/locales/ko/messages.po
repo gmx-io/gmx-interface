@@ -1329,10 +1329,6 @@ msgstr "총 소개 보수"
 msgid "To Network"
 msgstr "받는 네트워크"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min order: {0}"
-msgstr "최소 주문: {0}"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
@@ -1739,10 +1735,6 @@ msgstr "가격 입력"
 msgid "Not enough data available yet"
 msgstr "아직 충분한 데이터가 없습니다"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "높은 레버리지를 사용하면 청산 위험이 증가합니다."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "실행 가격이 허용 가격을 충족하지 않았습니다."
@@ -1779,10 +1771,6 @@ msgstr "가스 잔고 부족으로 익스프레스 및 원클릭 트레이딩 �
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "No funds to claim"
 msgstr "청구할 자금 없음"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min size per part: {0}"
-msgstr "부분당 최소 크기: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3939,10 +3927,6 @@ msgstr "지갑에서"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "재승인이 필요한 최대 허용 작업 수."
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"
@@ -7038,9 +7022,17 @@ msgstr "동결"
 msgid "Failed to bridge in"
 msgstr "브리지 수신 실패"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin per part: {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "수령 완료!"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin: {0}"
+msgstr ""
 
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts

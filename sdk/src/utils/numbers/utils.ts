@@ -558,6 +558,14 @@ export function getLimitedDisplay(
 
 export const limitDecimals = (amount: BigNumberish, maxDecimals?: number) => {
   let amountStr = amount.toString();
+
+  if (amountStr.includes("e") || amountStr.includes("E")) {
+    const num = Number(amountStr);
+    if (!isNaN(num)) {
+      amountStr = num.toFixed(20).replace(/\.?0+$/, "");
+    }
+  }
+
   if (maxDecimals === undefined) {
     return amountStr;
   }

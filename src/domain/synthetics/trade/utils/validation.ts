@@ -369,7 +369,7 @@ export function getIncreaseError(p: {
     numberOfParts > 0 &&
     (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
   ) {
-    return { buttonErrorMessage: t`Min size per part: ${formatUsd(minTwapPartSize)}` };
+    return { buttonErrorMessage: t`Min margin per part: ${formatUsd(minTwapPartSize)}` };
   }
 
   if (
@@ -378,7 +378,7 @@ export function getIncreaseError(p: {
       ? undefined
       : roundWithDecimals(initialCollateralUsd, { displayDecimals: 2, decimals: USD_DECIMALS }) < _minCollateralUsd)
   ) {
-    return { buttonErrorMessage: t`Min order: ${formatUsd(_minCollateralUsd)}` };
+    return { buttonErrorMessage: t`Min margin: ${formatUsd(_minCollateralUsd)}` };
   }
 
   const roundedNextCollateralUsd =

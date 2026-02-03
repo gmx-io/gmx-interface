@@ -468,9 +468,19 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
 
   const formattedMaxCloseSize = formatAmount(position.sizeInUsd, USD_DECIMALS, 2);
 
-  const handleCloseSizeChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setCloseSizeInput(e.target.value);
-  }, []);
+  const handleCloseSizeChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setCloseSizeInput(value);
+
+      const parsedValue = parseValue(value, USD_DECIMALS);
+      if (parsedValue !== undefined && parsedValue > 0n && position.sizeInUsd > 0n) {
+        const percent = Number(bigMath.mulDiv(parsedValue, 100n, position.sizeInUsd));
+        setClosePercentage(Math.min(100, Math.max(0, percent)));
+      }
+    },
+    [position.sizeInUsd]
+  );
 
   const handleClosePercentageChange = useCallback(
     (percent: number) => {

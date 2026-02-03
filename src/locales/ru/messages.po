@@ -1329,10 +1329,6 @@ msgstr "Всего Ребайтов"
 msgid "To Network"
 msgstr "В сеть"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min order: {0}"
-msgstr "Мин. ордер: {0}"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
@@ -1739,10 +1735,6 @@ msgstr "Введите цену"
 msgid "Not enough data available yet"
 msgstr "Пока недостаточно данных"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "Использование высокого левериджа увеличивает риск ликвидации."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "Цена исполнения не соответствовала приемлемой цене."
@@ -1779,10 +1771,6 @@ msgstr "Экспресс и торговля в один клик недосту
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "No funds to claim"
 msgstr "Нет средств для клейма"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min size per part: {0}"
-msgstr "Мин. размер на часть: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3939,10 +3927,6 @@ msgstr "из вашего кошелька"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "Максимальное количество действий до требуемой повторной авторизации."
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"
@@ -7038,9 +7022,17 @@ msgstr "Заморозить"
 msgid "Failed to bridge in"
 msgstr "Не удалось получить через мост"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin per part: {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "Заявка выполнена!"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin: {0}"
+msgstr ""
 
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts

@@ -1329,10 +1329,6 @@ msgstr "Total de Reembolsos"
 msgid "To Network"
 msgstr "A Red"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min order: {0}"
-msgstr "Orden mín.: {0}"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
@@ -1739,10 +1735,6 @@ msgstr "Introduce un precio"
 msgid "Not enough data available yet"
 msgstr "Aún no hay suficientes datos disponibles"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "Usar alto apalancamiento aumenta el riesgo de liquidación."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "El precio de ejecución no cumplió con el precio aceptable."
@@ -1779,10 +1771,6 @@ msgstr "Trading Express y en Un Clic no disponibles debido a saldo de gas insufi
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "No funds to claim"
 msgstr "No hay fondos para reclamar"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min size per part: {0}"
-msgstr "Tamaño mín. por parte: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3939,10 +3927,6 @@ msgstr "desde tu billetera"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "Número máximo de acciones permitidas antes de requerir reautorización."
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"
@@ -7038,9 +7022,17 @@ msgstr "Congelar"
 msgid "Failed to bridge in"
 msgstr "Error al recibir del puente"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin per part: {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "¡Reclamación completada!"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin: {0}"
+msgstr ""
 
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts

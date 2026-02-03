@@ -31,6 +31,7 @@ import {
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo } from "domain/synthetics/orders/types";
@@ -225,6 +226,10 @@ export function SyntheticsPage(p: Props) {
       const order = getByKey(ordersInfoData, orderKey);
 
       if (!order) return;
+
+      if (isTriggerDecreaseOrderType(order.orderType)) {
+        return;
+      }
 
       setActiveOrder(order);
     },

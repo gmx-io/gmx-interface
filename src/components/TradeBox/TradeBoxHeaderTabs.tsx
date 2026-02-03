@@ -112,15 +112,11 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     setIsCurtainOpen(!isCurtainOpen);
   };
 
-  const handleTabsClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
   return (
     <>
       {isInCurtain && !isCurtainOpen ? null : fieldsRow}
       <div className={cx("flex gap-8 bg-slate-900", isInCurtain && !isCurtainOpen ? "p-8" : "p-12")}>
-        <div className="flex grow items-stretch gap-12" onClick={handleTabsClick}>
+        <div className="flex grow items-stretch gap-12">
           <Tabs
             options={longShortTabsOptions}
             selectedValue={tradeType === TradeType.Swap ? undefined : tradeType}
