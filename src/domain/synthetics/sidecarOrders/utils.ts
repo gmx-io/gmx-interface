@@ -122,16 +122,16 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       if (markPrice !== undefined && markPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
-            ? inputPrice < markPrice && t`Trigger price below mark price`
-            : inputPrice > markPrice && t`Trigger price above mark price`;
+            ? inputPrice < markPrice && t`TP price below mark price`
+            : inputPrice > markPrice && t`TP price above mark price`;
 
           priceError = nextError || priceError;
         }
 
         if (type === "sl") {
           const nextError = isLong
-            ? inputPrice > markPrice && t`Trigger price above mark price`
-            : inputPrice < markPrice && t`Trigger price below mark price`;
+            ? inputPrice > markPrice && t`SL price above mark price`
+            : inputPrice < markPrice && t`SL price below mark price`;
 
           priceError = nextError || priceError;
         }
@@ -140,16 +140,16 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       if (triggerPrice !== undefined && triggerPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
-            ? inputPrice < triggerPrice && t`Trigger price below limit price`
-            : inputPrice > triggerPrice && t`Trigger price above limit price`;
+            ? inputPrice < triggerPrice && t`TP price below limit price`
+            : inputPrice > triggerPrice && t`TP price above limit price`;
 
           priceError = nextError || priceError;
         }
 
         if (type === "sl") {
           const nextError = isLong
-            ? inputPrice > triggerPrice && t`Trigger price above limit price`
-            : inputPrice < triggerPrice && t`Trigger price below limit price`;
+            ? inputPrice > triggerPrice && t`SL price above limit price`
+            : inputPrice < triggerPrice && t`SL price below limit price`;
 
           priceError = nextError || priceError;
         }

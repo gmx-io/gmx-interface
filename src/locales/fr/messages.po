@@ -885,8 +885,8 @@ msgid "Unstake {tokenSymbol}"
 msgstr "Unstaker {tokenSymbol}"
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
-msgid "Stop Loss Price"
-msgstr ""
+#~ msgid "Stop Loss Price"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
@@ -1190,6 +1190,10 @@ msgstr "Tokens"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Withdraw"
 msgstr "Demander un retrait"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above limit price"
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
@@ -2103,6 +2107,7 @@ msgstr "Déposé {0} dans {positionText}"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
 msgstr ""
 
+#: src/components/TPSLModal/TPSLInputRow.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr ""
@@ -2231,6 +2236,10 @@ msgstr "Jour(s)"
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer NFT"
 msgstr "Transférer NFT"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below mark price"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
@@ -3245,8 +3254,8 @@ msgstr "VOL."
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below limit price"
-msgstr "Prix de déclenchement inférieur au prix limite"
+#~ msgid "Trigger price below limit price"
+#~ msgstr "Prix de déclenchement inférieur au prix limite"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -4306,6 +4315,10 @@ msgstr "{typeString} Long Stop Market : {0} une position longue lorsque le prix 
 msgid "Insufficient {0} liquidity"
 msgstr "Liquidité {0} insuffisante"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above mark price"
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr ""
@@ -4632,6 +4645,10 @@ msgstr "Lien copié dans le presse-papiers."
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is -0.01%"
 msgstr "La précision maximale du glissement est de -0,01 %"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above mark price"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Weekly Updates"
@@ -5936,8 +5953,6 @@ msgstr "Taille de position minimale : {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "Prix de déclenchement inférieur au prix mark"
@@ -6022,6 +6037,10 @@ msgstr "Positions ouvertes avec ordres"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 msgstr "<0>⬡ Histoire de Données Chainlink ⬡ <1/><2>#Chainlink</2> Data Streams ont sécurisé plus de 56 Md$ en volume pour le protocole <3>@GMX_IO</3> V2.</0><4>La livraison à faible latence de données de marché de haute qualité des Data Streams a surchargé les marchés perpétuels de GMX sur <5>@arbitrum</5> et <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below limit price"
+msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -6175,6 +6194,10 @@ msgstr "Il pourrait ne pas y avoir suffisamment de liquidité pour exécuter vot
 msgid "Enter an amount"
 msgstr "Entrez un montant"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above limit price"
+msgstr ""
+
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets are available for deposit"
 msgstr "Aucun actif disponible pour dépôt"
@@ -6244,8 +6267,6 @@ msgstr "Déplacement de {symbol}..."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "Prix de déclenchement supérieur au prix mark"
@@ -6352,8 +6373,8 @@ msgid "More active management required compared to GLV"
 msgstr "Nécessite une gestion plus active par rapport à GLV"
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
-msgid "Take Profit Price"
-msgstr ""
+#~ msgid "Take Profit Price"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
@@ -6920,6 +6941,10 @@ msgstr "Dépôt en cours"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>Avec un vote majoritaire de 75,5 %, GMX a sélectionné LayerZero comme partenaire de messagerie pour l'expansion multichain ! L'intégration apporte à GMX :</0><1><2>La capacité d'expansion à plus de 125 chaînes</2><3>Propriété complète de tous les contrats et sécurité</3><4>Transferts rapides sans slippage</4><5>Rails testés en bataille déjà approuvés par des milliards de dollars en actifs et des centaines d'applications... <6>voir plus</6></5></1>"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below limit price"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -7065,8 +7090,8 @@ msgstr "En signe d'appréciation, vous recevrez une récompense de <0>100 <1/></
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above limit price"
-msgstr "Prix de déclenchement supérieur au prix limite"
+#~ msgid "Trigger price above limit price"
+#~ msgstr "Prix de déclenchement supérieur au prix limite"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled."
@@ -7928,6 +7953,10 @@ msgstr "Pour des stats détaillées"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Generate Referral Code"
 msgstr "Générer un code de parrainage"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below mark price"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx

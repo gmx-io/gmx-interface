@@ -885,8 +885,8 @@ msgid "Unstake {tokenSymbol}"
 msgstr "Вывести из стейкинга {tokenSymbol}"
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
-msgid "Stop Loss Price"
-msgstr ""
+#~ msgid "Stop Loss Price"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
@@ -1190,6 +1190,10 @@ msgstr "Токены"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Withdraw"
 msgstr "Запрос на вывод"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above limit price"
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
@@ -2103,6 +2107,7 @@ msgstr "Внесено {0} в {positionText}"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
 msgstr ""
 
+#: src/components/TPSLModal/TPSLInputRow.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr ""
@@ -2231,6 +2236,10 @@ msgstr "День(и)"
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer NFT"
 msgstr "Перевод NFT"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below mark price"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
@@ -3245,8 +3254,8 @@ msgstr "ОБЪЁМ"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below limit price"
-msgstr "Триггерная цена ниже лимитной цены"
+#~ msgid "Trigger price below limit price"
+#~ msgstr "Триггерная цена ниже лимитной цены"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -4306,6 +4315,10 @@ msgstr "{typeString} Long Stop Market: {0} длинную позицию, ког
 msgid "Insufficient {0} liquidity"
 msgstr "Недостаточно ликвидности {0}"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above mark price"
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr ""
@@ -4632,6 +4645,10 @@ msgstr "Ссылка скопирована в буфер обмена."
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is -0.01%"
 msgstr "Максимальная точность проскальзывания -0.01%"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above mark price"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Weekly Updates"
@@ -5936,8 +5953,6 @@ msgstr "Мин размер позиции: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "Цена триггера ниже маркированной цены"
@@ -6022,6 +6037,10 @@ msgstr "Открытые позиции с ордерами"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 msgstr "<0>⬡ История данных Chainlink ⬡ <1/><2>#Chainlink</2> Data Streams обеспечили более $56B в объеме для протокола <3>@GMX_IO</3> V2.</0><4>Низколатентная доставка высококачественных рыночных данных Data Streams суперзарядила перпетуальные рынки GMX по <5>@arbitrum</5> и <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below limit price"
+msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -6175,6 +6194,10 @@ msgstr "Возможно, не будет достаточно ликвидно�
 msgid "Enter an amount"
 msgstr "Введите сумму"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above limit price"
+msgstr ""
+
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets are available for deposit"
 msgstr "Нет активов для внесения"
@@ -6244,8 +6267,6 @@ msgstr "Сдвиг {symbol}..."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "Цена триггера выше маркированной цены"
@@ -6352,8 +6373,8 @@ msgid "More active management required compared to GLV"
 msgstr "Требует более активного управления по сравнению с GLV"
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
-msgid "Take Profit Price"
-msgstr ""
+#~ msgid "Take Profit Price"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
@@ -6920,6 +6941,10 @@ msgstr "Внесение"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>С большинством голосов 75.5% GMX выбрал LayerZero как партнера по messaging для мультичейн-расширения! Интеграция приносит GMX:</0><1><2>Возможность расширения на 125+ цепей</2><3>Полное владение всеми контрактами и безопасностью</3><4>Быстрые переводы без slippage</4><5>Боевые рельсы, уже доверенные миллиардам долларов в активах и сотням приложений... <6>см. больше</6></5></1>"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below limit price"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -7065,8 +7090,8 @@ msgstr "В знак нашей признательности вы получи�
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above limit price"
-msgstr "Триггерная цена выше лимитной цены"
+#~ msgid "Trigger price above limit price"
+#~ msgstr "Триггерная цена выше лимитной цены"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled."
@@ -7928,6 +7953,10 @@ msgstr "Для детальной статистики"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Generate Referral Code"
 msgstr "Сгенерировать реферальный код"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below mark price"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx

@@ -10,6 +10,7 @@ import {
   expandDecimals,
   formatAmount,
   formatDeltaUsd,
+  formatUsdPrice,
   parseValue,
   removeTrailingZeros,
 } from "lib/numbers";
@@ -78,8 +79,7 @@ export function TPSLInputRow({
   const tokenPrecision = expandDecimals(1, indexTokenDecimals);
 
   const isStopLoss = type === "stopLoss";
-  const priceLabel = isStopLoss ? t`Stop Loss Price` : t`Take Profit Price`;
-  const pricePlaceholder = isStopLoss ? t`SL Price` : t`TP Price`;
+  const priceLabel = isStopLoss ? t`SL Price` : t`TP Price`;
   const secondLabel = isStopLoss ? t`Loss` : t`Gain`;
 
   const effectiveLiquidationPrice = useMemo(() => {
@@ -277,6 +277,12 @@ export function TPSLInputRow({
 
   const estimatedPnl = estimatedPnlProp ?? derivedEstimatedPnl;
   const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
+
+  const formattedMarkPrice = useMemo(() => {
+    if (referencePrice === undefined) return undefined;
+    return formatUsdPrice(referencePrice, { visualMultiplier });
+  }, [referencePrice, visualMultiplier]);
+
   const estimatedPnlRow = (
     <div className="text-body-small flex justify-end">
       <span className="text-typography-secondary">
@@ -319,7 +325,7 @@ export function TPSLInputRow({
                     className={cx("h-18 w-full min-w-0 p-0 text-13 outline-none", { "text-red-500": priceError })}
                     inputRef={priceInputRef}
                     onValueChange={handlePriceChange}
-                    placeholder={pricePlaceholder}
+                    placeholder={priceLabel}
                   />
                 </div>
                 <span className="text-13 text-typography-secondary">USD</span>
@@ -378,7 +384,14 @@ export function TPSLInputRow({
             )}
             onClick={handleBoxClick(priceInputRef)}
           >
-            <div className="text-body-small text-typography-secondary">{priceLabel}</div>
+            <div className="flex items-center justify-between">
+              <div className="text-body-small text-typography-secondary">{priceLabel}</div>
+              {formattedMarkPrice !== undefined && (
+                <div className="text-12 text-typography-secondary numbers">
+                  <Trans>Mark:</Trans> <span className="text-typography-primary">{formattedMarkPrice}</span>
+                </div>
+              )}
+            </div>
             <div className="flex items-center justify-between">
               <NumberInput
                 value={priceValue}

@@ -885,8 +885,8 @@ msgid "Unstake {tokenSymbol}"
 msgstr "{tokenSymbol} 언스테이킹"
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
-msgid "Stop Loss Price"
-msgstr ""
+#~ msgid "Stop Loss Price"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
@@ -1190,6 +1190,10 @@ msgstr "토큰"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Withdraw"
 msgstr "인출 요청"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above limit price"
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
@@ -2103,6 +2107,7 @@ msgstr "{positionText}에 {0} 예치"
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
 msgstr ""
 
+#: src/components/TPSLModal/TPSLInputRow.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr ""
@@ -2231,6 +2236,10 @@ msgstr "일"
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer NFT"
 msgstr "NFT 전송하기"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below mark price"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
@@ -3245,8 +3254,8 @@ msgstr "거래량"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below limit price"
-msgstr "트리거 가격이 지정가 가격 미만"
+#~ msgid "Trigger price below limit price"
+#~ msgstr "트리거 가격이 지정가 가격 미만"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -4306,6 +4315,10 @@ msgstr "{typeString} 롱 스탑 마켓: 가격이 트리거 가격 아래일 때
 msgid "Insufficient {0} liquidity"
 msgstr "{0} 유동성 부족"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above mark price"
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr ""
@@ -4632,6 +4645,10 @@ msgstr "클립보드로 링크가 복사되었습니다."
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is -0.01%"
 msgstr "최대 슬리피지 정밀도는 -0.01%입니다"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above mark price"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Weekly Updates"
@@ -5936,8 +5953,6 @@ msgstr "최소 포지션 크기: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "트리거 가격이 마크 가격 미만"
@@ -6022,6 +6037,10 @@ msgstr "주문으로 포지션 개설"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 msgstr "<0>⬡ Chainlink 데이터 스토리 ⬡ <1/><2>#Chainlink</2> Data Streams는 <3>@GMX_IO</3> V2 프로토콜에 $56B 이상의 거래량을 보안했습니다.</0><4>Data Streams의 저지연 고품질 시장 데이터 전달은 <5>@arbitrum</5> 및 <6>@avax</6>에서 GMX의 영구 시장을 초강화했습니다. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below limit price"
+msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -6175,6 +6194,10 @@ msgstr "최소 수령이 충족될 때 주문을 실행할 유동성이 부족�
 msgid "Enter an amount"
 msgstr "금액 입력"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above limit price"
+msgstr ""
+
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets are available for deposit"
 msgstr "입금 가능한 자산 없음"
@@ -6244,8 +6267,6 @@ msgstr "{symbol} 이전 중..."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "트리거 가격이 마크 가격 초과"
@@ -6352,8 +6373,8 @@ msgid "More active management required compared to GLV"
 msgstr "GLV에 비해 더 많은 적극적 관리가 필요합니다"
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
-msgid "Take Profit Price"
-msgstr ""
+#~ msgid "Take Profit Price"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
@@ -6920,6 +6941,10 @@ msgstr "입금 중"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징 파트너로 LayerZero를 선택했습니다! 이 통합은 GMX에:</0><1><2>125+ 체인으로 확장 능력</2><3>모든 계약 및 보안의 완전 소유권</3><4>빠르고 제로 슬리피지 전송</4><5>수십억 달러 자산과 수백 개 애플리케이션에서 이미 신뢰받는 전투 테스트된 레일... <6>더 보기</6></5></1>"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below limit price"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -7065,8 +7090,8 @@ msgstr "감사의 표시로 <0>100 <1/></0> 보상을 받으실 수 있습니다
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above limit price"
-msgstr "트리거 가격이 지정가 가격보다 높습니다"
+#~ msgid "Trigger price above limit price"
+#~ msgstr "트리거 가격이 지정가 가격보다 높습니다"
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled."
@@ -7928,6 +7953,10 @@ msgstr "상세 통계"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Generate Referral Code"
 msgstr "추천 코드 생성"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below mark price"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
