@@ -27,7 +27,7 @@ import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { convertTokenAddress, getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
@@ -321,9 +321,9 @@ export function PositionEditor() {
         setIsVisible={onClose}
         label={
           <Trans>
-            Edit {position?.isLong ? t`Long` : t`Short`}{" "}
+            Edit Collateral: {position?.isLong ? t`Long` : t`Short`}{" "}
             {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
-            {position?.indexToken?.symbol}
+            {position?.indexToken?.symbol}/USD
           </Trans>
         }
         qa="position-edit-modal"
@@ -340,6 +340,16 @@ export function PositionEditor() {
             />
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
+              topRightLabel={isDeposit ? t`Balance` : t`Max`}
+              topRightValue={
+                isDeposit
+                  ? formatBalanceAmount(collateralToken?.balance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
+                      isStable: collateralToken?.isStable,
+                    })
+                  : formatBalanceAmount(maxWithdrawAmount ?? 0n, position?.collateralToken?.decimals ?? 0, undefined, {
+                      isStable: position?.collateralToken?.isStable,
+                    })
+              }
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
               showPercentSelector={!isDeposit}
