@@ -2238,6 +2238,7 @@ msgid "Transfer NFT"
 msgstr "NFT 전송하기"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price below mark price"
 msgstr ""
 
@@ -4646,6 +4647,7 @@ msgstr "클립보드로 링크가 복사되었습니다."
 msgid "Max slippage precision is -0.01%"
 msgstr "최대 슬리피지 정밀도는 -0.01%입니다"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr ""
@@ -7934,6 +7936,7 @@ msgstr "몇 분 걸릴 수 있습니다."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored Price Impact"
 msgstr "저장 가격 영향"

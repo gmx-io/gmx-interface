@@ -2238,6 +2238,7 @@ msgid "Transfer NFT"
 msgstr "NFTを送信する"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price below mark price"
 msgstr ""
 
@@ -4646,6 +4647,7 @@ msgstr "リンクがクリップボードにコピーされました。"
 msgid "Max slippage precision is -0.01%"
 msgstr "最大スリッページ精度は-0.01%"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr ""
@@ -7934,6 +7936,7 @@ msgstr "数分かかる場合があります。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored Price Impact"
 msgstr "保存価格影響"

@@ -20,6 +20,7 @@ import {
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectBreakdownNetPriceImpactEnabled,
   selectIsPnlInLeverage,
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -57,13 +58,14 @@ import {
   formatAmount,
   formatBalanceAmount,
   formatDeltaUsd,
+  formatPercentage,
   formatUsd,
   parseValue,
 } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
-import { getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import {
   CreateOrderTxnParams,
@@ -128,6 +130,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const isPnlInLeverage = useSelector(selectIsPnlInLeverage);
+  const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
   const { shouldDisableValidationForTesting } = useSettings();
 
   const marketInfo = position.marketInfo;
@@ -480,8 +483,40 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   const activeFees = activePreview.fees;
   const activeReceiveDisplay = activePreview.receiveDisplay;
   const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
-  const activeNetPriceImpactUsd = activeFees?.collateralNetPriceImpact?.deltaUsd;
   const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
+
+  const netPriceImpactAndFeesDisplay = useMemo(() => {
+    if (!activeFees) {
+      return {
+        formattedPriceImpactPercentage: "-",
+        formattedTotalFeePercentage: "-",
+        isPriceImpactPositive: false,
+        isTotalFeePositive: false,
+      };
+    }
+
+    const priceImpactPercentage = getCappedPriceImpactPercentageFromFees({ fees: activeFees, isSwap: false });
+    const formattedPriceImpactPercentage =
+      priceImpactPercentage === undefined
+        ? "..."
+        : formatPercentage(priceImpactPercentage, { bps: false, signed: true, displayDecimals: 3 });
+    const isPriceImpactPositive = priceImpactPercentage !== undefined && priceImpactPercentage > 0n;
+
+    const feesPercentage = activeFees.positionFee?.precisePercentage ?? 0n;
+    const formattedTotalFeePercentage = formatPercentage(feesPercentage, {
+      bps: false,
+      signed: true,
+      displayDecimals: 3,
+    });
+    const isTotalFeePositive = feesPercentage > 0n;
+
+    return {
+      formattedPriceImpactPercentage,
+      formattedTotalFeePercentage,
+      isPriceImpactPositive,
+      isTotalFeePositive,
+    };
+  }, [activeFees]);
 
   const formattedMaxCloseSize = formatAmount(position.sizeInUsd, USD_DECIMALS, 2);
 
@@ -544,13 +579,14 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     return (
       handleEntryError(entry, "tp", {
         liqPrice: position.liquidationPrice,
+        entryPrice: position.entryPrice,
         markPrice,
         isLong,
         isLimit: false,
         isExistingPosition: true,
       }).price.error ?? undefined
     );
-  }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, isLong]);
+  }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
 
   const slPriceError = useMemo(() => {
     if (markPrice === undefined) return undefined;
@@ -570,13 +606,14 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     return (
       handleEntryError(entry, "sl", {
         liqPrice: position.liquidationPrice,
+        entryPrice: position.entryPrice,
         markPrice,
         isLong,
         isLimit: false,
         isExistingPosition: true,
       }).price.error ?? undefined
     );
-  }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, isLong]);
+  }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
 
   const orderPayloads = useMemo((): CreateOrderTxnParams<DecreasePositionOrderParams>[] => {
     if (!account || !marketInfo || !collateralToken) {
@@ -918,9 +955,27 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
                 <SyntheticsInfoRow
                   label={<Trans>Net Price Impact / Fees</Trans>}
                   value={
-                    <span className={cx("numbers", getPositiveOrNegativeClass(activeNetPriceImpactUsd))}>
-                      {activeFees ? formatDeltaUsd(activeNetPriceImpactUsd ?? 0n) : "-"}
-                    </span>
+                    activeFees ? (
+                      <>
+                        <span
+                          className={cx({
+                            "text-green-500": netPriceImpactAndFeesDisplay.isPriceImpactPositive,
+                          })}
+                        >
+                          {netPriceImpactAndFeesDisplay.formattedPriceImpactPercentage}
+                        </span>{" "}
+                        /{" "}
+                        <span
+                          className={cx({
+                            "text-green-500": netPriceImpactAndFeesDisplay.isTotalFeePositive,
+                          })}
+                        >
+                          {netPriceImpactAndFeesDisplay.formattedTotalFeePercentage}
+                        </span>
+                      </>
+                    ) : (
+                      "-"
+                    )
                   }
                 />
               </div>
@@ -938,6 +993,23 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
           <NetworkFeeRow executionFee={totalExecutionFee} />
+          {breakdownNetPriceImpactEnabled && (
+            <SyntheticsInfoRow
+              label={t`Stored Price Impact`}
+              value={
+                activeNextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
+                position?.pendingImpactUsd !== undefined ? (
+                  <ValueTransition
+                    from={formatDeltaUsd(position?.pendingImpactUsd)}
+                    to={formatDeltaUsd(activeNextPositionValues?.nextPendingImpactDeltaUsd)}
+                  />
+                ) : (
+                  formatDeltaUsd(activeNextPositionValues?.nextPendingImpactDeltaUsd)
+                )
+              }
+              valueClassName="numbers"
+            />
+          )}
           <SyntheticsInfoRow label={<Trans>Leverage</Trans>} value={leverageValue} />
           <SyntheticsInfoRow
             label={<Trans>Size</Trans>}
@@ -959,11 +1031,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             value={
               <ValueTransition
                 from={formatUsd(position.collateralUsd)}
-                to={
-                  activeNextPositionValues?.nextCollateralUsd
-                    ? formatUsd(activeNextPositionValues.nextCollateralUsd)
-                    : undefined
-                }
+                to={formatUsd(activeNextPositionValues?.nextCollateralUsd)}
               />
             }
           />

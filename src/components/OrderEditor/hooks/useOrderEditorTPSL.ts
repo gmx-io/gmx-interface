@@ -543,6 +543,7 @@ function buildTpSlEntry(p: {
 
   return handleEntryError(entry, p.id, {
     liqPrice: p.positionForTpSl?.liquidationPrice,
+    entryPrice: p.positionForTpSl?.entryPrice,
     triggerPrice: p.triggerPrice ?? p.order?.triggerPrice,
     markPrice: p.markPrice,
     isLong: p.order?.isLong,

@@ -2238,6 +2238,7 @@ msgid "Transfer NFT"
 msgstr "转移 NFT"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price below mark price"
 msgstr ""
 
@@ -4646,6 +4647,7 @@ msgstr "链接已复制到剪贴板。"
 msgid "Max slippage precision is -0.01%"
 msgstr "最大滑点精度为 -0.01%"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr ""
@@ -7934,6 +7936,7 @@ msgstr "这可能需要几分钟。"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored Price Impact"
 msgstr "存储价格影响"
