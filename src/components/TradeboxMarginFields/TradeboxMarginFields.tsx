@@ -11,7 +11,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { calculateDisplayDecimals, formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -122,11 +122,12 @@ export function TradeboxMarginFields({
       if (fromToken?.balance === undefined || fromToken.balance === 0n) return;
 
       const amount = (fromToken.balance * BigInt(percentage)) / 100n;
-      const formatted = formatAmountFree(amount, fromToken.decimals);
+      const displayDecimals = calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable);
+      const formatted = limitDecimals(formatAmountFree(amount, fromToken.decimals), displayDecimals);
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
-    [fromToken?.balance, fromToken?.decimals, setFocusedInput, setFromTokenInputValue]
+    [fromToken?.balance, fromToken?.decimals, fromToken?.isStable, setFocusedInput, setFromTokenInputValue]
   );
 
   const handleSizeInputChange = useCallback(
