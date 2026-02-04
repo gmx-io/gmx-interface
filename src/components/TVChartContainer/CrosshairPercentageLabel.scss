@@ -1,0 +1,19 @@
+.CrosshairPercentageLabel {
+  position: absolute;
+  right: 4px;
+  transform: translateY(12px);
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family:
+    "Relative",
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 10;
+  white-space: nowrap;
+  background: #363a45;
+  color: #fff;
+}

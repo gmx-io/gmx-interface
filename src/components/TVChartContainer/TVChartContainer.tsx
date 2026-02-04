@@ -16,11 +16,13 @@ import Loader from "components/Loader/Loader";
 
 import { ChartContextMenu } from "./ChartContextMenu";
 import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import { CrosshairPercentageLabel } from "./CrosshairPercentageLabel";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { StaticLines } from "./StaticLines";
 import type { StaticChartLine } from "./types";
 import { useChartContextMenu } from "./useChartContextMenu";
+import { useCrosshairPercentage } from "./useCrosshairPercentage";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
@@ -104,6 +106,8 @@ export default function TVChartContainer({
     visualMultiplier,
     chartContainerRef
   );
+
+  const crosshairPercentageState = useCrosshairPercentage(tvWidgetRef, chartContainerRef, chartReady, visualMultiplier);
 
   const getContextMenuItemsRef = useRef<(price: number) => ContextMenuItem[]>(getContextMenuItems);
   const handlePlusClickRef = useRef<(params: PlusClickParams) => void>(handlePlusClick);
@@ -297,7 +301,9 @@ export default function TVChartContainer({
   return (
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
-      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content" />
+      <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content">
+        {chartReady && <CrosshairPercentageLabel state={crosshairPercentageState} />}
+      </div>
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
         <>
           <StaticLines tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
