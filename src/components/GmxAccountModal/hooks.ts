@@ -177,7 +177,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
       progressCallback: (chainId, tokensChainData) => {
         if (isCancelled) return;
         tokenBalances = { ...tokenBalances, [chainId]: tokensChainData };
-        options.next(null, { tokenBalances, isLoading: true });
+        options.next(null, { tokenBalances, isLoading: isLoaded ? false : true });
       },
       tokens,
       specificChainId,
