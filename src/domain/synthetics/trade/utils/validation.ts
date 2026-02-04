@@ -183,6 +183,10 @@ export function getSwapError(p: {
     return { buttonErrorMessage: t`Enter a  price` };
   }
 
+  if ((!isLimit || isTwap) && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
+    return { buttonErrorMessage: t`Insufficient liquidity` };
+  }
+
   if (fromTokenAmount > (fromToken.balance ?? 0n)) {
     return { buttonErrorMessage: t`Insufficient ${fromToken?.symbol} balance` };
   }
@@ -198,13 +202,8 @@ export function getSwapError(p: {
   if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
     return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
   }
-
-  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
-    return { buttonErrorMessage: t`Insufficient liquidity` };
-  }
-
   const noInternalSwap =
-    !swapPathStats?.swapPath || (!isLimit && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
+    !swapPathStats?.swapPath || ((!isLimit || isTwap) && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
 
   const noExternalSwap = !externalSwapQuote;
 
