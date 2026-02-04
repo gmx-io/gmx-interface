@@ -26,6 +26,9 @@ export type TPSLDisplayMode = "percentage" | "usd";
 type PositionData = {
   sizeInTokens: bigint;
   collateralUsd: bigint;
+  collateralAmount?: bigint;
+  collateralTokenDecimals?: number;
+  isCollateralTokenEquivalentToIndex?: boolean;
   entryPrice: bigint;
   referencePrice?: bigint;
   liquidationPrice?: bigint;
@@ -68,6 +71,9 @@ export function TPSLInputRow({
   const {
     sizeInTokens,
     collateralUsd,
+    collateralAmount,
+    collateralTokenDecimals,
+    isCollateralTokenEquivalentToIndex,
     entryPrice,
     referencePrice,
     liquidationPrice,
@@ -76,7 +82,21 @@ export function TPSLInputRow({
     visualMultiplier = 1,
   } = positionData;
   const priceReference = referencePrice ?? entryPrice;
+  const pnlReferencePrice = entryPrice > 0n ? entryPrice : priceReference;
   const tokenPrecision = expandDecimals(1, indexTokenDecimals);
+  const collateralPrecision =
+    collateralTokenDecimals !== undefined ? expandDecimals(1, collateralTokenDecimals) : undefined;
+
+  const getCollateralUsdForPnl = useCallback(
+    (price: bigint | undefined) => {
+      if (!isCollateralTokenEquivalentToIndex) return collateralUsd;
+      if (price === undefined || price === 0n) return collateralUsd;
+      if (collateralAmount === undefined || collateralPrecision === undefined) return collateralUsd;
+
+      return bigMath.mulDiv(collateralAmount, price, collateralPrecision);
+    },
+    [collateralAmount, collateralPrecision, collateralUsd, isCollateralTokenEquivalentToIndex]
+  );
 
   const isStopLoss = type === "stopLoss";
   const priceLabel = isStopLoss ? t`SL Price` : t`TP Price`;
@@ -100,12 +120,31 @@ export function TPSLInputRow({
     return parseValue(priceValue, USD_DECIMALS);
   }, [priceValue]);
 
+  const clampPriceForStopLoss = useCallback(
+    (price: bigint): bigint => {
+      if (!isStopLoss || effectiveLiquidationPrice === undefined) return price;
+      const isBeyondLiquidation = isLong ? price <= effectiveLiquidationPrice : price >= effectiveLiquidationPrice;
+      return isBeyondLiquidation ? effectiveLiquidationPrice : price;
+    },
+    [effectiveLiquidationPrice, isLong, isStopLoss]
+  );
+
+  const getPriceDiff = useCallback(
+    (price: bigint) => (isLong ? price - pnlReferencePrice : pnlReferencePrice - price),
+    [isLong, pnlReferencePrice]
+  );
+
+  const getPnlUsdForPrice = useCallback(
+    (price: bigint) => bigMath.mulDiv(getPriceDiff(price), sizeInTokens, tokenPrecision),
+    [getPriceDiff, sizeInTokens, tokenPrecision]
+  );
+
   const calculatePriceFromPnlUsd = useCallback(
     (targetPnlUsd: bigint): bigint | undefined => {
-      if (sizeInTokens === 0n || priceReference === 0n) return undefined;
+      if (sizeInTokens === 0n || pnlReferencePrice === 0n) return undefined;
 
       const absPnl = bigMath.abs(targetPnlUsd);
-      const positionValueUsd = bigMath.mulDiv(priceReference, sizeInTokens, tokenPrecision);
+      const positionValueUsd = bigMath.mulDiv(pnlReferencePrice, sizeInTokens, tokenPrecision);
       if (positionValueUsd === 0n) return undefined;
 
       const targetPositionValueUsd = isLong
@@ -120,24 +159,51 @@ export function TPSLInputRow({
 
       return bigMath.mulDiv(targetPositionValueUsd, tokenPrecision, sizeInTokens);
     },
-    [isLong, isStopLoss, priceReference, sizeInTokens, tokenPrecision]
+    [isLong, isStopLoss, pnlReferencePrice, sizeInTokens, tokenPrecision]
   );
 
   const calculatePriceFromPnlPercentage = useCallback(
     (targetPnlPercentage: bigint): bigint | undefined => {
-      if (collateralUsd === 0n) return undefined;
-      const targetPnlUsd = bigMath.mulDiv(collateralUsd, targetPnlPercentage, 10000n);
+      if (targetPnlPercentage <= 0n) return undefined;
+
+      if (isCollateralTokenEquivalentToIndex && collateralAmount !== undefined && collateralPrecision !== undefined) {
+        if (sizeInTokens === 0n || pnlReferencePrice === 0n) return undefined;
+
+        const scaledCollateral = bigMath.mulDiv(collateralAmount, tokenPrecision, collateralPrecision);
+        if (scaledCollateral !== 0n) {
+          const signedTargetPnlPercentage = isStopLoss ? -targetPnlPercentage : targetPnlPercentage;
+          const percentageTerm = bigMath.mulDiv(scaledCollateral, signedTargetPnlPercentage, 10000n);
+          const denominator = isLong ? sizeInTokens - percentageTerm : sizeInTokens + percentageTerm;
+
+          if (denominator <= 0n) return undefined;
+
+          const price = bigMath.mulDiv(pnlReferencePrice, sizeInTokens, denominator);
+          return clampPriceForStopLoss(price);
+        }
+      }
+
+      const pnlCollateralUsd = getCollateralUsdForPnl(undefined);
+      if (pnlCollateralUsd === 0n) return undefined;
+
+      const targetPnlUsd = bigMath.mulDiv(pnlCollateralUsd, targetPnlPercentage, 10000n);
       const price = calculatePriceFromPnlUsd(targetPnlUsd);
       if (price === undefined) return undefined;
 
-      if (isStopLoss && effectiveLiquidationPrice !== undefined) {
-        const isBeyondLiquidation = isLong ? price <= effectiveLiquidationPrice : price >= effectiveLiquidationPrice;
-        if (isBeyondLiquidation) return effectiveLiquidationPrice;
-      }
-
-      return price;
+      return clampPriceForStopLoss(price);
     },
-    [collateralUsd, calculatePriceFromPnlUsd, isStopLoss, effectiveLiquidationPrice, isLong]
+    [
+      calculatePriceFromPnlUsd,
+      clampPriceForStopLoss,
+      collateralAmount,
+      collateralPrecision,
+      getCollateralUsdForPnl,
+      isCollateralTokenEquivalentToIndex,
+      isLong,
+      isStopLoss,
+      pnlReferencePrice,
+      sizeInTokens,
+      tokenPrecision,
+    ]
   );
 
   const formatPrice = useCallback(
@@ -153,23 +219,22 @@ export function TPSLInputRow({
   const formatGainLossValue = useCallback(
     (mode: TPSLDisplayMode): string => {
       if (currentPriceValue === undefined || currentPriceValue === 0n) return "";
-      if (sizeInTokens === 0n || priceReference === 0n) return "";
+      if (sizeInTokens === 0n || pnlReferencePrice === 0n) return "";
 
       if (mode === "percentage") {
-        if (collateralUsd > 0n) {
-          const priceDiff = isLong ? currentPriceValue - priceReference : priceReference - currentPriceValue;
-          const pnlUsd = bigMath.mulDiv(priceDiff, sizeInTokens, tokenPrecision);
-          const percentage = bigMath.mulDiv(bigMath.abs(pnlUsd), 10000n, collateralUsd);
+        const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
+        if (pnlCollateralUsd > 0n) {
+          const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+          const percentage = bigMath.mulDiv(bigMath.abs(pnlUsd), 10000n, pnlCollateralUsd);
           return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
         }
       } else {
-        const priceDiff = isLong ? currentPriceValue - priceReference : priceReference - currentPriceValue;
-        const pnlUsd = bigMath.mulDiv(priceDiff, sizeInTokens, tokenPrecision);
+        const pnlUsd = getPnlUsdForPrice(currentPriceValue);
         return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
       }
       return "";
     },
-    [currentPriceValue, collateralUsd, isLong, priceReference, sizeInTokens, tokenPrecision]
+    [currentPriceValue, getCollateralUsdForPnl, getPnlUsdForPrice, sizeInTokens, pnlReferencePrice]
   );
 
   const calculateAndUpdatePrice = useCallback(
@@ -220,17 +285,17 @@ export function TPSLInputRow({
 
   const derivedEstimatedPnl = useMemo(() => {
     if (currentPriceValue === undefined || currentPriceValue === 0n) return undefined;
-    if (priceReference === 0n || sizeInTokens === 0n) return undefined;
+    if (pnlReferencePrice === 0n || sizeInTokens === 0n) return undefined;
 
-    const priceDiff = isLong ? currentPriceValue - priceReference : priceReference - currentPriceValue;
-    const pnlUsd = bigMath.mulDiv(priceDiff, sizeInTokens, tokenPrecision);
-    const pnlPercentage = collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, collateralUsd) : undefined;
+    const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+    const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
+    const pnlPercentage = pnlCollateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, pnlCollateralUsd) : undefined;
 
     return {
       pnlUsd,
       pnlPercentage,
     };
-  }, [collateralUsd, currentPriceValue, isLong, priceReference, sizeInTokens, tokenPrecision]);
+  }, [currentPriceValue, getCollateralUsdForPnl, getPnlUsdForPrice, pnlReferencePrice, sizeInTokens]);
 
   const convertGainLossValue = useCallback(
     (value: string, fromMode: TPSLDisplayMode, toMode: TPSLDisplayMode): string => {

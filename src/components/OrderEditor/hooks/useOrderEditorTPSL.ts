@@ -62,6 +62,7 @@ import {
   getCollateralDeltaUsd,
 } from "domain/tpsl/utils";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 import { DecreasePositionAmounts } from "sdk/utils/trade";
 
 export function useOrderEditorTPSL() {
@@ -196,6 +197,10 @@ export function useOrderEditorTPSL() {
       buildTpSlInputPositionData({
         position: positionForTpSl,
         indexTokenDecimals: positionForTpSl?.marketInfo.indexToken.decimals ?? 18,
+        collateralTokenDecimals: positionForTpSl?.collateralToken.decimals,
+        isCollateralTokenEquivalentToIndex: positionForTpSl
+          ? getIsEquivalentTokens(positionForTpSl.collateralToken, positionForTpSl.indexToken)
+          : undefined,
         visualMultiplier: indexToken?.visualMultiplier,
       }),
     [indexToken?.visualMultiplier, positionForTpSl]

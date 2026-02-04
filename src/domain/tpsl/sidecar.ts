@@ -38,6 +38,9 @@ export type TpSlInputPositionData = {
   sizeInUsd: bigint;
   sizeInTokens: bigint;
   collateralUsd: bigint;
+  collateralAmount?: bigint;
+  collateralTokenDecimals?: number;
+  isCollateralTokenEquivalentToIndex?: boolean;
   entryPrice: bigint;
   referencePrice?: bigint;
   liquidationPrice?: bigint;
@@ -49,10 +52,12 @@ export type TpSlInputPositionData = {
 export function buildTpSlInputPositionData(p: {
   position?: Pick<
     PositionInfo,
-    "sizeInUsd" | "sizeInTokens" | "collateralUsd" | "entryPrice" | "liquidationPrice" | "isLong"
+    "sizeInUsd" | "sizeInTokens" | "collateralUsd" | "collateralAmount" | "entryPrice" | "liquidationPrice" | "isLong"
   >;
   collateralUsd?: bigint;
   indexTokenDecimals: number;
+  collateralTokenDecimals?: number;
+  isCollateralTokenEquivalentToIndex?: boolean;
   visualMultiplier?: number;
   referencePrice?: bigint;
 }): TpSlInputPositionData | undefined {
@@ -64,6 +69,9 @@ export function buildTpSlInputPositionData(p: {
     sizeInUsd: p.position.sizeInUsd ?? 0n,
     sizeInTokens: p.position.sizeInTokens ?? 0n,
     collateralUsd: p.collateralUsd ?? p.position.collateralUsd ?? 0n,
+    collateralAmount: p.position.collateralAmount,
+    collateralTokenDecimals: p.collateralTokenDecimals,
+    isCollateralTokenEquivalentToIndex: p.isCollateralTokenEquivalentToIndex,
     entryPrice: p.position.entryPrice ?? 0n,
     referencePrice: p.referencePrice,
     liquidationPrice: p.position.liquidationPrice,

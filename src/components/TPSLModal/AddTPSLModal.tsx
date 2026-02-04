@@ -54,7 +54,6 @@ import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmo
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   calculateDisplayDecimals,
-  expandDecimals,
   formatAmount,
   formatBalanceAmount,
   formatDeltaUsd,
@@ -72,6 +71,7 @@ import {
   getBatchTotalExecutionFee,
 } from "sdk/utils/orderTransactions";
 import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -134,6 +134,10 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   const collateralToken = position.collateralToken;
   const indexToken = position.indexToken;
   const isLong = position.isLong;
+  const isCollateralTokenEquivalentToIndex = useMemo(
+    () => getIsEquivalentTokens(position.collateralToken, position.indexToken),
+    [position.collateralToken, position.indexToken]
+  );
 
   const visualMultiplier = indexToken?.visualMultiplier ?? 1;
   const priceDecimals = calculateDisplayDecimals(position.markPrice, USD_DECIMALS, visualMultiplier);
@@ -148,10 +152,19 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
         position,
         collateralUsd: position.collateralUsd,
         indexTokenDecimals: indexToken?.decimals ?? 18,
+        collateralTokenDecimals: collateralToken.decimals,
+        isCollateralTokenEquivalentToIndex,
         visualMultiplier,
         referencePrice: markPrice,
       })!,
-    [position, indexToken?.decimals, visualMultiplier, markPrice]
+    [
+      position,
+      indexToken?.decimals,
+      collateralToken.decimals,
+      isCollateralTokenEquivalentToIndex,
+      visualMultiplier,
+      markPrice,
+    ]
   );
 
   const tpPriceEntry = useMemo(
@@ -266,6 +279,22 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     slTriggerOrderType,
     isSetAcceptablePriceImpactEnabled,
   ]);
+
+  const tpPositionData = useMemo(
+    () => ({
+      ...positionData,
+      sizeInTokens: tpDecreaseAmounts?.sizeDeltaInTokens ?? positionData.sizeInTokens,
+    }),
+    [positionData, tpDecreaseAmounts?.sizeDeltaInTokens]
+  );
+
+  const slPositionData = useMemo(
+    () => ({
+      ...positionData,
+      sizeInTokens: slDecreaseAmounts?.sizeDeltaInTokens ?? positionData.sizeInTokens,
+    }),
+    [positionData, slDecreaseAmounts?.sizeDeltaInTokens]
+  );
 
   const getSidecarExecutionFee = useCallback(
     (decreaseSwapType: DecreasePositionSwapType | undefined) => {
@@ -384,35 +413,23 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     [getNextPositionValuesForAmounts, slDecreaseAmounts]
   );
 
-  const getEstimatedPnlFromMark = useCallback(
-    (decreaseAmounts: DecreasePositionAmounts | undefined, triggerPrice: bigint | undefined) => {
-      if (!decreaseAmounts || triggerPrice === undefined || markPrice === undefined) return undefined;
+  const getEstimatedPnlFromAmounts = useCallback((decreaseAmounts: DecreasePositionAmounts | undefined) => {
+    if (!decreaseAmounts) return undefined;
 
-      const sizeDeltaInTokens = decreaseAmounts.sizeDeltaInTokens;
-      if (sizeDeltaInTokens <= 0n) return undefined;
-
-      const tokenPrecision = expandDecimals(1, indexToken?.decimals ?? 18);
-      const priceDiff = isLong ? triggerPrice - markPrice : markPrice - triggerPrice;
-      const pnlUsd = bigMath.mulDiv(priceDiff, sizeDeltaInTokens, tokenPrecision);
-      const pnlPercentage =
-        position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : undefined;
-
-      return {
-        pnlUsd,
-        pnlPercentage,
-      };
-    },
-    [indexToken?.decimals, isLong, markPrice, position.collateralUsd]
-  );
+    return {
+      pnlUsd: decreaseAmounts.realizedPnl,
+      pnlPercentage: decreaseAmounts.realizedPnlPercentage,
+    };
+  }, []);
 
   const tpEstimatedPnl = useMemo(
-    () => getEstimatedPnlFromMark(tpDecreaseAmounts, tpTriggerPrice),
-    [getEstimatedPnlFromMark, tpDecreaseAmounts, tpTriggerPrice]
+    () => getEstimatedPnlFromAmounts(tpDecreaseAmounts),
+    [getEstimatedPnlFromAmounts, tpDecreaseAmounts]
   );
 
   const slEstimatedPnl = useMemo(
-    () => getEstimatedPnlFromMark(slDecreaseAmounts, slTriggerPrice),
-    [getEstimatedPnlFromMark, slDecreaseAmounts, slTriggerPrice]
+    () => getEstimatedPnlFromAmounts(slDecreaseAmounts),
+    [getEstimatedPnlFromAmounts, slDecreaseAmounts]
   );
 
   const getReceiveDisplay = useCallback(
@@ -782,7 +799,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             type="takeProfit"
             priceValue={tpPriceInput}
             onPriceChange={setTpPriceInput}
-            positionData={positionData}
+            positionData={tpPositionData}
             priceError={tpPriceError}
             variant="full"
             defaultDisplayMode="percentage"
@@ -795,7 +812,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             type="stopLoss"
             priceValue={slPriceInput}
             onPriceChange={setSlPriceInput}
-            positionData={positionData}
+            positionData={slPositionData}
             priceError={slPriceError}
             variant="full"
             defaultDisplayMode="percentage"
@@ -887,7 +904,10 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
                   label={<Trans>PnL</Trans>}
                   value={
                     <ValueTransition
-                      from={formatDeltaUsd(position.pnl, position.pnlPercentage)}
+                      from={formatDeltaUsd(
+                        activeDecreaseAmounts?.estimatedPnl,
+                        activeDecreaseAmounts?.estimatedPnlPercentage
+                      )}
                       to={formatDeltaUsd(
                         activeNextPositionValues?.nextPnl,
                         activeNextPositionValues?.nextPnlPercentage
