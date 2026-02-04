@@ -53,16 +53,25 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
 
     const lines: StaticChartLine[] = [
       {
-        title: t`Open ${longOrShortText} - ${marketIndexName}`,
+        title: t`Open ${longOrShortText} ${marketIndexName}`,
         price: parseFloat(
           formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
         ),
+        positionData: {
+          pnl: position.pnlAfterFees,
+          sizeInUsd: position.sizeInUsd,
+          sizeInTokens: position.sizeInTokens,
+          isLong: position.isLong,
+          marketIndexName,
+          tokenSymbol: position.indexToken.symbol,
+          tokenDecimals: position.indexToken.decimals,
+        },
       },
     ];
 
     if (liquidationPrice && liquidationPrice !== "NA") {
       lines.push({
-        title: t`Liq. ${longOrShortText} - ${marketIndexName}`,
+        title: t`Liq. ${longOrShortText} ${marketIndexName}`,
         price: parseFloat(liquidationPrice),
       });
     }

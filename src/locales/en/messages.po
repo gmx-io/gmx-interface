@@ -1322,10 +1322,6 @@ msgstr "Failed"
 msgid "No fee"
 msgstr "No fee"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} - {marketIndexName}"
-msgstr "Liq. {longOrShortText} - {marketIndexName}"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
 msgstr "Market - Long Inc."
@@ -1599,6 +1595,10 @@ msgstr "GMX Proposals Voting page"
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
 msgstr "GLP Reimbursement"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq. {longOrShortText} {marketIndexName}"
+msgstr "Liq. {longOrShortText} {marketIndexName}"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -3843,10 +3843,6 @@ msgstr "Estimated Time"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdrawing"
 msgstr "Withdrawing"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} - {marketIndexName}"
-msgstr "Open {longOrShortText} - {marketIndexName}"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
@@ -6490,6 +6486,10 @@ msgstr "<0>to </0><1>{0}</1>"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Open {longOrShortText} {marketIndexName}"
+msgstr "Open {longOrShortText} {marketIndexName}"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx

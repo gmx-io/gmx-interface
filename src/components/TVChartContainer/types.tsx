@@ -9,6 +9,16 @@ export enum LineStyle {
 export type StaticChartLine = {
   price: number;
   title: string;
+  /** Position entry line data for displaying PnL and size */
+  positionData?: {
+    pnl: bigint;
+    sizeInUsd: bigint;
+    sizeInTokens: bigint;
+    isLong: boolean;
+    marketIndexName: string;
+    tokenSymbol: string;
+    tokenDecimals: number;
+  };
 };
 
 export type DynamicChartLine = {
