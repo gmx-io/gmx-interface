@@ -80,6 +80,7 @@ const enabledFeatures: ChartingLibraryFeatureset[] = [
   "items_favoriting",
   "hide_left_toolbar_by_default",
   "iframe_loading_same_origin",
+  "chart_crosshair_menu" as ChartingLibraryFeatureset, // TradingTerminalFeatureset but works in Charting Library
 ];
 
 export const defaultChartProps = {

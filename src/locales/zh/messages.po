@@ -2630,6 +2630,11 @@ msgstr "滑点过高。"
 msgid "Collapse"
 msgstr "折叠"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {formattedPrice}"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr "在 Arbitrum 上推荐的交易者"
@@ -2691,6 +2696,11 @@ msgstr "当前价格影响为 {0}。考虑使用 -0.30% 的可接受价格影响
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "完全在公共链上运行"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {formattedPrice}"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
@@ -4500,6 +4510,11 @@ msgstr "GLV 金库"
 msgid "GMX (Portuguese)"
 msgstr "GMX (葡萄牙语)"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {formattedPrice}"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
@@ -5773,6 +5788,11 @@ msgstr "找不到具有足够流动性的交换路径"
 msgid "Time Limit"
 msgstr "时间限制"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {formattedPrice}"
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle Keeper Monitoring"
 msgstr "Oracle Keeper 监控"
@@ -7008,6 +7028,11 @@ msgstr "交换失败。"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated, please refresh"
 msgstr "页面已过期，请刷新"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {formattedPrice}"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
@@ -8520,6 +8545,11 @@ msgstr "待转账批准"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 到 </1>{0}{toTokenIcon}{1}"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {formattedPrice}"
+msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "ORACLE PRICE"

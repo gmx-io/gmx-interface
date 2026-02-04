@@ -2630,6 +2630,11 @@ msgstr ""
 msgid "Collapse"
 msgstr ""
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {formattedPrice}"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr ""
@@ -2690,6 +2695,11 @@ msgstr ""
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
+msgstr ""
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {formattedPrice}"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4500,6 +4510,11 @@ msgstr ""
 msgid "GMX (Portuguese)"
 msgstr ""
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {formattedPrice}"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Mozaic Finance"
 msgstr ""
@@ -5773,6 +5788,11 @@ msgstr ""
 msgid "Time Limit"
 msgstr ""
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {formattedPrice}"
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle Keeper Monitoring"
 msgstr ""
@@ -7007,6 +7027,11 @@ msgstr ""
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated, please refresh"
+msgstr ""
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {formattedPrice}"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8519,6 +8544,11 @@ msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
+msgstr ""
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {formattedPrice}"
 msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx

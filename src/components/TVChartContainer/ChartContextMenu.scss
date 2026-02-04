@@ -1,0 +1,43 @@
+.ChartContextMenu {
+  position: fixed;
+  z-index: 1000;
+  background: #1e2033;
+  border: 1px solid #363a59;
+  border-radius: 4px;
+  padding: 4px 0;
+  min-width: 240px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  transform: translateX(-100%);
+
+  :global(.theme-light) & {
+    background: #ffffff;
+    border-color: #d4d6e2;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  &-item {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    text-align: left;
+    background: none;
+    border: none;
+    color: #e7e7e9;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.1s ease;
+
+    :global(.theme-light) & {
+      color: #333333;
+    }
+
+    &:hover {
+      background: #363a59;
+
+      :global(.theme-light) & {
+        background: #ededf2;
+      }
+    }
+  }
+}

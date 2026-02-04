@@ -14,15 +14,19 @@ import { isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Loader from "components/Loader/Loader";
 
+import { ChartContextMenu } from "./ChartContextMenu";
 import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { StaticLines } from "./StaticLines";
 import type { StaticChartLine } from "./types";
+import { useChartContextMenu } from "./useChartContextMenu";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
+  ContextMenuItem,
   IChartingLibraryWidget,
+  PlusClickParams,
   ResolutionString,
 } from "../../charting_library";
 
@@ -95,6 +99,21 @@ export default function TVChartContainer({
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
+
+  const { menuState, closeMenu, handlePlusClick, handleOrderAction, getContextMenuItems } = useChartContextMenu(
+    visualMultiplier,
+    chartContainerRef
+  );
+
+  const getContextMenuItemsRef = useRef<(price: number) => ContextMenuItem[]>(getContextMenuItems);
+  const handlePlusClickRef = useRef<(params: PlusClickParams) => void>(handlePlusClick);
+  const closeMenuRef = useRef<() => void>(closeMenu);
+
+  useEffect(() => {
+    getContextMenuItemsRef.current = getContextMenuItems;
+    handlePlusClickRef.current = handlePlusClick;
+    closeMenuRef.current = closeMenu;
+  }, [getContextMenuItems, handlePlusClick, closeMenu]);
 
   useEffect(() => {
     if (
@@ -214,6 +233,18 @@ export default function TVChartContainer({
       tvWidgetRef.current?.activeChart().dataReady(() => {
         setChartDataLoading(false);
       });
+
+      tvWidgetRef.current?.onContextMenu((_unixTime, price) => {
+        return getContextMenuItemsRef.current(price);
+      });
+
+      tvWidgetRef.current?.subscribe("onPlusClick", (params: PlusClickParams) => {
+        handlePlusClickRef.current(params);
+      });
+
+      tvWidgetRef.current?.subscribe("mouse_down", () => {
+        closeMenuRef.current();
+      });
     });
 
     /*
@@ -273,6 +304,7 @@ export default function TVChartContainer({
           <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />
         </>
       )}
+      <ChartContextMenu menuState={menuState} onClose={closeMenu} onAction={handleOrderAction} />
     </div>
   );
 }

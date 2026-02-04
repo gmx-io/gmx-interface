@@ -2630,6 +2630,11 @@ msgstr "El slippage es demasiado alto."
 msgid "Collapse"
 msgstr "Contraer"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {formattedPrice}"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders Referred on Arbitrum"
 msgstr "Traders Referidos en Arbitrum"
@@ -2691,6 +2696,11 @@ msgstr "El impacto de precio actual es {0}. Considera usar un impacto de precio 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Se ejecuta completamente en cadenas públicas"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {formattedPrice}"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-Cancel TP/SL"
@@ -4500,6 +4510,11 @@ msgstr "Vaults GLV"
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugués)"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {formattedPrice}"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
@@ -5773,6 +5788,11 @@ msgstr "No se pudo encontrar una ruta de intercambio con suficiente liquidez"
 msgid "Time Limit"
 msgstr "Límite de Tiempo"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {formattedPrice}"
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle Keeper Monitoring"
 msgstr "Monitoreo de Oracle Keeper"
@@ -7008,6 +7028,11 @@ msgstr "Intercambio fallido."
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated, please refresh"
 msgstr "Página obsoleta, por favor actualice"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {formattedPrice}"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
@@ -8520,6 +8545,11 @@ msgstr "Aprobación de transferencia pendiente"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> a </1>{0}{toTokenIcon}{1}"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {formattedPrice}"
+msgstr ""
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "ORACLE PRICE"
