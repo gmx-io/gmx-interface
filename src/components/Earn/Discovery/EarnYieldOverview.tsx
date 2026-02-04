@@ -177,6 +177,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
     "group flex items-center justify-between gap-8 border-b-1/2 border-slate-600 px-12 py-8 last:border-b-0",
     {
       "cursor-default": disabled,
+      "cursor-pointer": !disabled && !to && onClick,
     }
   );
 
