@@ -103,12 +103,14 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
     [marketsInfoData]
   );
 
-  const key =
-    marketAddresses.length && marketTokensData && subgraphUrl ? marketAddresses.concat("userEarnings").join(",") : null;
-
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
   const marketsTokensAPRData = useGmMarketsApy(chainId, srcChainId, { period: "7d" }).marketsTokensApyData;
+
+  const key =
+    marketAddresses.length && marketTokensData && subgraphUrl && account
+      ? marketAddresses.concat("userEarnings", account).join(",")
+      : null;
 
   const { data, isLoading } = useSWR<UserEarningsData | null>(key, {
     fetcher: async (): Promise<UserEarningsData | null> => {
