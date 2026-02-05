@@ -478,6 +478,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 }
                 inputValue={depositValues[selectedVault]}
                 onInputValueChange={(e) => handleSetDepositValue(e.target.value)}
+                maxDecimals={18}
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
@@ -497,6 +498,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 topLeftLabel={t`Withdraw`}
                 inputValue={formatGmxAmount((vestedAmount ?? 0n) - (claimSum ?? 0n))}
                 isDisabled
+                maxDecimals={18}
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
@@ -512,7 +514,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
           {activeAction === "claim" && (
             <>
-              <BuyInputSection topLeftLabel={t`Claim`} inputValue={formatGmxAmount(claimableAmount)} isDisabled>
+              <BuyInputSection
+                topLeftLabel={t`Claim`}
+                inputValue={formatGmxAmount(claimableAmount)}
+                isDisabled
+                maxDecimals={18}
+              >
                 <div className="flex items-center gap-4">
                   <GmxIcon className="size-20" />
                   GMX

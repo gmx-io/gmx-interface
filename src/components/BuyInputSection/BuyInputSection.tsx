@@ -31,6 +31,7 @@ type Props = {
   qa?: string;
   isDisabled?: boolean;
   className?: string;
+  maxDecimals?: number;
 };
 
 function getMaxButtonPosition({
@@ -76,6 +77,7 @@ export default function BuyInputSection(props: Props) {
     qa,
     isDisabled = false,
     className,
+    maxDecimals,
   } = props;
   const [isPercentSelectorVisible, setIsPercentSelectorVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -191,6 +193,7 @@ export default function BuyInputSection(props: Props) {
               placeholder="0.0"
               qa={qa ? qa + "-input" : undefined}
               isDisabled={isDisabled}
+              maxDecimals={maxDecimals}
             />
 
             {showPercentSelector && isPercentSelectorVisible && onPercentChange && (
