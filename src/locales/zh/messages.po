@@ -956,8 +956,8 @@ msgstr "奖励"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeboxMarginFields/MarginToPayField.tsx
-#: src/components/TradeboxMarginFields/MarginToPayField.tsx
+#: src/components/TradeboxMarginFields/MarginField.tsx
+#: src/components/TradeboxMarginFields/MarginField.tsx
 msgid "Pay"
 msgstr "支付"
 
@@ -4373,8 +4373,8 @@ msgid "Transfer already initiated"
 msgstr "转账已启动"
 
 #: src/components/TradeboxMarginFields/MarginToPayField.tsx
-msgid "Margin to Pay"
-msgstr ""
+#~ msgid "Margin to Pay"
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted."
@@ -6718,6 +6718,10 @@ msgstr "创建推荐码"
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Error submitting order"
 msgstr "提交订单错误"
+
+#: src/components/TradeboxMarginFields/MarginField.tsx
+msgid "Margin"
+msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"

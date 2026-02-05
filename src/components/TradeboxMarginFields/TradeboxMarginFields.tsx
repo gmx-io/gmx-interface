@@ -16,8 +16,8 @@ import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, 
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
-import { MarginToPayField } from "./MarginToPayField";
 import { PriceField } from "./PriceField";
 import { SizeField, SizeDisplayMode } from "./SizeField";
 import { useSizeConversion } from "./useSizeConversion";
@@ -168,11 +168,12 @@ export function TradeboxMarginFields({
 
   return (
     <div className="flex flex-col gap-8">
-      <MarginToPayField
+      <MarginField
         inputValue={fromTokenInputValue}
         onInputValueChange={handleFromInputChange}
         onSelectFromTokenAddress={onSelectFromTokenAddress}
         onDepositTokenAddress={onDepositTokenAddress}
+        onMaxClick={() => handlePercentageChange(100)}
         onFocus={() => setFocusedInput("from")}
       />
 

@@ -956,8 +956,8 @@ msgstr "Rewards"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
-#: src/components/TradeboxMarginFields/MarginToPayField.tsx
-#: src/components/TradeboxMarginFields/MarginToPayField.tsx
+#: src/components/TradeboxMarginFields/MarginField.tsx
+#: src/components/TradeboxMarginFields/MarginField.tsx
 msgid "Pay"
 msgstr "Pay"
 
@@ -4373,8 +4373,8 @@ msgid "Transfer already initiated"
 msgstr "Transfer already initiated"
 
 #: src/components/TradeboxMarginFields/MarginToPayField.tsx
-msgid "Margin to Pay"
-msgstr "Margin to Pay"
+#~ msgid "Margin to Pay"
+#~ msgstr "Margin to Pay"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted."
@@ -6718,6 +6718,10 @@ msgstr "Create code"
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
 msgid "Error submitting order"
 msgstr "Error submitting order"
+
+#: src/components/TradeboxMarginFields/MarginField.tsx
+msgid "Margin"
+msgstr "Margin"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"

@@ -1,7 +1,6 @@
 import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import cx from "classnames";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useCallback, useRef } from "react";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, SourceChainId } from "config/chains";
 import { isSettlementChain } from "config/multichain";
@@ -15,7 +14,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { formatUsd, parseValue } from "lib/numbers";
+import { formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
@@ -26,20 +25,24 @@ import { MultichainTokenSelector } from "components/TokenSelector/MultichainToke
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import WalletIcon from "img/ic_wallet.svg?react";
+
 type Props = {
   inputValue: string;
   onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
   onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
+  onMaxClick?: () => void;
   onFocus?: () => void;
   qa?: string;
 };
 
-export function MarginToPayField({
+export function MarginField({
   inputValue,
   onInputValueChange,
   onSelectFromTokenAddress,
   onDepositTokenAddress,
+  onMaxClick,
   onFocus,
   qa,
 }: Props) {
@@ -65,33 +68,55 @@ export function MarginToPayField({
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
+  const formattedBalance =
+    fromToken?.balance !== undefined
+      ? formatBalanceAmount(fromToken.balance, fromToken.decimals, "", { isStable: fromToken.isStable })
+      : undefined;
+
+  const handleBalanceClick = useCallback(() => {
+    onMaxClick?.();
+  }, [onMaxClick]);
+
   return (
     <div data-qa={qa}>
-      <div
-        className={cx("flex cursor-default items-center justify-between gap-8 rounded-8 bg-slate-900")}
-      >
-        <div className="shrink-0 pl-4 text-12 font-medium text-typography-secondary">{t`Margin to Pay`}</div>
+      <div className="flex cursor-default items-center justify-between gap-8 rounded-8 bg-slate-900">
+        <div className="shrink-0 pl-4 text-12 font-medium text-typography-secondary">{t`Margin`}</div>
 
-        <div className="flex min-w-0 items-center justify-end gap-8 rounded-8 border border-slate-800 bg-slate-800 px-8 py-5 focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300">
-          <TooltipWithPortal
-            handle={
-              <NumberInput
-                value={inputValue}
-                className="bg-transparent text-body-large !w-74 p-1 text-13 outline-none"
-                inputRef={inputRef}
-                onValueChange={onInputValueChange}
-                onFocus={onFocus}
-                placeholder="0.00"
-                qa={qa ? qa + "-input" : undefined}
-              />
-            }
-            content={<span className="text-12">{formatUsd(fromUsd ?? 0n)}</span>}
-            variant="none"
-            position="top"
-            disabled={fromUsd === undefined}
-          />
+        <div className="group flex min-w-0 items-center rounded-8 border border-slate-800 bg-slate-800 hover:border-fill-surfaceElevatedHover hover:bg-fill-surfaceElevatedHover">
+          <div className="flex items-center gap-8 rounded-8 border border-slate-800 px-8 py-5 focus-within:border-blue-300 group-hover:border-fill-surfaceElevatedHover">
+            <TooltipWithPortal
+              handle={
+                <NumberInput
+                  value={inputValue}
+                  className="max-w-100 bg-transparent text-body-large w-auto min-w-40 p-1 text-13 outline-none"
+                  inputRef={inputRef}
+                  onValueChange={onInputValueChange}
+                  onFocus={onFocus}
+                  placeholder="0.00"
+                  qa={qa ? qa + "-input" : undefined}
+                />
+              }
+              content={<span className="text-12">{formatUsd(fromUsd ?? 0n)}</span>}
+              variant="none"
+              position="top"
+              disabled={fromUsd === undefined}
+            />
 
-          <div className="shrink-0" data-token-selector>
+            {formattedBalance !== undefined && (
+              <button
+                type="button"
+                onClick={handleBalanceClick}
+                className="flex shrink-0 items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
+              >
+                <WalletIcon className="size-14" />
+                <span className="numbers">{formattedBalance}</span>
+              </button>
+            )}
+          </div>
+
+          <div className="h-20 w-1 shrink-0 bg-slate-600" />
+
+          <div className="shrink-0 px-8 py-5" data-token-selector>
             {fromTokenAddress &&
               (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
                 <TokenSelector
