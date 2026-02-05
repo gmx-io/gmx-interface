@@ -1053,14 +1053,16 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             {maxAutoCancelOrdersWarning}
             {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
               <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
-                <Trans>
-                  The execution price may vary from your set limit price due to fees and price impact, ensuring you
-                  receive the displayed minimum receive amount.{" "}
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
-                    Read more
-                  </ExternalLink>
-                  .
-                </Trans>
+                <div>
+                  <Trans>
+                    The execution price may vary from your set limit price due to fees and price impact, ensuring you
+                    receive the displayed minimum receive amount.{" "}
+                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
+                      Read more
+                    </ExternalLink>
+                    .
+                  </Trans>
+                </div>
               </AlertInfoCard>
             )}
 
