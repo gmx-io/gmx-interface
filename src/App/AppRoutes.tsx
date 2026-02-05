@@ -16,6 +16,7 @@ import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
+import { useSupportChat } from "lib/supportChat";
 import { useHashQueryParams } from "lib/useHashQueryParams";
 import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
@@ -53,6 +54,7 @@ export function AppRoutes() {
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
+  useSupportChat();
 
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
