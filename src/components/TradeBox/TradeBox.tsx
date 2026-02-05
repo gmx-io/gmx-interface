@@ -84,6 +84,7 @@ import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -334,6 +335,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const gasPaymentTokenSymbolForMax = expressOrdersEnabledForMax ? gasPaymentTokenData?.symbol : nativeToken?.symbol;
 
+  const treatMinimalBufferAsEnough =
+    isSwap &&
+    toToken &&
+    (expressOrdersEnabledForMax
+      ? getGasPaymentTokens(chainId).includes(toToken.address)
+      : toToken.address === zeroAddress);
+
   const { maxAvailableAmount, maxAvailableAmountStatus } = getMaxAvailableTokenAmount(
     expressOrdersEnabledForMax
       ? {
@@ -341,12 +349,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           gasPaymentToken: gasPaymentTokenData,
           gasPaymentTokenAmount: expressGasPaymentTokenAmount,
           balanceType: isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
+          treatMinimalBufferAsEnough,
         }
       : {
           paymentToken: fromToken,
           gasPaymentToken: nativeToken,
           gasPaymentTokenAmount: submitButtonState.totalExecutionFee?.feeTokenAmount,
           balanceType: TokenBalanceType.Wallet,
+          treatMinimalBufferAsEnough,
         }
   );
 

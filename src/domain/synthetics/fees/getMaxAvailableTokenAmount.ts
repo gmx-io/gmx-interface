@@ -29,6 +29,7 @@ export function getMaxAvailableTokenAmount({
   balanceType,
   enabled = true,
   ignoreGasPaymentToken = false,
+  treatMinimalBufferAsEnough = false,
 }: {
   gasPaymentTokenAmount?: bigint;
   enabled?: boolean;
@@ -36,6 +37,7 @@ export function getMaxAvailableTokenAmount({
   gasPaymentToken?: TokenData;
   balanceType: TokenBalanceType;
   ignoreGasPaymentToken?: boolean;
+  treatMinimalBufferAsEnough?: boolean;
 }): {
   maxAvailableAmount: bigint;
   maxAvailableAmountStatus: GasPaymentTokenMaxAvailabilityStatus;
@@ -72,36 +74,42 @@ export function getMaxAvailableTokenAmount({
     };
   }
 
-  const minResidualAmount = convertToTokenAmount(
-    DEFAULT_MIN_RESIDUAL_GAS_USD,
-    gasPaymentToken.decimals,
-    gasPaymentToken.prices.minPrice
-  )!;
+  if (!treatMinimalBufferAsEnough) {
+    const minResidualAmount = convertToTokenAmount(
+      DEFAULT_MIN_RESIDUAL_GAS_USD,
+      gasPaymentToken.decimals,
+      gasPaymentToken.prices.minPrice
+    )!;
 
-  const maxResidualAmount = convertToTokenAmount(
-    DEFAULT_MAX_RESIDUAL_GAS_USD,
-    gasPaymentToken.decimals,
-    gasPaymentToken.prices.maxPrice
-  )!;
+    const maxResidualAmount = convertToTokenAmount(
+      DEFAULT_MAX_RESIDUAL_GAS_USD,
+      gasPaymentToken.decimals,
+      gasPaymentToken.prices.maxPrice
+    )!;
 
-  let safeBuffer = bigMath.clamp(
-    gasPaymentTokenAmount * RESIDUAL_GAS_AMOUNT_MULTIPLIER,
-    minResidualAmount,
-    maxResidualAmount
-  );
+    let safeBuffer = bigMath.clamp(
+      gasPaymentTokenAmount * RESIDUAL_GAS_AMOUNT_MULTIPLIER,
+      minResidualAmount,
+      maxResidualAmount
+    );
 
-  if (safeBuffer + gasPaymentTokenAmount <= gasPaymentTokenBalance) {
-    return {
-      maxAvailableAmount: gasPaymentTokenBalance - safeBuffer - gasPaymentTokenAmount,
-      maxAvailableAmountStatus: GasPaymentTokenMaxAvailabilityStatus.Enough,
-    };
+    if (safeBuffer + gasPaymentTokenAmount <= gasPaymentTokenBalance) {
+      return {
+        maxAvailableAmount: gasPaymentTokenBalance - safeBuffer - gasPaymentTokenAmount,
+        maxAvailableAmountStatus: GasPaymentTokenMaxAvailabilityStatus.Enough,
+      };
+    }
   }
 
   const minimalBuffer = applyValidMinimalBuffer(gasPaymentTokenAmount);
   if (gasPaymentTokenBalance >= minimalBuffer) {
+    const status = treatMinimalBufferAsEnough
+      ? GasPaymentTokenMaxAvailabilityStatus.Enough
+      : GasPaymentTokenMaxAvailabilityStatus.MinimalBuffer;
+
     return {
       maxAvailableAmount: gasPaymentTokenBalance - minimalBuffer,
-      maxAvailableAmountStatus: GasPaymentTokenMaxAvailabilityStatus.MinimalBuffer,
+      maxAvailableAmountStatus: status,
     };
   }
 
