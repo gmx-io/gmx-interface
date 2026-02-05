@@ -104,7 +104,11 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
           setIsVisible={handleOverlayClose}
           contentPadding={false}
           disableOverflowHandling={true}
-          contentClassName="!h-[640px] !w-[420px] !overflow-hidden text-body-medium"
+          contentClassName={
+            view === "depositStatus"
+              ? "!w-[420px] text-body-medium"
+              : "!h-[640px] !w-[420px] !overflow-hidden text-body-medium"
+          }
           zIndex={1002}
         >
           <div className="flex min-h-0 grow flex-col">
