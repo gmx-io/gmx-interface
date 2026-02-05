@@ -34,6 +34,23 @@
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
     <meta name="theme-color" content="#ffffff" />
     <title>GMX | Decentralized Perpetual Exchange</title>
+    <!-- Addressable Pixel base code -->
+    <script>
+      !(function (w, d) {
+        w.__adrsbl = {
+          queue: [],
+          run: function () {
+            this.queue.push(arguments);
+          },
+        };
+        var s = d.createElement("script");
+        s.async = true;
+        s.src = "https://tag.adrsbl.io/p.js?tid=94d6c6f370f54f799afb611ec6ef2461";
+        var b = d.getElementsByTagName("script")[0];
+        b.parentNode.insertBefore(s, b);
+      })(window, document);
+    </script>
+    <!-- End Addressable Pixel base code -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

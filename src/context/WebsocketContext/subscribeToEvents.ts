@@ -1,5 +1,13 @@
 import { MutableRefObject } from "react";
-import { Abi, ContractEventArgs, DecodeEventLogReturnType, encodeAbiParameters, isAddress, zeroAddress } from "viem";
+import {
+  Abi,
+  checksumAddress,
+  ContractEventArgs,
+  DecodeEventLogReturnType,
+  encodeAbiParameters,
+  isAddress,
+  zeroAddress,
+} from "viem";
 import type { ContractEventArgsFromTopics, ContractEventName } from "viem/_types/types/contract";
 
 import { getContract, tryGetContract } from "config/contracts";
@@ -178,7 +186,7 @@ export function subscribeToTransferEvents({
     },
     onLogs: (logs) => {
       for (const log of logs) {
-        const tokenAddress = log.address;
+        const tokenAddress = checksumAddress(log.address);
         const amount = log.args.value;
         onTransfer(tokenAddress, -amount);
       }
@@ -196,7 +204,7 @@ export function subscribeToTransferEvents({
     },
     onLogs: (logs) => {
       for (const log of logs) {
-        const tokenAddress = log.address;
+        const tokenAddress = checksumAddress(log.address);
         const amount = log.args.value;
         onTransfer(tokenAddress, amount);
       }
@@ -243,8 +251,8 @@ export function subscribeToApprovalEvents({
     },
     onLogs: (logs) => {
       for (const log of logs) {
-        const tokenAddress = log.address;
-        const spender = log.args.spender;
+        const tokenAddress = checksumAddress(log.address);
+        const spender = checksumAddress(log.args.spender);
         const value = log.args.value;
         onApprove(tokenAddress, spender, value);
       }
@@ -285,9 +293,13 @@ export function subscribeToOftSentEvents({
     onLogs: (logs) => {
       for (const log of logs) {
         onOftSent({
-          sender: log.address,
+          sender: checksumAddress(log.address),
           txnHash: log.transactionHash,
-          ...log.args,
+          guid: log.args.guid,
+          dstEid: log.args.dstEid,
+          fromAddress: checksumAddress(log.args.fromAddress),
+          amountSentLD: log.args.amountSentLD,
+          amountReceivedLD: log.args.amountReceivedLD,
         });
       }
     },
@@ -328,9 +340,12 @@ export function subscribeToOftReceivedEvents({
     onLogs: (logs) => {
       for (const log of logs) {
         onOftReceive({
-          sender: log.address,
+          sender: checksumAddress(log.address),
           txnHash: log.transactionHash,
-          ...log.args,
+          guid: log.args.guid,
+          srcEid: log.args.srcEid,
+          toAddress: checksumAddress(log.args.toAddress),
+          amountReceivedLD: log.args.amountReceivedLD,
         });
       }
     },
@@ -376,9 +391,12 @@ export function subscribeToComposeDeliveredEvents({
         }
 
         onComposeDelivered({
-          sender: log.address,
+          sender: checksumAddress(log.address),
           txnHash: log.transactionHash,
-          ...log.args,
+          guid: log.args.guid,
+          from: checksumAddress(log.args.from),
+          to: checksumAddress(log.args.to),
+          index: log.args.index,
         });
       }
     },
@@ -415,8 +433,8 @@ export function subscribeToMultichainApprovalEvents({
     },
     onLogs: (logs) => {
       for (const log of logs) {
-        const tokenAddress = log.address;
-        const spender = log.args.spender;
+        const tokenAddress = checksumAddress(log.address);
+        const spender = checksumAddress(log.args.spender);
         const value = log.args.value;
         onApprove(tokenAddress, spender, value);
       }

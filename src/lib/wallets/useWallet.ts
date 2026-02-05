@@ -5,7 +5,7 @@ import { useEthersSigner } from "./useEthersSigner";
 export type WalletClient = UseWalletClientReturnType["data"];
 
 export default function useWallet() {
-  const { address, isConnected, connector, chainId } = useAccount();
+  const { address, isConnected, status, connector, chainId } = useAccount();
   const { data: connectorClient } = useConnectorClient();
   const { data: walletClient } = useWalletClient();
 
@@ -14,6 +14,7 @@ export default function useWallet() {
   return {
     account: address,
     active: isConnected,
+    status,
     connector: connector!,
     chainId: chainId,
     signer: signer,
