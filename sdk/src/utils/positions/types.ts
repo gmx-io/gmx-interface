@@ -1,4 +1,5 @@
 import type { Market, MarketInfo } from "utils/markets/types";
+import type { ApiOrderInfo } from "utils/orders/types";
 import type { TokenData } from "utils/tokens/types";
 
 export type Position = {
@@ -23,22 +24,6 @@ export type Position = {
   traderDiscountAmount: bigint;
   uiFeeAmount: bigint;
   pendingImpactAmount: bigint;
-  /**
-   * Not implemented in parsing
-   */
-  borrowingFactor?: bigint;
-  /**
-   * Not implemented in parsing
-   */
-  fundingFeeAmountPerSize?: bigint;
-  /**
-   * Not implemented in parsing
-   */
-  longTokenClaimableFundingAmountPerSize?: bigint;
-  /**
-   * Not implemented in parsing
-   */
-  shortTokenClaimableFundingAmountPerSize?: bigint;
   data: string;
 };
 
@@ -79,10 +64,19 @@ export type PositionInfo = Position & {
 
 export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };
 
+export type RawPositionInfo = Omit<
+  PositionInfo,
+  "marketInfo" | "market" | "indexToken" | "longToken" | "shortToken" | "collateralToken" | "pnlToken"
+>;
+
 export type PositionsData = {
   [positionKey: string]: Position;
 };
 
 export type PositionsInfoData = {
   [positionKey: string]: PositionInfo;
+};
+
+export type ApiPositionInfo = RawPositionInfo & {
+  relatedOrders?: ApiOrderInfo[];
 };

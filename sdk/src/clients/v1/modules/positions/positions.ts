@@ -11,33 +11,15 @@ import {
   MIN_POSITION_SIZE_USD_KEY,
   uiFeeFactorKey,
 } from "configs/dataStore";
-import { getPositionFee } from "utils/fees";
-import {
-  getContractMarketPrices,
-  getMarketIndexName,
-  getMarketPoolName,
-  getMaxAllowedLeverageByMinCollateralFactor,
-} from "utils/markets";
+import { getContractMarketPrices } from "utils/markets";
 import { ContractMarketPrices, MarketsData, MarketsInfoData } from "utils/markets/types";
-import { basisPointsToFloat, getBasisPoints } from "utils/numbers";
+import { basisPointsToFloat } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { OrderInfo } from "utils/orders/types";
-import {
-  getEntryPrice,
-  getLeverage,
-  getLiquidationPrice,
-  getNetPriceImpactDeltaUsdForDecrease,
-  getPositionKey,
-  getPositionNetValue,
-  getPositionPendingFeesUsd,
-  getPositionPnlAfterFees,
-  getPositionPnlUsd,
-} from "utils/positions";
+import { getPositionInfo, getPositionKey } from "utils/positions";
 import { Position, PositionsData, PositionsInfoData } from "utils/positions/types";
-import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
 import { decodeReferralCode } from "utils/referrals";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd } from "utils/tokens";
 import { TokensData } from "utils/tokens/types";
 
 type PositionsResult = {
@@ -494,10 +476,10 @@ export class Positions extends Module {
     tokensData: TokensData;
     showPnlInLeverage: boolean;
   }): Promise<PositionsInfoData> {
-    const { showPnlInLeverage, marketsInfoData, tokensData } = p;
+    const { showPnlInLeverage, marketsInfoData } = p;
     const { positionsData } = await this.getPositions({
       marketsData: marketsInfoData,
-      tokensData,
+      tokensData: p.tokensData,
     });
     const { minCollateralUsd } = await this.getPositionsConstants();
     const uiFeeFactor = await this.getUiFeeFactorRequest();
@@ -509,212 +491,20 @@ export class Positions extends Module {
 
     const positionsInfoData = Object.keys(positionsData).reduce((acc: PositionsInfoData, positionKey: string) => {
       const position = getByKey(positionsData, positionKey)!;
-
       const marketInfo = getByKey(marketsInfoData, position.marketAddress);
-      const indexToken = marketInfo?.indexToken;
-      const longToken = getByKey(tokensData, marketInfo?.longTokenAddress);
-      const shortToken = getByKey(tokensData, marketInfo?.shortTokenAddress);
 
-      const pnlToken = position.isLong ? marketInfo?.longToken : marketInfo?.shortToken;
-      const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
-
-      if (!marketInfo || !indexToken || !pnlToken || !collateralToken || !longToken || !shortToken) {
+      if (!marketInfo) {
         return acc;
       }
 
-      const markPrice = getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false });
-      const collateralMinPrice = collateralToken.prices.minPrice;
-
-      const entryPrice = getEntryPrice({
-        sizeInTokens: position.sizeInTokens,
-        sizeInUsd: position.sizeInUsd,
-        indexToken,
-      });
-
-      const pendingFundingFeesUsd = convertToUsd(
-        position.fundingFeeAmount,
-        collateralToken.decimals,
-        collateralToken.prices.minPrice
-      )!;
-
-      const pendingClaimableFundingFeesLongUsd = convertToUsd(
-        position.claimableLongTokenAmount,
-        marketInfo.longToken.decimals,
-        marketInfo.longToken.prices.minPrice
-      )!;
-
-      const pendingClaimableFundingFeesShortUsd = convertToUsd(
-        position.claimableShortTokenAmount,
-        marketInfo.shortToken.decimals,
-        marketInfo.shortToken.prices.minPrice
-      )!;
-
-      const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd + pendingClaimableFundingFeesShortUsd;
-
-      const totalPendingFeesUsd = getPositionPendingFeesUsd({
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd,
-      });
-
-      const closeAcceptablePriceInfo = marketInfo
-        ? getAcceptablePriceInfo({
-            marketInfo,
-            isIncrease: false,
-            isLimit: false,
-            isLong: position.isLong,
-            indexPrice: getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false }),
-            sizeDeltaUsd: position.sizeInUsd,
-          })
-        : undefined;
-
-      const positionFeeInfo = getPositionFee(
+      acc[positionKey] = getPositionInfo({
+        position,
         marketInfo,
-        position.sizeInUsd,
-        closeAcceptablePriceInfo?.balanceWasImproved ?? false,
-        userReferralInfo,
-        uiFeeFactor
-      );
-
-      const closingFeeUsd = positionFeeInfo.positionFeeUsd;
-      const uiFeeUsd = positionFeeInfo.uiFeeUsd ?? 0n;
-
-      const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
-
-      const remainingCollateralUsd = collateralUsd - totalPendingFeesUsd;
-
-      const remainingCollateralAmount = convertToTokenAmount(
-        remainingCollateralUsd,
-        collateralToken.decimals,
-        collateralMinPrice
-      )!;
-
-      const pnl = getPositionPnlUsd({
-        marketInfo: marketInfo,
-        sizeInUsd: position.sizeInUsd,
-        sizeInTokens: position.sizeInTokens,
-        markPrice,
-        isLong: position.isLong,
-      });
-
-      const pnlPercentage =
-        collateralUsd !== undefined && collateralUsd != 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
-
-      const netPriceImapctValues =
-        marketInfo && closeAcceptablePriceInfo
-          ? getNetPriceImpactDeltaUsdForDecrease({
-              marketInfo,
-              sizeInUsd: position.sizeInUsd,
-              pendingImpactAmount: position.pendingImpactAmount,
-              sizeDeltaUsd: position.sizeInUsd,
-              priceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
-            })
-          : undefined;
-
-      const netValue = getPositionNetValue({
-        collateralUsd: collateralUsd,
-        pnl,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: pendingFundingFeesUsd,
-        closingFeeUsd,
-        uiFeeUsd,
-        totalPendingImpactDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
-        priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
-      });
-
-      const pnlAfterFees = getPositionPnlAfterFees({
-        pnl,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: pendingFundingFeesUsd,
-        closingFeeUsd,
-        uiFeeUsd,
-        totalPendingImpactDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
-        priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
-      });
-
-      const pnlAfterFeesPercentage =
-        collateralUsd != 0n ? getBasisPoints(pnlAfterFees, collateralUsd + closingFeeUsd) : 0n;
-
-      const leverage = getLeverage({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: collateralUsd,
-        pnl: showPnlInLeverage ? pnl : undefined,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: pendingFundingFeesUsd,
-      });
-
-      const leverageWithoutPnl = getLeverage({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: collateralUsd,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: pendingFundingFeesUsd,
-        pnl: undefined,
-      });
-
-      const leverageWithPnl = getLeverage({
-        sizeInUsd: position.sizeInUsd,
-        collateralUsd: collateralUsd,
-        pnl,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd: pendingFundingFeesUsd,
-      });
-
-      const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
-
-      const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
-
-      const liquidationPrice = getLiquidationPrice({
-        marketInfo,
-        collateralToken,
-        sizeInUsd: position.sizeInUsd,
-        sizeInTokens: position.sizeInTokens,
-        collateralUsd,
-        collateralAmount: position.collateralAmount,
-        pendingImpactAmount: position.pendingImpactAmount,
-        userReferralInfo,
         minCollateralUsd,
-        pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
-        pendingFundingFeesUsd,
-        isLong: position.isLong,
+        userReferralInfo,
+        showPnlInLeverage,
+        uiFeeFactor,
       });
-
-      const indexName = getMarketIndexName({ indexToken, isSpotOnly: false });
-      const poolName = getMarketPoolName({ longToken, shortToken });
-
-      acc[positionKey] = {
-        ...position,
-        market: marketInfo,
-        marketInfo,
-        indexName,
-        poolName,
-        indexToken,
-        collateralToken,
-        pnlToken,
-        longToken,
-        shortToken,
-        markPrice,
-        entryPrice,
-        liquidationPrice,
-        collateralUsd,
-        remainingCollateralUsd,
-        remainingCollateralAmount,
-        hasLowCollateral,
-        leverage,
-        leverageWithPnl,
-        leverageWithoutPnl,
-        pnl,
-        pnlPercentage,
-        pnlAfterFees,
-        pnlAfterFeesPercentage,
-        netValue,
-        netPriceImapctDeltaUsd: netPriceImapctValues?.totalImpactDeltaUsd ?? 0n,
-        priceImpactDiffUsd: netPriceImapctValues?.priceImpactDiffUsd ?? 0n,
-        pendingImpactUsd: netPriceImapctValues?.proportionalPendingImpactDeltaUsd ?? 0n,
-        closePriceImpactDeltaUsd: closeAcceptablePriceInfo?.priceImpactDeltaUsd ?? 0n,
-        closingFeeUsd,
-        uiFeeUsd,
-        pendingFundingFeesUsd,
-        pendingClaimableFundingFeesUsd,
-      };
 
       return acc;
     }, {} as PositionsInfoData);

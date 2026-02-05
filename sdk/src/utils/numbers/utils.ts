@@ -14,6 +14,9 @@ export const BASIS_POINTS_DECIMALS = 4;
 export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 
+export const FLOAT_PRECISION_SQRT_DECIMALS = 15;
+export const FLOAT_PRECISION_SQRT = expandDecimals(1, FLOAT_PRECISION_SQRT_DECIMALS);
+
 export const BN_ZERO = 0n;
 export const BN_ONE = 1n;
 export const BN_NEGATIVE_ONE = -1n;
