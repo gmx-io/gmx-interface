@@ -445,8 +445,8 @@ export function PositionSeller() {
       numberOfParts,
     });
 
-    if (commonError[0] || decreaseError[0] || expressError[0]) {
-      return commonError[0] || decreaseError[0] || expressError[0];
+    if (commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage) {
+      return commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage;
     }
 
     if (isSubmitting) {
