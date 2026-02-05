@@ -47,30 +47,42 @@ type TakenInfo = Partial<
   all: boolean;
 };
 
+export type ReferralCodeTakenStatusResult = {
+  takenStatus: TakenStatus;
+  info: TakenInfo;
+  failedChains: ContractsChainId[];
+};
+
 export async function getReferralCodeTakenStatus(
   account: string | undefined,
   referralCode: string,
   chainId: ContractsChainId
-): Promise<{
-  takenStatus: TakenStatus;
-  info: TakenInfo;
-}> {
+): Promise<ReferralCodeTakenStatusResult> {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
 
   const ownerMap: Partial<Record<ContractsChainId, string>> = {};
+  const failedChains: ContractsChainId[] = [];
 
   await Promise.all(
     CONTRACTS_CHAIN_IDS.map(async (otherChainId) => {
-      const res = await getReferralCodeOwner(otherChainId as ContractsChainId, referralCodeBytes32);
-      ownerMap[otherChainId] = res;
+      try {
+        const res = await getReferralCodeOwner(otherChainId as ContractsChainId, referralCodeBytes32);
+        ownerMap[otherChainId] = res;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(`Failed to check referral code owner on chain ${otherChainId}:`, error);
+        failedChains.push(otherChainId as ContractsChainId);
+      }
     })
   );
 
   const takenMap: Partial<Record<ContractsChainId, boolean>> = {};
 
   for (const otherChainId of CONTRACTS_CHAIN_IDS) {
-    // const takenOnArb =
-    //   !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
+    if (failedChains.includes(otherChainId as ContractsChainId)) {
+      continue;
+    }
+
     const owner = ownerMap[otherChainId];
     const takenOnOtherChain =
       !isAddressZero(owner) && (owner !== account || (owner === account && chainId === otherChainId));
@@ -78,7 +90,10 @@ export async function getReferralCodeTakenStatus(
     takenMap[otherChainId] = takenOnOtherChain;
   }
 
-  const allTaken = Object.values(takenMap).every(identity);
+  const checkedChains = CONTRACTS_CHAIN_IDS.filter(
+    (id) => !failedChains.includes(id as ContractsChainId)
+  ) as ContractsChainId[];
+  const allTaken = checkedChains.length > 0 && checkedChains.every((id) => takenMap[id]);
   const someTaken = Object.values(takenMap).some(identity);
 
   const referralCodeTakenInfo: TakenInfo = {
@@ -93,17 +108,17 @@ export async function getReferralCodeTakenStatus(
   }
 
   if (referralCodeTakenInfo.all) {
-    return { takenStatus: "all", info: referralCodeTakenInfo };
+    return { takenStatus: "all", info: referralCodeTakenInfo, failedChains };
   }
   if (referralCodeTakenInfo[chainId]?.taken) {
-    return { takenStatus: "current", info: referralCodeTakenInfo };
+    return { takenStatus: "current", info: referralCodeTakenInfo, failedChains };
   }
 
   if (!referralCodeTakenInfo[chainId]?.taken && someTaken) {
-    return { takenStatus: "other", info: referralCodeTakenInfo };
+    return { takenStatus: "other", info: referralCodeTakenInfo, failedChains };
   }
 
-  return { takenStatus: "none", info: referralCodeTakenInfo };
+  return { takenStatus: "none", info: referralCodeTakenInfo, failedChains };
 }
 
 export function getTierIdDisplay(tierId) {

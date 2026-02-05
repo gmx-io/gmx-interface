@@ -20,12 +20,11 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
-import { useBreakpoints } from "lib/useBreakpoints";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
-import { Token } from "sdk/types/tokens";
+import { Token } from "sdk/utils/tokens/types";
 
 import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";
@@ -110,7 +109,6 @@ const Toolbar = ({ account }: { account: string }) => {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const history = useHistory();
 
-  const { isSmallMobile } = useBreakpoints();
   const chainId = srcChainId ?? settlementChainId;
 
   const { openNotifyModal } = useNotifyModalState();
@@ -152,23 +150,23 @@ const Toolbar = ({ account }: { account: string }) => {
   };
 
   const showNotify = settlementChainId !== BOTANIX;
-  const buttonClassName = isSmallMobile ? cx("size-32 !p-0") : cx("size-40 !p-0");
+  const buttonClassName = cx("size-32 !p-0");
 
   return (
     <div className="flex items-stretch justify-between gap-12 max-smallMobile:flex-wrap">
-      <Button variant="secondary" size="small" className="flex items-center gap-8" onClick={handleCopyAddress}>
+      <Button variant="secondary" size="small" className="flex h-32 items-center gap-8" onClick={handleCopyAddress}>
         <div className="max-[500px]:hidden">
           <Avatar size={24} ensName={ensName} address={account} />
         </div>
         <div className="text-body-medium font-medium text-typography-primary">
           {shortenAddressOrEns(ensName || account, 13)}
         </div>
-        <CopyIcon className="size-20 max-[500px]:hidden" />
+        <CopyIcon className="size-16 max-[500px]:hidden" />
       </Button>
       <div className="flex items-center gap-8">
         <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" size="small" className={buttonClassName} onClick={handlePnlAnalysisClick}>
-            <PnlAnalysisIcon width={20} height={20} />
+            <PnlAnalysisIcon className="size-16" />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal
@@ -186,25 +184,25 @@ const Toolbar = ({ account }: { account: string }) => {
             className={buttonClassName}
             showExternalLinkArrow={false}
           >
-            <ExplorerIcon />
+            <ExplorerIcon className="size-16" />
           </Button>
         </TooltipWithPortal>
         {showNotify && (
           <TooltipWithPortal content={t`Notifications`} position="bottom" tooltipClassName="!min-w-max" variant="none">
             <Button variant="secondary" size="small" className={buttonClassName} onClick={handleNotificationsClick}>
-              <BellIcon />
+              <BellIcon className="size-16" />
             </Button>
           </TooltipWithPortal>
         )}
 
         <TooltipWithPortal content={t`Settings`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" size="small" className={buttonClassName} onClick={handleSettingsClick}>
-            <SettingsIcon width={20} height={20} />
+            <SettingsIcon className="size-16" />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" size="small" className={buttonClassName} onClick={handleDisconnect}>
-            <DisconnectIcon />
+            <DisconnectIcon className="size-16" />
           </Button>
         </TooltipWithPortal>
       </div>
@@ -431,7 +429,7 @@ const FundingHistorySection = () => {
       </div>
       {Boolean(fundingHistory?.length) && (
         <div className="px-adaptive">
-          <SearchInput value={searchQuery} setValue={setSearchQuery} size="m" />
+          <SearchInput value={searchQuery} setValue={setSearchQuery} />
         </div>
       )}
       <VerticalScrollFadeContainer className="flex grow flex-col">

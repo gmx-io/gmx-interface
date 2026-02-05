@@ -7,6 +7,7 @@ import {
   getLayerZeroEndpointId,
   getMultichainTokenId,
   getStargatePoolAddress,
+  RANDOM_WALLET,
 } from "config/multichain";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import {
@@ -44,9 +45,9 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
-import { WithdrawalAmounts } from "sdk/types/trade";
 import { nowInSeconds } from "sdk/utils/time";
 import { applySlippageToMinOut } from "sdk/utils/trade/trade";
+import { WithdrawalAmounts } from "sdk/utils/trade/types";
 
 import { selectDepositWithdrawalAmounts } from "./selectDepositWithdrawalAmounts";
 
@@ -58,12 +59,7 @@ type PoolsDetailsParams =
   | undefined;
 
 export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams => {
-  const account = q(selectAccount);
-
-  // Early return if no account
-  if (!account) {
-    return undefined;
-  }
+  const account = q(selectAccount) ?? RANDOM_WALLET.address;
 
   const chainId = q(selectChainId);
   const srcChainId = q(selectSrcChainId);

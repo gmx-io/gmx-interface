@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import type { GasLimitsConfig } from "types/fees";
-import type { TokensData } from "types/tokens";
+import type { GasLimitsConfig } from "utils/fees/types";
 import { expandDecimals } from "utils/numbers";
+import type { TokensData } from "utils/tokens/types";
 
 import { getExecutionFee } from "./executionFee";
 

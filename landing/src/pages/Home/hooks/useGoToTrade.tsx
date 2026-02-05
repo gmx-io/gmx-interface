@@ -32,7 +32,7 @@ type Props = {
 };
 
 const REDIRECT_MAP: Record<RedirectChainIds, string> = {
-  [RedirectChainIds.Solana]: "https://gmxsol.io/",
+  [RedirectChainIds.Solana]: "https://gmtrade.xyz",
   [RedirectChainIds.Base]: makeLink(SOURCE_BASE_MAINNET),
   [RedirectChainIds.Arbitum]: makeLink(ARBITRUM),
   [RedirectChainIds.Avalanche]: makeLink(AVALANCHE),

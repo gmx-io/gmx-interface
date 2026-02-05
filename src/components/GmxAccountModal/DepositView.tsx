@@ -8,15 +8,7 @@ import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, encodeEventTopics, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
-import {
-  AnyChainId,
-  AVALANCHE,
-  SettlementChainId,
-  SourceChainId,
-  getChainName,
-  getViemChain,
-  isTestnetChain,
-} from "config/chains";
+import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -53,6 +45,7 @@ import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
@@ -68,7 +61,6 @@ import {
 } from "lib/metrics";
 import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
-import { useJsonRpcProvider } from "lib/rpc";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
@@ -86,6 +78,7 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -97,6 +90,18 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 import { calculateNetworkFeeDetails } from "./calculateNetworkFeeDetails";
 import { useAvailableToTradeAssetMultichain, useMultichainTradeTokensRequest } from "./hooks";
 import { wrapChainAction } from "./wrapChainAction";
+
+const valueSkeleton = (
+  <Skeleton
+    baseColor="#B4BBFF1A"
+    highlightColor="#B4BBFF1A"
+    width={96}
+    height={14}
+    borderRadius={4}
+    className="leading-[14px]"
+    inline
+  />
+);
 
 const useIsFirstDeposit = () => {
   const [enabled, setEnabled] = useState(true);
@@ -128,7 +133,6 @@ export const DepositView = () => {
 
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [depositViewChain, setDepositViewChain] = useGmxAccountDepositViewChain();
-  const { provider: sourceChainProvider } = useJsonRpcProvider(depositViewChain);
 
   const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setSelectedTransferGuid] = useGmxAccountSelectedTransferGuid();
@@ -255,7 +259,7 @@ export const DepositView = () => {
     unwrappedSelectedTokenAddress,
   ]);
 
-  const { gmxAccountUsd } = useAvailableToTradeAssetMultichain();
+  const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo((): {
     nextGmxAccountBalanceUsd?: bigint;
@@ -350,7 +354,7 @@ export const DepositView = () => {
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n || amountLD === undefined || amountLD <= 0n;
 
-  const { composeGas } = useMultichainDepositNetworkComposeGas({
+  const { composeGas, isLoading: isComposeGasLoading } = useMultichainDepositNetworkComposeGas({
     tokenAddress: depositViewTokenAddress,
   });
 
@@ -375,10 +379,9 @@ export const DepositView = () => {
     });
   }, [account, amountLD, depositViewChain, composeGas, settlementChainId]);
 
-  const quoteOft = useQuoteOft({
+  const { data: quoteOft, isLoading: isQuoteOftLoading } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
-    fromChainProvider: sourceChainProvider,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
   });
@@ -388,6 +391,7 @@ export const DepositView = () => {
     amountLD,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSourceChainTokenId?.decimals,
+    enabled: depositViewChain !== settlementChainId,
   });
 
   const sendParamsWithSlippage: SendParam | undefined = useMemo(() => {
@@ -407,7 +411,7 @@ export const DepositView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const quoteSendNativeFee = useQuoteSendNativeFee({
+  const { data: quoteSendNativeFee, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
@@ -447,6 +451,7 @@ export const DepositView = () => {
               settlementChainId,
             }
           : undefined,
+      withLoading: true,
     }
   );
 
@@ -842,6 +847,7 @@ export const DepositView = () => {
 
   let buttonState: {
     text: React.ReactNode;
+    bannerErrorName?: ValidationBannerErrorName;
     disabled?: boolean;
     onClick?: () => void;
   } = {
@@ -907,10 +913,9 @@ export const DepositView = () => {
     const value = isNative ? amountLD : 0n;
 
     if (depositViewChain !== undefined && quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
-      const nativeTokenSymbol = getViemChain(depositViewChain).nativeCurrency.symbol;
-
       buttonState = {
-        text: t`Insufficient ${nativeTokenSymbol} balance`,
+        text: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
         disabled: true,
       };
     }
@@ -1008,6 +1013,18 @@ export const DepositView = () => {
     networkFeeUsd,
     sameChainNetworkFeeDetails,
   ]);
+
+  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
+
+  const areMultichainFeesLoading = isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading;
+
+  const isNetworkFeeLoading =
+    shouldShowInfoRowPlaceholder &&
+    (depositViewChain === settlementChainId ? sameChainNetworkFeeAsyncResult.isLoading : areMultichainFeesLoading);
+
+  const isDepositFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
+
+  const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountUsdLoading;
 
   return (
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
@@ -1143,16 +1160,37 @@ export const DepositView = () => {
           </div>
         </AlertInfoCard>
       )}
+      {buttonState.bannerErrorName && (
+        <AlertInfoCard type="error" className="mt-8" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={buttonState.bannerErrorName}
+            chainId={settlementChainId}
+            srcChainId={depositViewChain}
+          />
+        </AlertInfoCard>
+      )}
       <div className="h-32 shrink-0 grow" />
 
       {depositViewTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow label={<Trans>Estimated Time</Trans>} value={estimatedTimeValue} />
-          <SyntheticsInfoRow label={<Trans>Network Fee</Trans>} value={networkFeeValue} />
-          <SyntheticsInfoRow label={<Trans>Deposit Fee</Trans>} value={depositFeeValue} />
+          <SyntheticsInfoRow
+            label={<Trans>Network Fee</Trans>}
+            value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
+          />
+          <SyntheticsInfoRow
+            label={<Trans>Deposit Fee</Trans>}
+            value={isDepositFeeLoading ? valueSkeleton : depositFeeValue}
+          />
           <SyntheticsInfoRow
             label={<Trans>GMX Balance</Trans>}
-            value={<ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />}
+            value={
+              isGmxBalanceLoading ? (
+                valueSkeleton
+              ) : (
+                <ValueTransition from={formatUsd(gmxAccountUsd)} to={formatUsd(nextGmxAccountBalanceUsd)} />
+              )
+            }
           />
         </div>
       )}

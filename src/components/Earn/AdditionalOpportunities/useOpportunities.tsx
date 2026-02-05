@@ -8,7 +8,7 @@ import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
 import { getMarketByLabel, MarketLabel } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import { TokensData } from "sdk/types/tokens";
+import { TokensData } from "sdk/utils/tokens/types";
 
 import beefyIcon from "img/ic_beefy.svg";
 import deltaPrimeIcon from "img/ic_delta_prime.svg";

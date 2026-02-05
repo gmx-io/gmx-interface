@@ -513,6 +513,18 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x3600592DdEd7e6E0B05029DfB637fFc5A85D6f6B": {
       enabled: true,
     },
+    // XAUT/USD [WBTC-USDC]
+    "0xeb28aD1a2e497F4Acc5D9b87e7B496623C93061E": {
+      enabled: true,
+    },
+    // LIT/USD [WETH-USDC]
+    "0x044dFE01863CE85f9ECd5639eE5485c90AC320FC": {
+      enabled: true,
+    },
+    // IP/USD [WBTC-USDC]
+    "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

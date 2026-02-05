@@ -2,8 +2,8 @@ import type { SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
-import type { TradeMode } from "sdk/types/trade";
-import type { TwapDuration } from "sdk/types/twap";
+import type { TradeMode } from "sdk/utils/trade/types";
+import type { TwapDuration } from "sdk/utils/twap/types";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -89,24 +89,30 @@ export type AccountInitedEvent = {
 };
 
 // Websockets
-export type WsProviderConnected = {
-  event: "wsProvider.connected";
-  isError: false;
-  data: {};
-};
-
-export type WsProviderDisconnected = {
-  event: "wsProvider.disconnected";
-  isError: false;
-  data: {};
-};
-
-export type WsProviderHealthCheckFailed = {
-  event: "wsProvider.healthCheckFailed";
+export type ViemWsClientConnected = {
+  event: "viemWsClient.connected";
   isError: false;
   data: {
-    requiredListenerCount: number;
-    listenerCount: number;
+    chainId: number;
+    rpcUrl: string;
+  };
+};
+
+export type ViemWsClientDisconnected = {
+  event: "viemWsClient.disconnected";
+  isError: false;
+  data: {
+    chainId: number;
+    rpcUrl: string;
+  };
+};
+
+export type ViemWsClientError = {
+  event: "viemWsClient.error";
+  isError: true;
+  data: {
+    chainId: number;
+    rpcUrl: string;
   };
 };
 
@@ -157,6 +163,7 @@ export enum FreshnessMetricId {
   Prices24h = "24Prices",
   MarketsValues = "marketsValues",
   MarketsConfigs = "marketsConfigs",
+  ApiMarketsInfo = "apiMarketsInfo",
   Positions = "positions",
   Orders = "orders",
   Balances = "balances",
@@ -608,20 +615,6 @@ export type MulticallRequestCounter = {
     requestType: string;
     rpcProvider: string;
     isLargeAccount: boolean;
-  };
-};
-
-export type WsSourceChainProviderConnectedCounter = {
-  event: "wsSourceChainProvider.connected";
-  data: {
-    srcChainId: SourceChainId;
-  };
-};
-
-export type WsSourceChainProviderDisconnectedCounter = {
-  event: "wsSourceChainProvider.disconnected";
-  data: {
-    srcChainId: SourceChainId;
   };
 };
 

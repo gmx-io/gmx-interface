@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
-import { getAddress } from "ethers";
 import { useMemo } from "react";
 import useSWRInfinite, { SWRInfiniteResponse } from "swr/infinite";
+import { getAddress } from "viem";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
