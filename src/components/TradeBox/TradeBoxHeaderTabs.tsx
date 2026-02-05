@@ -16,6 +16,7 @@ import { LeverageField } from "components/LeverageField/LeverageField";
 import Tabs from "components/Tabs/Tabs";
 import { useIsCurtainOpen } from "components/TradeBox/Curtain";
 import { MarketPoolSelectorField } from "components/TradeBox/MarketPoolSelectorField";
+import { SwapSlippageField } from "components/TradeBox/SwapSlippageField";
 import { CollateralSelectorField } from "components/TradeBox/TradeBoxRows/CollateralSelectorField";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -69,23 +70,21 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   );
 
   const isSwap = tradeType === TradeType.Swap;
-  const fieldsDisabled = isSwap;
-  const leverageFieldVisible = isIncrease || isSwap;
-  const fieldsColumnsClass = leverageFieldVisible ? "md:grid-cols-3" : "md:grid-cols-2";
+  const leverageFieldVisible = isIncrease;
 
-  const fields = (
+  const positionFields = (
     <div className="grid grid-cols-[minmax(48px,auto)_1fr_1fr] gap-8">
       {leverageFieldVisible ? (
         <LeverageField
           marks={leverageSliderMarks}
           value={isLeverageSliderEnabled ? leverageOption ?? null : null}
           onChange={setLeverageOption}
-          disabled={fieldsDisabled}
+          disabled={false}
         />
       ) : null}
 
       <div className="overflow-hidden">
-        <MarketPoolSelectorField disabled={fieldsDisabled} />
+        <MarketPoolSelectorField disabled={false} />
       </div>
 
       <div className="overflow-hidden">
@@ -93,15 +92,17 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           selectedMarketAddress={marketInfo?.marketTokenAddress}
           onSelectCollateralAddress={onSelectCollateralAddress}
           isMarket={isMarket}
-          disabled={fieldsDisabled}
+          disabled={false}
         />
       </div>
     </div>
   );
 
+  const swapFields = <SwapSlippageField />;
+
   const fieldsRow = (
-    <div className={cx("h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-6", fieldsColumnsClass)}>
-      {isPosition || isSwap ? fields : null}
+    <div className="h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-6">
+      {isSwap ? swapFields : isPosition ? positionFields : null}
     </div>
   );
 

@@ -234,7 +234,7 @@ export function TradeBoxAdvancedGroups({
       {!isTwap && (
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
-          {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
+          {isMarket && !isSwap && <AllowedSlippageRow slippageInputId={slippageInputId} />}
           {!isSwap && <NextStoredImpactRows />}
           <LeverageInfoRows />
           <EntryPriceRow />

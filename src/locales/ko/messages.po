@@ -1474,6 +1474,10 @@ msgstr "GM 이동"
 msgid "Timestamp"
 msgstr "타임스탬프"
 
+#: src/components/TradeBox/SwapSlippageField.tsx
+msgid "Custom"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "출금하려는 금액이 한도를 초과합니다. <0>{upperLimitFormatted}</0>보다 작은 금액을 시도하세요."
@@ -3432,6 +3436,7 @@ msgstr "거래가 아직 없습니다"
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/TradeBox/SwapSlippageField.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed Slippage"
 msgstr "허용 가능한 슬리피지"
@@ -3727,6 +3732,7 @@ msgid "Stake submitted."
 msgstr "스테이크 제출됨."
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/TradeBox/SwapSlippageField.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "슬리피지는 가격 변동성으로 인해 예상 체결 가격과 실제 체결 가격의 차이입니다. 슬리피지가 허용 최대값을 초과하면 주문이 체결되지 않습니다. 기본값은 설정에서 조정할 수 있습니다.<0/><1/>낮은 값(예: -{0} 미만)은 변동성이 높을 때 주문 실패를 유발할 수 있습니다.<2/><3/>참고: 슬리피지는 미결제약정 불균형에 기반한 가격 영향과 다릅니다. <4>자세히 보기</4>."
