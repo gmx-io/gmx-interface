@@ -27,7 +27,7 @@ import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { convertTokenAddress, getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
@@ -364,6 +364,9 @@ export function PositionEditor() {
                   );
                 }
               }}
+              inputTooltip={
+                collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n ? formatUsd(collateralDeltaUsd) : undefined
+              }
               qa="amount-input"
             >
               {hasMultipleTokens ? (
@@ -379,8 +382,7 @@ export function PositionEditor() {
                 collateralToken?.symbol
               )}
             </BuyInputSection>
-            {((isDeposit && collateralToken?.balance && collateralToken.balance > 0n) ||
-              (!isDeposit && maxWithdrawAmount !== undefined && maxWithdrawAmount > 0n)) && (
+            {(isDeposit || (maxWithdrawAmount !== undefined && maxWithdrawAmount > 0n)) && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
             )}
             <div className="flex flex-col gap-14">

@@ -887,9 +887,9 @@ msgstr "一致する市場がありません"
 msgid "Unstake {tokenSymbol}"
 msgstr "{tokenSymbol}をアンステーク"
 
-#: src/components/TPSLModal/TPSLInputRow.tsx
-#~ msgid "Stop Loss Price"
-#~ msgstr ""
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Stop Loss Price"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
@@ -6386,9 +6386,9 @@ msgstr "プロトコルの分析"
 msgid "More active management required compared to GLV"
 msgstr "GLVに比べてアクティブ運用が必要"
 
-#: src/components/TPSLModal/TPSLInputRow.tsx
-#~ msgid "Take Profit Price"
-#~ msgstr ""
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Take Profit Price"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
@@ -6879,7 +6879,6 @@ msgstr "GMX報酬："
 msgid "Referral code created!"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx

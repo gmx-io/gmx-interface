@@ -176,29 +176,30 @@ export function TradeboxMarginFields({
         onFocus={() => setFocusedInput("from")}
       />
 
-      <SizeField
-        sizeInTokens={increaseAmounts?.sizeDeltaInTokens}
-        sizeInUsd={increaseAmounts?.sizeDeltaUsd}
-        indexToken={toToken}
-        displayMode={sizeDisplayMode}
-        onDisplayModeChange={handleSizeDisplayModeChange}
-        inputValue={sizeFieldInputValue}
-        onInputValueChange={handleSizeInputChange}
-        onFocus={() => setFocusedInput("to")}
-        qa="position-size"
-      />
-
-      {showPriceField && onTriggerPriceInputChange && (
-        <PriceField
+      <div className="flex flex-col gap-4">
+        <SizeField
+          sizeInTokens={increaseAmounts?.sizeDeltaInTokens}
+          sizeInUsd={increaseAmounts?.sizeDeltaUsd}
           indexToken={toToken}
-          markPrice={markPrice}
-          inputValue={triggerPriceInputValue}
-          onInputValueChange={onTriggerPriceInputChange}
-          tradeMode={tradeMode}
-          qa="trigger-price"
+          displayMode={sizeDisplayMode}
+          onDisplayModeChange={handleSizeDisplayModeChange}
+          inputValue={sizeFieldInputValue}
+          onInputValueChange={handleSizeInputChange}
+          onFocus={() => setFocusedInput("to")}
+          qa="position-size"
         />
-      )}
 
+        {showPriceField && onTriggerPriceInputChange && (
+          <PriceField
+            indexToken={toToken}
+            markPrice={markPrice}
+            inputValue={triggerPriceInputValue}
+            onInputValueChange={onTriggerPriceInputChange}
+            tradeMode={tradeMode}
+            qa="trigger-price"
+          />
+        )}
+      </div>
       <MarginPercentageSlider value={marginPercentage} onChange={handlePercentageChange} />
     </div>
   );

@@ -887,9 +887,9 @@ msgstr "没有匹配的市场"
 msgid "Unstake {tokenSymbol}"
 msgstr "解除质押 {tokenSymbol}"
 
-#: src/components/TPSLModal/TPSLInputRow.tsx
-#~ msgid "Stop Loss Price"
-#~ msgstr ""
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Stop Loss Price"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
@@ -6386,9 +6386,9 @@ msgstr "协议分析"
 msgid "More active management required compared to GLV"
 msgstr "相较于 GLV 需要更多主动管理"
 
-#: src/components/TPSLModal/TPSLInputRow.tsx
-#~ msgid "Take Profit Price"
-#~ msgstr ""
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Take Profit Price"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
@@ -6879,7 +6879,6 @@ msgstr "GMX 奖励："
 msgid "Referral code created!"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx

@@ -887,9 +887,9 @@ msgstr "Keine Märkte passen"
 msgid "Unstake {tokenSymbol}"
 msgstr "{tokenSymbol} unstaken"
 
-#: src/components/TPSLModal/TPSLInputRow.tsx
-#~ msgid "Stop Loss Price"
-#~ msgstr ""
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Stop Loss Price"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
@@ -6386,9 +6386,9 @@ msgstr "Protokoll-Analytik"
 msgid "More active management required compared to GLV"
 msgstr "Mehr aktives Management erforderlich im Vergleich zu GLV"
 
-#: src/components/TPSLModal/TPSLInputRow.tsx
-#~ msgid "Take Profit Price"
-#~ msgstr ""
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Take Profit Price"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
@@ -6879,7 +6879,6 @@ msgstr "GMX-Belohnungen:"
 msgid "Referral code created!"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
