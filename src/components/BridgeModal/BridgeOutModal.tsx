@@ -461,6 +461,7 @@ export function BridgeOutModal({
               chainId={chainId}
               srcChainId={bridgeOutChain}
               gasPaymentTokenAddress={gasPaymentTokenAddress}
+              onBeforeNavigation={() => setIsVisible(false)}
             />
           </AlertInfoCard>
         )}

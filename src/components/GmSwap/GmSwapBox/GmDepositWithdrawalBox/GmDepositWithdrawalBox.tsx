@@ -441,7 +441,14 @@ export function GmSwapBoxDepositWithdrawal() {
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal content={submitState.errorDescription} variant="none">
+        <TooltipWithPortal
+          content={submitState.errorDescription}
+          variant="none"
+          position="bottom"
+          className="w-full"
+          handleClassName="w-full"
+          contentClassName="w-full justify-center"
+        >
           {btn}
         </TooltipWithPortal>
       );
