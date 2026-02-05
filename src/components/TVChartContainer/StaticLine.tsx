@@ -66,8 +66,8 @@ export function StaticLine({
       positionLine
         .setText(displayText)
         .setPrice(price)
-        .setLineStyle(LineStyle.Dotted)
-        .setLineLength(1)
+        .setLineStyle(LineStyle.Dashed)
+        .setLineLength(-40, "pixel")
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
         .setBodyTextColor("#fff")
         .setLineColor(lineColor)
