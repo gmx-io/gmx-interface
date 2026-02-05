@@ -137,11 +137,11 @@ export function usePositionsInfoRequest(
   }, [apiPositionsInfoData, marketsInfoData]);
 
   const positionsInfoData = useMemo(() => {
-    if (composedApiPositionsInfoData && !isApiStale) {
+    if (composedApiPositionsInfoData && !isApiStale && !apiError) {
       return composedApiPositionsInfoData;
     }
     return rpcPositionsInfoData;
-  }, [composedApiPositionsInfoData, isApiStale, rpcPositionsInfoData]);
+  }, [composedApiPositionsInfoData, isApiStale, apiError, rpcPositionsInfoData]);
 
   const isLoading = !positionsInfoData && (shouldFallbackToRpc ? !rpcPositionsInfoData : !composedApiPositionsInfoData);
 

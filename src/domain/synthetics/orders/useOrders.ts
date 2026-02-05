@@ -193,7 +193,7 @@ export function useOrders(
     swapRelevantDefinedMarketsLowercased,
   ]);
 
-  const count = apiEnabled && apiOrdersData ? Object.keys(apiOrdersData).length : rpcData?.count;
+  const count = apiEnabled && apiOrdersData && !isApiStale && !apiError ? Object.keys(apiOrdersData).length : rpcData?.count;
 
   return {
     ordersData: ordersData,
