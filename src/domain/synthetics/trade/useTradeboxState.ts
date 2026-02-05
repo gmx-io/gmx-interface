@@ -165,6 +165,10 @@ export function useTradeboxState(
       setStoredOptionsWithoutFallbacks((oldState) => {
         const newState = typeof args === "function" ? args(oldState) : args;
 
+        if (isEqual(oldState, newState)) {
+          return oldState;
+        }
+
         localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
         if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
@@ -617,7 +621,8 @@ export function useTradeboxState(
         return;
       }
 
-      setStoredOptions((oldState) => ({ ...oldState }));
+      // Trigger fallback normalization without forcing a redundant state change.
+      setStoredOptions((oldState) => oldState);
     },
     [availableSwapTokenAddresses.length, enabled, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
   );
