@@ -41,6 +41,7 @@ import {
   Subaccount,
 } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { extendError } from "lib/errors";
 import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
@@ -219,11 +220,13 @@ export async function estimateExpressParams({
   throwOnInvalid = false,
   provider,
   client,
+  overrideGasLimit,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
   globalExpressParams: GlobalExpressParams;
   transactionParams: ExpressTransactionEstimatorParams;
+  overrideGasLimit?: bigint;
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
@@ -281,15 +284,18 @@ export async function estimateExpressParams({
 
   const tokenPermits = isGmxAccount ? [] : rawTokenPermits;
 
-  const baseRelayerGasLimit = estimateRelayerGasLimit({
-    gasLimits,
-    tokenPermitsCount: tokenPermits.length,
-    feeSwapsCount: 1,
-    feeExternalCallsGasLimit: 0n,
-    oraclePriceCount: 2,
-    l1GasLimit: l1Reference?.gasLimit ?? 0n,
-    transactionPayloadGasLimit,
-  });
+  const baseRelayerGasLimit =
+    overrideGasLimit ??
+    estimateRelayerGasLimit({
+      gasLimits,
+      tokenPermitsCount: tokenPermits.length,
+      // TODO: is this always 1? even when paying with USDT?
+      feeSwapsCount: 1,
+      feeExternalCallsGasLimit: 0n,
+      oraclePriceCount: 2,
+      l1GasLimit: l1Reference?.gasLimit ?? 0n,
+      transactionPayloadGasLimit,
+    });
 
   const baseRelayerFeeAmount = baseRelayerGasLimit * gasPrice;
 
@@ -338,7 +344,9 @@ export async function estimateExpressParams({
     : 0n;
 
   let gasLimit: bigint;
-  if (estimationMethod === "estimateGas") {
+  if (overrideGasLimit !== undefined) {
+    gasLimit = overrideGasLimit;
+  } else if (estimationMethod === "estimateGas") {
     try {
       if (provider) {
         const baseGasPaymentValidations = getGasPaymentValidations({
@@ -536,7 +544,7 @@ export function getGasPaymentValidations({
   isGmxAccount: boolean;
 }): GasPaymentValidations {
   // Add buffer to onchain avoid out of balance errors in case quick of network fee increase
-  const gasTokenAmountWithBuffer = (gasPaymentTokenAmount * 13n) / 10n;
+  const gasTokenAmountWithBuffer = applyMinimalBuffer(gasPaymentTokenAmount);
   const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasTokenAmountWithBuffer;
 
   const tokenBalance = isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance;

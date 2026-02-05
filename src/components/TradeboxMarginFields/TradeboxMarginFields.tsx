@@ -3,8 +3,8 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { SourceChainId } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxFromToken,
   selectTradeboxFocusedInput,
+  selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarkPrice,
   selectTradeboxState,
@@ -19,10 +19,11 @@ import { bigMath } from "sdk/utils/bigmath";
 import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { PriceField } from "./PriceField";
-import { SizeField, SizeDisplayMode } from "./SizeField";
+import { SizeDisplayMode, SizeField } from "./SizeField";
 import { useSizeConversion } from "./useSizeConversion";
 
 type Props = {
+  maxAvailableAmount: bigint;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
   onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
   fromTokenInputValue: string;
@@ -35,6 +36,7 @@ type Props = {
 };
 
 export function TradeboxMarginFields({
+  maxAvailableAmount,
   onSelectFromTokenAddress,
   onDepositTokenAddress,
   fromTokenInputValue,
@@ -77,14 +79,14 @@ export function TradeboxMarginFields({
   });
 
   const marginPercentage = useMemo(() => {
-    if (fromToken?.balance === undefined || fromToken.balance === 0n) return 0;
+    if (fromToken?.decimals === undefined || maxAvailableAmount === 0n) return 0;
 
     const inputAmount = parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n;
     if (inputAmount === 0n) return 0;
 
-    const percentage = Number(bigMath.divRound(inputAmount * 100n, fromToken.balance));
+    const percentage = Number(bigMath.divRound(inputAmount * 100n, maxAvailableAmount));
     return Math.min(100, Math.max(0, percentage));
-  }, [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]);
+  }, [fromTokenInputValue, fromToken?.decimals, maxAvailableAmount]);
 
   useEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
@@ -121,15 +123,15 @@ export function TradeboxMarginFields({
 
   const handlePercentageChange = useCallback(
     (percentage: number) => {
-      if (fromToken?.balance === undefined || fromToken.balance === 0n) return;
+      if (fromToken?.decimals === undefined || maxAvailableAmount === 0n) return;
 
-      const amount = (fromToken.balance * BigInt(percentage)) / 100n;
+      const amount = (maxAvailableAmount * BigInt(percentage)) / 100n;
       const displayDecimals = calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable);
       const formatted = limitDecimals(formatAmountFree(amount, fromToken.decimals), displayDecimals);
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
-    [fromToken?.balance, fromToken?.decimals, fromToken?.isStable, setFocusedInput, setFromTokenInputValue]
+    [fromToken?.decimals, fromToken?.isStable, maxAvailableAmount, setFocusedInput, setFromTokenInputValue]
   );
 
   const handleSizeInputChange = useCallback(

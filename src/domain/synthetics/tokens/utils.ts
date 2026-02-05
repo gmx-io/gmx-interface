@@ -103,7 +103,14 @@ export function adaptToV1TokenInfo(tokenData: TokenData): TokenInfo {
   };
 }
 
-export function getBalanceByBalanceType(tokenData: TokenData, tokenBalanceType: TokenBalanceType): bigint | undefined {
+export function getBalanceByBalanceType(
+  tokenData: TokenData | undefined,
+  tokenBalanceType: TokenBalanceType
+): bigint | undefined {
+  if (tokenData === undefined) {
+    return undefined;
+  }
+
   switch (tokenBalanceType) {
     case TokenBalanceType.Wallet:
       return tokenData.walletBalance;

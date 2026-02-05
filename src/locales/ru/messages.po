@@ -845,6 +845,7 @@ msgstr "Достигнута максимальная сумма пула"
 msgid "Market Orders"
 msgstr "Рыночные Ордера"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr "Создание ордера"
@@ -2275,7 +2276,6 @@ msgstr "ЛИКВИДНОСТЬ"
 msgid "Swaps"
 msgstr "Обмены"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr "Создание ордера…"
@@ -2567,10 +2567,6 @@ msgstr "Годовая Процентная Ставка обновляется 
 msgid "Fees (Incl. Swap)"
 msgstr "Комиссии (Вкл. Обмен)"
 
-#: src/components/OrderEditor/OrderEditor.tsx
-#~ msgid "Order update fee"
-#~ msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2834,6 +2830,10 @@ msgstr "Показать значения отладки"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Годовые данные на основе последних 7 дней."
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr "Низкий баланс {symbol}. Этой суммы почти не останется на будущие комиссии в {0}."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3265,11 +3265,6 @@ msgstr "Допустимая Цена Ордера"
 msgid "VOL."
 msgstr "ОБЪЁМ"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below limit price"
-#~ msgstr "Триггерная цена ниже лимитной цены"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>Покупка {0}{1}<1>{poolName}</1></0> <2>с {tokensText}</2>"
@@ -3527,10 +3522,6 @@ msgstr "Повторить транзакцию"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr "Высокая комиссия прибыли свопа"
-
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "Swap {fromTokenText} for {toTokenText}"
-#~ msgstr "Обмен {fromTokenText} на {toTokenText}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -4371,10 +4362,6 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "Перевод уже запущен"
-
-#: src/components/TradeboxMarginFields/MarginToPayField.tsx
-#~ msgid "Margin to Pay"
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted."
@@ -5339,10 +5326,6 @@ msgstr ""
 msgid "Size, $"
 msgstr "Размер, $"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Close {0} {1}{2}"
-#~ msgstr "Закрыть {0} {1}{2}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Недостаточно баланса газа"
@@ -6116,10 +6099,6 @@ msgstr "Обмен {fromAmount} на {toAmount}"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Amount"
 msgstr "Сумма"
-
-#: src/components/PositionEditor/PositionEditor.tsx
-#~ msgid "Edit {0} {1}{2}"
-#~ msgstr "Редактировать {0} {1}{2}"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -7116,11 +7095,6 @@ msgstr "Партнерства и интеграции"
 msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 msgstr "В знак нашей признательности вы получите вознаграждение в размере <0>100 <1/></0>."
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above limit price"
-#~ msgstr "Триггерная цена выше лимитной цены"
-
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled."
 msgstr "{ordersText} отменено."
@@ -7355,10 +7329,6 @@ msgstr "Отправитель вывел все токены из GMX Vesting V
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr "Неудачный расчет комиссий за финансирование"
-
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-#~ msgstr "{increaseOrDecreaseText} {tokenText} на {sizeText}"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
@@ -8147,10 +8117,6 @@ msgstr "Открыть приложение"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr "7д"
-
-#: src/components/OrderEditor/OrderEditor.tsx
-#~ msgid "TP/SL fees"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

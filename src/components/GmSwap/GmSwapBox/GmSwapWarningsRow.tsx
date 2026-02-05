@@ -10,18 +10,22 @@ export function GmSwapWarningsRow({
   shouldShowWarningForExecutionFee,
   bannerErrorContent,
   shouldShowAvalancheGmxAccountWarning,
+  gasPaymentTokenWarningContent,
+  isSubmitDisabled,
 }: {
   shouldShowWarning: boolean;
   shouldShowWarningForPosition: boolean;
   shouldShowWarningForExecutionFee: boolean;
   bannerErrorContent?: ReactNode;
   shouldShowAvalancheGmxAccountWarning?: boolean;
+  gasPaymentTokenWarningContent?: string;
+  isSubmitDisabled?: boolean;
 }) {
   const warnings: ReactNode[] = [];
 
   if (shouldShowAvalancheGmxAccountWarning) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="error" key="avalancheGmxAccountWarning" hideClose>
+      <AlertInfoCard type="error" key="avalancheGmxAccountWarning" hideClose>
         <Trans>
           Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing
           additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a
@@ -33,7 +37,7 @@ export function GmSwapWarningsRow({
 
   if (shouldShowWarningForPosition) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighPriceImpactWarning" onClose={noop}>
+      <AlertInfoCard type="warning" key="swapBoxHighPriceImpactWarning" onClose={noop}>
         <Trans>High price impact</Trans>
       </AlertInfoCard>
     );
@@ -41,7 +45,7 @@ export function GmSwapWarningsRow({
 
   if (shouldShowWarningForExecutionFee) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="warning" key="swapBoxHighNetworkFeeWarning" onClose={noop}>
+      <AlertInfoCard type="warning" key="swapBoxHighNetworkFeeWarning" onClose={noop}>
         <Trans>High network fees</Trans>
       </AlertInfoCard>
     );
@@ -49,8 +53,16 @@ export function GmSwapWarningsRow({
 
   if (bannerErrorContent) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="error" key="bannerErrorContent" hideClose>
+      <AlertInfoCard type="error" key="bannerErrorContent" hideClose>
         {bannerErrorContent}
+      </AlertInfoCard>
+    );
+  }
+
+  if (gasPaymentTokenWarningContent && !isSubmitDisabled && !bannerErrorContent) {
+    warnings.push(
+      <AlertInfoCard type="warning" key="gasPaymentTokenWarningContent" hideClose>
+        {gasPaymentTokenWarningContent}
       </AlertInfoCard>
     );
   }
@@ -59,5 +71,5 @@ export function GmSwapWarningsRow({
     return null;
   }
 
-  return <div className="flex flex-col">{warnings}</div>;
+  return <div className="flex flex-col gap-14">{warnings}</div>;
 }

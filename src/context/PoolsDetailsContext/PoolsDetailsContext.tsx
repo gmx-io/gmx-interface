@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
@@ -57,7 +57,7 @@ function fallbackPaySource({
 
 export type PoolsDetailsState = {
   glvOrMarketAddress: string | undefined;
-  selectedMarketForGlv: string | undefined;
+  selectedMarketAddressForGlv: string | undefined;
   operation: Operation;
   mode: Mode;
   withdrawalMarketTokensData: TokensData | undefined;
@@ -114,7 +114,6 @@ export function usePoolsDetailsState({
 
   const [operation, setOperation] = useState<Operation>(Operation.Deposit);
   const [mode, setMode] = useState<Mode>(Mode.Single);
-  const [selectedMarketForGlv, setSelectedMarketForGlv] = useState<string | undefined>(undefined);
 
   const { marketTokensData: withdrawalMarketTokensData } = useMarketTokensDataRequest(chainId, srcChainId, {
     isDeposit: false,
@@ -199,6 +198,17 @@ export function usePoolsDetailsState({
     [setInputTokenAddresses]
   );
 
+  const [selectedMarketAddressForGlv, setSelectedMarketAddressForGlv] = useState<string | undefined>(undefined);
+  const isSelectedMarketAddressForGlvInitialized = useRef(false);
+  useEffect(() => {
+    if (!isSelectedMarketAddressForGlvInitialized.current && firstTokenAddress) {
+      isSelectedMarketAddressForGlvInitialized.current = true;
+      if (firstTokenAddress && isMarketTokenAddress(chainId, firstTokenAddress)) {
+        setSelectedMarketAddressForGlv(firstTokenAddress);
+      }
+    }
+  }, [chainId, firstTokenAddress]);
+
   const [firstTokenInputValue, setFirstTokenInputValue] = useSafeState<string>("");
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
@@ -263,7 +273,7 @@ export function usePoolsDetailsState({
       operation,
       mode,
       withdrawalMarketTokensData,
-      selectedMarketForGlv,
+      selectedMarketAddressForGlv,
 
       // GM Deposit/Withdrawal Box State
       focusedInput,
@@ -279,7 +289,7 @@ export function usePoolsDetailsState({
       setOperation,
       setMode,
       setGlvOrMarketAddress,
-      setSelectedMarketAddressForGlv: setSelectedMarketForGlv,
+      setSelectedMarketAddressForGlv,
       setFocusedInput,
       setPaySource,
       setFirstTokenAddress,
@@ -295,7 +305,7 @@ export function usePoolsDetailsState({
     operation,
     mode,
     withdrawalMarketTokensData,
-    selectedMarketForGlv,
+    selectedMarketAddressForGlv,
     focusedInput,
     paySource,
     firstTokenAddress,

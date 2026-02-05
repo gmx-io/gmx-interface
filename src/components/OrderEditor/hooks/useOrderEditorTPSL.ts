@@ -34,11 +34,11 @@ import {
 } from "domain/synthetics/fees";
 import {
   DecreasePositionSwapType,
-  OrderType,
-  PositionOrderInfo,
   isLimitIncreaseOrderType,
   isPositionOrder,
   isStopIncreaseOrderType,
+  OrderType,
+  PositionOrderInfo,
 } from "domain/synthetics/orders";
 import { PositionInfo, PositionInfoLoaded } from "domain/synthetics/positions";
 import { EntryField, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";

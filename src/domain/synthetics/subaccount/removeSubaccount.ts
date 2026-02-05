@@ -208,6 +208,7 @@ export async function removeSubaccountExpressTxn({
     expressTransactionBuilder: getTxnData,
     gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
     subaccount: subaccount,
+    globalExpressParams: globalExpressParams,
   });
 
   if (relayerFeeAmount === undefined) {

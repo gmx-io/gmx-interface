@@ -99,11 +99,9 @@ export function useExpressOrdersParams({
             isGmxAccount: p.isGmxAccount,
             subaccount: p.subaccount,
           }),
-          getIsEmptyBatch(p.orderParams)
-            ? Promise.resolve(undefined)
-            : sleep(5000).then(() => {
-                throw new Error(FAST_EXPRESS_PARAMS_TIMEOUT_ERROR);
-              }),
+          sleep(5000).then(() => {
+            throw new Error(FAST_EXPRESS_PARAMS_TIMEOUT_ERROR);
+          }),
         ]);
 
         return nextApproximateParams;

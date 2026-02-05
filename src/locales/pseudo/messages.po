@@ -845,6 +845,7 @@ msgstr ""
 msgid "Market Orders"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr ""
@@ -2275,7 +2276,6 @@ msgstr ""
 msgid "Swaps"
 msgstr ""
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr ""
@@ -2567,10 +2567,6 @@ msgstr ""
 msgid "Fees (Incl. Swap)"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
-#~ msgid "Order update fee"
-#~ msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2833,6 +2829,10 @@ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
+msgstr ""
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -3265,11 +3265,6 @@ msgstr ""
 msgid "VOL."
 msgstr ""
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below limit price"
-#~ msgstr ""
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr ""
@@ -3527,10 +3522,6 @@ msgstr ""
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "Swap {fromTokenText} for {toTokenText}"
-#~ msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -4371,10 +4362,6 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr ""
-
-#: src/components/TradeboxMarginFields/MarginToPayField.tsx
-#~ msgid "Margin to Pay"
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted."
@@ -5339,10 +5326,6 @@ msgstr ""
 msgid "Size, $"
 msgstr ""
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Close {0} {1}{2}"
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr ""
@@ -6116,10 +6099,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Amount"
 msgstr ""
-
-#: src/components/PositionEditor/PositionEditor.tsx
-#~ msgid "Edit {0} {1}{2}"
-#~ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -7116,11 +7095,6 @@ msgstr ""
 msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 msgstr ""
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above limit price"
-#~ msgstr ""
-
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled."
 msgstr ""
@@ -7355,10 +7329,6 @@ msgstr ""
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr ""
-
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-#~ msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
@@ -8147,10 +8117,6 @@ msgstr ""
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr ""
-
-#: src/components/OrderEditor/OrderEditor.tsx
-#~ msgid "TP/SL fees"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

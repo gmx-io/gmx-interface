@@ -845,6 +845,7 @@ msgstr "达到池最大金额"
 msgid "Market Orders"
 msgstr "市场订单"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr "创建订单"
@@ -2275,7 +2276,6 @@ msgstr "流动性"
 msgid "Swaps"
 msgstr "交换"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr "正在创建订单…"
@@ -2567,10 +2567,6 @@ msgstr "年化收益率每周三更新，具体取决于当周收取的费用。
 msgid "Fees (Incl. Swap)"
 msgstr "费用（包括交换）"
 
-#: src/components/OrderEditor/OrderEditor.tsx
-#~ msgid "Order update fee"
-#~ msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
@@ -2834,6 +2830,10 @@ msgstr "显示调试值"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "基于过去 7 天的年化数据。"
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr "{symbol} 余额不足。此金额在 {0} 上几乎无法支付未来手续费。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3265,11 +3265,6 @@ msgstr "订单可接受价格"
 msgid "VOL."
 msgstr "交易量"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price below limit price"
-#~ msgstr "触发价格低于限价"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>购买 {0}{1}<1>{poolName}</1></0> <2>使用 {tokensText}</2>"
@@ -3527,10 +3522,6 @@ msgstr "重复交易"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr "高交换利润费用"
-
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "Swap {fromTokenText} for {toTokenText}"
-#~ msgstr "将 {fromTokenText} 交换为 {toTokenText}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -4371,10 +4362,6 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "转账已启动"
-
-#: src/components/TradeboxMarginFields/MarginToPayField.tsx
-#~ msgid "Margin to Pay"
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw submitted."
@@ -5339,10 +5326,6 @@ msgstr ""
 msgid "Size, $"
 msgstr "大小，$"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Close {0} {1}{2}"
-#~ msgstr "关闭 {0} {1}{2}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Gas余额不足"
@@ -6116,10 +6099,6 @@ msgstr "将 {fromAmount} 交换为 {toAmount}"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Amount"
 msgstr "金额"
-
-#: src/components/PositionEditor/PositionEditor.tsx
-#~ msgid "Edit {0} {1}{2}"
-#~ msgstr "编辑 {0} {1}{2}"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -7116,11 +7095,6 @@ msgstr "合作伙伴与整合"
 msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 msgstr "作为我们的感谢，您将收到 <0>100 <1/></0> 的奖励。"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#~ msgid "Trigger price above limit price"
-#~ msgstr "触发价格高于限价"
-
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled."
 msgstr "{ordersText} 已取消。"
@@ -7355,10 +7329,6 @@ msgstr "发送方已从 GMX 归属金库中提取所有代币"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Failed Settlement of Funding Fees"
 msgstr "资金费用结算失败"
-
-#: src/domain/synthetics/orders/utils.tsx
-#~ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-#~ msgstr "{increaseOrDecreaseText} {tokenText} 按 {sizeText}"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
@@ -8147,10 +8117,6 @@ msgstr "打开应用"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr "7 天"
-
-#: src/components/OrderEditor/OrderEditor.tsx
-#~ msgid "TP/SL fees"
-#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

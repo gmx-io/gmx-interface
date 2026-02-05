@@ -1,7 +1,7 @@
 import { SettlementChainId, SourceChainId } from "config/chains";
 import {
-  RawCreateGlvDepositParams,
   RawCreateDepositParams,
+  RawCreateGlvDepositParams,
   RawCreateGlvWithdrawalParams,
   RawCreateWithdrawalParams,
 } from "domain/synthetics/markets";
@@ -9,11 +9,10 @@ import { estimateSourceChainDepositFees } from "domain/synthetics/markets/feeEst
 import { estimateSourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import { estimateSourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import { estimateSourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
-import { MARKETS } from "sdk/configs/markets";
-import { WithdrawalAmounts } from "sdk/utils/trade/types";
+import { getTokenAddressByMarket } from "sdk/configs/markets";
 
-import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 import { Operation } from "../types";
+import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 
 export async function calculateSourceChainTechnicalFees(
   params: CalculateTechnicalFeesParams
@@ -60,11 +59,8 @@ export async function calculateSourceChainTechnicalFees(
   } else if (params.operation === Operation.Withdrawal) {
     if (params.isGlv) {
       const castedParams = params.rawParams as RawCreateGlvWithdrawalParams;
-      const glvWithdrawalAmounts = params.amounts as WithdrawalAmounts;
-      const outputLongTokenAddress =
-        glvWithdrawalAmounts.longTokenSwapPathStats?.tokenOutAddress ?? params.glvInfo!.longTokenAddress;
-      const outputShortTokenAddress =
-        glvWithdrawalAmounts.shortTokenSwapPathStats?.tokenOutAddress ?? params.glvInfo!.shortTokenAddress;
+      const outputLongTokenAddress = params.outputLongTokenAddress ?? params.glvInfo!.longTokenAddress;
+      const outputShortTokenAddress = params.outputShortTokenAddress ?? params.glvInfo!.shortTokenAddress;
 
       const fees = await estimateSourceChainGlvWithdrawalFees({
         chainId: params.chainId as SettlementChainId,
@@ -86,18 +82,12 @@ export async function calculateSourceChainTechnicalFees(
       };
     } else {
       const castedParams = params.rawParams as RawCreateWithdrawalParams;
-      if (!params.amounts) {
-        return undefined;
-      }
-
-      const gmWithdrawalAmounts = params.amounts as WithdrawalAmounts;
-
       const outputLongTokenAddress =
-        gmWithdrawalAmounts.longTokenSwapPathStats?.tokenOutAddress ??
-        MARKETS[params.chainId][params.rawParams.addresses.market].longTokenAddress;
+        params.outputLongTokenAddress ??
+        getTokenAddressByMarket(params.chainId, params.rawParams.addresses.market, "long");
       const outputShortTokenAddress =
-        gmWithdrawalAmounts.shortTokenSwapPathStats?.tokenOutAddress ??
-        MARKETS[params.chainId][params.rawParams.addresses.market].shortTokenAddress;
+        params.outputShortTokenAddress ??
+        getTokenAddressByMarket(params.chainId, params.rawParams.addresses.market, "short");
 
       const fees = await estimateSourceChainWithdrawalFees({
         chainId: params.chainId as SettlementChainId,
