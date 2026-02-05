@@ -438,8 +438,8 @@ export function OrderEditor(p: Props) {
         tokensData,
       });
 
-      if (expressError[0]) {
-        return expressError[0];
+      if (expressError.buttonErrorMessage) {
+        return expressError.buttonErrorMessage;
       }
 
       return;
