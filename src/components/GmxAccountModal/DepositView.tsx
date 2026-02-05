@@ -44,9 +44,13 @@ import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
-import { getMaxAvailableTokenAmount } from "domain/synthetics/fees/getMaxAvailableTokenAmount";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
-import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
+import {
+  getBalanceByBalanceType,
+  getNeedTokenApprove,
+  useTokensAllowanceData,
+  useTokensDataRequest,
+} from "domain/synthetics/tokens";
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -523,29 +527,25 @@ export const DepositView = () => {
     };
   }, [depositViewChain, nativeTokenSourceChainBalance, settlementChainId, settlementChainTokensData]);
 
-  const { maxAvailableAmount: depositMaxAvailableAmount, maxAvailableAmountStatus: depositMaxAvailableAmountStatus } =
-    getMaxAvailableTokenAmount({
-      paymentToken,
-      gasPaymentToken,
-      gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
-      balanceType: depositViewChain === settlementChainId ? TokenBalanceType.Wallet : TokenBalanceType.SourceChain,
-      enabled: depositViewTokenAddress !== undefined,
-      ignoreGasPaymentToken:
-        depositViewChain !== undefined &&
-        depositViewChain !== settlementChainId &&
-        !getMappedTokenId(settlementChainId as SettlementChainId, zeroAddress, depositViewChain as SourceChainId),
-    });
+  const depositBalanceType =
+    depositViewChain === settlementChainId ? TokenBalanceType.Wallet : TokenBalanceType.SourceChain;
+  const ignoreGasPaymentToken =
+    depositViewChain !== undefined &&
+    depositViewChain !== settlementChainId &&
+    !getMappedTokenId(settlementChainId as SettlementChainId, zeroAddress, depositViewChain as SourceChainId);
+  const gasPaymentTokenBalanceForDeposit = getBalanceByBalanceType(gasPaymentToken, depositBalanceType);
 
   const depositMaxDetails = useMaxAvailableAmount({
     fromToken: paymentToken,
-    fromTokenAmount: inputAmount ?? 0n,
+    fromTokenBalance: getBalanceByBalanceType(paymentToken, depositBalanceType),
+    fromTokenAmount: inputAmount,
     fromTokenInputValue: inputValue ?? "",
-    maxAvailableAmount: depositMaxAvailableAmount,
     isLoading: isLoadingDepositMax,
-    maxAvailableAmountStatus: depositMaxAvailableAmountStatus,
-    gasPaymentTokenSymbol: gasPaymentToken?.symbol,
     srcChainId: depositViewChain,
-    tokenBalanceType: depositViewChain === settlementChainId ? TokenBalanceType.Wallet : TokenBalanceType.SourceChain,
+    gasPaymentToken,
+    gasPaymentTokenBalance: gasPaymentTokenBalanceForDeposit,
+    gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
+    ignoreGasPaymentToken,
   });
 
   const handleMaxButtonClick = useCallback(() => {

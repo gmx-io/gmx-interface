@@ -166,6 +166,9 @@ async function estimateArbitraryGasLimit({
   );
 
   const tokensToOverride = new Set([gasPaymentParams.gasPaymentTokenAddress]);
+  if (overrideWnt) {
+    tokensToOverride.add(gasPaymentParams.relayerFeeTokenAddress);
+  }
   if (additionalBalanceOverrideTokens) {
     for (const token of additionalBalanceOverrideTokens) {
       if (token) {
@@ -454,11 +457,12 @@ export function useArbitraryRelayParamsAndPayload({
           executionFeeAmount: p.executionFeeAmount ?? 0n,
           gasPaymentTokenAsCollateralAmount: p.gasPaymentTokenAsCollateralAmount ?? 0n,
           subaccountActions: 0,
-          transactionPayloadGasLimit: gasLimit,
+          transactionPayloadGasLimit: 0n,
           expressTransactionBuilder: p.expressTransactionBuilder,
           executionGasLimit: 0n,
         },
         throwOnInvalid: true,
+        overrideGasLimit: gasLimit,
       });
 
       if (expressParams === undefined) {

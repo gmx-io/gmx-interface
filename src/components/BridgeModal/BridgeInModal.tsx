@@ -121,13 +121,11 @@ export function BridgeInModal({
 
   const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken: marketToken,
-    fromTokenAmount: bridgeInAmount ?? 0n,
+    fromTokenBalance: bridgeInChainMarketTokenBalance,
+    fromTokenAmount: bridgeInAmount,
     fromTokenInputValue: bridgeInInputValue,
-    maxAvailableAmount: bridgeInChainMarketTokenBalance,
-    isLoading: false,
     srcChainId: bridgeInChain,
-    overrideBalance: true,
-    balance: bridgeInChainMarketTokenBalance,
+    ignoreGasPaymentToken: true,
   });
 
   const nativeFeeAsyncResult = useThrottledAsync(

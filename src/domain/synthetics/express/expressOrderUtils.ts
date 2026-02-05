@@ -41,6 +41,7 @@ import {
   Subaccount,
 } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { extendError } from "lib/errors";
 import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
@@ -70,7 +71,6 @@ import { nowInSeconds } from "sdk/utils/time";
 import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
-import { applyMinimalBuffer } from "../fees/getMaxAvailableTokenAmount";
 import { getNeedTokenApprove } from "../tokens";
 
 export async function estimateBatchExpressParams({
@@ -220,11 +220,13 @@ export async function estimateExpressParams({
   throwOnInvalid = false,
   provider,
   client,
+  overrideGasLimit,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
   globalExpressParams: GlobalExpressParams;
   transactionParams: ExpressTransactionEstimatorParams;
+  overrideGasLimit?: bigint;
   estimationMethod: "approximate" | "estimateGas";
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
@@ -282,16 +284,18 @@ export async function estimateExpressParams({
 
   const tokenPermits = isGmxAccount ? [] : rawTokenPermits;
 
-  const baseRelayerGasLimit = estimateRelayerGasLimit({
-    gasLimits,
-    tokenPermitsCount: tokenPermits.length,
-    // TODO: is this always 1? even when paying with USDT?
-    feeSwapsCount: 1,
-    feeExternalCallsGasLimit: 0n,
-    oraclePriceCount: 2,
-    l1GasLimit: l1Reference?.gasLimit ?? 0n,
-    transactionPayloadGasLimit,
-  });
+  const baseRelayerGasLimit =
+    overrideGasLimit ??
+    estimateRelayerGasLimit({
+      gasLimits,
+      tokenPermitsCount: tokenPermits.length,
+      // TODO: is this always 1? even when paying with USDT?
+      feeSwapsCount: 1,
+      feeExternalCallsGasLimit: 0n,
+      oraclePriceCount: 2,
+      l1GasLimit: l1Reference?.gasLimit ?? 0n,
+      transactionPayloadGasLimit,
+    });
 
   const baseRelayerFeeAmount = baseRelayerGasLimit * gasPrice;
 
@@ -340,7 +344,9 @@ export async function estimateExpressParams({
     : 0n;
 
   let gasLimit: bigint;
-  if (estimationMethod === "estimateGas") {
+  if (overrideGasLimit !== undefined) {
+    gasLimit = overrideGasLimit;
+  } else if (estimationMethod === "estimateGas") {
     try {
       if (provider) {
         const baseGasPaymentValidations = getGasPaymentValidations({

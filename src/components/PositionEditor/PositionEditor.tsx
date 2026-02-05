@@ -22,11 +22,11 @@ import {
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
-import { getMaxAvailableTokenAmount } from "domain/synthetics/fees/getMaxAvailableTokenAmount";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { convertToTokenAmount, TokenBalanceType } from "domain/synthetics/tokens";
+import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { formatAmountFree, formatTokenAmountWithUsd } from "lib/numbers";
@@ -44,7 +44,6 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import { getLowGasPaymentTokenBalanceWarning } from "components/Errors/LowGasPaymentTokenBalanceWarning";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -217,31 +216,31 @@ export function PositionEditor() {
 
   const submitButtonState = usePositionEditorButtonState(operation);
 
-  const gasPaymentTokenForMax = isCollateralTokenFromGmxAccount
-    ? submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken
-    : nativeToken;
-  const gasPaymentTokenAmountForMax = isCollateralTokenFromGmxAccount
-    ? submitButtonState.expressParams?.gasPaymentParams?.gasPaymentTokenAmount
-    : executionFee?.feeTokenAmount;
+  const gasPaymentTokenForMax =
+    expressOrdersEnabled && !collateralToken?.isNative
+      ? submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken
+      : nativeToken;
+  const gasPaymentTokenAmountForMax =
+    expressOrdersEnabled && !collateralToken?.isNative
+      ? submitButtonState.expressParams?.gasPaymentParams?.gasPaymentTokenAmount
+      : executionFee?.feeTokenAmount;
 
-  const { maxAvailableAmount: depositMaxAvailableAmount, maxAvailableAmountStatus: depositMaxAvailableAmountStatus } =
-    getMaxAvailableTokenAmount({
-      enabled: isDeposit,
-      paymentToken: collateralToken,
-      gasPaymentToken: gasPaymentTokenForMax,
-      gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-      balanceType: isCollateralTokenFromGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
-    });
+  const depositBalanceType = isCollateralTokenFromGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet;
+  const collateralTokenBalance = getBalanceByBalanceType(collateralToken, depositBalanceType);
+  const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(gasPaymentTokenForMax, depositBalanceType);
 
-  const maxAvailableAmount = isDeposit ? depositMaxAvailableAmount : maxWithdrawAmount;
+  const depositMaxDetails = useMaxAvailableAmount({
+    fromToken: collateralToken,
+    fromTokenBalance: collateralTokenBalance,
+    fromTokenAmount: collateralDeltaAmount,
+    fromTokenInputValue: collateralInputValue,
+    gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
+    gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
+    gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+  });
 
-  const lowGasPaymentTokenWarningContent = isDeposit
-    ? getLowGasPaymentTokenBalanceWarning({
-        status: depositMaxAvailableAmountStatus,
-        symbol: gasPaymentTokenForMax?.symbol,
-        chainId,
-      })
-    : undefined;
+  const maxAvailableAmount = isDeposit ? depositMaxDetails.maxAvailableAmount : maxWithdrawAmount;
+  const lowGasPaymentTokenWarningContent = isDeposit ? depositMaxDetails.gasPaymentTokenWarningContent : undefined;
 
   const collateralPercentage = useMemo(() => {
     if (collateralDeltaAmount === undefined || collateralDeltaAmount === 0n) return 0;

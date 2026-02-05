@@ -50,7 +50,6 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { paySourceToTokenBalanceType } from "domain/multichain/paySourceToTokenBalanceType";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
-import { getMaxAvailableTokenAmount } from "domain/synthetics/fees/getMaxAvailableTokenAmount";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -226,70 +225,52 @@ export function GmSwapBoxDepositWithdrawal() {
     gasPaymentTokenForMax?.decimals,
     gasPaymentTokenForMax?.prices.minPrice
   );
+
+  const balanceType = paySourceToTokenBalanceType(paySource);
+  const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(gasPaymentTokenForMax, balanceType);
+  const marketOrGlvTokenBalance = getBalanceByBalanceType(marketOrGlvTokenData, balanceType);
+
   const isLoadingFirstTokenMaxAvailableAmount =
     firstToken?.address === gasPaymentTokenForMax?.address && logicalFees?.logicalNetworkFee?.deltaUsd === undefined;
-  const {
-    maxAvailableAmount: firstTokenMaxAvailableAmount,
-    maxAvailableAmountStatus: firstTokenMaxAvailableAmountStatus,
-  } = getMaxAvailableTokenAmount({
-    paymentToken: firstToken,
-    balanceType: paySourceToTokenBalanceType(paySource),
-    gasPaymentToken: gasPaymentTokenForMax,
-    gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-    enabled: isDeposit,
-  });
 
   const firstTokenMaxDetails = useMaxAvailableAmount({
     fromToken: firstToken,
-    fromTokenAmount: firstTokenAmount ?? 0n,
+    fromTokenBalance: getBalanceByBalanceType(firstToken, balanceType),
+    fromTokenAmount: firstTokenAmount,
     fromTokenInputValue: firstTokenInputValue,
-    maxAvailableAmount: firstTokenMaxAvailableAmount,
     isLoading: isLoadingFirstTokenMaxAvailableAmount,
-    srcChainId,
-    tokenBalanceType: paySourceToTokenBalanceType(paySource),
-    maxAvailableAmountStatus: firstTokenMaxAvailableAmountStatus,
-    gasPaymentTokenSymbol: gasPaymentTokenForMax?.symbol,
+    srcChainId: paySource === "sourceChain" ? srcChainId : undefined,
+    gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
+    gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
+    gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
   });
 
   const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
 
-  const {
-    maxAvailableAmount: secondTokenMaxAvailableAmount,
-    maxAvailableAmountStatus: secondTokenMaxAvailableAmountStatus,
-  } = getMaxAvailableTokenAmount({
-    paymentToken: secondToken,
-    balanceType: paySourceToTokenBalanceType(paySource),
-    gasPaymentToken: gasPaymentTokenForMax,
-    gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-    enabled: isDeposit,
-  });
-
   const isLoadingSecondTokenMaxAvailableAmount =
     secondToken?.address === gasPaymentTokenForMax?.address && logicalFees?.logicalNetworkFee?.deltaUsd === undefined;
+
   const secondTokenMaxDetails = useMaxAvailableAmount({
     fromToken: secondToken,
+    fromTokenBalance: getBalanceByBalanceType(secondToken, balanceType),
     fromTokenAmount: secondTokenAmount,
     fromTokenInputValue: secondTokenInputValue,
     isLoading: isLoadingSecondTokenMaxAvailableAmount,
-    maxAvailableAmountStatus: secondTokenMaxAvailableAmountStatus,
-    gasPaymentTokenSymbol: gasPaymentTokenForMax?.symbol,
-    tokenBalanceType: paySourceToTokenBalanceType(paySource),
-    maxAvailableAmount: secondTokenMaxAvailableAmount,
-    srcChainId,
+    srcChainId: paySource === "sourceChain" ? srcChainId : undefined,
+    gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
+    gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
+    gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
   });
 
   const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;
 
   const marketTokenMaxDetails = useMaxAvailableAmount({
-    // TODO make glv balances work on source chain
     fromToken: marketOrGlvTokenData,
+    fromTokenBalance: marketOrGlvTokenBalance,
     fromTokenAmount: marketOrGlvTokenAmount,
     fromTokenInputValue: marketOrGlvTokenInputValue,
-    maxAvailableAmount: marketOrGlvTokenData
-      ? getBalanceByBalanceType(marketOrGlvTokenData, paySourceToTokenBalanceType(paySource))
-      : undefined,
-    isLoading: false,
-    tokenBalanceType: paySourceToTokenBalanceType(paySource),
+    srcChainId: paySource === "sourceChain" ? srcChainId : undefined,
+    ignoreGasPaymentToken: true,
   });
 
   const marketTokenInputShowMaxButton = isWithdrawal && marketTokenMaxDetails.showClickMax;

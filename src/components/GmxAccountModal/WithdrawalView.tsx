@@ -51,9 +51,8 @@ import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
 import { buildAndSignBridgeOutTxn } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTransactionBuilder, ExpressTxnParams, RawRelayParamsPayload } from "domain/synthetics/express/types";
-import { getMaxAvailableTokenAmount } from "domain/synthetics/fees/getMaxAvailableTokenAmount";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
-import { TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { getBalanceByBalanceType, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, sortTokenDataByBalance, TokenBalanceType, TokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -607,18 +606,6 @@ export const WithdrawalView = () => {
     withdrawalViewChain,
   ]);
 
-  const isMaxButtonDisabled = useMemo(() => {
-    if (isSameChain) {
-      return false;
-    }
-
-    if (!baseSendParams) {
-      return true;
-    }
-
-    return false;
-  }, [baseSendParams, isSameChain]);
-
   const { data: baseNativeFee, isLoading: isBaseNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
@@ -979,30 +966,49 @@ export const WithdrawalView = () => {
     wrappedNativeTokenAddress,
   ]);
 
-  const gasPaymentTokenAmountForMax = isSameChain ? 0n : someGasPaymentTokenAmount;
+  const { gasPaymentTokenForMax, gasPaymentTokenAmountForMax, gasPaymentTokenBalanceForMax } = useMemo(() => {
+    if (isSameChain) {
+      return {
+        gasPaymentTokenForMax: gasPaymentToken,
+        gasPaymentTokenAmountForMax: 0n,
+        gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
+      };
+    }
 
-  const isLoadingWithdrawalMax = isSameChain ? false : someGasPaymentTokenAmount === undefined;
+    if (selectedToken?.isWrapped) {
+      return {
+        gasPaymentTokenForMax: selectedToken,
+        gasPaymentTokenAmountForMax: wntFee,
+        gasPaymentTokenBalanceForMax: getBalanceByBalanceType(selectedToken, TokenBalanceType.GmxAccount),
+      };
+    }
 
-  const {
-    maxAvailableAmount: withdrawalMaxAvailableAmount,
-    maxAvailableAmountStatus: withdrawalMaxAvailableAmountStatus,
-  } = getMaxAvailableTokenAmount({
-    paymentToken: selectedToken,
-    gasPaymentToken: gasPaymentToken,
-    gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-    balanceType: TokenBalanceType.GmxAccount,
-    enabled: selectedToken !== undefined,
-  });
+    if (gasPaymentToken?.isWrapped) {
+      return {
+        gasPaymentTokenForMax: gasPaymentToken,
+        gasPaymentTokenAmountForMax: networkFeeInGasPaymentToken,
+        gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
+      };
+    }
+
+    return {
+      gasPaymentTokenForMax: gasPaymentToken,
+      gasPaymentTokenAmountForMax: someGasPaymentTokenAmount,
+      gasPaymentTokenBalanceForMax: getBalanceByBalanceType(gasPaymentToken, TokenBalanceType.GmxAccount),
+    };
+  }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, selectedToken, someGasPaymentTokenAmount, wntFee]);
+
+  const isLoadingWithdrawalMax = isSameChain ? false : gasPaymentTokenAmountForMax === undefined;
 
   const withdrawalMaxDetails = useMaxAvailableAmount({
     fromToken: selectedToken,
-    fromTokenAmount: inputAmount ?? 0n,
+    fromTokenAmount: inputAmount,
+    fromTokenBalance: getBalanceByBalanceType(selectedToken, TokenBalanceType.GmxAccount),
     fromTokenInputValue: inputValue ?? "",
-    maxAvailableAmount: withdrawalMaxAvailableAmount,
-    isLoading: isLoadingWithdrawalMax || isMaxButtonDisabled,
-    tokenBalanceType: TokenBalanceType.GmxAccount,
-    maxAvailableAmountStatus: withdrawalMaxAvailableAmountStatus,
-    gasPaymentTokenSymbol: gasPaymentToken?.symbol,
+    isLoading: isLoadingWithdrawalMax,
+    gasPaymentToken: gasPaymentTokenForMax,
+    gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
+    gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
   });
 
   const handlePickToken = useCallback(
