@@ -41,6 +41,7 @@ import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/sele
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectPoolsDetailsTokenOptions } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsTokenOptions";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
   selectGlvAndMarketsInfoData,
@@ -49,6 +50,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { paySourceToTokenBalanceType } from "domain/multichain/paySourceToTokenBalanceType";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { getMaxAvailableTokenAmount } from "domain/synthetics/fees/getMaxAvailableTokenAmount";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   getAvailableUsdLiquidityForCollateral,
@@ -56,12 +58,12 @@ import {
   getMarketIndexName,
   getTokenPoolType,
 } from "domain/synthetics/markets/utils";
-import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, getBalanceByBalanceType, getMidPrice } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
-import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatAmountFree, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { switchNetwork } from "lib/wallets";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
@@ -217,26 +219,63 @@ export function GmSwapBoxDepositWithdrawal() {
     glvAndMarketsInfoData,
   });
 
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const gasPaymentTokenForMax = paySource === "gmxAccount" ? gasPaymentToken : nativeToken;
+  const gasPaymentTokenAmountForMax = convertToTokenAmount(
+    (logicalFees?.logicalNetworkFee?.deltaUsd ?? 0n) * -1n,
+    gasPaymentTokenForMax?.decimals,
+    gasPaymentTokenForMax?.prices.minPrice
+  );
+  const isLoadingFirstTokenMaxAvailableAmount =
+    firstToken?.address === gasPaymentTokenForMax?.address && logicalFees?.logicalNetworkFee?.deltaUsd === undefined;
+  const {
+    maxAvailableAmount: firstTokenMaxAvailableAmount,
+    maxAvailableAmountStatus: firstTokenMaxAvailableAmountStatus,
+  } = getMaxAvailableTokenAmount({
+    paymentToken: firstToken,
+    balanceType: paySourceToTokenBalanceType(paySource),
+    gasPaymentToken: gasPaymentTokenForMax,
+    gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+    enabled: isDeposit,
+  });
+
   const firstTokenMaxDetails = useMaxAvailableAmount({
     fromToken: firstToken,
     fromTokenAmount: firstTokenAmount ?? 0n,
-    fromTokenInputValue: firstTokenInputValue || "",
-    nativeToken: nativeToken,
-    minResidualAmount: undefined,
-    isLoading: false,
+    fromTokenInputValue: firstTokenInputValue,
+    maxAvailableAmount: firstTokenMaxAvailableAmount,
+    isLoading: isLoadingFirstTokenMaxAvailableAmount,
     srcChainId,
     tokenBalanceType: paySourceToTokenBalanceType(paySource),
+    maxAvailableAmountStatus: firstTokenMaxAvailableAmountStatus,
+    gasPaymentTokenSymbol: gasPaymentTokenForMax?.symbol,
   });
 
   const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
 
+  const {
+    maxAvailableAmount: secondTokenMaxAvailableAmount,
+    maxAvailableAmountStatus: secondTokenMaxAvailableAmountStatus,
+  } = getMaxAvailableTokenAmount({
+    paymentToken: secondToken,
+    balanceType: paySourceToTokenBalanceType(paySource),
+    gasPaymentToken: gasPaymentTokenForMax,
+    gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+    enabled: isDeposit,
+  });
+
+  const isLoadingSecondTokenMaxAvailableAmount =
+    secondToken?.address === gasPaymentTokenForMax?.address && logicalFees?.logicalNetworkFee?.deltaUsd === undefined;
   const secondTokenMaxDetails = useMaxAvailableAmount({
     fromToken: secondToken,
-    fromTokenAmount: secondTokenAmount ?? 0n,
+    fromTokenAmount: secondTokenAmount,
     fromTokenInputValue: secondTokenInputValue,
-    nativeToken: nativeToken,
-    minResidualAmount: undefined,
-    isLoading: false,
+    isLoading: isLoadingSecondTokenMaxAvailableAmount,
+    maxAvailableAmountStatus: secondTokenMaxAvailableAmountStatus,
+    gasPaymentTokenSymbol: gasPaymentTokenForMax?.symbol,
+    tokenBalanceType: paySourceToTokenBalanceType(paySource),
+    maxAvailableAmount: secondTokenMaxAvailableAmount,
+    srcChainId,
   });
 
   const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;
@@ -246,8 +285,9 @@ export function GmSwapBoxDepositWithdrawal() {
     fromToken: marketOrGlvTokenData,
     fromTokenAmount: marketOrGlvTokenAmount,
     fromTokenInputValue: marketOrGlvTokenInputValue,
-    nativeToken: nativeToken,
-    minResidualAmount: undefined,
+    maxAvailableAmount: marketOrGlvTokenData
+      ? getBalanceByBalanceType(marketOrGlvTokenData, paySourceToTokenBalanceType(paySource))
+      : undefined,
     isLoading: false,
     tokenBalanceType: paySourceToTokenBalanceType(paySource),
   });
@@ -530,13 +570,7 @@ export function GmSwapBoxDepositWithdrawal() {
                       topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
                       bottomLeftValue={formatUsd(secondTokenUsd ?? 0n)}
                       bottomRightLabel={t`Balance`}
-                      bottomRightValue={
-                        secondToken && secondToken.balance !== undefined
-                          ? formatBalanceAmount(secondToken.balance, secondToken.decimals, undefined, {
-                              isStable: secondToken.isStable,
-                            })
-                          : undefined
-                      }
+                      bottomRightValue={secondTokenMaxDetails.formattedBalance}
                       inputValue={secondTokenInputValue}
                       onInputValueChange={secondTokenInputValueChange}
                       onClickTopRightLabel={onMaxClickSecondToken}
@@ -644,6 +678,11 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
                 bannerErrorContent={submitState.bannerErrorContent}
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
+                isSubmitDisabled={submitState.disabled}
+                gasPaymentTokenWarningContent={
+                  firstTokenMaxDetails.gasPaymentTokenWarningContent ??
+                  secondTokenMaxDetails.gasPaymentTokenWarningContent
+                }
               />
             </div>
           </div>

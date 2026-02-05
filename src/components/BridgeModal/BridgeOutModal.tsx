@@ -30,6 +30,7 @@ import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeOutTxn } from "domain/synthetics/markets/createBridgeOutTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getBalanceByBalanceType } from "domain/synthetics/tokens";
 import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
@@ -122,8 +123,7 @@ export function BridgeOutModal({
     fromToken: marketToken,
     fromTokenAmount: bridgeOutAmount ?? 0n,
     fromTokenInputValue: bridgeOutInputValue,
-    nativeToken: undefined,
-    minResidualAmount: undefined,
+    maxAvailableAmount: marketToken ? getBalanceByBalanceType(marketToken, TokenBalanceType.GmxAccount) : undefined,
     isLoading: false,
     srcChainId: undefined,
     tokenBalanceType: TokenBalanceType.GmxAccount,

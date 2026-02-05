@@ -70,6 +70,7 @@ import { nowInSeconds } from "sdk/utils/time";
 import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 
 import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
+import { applyMinimalBuffer } from "../fees/getMaxAvailableTokenAmount";
 import { getNeedTokenApprove } from "../tokens";
 
 export async function estimateBatchExpressParams({
@@ -284,6 +285,7 @@ export async function estimateExpressParams({
   const baseRelayerGasLimit = estimateRelayerGasLimit({
     gasLimits,
     tokenPermitsCount: tokenPermits.length,
+    // TODO: is this always 1? even when paying with USDT?
     feeSwapsCount: 1,
     feeExternalCallsGasLimit: 0n,
     oraclePriceCount: 2,
@@ -536,7 +538,7 @@ export function getGasPaymentValidations({
   isGmxAccount: boolean;
 }): GasPaymentValidations {
   // Add buffer to onchain avoid out of balance errors in case quick of network fee increase
-  const gasTokenAmountWithBuffer = (gasPaymentTokenAmount * 13n) / 10n;
+  const gasTokenAmountWithBuffer = applyMinimalBuffer(gasPaymentTokenAmount);
   const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasTokenAmountWithBuffer;
 
   const tokenBalance = isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance;

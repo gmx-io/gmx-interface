@@ -842,6 +842,7 @@ msgstr "达到池最大金额"
 msgid "Market Orders"
 msgstr "市场订单"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr "创建订单"
@@ -1739,10 +1740,6 @@ msgstr "输入价格"
 msgid "Not enough data available yet"
 msgstr "暂无足够数据"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "使用高杠杆会增加清算风险。"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "执行价格未达到可接受价格。"
@@ -2263,7 +2260,6 @@ msgstr "流动性"
 msgid "Swaps"
 msgstr "交换"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr "正在创建订单…"
@@ -2824,6 +2820,10 @@ msgstr "显示调试值"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "基于过去 7 天的年化数据。"
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr "{symbol} 余额不足。此金额在 {0} 上几乎无法支付未来手续费。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3939,10 +3939,6 @@ msgstr "从您的钱包"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "需要重新授权前允许的最大操作数。"
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

@@ -842,6 +842,7 @@ msgstr ""
 msgid "Market Orders"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr ""
@@ -1739,10 +1740,6 @@ msgstr ""
 msgid "Not enough data available yet"
 msgstr ""
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr ""
@@ -2263,7 +2260,6 @@ msgstr ""
 msgid "Swaps"
 msgstr ""
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr ""
@@ -2823,6 +2819,10 @@ msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
+msgstr ""
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -3939,10 +3939,6 @@ msgstr ""
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr ""
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

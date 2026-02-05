@@ -233,7 +233,10 @@ export const useGmSwapSubmitState = ({
       if (gasPaymentToken) {
         const { symbol, decimals } = gasPaymentToken;
 
-        const availableFormatted = formatBalanceAmount(gasPaymentToken.gmxAccountBalance ?? 0n, decimals);
+        const availableFormatted = formatBalanceAmount(
+          estimationError.params?.balance ?? gasPaymentToken.gmxAccountBalance ?? 0n,
+          decimals
+        );
 
         let collateralAmount = 0n;
         if (isDeposit) {

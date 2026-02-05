@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import pickBy from "lodash/pickBy";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey } from "react-use";
@@ -14,6 +14,7 @@ import {
   usePositionEditorPositionState,
   usePositionEditorSelectedCollateralAddress,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorSelectedCollateralToken,
@@ -21,6 +22,7 @@ import {
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
+import { getMaxAvailableTokenAmount } from "domain/synthetics/fees/getMaxAvailableTokenAmount";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount, TokenBalanceType } from "domain/synthetics/tokens";
 import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
@@ -28,12 +30,21 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { formatAmountFree, formatTokenAmountWithUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import { convertTokenAddress, getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
+import {
+  convertTokenAddress,
+  getTokenVisualMultiplier,
+  getWrappedToken,
+  NATIVE_TOKEN_ADDRESS,
+} from "sdk/configs/tokens";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { getLowGasPaymentTokenBalanceWarning } from "components/Errors/LowGasPaymentTokenBalanceWarning";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -47,7 +58,7 @@ import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { PositionEditorAdvancedRows } from "./PositionEditorAdvancedRows";
-import { OPERATION_LABELS, Operation } from "./types";
+import { Operation, OPERATION_LABELS } from "./types";
 import { usePositionEditorButtonState } from "./usePositionEditorButtonState";
 
 import "./PositionEditor.scss";
@@ -57,6 +68,8 @@ export function PositionEditor() {
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
+  const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
+  const gasPaymentToken = useSelector(selectGasPaymentToken);
   const { minCollateralUsd } = usePositionsConstants();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
@@ -198,37 +211,61 @@ export function PositionEditor() {
     return maxWithdrawAmount;
   }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
 
+  const { fees, executionFee } = usePositionEditorFees({
+    operation,
+  });
+
+  const submitButtonState = usePositionEditorButtonState(operation);
+
+  const gasPaymentTokenForMax = isCollateralTokenFromGmxAccount
+    ? submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken
+    : nativeToken;
+  const gasPaymentTokenAmountForMax = isCollateralTokenFromGmxAccount
+    ? submitButtonState.expressParams?.gasPaymentParams?.gasPaymentTokenAmount
+    : executionFee?.feeTokenAmount;
+
+  const { maxAvailableAmount: depositMaxAvailableAmount, maxAvailableAmountStatus: depositMaxAvailableAmountStatus } =
+    getMaxAvailableTokenAmount({
+      enabled: isDeposit,
+      paymentToken: collateralToken,
+      gasPaymentToken: gasPaymentTokenForMax,
+      gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+      balanceType: isCollateralTokenFromGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet,
+    });
+
+  const maxAvailableAmount = isDeposit ? depositMaxAvailableAmount : maxWithdrawAmount;
+
+  const lowGasPaymentTokenWarningContent = isDeposit
+    ? getLowGasPaymentTokenBalanceWarning({
+        status: depositMaxAvailableAmountStatus,
+        symbol: gasPaymentTokenForMax?.symbol,
+        chainId,
+      })
+    : undefined;
+
   const collateralPercentage = useMemo(() => {
     if (collateralDeltaAmount === undefined || collateralDeltaAmount === 0n) return 0;
+    if (maxAvailableAmount === undefined || maxAvailableAmount === 0n) return 0;
 
-    const maxAmount = isDeposit ? collateralToken?.balance : maxWithdrawAmount;
-    if (maxAmount === undefined || maxAmount === 0n) return 0;
-
-    const percentage = Number((collateralDeltaAmount * 100n) / maxAmount);
+    const percentage = Number((collateralDeltaAmount * 100n) / maxAvailableAmount);
     return Math.min(100, Math.max(0, percentage));
-  }, [collateralDeltaAmount, maxWithdrawAmount, isDeposit, collateralToken?.balance]);
+  }, [collateralDeltaAmount, maxAvailableAmount]);
 
   const handleCollateralPercentageChange = useCallback(
     (percentage: number) => {
-      const maxAmount = isDeposit ? collateralToken?.balance : maxWithdrawAmount;
-      if (maxAmount === undefined || maxAmount === 0n) return;
+      if (maxAvailableAmount === undefined || maxAvailableAmount === 0n) return;
 
       const decimals = isDeposit ? collateralToken?.decimals : position?.collateralToken?.decimals;
-      setCollateralInputValue(formatAmountFree((maxAmount * BigInt(percentage)) / 100n, decimals || 0));
+      setCollateralInputValue(formatAmountFree((maxAvailableAmount * BigInt(percentage)) / 100n, decimals || 0));
     },
     [
-      maxWithdrawAmount,
+      maxAvailableAmount,
       isDeposit,
-      collateralToken?.balance,
       collateralToken?.decimals,
       position?.collateralToken?.decimals,
       setCollateralInputValue,
     ]
   );
-
-  const { fees, executionFee } = usePositionEditorFees({
-    operation,
-  });
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
@@ -243,18 +280,16 @@ export function PositionEditor() {
     operation,
   });
 
-  const { text, tooltipContent, onSubmit, disabled, expressParams } = usePositionEditorButtonState(operation);
-
   useKey(
     "Enter",
     () => {
-      if (isVisible && !disabled) {
+      if (isVisible && !submitButtonState.disabled) {
         submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        onSubmit();
+        submitButtonState.onSubmit();
       }
     },
     {},
-    [isVisible, disabled]
+    [isVisible, submitButtonState.disabled]
   );
 
   useEffect(
@@ -283,19 +318,19 @@ export function PositionEditor() {
     <Button
       className="w-full"
       variant="primary-action"
-      onClick={onSubmit}
-      disabled={disabled}
+      onClick={submitButtonState.onSubmit}
+      disabled={submitButtonState.disabled}
       buttonRef={submitButtonRef}
       qa="confirm-button"
     >
-      {text}
+      {submitButtonState.text}
     </Button>
   );
 
-  const button = tooltipContent ? (
+  const button = submitButtonState.tooltipContent ? (
     <TooltipWithPortal
       className="w-full"
-      content={tooltipContent}
+      content={submitButtonState.tooltipContent}
       isHandlerDisabled
       handle={buttonContent}
       handleClassName="w-full"
@@ -341,17 +376,6 @@ export function PositionEditor() {
               topLeftLabel={localizedOperationLabels[operation]}
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
-              showPercentSelector={!isDeposit}
-              onPercentChange={(percent) => {
-                if (!isDeposit) {
-                  setCollateralInputValue(
-                    formatAmountFree(
-                      (maxWithdrawAmount! * BigInt(percent)) / 100n,
-                      position?.collateralToken?.decimals || 0
-                    )
-                  );
-                }
-              }}
               qa="amount-input"
             >
               {hasMultipleTokens ? (
@@ -367,8 +391,7 @@ export function PositionEditor() {
                 collateralToken?.symbol
               )}
             </BuyInputSection>
-            {((isDeposit && collateralToken?.balance && collateralToken.balance > 0n) ||
-              (!isDeposit && maxWithdrawAmount !== undefined && maxWithdrawAmount > 0n)) && (
+            {maxAvailableAmount !== undefined && maxAvailableAmount > 0n && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
             )}
             <div className="flex flex-col gap-14">
@@ -380,10 +403,26 @@ export function PositionEditor() {
                 maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
               />
 
+              {submitButtonState.bannerErrorName && (
+                <AlertInfoCard type="error" hideClose>
+                  <ValidationBannerErrorContent
+                    validationBannerErrorName={submitButtonState.bannerErrorName}
+                    chainId={chainId}
+                    gasPaymentTokenAddress={gasPaymentToken?.address}
+                    srcChainId={srcChainId}
+                  />
+                </AlertInfoCard>
+              )}
+              {!submitButtonState.bannerErrorName && lowGasPaymentTokenWarningContent && (
+                <AlertInfoCard type="warning" hideClose>
+                  {lowGasPaymentTokenWarningContent}
+                </AlertInfoCard>
+              )}
+
               <div>{button}</div>
 
               <ExpressTradingWarningCard
-                expressParams={expressParams}
+                expressParams={submitButtonState.expressParams}
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
                 isGmxAccount={isCollateralTokenFromGmxAccount}
@@ -422,7 +461,10 @@ export function PositionEditor() {
                 }
               />
 
-              <PositionEditorAdvancedRows operation={operation} gasPaymentParams={expressParams?.gasPaymentParams} />
+              <PositionEditorAdvancedRows
+                operation={operation}
+                gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
+              />
             </div>
           </div>
         )}

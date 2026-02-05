@@ -842,6 +842,7 @@ msgstr "Cantidad máxima de reserva alcanzada"
 msgid "Market Orders"
 msgstr "Órdenes de Mercado"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr "Creando orden"
@@ -1739,10 +1740,6 @@ msgstr "Introduce un precio"
 msgid "Not enough data available yet"
 msgstr "Aún no hay suficientes datos disponibles"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "Usar alto apalancamiento aumenta el riesgo de liquidación."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "El precio de ejecución no cumplió con el precio aceptable."
@@ -2263,7 +2260,6 @@ msgstr "LIQUIDEZ"
 msgid "Swaps"
 msgstr "Intercambios"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr "Creando orden…"
@@ -2824,6 +2820,10 @@ msgstr "Mostrar Valores de Depuración"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Datos anualizados basados en los últimos 7 días."
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr "Saldo bajo de {symbol}. Este importe deja poco para futuras comisiones en {0}."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3939,10 +3939,6 @@ msgstr "desde tu billetera"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "Número máximo de acciones permitidas antes de requerir reautorización."
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

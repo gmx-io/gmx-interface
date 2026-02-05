@@ -15,6 +15,7 @@ import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
   MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
+  RANDOM_ACCOUNT,
   StargateErrorsAbi,
   getMappedTokenId,
 } from "config/multichain";
@@ -43,10 +44,12 @@ import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
+import { getMaxAvailableTokenAmount } from "domain/synthetics/fees/getMaxAvailableTokenAmount";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
+import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
@@ -59,7 +62,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, adjustForDecimals, expandDecimals, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -69,12 +72,10 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
-import { bigMath } from "sdk/utils/bigmath";
-import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
+import { TokenBalanceType, TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
@@ -221,44 +222,6 @@ export const DepositView = () => {
       ? (inputAmount * 10n ** BigInt(selectedTokenSourceChainDecimals)) / 10n ** BigInt(selectedToken?.decimals)
       : undefined;
 
-  const handleMaxButtonClick = useCallback(() => {
-    if (
-      selectedToken === undefined ||
-      selectedTokenSourceChainBalance === undefined ||
-      selectedTokenSourceChainDecimals === undefined
-    ) {
-      return;
-    }
-
-    const isNative = unwrappedSelectedTokenAddress === zeroAddress;
-    if (isNative) {
-      const buffer = convertToTokenAmount(
-        10n * 10n ** BigInt(USD_DECIMALS),
-        selectedToken.decimals,
-        getMidPrice(selectedTokenChainData?.sourceChainPrices ?? { minPrice: 0n, maxPrice: 0n })
-      )!;
-
-      let amount = selectedTokenSourceChainBalance;
-
-      if (selectedTokenSourceChainBalance > buffer) {
-        const maxAmount = bigMath.max(selectedTokenSourceChainBalance - buffer, 0n);
-        amount = maxAmount;
-      }
-
-      setInputValue(formatAmountFree(amount, selectedToken.decimals));
-      return;
-    }
-
-    setInputValue(formatAmountFree(selectedTokenSourceChainBalance, selectedTokenSourceChainDecimals));
-  }, [
-    selectedToken,
-    selectedTokenChainData?.sourceChainPrices,
-    selectedTokenSourceChainBalance,
-    selectedTokenSourceChainDecimals,
-    setInputValue,
-    unwrappedSelectedTokenAddress,
-  ]);
-
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain();
 
   const { nextGmxAccountBalanceUsd } = useMemo((): {
@@ -379,6 +342,35 @@ export const DepositView = () => {
     });
   }, [account, amountLD, depositViewChain, composeGas, settlementChainId]);
 
+  const baseSendParams: SendParam | undefined = useMemo(() => {
+    if (depositViewChain === undefined || composeGas === undefined) {
+      return;
+    }
+
+    const decimals = selectedTokenSourceChainTokenId?.decimals;
+    const prices = selectedTokenChainData?.sourceChainPrices;
+    if (decimals === undefined || prices === undefined) {
+      return;
+    }
+
+    const amountLD = convertToTokenAmount(expandDecimals(10, USD_DECIMALS), decimals, getMidPrice(prices))!;
+
+    return getMultichainTransferSendParams({
+      account: RANDOM_ACCOUNT.address,
+      amountLD,
+      srcChainId: depositViewChain,
+      composeGas,
+      dstChainId: settlementChainId,
+      isToGmx: true,
+    });
+  }, [
+    composeGas,
+    depositViewChain,
+    selectedTokenChainData?.sourceChainPrices,
+    selectedTokenSourceChainTokenId?.decimals,
+    settlementChainId,
+  ]);
+
   const { data: quoteOft, isLoading: isQuoteOftLoading } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
@@ -419,8 +411,15 @@ export const DepositView = () => {
     composeGas,
   });
 
+  const { data: baseQuoteSendNativeFee, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
+    sendParams: baseSendParams,
+    fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
+    fromChainId: depositViewChain,
+    toChainId: settlementChainId,
+  });
+
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
-    quoteSendNativeFee,
+    quoteSendNativeFee: quoteSendNativeFee ?? baseQuoteSendNativeFee,
     quoteOft,
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
     sourceChainId: depositViewChain,
@@ -433,17 +432,31 @@ export const DepositView = () => {
     async ({ params }) => {
       const client = getPublicClientWithRpc(params.settlementChainId);
 
+      let inputAmount = params.inputAmount ?? 0n;
+      if (inputAmount === 0n) {
+        const token = getByKey(settlementChainTokensData, params.depositViewTokenAddress);
+        if (token === undefined) {
+          return undefined;
+        }
+
+        inputAmount = convertToTokenAmount(
+          expandDecimals(10, USD_DECIMALS),
+          token.decimals,
+          getMidPrice(token.prices)
+        )!;
+      }
+
       return estimateSameChainDepositGas({
         chainId: params.settlementChainId as SettlementChainId,
         client,
         tokenAddress: params.depositViewTokenAddress,
-        amount: params.inputAmount,
+        amount: inputAmount,
         account: params.account,
       });
     },
     {
       params:
-        account && depositViewTokenAddress && inputAmount !== undefined && settlementChainId
+        account && depositViewTokenAddress && settlementChainId
           ? {
               account,
               depositViewTokenAddress,
@@ -464,6 +477,82 @@ export const DepositView = () => {
       }),
     [sameChainNetworkFeeAsyncResult.data, gasPrice, settlementChainTokensData]
   );
+
+  const gasPaymentTokenAmountForDepositView =
+    depositViewChain === settlementChainId
+      ? sameChainNetworkFeeDetails?.amount
+      : quoteSendNativeFee ?? baseQuoteSendNativeFee;
+
+  const isLoadingDepositMax =
+    depositViewChain === settlementChainId
+      ? sameChainNetworkFeeDetails === undefined
+      : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
+
+  const paymentToken = useMemo((): TokenData | undefined => {
+    if (selectedTokenData === undefined) {
+      return undefined;
+    }
+    return {
+      ...selectedTokenData,
+      sourceChainBalance: selectedTokenSourceChainBalance,
+    };
+  }, [selectedTokenData, selectedTokenSourceChainBalance]);
+
+  const gasPaymentToken = useMemo(() => {
+    const nativeTokenData = getByKey(settlementChainTokensData, zeroAddress);
+    if (nativeTokenData === undefined) {
+      return undefined;
+    }
+
+    if (depositViewChain === settlementChainId) {
+      return nativeTokenData;
+    }
+
+    const isSameNativeTokens = getMappedTokenId(
+      settlementChainId as SettlementChainId,
+      zeroAddress,
+      depositViewChain as SourceChainId
+    );
+    if (!isSameNativeTokens) {
+      return undefined;
+    }
+
+    return {
+      ...nativeTokenData,
+      sourceChainBalance: nativeTokenSourceChainBalance,
+    };
+  }, [depositViewChain, nativeTokenSourceChainBalance, settlementChainId, settlementChainTokensData]);
+
+  const { maxAvailableAmount: depositMaxAvailableAmount, maxAvailableAmountStatus: depositMaxAvailableAmountStatus } =
+    getMaxAvailableTokenAmount({
+      paymentToken,
+      gasPaymentToken,
+      gasPaymentTokenAmount: gasPaymentTokenAmountForDepositView,
+      balanceType: depositViewChain === settlementChainId ? TokenBalanceType.Wallet : TokenBalanceType.SourceChain,
+      enabled: depositViewTokenAddress !== undefined,
+      ignoreGasPaymentToken:
+        depositViewChain !== undefined &&
+        depositViewChain !== settlementChainId &&
+        !getMappedTokenId(settlementChainId as SettlementChainId, zeroAddress, depositViewChain as SourceChainId),
+    });
+
+  const depositMaxDetails = useMaxAvailableAmount({
+    fromToken: paymentToken,
+    fromTokenAmount: inputAmount ?? 0n,
+    fromTokenInputValue: inputValue ?? "",
+    maxAvailableAmount: depositMaxAvailableAmount,
+    isLoading: isLoadingDepositMax,
+    maxAvailableAmountStatus: depositMaxAvailableAmountStatus,
+    gasPaymentTokenSymbol: gasPaymentToken?.symbol,
+    srcChainId: depositViewChain,
+    tokenBalanceType: depositViewChain === settlementChainId ? TokenBalanceType.Wallet : TokenBalanceType.SourceChain,
+  });
+
+  const handleMaxButtonClick = useCallback(() => {
+    if (depositMaxDetails.formattedMaxAvailableAmount) {
+      setInputValue(depositMaxDetails.formattedMaxAvailableAmount);
+    }
+  }, [depositMaxDetails.formattedMaxAvailableAmount, setInputValue]);
 
   const isFirstDeposit = useIsFirstDeposit();
   const latestIsFirstDeposit = useLatest(isFirstDeposit);
@@ -1094,20 +1183,14 @@ export const DepositView = () => {
         <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
           <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
             <Trans>Deposit</Trans>
-            {selectedTokenSourceChainBalance !== undefined &&
-              selectedToken !== undefined &&
-              selectedTokenSourceChainDecimals !== undefined && (
-                <div>
-                  <Trans>Available:</Trans>{" "}
-                  <Amount
-                    className="text-typography-primary"
-                    amount={selectedTokenSourceChainBalance}
-                    decimals={selectedTokenSourceChainDecimals}
-                    isStable={selectedToken.isStable}
-                    symbol={selectedToken.symbol}
-                  />
-                </div>
-              )}
+            {selectedToken !== undefined && (
+              <div>
+                <Trans>Available:</Trans>{" "}
+                <span className="text-typography-primary">
+                  <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
+                </span>
+              </div>
+            )}
           </div>
           <div className="relative text-16 leading-base">
             <NumberInput
@@ -1119,14 +1202,16 @@ export const DepositView = () => {
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-              <button
-                className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
-                           hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
-                type="button"
-                onClick={handleMaxButtonClick}
-              >
-                <Trans>Max</Trans>
-              </button>
+              {depositMaxDetails.showClickMax && (
+                <button
+                  className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
+                             hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
+                  type="button"
+                  onClick={handleMaxButtonClick}
+                >
+                  <Trans>Max</Trans>
+                </button>
+              )}
             </div>
           </div>
           <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
@@ -1167,6 +1252,11 @@ export const DepositView = () => {
             chainId={settlementChainId}
             srcChainId={depositViewChain}
           />
+        </AlertInfoCard>
+      )}
+      {depositMaxDetails.gasPaymentTokenWarningContent && (
+        <AlertInfoCard type="warning" className="mt-8" hideClose>
+          {depositMaxDetails.gasPaymentTokenWarningContent}
         </AlertInfoCard>
       )}
       <div className="h-32 shrink-0 grow" />

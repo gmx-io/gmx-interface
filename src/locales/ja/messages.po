@@ -842,6 +842,7 @@ msgstr "最大プール額到達"
 msgid "Market Orders"
 msgstr "市場注文"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr "注文作成中"
@@ -1739,10 +1740,6 @@ msgstr "価格を入力"
 msgid "Not enough data available yet"
 msgstr "まだ十分なデータがありません"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "高いレバレッジを使用すると清算リスクが増大します。"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "実行価格が許容価格を満たしませんでした。"
@@ -2263,7 +2260,6 @@ msgstr "流動性"
 msgid "Swaps"
 msgstr "スワップ"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr "注文を作成中…"
@@ -2824,6 +2820,10 @@ msgstr "デバッグ値を表示"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "過去7日間の年換算データ。"
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr "{symbol}の残高が少ないです。この金額では{0}での今後の手数料用にほとんど残りません。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3939,10 +3939,6 @@ msgstr "ウォレットから"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "再承認が必要になるまでの最大許容アクション数。"
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

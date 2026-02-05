@@ -842,6 +842,7 @@ msgstr "Достигнута максимальная сумма пула"
 msgid "Market Orders"
 msgstr "Рыночные Ордера"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr "Создание ордера"
@@ -1739,10 +1740,6 @@ msgstr "Введите цену"
 msgid "Not enough data available yet"
 msgstr "Пока недостаточно данных"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "Использование высокого левериджа увеличивает риск ликвидации."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "Цена исполнения не соответствовала приемлемой цене."
@@ -2263,7 +2260,6 @@ msgstr "ЛИКВИДНОСТЬ"
 msgid "Swaps"
 msgstr "Обмены"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr "Создание ордера…"
@@ -2824,6 +2820,10 @@ msgstr "Показать значения отладки"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Годовые данные на основе последних 7 дней."
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr "Низкий баланс {symbol}. Этой суммы почти не останется на будущие комиссии в {0}."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3939,10 +3939,6 @@ msgstr "из вашего кошелька"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "Максимальное количество действий до требуемой повторной авторизации."
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

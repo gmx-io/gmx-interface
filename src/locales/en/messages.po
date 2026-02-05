@@ -842,6 +842,7 @@ msgstr "Max pool amount reached"
 msgid "Market Orders"
 msgstr "Market Orders"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
 msgstr "Creating order"
@@ -1739,10 +1740,6 @@ msgstr "Enter a  price"
 msgid "Not enough data available yet"
 msgstr "Not enough data available yet"
 
-#: src/components/TradeBox/TradeBox.tsx
-#~ msgid "Using high leverage increases the risk of liquidation."
-#~ msgstr "Using high leverage increases the risk of liquidation."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "The execution price didn't meet the acceptable price."
@@ -2263,7 +2260,6 @@ msgstr "LIQUIDITY"
 msgid "Swaps"
 msgstr "Swaps"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Creating order..."
 msgstr "Creating order..."
@@ -2824,6 +2820,10 @@ msgstr "Show Debug Values"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Annualized data based on the past 7 days."
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr "Low {symbol} balance. This amount leaves little for future fees on {0}"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -3939,10 +3939,6 @@ msgstr "from your wallet"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum number of actions allowed before reauthorization is required."
 msgstr "Maximum number of actions allowed before reauthorization is required."
-
-#: src/components/LeverageField/LeverageField.tsx
-#~ msgid "High leverage increases risk. Trade with caution."
-#~ msgstr "High leverage increases risk. Trade with caution."
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"

@@ -286,7 +286,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         convertTokenAddress(chainId, shortTokenAddress, "native")
       );
 
-      const provider = longTokenAmount > 0n ? longOftProvider : shortTokenAmount > 0n ? shortOftProvider : undefined;
+      const provider = longTokenAmount > 0n ? longOftProvider : shortOftProvider;
 
       if (!provider) {
         return undefined;
