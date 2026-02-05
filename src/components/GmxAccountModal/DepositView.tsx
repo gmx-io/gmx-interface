@@ -47,6 +47,7 @@ import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
+import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
@@ -59,7 +60,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, adjustForDecimals, bigintToNumber, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -485,6 +486,16 @@ export const DepositView = () => {
         helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
         setIsVisibleOrView("main");
         setIsSubmitting(false);
+
+        const sizeInUsdValue = latestInputAmountUsd.current;
+        if (sizeInUsdValue !== undefined && sizeInUsdValue > 0n) {
+          sendAddressablePixelEvent({
+            eventName: AddressablePixelEventName.DepositSuccess,
+            sizeInUsd: bigintToNumber(sizeInUsdValue, USD_DECIMALS),
+            chainId: depositViewChain ?? settlementChainId,
+          });
+        }
+
         if (txnEvent.data.type === "wallet" && depositViewTokenAddress && inputAmount !== undefined) {
           const txnHash = txnEvent.data.transactionHash;
           const mockId = setMultichainSubmittedDeposit({
@@ -532,8 +543,10 @@ export const DepositView = () => {
     },
     [
       account,
+      depositViewChain,
       depositViewTokenAddress,
       inputAmount,
+      latestInputAmountUsd,
       setIsVisibleOrView,
       setMultichainFundingPendingId,
       setMultichainSubmittedDeposit,
@@ -611,6 +624,14 @@ export const DepositView = () => {
 
           sendTxnSentMetric(params.metricId);
 
+          if (latestInputAmountUsd.current !== undefined) {
+            sendAddressablePixelEvent({
+              eventName: AddressablePixelEventName.DepositSuccess,
+              sizeInUsd: bigintToNumber(latestInputAmountUsd.current, USD_DECIMALS),
+              chainId: params.depositViewChain ?? settlementChainId,
+            });
+          }
+
           let submittedDepositGuid: string | undefined;
 
           if (txnEvent.data.type === "wallet") {
@@ -653,12 +674,13 @@ export const DepositView = () => {
         }
       },
     [
-      setIsVisibleOrView,
+      latestInputAmountUsd,
+      settlementChainId,
       setMultichainSubmittedDeposit,
       setSelectedTransferGuid,
-      settlementChainId,
       subaccountState.subaccount,
       isExpressTradingDisabled,
+      setIsVisibleOrView,
     ]
   );
 
