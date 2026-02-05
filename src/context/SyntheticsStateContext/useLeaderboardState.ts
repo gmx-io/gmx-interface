@@ -10,7 +10,7 @@ import {
 } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
-import { getTimestampByDaysAgo } from "lib/dates";
+import { getTimePeriodsInSeconds } from "lib/dates";
 import { mustNeverExist } from "lib/types";
 
 export type LeaderboardState = ReturnType<typeof useLeaderboardState>;
@@ -99,15 +99,11 @@ function useLeaderboardTimeframe(
     if (leaderboardTimeframeType === "all") {
       return LEADERBOARD_PAGES.leaderboard.timeframe;
     } else if (leaderboardTimeframeType === "30days") {
-      return {
-        from: getTimestampByDaysAgo(30),
-        to: undefined,
-      };
+      const [from, to] = getTimePeriodsInSeconds().month;
+      return { from, to };
     } else if (leaderboardTimeframeType === "7days") {
-      return {
-        from: getTimestampByDaysAgo(7),
-        to: undefined,
-      };
+      const [from, to] = getTimePeriodsInSeconds().week;
+      return { from, to };
     } else {
       throw mustNeverExist(leaderboardTimeframeType);
     }
