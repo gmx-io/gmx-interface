@@ -29,6 +29,7 @@ export function DynamicLine({
   isPending,
   getError,
   marketName,
+  lineLength,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -37,7 +38,8 @@ export function DynamicLine({
   onEdit: (id: string, price?: number) => void;
   onCancel: (id: string) => void;
   getError: (id: string, price: number) => string | undefined;
-} & DynamicChartLine) {
+  lineLength: number;
+} & Omit<DynamicChartLine, "updatedAtTime">) {
   const { _ } = useLingui();
   const lineApi = useRef<IOrderLineAdapter | undefined>(undefined);
   const latestOnEdit = useLatest(onEdit);
@@ -103,7 +105,7 @@ export function DynamicLine({
 
       if (!isMobile) {
         lineApi.current
-          .setLineLength(-200, "pixel")
+          .setLineLength(lineLength, "pixel")
           .onMoving(() => {
             const error = getError(id, lineApi.current!.getPrice());
             setError(error);
@@ -148,6 +150,7 @@ export function DynamicLine({
     latestOnCancel,
     latestOnEdit,
     latestPrice,
+    lineLength,
     orderType,
     price,
     title,

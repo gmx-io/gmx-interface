@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
@@ -38,6 +38,9 @@ import { PositionOrderInfo } from "sdk/utils/orders/types";
 
 import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
+
+const BASE_ORDER_LINE_LENGTH = -40;
+const ORDER_SPACING_PX = 190;
 
 export function DynamicLines({
   tvWidgetRef,
@@ -177,7 +180,34 @@ export function DynamicLines({
     [chainId, marketsData, ordersInfoData, setEditingOrderState, setTriggerPriceInputValue]
   );
 
-  return dynamicChartLines.map((line) => (
+  const linesWithStackedOffsets = useMemo(() => {
+    if (dynamicChartLines.length === 0) {
+      return [];
+    }
+
+    const sortedLines = [...dynamicChartLines].sort((a, b) => {
+      if (a.price !== b.price) {
+        return a.price - b.price;
+      }
+      return Number(b.updatedAtTime - a.updatedAtTime);
+    });
+
+    const priceGroupIndices = new Map<number, number>();
+
+    return sortedLines.map((line) => {
+      const indexInGroup = priceGroupIndices.get(line.price) ?? 0;
+      priceGroupIndices.set(line.price, indexInGroup + 1);
+
+      const lineLength = BASE_ORDER_LINE_LENGTH - indexInGroup * ORDER_SPACING_PX;
+
+      return {
+        ...line,
+        lineLength,
+      };
+    });
+  }, [dynamicChartLines]);
+
+  return linesWithStackedOffsets.map(({ updatedAtTime: _, ...line }) => (
     <DynamicLine
       {...line}
       key={line.id}

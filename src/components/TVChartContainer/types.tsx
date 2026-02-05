@@ -27,4 +27,5 @@ export type DynamicChartLine = {
   orderType: OrderType;
   isLong: boolean;
   marketName: string;
+  updatedAtTime: bigint;
 };
