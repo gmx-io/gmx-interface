@@ -72,11 +72,9 @@ import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
-  buildTwapOrdersPayloads,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
 } from "sdk/utils/orderTransactions";
-import { getIsValidTwapParams } from "sdk/utils/twap";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -98,7 +96,6 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { tradeModeLabels, tradeTypeLabels } from "../TradeBox/tradeboxConstants";
-import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
 
 import "./PositionSeller.scss";
@@ -165,8 +162,6 @@ export function PositionSeller() {
     setKeepLeverage,
     duration,
     numberOfParts,
-    setDuration,
-    setNumberOfParts,
   } = usePositionSeller();
   const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
   const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
@@ -178,7 +173,6 @@ export function PositionSeller() {
 
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
 
-  const isTwap = orderOption === OrderOption.Twap;
   const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
   const maxCloseSize = position?.sizeInUsd || 0n;
@@ -259,6 +253,8 @@ export function PositionSeller() {
 
   const slippageInputId = useId();
 
+  const isTwap = orderOption === OrderOption.Twap;
+
   useEffect(() => {
     if (isVisible) {
       setIsDismissedLatestRef.current(false);
@@ -266,7 +262,7 @@ export function PositionSeller() {
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
-    const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
+    const orderType = OrderType.MarketDecrease;
 
     // TODO findSwapPath considering decreasePositionSwapType?
     const swapPath =
@@ -318,11 +314,7 @@ export function PositionSeller() {
 
     let createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[] = [];
 
-    if (isTwap && getIsValidTwapParams(duration, numberOfParts)) {
-      createOrderParams = buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts });
-    } else {
-      createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
-    }
+    createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
 
     return {
       createOrderParams,
@@ -338,13 +330,10 @@ export function PositionSeller() {
     decreaseAmounts?.decreaseSwapType,
     decreaseAmounts?.sizeDeltaInTokens,
     decreaseAmounts?.sizeDeltaUsd,
-    duration,
     executionFee?.feeTokenAmount,
     executionFee?.gasLimit,
     isMarket,
-    isTwap,
     marketsInfoData,
-    numberOfParts,
     position,
     receiveToken?.address,
     receiveUsd,
@@ -850,18 +839,19 @@ export function PositionSeller() {
         setIsVisible={onClose}
         label={
           <Trans>
-            Close {position?.isLong ? t`Long` : t`Short`}{" "}
+            {localizedTradeModeLabels[tradeMode]}: {position?.isLong ? t`Long` : t`Short`}{" "}
             {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
-            {position?.indexToken?.symbol}
+            {position?.indexToken?.symbol}/USD decrease
           </Trans>
         }
         qa="position-close-modal"
         contentClassName="w-[380px]"
+        contentPadding={false}
       >
         <div className="w-full">
           {position && (
             <>
-              <div className="flex flex-col gap-4">
+              <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
                 {twapRecommendation && (
                   <ColorfulBanner color="blue" icon={InfoCircleIcon}>
                     <div className="flex flex-col gap-8">
@@ -901,22 +891,7 @@ export function PositionSeller() {
                 </div>
               </div>
 
-              {isTwap && (
-                <div className="pt-14">
-                  <TwapRows
-                    duration={duration}
-                    numberOfParts={numberOfParts}
-                    setNumberOfParts={setNumberOfParts}
-                    setDuration={setDuration}
-                    isLong={position.isLong}
-                    sizeUsd={decreaseAmounts?.sizeDeltaUsd}
-                    marketInfo={position.marketInfo}
-                    type="decrease"
-                  />
-                </div>
-              )}
-
-              <div className="flex w-full flex-col gap-14 pt-14">
+              <div className="flex w-full flex-col gap-14 px-20 pb-14">
                 <HighPriceImpactOrFeesWarningCard
                   priceImpactWarningState={priceImpactWarningState}
                   swapPriceImpact={fees?.swapPriceImpact}
@@ -925,16 +900,14 @@ export function PositionSeller() {
                   maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
                 />
 
-                {!isTwap && (
-                  <ToggleSwitch
-                    textClassName="text-typography-secondary"
-                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                    setIsChecked={setKeepLeverage}
-                    disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
-                  >
-                    {keepLeverageTextElem}
-                  </ToggleSwitch>
-                )}
+                <ToggleSwitch
+                  textClassName="text-typography-secondary"
+                  isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                  setIsChecked={setKeepLeverage}
+                  disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
+                >
+                  {keepLeverageTextElem}
+                </ToggleSwitch>
 
                 <Button
                   className="w-full"
@@ -954,13 +927,9 @@ export function PositionSeller() {
                   isGmxAccount={srcChainId !== undefined}
                 />
 
-                {!isTwap && (
-                  <>
-                    {receiveTokenRow}
-                    {liqPriceRow}
-                    {pnlRow}
-                  </>
-                )}
+                {receiveTokenRow}
+                {liqPriceRow}
+                {pnlRow}
 
                 <PositionSellerPriceImpactFeesRow />
 

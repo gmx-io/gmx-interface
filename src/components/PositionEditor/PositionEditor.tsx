@@ -29,7 +29,7 @@ import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpa
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import {
@@ -354,15 +354,16 @@ export function PositionEditor() {
         setIsVisible={onClose}
         label={
           <Trans>
-            Edit {position?.isLong ? t`Long` : t`Short`}{" "}
+            Edit Collateral: {position?.isLong ? t`Long` : t`Short`}{" "}
             {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
-            {position?.indexToken?.symbol}
+            {position?.indexToken?.symbol}/USD
           </Trans>
         }
         qa="position-edit-modal"
+        contentPadding={false}
       >
         {position && (
-          <div className="flex flex-col gap-12">
+          <div className="mt-12 flex flex-col gap-12 border-t-1/2 border-slate-600 px-20 py-16">
             <Tabs
               onChange={setOperation}
               selectedValue={operation}
@@ -373,6 +374,16 @@ export function PositionEditor() {
             />
             <BuyInputSection
               topLeftLabel={localizedOperationLabels[operation]}
+              topRightLabel={isDeposit ? t`Balance` : t`Max`}
+              topRightValue={
+                isDeposit
+                  ? formatBalanceAmount(collateralToken?.balance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
+                      isStable: collateralToken?.isStable,
+                    })
+                  : formatBalanceAmount(maxWithdrawAmount ?? 0n, position?.collateralToken?.decimals ?? 0, undefined, {
+                      isStable: position?.collateralToken?.isStable,
+                    })
+              }
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
               qa="amount-input"

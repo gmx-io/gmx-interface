@@ -87,6 +87,7 @@ export function TPSLGroup() {
           handle={<Trans>Take Profit / Stop Loss</Trans>}
           variant="iconStroke"
           position="top"
+          disableClickToggle
           content={
             <Trans>
               Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list
@@ -98,7 +99,6 @@ export function TPSLGroup() {
       hasError={hasError}
       disableCollapseOnError
       autoExpandOnError
-      errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
       onToggle={toggleTPSL}
       withToggleSwitch
     >

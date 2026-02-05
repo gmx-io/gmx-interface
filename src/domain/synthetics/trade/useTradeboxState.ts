@@ -62,7 +62,7 @@ export interface TradeboxAdvancedOptions {
   limitOrTPSL: boolean;
 }
 
-type StoredTradeOptions = {
+export type StoredTradeOptions = {
   tradeType: TradeType;
   tradeMode: TradeMode;
   tokens: {
@@ -164,6 +164,10 @@ export function useTradeboxState(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsWithoutFallbacks((oldState) => {
         const newState = typeof args === "function" ? args(oldState) : args;
+
+        if (isEqual(oldState, newState)) {
+          return oldState;
+        }
 
         localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
@@ -617,7 +621,8 @@ export function useTradeboxState(
         return;
       }
 
-      setStoredOptions((oldState) => ({ ...oldState }));
+      // Trigger fallback normalization without forcing a redundant state change.
+      setStoredOptions((oldState) => oldState);
     },
     [availableSwapTokenAddresses.length, enabled, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
   );

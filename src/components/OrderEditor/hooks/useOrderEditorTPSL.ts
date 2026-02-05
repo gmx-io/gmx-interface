@@ -34,11 +34,11 @@ import {
 } from "domain/synthetics/fees";
 import {
   DecreasePositionSwapType,
-  OrderType,
-  PositionOrderInfo,
   isLimitIncreaseOrderType,
   isPositionOrder,
   isStopIncreaseOrderType,
+  OrderType,
+  PositionOrderInfo,
 } from "domain/synthetics/orders";
 import { PositionInfo, PositionInfoLoaded } from "domain/synthetics/positions";
 import { EntryField, SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
@@ -62,7 +62,8 @@ import {
   getCollateralDeltaUsd,
 } from "domain/tpsl/utils";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import { DecreasePositionAmounts } from "sdk/utils/trade/types";
+import { getIsEquivalentTokens } from "sdk/utils/tokens";
+import { DecreasePositionAmounts } from "sdk/utils/trade";
 
 export function useOrderEditorTPSL() {
   const orderInfo = useSelector(selectOrderEditorOrder);
@@ -196,6 +197,10 @@ export function useOrderEditorTPSL() {
       buildTpSlInputPositionData({
         position: positionForTpSl,
         indexTokenDecimals: positionForTpSl?.marketInfo.indexToken.decimals ?? 18,
+        collateralTokenDecimals: positionForTpSl?.collateralToken.decimals,
+        isCollateralTokenEquivalentToIndex: positionForTpSl
+          ? getIsEquivalentTokens(positionForTpSl.collateralToken, positionForTpSl.indexToken)
+          : undefined,
         visualMultiplier: indexToken?.visualMultiplier,
       }),
     [indexToken?.visualMultiplier, positionForTpSl]
@@ -538,6 +543,7 @@ function buildTpSlEntry(p: {
 
   return handleEntryError(entry, p.id, {
     liqPrice: p.positionForTpSl?.liquidationPrice,
+    entryPrice: p.positionForTpSl?.entryPrice,
     triggerPrice: p.triggerPrice ?? p.order?.triggerPrice,
     markPrice: p.markPrice,
     isLong: p.order?.isLong,

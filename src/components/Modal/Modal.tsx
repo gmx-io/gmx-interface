@@ -46,6 +46,7 @@ export type ModalProps = PropsWithChildren<{
   contentClassName?: string;
   disableOverflowHandling?: boolean;
   withMobileBottomPosition?: boolean;
+  takeFullHeight?: boolean;
 }>;
 
 export default function Modal({
@@ -64,6 +65,7 @@ export default function Modal({
   contentClassName,
   disableOverflowHandling = false,
   withMobileBottomPosition = false,
+  takeFullHeight = false,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -154,11 +156,12 @@ export default function Modal({
                 {disableOverflowHandling ? (
                   children
                 ) : (
-                  <div className="overflow-auto">
+                  <div className={cx("overflow-auto", { "flex grow flex-col": takeFullHeight })}>
                     <div
                       className={cx("Modal-body", {
                         "px-adaptive": contentPadding,
                         "pb-adaptive": contentPadding && !footerContent,
+                        "flex grow flex-col": takeFullHeight,
                       })}
                     >
                       {children}

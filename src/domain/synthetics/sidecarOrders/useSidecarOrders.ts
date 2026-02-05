@@ -47,6 +47,7 @@ export function useSidecarOrders() {
     (entry: SidecarSlTpOrderEntry) =>
       handleEntryError(entry, "sl", {
         liqPrice: nextPositionValues?.nextLiqPrice,
+        entryPrice: existingPosition?.entryPrice,
         triggerPrice,
         markPrice,
         isLong,
@@ -60,6 +61,7 @@ export function useSidecarOrders() {
     (entry: SidecarSlTpOrderEntry) =>
       handleEntryError(entry, "tp", {
         liqPrice: nextPositionValues?.nextLiqPrice,
+        entryPrice: existingPosition?.entryPrice,
         triggerPrice,
         markPrice,
         isLong,

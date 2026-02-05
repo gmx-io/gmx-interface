@@ -43,6 +43,7 @@ export default function NestedTab<V extends string | number>({
       <Menu.Button as="div" ref={refs.setReference} data-qa={qa ? `${qa}-tab-${option.label}` : undefined}>
         {isPills ? (
           <button
+            type="button"
             className={cx(
               "text-body-medium flex items-center gap-4 rounded-full border px-12 py-6 font-medium transition-colors",
               commonOptionClassname,

@@ -1,5 +1,5 @@
 export { TradeboxMarginFields } from "./TradeboxMarginFields";
-export { MarginToPayField } from "./MarginToPayField";
+export { MarginField } from "./MarginField";
 export { MarginPercentageSlider } from "./MarginPercentageSlider";
 export { SizeField, type SizeDisplayMode } from "./SizeField";
 export { PriceField } from "./PriceField";

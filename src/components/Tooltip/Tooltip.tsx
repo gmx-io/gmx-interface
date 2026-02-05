@@ -74,6 +74,10 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
   shouldPreventDefault?: boolean;
   fitHandleWidth?: boolean;
   closeOnDoubleClick?: boolean;
+  /**
+   * Disables the click toggle behavior that keeps the tooltip open after clicking.
+   */
+  disableClickToggle?: boolean;
 
   variant?: "icon" | "iconStroke" | "underline" | "none";
   iconClassName?: string;
@@ -105,6 +109,7 @@ export default function Tooltip<T extends ElementType>({
   shouldPreventDefault = true,
   fitHandleWidth,
   closeOnDoubleClick,
+  disableClickToggle,
   variant = "underline",
   iconClassName,
   ...containerProps
@@ -165,7 +170,7 @@ export default function Tooltip<T extends ElementType>({
     },
   });
   const click = useClick(context, {
-    enabled: !disabled && closeOnDoubleClick,
+    enabled: !disabled && !disableClickToggle && closeOnDoubleClick,
     toggle: closeOnDoubleClick,
   });
   const dismiss = useDismiss(context, {

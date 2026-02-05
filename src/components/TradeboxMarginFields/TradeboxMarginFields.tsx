@@ -9,14 +9,15 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxState,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { calculateDisplayDecimals, formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
+import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
-import { MarginToPayField } from "./MarginToPayField";
 import { PriceField } from "./PriceField";
 import { SizeDisplayMode, SizeField } from "./SizeField";
 import { useSizeConversion } from "./useSizeConversion";
@@ -51,6 +52,7 @@ export function TradeboxMarginFields({
   const fromToken = useSelector(selectTradeboxFromToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const focusedInput = useSelector(selectTradeboxFocusedInput);
 
@@ -124,11 +126,12 @@ export function TradeboxMarginFields({
       if (fromToken?.decimals === undefined || maxAvailableAmount === 0n) return;
 
       const amount = (maxAvailableAmount * BigInt(percentage)) / 100n;
-      const formatted = formatAmountFree(amount, fromToken.decimals);
+      const displayDecimals = calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable);
+      const formatted = limitDecimals(formatAmountFree(amount, fromToken.decimals), displayDecimals);
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
-    [fromToken?.decimals, maxAvailableAmount, setFocusedInput, setFromTokenInputValue]
+    [fromToken?.decimals, fromToken?.isStable, maxAvailableAmount, setFocusedInput, setFromTokenInputValue]
   );
 
   const handleSizeInputChange = useCallback(
@@ -167,36 +170,39 @@ export function TradeboxMarginFields({
 
   return (
     <div className="flex flex-col gap-8">
-      <MarginToPayField
+      <MarginField
         inputValue={fromTokenInputValue}
         onInputValueChange={handleFromInputChange}
         onSelectFromTokenAddress={onSelectFromTokenAddress}
         onDepositTokenAddress={onDepositTokenAddress}
+        onMaxClick={() => handlePercentageChange(100)}
         onFocus={() => setFocusedInput("from")}
       />
 
-      <SizeField
-        sizeInTokens={increaseAmounts?.sizeDeltaInTokens}
-        sizeInUsd={increaseAmounts?.sizeDeltaUsd}
-        indexToken={toToken}
-        displayMode={sizeDisplayMode}
-        onDisplayModeChange={handleSizeDisplayModeChange}
-        inputValue={sizeFieldInputValue}
-        onInputValueChange={handleSizeInputChange}
-        onFocus={() => setFocusedInput("to")}
-        qa="position-size"
-      />
-
-      {showPriceField && onTriggerPriceInputChange && (
-        <PriceField
+      <div className="flex flex-col gap-4">
+        <SizeField
+          sizeInTokens={increaseAmounts?.sizeDeltaInTokens}
+          sizeInUsd={increaseAmounts?.sizeDeltaUsd}
           indexToken={toToken}
-          markPrice={markPrice}
-          inputValue={triggerPriceInputValue}
-          onInputValueChange={onTriggerPriceInputChange}
-          qa="trigger-price"
+          displayMode={sizeDisplayMode}
+          onDisplayModeChange={handleSizeDisplayModeChange}
+          inputValue={sizeFieldInputValue}
+          onInputValueChange={handleSizeInputChange}
+          onFocus={() => setFocusedInput("to")}
+          qa="position-size"
         />
-      )}
 
+        {showPriceField && onTriggerPriceInputChange && (
+          <PriceField
+            indexToken={toToken}
+            markPrice={markPrice}
+            inputValue={triggerPriceInputValue}
+            onInputValueChange={onTriggerPriceInputChange}
+            tradeMode={tradeMode}
+            qa="trigger-price"
+          />
+        )}
+      </div>
       <MarginPercentageSlider value={marginPercentage} onChange={handlePercentageChange} />
     </div>
   );

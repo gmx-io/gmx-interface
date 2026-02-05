@@ -51,6 +51,7 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
+  isLimitDecreaseOrderType,
   isLimitIncreaseOrderType,
   isLimitSwapOrderType,
   isStopIncreaseOrderType,
@@ -81,32 +82,31 @@ import {
   formatBalanceAmount,
   formatDeltaUsd,
   formatTokenAmountWithUsd,
+  formatUsd,
   formatUsdPrice,
   parseValue,
 } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
-import { BatchOrderTxnParams, buildUpdateOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ExpandableRow } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-import { TPSLInputRow } from "components/TPSLModal/TPSLInputRow";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
-import { useOrderEditorTPSL } from "./hooks/useOrderEditorTPSL";
 
 import "./OrderEditor.scss";
 
@@ -158,7 +158,7 @@ export function OrderEditor(p: Props) {
     const additionalTokenAmount = executionFee.feeTokenAmount - p.order.executionFee;
 
     return {
-      feeUsd: convertToUsd(additionalTokenAmount, executionFee.feeToken.decimals, feeTokenData?.prices.minPrice) ?? 0n,
+      feeUsd: convertToUsd(additionalTokenAmount, executionFee.feeToken.decimals, feeTokenData?.prices.minPrice),
       feeTokenAmount: additionalTokenAmount,
       feeToken: executionFee.feeToken,
     };
@@ -178,7 +178,6 @@ export function OrderEditor(p: Props) {
 
   const userReferralInfo = useUserReferralInfo();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
-  const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
   const acceptablePriceImpactBps = useSelector(selectOrderEditorAcceptablePriceImpactBps);
@@ -203,21 +202,6 @@ export function OrderEditor(p: Props) {
         ? bigMath.abs(decreaseAmounts?.recommendedAcceptablePriceDeltaBps)
         : undefined;
 
-  const {
-    isLimitOrStopIncrease,
-    isTpSlEnabled,
-    setIsTpSlEnabled,
-    tpEntry,
-    slEntry,
-    tpSlPositionData,
-    tpSlCreatePayloads,
-    sidecarExecutionFee,
-    tpSlError,
-    tpSlHasError,
-    setTpPriceInputValue,
-    setSlPriceInputValue,
-  } = useOrderEditorTPSL();
-
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
 
   const isMaxLeverageError = useMemo(() => {
@@ -236,6 +220,8 @@ export function OrderEditor(p: Props) {
     }
     return false;
   }, [p.order, sizeDeltaUsd, nextPositionValuesWithoutPnlForIncrease?.nextLeverage]);
+
+  const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
   const detectAndSetAvailableMaxLeverage = useCallback(() => {
     const positionOrder = p.order as PositionOrderInfo;
@@ -365,7 +351,7 @@ export function OrderEditor(p: Props) {
       const positionOrder = p.order as PositionOrderInfo;
 
       return {
-        createOrderParams: tpSlCreatePayloads,
+        createOrderParams: [],
         updateOrderParams: [
           buildUpdateOrderPayload({
             chainId,
@@ -396,7 +382,6 @@ export function OrderEditor(p: Props) {
     acceptablePrice,
     minOutputAmount,
     additionalExecutionFee?.feeTokenAmount,
-    tpSlCreatePayloads,
   ]);
 
   const { expressParams, expressParamsPromise } = useExpressOrdersParams({
@@ -406,12 +391,28 @@ export function OrderEditor(p: Props) {
   });
 
   const networkFee = useMemo(() => {
-    if (!batchParams || !tokensData) {
+    if (!additionalExecutionFee) {
       return undefined;
     }
 
-    return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
-  }, [batchParams, chainId, tokensData]);
+    let feeToken = additionalExecutionFee?.feeToken;
+    let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
+    let feeUsd = additionalExecutionFee?.feeUsd;
+
+    const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
+
+    if (gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
+      feeToken = gasPaymentToken;
+      feeTokenAmount = expressParams?.gasPaymentParams.gasPaymentTokenAmount;
+      feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
+    }
+
+    return {
+      feeToken,
+      feeTokenAmount,
+      feeUsd,
+    };
+  }, [additionalExecutionFee, expressParams, tokensData]);
 
   const error = useMemo(() => {
     if (isSubmitting) {
@@ -447,13 +448,7 @@ export function OrderEditor(p: Props) {
       return;
     }
 
-    const positionError = calcSelector(selectOrderEditorPositionOrderError);
-
-    if (positionError) {
-      return positionError;
-    }
-
-    return tpSlError;
+    return calcSelector(selectOrderEditorPositionOrderError);
   }, [
     isSubmitting,
     p.order.orderType,
@@ -465,14 +460,7 @@ export function OrderEditor(p: Props) {
     markRatio,
     expressParams,
     tokensData,
-    tpSlError,
   ]);
-
-  useEffect(() => {
-    setIsTpSlEnabled(false);
-    setTpPriceInputValue("");
-    setSlPriceInputValue("");
-  }, [p.order.key, setIsTpSlEnabled, setSlPriceInputValue, setTpPriceInputValue]);
 
   const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
@@ -495,10 +483,8 @@ export function OrderEditor(p: Props) {
       isGmxAccount: srcChainId !== undefined,
     });
 
-    const closeAfterSubmit = p.onBack ?? p.onClose;
-
     if (expressParams?.subaccount) {
-      closeAfterSubmit();
+      p.onClose();
       setIsSubmitting(false);
       if (market) {
         sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
@@ -508,7 +494,7 @@ export function OrderEditor(p: Props) {
 
     txnPromise
       .then(() => {
-        closeAfterSubmit();
+        p.onClose();
         if (market) {
           sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
         }
@@ -665,39 +651,41 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
-    ? t`Trigger Price`
-    : isStopIncreaseOrderType(p.order.orderType)
-      ? t`Stop Price`
-      : t`Limit Price`;
+  const priceLabel = isLimitDecreaseOrderType(p.order.orderType)
+    ? t`Take Profit Price`
+    : isStopLossOrderType(p.order.orderType)
+      ? t`Stop Loss Price`
+      : isStopIncreaseOrderType(p.order.orderType)
+        ? t`Stop Price`
+        : t`Limit Price`;
 
   const positionSize = existingPosition?.sizeInUsd;
 
   const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
 
-  const closeSizePercentage = useMemo(() => {
+  const sizePercentage = useMemo(() => {
     if (positionSize === undefined || positionSize === 0n) return 0;
     const percentage = Number((sizeUsd * 100n) / positionSize);
     return Math.min(100, Math.max(0, percentage));
   }, [sizeUsd, positionSize]);
 
-  const handleCloseSizePercentageChange = useCallback(
+  const handleSizePercentageChange = useCallback(
     (percentage: number) => {
-      if (positionSize === undefined || positionSize === 0n) return;
+      if (positionSize === undefined) return;
       const formattedAmount = formatAmountFree((positionSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
       setSizeInputValue(formattedAmount);
     },
     [positionSize, setSizeInputValue]
   );
 
-  const handleBack = useCallback(() => {
+  const handleBack = () => {
     if (p.onBack) {
       p.onBack();
       return;
     }
 
     p.onClose();
-  }, [p]);
+  };
 
   return (
     <div className="PositionEditor">
@@ -709,19 +697,31 @@ export function OrderEditor(p: Props) {
         contentPadding={false}
         onBack={p.onBack ? handleBack : undefined}
       >
-        <div className="mb-14 flex flex-col gap-2 px-adaptive pt-12">
+        <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <BuyInputSection
                 topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
                 inputValue={sizeInputValue}
                 onInputValueChange={(e) => setSizeInputValue(e.target.value)}
+                bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
+                bottomRightLabel={
+                  isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined ? t`Max` : undefined
+                }
+                bottomRightValue={
+                  isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
+                }
+                onClickMax={
+                  isTriggerDecreaseOrderType(p.order.orderType) &&
+                  positionSize !== undefined &&
+                  positionSize > 0 &&
+                  sizeUsd !== positionSize
+                    ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
+                    : undefined
+                }
               >
                 USD
               </BuyInputSection>
-              {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
-                <MarginPercentageSlider value={closeSizePercentage} onChange={handleCloseSizePercentageChange} />
-              )}
 
               <BuyInputSection
                 topLeftLabel={priceLabel}
@@ -746,6 +746,10 @@ export function OrderEditor(p: Props) {
               >
                 USD
               </BuyInputSection>
+
+              {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
+                <MarginPercentageSlider value={sizePercentage} onChange={handleSizePercentageChange} />
+              )}
             </>
           )}
 
@@ -770,60 +774,8 @@ export function OrderEditor(p: Props) {
             </>
           )}
         </div>
-        {isLimitOrStopIncrease && tpSlPositionData && (
-          <div className="mb-12 border-b-1/2 border-t-1/2 border-slate-600 px-adaptive py-12">
-            <ExpandableRow
-              open={tpSlError ? true : isTpSlEnabled}
-              title={
-                <TooltipWithPortal
-                  handle={<Trans>Take Profit / Stop Loss</Trans>}
-                  variant="iconStroke"
-                  position="bottom"
-                  content={
-                    <Trans>
-                      Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the
-                      positions list after opening a position.
-                    </Trans>
-                  }
-                />
-              }
-              hasError={tpSlHasError}
-              disableCollapseOnError
-              autoExpandOnError
-              errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
-              onToggle={setIsTpSlEnabled}
-              withToggleSwitch
-            >
-              <div className="flex flex-col gap-8">
-                <TPSLInputRow
-                  type="takeProfit"
-                  priceValue={tpEntry.price.input}
-                  onPriceChange={(value) => {
-                    setIsTpSlEnabled(true);
-                    setTpPriceInputValue(value);
-                  }}
-                  positionData={tpSlPositionData}
-                  priceError={tpEntry.price.error ?? undefined}
-                  variant="compact"
-                />
-                <TPSLInputRow
-                  type="stopLoss"
-                  priceValue={slEntry.price.input}
-                  onPriceChange={(value) => {
-                    setIsTpSlEnabled(true);
-                    setSlPriceInputValue(value);
-                  }}
-                  positionData={tpSlPositionData}
-                  priceError={slEntry.price.error ?? undefined}
-                  variant="compact"
-                  defaultDisplayMode="usd"
-                />
-              </div>
-            </ExpandableRow>
-          </div>
-        )}
 
-        <div className="flex flex-col gap-14 px-adaptive pb-12">
+        <div className="flex flex-col gap-14 px-20 pb-16">
           {button}
 
           <ExpressTradingWarningCard
@@ -879,7 +831,7 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
-          {networkFee && isTpSlEnabled && (
+          {networkFee && (
             <SyntheticsInfoRow
               label={t`Fees`}
               value={
@@ -887,7 +839,7 @@ export function OrderEditor(p: Props) {
                   position="top-end"
                   tooltipClassName="PositionEditor-fees-tooltip"
                   handle={formatDeltaUsd(networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n)}
-                  content={
+                  renderContent={() => (
                     <>
                       <StatsTooltipRow
                         label={<div className="text-typography-primary">{t`Network Fee`}:</div>}
@@ -897,52 +849,18 @@ export function OrderEditor(p: Props) {
                           networkFee.feeToken.symbol,
                           networkFee.feeToken.decimals,
                           {
-                            displayDecimals: networkFee.feeToken.priceDecimals,
+                            displayDecimals: 5,
                             isStable: networkFee.feeToken.isStable,
                           }
                         )}
                         showDollar={false}
                       />
-                      {additionalExecutionFee && (
-                        <StatsTooltipRow
-                          label={<div className="text-typography-primary">{t`Order update fee`}:</div>}
-                          value={formatTokenAmountWithUsd(
-                            additionalExecutionFee.feeTokenAmount * -1n,
-                            additionalExecutionFee.feeUsd === undefined
-                              ? undefined
-                              : additionalExecutionFee.feeUsd * -1n,
-                            additionalExecutionFee.feeToken.symbol,
-                            additionalExecutionFee.feeToken.decimals,
-                            {
-                              displayDecimals: additionalExecutionFee.feeToken.priceDecimals,
-                              isStable: additionalExecutionFee.feeToken.isStable,
-                            }
-                          )}
-                          showDollar={false}
-                        />
-                      )}
-                      {sidecarExecutionFee && (
-                        <StatsTooltipRow
-                          label={<div className="text-typography-primary">{t`TP/SL fees`}:</div>}
-                          value={formatTokenAmountWithUsd(
-                            sidecarExecutionFee.feeTokenAmount * -1n,
-                            sidecarExecutionFee.feeUsd === undefined ? undefined : sidecarExecutionFee.feeUsd * -1n,
-                            sidecarExecutionFee.feeToken.symbol,
-                            sidecarExecutionFee.feeToken.decimals,
-                            {
-                              displayDecimals: sidecarExecutionFee.feeToken.priceDecimals,
-                              isStable: sidecarExecutionFee.feeToken.isStable,
-                            }
-                          )}
-                          showDollar={false}
-                        />
-                      )}
                       <br />
                       <div className="text-typography-primary">
                         <Trans>As network fees have increased, an additional network fee is needed.</Trans>
                       </div>
                     </>
-                  }
+                  )}
                 />
               }
             />
