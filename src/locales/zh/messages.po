@@ -73,7 +73,6 @@ msgstr "价格"
 msgid "receive"
 msgstr "接收"
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
@@ -336,6 +335,10 @@ msgstr "什么是 GLV？"
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To begin trading on GMX deposit assets into GMX account."
 msgstr "要在 GMX 上开始交易，请将资产存入 GMX 账户。"
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No TP orders"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
@@ -977,6 +980,7 @@ msgstr "去中心化货币市场"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop Price"
 msgstr "止损价格"
 
@@ -1292,6 +1296,10 @@ msgstr "总计"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
 msgstr "一键交易批准无效。这可能在切换链或更改支付代币时发生。请签署新的批准以继续。"
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No SL orders"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -1946,6 +1954,7 @@ msgstr "费用的 USD 值在赚取时计算，不包括激励。"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Max"
 msgstr "最大"
@@ -2555,8 +2564,8 @@ msgid "Fees (Incl. Swap)"
 msgstr "费用（包括交换）"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-msgid "Order update fee"
-msgstr ""
+#~ msgid "Order update fee"
+#~ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -2703,8 +2712,6 @@ msgid "Returned Collateral"
 msgstr "返回抵押品"
 
 #: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "TP/SL 订单存在问题。"
 
@@ -4443,7 +4450,6 @@ msgstr "Botanix"
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "累积的价格影响返利。5 天后可申领。<0/><1/><2>阅读更多</2>。"
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "止盈 / 止损"
@@ -5071,7 +5077,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeboxMarginFields/PriceField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -5553,6 +5558,7 @@ msgstr "清算"
 
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr ""
 
@@ -6498,6 +6504,7 @@ msgstr "输入 NFT ID"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Limit Price"
 msgstr "限价"
 
@@ -8124,8 +8131,8 @@ msgid "7d"
 msgstr "7 天"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-msgid "TP/SL fees"
-msgstr ""
+#~ msgid "TP/SL fees"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

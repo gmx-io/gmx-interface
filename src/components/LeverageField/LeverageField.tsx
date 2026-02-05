@@ -154,7 +154,7 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
           <div
             ref={refs.setFloating}
             style={floatingStyles}
-            className="z-[1000] w-[376px] max-w-[90vw] rounded-4 border border-slate-600 bg-slate-900 p-16"
+            className="z-[1000] w-[376px] rounded-4 border border-slate-600 bg-slate-900 p-16 max-md:max-w-[100vw] max-md:px-12 md:max-w-[90vw]"
             {...getFloatingProps()}
           >
             <div className="mb-16 flex items-center justify-between">

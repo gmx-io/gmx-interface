@@ -73,7 +73,6 @@ msgstr "PRICE"
 msgid "receive"
 msgstr "receive"
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
@@ -336,6 +335,10 @@ msgstr "What is GLV?"
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To begin trading on GMX deposit assets into GMX account."
 msgstr "To begin trading on GMX deposit assets into GMX account."
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No TP orders"
+msgstr "No TP orders"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
@@ -977,6 +980,7 @@ msgstr "Decentralized Money Market"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop Price"
 msgstr "Stop Price"
 
@@ -1292,6 +1296,10 @@ msgstr "Total"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
 msgstr "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No SL orders"
+msgstr "No SL orders"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -1946,6 +1954,7 @@ msgstr "The fees' USD value is calculated at the time they are earned and does n
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Max"
 msgstr "Max"
@@ -2555,8 +2564,8 @@ msgid "Fees (Incl. Swap)"
 msgstr "Fees (Incl. Swap)"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-msgid "Order update fee"
-msgstr "Order update fee"
+#~ msgid "Order update fee"
+#~ msgstr "Order update fee"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -2703,8 +2712,6 @@ msgid "Returned Collateral"
 msgstr "Returned Collateral"
 
 #: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "There are issues in the TP/SL orders."
 
@@ -4443,7 +4450,6 @@ msgstr "Botanix"
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
@@ -5071,7 +5077,6 @@ msgstr "Trade directly from wallet or use GMX Account."
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeboxMarginFields/PriceField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -5553,6 +5558,7 @@ msgstr "Liquidation"
 
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "Add TP/SL"
 
@@ -6498,6 +6504,7 @@ msgstr "Enter NFT ID"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Limit Price"
 msgstr "Limit Price"
 
@@ -8124,8 +8131,8 @@ msgid "7d"
 msgstr "7d"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-msgid "TP/SL fees"
-msgstr "TP/SL fees"
+#~ msgid "TP/SL fees"
+#~ msgstr "TP/SL fees"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

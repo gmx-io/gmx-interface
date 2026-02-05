@@ -9,6 +9,7 @@ import {
   selectTradeboxMarkPrice,
   selectTradeboxState,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, USD_DECIMALS } from "lib/numbers";
@@ -49,6 +50,7 @@ export function TradeboxMarginFields({
   const fromToken = useSelector(selectTradeboxFromToken);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const focusedInput = useSelector(selectTradeboxFocusedInput);
 
@@ -192,6 +194,7 @@ export function TradeboxMarginFields({
           markPrice={markPrice}
           inputValue={triggerPriceInputValue}
           onInputValueChange={onTriggerPriceInputChange}
+          tradeMode={tradeMode}
           qa="trigger-price"
         />
       )}

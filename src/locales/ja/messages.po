@@ -73,7 +73,6 @@ msgstr "価格"
 msgid "receive"
 msgstr "受け取り"
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
 msgstr ""
@@ -336,6 +335,10 @@ msgstr "GLVとは？"
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To begin trading on GMX deposit assets into GMX account."
 msgstr "GMXで取引を開始するには、GMXアカウントに資産を入金してください。"
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No TP orders"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
@@ -977,6 +980,7 @@ msgstr "分散型マネーマーケット"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop Price"
 msgstr "ストップ価格"
 
@@ -1292,6 +1296,10 @@ msgstr "総計"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
 msgstr "ワンクリック取引承認が無効です。チェーン切り替えや支払いトークン変更時に発生する可能性があります。続行するには新しい承認に署名してください。"
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No SL orders"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -1946,6 +1954,7 @@ msgstr "手数料のUSD価値は獲得時に計算され、インセンティブ
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Max"
 msgstr "最大"
@@ -2555,8 +2564,8 @@ msgid "Fees (Incl. Swap)"
 msgstr "手数料 (スワップを含む)"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-msgid "Order update fee"
-msgstr ""
+#~ msgid "Order update fee"
+#~ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -2703,8 +2712,6 @@ msgid "Returned Collateral"
 msgstr "返却された担保"
 
 #: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "There are issues in the TP/SL orders."
 msgstr "TP/SL注文に問題があります。"
 
@@ -4443,7 +4450,6 @@ msgstr "Botanix"
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "蓄積された価格影響リベート。5日後に請求可能になります。<0/><1/><2>詳細を読む</2>。"
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "テイクプロフィット / ストップロス"
@@ -5071,7 +5077,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeboxMarginFields/PriceField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -5553,6 +5558,7 @@ msgstr "清算"
 
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr ""
 
@@ -6498,6 +6504,7 @@ msgstr "NFT IDを入力"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Limit Price"
 msgstr "指値"
 
@@ -8124,8 +8131,8 @@ msgid "7d"
 msgstr "7日"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-msgid "TP/SL fees"
-msgstr ""
+#~ msgid "TP/SL fees"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"

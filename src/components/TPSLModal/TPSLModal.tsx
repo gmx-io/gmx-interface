@@ -246,6 +246,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
         contentClassName="!max-w-[896px] w-[95%] h-[min(90vh,500px)] max-lg:h-[85vh] max-lg:!w-full max-lg:!max-w-none"
         contentPadding={false}
         withMobileBottomPosition={true}
+        takeFullHeight={true}
       >
         <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12 max-md:gap-16 max-md:px-16">
           <div className="flex flex-col">
@@ -297,15 +298,15 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
             className="-mb-1 w-full pr-20 max-md:pr-16"
             rightContent={
               <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
-                {displayedOrders.length > 0 && (
-                  <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
-                    <Trans>Cancel all</Trans>
-                  </Button>
-                )}
                 {!isMobile && (
                   <Button variant="ghost" onClick={handleAddTPSLOpen}>
                     <Trans>Add TP/SL</Trans>
                     <PlusIcon className="size-16" />
+                  </Button>
+                )}
+                {displayedOrders.length > 0 && (
+                  <Button variant="ghost" onClick={handleCancelAll} disabled={isCancellingAll}>
+                    <Trans>Cancel all</Trans>
                   </Button>
                 )}
               </div>
@@ -318,7 +319,9 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
           position={position}
           marketDecimals={marketDecimals}
           isMobile={isMobile}
+          activeTab={activeTab}
           onEdit={handleEditOrder}
+          onAddTPSL={handleAddTPSLOpen}
         />
 
         {isMobile && (

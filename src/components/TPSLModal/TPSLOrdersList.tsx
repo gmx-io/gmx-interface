@@ -25,15 +25,19 @@ import { TableTd, TableTr } from "components/Table/Table";
 import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 
+type TabType = "all" | "takeProfit" | "stopLoss";
+
 type Props = {
   orders: PositionOrderInfo[];
   position: PositionInfo;
   marketDecimals: number | undefined;
   isMobile: boolean;
+  activeTab?: TabType;
   onEdit?: (orderKey: string) => void;
+  onAddTPSL?: () => void;
 };
 
-export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, onEdit }: Props) {
+export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, activeTab, onEdit, onAddTPSL }: Props) {
   const [, setEditingOrderState] = useEditingOrderState();
 
   const handleEditOrder = useCallback(
@@ -47,10 +51,25 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, onE
     [onEdit, setEditingOrderState]
   );
 
+  const emptyMessage = useMemo(() => {
+    if (activeTab === "takeProfit") {
+      return <Trans>No TP orders</Trans>;
+    }
+    if (activeTab === "stopLoss") {
+      return <Trans>No SL orders</Trans>;
+    }
+    return <Trans>No TP/SL orders</Trans>;
+  }, [activeTab]);
+
   if (orders.length === 0) {
     return (
-      <div className="flex items-center justify-center py-32 text-typography-secondary">
-        <Trans>No TP/SL orders</Trans>
+      <div className="flex h-full grow flex-col items-center justify-center gap-8 py-32">
+        <span className="text-typography-secondary">{emptyMessage}</span>
+        {onAddTPSL && (
+          <Button variant="primary" onClick={onAddTPSL}>
+            <Trans>Add TP/SL</Trans>
+          </Button>
+        )}
       </div>
     );
   }
