@@ -876,6 +876,10 @@ msgstr "이 네트워크에 중앙화 거래소가 없습니다."
 msgid "Invalid slippage value"
 msgstr "유효하지 않은 슬리피지 값"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "5%를 돌려받고 커뮤니티에 모든 거래에서 5% 할인을 제공하세요. 더 높은 추천 등급은 더 많은 혜택을 해제합니다. <0>자세히 보기</0>."
@@ -2240,7 +2244,6 @@ msgstr "스왑"
 msgid "Creating order..."
 msgstr "주문 생성 중…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx

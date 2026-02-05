@@ -25,7 +25,6 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -380,17 +379,6 @@ export function StakeModal(props: {
             </div>
           </BuyInputSection>
         </div>
-
-        {activeTab === "stake" && (needApproval || isApproving) && (
-          <div className="mb-12">
-            <ApproveTokenButton
-              tokenAddress={stakeTokenAddress}
-              spenderAddress={stakeFarmAddress}
-              tokenSymbol={tokenSymbol}
-              isApproved={!needApproval}
-            />
-          </div>
-        )}
 
         {showStakeBonus && (
           <AlertInfo type="info">

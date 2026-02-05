@@ -876,6 +876,10 @@ msgstr "Keine zentralisierten Exchanges für dieses Netzwerk verfügbar."
 msgid "Invalid slippage value"
 msgstr "Ungültiger Schlupfwert"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "Erhalte 5 % zurück und gib deiner Community 5 % Rabatt auf jeden Trade. Höhere Referral-Stufen schalten noch mehr frei. <0>Mehr erfahren</0>."
@@ -2240,7 +2244,6 @@ msgstr "Tausch"
 msgid "Creating order..."
 msgstr "Order wird erstellt…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
