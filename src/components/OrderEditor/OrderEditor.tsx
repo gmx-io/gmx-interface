@@ -112,6 +112,7 @@ type Props = {
   order: OrderInfo;
   source: EditingOrderSource;
   onClose: () => void;
+  onBack?: () => void;
 };
 
 export function OrderEditor(p: Props) {
@@ -658,6 +659,15 @@ export function OrderEditor(p: Props) {
 
   const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
 
+  const handleBack = () => {
+    if (p.onBack) {
+      p.onBack();
+      return;
+    }
+
+    p.onClose();
+  };
+
   return (
     <div className="PositionEditor">
       <Modal
@@ -665,8 +675,10 @@ export function OrderEditor(p: Props) {
         isVisible={true}
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
+        contentPadding={false}
+        onBack={p.onBack ? handleBack : undefined}
       >
-        <div className="mb-14 flex flex-col gap-8">
+        <div className="mt-12 flex flex-col gap-8 border-t-1/2 border-slate-600 px-20 py-16">
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <BuyInputSection
@@ -740,7 +752,7 @@ export function OrderEditor(p: Props) {
           )}
         </div>
 
-        <div className="flex flex-col gap-14">
+        <div className="flex flex-col gap-14 px-20 pb-16">
           {button}
 
           <ExpressTradingWarningCard

@@ -3524,8 +3524,8 @@ msgid "High swap profit fee"
 msgstr "높은 스왑 이익 수수료"
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "Swap {fromTokenText} for {toTokenText}"
-msgstr "{fromTokenText}을 {toTokenText}로 스왑"
+#~ msgid "Swap {fromTokenText} for {toTokenText}"
+#~ msgstr "{fromTokenText}을 {toTokenText}로 스왑"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -5334,8 +5334,8 @@ msgid "Size, $"
 msgstr "크기, $"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}{2}"
-msgstr "{0} {1}{2} 종료"
+#~ msgid "Close {0} {1}{2}"
+#~ msgstr "{0} {1}{2} 종료"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
@@ -6123,6 +6123,10 @@ msgstr "리베이트 분배 내역 없음."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance"
 msgstr "GMX 거버넌스"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{increaseOrDecreaseText}: {0} {longShortText}"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
@@ -7344,8 +7348,8 @@ msgid "Failed Settlement of Funding Fees"
 msgstr "자금 수수료 정산 실패"
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-msgstr "{increaseOrDecreaseText} {tokenText}를 {sizeText}만큼"
+#~ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+#~ msgstr "{increaseOrDecreaseText} {tokenText}를 {sizeText}만큼"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
@@ -7980,6 +7984,7 @@ msgstr ""
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap"
 msgstr "스왑"
 
@@ -8028,6 +8033,10 @@ msgstr "포지션 공유"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "입금 수수료"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0}: {1} {2}{3}/USD decrease"
+msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"

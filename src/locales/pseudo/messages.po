@@ -3524,8 +3524,8 @@ msgid "High swap profit fee"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "Swap {fromTokenText} for {toTokenText}"
-msgstr ""
+#~ msgid "Swap {fromTokenText} for {toTokenText}"
+#~ msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -5334,8 +5334,8 @@ msgid "Size, $"
 msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}{2}"
-msgstr ""
+#~ msgid "Close {0} {1}{2}"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
@@ -6122,6 +6122,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{increaseOrDecreaseText}: {0} {longShortText}"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -7344,8 +7348,8 @@ msgid "Failed Settlement of Funding Fees"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-msgstr ""
+#~ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+#~ msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
@@ -7980,6 +7984,7 @@ msgstr ""
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap"
 msgstr ""
 
@@ -8027,6 +8032,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
+msgstr ""
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0}: {1} {2}{3}/USD decrease"
 msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

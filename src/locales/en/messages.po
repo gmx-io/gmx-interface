@@ -3524,8 +3524,8 @@ msgid "High swap profit fee"
 msgstr "High swap profit fee"
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "Swap {fromTokenText} for {toTokenText}"
-msgstr "Swap {fromTokenText} for {toTokenText}"
+#~ msgid "Swap {fromTokenText} for {toTokenText}"
+#~ msgstr "Swap {fromTokenText} for {toTokenText}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -5334,8 +5334,8 @@ msgid "Size, $"
 msgstr "Size, $"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}{2}"
-msgstr "Close {0} {1}{2}"
+#~ msgid "Close {0} {1}{2}"
+#~ msgstr "Close {0} {1}{2}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
@@ -6123,6 +6123,10 @@ msgstr "No rebates distribution history yet."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance"
 msgstr "GMX Governance"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{increaseOrDecreaseText}: {0} {longShortText}"
+msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
@@ -7344,8 +7348,8 @@ msgid "Failed Settlement of Funding Fees"
 msgstr "Failed Settlement of Funding Fees"
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+#~ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+#~ msgstr "{increaseOrDecreaseText} {tokenText} by {sizeText}"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
@@ -7980,6 +7984,7 @@ msgstr "SL price below mark price"
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap"
 msgstr "Swap"
 
@@ -8028,6 +8033,10 @@ msgstr "Share Position"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "Deposit Fee"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0}: {1} {2}{3}/USD decrease"
+msgstr "{0}: {1} {2}{3}/USD decrease"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"

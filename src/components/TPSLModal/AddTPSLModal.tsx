@@ -829,8 +829,9 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       label={<Trans>TP/SL: {positionTitle} Decrease</Trans>}
       onBack={onBack ? handleBack : undefined}
       withMobileBottomPosition
+      contentPadding={false}
     >
-      <div className="flex flex-col gap-16">
+      <div className="mt-12 flex flex-col gap-16 border-t-1/2 border-slate-600 px-20 py-16">
         <div className="flex flex-col gap-4">
           <TPSLInputRow
             type="takeProfit"

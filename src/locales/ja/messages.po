@@ -3524,8 +3524,8 @@ msgid "High swap profit fee"
 msgstr "高いスワップ利益手数料"
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "Swap {fromTokenText} for {toTokenText}"
-msgstr "{fromTokenText}を{toTokenText}にスワップ"
+#~ msgid "Swap {fromTokenText} for {toTokenText}"
+#~ msgstr "{fromTokenText}を{toTokenText}にスワップ"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -5334,8 +5334,8 @@ msgid "Size, $"
 msgstr "サイズ, $"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}{2}"
-msgstr "{0} {1}{2} をクローズ"
+#~ msgid "Close {0} {1}{2}"
+#~ msgstr "{0} {1}{2} をクローズ"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
@@ -6123,6 +6123,10 @@ msgstr "紹介報酬支払い履歴はありません。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance"
 msgstr "GMXガバナンス"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{increaseOrDecreaseText}: {0} {longShortText}"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
@@ -7344,8 +7348,8 @@ msgid "Failed Settlement of Funding Fees"
 msgstr "ファンディング手数料の決済に失敗"
 
 #: src/domain/synthetics/orders/utils.tsx
-msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-msgstr "{increaseOrDecreaseText} {tokenText} を {sizeText} で"
+#~ msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
+#~ msgstr "{increaseOrDecreaseText} {tokenText} を {sizeText} で"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
@@ -7980,6 +7984,7 @@ msgstr ""
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap"
 msgstr "スワップ"
 
@@ -8028,6 +8033,10 @@ msgstr "ポジション共有"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "入金手数料"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0}: {1} {2}{3}/USD decrease"
+msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
