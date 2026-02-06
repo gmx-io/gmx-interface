@@ -23,7 +23,7 @@ import { getGmSwapError } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { absDiffBps } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
-import type { GmSwapFees } from "sdk/types/trade";
+import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import { useGlvGmMarketsWithComposition } from "./useMarketGlvGmMarketsCompositions";
 
@@ -100,7 +100,7 @@ export const useBestGmPoolAddressForGlv = ({
       const longTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, true);
       const shortTokenLiquidityUsd = getAvailableUsdLiquidityForCollateral(marketInfo, false);
 
-      const [error] = getGmSwapError({
+      const errorResult = getGmSwapError({
         isDeposit,
         marketInfo,
         glvInfo,
@@ -127,6 +127,7 @@ export const useBestGmPoolAddressForGlv = ({
         srcChainId,
         isMarketTokenDeposit,
       });
+      const error = errorResult.buttonErrorMessage;
 
       return {
         isValid: error === undefined,

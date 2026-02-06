@@ -248,7 +248,7 @@ export function TwapOrderProgress({ order, className }: { order: TwapOrderInfo; 
   return <span className={className}>{content}</span>;
 }
 
-export function SizeWithIcon({ order, className }: { order: OrderInfo; className?: string }) {
+function SizeWithIcon({ order, className }: { order: OrderInfo; className?: string }) {
   if (isSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 

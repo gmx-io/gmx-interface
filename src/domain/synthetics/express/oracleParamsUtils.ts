@@ -7,7 +7,7 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { getOppositeCollateralFromConfig } from "sdk/utils/markets";
 import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
-export function getOracleParams({ chainId, tokenAddresses }: { chainId: ContractsChainId; tokenAddresses: string[] }) {
+function getOracleParams({ chainId, tokenAddresses }: { chainId: ContractsChainId; tokenAddresses: string[] }) {
   const uniqTokenAddresses = uniq(
     tokenAddresses.map((tokenAddress) => convertTokenAddress(chainId, tokenAddress, "wrapped"))
   );
@@ -52,7 +52,7 @@ export function getOracleParamsForRelayParams({
   return getOracleParams({ chainId, tokenAddresses });
 }
 
-export function getSwapPathOracleTokens({
+function getSwapPathOracleTokens({
   chainId,
 
   initialCollateralAddress,

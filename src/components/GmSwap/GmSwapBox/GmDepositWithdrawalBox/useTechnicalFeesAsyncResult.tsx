@@ -3,12 +3,10 @@ import {
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
   selectPoolsDetailsGlvInfo,
-  selectPoolsDetailsLongTokenAmount,
   selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsOperation,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSelectedMarketAddressForGlv,
-  selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
@@ -29,7 +27,12 @@ import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { absDiffBps } from "sdk/utils/numbers";
 
-export function useTechnicalFees(): TechnicalGmFees | undefined {
+export type TechnicalFeesResult = {
+  data: TechnicalGmFees | undefined;
+  error: Error | undefined;
+};
+
+export function useTechnicalFees(): TechnicalFeesResult {
   const { chainId, srcChainId } = useChainId();
 
   const operation = useSelector(selectPoolsDetailsOperation);
@@ -42,8 +45,6 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
 
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
-  const longTokenAmount = useSelector(selectPoolsDetailsLongTokenAmount);
-  const shortTokenAmount = useSelector(selectPoolsDetailsShortTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
 
   const prevPaySource = usePrevious(paySource);
@@ -79,8 +80,8 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
             srcChainId,
             firstTokenAddress,
             firstTokenAmount,
-            longTokenAmount,
-            shortTokenAmount,
+            longTokenAmount: amounts?.longTokenAmount ?? 0n,
+            shortTokenAmount: amounts?.shortTokenAmount ?? 0n,
             marketTokenAmount: marketOrGlvTokenAmount,
             operation,
             amounts,
@@ -94,5 +95,8 @@ export function useTechnicalFees(): TechnicalGmFees | undefined {
     resetOnForceRecalculate: true,
   });
 
-  return technicalFeesAsyncResult.data;
+  return {
+    data: technicalFeesAsyncResult.data,
+    error: technicalFeesAsyncResult.error,
+  };
 }

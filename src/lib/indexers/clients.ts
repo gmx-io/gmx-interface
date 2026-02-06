@@ -5,23 +5,23 @@ import { createClient } from "./utils";
 
 export const chainlinkClient = createClient(SOURCE_ETHEREUM_MAINNET, "chainLink");
 
-export const arbitrumGraphClient = createClient(ARBITRUM, "stats");
-export const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
+const arbitrumGraphClient = createClient(ARBITRUM, "stats");
+const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
 
-export const avalancheGraphClient = createClient(AVALANCHE, "stats");
-export const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
-export const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "referrals");
+const avalancheGraphClient = createClient(AVALANCHE, "stats");
+const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
+const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "referrals");
 
-export const arbitrumSyntheticsStatsClient = createClient(ARBITRUM, "syntheticsStats");
-export const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "syntheticsStats");
-export const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
-export const botanixSyntheticsStatsClient = createClient(BOTANIX, "syntheticsStats");
+const arbitrumSyntheticsStatsClient = createClient(ARBITRUM, "syntheticsStats");
+const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "syntheticsStats");
+const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
+const botanixSyntheticsStatsClient = createClient(BOTANIX, "syntheticsStats");
 
-export const arbitrumSubsquidClient = createClient(ARBITRUM, "subsquid");
-export const avalancheSubsquidClient = createClient(AVALANCHE, "subsquid");
-export const avalancheFujiSubsquidClient = createClient(AVALANCHE_FUJI, "subsquid");
-export const arbitrumSepoliaSubsquidClient = createClient(ARBITRUM_SEPOLIA, "subsquid");
-export const botanixSubsquidClient = createClient(BOTANIX, "subsquid");
+const arbitrumSubsquidClient = createClient(ARBITRUM, "subsquid");
+const avalancheSubsquidClient = createClient(AVALANCHE, "subsquid");
+const avalancheFujiSubsquidClient = createClient(AVALANCHE_FUJI, "subsquid");
+const arbitrumSepoliaSubsquidClient = createClient(ARBITRUM_SEPOLIA, "subsquid");
+const botanixSubsquidClient = createClient(BOTANIX, "subsquid");
 
 export const REFERRAL_SUPPORTED_CHAIN_IDS = isDevelopment()
   ? [ARBITRUM, AVALANCHE, AVALANCHE_FUJI]

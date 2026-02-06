@@ -38,7 +38,8 @@ import {
   getTokenVisualMultiplier,
   getWrappedToken,
 } from "sdk/configs/tokens";
-import { TokenBalanceType } from "sdk/types/tokens";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -350,7 +351,6 @@ export function PositionEditor() {
               options={tabsOptions}
               type="inline"
               className="PositionEditor-tabs"
-              size="l"
               qa="operation-tabs"
             />
             <BuyInputSection
@@ -383,6 +383,7 @@ export function PositionEditor() {
               }}
               onClickMax={showMaxButton ? handleMaxButtonClick : undefined}
               qa="amount-input"
+              maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
             >
               {hasMultipleTokens ? (
                 <PositionEditorCollateralSelector
@@ -403,6 +404,7 @@ export function PositionEditor() {
                 swapPriceImpact={fees?.swapPriceImpact}
                 swapProfitFee={fees?.swapProfitFee}
                 executionFeeUsd={executionFee?.feeUsd}
+                maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
               />
 
               <div>{button}</div>

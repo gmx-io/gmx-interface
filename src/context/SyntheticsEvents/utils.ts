@@ -1,5 +1,4 @@
-import { ErrorLike, extendError } from "lib/errors";
-import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
+import { extendError } from "lib/errors";
 
 import type {
   GelatoTaskStatus,
@@ -99,10 +98,6 @@ export function extractGelatoError(gelatoTaskStatus: GelatoTaskStatus) {
   return extendError(new Error(`Gelato task cancelled, unknown reason`), {
     data: { taskId: gelatoTaskStatus.taskId, lastCheckMessage: gelatoTaskStatus.lastCheckMessage },
   });
-}
-
-export async function sendGelatoTaskStatusMetric(metricId: OrderMetricId, error: ErrorLike) {
-  sendTxnErrorMetric(metricId, error, "relayer");
 }
 
 export function getGelatoTaskUrl({

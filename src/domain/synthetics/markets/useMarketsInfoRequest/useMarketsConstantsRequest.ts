@@ -6,7 +6,7 @@ import { useMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
 
-export type MarketsConstants = {
+type MarketsConstants = {
   useOpenInterestInTokensForBalance: boolean;
 };
 

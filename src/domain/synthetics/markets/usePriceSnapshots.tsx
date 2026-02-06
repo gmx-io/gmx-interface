@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 import { SECONDS_IN_DAY } from "lib/dates";
 import { getSubsquidGraphClient } from "lib/indexers";
-import { Price } from "sdk/types/subsquid";
+import { Price } from "sdk/codegen/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 
 import { Period } from "./usePoolsTimeRange";
@@ -38,14 +38,6 @@ type PriceSnapshot = Price & { snapshotTimestamp: number };
 
 type PriceQuery = {
   prices: PriceSnapshot[];
-};
-
-export type PriceData = {
-  [tokenAddress: string]: PriceSnapshot[];
-};
-
-export type PriceDataMapped = {
-  [tokenAddress: string]: Record<number, PriceSnapshot>;
 };
 
 export function usePriceSnapshots({

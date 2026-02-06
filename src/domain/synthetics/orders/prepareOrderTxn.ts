@@ -10,10 +10,6 @@ import { getProvider } from "lib/rpc";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 
-export type PrepareOrderTxnParams = {
-  simulationPromise?: Promise<void>;
-};
-
 export async function prepareOrderTxn(
   chainId: number,
   contract: ethers.Contract,
@@ -44,7 +40,7 @@ export async function prepareOrderTxn(
   return { gasLimit, gasPriceData };
 }
 
-export const makeCatchTransactionError =
+const makeCatchTransactionError =
   (
     chainId: number,
     metricId: OrderMetricId | undefined,

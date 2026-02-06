@@ -12,7 +12,7 @@ import {
   sepolia,
 } from "viem/chains";
 
-import { ContractsChainConfig, SourceChainConfig } from "types/chains";
+import { ContractsChainConfig, SourceChainConfig } from "utils/chains/types";
 
 import {
   ARBITRUM,

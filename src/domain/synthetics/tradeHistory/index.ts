@@ -1,2 +1,2 @@
-export * from "sdk/types/tradeHistory";
+export * from "sdk/utils/tradeHistory/types";
 export * from "./useTradeHistory";

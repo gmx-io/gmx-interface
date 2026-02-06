@@ -107,7 +107,7 @@ export type SettingsContextType = {
   setIsSetAcceptablePriceImpactEnabled: (val: boolean) => void;
 };
 
-export const SettingsContext = createContext({});
+const SettingsContext = createContext({});
 
 export function useSettings() {
   return useContext(SettingsContext) as SettingsContextType;

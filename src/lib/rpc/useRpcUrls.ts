@@ -101,10 +101,6 @@ class RpcTrackersRegistry {
   }
 }
 
-export function getRpcTracker(trackerKey: string): RpcTracker | undefined {
-  return RpcTrackersRegistry.getInstance().getRpcTracker(trackerKey);
-}
-
 export function getRpcTrackerByChainId(chainId: number): RpcTracker | undefined {
   return RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId);
 }

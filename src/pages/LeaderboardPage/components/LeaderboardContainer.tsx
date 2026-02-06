@@ -224,7 +224,6 @@ export function LeaderboardContainer() {
               className="w-full max-w-[260px] max-md:min-w-[120px]"
               value={searchAddress}
               setValue={setSearchAddress}
-              size="s"
             />
             {!isCompetition && (
               <Tabs

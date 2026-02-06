@@ -68,7 +68,7 @@ export function GmList({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { active } = useWallet();
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");
@@ -134,7 +134,6 @@ export function GmList({
           </Trans>
           <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
-              size="s"
               className="w-full *:!text-body-medium md:max-w-[260px]"
               value={searchText}
               setValue={setSearchText}

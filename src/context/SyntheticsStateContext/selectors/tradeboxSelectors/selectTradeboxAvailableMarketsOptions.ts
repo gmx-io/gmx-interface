@@ -56,7 +56,7 @@ import { selectIsLeverageSliderEnabled } from "../settingsSelectors";
 import { makeSelectIncreasePositionAmounts } from "../tradeSelectors";
 import { selectTradeboxAvailableMarkets } from "./selectTradeboxAvailableMarkets";
 
-export type AvailableMarketsOptions = {
+type AvailableMarketsOptions = {
   allMarkets?: MarketInfo[];
   availableMarkets?: MarketInfo[];
   availableIndexTokenStat?: IndexTokenStat;

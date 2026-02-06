@@ -31,6 +31,7 @@ export enum MultichainActionType {
   SetTraderReferralCode = 4,
   Withdrawal = 5,
   GlvWithdrawal = 6,
+  RegisterCode = 7,
 }
 
 type CommonActionData = {
@@ -45,6 +46,15 @@ type SetTraderReferralCodeActionData = CommonActionData & {
 type SetTraderReferralCodeAction = {
   actionType: MultichainActionType.SetTraderReferralCode;
   actionData: SetTraderReferralCodeActionData;
+};
+
+type RegisterCodeActionData = CommonActionData & {
+  referralCode: string;
+};
+
+type RegisterCodeAction = {
+  actionType: MultichainActionType.RegisterCode;
+  actionData: RegisterCodeActionData;
 };
 
 type DepositActionData = CommonActionData & {
@@ -92,6 +102,7 @@ type GlvWithdrawalAction = {
  */
 export type MultichainAction =
   | SetTraderReferralCodeAction
+  | RegisterCodeAction
   | DepositAction
   | GlvDepositAction
   | WithdrawalAction
@@ -147,6 +158,11 @@ export class CodecUiHelper {
   public static encodeMultichainComposeActionData(action: MultichainAction): string {
     let actionData: Hex | undefined;
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
+      actionData = encodeAbiParameters(
+        [RELAY_PARAMS_TYPE, { type: "bytes32" }],
+        [{ ...action.actionData.relayParams, signature: action.actionData.signature }, action.actionData.referralCode]
+      );
+    } else if (action.actionType === MultichainActionType.RegisterCode) {
       actionData = encodeAbiParameters(
         [RELAY_PARAMS_TYPE, { type: "bytes32" }],
         [{ ...action.actionData.relayParams, signature: action.actionData.signature }, action.actionData.referralCode]

@@ -11,7 +11,7 @@ type GetLiquidationParams = {
   fundingFee?: bigint;
 };
 
-export function getLiquidationPriceFromDelta({
+function getLiquidationPriceFromDelta({
   liquidationAmount,
   size,
   collateral,
@@ -47,7 +47,7 @@ function calculateTotalFees(size: bigint, fundingFees: bigint): bigint {
   );
 }
 
-export function getLiquidationPrice({ size, collateral, averagePrice, isLong, fundingFee }: GetLiquidationParams) {
+function getLiquidationPrice({ size, collateral, averagePrice, isLong, fundingFee }: GetLiquidationParams) {
   if (size === undefined || collateral === undefined || averagePrice === undefined) {
     return;
   }

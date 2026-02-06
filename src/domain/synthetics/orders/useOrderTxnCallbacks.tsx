@@ -22,6 +22,7 @@ import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
 import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
+import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
@@ -41,8 +42,8 @@ import {
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
 import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
+import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
   CancelOrderTxnParams,
@@ -80,7 +81,7 @@ export function useOrderTxnCallbacks() {
     setPendingExpressTxn,
     setPendingFundingFeeSettlement,
   } = useSyntheticsEvents();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
@@ -247,6 +248,17 @@ export function useOrderTxnCallbacks() {
         case TxnEventName.Sent: {
           if (ctx.metricId) {
             sendTxnSentMetric(ctx.metricId);
+
+            if (mainActionType === "create" && batchParams.createOrderParams.length > 0) {
+              const firstOrder = batchParams.createOrderParams[0];
+              const orderType = firstOrder.orderPayload.orderType;
+              sendAddressablePixelEventForOrder({
+                metricId: ctx.metricId,
+                orderType,
+                chainId,
+                srcChainId,
+              });
+            }
           }
 
           if (!expressParams) {
@@ -357,6 +369,7 @@ export function useOrderTxnCallbacks() {
       addOptimisticTokensBalancesUpdates,
       blockNumber,
       chainId,
+      srcChainId,
       ordersInfoData,
       resetTokenPermits,
       setIsPermitsDisabled,
@@ -382,7 +395,7 @@ export function useOrderTxnCallbacks() {
   );
 }
 
-export function getBatchPendingOrders(
+function getBatchPendingOrders(
   txnParams: BatchOrderTxnParams,
   ordersInfoData: OrdersInfoData | undefined,
   createdAt: number
@@ -422,11 +435,7 @@ export function getBatchPendingOrders(
     ...cancelPendingOrders,
   ] as PendingOrderData[];
 }
-export function getPendingCancelOrder(
-  params: CancelOrderTxnParams,
-  order: OrderInfo,
-  createdAt: number
-): PendingOrderData {
+function getPendingCancelOrder(params: CancelOrderTxnParams, order: OrderInfo, createdAt: number): PendingOrderData {
   return {
     txnType: "cancel",
     account: order.account,
@@ -449,7 +458,7 @@ export function getPendingCancelOrder(
   };
 }
 
-export function getPendingPositionFromParams({
+function getPendingPositionFromParams({
   createOrderParams: createOrderPayload,
   blockNumber,
   timestamp,
@@ -482,7 +491,7 @@ export function getPendingPositionFromParams({
   };
 }
 
-export function getPendingUpdateOrder(
+function getPendingUpdateOrder(
   updateOrderParams: UpdateOrderTxnParams,
   order: OrderInfo,
   createdAt: number
@@ -509,7 +518,7 @@ export function getPendingUpdateOrder(
   };
 }
 
-export function getOptimisticBatchPayAmounts({
+function getOptimisticBatchPayAmounts({
   expressParams,
   batchParams,
 }: {
@@ -530,7 +539,7 @@ export function getOptimisticBatchPayAmounts({
   return batchPayAmounts;
 }
 
-export function getPendingCreateOrder(
+function getPendingCreateOrder(
   createOrderPayload: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams>,
   isTwap = false,
   createdAt = Date.now()
@@ -561,7 +570,7 @@ export function getPendingCreateOrder(
   };
 }
 
-export function getPendingCreateTwapOrders(
+function getPendingCreateTwapOrders(
   createOrderPayloads: CreateOrderTxnParams<
     IncreasePositionOrderParams | DecreasePositionOrderParams | SwapOrderParams
   >[],

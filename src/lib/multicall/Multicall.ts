@@ -22,12 +22,6 @@ import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState
 
 export const MAX_PRIMARY_TIMEOUT = 20_000;
 
-export type MulticallProviderUrls = {
-  primary: string;
-  secondary: string;
-  trackerKey: string;
-};
-
 export class Multicall {
   static instances: {
     [chainId: number]: Multicall | undefined;

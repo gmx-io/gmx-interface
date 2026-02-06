@@ -14,7 +14,7 @@ import type { ERC20Address } from "domain/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { TokenData, TokensData } from "../tokens";
-import { convertToTokenAmount, convertToUsd } from "../tokens/utils";
+import { convertToTokenAmount, convertToUsd } from "../tokens";
 
 export function getMaxUsdCapUsdInGmGlvMarket(market: GlvMarket, gmToken?: TokenData) {
   if (!gmToken) {
@@ -39,7 +39,7 @@ export function getMaxUsdBuyableAmountInMarketWithGm(
   return bigMath.min(mintableInGmMarket?.mintableUsd, maxUsdInGmGlv);
 }
 
-export function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvInfo, gmToken: TokenData) {
+function getMaxUsdBuyableAmountInMarket(market: GlvMarket, glv: GlvInfo, gmToken: TokenData) {
   const gmBalanceUsd = convertToUsd(market.gmBalance, gmToken.decimals, gmToken.prices.maxPrice) ?? 0n;
 
   return (

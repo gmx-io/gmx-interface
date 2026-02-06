@@ -10,9 +10,7 @@ import { MARKETS } from "./static/markets";
 
 export * from "./static/markets";
 
-export const ENOUGH_DAYS_SINCE_LISTING_FOR_APY = 8;
-
-export const MARKETS_INDEX: Record<number, Record<string, boolean>> = mapValues(MARKETS, (markets) =>
+const MARKETS_INDEX: Record<number, Record<string, boolean>> = mapValues(MARKETS, (markets) =>
   mapValues(markets, (market) => Boolean(market.enabled))
 );
 

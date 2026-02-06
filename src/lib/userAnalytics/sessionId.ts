@@ -1,12 +1,12 @@
 export const SESSION_ID_KEY = "sessionId";
-export const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24 * 4; // 4 days
-export const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
+const MAX_SESSION_ID_AGE = 1000 * 60 * 60 * 24 * 4; // 4 days
+const USER_ANALYTICS_LAST_EVENT_TIME_KEY = "USER_ANALYTICS_LAST_EVENT_TIME";
 
 export function setLastEventTime(time: number) {
   localStorage.setItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY, time.toString());
 }
 
-export function getLastEventTime() {
+function getLastEventTime() {
   const lastEventTime = localStorage.getItem(USER_ANALYTICS_LAST_EVENT_TIME_KEY);
   return parseInt(lastEventTime as string) || 0;
 }

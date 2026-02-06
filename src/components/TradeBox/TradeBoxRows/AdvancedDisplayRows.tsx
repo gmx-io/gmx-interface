@@ -25,7 +25,7 @@ import { GasPaymentParams } from "domain/synthetics/express";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverage } from "domain/synthetics/positions";
 import { formatUsd } from "lib/numbers";
-import { ExecutionFee } from "sdk/types/fees";
+import { ExecutionFee } from "sdk/utils/fees/types";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";

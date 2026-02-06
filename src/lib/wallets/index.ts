@@ -5,18 +5,6 @@ import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { getRainbowKitConfig } from "./rainbowKitConfig";
 
-export type NetworkMetadata = {
-  chainId: string;
-  chainName: string;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  rpcUrls: string[];
-  blockExplorerUrls: string[];
-};
-
 export type WalletSigner = UncheckedJsonRpcSigner & {
   address: string;
 };

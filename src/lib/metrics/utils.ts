@@ -10,8 +10,8 @@ import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMod
 import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
-import { TwapDuration } from "sdk/types/twap";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";
+import { TwapDuration } from "sdk/utils/twap/types";
 
 import { metrics, SubmittedOrderEvent } from ".";
 import {
@@ -26,7 +26,6 @@ import {
   OrderExecutedEvent,
   OrderMetricData,
   OrderMetricId,
-  OrderMetricType,
   OrderSentEvent,
   OrderSimulatedEvent,
   OrderStage,
@@ -38,47 +37,6 @@ import {
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
-
-export function getMetricTypeByOrderType(p: {
-  orderType: OrderType;
-  sizeDeltaUsd: bigint | undefined;
-}): OrderMetricType {
-  const { orderType, sizeDeltaUsd } = p;
-
-  if (orderType === OrderType.MarketSwap) {
-    return "swap";
-  }
-
-  if (orderType === OrderType.LimitSwap) {
-    return "limitSwap";
-  }
-
-  if (orderType === OrderType.MarketIncrease) {
-    if (sizeDeltaUsd === 0n) {
-      return "depositCollateral";
-    }
-
-    return "increasePosition";
-  }
-
-  if (orderType === OrderType.MarketDecrease) {
-    if (sizeDeltaUsd === 0n) {
-      return "withdrawCollateral";
-    }
-
-    return "decreasePosition";
-  }
-
-  if (orderType === OrderType.LimitIncrease) {
-    return "limitOrder";
-  }
-
-  if (orderType === OrderType.LimitDecrease) {
-    return "takeProfitOrder";
-  }
-
-  return "stopLossOrder";
-}
 
 export function initSwapMetricData({
   fromToken,

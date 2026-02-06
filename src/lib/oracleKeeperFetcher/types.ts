@@ -43,7 +43,7 @@ export type UserAnalyticsEventPayload = {
   customFields: { [key: string]: any };
 };
 
-export type UserAnalyticsProfilePayload = {
+type UserAnalyticsProfilePayload = {
   distinctId: string;
   customFields: { [key: string]: any };
 };
@@ -53,22 +53,22 @@ export type UserAnalyticsEventItem = {
   payload: UserAnalyticsEventPayload;
 };
 
-export type UserAnalyticsProfileItem = {
+type UserAnalyticsProfileItem = {
   type: "userAnalyticsProfile";
   payload: UserAnalyticsProfilePayload;
 };
 
-export type EventItem = {
+type EventItem = {
   type: "event";
   payload: EventPayload;
 };
 
-export type CounterItem = {
+type CounterItem = {
   type: "counter";
   payload: CounterPayload;
 };
 
-export type TimingItem = {
+type TimingItem = {
   type: "timing";
   payload: TimingPayload;
 };

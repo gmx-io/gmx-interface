@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 
 import { GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { sendEarnOpportunityClickedEvent } from "lib/userAnalytics/earnEvents";
-import { TokensData } from "sdk/types/tokens";
+import { TokensData } from "sdk/utils/tokens/types";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
@@ -18,7 +18,7 @@ type Props = {
   tokensData: TokensData | undefined;
 };
 
-export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Props) {
+function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Props) {
   const { name, description, tags, assets: tokens, link } = opportunity;
 
   const opportunityTagLabels = useOpportunityTagLabels();
@@ -30,7 +30,7 @@ export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Pr
         {tags.length ? (
           <div className="flex flex-wrap gap-6">
             {tags.map((tag) => (
-              <Badge key={tag} className="!bg-slate-700 px-8 py-4 text-12 text-typography-secondary">
+              <Badge key={tag} className="text-body-small !bg-slate-700 px-8 py-4 text-typography-secondary">
                 {opportunityTagLabels[tag]}
               </Badge>
             ))}
@@ -45,8 +45,8 @@ export function OpportunityCard({ opportunity, marketsInfoData, tokensData }: Pr
         />
         <div className="flex items-end justify-between gap-16">
           <div className="flex flex-col gap-4">
-            <h3 className="text-16 font-medium text-typography-primary">{name}</h3>
-            <p className="leading-5 text-13 text-typography-secondary">{description}</p>
+            <h3 className="text-body-large font-medium text-typography-primary">{name}</h3>
+            <p className="text-body-medium text-typography-secondary">{description}</p>
           </div>
 
           <Button

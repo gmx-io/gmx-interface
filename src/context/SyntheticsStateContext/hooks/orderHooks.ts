@@ -9,15 +9,14 @@ import { helperToast } from "lib/helperToast";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { OrderInfo } from "sdk/types/orders";
 import { getOrderKeys } from "sdk/utils/orders";
+import { OrderInfo } from "sdk/utils/orders/types";
 
 import { selectExpressGlobalParams } from "../selectors/expressSelectors";
 import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
   makeSelectOrdersWithErrorsByPositionKey,
-  selectOrderErrorsByOrderKeyMap,
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
 import { useSelector } from "../utils";
@@ -32,8 +31,6 @@ export const usePositionOrdersWithErrors = (positionKey: string | undefined) => 
   const selector = useMemo(() => makeSelectOrdersWithErrorsByPositionKey(positionKey), [positionKey]);
   return useSelector(selector);
 };
-
-export const useOrderErrorsByOrderKeyMap = () => useSelector(selectOrderErrorsByOrderKeyMap);
 
 export const useOrderErrorsCount = () => useSelector(selectOrderErrorsCount);
 

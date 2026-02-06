@@ -273,7 +273,7 @@ export function MultichainTokenSelector({
   );
 }
 
-export function useAvailableToTradeTokenList({
+function useAvailableToTradeTokenList({
   chainId,
   activeFilter,
   srcChainId,

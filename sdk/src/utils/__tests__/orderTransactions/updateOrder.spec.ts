@@ -2,11 +2,10 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken } from "configs/tokens";
-import { OrderType } from "types/orders";
+import { MOCK_GAS_PRICE } from "test/mock";
 import { parseValue, USD_DECIMALS } from "utils/numbers";
+import { OrderType } from "utils/orders/types";
 import { buildUpdateOrderPayload, UpdateOrderParams } from "utils/orderTransactions";
-
-import { MOCK_GAS_PRICE } from "../../../test/mock";
 
 beforeAll(() => {
   vi.spyOn(Math, "random").mockReturnValue(0.5);

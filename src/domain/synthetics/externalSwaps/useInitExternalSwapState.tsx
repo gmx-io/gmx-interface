@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { ExternalSwapQuote } from "sdk/types/trade";
+import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { ExternalSwapState } from "./types";
 

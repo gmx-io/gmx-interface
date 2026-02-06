@@ -39,8 +39,6 @@ export const useLiquidityProvidersIncentives = (chainId: number) => {
   }, [lpStats]);
 };
 
-export type TradingIncentives = ReturnType<typeof useTradingIncentives>;
-
 export const useTradingIncentives = (chainId: number) => {
   const incentiveStats = useIncentiveStats(chainId);
 

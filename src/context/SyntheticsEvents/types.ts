@@ -6,12 +6,12 @@ import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubacсountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
-import type { SignedTokenPermit } from "sdk/types/tokens";
-import type { ExternalSwapQuote } from "sdk/types/trade";
+import type { SignedTokenPermit } from "sdk/utils/tokens/types";
+import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import type { MultichainEventsState } from "./useMultichainEvents";
 
-export type MultiTransactionStatus<TEventData> = {
+type MultiTransactionStatus<TEventData> = {
   key: string;
   data?: TEventData;
   createdTxnHash?: string;
@@ -104,11 +104,6 @@ export type GelatoTaskStatus = {
   transactionHash?: string;
 };
 
-export type ExpressHandlers = {
-  onSuccess: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
-  onFailure: (params: { pendingExpressTxn: PendingExpressTxnParams }) => void;
-};
-
 export type PendingPositionsUpdates = {
   [key: string]: PendingPositionUpdate | undefined;
 };
@@ -135,11 +130,11 @@ export type SubmittedMultichainWithdrawal = {
 
 export type PendingMultichainFunding = MultichainFundingHistoryItem[];
 
-export type EventLogItems<T> = {
+type EventLogItems<T> = {
   [key: string]: T;
 };
 
-export type EventLogArrayItems<T> = {
+type EventLogArrayItems<T> = {
   [key: string]: T[];
 };
 

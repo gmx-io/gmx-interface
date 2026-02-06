@@ -11,7 +11,6 @@ type Props<V extends BaseOptionValue> = {
   options: Option<V>[];
   selectedValue: V | undefined;
   onChange?: (value: V) => void;
-  size?: "l" | "m";
   type?: "inline" | "block" | "inline-primary";
   className?: string;
   regularOptionClassname?: string;
@@ -23,8 +22,6 @@ export default function Tabs<V extends string | number>({
   options,
   selectedValue,
   onChange,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  size = "m",
   type = "block",
   className,
   regularOptionClassname,

@@ -3,7 +3,7 @@ import entries from "lodash/entries";
 import { resolve } from "path";
 
 import { MARKETS } from "../../src/configs/markets";
-import { hashMarketValuesKeys } from "../../src/utils/marketKeysAndConfigs";
+import { hashMarketValuesKeys } from "../../src/utils/markets/hashKeys";
 
 export function prebuildMarketValuesKeys(outputDir: string) {
   const chainMarketKeys = entries(MARKETS).reduce((chainsAcc, [chainId, markets]) => {

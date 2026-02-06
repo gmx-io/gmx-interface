@@ -5,7 +5,7 @@ type WithFallbackOptions<TReturn, TEndpoint> = {
   onFallback?: (ctx: WithFallbackContext<TEndpoint>) => void;
 };
 
-export type WithFallbackContext<TEndpoint> = {
+type WithFallbackContext<TEndpoint> = {
   endpoint: TEndpoint;
   fallbacks: TEndpoint[];
 };

@@ -23,10 +23,6 @@ import {
   useMultichainTradeTokensRequest,
 } from "components/GmxAccountModal/hooks";
 
-export type PoolsDetailsQueryParams = {
-  market: string;
-};
-
 function isValidPaySource(paySource: string | undefined): paySource is GmPaySource {
   return (
     (paySource as GmPaySource) === "settlementChain" ||

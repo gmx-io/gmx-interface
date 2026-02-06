@@ -19,6 +19,7 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
+import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
@@ -28,7 +29,6 @@ import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
-import { WebsocketContextProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
@@ -72,7 +72,6 @@ function App() {
   app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
   app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
-  app = <WebsocketContextProvider>{app}</WebsocketContextProvider>;
   app = <SEO>{app}</SEO>;
   app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
@@ -83,6 +82,7 @@ function App() {
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <ThemeProvider>{app}</ThemeProvider>;
+  app = <GmxSdkProvider>{app}</GmxSdkProvider>;
   app = <Router>{app}</Router>;
 
   return app;

@@ -36,7 +36,7 @@ import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 
 const SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS = 1; // +0.01%
 
-export const useTradeboxPoolWarnings = () => {
+const useTradeboxPoolWarnings = () => {
   const { chainId } = useChainId();
   const marketsInfoData = useMarketsInfoData();
   const marketsOptions = useSelector(selectTradeboxAvailableMarketsOptions);

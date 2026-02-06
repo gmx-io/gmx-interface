@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildFiltersBody, GraphQlFilters } from "../indexers";
+import { buildFiltersBody, GraphQlFilters } from "utils/indexers";
 
 describe("buildFiltersBody", () => {
   it("should return empty object if no filters", () => {

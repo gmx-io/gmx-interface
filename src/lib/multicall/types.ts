@@ -56,7 +56,3 @@ export type MulticallResult<T extends MulticallRequestConfig<any>> = {
     [contractKey in keyof T]: ContractCallsResult<T[contractKey]>;
   };
 };
-
-export function multicall<T extends MulticallRequestConfig<any>>(request: T): MulticallResult<T> {
-  return request as any;
-}

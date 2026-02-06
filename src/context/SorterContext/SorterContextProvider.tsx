@@ -1,13 +1,10 @@
 import noop from "lodash/noop";
 import { PropsWithChildren, createContext, useCallback, useContext, useMemo, useState } from "react";
 
-import { SORTER_CONFIG_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { setByKey, updateByKey } from "sdk/utils/objects";
 
 import { SorterConfig, SorterKey } from "./types";
-
-localStorage.removeItem(SORTER_CONFIG_KEY);
 
 type SorterState = Record<SorterKey, SorterConfig>;
 

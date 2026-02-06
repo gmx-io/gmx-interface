@@ -8,7 +8,7 @@ import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { ColorTree } from "lib/generateColorConfig";
 import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
-import { TokenCategory } from "sdk/types/tokens";
+import { TokenCategory } from "sdk/utils/tokens/types";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";

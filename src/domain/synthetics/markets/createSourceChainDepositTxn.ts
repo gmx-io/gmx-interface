@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 import { encodeFunctionData, zeroAddress } from "viem";
 
 import { SettlementChainId, SourceChainId } from "config/chains";
-import { getMappedTokenId, getMultichainTokenId, IStargateAbi } from "config/multichain";
+import { getMappedTokenId, getMultichainTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
@@ -12,6 +12,7 @@ import { CreateDepositParams, RawCreateDepositParams } from "domain/synthetics/m
 import { adjustForDecimals } from "lib/numbers";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
+import { abis } from "sdk/abis";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { estimateSourceChainDepositFees, SourceChainDepositFees } from "./feeEstimation/estimateSourceChainDepositFees";
@@ -117,7 +118,7 @@ export async function createSourceChainDepositTxn({
           }
         : undefined,
     callData: encodeFunctionData({
-      abi: IStargateAbi,
+      abi: abis.IStargate,
       functionName: "sendToken",
       args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), params.addresses.receiver],
     }),

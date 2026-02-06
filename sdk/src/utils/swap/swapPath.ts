@@ -1,12 +1,12 @@
 import { MarketConfig, MARKETS } from "configs/markets";
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
-import { GasLimitsConfig } from "types/fees";
-import { MarketsInfoData } from "types/markets";
-import { SwapPricingType } from "types/orders";
-import { TokensData } from "types/tokens";
-import { FindSwapPath, SwapPathStats } from "types/trade";
+import { GasLimitsConfig } from "utils/fees/types";
 import { LRUCache } from "utils/LruCache";
 import { getIsMarketAvailableForExpressSwaps } from "utils/markets";
+import { MarketsInfoData } from "utils/markets/types";
+import { SwapPricingType } from "utils/orders/types";
+import { TokensData } from "utils/tokens/types";
+import { FindSwapPath, SwapPathStats } from "utils/trade/types";
 
 import { buildMarketsAdjacencyGraph, MarketsGraph } from "./buildMarketsAdjacencyGraph";
 import {

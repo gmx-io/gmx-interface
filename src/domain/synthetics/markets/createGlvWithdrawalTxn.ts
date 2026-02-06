@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { ethers } from "ethers";
+import { Abi, ContractFunctionParameters, encodeFunctionData, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -10,7 +11,6 @@ import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-import { IGlvWithdrawalUtils } from "typechain-types/GlvRouter";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -61,8 +61,8 @@ export async function createGlvWithdrawalTxn({
         {
           addresses: {
             receiver: params.addresses.receiver,
-            callbackContract: ethers.ZeroAddress,
-            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? ethers.ZeroAddress,
+            callbackContract: zeroAddress,
+            uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
             market: params.addresses.market,
             glv: params.addresses.glv,
             longTokenSwapPath: params.addresses.longTokenSwapPath,
@@ -74,14 +74,18 @@ export async function createGlvWithdrawalTxn({
           executionFee: params.executionFee,
           callbackGasLimit: 0n,
           dataList: [],
-        } satisfies IGlvWithdrawalUtils.CreateGlvWithdrawalParamsStruct,
-      ],
+        },
+      ] satisfies ContractFunctionParameters<typeof abis.GlvRouter, "payable", "createGlvWithdrawal">["args"],
     },
   ];
 
-  const encodedPayload = multicall
-    .filter(Boolean)
-    .map((call) => contract.interface.encodeFunctionData(call!.method, call!.params));
+  const encodedPayload = multicall.filter(Boolean).map((call) =>
+    encodeFunctionData({
+      abi: abis.GlvRouter as Abi,
+      functionName: call!.method,
+      args: call!.params,
+    })
+  );
 
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {

@@ -49,10 +49,10 @@ export const selectChartHeaderInfo = createSelector((q) => {
     return;
   }
 
-  const borrowingRateLong = -getBorrowingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
-  const borrowingRateShort = -getBorrowingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
-  const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, CHART_PERIODS["1h"]);
-  const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, CHART_PERIODS["1h"]);
+  const borrowingRateLong = -getBorrowingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
+  const borrowingRateShort = -getBorrowingFactorPerPeriod(marketInfo, false, BigInt(CHART_PERIODS["1h"]));
+  const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
+  const fundingRateShort = getFundingFactorPerPeriod(marketInfo, false, BigInt(CHART_PERIODS["1h"]));
 
   const netRateHourlyLong = (fundingRateLong ?? 0n) + (borrowingRateLong ?? 0n);
   const netRateHourlyShort = (fundingRateShort ?? 0n) + (borrowingRateShort ?? 0n);

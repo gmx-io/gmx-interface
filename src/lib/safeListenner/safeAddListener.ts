@@ -82,11 +82,3 @@ export function safeAddGlobalListener(
   const cache = SafeListenersCache.getInstance(event, maxListeners);
   return cache.addListener(listener);
 }
-
-/**
- * Removes a listener that was added via safeAddGlobalListener
- */
-export function safeRemoveGlobalListener(event: string, listener: (event: Event) => void) {
-  const cache = SafeListenersCache.getInstance(event);
-  cache.removeListener(listener);
-}

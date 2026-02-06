@@ -1,17 +1,15 @@
-import { t } from "@lingui/macro";
 import { useMemo } from "react";
 
-import { ContractsChainId, getViemChain, SourceChainId } from "config/chains";
+import { ContractsChainId, SourceChainId } from "config/chains";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUsdToNativeTokenMultichain } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
-import { formatBalanceAmount } from "sdk/utils/numbers";
-
-export type SourceChainNativeFeeError = {
-  buttonText: string;
-  warningText: string;
-};
+import {
+  ValidationBannerErrorName,
+  ValidationResult,
+  getDefaultInsufficientGasMessage,
+} from "domain/synthetics/trade/utils/validation";
 
 export function useSourceChainNativeFeeError({
   networkFeeUsd,
@@ -25,7 +23,7 @@ export function useSourceChainNativeFeeError({
   chainId: ContractsChainId | undefined;
   srcChainId: SourceChainId | undefined;
   paySourceChainNativeTokenAmount: bigint | undefined;
-}): SourceChainNativeFeeError | undefined {
+}): ValidationResult | undefined {
   const account = useSelector(selectAccount);
   const sourceChainNativeTokenBalance = useNativeTokenBalance(srcChainId, account);
   const nativeFee = useUsdToNativeTokenMultichain({
@@ -34,7 +32,7 @@ export function useSourceChainNativeFeeError({
     targetChainId: chainId,
   });
 
-  return useMemo(() => {
+  return useMemo((): ValidationResult | undefined => {
     if (
       (paySource !== undefined && paySource !== "sourceChain") ||
       chainId === undefined ||
@@ -45,19 +43,12 @@ export function useSourceChainNativeFeeError({
       return undefined;
     }
 
-    const sourceChainNativeCurrency = getViemChain(srcChainId).nativeCurrency;
-    const symbol = sourceChainNativeCurrency.symbol;
-    const decimals = sourceChainNativeCurrency.decimals;
-
     const requiredAmount = nativeFee + paySourceChainNativeTokenAmount;
 
     if (sourceChainNativeTokenBalance < requiredAmount) {
-      const availableFormatted = formatBalanceAmount(sourceChainNativeTokenBalance, decimals);
-      const requiredFormatted = formatBalanceAmount(requiredAmount, decimals);
-
       return {
-        buttonText: t`Insufficient ${symbol} balance`,
-        warningText: t`Insufficient ${symbol} balance: ${availableFormatted} available, ${requiredFormatted} required`,
+        buttonErrorMessage: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
       };
     }
 

@@ -33,11 +33,3 @@ export function getCallId(contractAddress: string, abiId: AbiId, methodName: str
 export function getContractAbiKey(contractAddress: string, abiId: AbiId) {
   return `${contractAddress}-${abiId}`;
 }
-
-export function parseContractAbiKey(contractAbiKey: string) {
-  const firstHyphenIndex = contractAbiKey.indexOf("-");
-  const contractAddress = contractAbiKey.slice(0, firstHyphenIndex);
-  const abiId = contractAbiKey.slice(firstHyphenIndex + 1);
-
-  return { contractAddress, abiId };
-}

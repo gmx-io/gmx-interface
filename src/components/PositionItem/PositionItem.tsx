@@ -204,13 +204,13 @@ export function PositionItem(p: Props) {
         p.position.marketInfo,
         p.position.isLong,
         p.position.sizeInUsd,
-        CHART_PERIODS["1d"]
+        BigInt(CHART_PERIODS["1d"])
       ),
       borrowingFeeRateUsd: getBorrowingFeeRateUsd(
         p.position.marketInfo,
         p.position.isLong,
         p.position.sizeInUsd,
-        CHART_PERIODS["1d"]
+        BigInt(CHART_PERIODS["1d"])
       ),
     };
   }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);

@@ -3,17 +3,18 @@ import useSWR from "swr";
 
 import { getCurrentEpochStartedTimestamp } from "domain/stats";
 import { getWeekAgoTimestamp } from "domain/stats/getWeekAgoTimestamp";
-import { getSyntheticsGraphClient } from "lib/indexers";
+import { getSubsquidGraphClient } from "lib/indexers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { PositionFeesInfoWithPeriod, SwapFeesInfoWithPeriod } from "sdk/codegen/subsquid";
 
 const totalFeeQuery = gql`
   query totalFeesInfo {
-    position: positionFeesInfoWithPeriod(id: "total") {
+    position: positionFeesInfoWithPeriodById(id: "total") {
       totalBorrowingFeeUsd
       totalPositionFeeUsd
       totalLiquidationFeeUsd
     }
-    swap: swapFeesInfoWithPeriod(id: "total") {
+    swap: swapFeesInfoWithPeriodById(id: "total") {
       totalFeeReceiverUsd
       totalFeeUsdForPool
     }
@@ -23,44 +24,34 @@ const totalFeeQuery = gql`
 const weeklyFeeQuery = gql`
   query weeklyFeesInfo($weekAgoTimestamp: Int!) {
     position: positionFeesInfoWithPeriods(
-      where: { id_gte: $weekAgoTimestamp, period: "1d" }
-      orderBy: id
-      orderDirection: asc
+      where: { timestamp_gte: $weekAgoTimestamp, period_eq: "1d" }
+      orderBy: timestamp_ASC
+      limit: 1000
     ) {
-      id
+      timestamp
       totalBorrowingFeeUsd
       totalPositionFeeUsd
       totalLiquidationFeeUsd
     }
 
     swap: swapFeesInfoWithPeriods(
-      where: { id_gte: $weekAgoTimestamp, period: "1d" }
-      orderBy: id
-      orderDirection: asc
+      where: { timestamp_gte: $weekAgoTimestamp, period_eq: "1d" }
+      orderBy: timestamp_ASC
+      limit: 1000
     ) {
-      id
+      timestamp
       totalFeeReceiverUsd
       totalFeeUsdForPool
     }
   }
 `;
 
-type PositionFeesItem = {
-  id: string;
-  totalBorrowingFeeUsd: string;
-  totalPositionFeeUsd: string;
-  totalLiquidationFeeUsd: string;
-};
-
-type SwapFeesItem = {
-  id: string;
-  totalFeeReceiverUsd: string;
-  totalFeeUsdForPool: string;
-};
-
 type WeeklyFeesInfo = {
-  position: PositionFeesItem[];
-  swap: SwapFeesItem[];
+  position: Pick<
+    PositionFeesInfoWithPeriod,
+    "timestamp" | "totalBorrowingFeeUsd" | "totalPositionFeeUsd" | "totalLiquidationFeeUsd"
+  >[];
+  swap: Pick<SwapFeesInfoWithPeriod, "timestamp" | "totalFeeReceiverUsd" | "totalFeeUsdForPool">[];
 };
 
 function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
@@ -69,7 +60,13 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
   let epochLiquidationFees = 0n;
 
   const weeklyPositionFees = fees.position.reduce((acc, fee) => {
-    const timestamp = Number(fee.id);
+    const timestamp = fee.timestamp;
+
+    if (!timestamp) {
+      // eslint-disable-next-line no-console
+      console.warn("No timestamp found for PositionFeesInfoWithPeriod");
+      return acc;
+    }
 
     const increment = BigInt(fee.totalBorrowingFeeUsd) + BigInt(fee.totalPositionFeeUsd);
 
@@ -81,7 +78,13 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
   }, 0n);
 
   const weeklySwapFees = fees.swap.reduce((acc, fee) => {
-    const timestamp = Number(fee.id);
+    const timestamp = fee.timestamp;
+
+    if (!timestamp) {
+      // eslint-disable-next-line no-console
+      console.warn("No timestamp found for SwapFeesInfoWithPeriod");
+      return acc;
+    }
 
     const increment = BigInt(fee.totalFeeReceiverUsd) + BigInt(fee.totalFeeUsdForPool);
 
@@ -93,7 +96,13 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
   }, 0n);
 
   const weeklyLiquidationFees = fees.position.reduce((acc, fee) => {
-    const timestamp = Number(fee.id);
+    const timestamp = fee.timestamp;
+
+    if (!timestamp) {
+      // eslint-disable-next-line no-console
+      console.warn("No timestamp found for PositionFeesInfoWithPeriod");
+      return acc;
+    }
 
     const increment = BigInt(fee.totalLiquidationFeeUsd);
 
@@ -116,7 +125,7 @@ function getSumFees(fees: WeeklyFeesInfo, epochStartedTimestamp: number) {
 export default function useV2FeesInfo(chainId: number) {
   async function fetcher() {
     try {
-      const client = getSyntheticsGraphClient(chainId);
+      const client = getSubsquidGraphClient(chainId);
       const epochStartedTimestamp = getCurrentEpochStartedTimestamp();
       const weekAgoTimestamp = getWeekAgoTimestamp();
 

@@ -9,7 +9,7 @@ const BACKEND_URLS = {
   [AVALANCHE]: "https://gmx-avax-server.uc.r.appspot.com",
 };
 
-export function getServerBaseUrl(chainId: number) {
+function getServerBaseUrl(chainId: number) {
   if (!chainId) {
     throw new Error("chainId is not provided");
   }

@@ -1,11 +1,11 @@
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
 import type { GlobalExpressParams } from "domain/synthetics/express";
-import { getByKey } from "lib/objects";
+import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { getRelayerFeeToken } from "sdk/configs/express";
-import { SwapPricingType } from "sdk/types/orders";
-import type { FindSwapPath } from "sdk/types/trade";
+import { SwapPricingType } from "sdk/utils/orders/types";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
+import type { FindSwapPath } from "sdk/utils/trade/types";
 
 import { createSelector } from "../utils";
 import {
@@ -31,12 +31,6 @@ import { selectGasEstimationParams } from "./tradeSelectors";
 export const selectGasPaymentToken = createSelector((q) => {
   const gasPaymentTokenAddress = q(selectGasPaymentTokenAddress);
   return q((state) => getByKey(selectTokensData(state), gasPaymentTokenAddress));
-});
-
-export const selectRelayerFeeToken = createSelector((q) => {
-  const chainId = q(selectChainId);
-  const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
-  return q((state) => getByKey(selectTokensData(state), relayerFeeTokenAddress));
 });
 
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
@@ -77,7 +71,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     (hasL1Gas && !l1Reference) ||
     !gasPaymentToken ||
     !relayerFeeToken ||
-    !gasPaymentAllowance?.tokensAllowanceData ||
     !tokensData ||
     !marketsInfoData ||
     !gasLimits ||
@@ -96,7 +89,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     isSponsoredCall: isSponsoredCallAvailable,
     findFeeSwapPath,
     tokenPermits,
-    gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData,
+    gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,
     bufferBps,
     gasPrice,
     gasLimits,
@@ -107,7 +100,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
   };
 });
 
-export const selectExpressFindSwapPath = createSelector(function selectExpressFindSwapPath(q): FindSwapPath {
+const selectExpressFindSwapPath = createSelector(function selectExpressFindSwapPath(q): FindSwapPath {
   const chainId = q(selectChainId);
   const marketsInfoData = q(selectMarketsInfoData);
   const gasEstimationParams = q(selectGasEstimationParams);

@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
 import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
@@ -58,25 +59,35 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { getApprovalRequirements } from "domain/synthetics/tokens/utils";
 import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
-import { getCommonError, getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
+import {
+  getCommonError,
+  getExpressError,
+  getIsMaxLeverageExceeded,
+  getNativeGasError,
+  takeValidationResult,
+  ValidationButtonTooltipName,
+  ValidationResult,
+} from "domain/synthetics/trade/utils/validation";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { formatAmountFree } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
-import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { ExecutionFee } from "sdk/types/fees";
-import { TokenData } from "sdk/types/tokens";
-import { TradeMode, TradeType } from "sdk/types/trade";
+import { ExecutionFee } from "sdk/utils/fees/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { TokenData } from "sdk/utils/tokens/types";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
+import { mustNeverExist } from "sdk/utils/types";
 
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -92,6 +103,7 @@ interface TradeboxButtonStateOptions {
 type TradeboxButtonState = {
   text: ReactNode;
   tooltipContent: ReactNode | null;
+  bannerErrorContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => Promise<void>;
   slippageInputId: string;
@@ -155,6 +167,7 @@ export function useTradeboxButtonState({
     setPendingTxns,
   });
 
+  // TODO move this to a separate hook
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
     if (isFromTokenGmxAccount) {
       return { tokensToApprove: [], isAllowanceLoaded: true };
@@ -213,7 +226,27 @@ export function useTradeboxButtonState({
 
   const tradeError = useSelector(selectTradeboxTradeTypeError);
 
-  const { buttonErrorText, tooltipContent } = useMemo(() => {
+  const nativeGasError = useMemo((): ValidationResult => {
+    if (gasPaymentToken && expressParams?.gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
+      return {};
+    }
+
+    return getNativeGasError({
+      networkFee: totalExecutionFee?.feeTokenAmount,
+      nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
+    });
+  }, [
+    expressParams?.gasPaymentParams?.gasPaymentTokenAmount,
+    gasPaymentToken,
+    tokensData,
+    totalExecutionFee?.feeTokenAmount,
+  ]);
+
+  const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
+    buttonErrorText: string | undefined;
+    tooltipContent: ReactNode | null;
+    bannerErrorContent: ReactNode | null;
+  } => {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
@@ -221,42 +254,41 @@ export function useTradeboxButtonState({
     });
 
     const expressError = getExpressError({
-      chainId,
       expressParams,
       tokensData,
     });
 
-    const buttonErrorText = commonError[0] || tradeError[0] || expressError[0];
-    const tooltipName = commonError[1] || tradeError[1] || expressError[1];
+    const validationResult = takeValidationResult(commonError, tradeError, expressError, nativeGasError);
 
     let tooltipContent: ReactNode = null;
-    if (tooltipName) {
-      switch (tooltipName) {
-        case "maxLeverage": {
+    if (validationResult.buttonTooltipName) {
+      switch (validationResult.buttonTooltipName) {
+        case ValidationButtonTooltipName.maxLeverage: {
           tooltipContent = (
             <>
               {isLeverageSliderEnabled ? (
-                <Trans>Decrease the leverage to match the max allowed leverage.</Trans>
+                <Trans>Decrease the leverage to match the max. allowed leverage.</Trans>
               ) : (
-                <Trans>Decrease the size to match the max allowed leverage.</Trans>
+                <Trans>Decrease the size to match the max. allowed leverage:</Trans>
               )}{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-                <Trans>Set max leverage</Trans>
+                <Trans>Set Max Leverage</Trans>
               </span>
             </>
           );
 
           break;
         }
-
-        case "liqPrice > markPrice":
-          tooltipContent = <Trans>Position would be liquidated immediately. Try reducing size.</Trans>;
+        case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
+          tooltipContent = (
+            <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
+          );
           break;
-
-        case "noSwapPath":
+        }
+        case ValidationButtonTooltipName.noSwapPath: {
           tooltipContent = (
             <NoSwapPathTooltipContent
               collateralToken={collateralToken}
@@ -266,13 +298,22 @@ export function useTradeboxButtonState({
             />
           );
           break;
+        }
 
         default:
-          mustNeverExist(tooltipName);
+          mustNeverExist(validationResult.buttonTooltipName);
       }
     }
 
-    return { buttonErrorText, tooltipContent };
+    const bannerErrorContent = validationResult.bannerErrorName ? (
+      <ValidationBannerErrorContent validationBannerErrorName={validationResult.bannerErrorName} chainId={chainId} />
+    ) : null;
+
+    return {
+      buttonErrorText: validationResult.buttonErrorMessage,
+      tooltipContent,
+      bannerErrorContent,
+    };
   }, [
     chainId,
     account,
@@ -280,6 +321,7 @@ export function useTradeboxButtonState({
     expressParams,
     tokensData,
     tradeError,
+    nativeGasError,
     collateralToken,
     fromToken,
     toToken,
@@ -398,9 +440,10 @@ export function useTradeboxButtonState({
     }
   }, [isApproving, tokensToApprove]);
 
-  return useMemo(() => {
+  return useMemo((): TradeboxButtonState => {
     const commonState = {
       tooltipContent,
+      bannerErrorContent,
       onSubmit,
       slippageInputId,
       expressParams,
@@ -469,7 +512,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Approving ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol}...`}{" "}
+            {t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`}{" "}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -480,7 +523,7 @@ export function useTradeboxButtonState({
     if (isAllowanceLoaded && tokensToApprove.length) {
       return {
         ...commonState,
-        text: t`Approve ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol}`,
+        text: t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`,
         disabled: false,
       };
     }
@@ -488,7 +531,7 @@ export function useTradeboxButtonState({
     if (stage === "processing") {
       return {
         ...commonState,
-        text: t`Creating order...`,
+        text: t`Creating order`,
         disabled: true,
       };
     }
@@ -540,6 +583,7 @@ export function useTradeboxButtonState({
     };
   }, [
     tooltipContent,
+    bannerErrorContent,
     onSubmit,
     slippageInputId,
     expressParams,
@@ -572,7 +616,7 @@ export function useTradeboxButtonState({
   ]);
 }
 
-export function useDetectAndSetAvailableMaxLeverage({
+function useDetectAndSetAvailableMaxLeverage({
   setToTokenInputValue,
 }: {
   setToTokenInputValue: (value: string, shouldResetPriceImpactWarning: boolean) => void;
@@ -693,7 +737,7 @@ export function useDetectAndSetAvailableMaxLeverage({
         );
       }
     } else {
-      helperToast.error(t`No leverage available`);
+      helperToast.error(t`No available leverage found`);
     }
   }, [
     acceptablePriceImpactBuffer,
@@ -754,7 +798,7 @@ function NoSwapPathTooltipContent({
     if (collateralToken) {
       return (
         <Trans>
-          No swap path found.{" "}
+          No swap path available.{" "}
           <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
             Swap {fromToken.symbol} to STBTC
           </span>{" "}
@@ -766,7 +810,7 @@ function NoSwapPathTooltipContent({
     const swapToTokenSymbol = fromToken.symbol === "STBTC" ? "PBTC" : "STBTC";
     return (
       <Trans>
-        No swap path found.{" "}
+        No swap path available.{" "}
         <span onClick={makeHandleSwapClick(fromToken.symbol, swapToTokenSymbol)} className="Tradebox-handle">
           Swap {fromToken.symbol} to {swapToTokenSymbol}
         </span>
@@ -781,12 +825,12 @@ function NoSwapPathTooltipContent({
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} is required for collateral.
         <br />
         <br />
-        No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
+        There is no swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
         <br />
         <br />
         <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
-          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch
+          You can buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch.
         </ExternalLink>
       </Trans>
       {getBridgingOptionsForToken(collateralToken?.symbol) && (

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { getRainbowKitConfig } from "./rainbowKitConfig";
 
-export async function getWalletIconUrls(): Promise<string[]> {
+async function getWalletIconUrls(): Promise<string[]> {
   const uniqueConnectors = uniqBy(
     getRainbowKitConfig().connectors as WagmiConnectorInstance[],
     (connector) => connector.id

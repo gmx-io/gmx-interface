@@ -1,13 +1,15 @@
 import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
+import { zeroAddress } from "viem";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 import { metrics } from "lib/metrics";
-import { MarketInfo as SquidMarketInfo } from "sdk/types/subsquid";
+import { MarketInfo as SquidMarketInfo } from "sdk/codegen/subsquid";
+import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { queryPaginated } from "sdk/utils/indexers";
 
-import { FastMarketInfoData } from "..";
+import { getMarketFullName, RawMarketsInfoData } from "..";
 
 const MARKETS_INFO_QUERY = gql`
   query MarketsInfo($limit: Int, $offset: Int) {
@@ -116,7 +118,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
     data: fastMarketInfoData,
     error,
     isLoading,
-  } = useSWR<FastMarketInfoData | undefined>([chainId, "useFastMarketsInfoRequest"], {
+  } = useSWR<RawMarketsInfoData | undefined>([chainId, "useFastMarketsInfoRequest"], {
     refreshInterval: undefined,
     fetcher: async () => {
       try {
@@ -137,7 +139,14 @@ export function useFastMarketsInfoRequest(chainId: number) {
           return undefined;
         }
 
-        return rawMarketsInfos.reduce((acc: FastMarketInfoData, mInfo) => {
+        return rawMarketsInfos.reduce((acc: RawMarketsInfoData, mInfo) => {
+          const indexToken = getToken(chainId, convertTokenAddress(chainId, mInfo.indexTokenAddress, "native"));
+          const longToken = getToken(chainId, mInfo.longTokenAddress);
+          const shortToken = getToken(chainId, mInfo.shortTokenAddress);
+          const isSpotOnly = mInfo.indexTokenAddress === zeroAddress;
+
+          const name = getMarketFullName({ indexToken, longToken, shortToken, isSpotOnly });
+
           acc[mInfo.marketTokenAddress] = {
             marketTokenAddress: mInfo.marketTokenAddress,
             indexTokenAddress: mInfo.indexTokenAddress,
@@ -145,6 +154,10 @@ export function useFastMarketsInfoRequest(chainId: number) {
             shortTokenAddress: mInfo.shortTokenAddress,
 
             isDisabled: mInfo.isDisabled,
+            isSameCollaterals: mInfo.longTokenAddress === mInfo.shortTokenAddress,
+            isSpotOnly,
+            name,
+            data: "",
 
             longPoolAmount: BigInt(mInfo.longPoolAmount),
             shortPoolAmount: BigInt(mInfo.shortPoolAmount),
@@ -242,7 +255,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
           };
 
           return acc;
-        }, {} as FastMarketInfoData);
+        }, {} as RawMarketsInfoData);
       } catch (e) {
         metrics.pushError(e, "useFastMarketsInfoRequest");
         throw e;

@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers";
-import { AprSnapshot } from "sdk/types/subsquid";
+import { AprSnapshot } from "sdk/codegen/subsquid";
 import { queryPaginated } from "sdk/utils/indexers";
 
 import { Period } from "./usePoolsTimeRange";

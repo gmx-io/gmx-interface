@@ -117,19 +117,19 @@ function fontComponentsPlugin({ addComponents, addBase }: any) {
   addComponents({
     ".text-h1": {
       fontSize: "3.2rem",
-      lineHeight: "auto",
+      lineHeight: "110%",
       fontWeight: 500,
       letterSpacing: "-0.016em",
     },
     ".text-h2": {
       fontSize: "2.4rem",
-      lineHeight: "auto",
+      lineHeight: "110%",
       fontWeight: 500,
       letterSpacing: "-0.016em",
     },
     ".text-h3": {
       fontSize: "2rem",
-      lineHeight: "auto",
+      lineHeight: "110%",
       fontWeight: 500,
       letterSpacing: "-0.016em",
     },

@@ -62,7 +62,7 @@ function calculateLogicalFees({
 
   const logicalNetworkFee = getFeeItem(logicalNetworkFeeUsd, basisUsd)!;
   // TODO ADD stargate protocol fees
-  const logicalProtocolFee = getTotalFeeItem([swapFee, uiFee, swapPriceImpact].filter(Boolean) as FeeItem[]);
+  const logicalProtocolFee = getTotalFeeItem([swapFee, uiFee].filter(Boolean) as FeeItem[]);
 
   const logicalFees: GmSwapFees = {
     totalFees: logicalProtocolFee,

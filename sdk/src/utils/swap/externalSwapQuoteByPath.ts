@@ -1,4 +1,9 @@
-import { ExternalSwapAggregator, ExternalSwapPath, ExternalSwapQuote, ExternalSwapQuoteParams } from "types/trade";
+import {
+  ExternalSwapAggregator,
+  ExternalSwapPath,
+  ExternalSwapQuote,
+  ExternalSwapQuoteParams,
+} from "utils/trade/types";
 
 import { getBotanixStakingExternalSwapQuote } from "./botanixStaking";
 

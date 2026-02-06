@@ -1,12 +1,12 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
-import { MarketInfo, MarketsInfoData } from "sdk/types/markets";
-import { PositionInfo } from "sdk/types/positions";
-import { TokenData } from "sdk/types/tokens";
-import { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/types/trade";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
+import { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
+import { PositionInfo } from "sdk/utils/positions/types";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
+import { TokenData } from "sdk/utils/tokens/types";
+import { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/utils/trade/types";
 
 import {
   FindSwapPath,
@@ -204,27 +204,4 @@ export function getBestSwapStrategy({
   } else {
     return undefined;
   }
-}
-
-export function getIsInternalSwapBetter({
-  internalSwapAmounts,
-  externalSwapQuote,
-  forceExternalSwaps,
-}: {
-  internalSwapAmounts: SwapAmounts | undefined;
-  externalSwapQuote: ExternalSwapQuote | undefined;
-  forceExternalSwaps: boolean | undefined;
-}) {
-  if (externalSwapQuote?.usdOut == undefined) {
-    return true;
-  }
-
-  if (forceExternalSwaps) {
-    return false;
-  }
-
-  return (
-    internalSwapAmounts?.swapStrategy.swapPathStats?.usdOut !== undefined &&
-    internalSwapAmounts!.swapStrategy!.swapPathStats!.usdOut! > (externalSwapQuote?.usdOut ?? 0n)
-  );
 }

@@ -6,31 +6,6 @@ import { formatAmountForMetrics, metrics, MissedCoinEvent } from "lib/metrics";
 import { MissedCoinsPlace } from "./types";
 import { COIN_REGEXP } from "./utils";
 
-export function sendMissedCoinsFeedback({
-  totalVolume,
-  monthVolume,
-  coins,
-  place,
-}: {
-  totalVolume: bigint | undefined;
-  monthVolume: bigint | undefined;
-  place: MissedCoinsPlace;
-  coins: string[];
-}) {
-  coins.forEach((coin) => {
-    metrics.pushEvent<MissedCoinEvent>({
-      event: "missedCoin.popup",
-      isError: false,
-      data: {
-        coin,
-        totalVolume: formatAmountForMetrics(totalVolume ? totalVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
-        monthVolume: formatAmountForMetrics(monthVolume ? monthVolume : 0n, USD_DECIMALS, "toSecondOrderInt"),
-        place,
-      },
-    });
-  });
-}
-
 export const sendMissedCoinSearchDebounced = debounce(
   ({
     searchText,

@@ -9,9 +9,9 @@ import { selectAccount, selectMarketsInfoData, selectTokensData, selectUserRefer
 
 const BASIS_POINTS_DIVISOR = 10000n;
 
-export const selectLeaderboardAccountBases = (s: SyntheticsState) => s.leaderboard.accounts;
+const selectLeaderboardAccountBases = (s: SyntheticsState) => s.leaderboard.accounts;
 
-export const selectLeaderboardPositionBases = (s: SyntheticsState) => s.leaderboard.positions;
+const selectLeaderboardPositionBases = (s: SyntheticsState) => s.leaderboard.positions;
 
 export const selectLeaderboardTimeframeType = (s: SyntheticsState) => s.leaderboard.leaderboardTimeframeType;
 
@@ -36,17 +36,6 @@ export const selectLeaderboardSetSearchAddress = (s: SyntheticsState) => s.leade
 export const selectLeaderboardIsCompetition = createSelector(function selectLeaderboardIsCompetition(q) {
   const pageKey = q((s) => s.leaderboard.leaderboardPageKey);
   return LEADERBOARD_PAGES[pageKey].isCompetition;
-});
-
-export const selectLeaderboardIsCompetitionOver = createSelector(function selectLeaderboardIsCompetitionOver(q) {
-  const isEndInFuture = q(selectLeaderboardIsEndInFuture);
-  if (isEndInFuture) return false;
-
-  const timeframe = q(selectLeaderboardTimeframe);
-
-  if (timeframe.to === undefined) return false;
-
-  return q(selectLeaderboardIsCompetition);
 });
 
 export const selectLeaderboardCurrentAccount = createSelector(function selectLeaderboardCurrentAccount(q):
@@ -292,7 +281,7 @@ function getPositionPnl(position: LeaderboardPositionBase, market: MarketInfo) {
   return pnl;
 }
 
-export function getEntryPrice(sizeInUsd: bigint, sizeInTokens: bigint, decimals: number) {
+function getEntryPrice(sizeInUsd: bigint, sizeInTokens: bigint, decimals: number) {
   if (sizeInTokens <= 0n) {
     return 0n;
   }

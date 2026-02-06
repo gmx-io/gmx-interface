@@ -33,7 +33,7 @@ import {
   getSwapError,
 } from "domain/synthetics/trade/utils/validation";
 
-export const selectTradeboxSwapTradeError = createSelector((q) => {
+const selectTradeboxSwapTradeError = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxToToken);
   const fromTokenAmount = q(selectTradeboxFromTokenAmount);
@@ -70,7 +70,7 @@ export const selectTradeboxSwapTradeError = createSelector((q) => {
   });
 });
 
-export const selectTradeboxIncreaseTradeError = createSelector((q) => {
+const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const marketInfo = q(selectTradeboxMarketInfo);
   const toToken = q(selectTradeboxToToken);
   const fromToken = q(selectTradeboxFromToken);
@@ -121,7 +121,7 @@ export const selectTradeboxIncreaseTradeError = createSelector((q) => {
   });
 });
 
-export const selectTradeboxDecreaseTradeError = createSelector((q) => {
+const selectTradeboxDecreaseTradeError = createSelector((q) => {
   const marketInfo = q(selectTradeboxMarketInfo);
   const closeSizeUsd = q(selectTradeboxCloseSizeUsd);
   const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
@@ -155,7 +155,7 @@ export const selectTradeboxDecreaseTradeError = createSelector((q) => {
   });
 });
 
-const DEFAULT_TRADE_ERROR: ValidationResult = [undefined];
+const DEFAULT_TRADE_ERROR: ValidationResult = {};
 export const selectTradeboxTradeTypeError = createSelector((q) => {
   const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
   let tradeError: ValidationResult = DEFAULT_TRADE_ERROR;

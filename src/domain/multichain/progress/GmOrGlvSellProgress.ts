@@ -20,7 +20,7 @@ type GmOrGlvSellGroup = undefined;
 
 const GM_OR_GLV_SELL_GROUPS: GmOrGlvSellGroup[] = [];
 
-export abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmOrGlvSellStep, GmOrGlvSellGroup> {
+abstract class GmOrGlvSellProgress extends MultichainTransferProgress<GmOrGlvSellStep, GmOrGlvSellGroup> {
   abstract isGlv: boolean;
 
   override readonly steps = GM_OR_GLV_SELL_STEPS;

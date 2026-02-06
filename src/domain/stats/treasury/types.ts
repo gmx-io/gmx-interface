@@ -1,5 +1,5 @@
 import type { ContractsChainId } from "sdk/configs/chains";
-import type { Token } from "sdk/types/tokens";
+import type { Token } from "sdk/utils/tokens/types";
 
 export type TreasuryEntryType = "token" | "gmxV2" | "glv" | "uniswapV3" | "venus" | "pendle";
 

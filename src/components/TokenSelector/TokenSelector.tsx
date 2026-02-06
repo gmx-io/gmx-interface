@@ -30,7 +30,7 @@ type TokenState = {
   message?: string;
 };
 
-export type ExtendedToken = Token & { isMarketToken?: boolean };
+type ExtendedToken = Token & { isMarketToken?: boolean };
 
 type Props = {
   chainId: number;

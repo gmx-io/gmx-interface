@@ -12,16 +12,11 @@ import {
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
-  isPositionOrder,
   isSwapOrder,
   isSwapOrderType,
-  isTriggerDecreaseOrderType,
   OrderInfo,
   OrderType,
   PositionOrderInfo,
-  sortPositionOrders,
-  sortSwapOrders,
-  SwapOrderInfo,
 } from "domain/synthetics/orders";
 import { getPositionOrderError } from "domain/synthetics/orders/getPositionOrderError";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
@@ -39,7 +34,6 @@ import {
   getIncreasePositionAmounts,
   getSwapPathOutputAddresses,
   getTradeFees,
-  getTradeFlagsForOrder,
   TradeMode,
   TradeType,
 } from "domain/synthetics/trade";
@@ -70,7 +64,7 @@ import {
   selectSavedAcceptablePriceImpactBuffer,
   selectIsSetAcceptablePriceImpactEnabled,
 } from "./settingsSelectors";
-import { selectExternalSwapQuote, selectTradeboxAvailableTokensOptions } from "./tradeboxSelectors";
+import { selectExternalSwapQuote } from "./tradeboxSelectors";
 import { makeSelectFindSwapPath, makeSelectNextPositionValuesForIncrease } from "./tradeSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
@@ -104,10 +98,10 @@ export const selectOrderEditorSelectedAllowedSwapSlippageBps = (s: SyntheticsSta
   s.orderEditor.selectedAllowedSwapSlippageBps;
 export const selectOrderEditorSetSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
   s.orderEditor.setSelectedAllowedSwapSlippageBps;
-export const selectOrderEditorShouldCalculateMinOutputAmount = (s: SyntheticsState) =>
+const selectOrderEditorShouldCalculateMinOutputAmount = (s: SyntheticsState) =>
   s.orderEditor.shouldCalculateMinOutputAmount;
 
-export const selectOrderEditorSwapFees = createSelector((q) => {
+const selectOrderEditorSwapFees = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
   const uiFeeFactor = q(selectUiFeeFactor);
 
@@ -184,30 +178,6 @@ export const selectOrderEditorTriggerPrice = createSelector((q) => {
   return triggerPrice;
 });
 
-export const selectOrdersList = createSelector((q) => {
-  const ordersData = q(selectOrdersInfoData);
-  const { sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } = q(selectTradeboxAvailableTokensOptions);
-
-  const { swapOrders, positionOrders } = Object.values(ordersData || {}).reduce(
-    (acc, order) => {
-      if (isLimitOrderType(order.orderType) || isTriggerDecreaseOrderType(order.orderType)) {
-        if (isSwapOrder(order)) {
-          acc.swapOrders.push(order);
-        } else if (isPositionOrder(order)) {
-          acc.positionOrders.push(order);
-        }
-      }
-      return acc;
-    },
-    { swapOrders: [] as SwapOrderInfo[], positionOrders: [] as PositionOrderInfo[] }
-  );
-
-  return [
-    ...sortPositionOrders(positionOrders, sortedIndexTokensWithPoolValue),
-    ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
-  ];
-});
-
 export const selectOrderEditorOrder = createSelector((q): OrderInfo | undefined => {
   const editingOrderState = q(selectEditingOrderState);
   const order = q((state) => getByKey(selectOrdersInfoData(state), editingOrderState?.orderKey));
@@ -215,7 +185,7 @@ export const selectOrderEditorOrder = createSelector((q): OrderInfo | undefined 
   return order;
 });
 
-export const selectOrderEditorPositionKey = createSelector((q) => {
+const selectOrderEditorPositionKey = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
   if (!order) return;
@@ -237,7 +207,7 @@ export const selectOrderEditorExistingPosition = createSelector((q) => {
   return positionInfo;
 });
 
-export const makeSelectOrderEditorExistingPosition = createSelectorFactory((orderKey: string) =>
+const makeSelectOrderEditorExistingPosition = createSelectorFactory((orderKey: string) =>
   createSelector((q) => {
     const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
 
@@ -353,7 +323,7 @@ export const selectOrderEditorNextPositionValuesForIncrease = createSelector((q)
   return q(selector);
 });
 
-export const makeSelectOrderEditorNextPositionValuesForIncrease = createSelectorFactory(
+const makeSelectOrderEditorNextPositionValuesForIncrease = createSelectorFactory(
   (orderKey: string, triggerPrice: bigint) =>
     createSelector((q) => {
       const args = q(makeSelectOrderEditorNextPositionValuesForIncreaseArgs(orderKey, triggerPrice));
@@ -440,7 +410,7 @@ export const selectOrderEditorFromToken = createSelector((q) => {
   return getTokenData(tokensData, order.initialCollateralTokenAddress);
 });
 
-export const selectOrderEditorToToken = createSelector((q) => {
+const selectOrderEditorToToken = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
   if (!order) return undefined;
 
@@ -464,7 +434,7 @@ export const selectOrderEditorToToken = createSelector((q) => {
   return q((s) => selectTokensData(s)?.[swapPathInfo.outTokenAddress]);
 });
 
-export const selectOrderEditorIndexToken = createSelector((q) => {
+const selectOrderEditorIndexToken = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
   if (!order) return undefined;
@@ -575,12 +545,6 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
   }
 
   return minOutputAmount;
-});
-
-export const selectOrderEditorTradeFlags = createSelector((q) => {
-  const order = q(selectOrderEditorOrder);
-  if (!order) throw new Error("selectOrderEditorTradeFlags: Order is not defined");
-  return getTradeFlagsForOrder(order);
 });
 
 export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
@@ -728,7 +692,7 @@ export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
   return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
 });
 
-export const makeSelectOrderEditorMaxAllowedLeverage = createSelectorFactory((orderKey: string) =>
+const makeSelectOrderEditorMaxAllowedLeverage = createSelectorFactory((orderKey: string) =>
   createSelector((q) => {
     const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
     if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined);

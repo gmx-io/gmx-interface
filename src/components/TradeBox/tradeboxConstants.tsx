@@ -3,16 +3,6 @@ import { msg } from "@lingui/macro";
 
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 
-import LongIcon from "img/long.svg?react";
-import ShortIcon from "img/short.svg?react";
-import SwapIcon from "img/swap.svg?react";
-
-export const tradeTypeIcons = {
-  [TradeType.Long]: <LongIcon />,
-  [TradeType.Short]: <ShortIcon />,
-  [TradeType.Swap]: <SwapIcon />,
-};
-
 export const tradeModeLabels: Record<TradeMode, MessageDescriptor> = {
   [TradeMode.Market]: msg`Market`,
   [TradeMode.Limit]: msg`Limit`,

@@ -71,18 +71,6 @@ export const makeSelectOrdersWithErrorsByPositionKey = createSelectorFactory((po
   })
 );
 
-export const selectOrderErrorsByOrderKeyMap = createSelector(function selectOrderErrorByOrderKeyMap(q) {
-  const ordersInfoData = q(selectOrdersInfoData);
-  const res: Record<string, OrderErrors> = {};
-
-  Object.values(ordersInfoData || {}).forEach((order) => {
-    const selector = makeSelectOrderErrorByOrderKey(order.key);
-    res[order.key] = q(selector);
-  });
-
-  return res;
-});
-
 export const selectOrderErrorsCount = createSelector(function selectOrderErrorsCount(q) {
   const ordersInfoData = q(selectOrdersInfoData);
   const orders = Object.values(ordersInfoData || {});

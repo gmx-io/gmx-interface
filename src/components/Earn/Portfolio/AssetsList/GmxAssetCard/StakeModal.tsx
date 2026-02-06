@@ -1,7 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ZeroAddress, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { zeroAddress } from "viem";
 
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
@@ -24,7 +25,6 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -121,7 +121,7 @@ export function StakeModal(props: {
   }, [isVisible, setStakeValue, setUnstakeValue]);
 
   const needApproval =
-    stakeFarmAddress !== ZeroAddress &&
+    stakeFarmAddress !== zeroAddress &&
     tokenAllowance !== undefined &&
     stakeAmount !== undefined &&
     stakeAmount > tokenAllowance;
@@ -366,6 +366,7 @@ export function StakeModal(props: {
             onInputValueChange={(e) =>
               activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)
             }
+            maxDecimals={18}
           >
             <div className="flex items-center gap-4 py-8">
               <img
@@ -378,17 +379,6 @@ export function StakeModal(props: {
             </div>
           </BuyInputSection>
         </div>
-
-        {activeTab === "stake" && (needApproval || isApproving) && (
-          <div className="mb-12">
-            <ApproveTokenButton
-              tokenAddress={stakeTokenAddress}
-              spenderAddress={stakeFarmAddress}
-              tokenSymbol={tokenSymbol}
-              isApproved={!needApproval}
-            />
-          </div>
-        )}
 
         {showStakeBonus && (
           <AlertInfo type="info">

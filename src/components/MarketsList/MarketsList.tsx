@@ -63,7 +63,6 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
 
         <div className="max-w-[260px]">
           <SearchInput
-            size="s"
             value={searchText}
             setValue={setSearchText}
             className="*:!text-body-medium"

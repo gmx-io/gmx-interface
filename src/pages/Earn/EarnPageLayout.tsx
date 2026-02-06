@@ -19,8 +19,6 @@ export enum EarnTab {
   Distributions = "distributions",
 }
 
-export const EARN_TABS = Object.values(EarnTab);
-
 export function isEarnTab(value: string | null): value is EarnTab {
   return typeof value === "string" && Object.values(EarnTab).includes(value as EarnTab);
 }
@@ -41,9 +39,9 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   const tabOptions = useMemo(
     () => [
-      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
       { value: EarnTab.Portfolio, label: <Trans>Portfolio</Trans> },
-      { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional opportunities</Trans> },
+      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
+      { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional Opportunities</Trans> },
       { value: EarnTab.Distributions, label: <Trans>Distributions</Trans> },
     ],
     []

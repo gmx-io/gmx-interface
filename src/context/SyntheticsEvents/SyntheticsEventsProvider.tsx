@@ -14,7 +14,6 @@ import {
   subscribeToTransferEvents,
   subscribeToV2Events,
 } from "context/WebsocketContext/subscribeToEvents";
-import { useWebsocketProvider } from "context/WebsocketContext/WebsocketContextProvider";
 import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
@@ -96,7 +95,7 @@ import {
 import { useMultichainEvents } from "./useMultichainEvents";
 import { extractGelatoError, getGelatoTaskUrl, getPendingOrderKey } from "./utils";
 
-export const SyntheticsEventsContext = createContext({});
+const SyntheticsEventsContext = createContext({});
 
 export function useSyntheticsEvents(): SyntheticsEventsContextType {
   return useContext(SyntheticsEventsContext) as SyntheticsEventsContextType;
@@ -106,7 +105,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { chainId, srcChainId } = useChainId();
   const { account: currentAccount } = useWallet();
   const provider = getProvider(undefined, chainId);
-  const { wsProvider } = useWebsocketProvider();
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
@@ -916,31 +914,34 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useEffect(
     function subscribe() {
-      if (hasV2LostFocus || !wsProvider || !currentAccount) {
+      if (hasV2LostFocus || !currentAccount) {
         return;
       }
 
-      const unsubscribe = subscribeToV2Events(chainId, wsProvider, currentAccount, eventLogHandlers);
+      const unsubscribe = subscribeToV2Events({
+        chainId,
+        account: currentAccount,
+        eventLogHandlers,
+      });
 
       return function cleanup() {
         unsubscribe();
       };
     },
-    [chainId, currentAccount, hasV2LostFocus, wsProvider]
+    [chainId, currentAccount, hasV2LostFocus]
   );
 
   useEffect(
     function subscribeTokenTransferEvents() {
-      if (hasPageLostFocus || !wsProvider || !currentAccount || !marketTokensAddressesString) {
+      if (hasPageLostFocus || !currentAccount || !marketTokensAddressesString) {
         return;
       }
 
-      const unsubscribeFromTokenEvents = subscribeToTransferEvents(
+      const unsubscribeFromTokenEvents = subscribeToTransferEvents({
         chainId,
-        wsProvider,
-        currentAccount,
-        marketTokensAddressesString.split("-"),
-        (tokenAddress, amount) => {
+        account: currentAccount,
+        marketTokensAddresses: marketTokensAddressesString.split("-"),
+        onTransfer: (tokenAddress, amount) => {
           setWebsocketTokenBalancesUpdates((old) => {
             const oldDiff = old[tokenAddress]?.diff || 0n;
 
@@ -953,8 +954,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           setOptimisticTokensBalancesUpdates((old) => {
             return updateByKey(old, tokenAddress, { isPending: false });
           });
-        }
-      );
+        },
+      });
 
       return function cleanup() {
         unsubscribeFromTokenEvents();
@@ -968,21 +969,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       marketTokensAddressesString,
       setOptimisticTokensBalancesUpdates,
       setWebsocketTokenBalancesUpdates,
-      wsProvider,
     ]
   );
 
   useEffect(
     function subscribeApproval() {
-      if (!wsProvider || !currentAccount) {
+      if (!currentAccount) {
         return;
       }
 
-      const unsubscribeApproval = subscribeToApprovalEvents(
+      const unsubscribeApproval = subscribeToApprovalEvents({
         chainId,
-        wsProvider,
-        currentAccount,
-        (tokenAddress, spender, value) => {
+        account: currentAccount,
+        onApprove: (tokenAddress, spender, value) => {
           setApprovalStatuses((old) => ({
             ...old,
             [tokenAddress]: {
@@ -996,14 +995,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               action: "ApproveSuccess",
             },
           });
-        }
-      );
+        },
+      });
 
       return function cleanup() {
         unsubscribeApproval();
       };
     },
-    [chainId, currentAccount, wsProvider]
+    [chainId, currentAccount]
   );
 
   useEffect(() => {

@@ -7,7 +7,7 @@ import { ExpandableRow } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
-export function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
+function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
   const {
     tenderlyAccountSlug,
     tenderlyProjectSlug,

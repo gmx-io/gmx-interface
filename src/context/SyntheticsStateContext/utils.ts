@@ -4,9 +4,9 @@ import { Selector, createSelector as createSelectorCommon } from "reselect";
 import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
 
 import type { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
-import type { ExternalSwapQuote, TradeMode, TradeType } from "sdk/types/trade";
 import { LRUCache } from "sdk/utils/LruCache";
 import type { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import type { ExternalSwapQuote, TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import type { SyntheticsState } from "./SyntheticsStateContextProvider";
 
@@ -34,7 +34,7 @@ export function createSelectorFactory<SelectionResult, Args extends SupportedArg
   };
 }
 
-export function getKeyForArgs(...args: SupportedArg[]) {
+function getKeyForArgs(...args: SupportedArg[]) {
   return args
     .map((arg) =>
       typeof arg === "object" && arg

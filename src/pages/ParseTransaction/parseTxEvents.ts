@@ -1,11 +1,11 @@
 import * as ethers from "ethers";
 import { Abi, Hash, parseEventLogs, ParseEventLogsReturnType, PublicClient } from "viem";
 
-import { expandDecimals } from "lib/numbers";
 import { LogEntry } from "pages/ParseTransaction/types";
 import { abis } from "sdk/abis";
+import { keccakString } from "sdk/utils/hash";
 
-const PANIC_SIGNATURE4 = ethers.id("Panic(uint256)").slice(0, 10);
+const PANIC_SIGNATURE4 = keccakString("Panic(uint256)").slice(0, 10);
 const PANIC_MAP = {
   0x00: "generic compiler inserted panics",
   0x01: "call assert with an argument that evaluates to false",
@@ -51,14 +51,6 @@ function parseError(reasonBytes, shouldThrow = true) {
     }
     throw new Error(`Could not parse errorBytes ${reasonBytes}`);
   }
-}
-
-export function convertToContractPrice(price: bigint, tokenDecimals: number) {
-  return price / expandDecimals(1, tokenDecimals);
-}
-
-export function convertFromContractPrice(price: bigint, tokenDecimals: number) {
-  return price * expandDecimals(1, tokenDecimals);
 }
 
 export type ParseTransactionEvent = ReturnType<typeof parseEvent>;

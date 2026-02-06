@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Address, isAddressEqual } from "viem";
+import { Address, ContractFunctionReturnType, isAddressEqual } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -13,6 +13,7 @@ import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { abis } from "sdk/abis";
 import { getWrappedToken } from "sdk/configs/tokens";
 import {
   isIncreaseOrderType,
@@ -23,7 +24,6 @@ import {
   isVisibleOrder,
 } from "sdk/utils/orders";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
-import { ReaderUtils } from "typechain-types/SyntheticsReader";
 
 import type {
   MarketFilterLongShortDirection,
@@ -214,18 +214,22 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
     count,
     orders: orders.map((order, i) => {
       const key = orderKeys[i];
-      const orderData = order.order as ReaderUtils.OrderInfoStructOutput["order"];
+      const orderData = order.order as ContractFunctionReturnType<
+        typeof abis.SyntheticsReader,
+        "view",
+        "getAccountOrders"
+      >[number]["order"];
 
       return {
         key,
-        account: orderData.addresses.account as Address,
-        receiver: orderData.addresses.receiver as Address,
+        account: orderData.addresses.account,
+        receiver: orderData.addresses.receiver,
         // cancellationReceiver: orderData.addresses.cancellationReceiver as Address,
-        callbackContract: orderData.addresses.callbackContract as Address,
-        uiFeeReceiver: orderData.addresses.uiFeeReceiver as Address,
-        marketAddress: orderData.addresses.market as Address,
-        initialCollateralTokenAddress: orderData.addresses.initialCollateralToken as Address,
-        swapPath: orderData.addresses.swapPath as Address[],
+        callbackContract: orderData.addresses.callbackContract,
+        uiFeeReceiver: orderData.addresses.uiFeeReceiver,
+        marketAddress: orderData.addresses.market,
+        initialCollateralTokenAddress: orderData.addresses.initialCollateralToken,
+        swapPath: orderData.addresses.swapPath as string[],
         sizeDeltaUsd: BigInt(orderData.numbers.sizeDeltaUsd),
         initialCollateralDeltaAmount: BigInt(orderData.numbers.initialCollateralDeltaAmount),
         contractTriggerPrice: BigInt(orderData.numbers.triggerPrice),
@@ -235,13 +239,13 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         minOutputAmount: BigInt(orderData.numbers.minOutputAmount),
         updatedAtTime: orderData.numbers.updatedAtTime,
         validFromTime: orderData.numbers.validFromTime,
-        isLong: orderData.flags.isLong as boolean,
-        shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken as boolean,
-        isFrozen: orderData.flags.isFrozen as boolean,
-        orderType: orderData.numbers.orderType as unknown as OrderType,
-        decreasePositionSwapType: orderData.numbers.decreasePositionSwapType as unknown as DecreasePositionSwapType,
-        autoCancel: orderData.flags.autoCancel as boolean,
-        data: orderData._dataList,
+        isLong: orderData.flags.isLong,
+        shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken,
+        isFrozen: orderData.flags.isFrozen,
+        orderType: orderData.numbers.orderType as OrderType,
+        decreasePositionSwapType: orderData.numbers.decreasePositionSwapType as DecreasePositionSwapType,
+        autoCancel: orderData.flags.autoCancel,
+        data: orderData._dataList as string[],
       } satisfies Order;
     }),
   };

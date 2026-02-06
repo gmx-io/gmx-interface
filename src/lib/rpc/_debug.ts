@@ -15,13 +15,13 @@ export enum RpcDebugFlags {
   DebugAlchemy = "debugAlchemy",
 }
 
-export type RpcDebugState = {
+type RpcDebugState = {
   [RpcDebugFlags.LogRpcTracker]: boolean;
   [RpcDebugFlags.DebugLargeAccount]: boolean;
   [RpcDebugFlags.DebugAlchemy]: boolean;
 };
 
-export type DebugRpcEndpoint = {
+type DebugRpcEndpoint = {
   url: string;
   isPublic: boolean;
   purpose: string;

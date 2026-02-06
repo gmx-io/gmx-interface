@@ -1,18 +1,8 @@
-import type { Bar as BarType, LibrarySymbolInfo, ResolutionString } from "charting_library";
+import type { Bar as BarType } from "charting_library";
 
 export type Bar = BarType & {
   ticker?: string;
   period?: string;
-};
-
-export type SymbolInfo = LibrarySymbolInfo & {
-  isStable: boolean;
-  visualMultiplier?: number;
-};
-
-export type TvParamsCache = {
-  resolution: ResolutionString;
-  countBack: number;
 };
 
 interface Flavoring<FlavorT> {

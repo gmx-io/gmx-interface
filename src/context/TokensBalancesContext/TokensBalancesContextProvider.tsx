@@ -13,7 +13,7 @@ import {
 
 import type { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { TokenBalanceType } from "sdk/types/tokens";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 export type TokenBalanceUpdate = {
   isPending?: boolean;

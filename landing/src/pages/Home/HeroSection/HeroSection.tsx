@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-
 import { useHomePageContext } from "landing/pages/Home/contexts/HomePageContext";
 import { useTotalVolume } from "landing/pages/Home/hooks/useTotalVolume";
 import { useTraders } from "landing/pages/Home/hooks/useTraders";

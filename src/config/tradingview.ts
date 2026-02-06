@@ -8,4 +8,3 @@ export const SUPPORTED_RESOLUTIONS_V2 = {
   "1W": "1w",
   "1M": "1M",
 };
-export const LAST_BAR_FETCH_INTERVAL = 1000; // 1 second

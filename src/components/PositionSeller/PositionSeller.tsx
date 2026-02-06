@@ -79,6 +79,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
@@ -112,10 +113,6 @@ import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
 
 import "./PositionSeller.scss";
-
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
 
 const ORDER_OPTION_LABELS: Record<OrderOption, MessageDescriptor> = {
   [OrderOption.Market]: msg`Market`,
@@ -424,7 +421,6 @@ export function PositionSeller() {
     });
 
     const expressError = getExpressError({
-      chainId,
       expressParams,
       tokensData,
     });
@@ -960,6 +956,7 @@ export function PositionSeller() {
                       setCloseUsdInputValueRaw(formattedAmount);
                     }}
                     qa="amount-input"
+                    maxDecimals={USD_DECIMALS}
                   >
                     USD
                   </BuyInputSection>
@@ -988,6 +985,7 @@ export function PositionSeller() {
                         setTriggerPriceInputValue(e.target.value);
                       }}
                       qa="trigger-input"
+                      maxDecimals={USD_DECIMALS}
                     >
                       USD
                     </BuyInputSection>
@@ -1017,6 +1015,7 @@ export function PositionSeller() {
                   swapPriceImpact={fees?.swapPriceImpact}
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
+                  maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
                 />
 
                 {!isTwap && (

@@ -31,7 +31,7 @@ const ENV_AVALANCHE_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_AVAL
 const ENV_BOTANIX_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_BOTANIX_RPC_URLS);
 
 // Chains that support Alchemy WebSocket endpoints
-export const ALCHEMY_WS_SUPPORT_CHAINS = [
+const ALCHEMY_WS_SUPPORT_CHAINS = [
   ARBITRUM,
   BOTANIX,
   ARBITRUM_SEPOLIA,
@@ -301,7 +301,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
   ],
 };
 
-export const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
+const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
   [ARBITRUM]: [getAlchemyProvider(ARBITRUM, "fallback", "ws"), getAlchemyProvider(ARBITRUM, "largeAccount", "ws")],
   [AVALANCHE]: [{ url: "wss://api.avax.network/ext/bc/C/ws", isPublic: true, purpose: "fallback" }],
   [ARBITRUM_SEPOLIA]: [
@@ -341,10 +341,6 @@ export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig
   return config.filter((rpc) => rpc.purpose === purpose);
 }
 
-export function getAllRpcProviders(chainId: number): RpcConfig[] {
-  return Object.values(RPC_CONFIGS[chainId]);
-}
-
 export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
   const config = WS_RPC_CONFIGS[chainId];
 
@@ -366,7 +362,7 @@ export function getExpressRpcUrl(chainId: number): string | undefined {
 
 export type RpcPurpose = "fallback" | "largeAccount" | "express" | "default";
 
-export function getAlchemyProvider(
+function getAlchemyProvider(
   chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI>,
   purpose: RpcPurpose,
   type: "http" | "ws" = "http"

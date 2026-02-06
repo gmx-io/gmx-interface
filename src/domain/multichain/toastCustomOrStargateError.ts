@@ -1,7 +1,9 @@
+import type { CallExceptionError, EthersError } from "ethers";
 import { Abi, decodeErrorResult } from "viem";
 
 import type { AnyChainId } from "config/chains";
 import { StargateErrorsAbi } from "config/multichain";
+import { extractErrorDataFromViemError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { abis } from "sdk/abis";
 
@@ -11,7 +13,10 @@ export function toastCustomOrStargateError(chainId: AnyChainId, error: Error) {
   let prettyErrorName = error.name;
   let prettyErrorMessage = error.message;
 
-  const data = (error as any)?.info?.error?.data ?? (error as any)?.data;
+  const data =
+    extractErrorDataFromViemError(error) ??
+    (error as EthersError)?.info?.error?.data ??
+    (error as CallExceptionError)?.data;
   if (data) {
     try {
       const parsedError = decodeErrorResult({

@@ -61,7 +61,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
   const { isMobile } = useBreakpoints();

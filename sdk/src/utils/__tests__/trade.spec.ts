@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { applySlippageToMinOut, applySlippageToPrice } from "../trade";
+import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 
 describe("applySlippageToPrice", () => {
   it("applies positive slippage if getShouldUseMaxPrice is true", () => {

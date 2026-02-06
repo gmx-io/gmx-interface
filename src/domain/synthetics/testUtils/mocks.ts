@@ -2,11 +2,11 @@ import { expect } from "vitest";
 
 import { AVALANCHE } from "config/chains";
 import { MarketInfo, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { convertToTokenAmount } from "domain/synthetics/tokens/utils";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getTokenBySymbol } from "sdk/configs/tokens";
-import type { PositionInfo } from "sdk/types/positions";
 import { bigMath } from "sdk/utils/bigmath";
 import { getLeverage } from "sdk/utils/positions";
+import type { PositionInfo } from "sdk/utils/positions/types";
 
 import { getPositionKey } from "../positions";
 import { ExternalSwapAggregator, ExternalSwapQuote, getMarkPrice } from "../trade";
@@ -107,7 +107,7 @@ export function mockPositionInfo(
   };
 }
 
-export const MOCK_TXN_DATA = {
+const MOCK_TXN_DATA = {
   to: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
   data: "0xabcd",
   value: 0n,

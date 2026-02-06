@@ -1,37 +1,17 @@
-import { gql } from "@apollo/client";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
 import { contractFetcher } from "lib/contracts";
-import { getGmxGraphClient } from "lib/indexers/clients";
 import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 export * from "./prices";
-
-export function useUserStat(chainId) {
-  const query = gql(`{
-    userStat(id: "total") {
-      id
-      uniqueCount
-    }
-  }`);
-
-  const [res, setRes] = useState<any>();
-
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    getGmxGraphClient(chainId)?.query({ query }).then(setRes).catch(console.warn);
-  }, [setRes, query, chainId]);
-
-  return res ? res.data.userStat : null;
-}
 
 export function useGmxPrice(chainId, libraries, active) {
   const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;

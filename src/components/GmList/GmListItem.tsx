@@ -49,7 +49,7 @@ import { FeeApyLabel } from "./FeeApyLabel";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
 
-export const tokenAddressStyle = { fontSize: 5 };
+const tokenAddressStyle = { fontSize: 5 };
 
 export function GmListItem({
   token,
@@ -82,7 +82,7 @@ export function GmListItem({
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);

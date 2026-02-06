@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
-import { BigNumberish, ethers, isAddress, Signer } from "ethers";
+import { BigNumberish, ethers, Signer } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
-import { Hash, zeroAddress } from "viem";
+import { Hash, isAddress, zeroAddress, zeroHash } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
@@ -12,8 +12,8 @@ import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { basisPointsToFloat } from "lib/numbers";
-import { getProvider } from "lib/rpc";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
@@ -22,7 +22,6 @@ import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 
 import { UserReferralInfo } from "../types";
 
-export * from "./useReferralCodeFromUrl";
 export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
 
@@ -164,9 +163,13 @@ export async function getReferralCodeOwner(chainId: ContractsChainId, referralCo
   if (referralStorageAddress === zeroAddress) {
     return zeroAddress;
   }
-  const provider = getProvider(undefined, chainId);
-  const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, provider);
-  const codeOwner = await contract.codeOwners(referralCode);
+  const publicClient = getPublicClientWithRpc(chainId);
+  const codeOwner = await publicClient.readContract({
+    address: referralStorageAddress,
+    abi: abis.ReferralStorage,
+    functionName: "codeOwners",
+    args: [referralCode],
+  });
   return codeOwner;
 }
 
@@ -195,7 +198,7 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
     let attachedOnChain = false;
     let userReferralCode: string | undefined = undefined;
     let userReferralCodeString: string | undefined = undefined;
-    let referralCodeForTxn = ethers.ZeroHash;
+    let referralCodeForTxn: string = zeroHash;
 
     if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;
@@ -247,18 +250,6 @@ export function useLocalReferralCode() {
       userReferralCodeString,
     };
   }, [userReferralCode]);
-}
-
-export function getRefCodeParamString() {
-  const userReferralCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
-
-  if (!userReferralCode) {
-    return undefined;
-  }
-
-  const userReferralCodeString = decodeReferralCode(userReferralCode as Hash);
-
-  return `ref=${userReferralCodeString}`;
 }
 
 export function useReferrerTier(signer, chainId, account) {

@@ -96,7 +96,7 @@ type CompositionChartItem = {
   color: string;
 };
 
-export function CompositionChart({ items, label }: CompositionChartProps) {
+function CompositionChart({ items, label }: CompositionChartProps) {
   const total = useMemo(() => {
     return items.reduce((acc, item) => acc + item.value, 0);
   }, [items]);

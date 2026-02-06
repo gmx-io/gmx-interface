@@ -1,7 +1,5 @@
 import { useMemo } from "react";
-import useSWR from "swr";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
-import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import {
@@ -12,10 +10,7 @@ import {
 } from "config/multichain";
 import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  fetchMultichainTokenBalances,
-  fetchSourceChainTokenBalances,
-} from "domain/multichain/fetchMultichainTokenBalances";
+import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import type { TokenChainData } from "domain/multichain/types";
 import { convertToUsd, getMidPrice, useTokenRecentPricesRequest, useTokensDataRequest } from "domain/synthetics/tokens";
 import { TokenPricesData, TokensData } from "domain/tokens";
@@ -127,20 +122,23 @@ export function useAvailableToTradeAssetMultichainRequest(
   srcChainId: SourceChainId | undefined
 ): {
   gmxAccountUsd: bigint | undefined;
+  isLoading: boolean;
 } {
-  const { tokensData, isGmxAccountBalancesLoaded } = useTokensDataRequest(chainId, srcChainId);
+  const { tokensData, isGmxAccountBalancesLoaded, error } = useTokensDataRequest(chainId, srcChainId);
+  const isLoading = !isGmxAccountBalancesLoaded && !error;
 
   if (!tokensData || !isGmxAccountBalancesLoaded) {
-    return { gmxAccountUsd: undefined };
+    return { gmxAccountUsd: undefined, isLoading: false };
   }
 
   const gmxAccountUsd = getTotalGmxAccountUsdFromTokensData(tokensData);
 
-  return { gmxAccountUsd };
+  return { gmxAccountUsd, isLoading };
 }
 
 export function useAvailableToTradeAssetMultichain(): {
   gmxAccountUsd: bigint | undefined;
+  isLoading: boolean;
 } {
   const { chainId, srcChainId } = useChainId();
   return useAvailableToTradeAssetMultichainRequest(chainId, srcChainId);
@@ -170,12 +168,14 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   let tokenBalances: Record<number, Record<string, bigint>> | undefined;
   let isLoaded = false;
   let timeoutId: number | undefined;
+  let isCancelled = false;
 
   const fetchAndScheduleNext = () => {
     fetchMultichainTokenBalances({
       settlementChainId,
       account,
       progressCallback: (chainId, tokensChainData) => {
+        if (isCancelled) return;
         tokenBalances = { ...tokenBalances, [chainId]: tokensChainData };
         options.next(null, { tokenBalances, isLoading: isLoaded ? false : true });
       },
@@ -183,12 +183,15 @@ const subscribeMultichainTokenBalances: SWRSubscription<
       specificChainId,
     })
       .then((finalTokenBalances) => {
+        if (isCancelled) return;
+        tokenBalances = finalTokenBalances;
         if (!isLoaded) {
           isLoaded = true;
           options.next(null, { tokenBalances: finalTokenBalances, isLoading: false });
         }
       })
       .finally(() => {
+        if (isCancelled) return;
         timeoutId = window.setTimeout(fetchAndScheduleNext, FREQUENT_UPDATE_INTERVAL);
       });
   };
@@ -196,6 +199,7 @@ const subscribeMultichainTokenBalances: SWRSubscription<
   fetchAndScheduleNext();
 
   return () => {
+    isCancelled = true;
     if (timeoutId !== undefined) {
       window.clearTimeout(timeoutId);
     }
@@ -372,78 +376,6 @@ function getTokensChainData({
   }
 
   return tokensChainData;
-}
-
-const getSourceChainTokensDataRequestKey = (
-  chainId: ContractsChainId,
-  srcChainId: SourceChainId | undefined,
-  account: string | undefined
-) => {
-  return srcChainId && account ? ["source-chain-tokens", chainId, srcChainId, account] : null;
-};
-
-export function useSourceChainTokensDataRequest(
-  chainId: ContractsChainId,
-  srcChainId: SourceChainId | undefined,
-  account: string | undefined
-): {
-  tokensSrcChainData: Record<string, TokenChainData>;
-  isPriceDataLoading: boolean;
-  isBalanceDataLoading: boolean;
-} {
-  const { pricesData, isPriceDataLoading } = useTokenRecentPricesRequest(chainId);
-
-  const { data: balanceData, isLoading: isBalanceDataLoading } = useSWR(
-    srcChainId && account ? getSourceChainTokensDataRequestKey(chainId, srcChainId, account) : null,
-    () => {
-      if (!srcChainId || !account) {
-        return undefined;
-      }
-      const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[srcChainId];
-      if (!sourceChainTokenIdMap) {
-        return undefined;
-      }
-
-      return fetchSourceChainTokenBalances({
-        sourceChainId: srcChainId,
-        account: account!,
-        sourceChainTokenIdMap,
-      });
-    }
-  );
-
-  const tokensSrcChainData: Record<string, TokenChainData> = useMemo(() => {
-    if (!balanceData || !srcChainId) {
-      return EMPTY_OBJECT;
-    }
-
-    const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[srcChainId];
-
-    if (!sourceChainTokenIdMap) {
-      return EMPTY_OBJECT;
-    }
-
-    return getTokensChainData({
-      chainId,
-      sourceChainTokenIdMap,
-      pricesData,
-      sourceChainId: srcChainId,
-      tokensChainBalanceData: balanceData,
-    });
-  }, [balanceData, chainId, pricesData, srcChainId]);
-
-  return {
-    tokensSrcChainData,
-    isPriceDataLoading,
-    isBalanceDataLoading,
-  };
-}
-
-export function useSrcChainTokensData() {
-  const { chainId, srcChainId } = useChainId();
-  const { address: account } = useAccount();
-
-  return useSourceChainTokensDataRequest(chainId, srcChainId, account);
 }
 
 export function useGmxAccountWithdrawNetworks() {

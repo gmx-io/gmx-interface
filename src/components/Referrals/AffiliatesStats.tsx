@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
@@ -32,7 +32,7 @@ import PlusIcon from "img/ic_plus.svg?react";
 import WarnIcon from "img/ic_warn.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 
-import { AffiliateCodeForm } from "./AddAffiliateCode";
+import { AffiliateCodeFormContainer } from "./AddAffiliateCode";
 import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
 import EmptyMessage from "./EmptyMessage";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
@@ -316,7 +316,7 @@ function AffiliatesStats({
           onAfterOpen={() => addNewModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <AffiliateCodeForm
+            <AffiliateCodeFormContainer
               handleCreateReferralCode={handleCreateReferralCode}
               recentlyAddedCodes={recentlyAddedCodes}
               setRecentlyAddedCodes={setRecentlyAddedCodes}

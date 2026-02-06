@@ -1,21 +1,6 @@
 import { maxUint256 } from "viem";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
-import { MarketInfo, MarketsInfoData } from "types/markets";
-import { OrderType } from "types/orders";
-import { PositionInfo } from "types/positions";
-import { UserReferralInfo } from "types/referrals";
-import { ExternalSwapStrategy, NoSwapStrategy } from "types/swapStrategy";
-import { TokenData, TokensRatio } from "types/tokens";
-import {
-  ExternalSwapQuote,
-  ExternalSwapQuoteParams,
-  FindSwapPath,
-  IncreasePositionAmounts,
-  NextPositionValues,
-  SwapOptimizationOrderArray,
-  TriggerThresholdType,
-} from "types/trade";
 import { bigMath } from "utils/bigmath";
 import {
   capPositionImpactUsdByMaxImpactPool,
@@ -24,7 +9,9 @@ import {
   getPriceImpactForPosition,
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
+import { OrderType } from "utils/orders/types";
 import {
   getEntryPrice,
   getLeverage,
@@ -32,14 +19,28 @@ import {
   getPositionPnlUsd,
   getPriceImpactDiffUsd,
 } from "utils/positions";
+import { PositionInfo } from "utils/positions/types";
 import {
   getAcceptablePriceInfo,
   getDefaultAcceptablePriceImpactBps,
   getMarkPrice,
   getOrderThresholdType,
 } from "utils/prices";
+import { UserReferralInfo } from "utils/referrals/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
+import { ExternalSwapStrategy, NoSwapStrategy } from "utils/swap/types";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getTokensRatioByPrice } from "utils/tokens";
+import { TokenData, TokensRatio } from "utils/tokens/types";
+
+import {
+  ExternalSwapQuote,
+  ExternalSwapQuoteParams,
+  FindSwapPath,
+  IncreasePositionAmounts,
+  NextPositionValues,
+  SwapOptimizationOrderArray,
+  TriggerThresholdType,
+} from "./types";
 
 type IncreasePositionParams = {
   marketInfo: MarketInfo;

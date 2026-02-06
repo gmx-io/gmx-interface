@@ -15,7 +15,7 @@ const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
   { msg: "execution reverted" },
 ];
 
-export function getAdditionalValidationType(error: Error) {
+function getAdditionalValidationType(error: Error) {
   const errorData = parseError(error);
 
   const shouldTryCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
@@ -40,7 +40,7 @@ export function getAdditionalValidationType(error: Error) {
   return undefined;
 }
 
-export function getEstimateGasError(provider: Provider | ISigner, txnData: TransactionRequest) {
+function getEstimateGasError(provider: Provider | ISigner, txnData: TransactionRequest) {
   return provider
     .estimateGas(txnData)
     .then(() => {

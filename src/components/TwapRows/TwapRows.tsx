@@ -7,9 +7,9 @@ import { useLocalStorage } from "react-use";
 import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { formatUsd } from "lib/numbers";
-import { MarketInfo } from "sdk/types/markets";
-import { TwapDuration } from "sdk/types/twap";
+import { MarketInfo } from "sdk/utils/markets/types";
 import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
+import { TwapDuration } from "sdk/utils/twap/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";

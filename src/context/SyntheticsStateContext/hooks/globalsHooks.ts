@@ -4,7 +4,6 @@ import {
   selectIsOrdersLoading,
   selectIsPositionsLoading,
   selectMarketsInfoData,
-  selectOrdersInfoData,
   selectPositionConstants,
   selectPositionsInfoData,
   selectPositiveFeePositionsSortedByUsd,
@@ -16,7 +15,6 @@ import { useSelector } from "../utils";
 
 export const useMarketsInfoData = () => useSelector(selectMarketsInfoData);
 export const useTokensData = () => useSelector(selectTokensData);
-export const useOrdersInfoData = () => useSelector(selectOrdersInfoData);
 export const useIsOrdersLoading = () => useSelector(selectIsOrdersLoading);
 export const useUserReferralInfo = () => useSelector(selectUserReferralInfo);
 export const usePositionsInfoData = () => useSelector(selectPositionsInfoData);

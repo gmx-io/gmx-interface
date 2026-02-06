@@ -48,7 +48,7 @@ export function EarnRedirect() {
   return <EarnFirstVisitRedirect />;
 }
 
-export function EarnFirstVisitRedirect() {
+function EarnFirstVisitRedirect() {
   const { account } = useWallet();
   const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);

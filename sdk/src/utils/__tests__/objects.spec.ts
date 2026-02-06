@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { setByKey, updateByKey, getByKey, objectKeysDeep } from "../objects";
+import { setByKey, updateByKey, getByKey, objectKeysDeep } from "utils/objects";
 describe("setByKey", () => {
   it("should set a key in an object", () => {
     const obj = { a: 1, b: 2 };

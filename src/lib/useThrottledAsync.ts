@@ -25,14 +25,6 @@ type RetryResult<T> = {
   data: T;
 };
 
-export function retry<T>(data: T, delay?: number): RetryResult<T> {
-  return {
-    retry: RETRY_SYMBOL,
-    data,
-    delay,
-  };
-}
-
 function isRetryResult<T>(result: T | RetryResult<T> | undefined): result is RetryResult<T> {
   return typeof result === "object" && result !== null && "retry" in result && result.retry === RETRY_SYMBOL;
 }

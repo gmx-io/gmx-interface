@@ -2,8 +2,8 @@ import type { SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
-import type { TradeMode } from "sdk/types/trade";
-import type { TwapDuration } from "sdk/types/twap";
+import type { TradeMode } from "sdk/utils/trade/types";
+import type { TwapDuration } from "sdk/utils/twap/types";
 
 export type GlobalMetricData = {
   isMobileMetamask: boolean;
@@ -32,7 +32,7 @@ export enum OrderStage {
   Failed = "failed",
 }
 
-export enum LoadingStage {
+enum LoadingStage {
   Started = "started",
   Success = "success",
   Timeout = "timeout",
@@ -59,9 +59,6 @@ export type OrderMetricType =
   | ShiftGmMetricData["metricType"]
   | MultichainDepositMetricData["metricType"]
   | MultichainWithdrawalMetricData["metricType"];
-
-export type OrderEventName = `${OrderMetricType}.${OrderStage}`;
-export type MeasureEventName = `${MeasureMetricType}.${LoadingStage}`;
 
 export type OrderMetricId = OrderMetricData["metricId"];
 
@@ -92,24 +89,30 @@ export type AccountInitedEvent = {
 };
 
 // Websockets
-export type WsProviderConnected = {
-  event: "wsProvider.connected";
-  isError: false;
-  data: {};
-};
-
-export type WsProviderDisconnected = {
-  event: "wsProvider.disconnected";
-  isError: false;
-  data: {};
-};
-
-export type WsProviderHealthCheckFailed = {
-  event: "wsProvider.healthCheckFailed";
+export type ViemWsClientConnected = {
+  event: "viemWsClient.connected";
   isError: false;
   data: {
-    requiredListenerCount: number;
-    listenerCount: number;
+    chainId: number;
+    rpcUrl: string;
+  };
+};
+
+export type ViemWsClientDisconnected = {
+  event: "viemWsClient.disconnected";
+  isError: false;
+  data: {
+    chainId: number;
+    rpcUrl: string;
+  };
+};
+
+export type ViemWsClientError = {
+  event: "viemWsClient.error";
+  isError: true;
+  data: {
+    chainId: number;
+    rpcUrl: string;
   };
 };
 
@@ -160,6 +163,7 @@ export enum FreshnessMetricId {
   Prices24h = "24Prices",
   MarketsValues = "marketsValues",
   MarketsConfigs = "marketsConfigs",
+  ApiMarketsInfo = "apiMarketsInfo",
   Positions = "positions",
   Orders = "orders",
   Balances = "balances",
@@ -178,12 +182,6 @@ export type SubmittedOrderEvent = {
   event: `${OrderMetricType}.${OrderStage.Submitted}`;
   isError: false;
   data: OrderMetricData;
-};
-
-export type ValidationErrorEvent = {
-  event: `${OrderMetricType}.${OrderStage.Failed}`;
-  isError: true;
-  data: OrderMetricData & ErrorData;
 };
 
 export type OrderStepTimings = {
@@ -226,13 +224,6 @@ export type OrderTxnFailedEvent = {
   event: `${OrderMetricType}.${OrderStage.Failed | OrderStage.Rejected}`;
   isError: true;
   data: Partial<OrderMetricData & ErrorData & OrderStepTimings>;
-};
-
-export type PendingTxnErrorEvent = {
-  event: `${OrderMetricType}.${OrderStage.Failed}`;
-  isError: true;
-  time: number | undefined;
-  data: OrderMetricData & ErrorData;
 };
 
 export type OrderExecutedEvent = {
@@ -627,28 +618,6 @@ export type MulticallRequestCounter = {
   };
 };
 
-export type MulticallFallbackRpcModeCounter = {
-  event: `multicall.fallbackRpcMode.${"on" | "off"}`;
-  data: {
-    chainId: number;
-    isInMainThread: boolean;
-  };
-};
-
-export type WsSourceChainProviderConnectedCounter = {
-  event: "wsSourceChainProvider.connected";
-  data: {
-    srcChainId: SourceChainId;
-  };
-};
-
-export type WsSourceChainProviderDisconnectedCounter = {
-  event: "wsSourceChainProvider.disconnected";
-  data: {
-    srcChainId: SourceChainId;
-  };
-};
-
 export type GetFeeDataBlockError = {
   event: "error.getFeeData.value.hash";
 };
@@ -674,16 +643,4 @@ export type MultichainWithdrawalMetricData = MultichainFundingParams & {
   metricId: `multichainWithdrawal:${string}`;
   metricType: "multichainWithdrawal";
   isFirstWithdrawal: boolean;
-};
-
-export type MultichainDepositEvent = {
-  event: "multichainDeposit";
-  isError: false;
-  data: MultichainDepositMetricData;
-};
-
-export type MultichainWithdrawalEvent = {
-  event: "multichainWithdrawal";
-  isError: false;
-  data: MultichainWithdrawalMetricData;
 };

@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
@@ -14,6 +14,8 @@ import { shortenAddressOrEns } from "lib/wallets";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
+
+const BACKDROP_ANIMATION_DURATION = 300;
 
 type Props = {
   account: string;
@@ -29,9 +31,23 @@ export function AddressDropdownWithMultichain({ account }: Props) {
   const { isMobile, isSmallMobile } = useBreakpoints();
   const displayAddressLength = isMobile ? 9 : 13;
 
-  const handleOpenGmxAccountModal = useCallback(() => {
-    setGmxAccountModalOpen(true);
-  }, [setGmxAccountModalOpen]);
+  const [isGmxAccountModalOpen] = useGmxAccountModalOpen();
+  const isModalOpen = isGmxAccountModalOpen !== false;
+
+  // Keep elevated z-index during backdrop fade-out animation
+  const [isElevated, setIsElevated] = useState(false);
+  useEffect(() => {
+    if (isModalOpen) {
+      setIsElevated(true);
+    } else {
+      const timeout = setTimeout(() => setIsElevated(false), BACKDROP_ANIMATION_DURATION);
+      return () => clearTimeout(timeout);
+    }
+  }, [isModalOpen]);
+
+  const handleToggleGmxAccountModal = useCallback(() => {
+    setGmxAccountModalOpen(isModalOpen ? false : true);
+  }, [setGmxAccountModalOpen, isModalOpen]);
 
   const handleOpenDeposit = useCallback(
     (e: React.MouseEvent) => {
@@ -44,7 +60,11 @@ export function AddressDropdownWithMultichain({ account }: Props) {
   const showSideButton = srcChainId !== undefined || (gmxAccountUsd !== undefined && gmxAccountUsd > 0n);
 
   return (
-    <div className="text-body-medium flex font-medium text-typography-primary">
+    <div
+      className={cx("text-body-medium relative flex font-medium text-typography-primary", {
+        "z-[1002]": isElevated,
+      })}
+    >
       <Button
         variant="secondary"
         type="button"
@@ -53,7 +73,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
           "!py-4 !pl-12 !pr-4": shouldShowDepositButton && !isMobile,
           "!py-0 !pl-12 !pr-0": shouldShowDepositButton && isMobile,
         })}
-        onClick={handleOpenGmxAccountModal}
+        onClick={handleToggleGmxAccountModal}
       >
         <div
           className={cx(
