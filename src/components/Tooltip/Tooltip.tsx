@@ -257,7 +257,7 @@ export default function Tooltip<T extends ElementType>({
           },
         })}
       >
-        <div className={cx("flex items-center gap-2", contentClassName)}>
+        <div className={cx("flex grow items-center gap-2", contentClassName)}>
           {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
           {isHandlerDisabled ? (
             <div className="pointer-events-none w-full flex-none [text-decoration:inherit]">{handle ?? children}</div>

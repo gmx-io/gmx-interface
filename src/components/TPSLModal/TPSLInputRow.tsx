@@ -369,8 +369,8 @@ export function TPSLInputRow({
       <div className="flex flex-col gap-4">
         <div className="flex gap-8">
           <TooltipWithPortal
-            className="flex-1"
-            handleClassName="w-full"
+            className="flex grow"
+            handleClassName="grow"
             variant="none"
             disabled={!priceError}
             content={priceError}
@@ -400,7 +400,7 @@ export function TPSLInputRow({
 
           <div
             className={cx(
-              "text-body-small relative flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3",
+              "text-body-small relative flex grow cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3",
               "border-slate-800",
               "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
             )}
