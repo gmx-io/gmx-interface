@@ -50,7 +50,7 @@ export default function NestedTab<V extends string | number>({
               {
                 "border-slate-600 bg-slate-800 text-typography-primary": selectedSubOption,
                 "bg-transparent border-slate-600 text-typography-secondary hover:text-typography-primary":
-                  !selectedSubOption,
+                !selectedSubOption,
               }
             )}
           >
@@ -59,6 +59,7 @@ export default function NestedTab<V extends string | number>({
           </button>
         ) : (
           <Button
+            type="button"
             variant="ghost"
             className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}
           >

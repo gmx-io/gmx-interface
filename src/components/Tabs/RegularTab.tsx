@@ -28,6 +28,7 @@ export default function RegularTab<V extends string | number>({
   if (type === "pills") {
     return (
       <button
+        type="button"
         className={cx(
           "text-body-medium rounded-full border px-12 py-6 font-medium transition-colors",
           optionClassName,
