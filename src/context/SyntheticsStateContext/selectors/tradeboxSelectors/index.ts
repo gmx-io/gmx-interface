@@ -298,7 +298,7 @@ export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
 export const selectTradeboxAvailableTokensOptions = (s: SyntheticsState) => s.tradebox.availableTokensOptions;
 export const selectTradeboxFromTokenInputValue = (s: SyntheticsState) => s.tradebox.fromTokenInputValue;
-const selectTradeboxToTokenInputValue = (s: SyntheticsState) => s.tradebox.toTokenInputValue;
+export const selectTradeboxToTokenInputValue = (s: SyntheticsState) => s.tradebox.toTokenInputValue;
 export const selectTradeboxStage = (s: SyntheticsState) => s.tradebox.stage;
 export const selectTradeboxFocusedInput = (s: SyntheticsState) => s.tradebox.focusedInput;
 export const selectTradeboxDefaultTriggerAcceptablePriceImpactBps = (s: SyntheticsState) =>
@@ -334,6 +334,13 @@ export const selectSetTradeboxAllowedSlippage = (s: SyntheticsState) => s.tradeb
 export const selectTradeboxTokensAllowance = (s: SyntheticsState) => s.tradebox.tokensAllowance;
 export const selectTradeboxTwapDuration = (s: SyntheticsState) => s.tradebox.duration;
 export const selectTradeboxTwapNumberOfParts = (s: SyntheticsState) => s.tradebox.numberOfParts;
+
+export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
+  const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
+  const { isSwap, isTrigger } = q(selectTradeboxTradeFlags);
+
+  return limitOrTPSL && !isSwap && !isTrigger;
+});
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);

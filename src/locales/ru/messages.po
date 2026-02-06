@@ -73,6 +73,10 @@ msgstr "ЦЕНА"
 msgid "receive"
 msgstr "получить"
 
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
+msgid "Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Referrals Dashboard"
 msgstr "Панель рефералов GMX"
@@ -133,7 +137,7 @@ msgstr "Оптимизатор доходности на Avalanche"
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Ордера ({0})"
 
@@ -148,6 +152,8 @@ msgstr "стоп-лосс"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
@@ -269,6 +275,10 @@ msgstr "Исполнение рыночного обмена"
 msgid "Discover"
 msgstr "Обзор"
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Full Position Close"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "There is no price impact for increase orders, orders are filled at the mark price. <0>Read more</0>."
 msgstr "Для ордеров на увеличение нет влияния на цену. Ордера исполняются по маркетной цене. <0>Подробнее</0>."
@@ -325,6 +335,10 @@ msgstr "Что такое GLV?"
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "To begin trading on GMX deposit assets into GMX account."
 msgstr "Чтобы начать торговлю на GMX, внесите активы на счет GMX."
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No TP orders"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
@@ -430,7 +444,6 @@ msgstr "Максимальный USD пула превышен"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price below mark price"
@@ -645,6 +658,10 @@ msgstr "Контакт в Telegram (опционально)"
 msgid "Market order will be cancellable in {minutesText}{seconds}s."
 msgstr "Рыночный ордер можно отменить через {minutesText}{seconds}с."
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "Edit TP/SL Size"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "About GLP Incident"
 msgstr "О инциденте GLP"
@@ -679,9 +696,12 @@ msgid "Settling"
 msgstr "Расчет"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
-#: src/components/PositionItem/PositionItem.tsx
 msgid "Edit Collateral"
 msgstr "Редактирование залога"
+
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "SL Price"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GLV and GM both enable liquidity provision on GMX, allowing users to earn fees from three revenue sources that auto-compound into the token's price. GM tokens represent liquidity in a single pool that supports one specific market on GMX. GLV vaults contain multiple GM tokens in an auto-rebalancing composition, thereby aggregating liquidity across various markets that have the same backing tokens (ex: ETH-USDC, or BTC-USDC). GM enables users to provide isolated liquidity with exposure to a specific market, while GLV allows users to passively earn yield from a diverse range of highly utilized pools."
@@ -689,7 +709,6 @@ msgstr "GLV и GM позволяют предоставлять ликвидно
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Limit price above mark price"
@@ -868,6 +887,10 @@ msgstr "Нет совпадающих рынков"
 msgid "Unstake {tokenSymbol}"
 msgstr "Вывести из стейкинга {tokenSymbol}"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Stop Loss Price"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No centralized exchanges available for this network."
 msgstr "Нет централизованных бирж для этой сети."
@@ -937,6 +960,8 @@ msgstr "Вознаграждения"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/MarginField.tsx
+#: src/components/TradeboxMarginFields/MarginField.tsx
 msgid "Pay"
 msgstr "Оплатить"
 
@@ -959,6 +984,7 @@ msgstr "Децентрализованный денежный рынок"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop Price"
 msgstr "Стоп-цена"
 
@@ -1111,6 +1137,7 @@ msgstr "Разрешить перевод всех моих токенов на 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Collateral"
 msgstr "Залог"
@@ -1167,6 +1194,10 @@ msgstr "Токены"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Withdraw"
 msgstr "Запрос на вывод"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above limit price"
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
@@ -1267,6 +1298,10 @@ msgstr "Итого"
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please sign a new approval to continue."
 msgstr "Одобрение One-Click Trading недействительно. Это может произойти при переключении цепей или смене токенов оплаты. Пожалуйста, подпишите новое одобрение для продолжения."
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No SL orders"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1307,14 +1342,14 @@ msgstr "Всего Ребайтов"
 msgid "To Network"
 msgstr "В сеть"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min order: {0}"
-msgstr "Мин. ордер: {0}"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Wallet is not connected"
 msgstr "Кошелёк не подключён"
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Size (% of position)"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "100+ crypto tokens"
@@ -1333,6 +1368,10 @@ msgstr "TWAP-обмен"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "The current price impact is {0}. Consider adding a buffer of 0.30% to it so the order is more likely to be processed."
 msgstr "Текущее влияние на цену {0}. Рассмотрите добавление буфера 0.30%, чтобы ордер был более вероятно обработан."
+
+#: src/components/TPSLModal/TPSLModal.tsx
+msgid "TP/SL: {positionTitle}"
+msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Public"
@@ -1436,9 +1475,17 @@ msgstr "Сдвиг GM"
 msgid "Timestamp"
 msgstr "Время"
 
+#: src/components/TradeBox/SwapSlippageField.tsx
+msgid "Custom"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Сумма, которую вы пытаетесь вывести, превышает лимит. Пожалуйста, попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
+
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "Gain"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX Alerts"
@@ -1651,10 +1698,6 @@ msgstr "Путь обмена не найден"
 msgid "RPnL"
 msgstr "Реализованный PnL"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined stop losses are at maximum (100%). Decrease existing values to add more orders."
-msgstr "Комбинированные стоп-лоссы на максимуме (100%). Уменьшите существующие значения, чтобы добавить больше ордеров."
-
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "4-18 Places"
@@ -1707,10 +1750,6 @@ msgstr "Введите цену"
 msgid "Not enough data available yet"
 msgstr "Пока недостаточно данных"
 
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Using high leverage increases the risk of liquidation."
-msgstr "Использование высокого левериджа увеличивает риск ликвидации."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet the acceptable price."
 msgstr "Цена исполнения не соответствовала приемлемой цене."
@@ -1748,12 +1787,7 @@ msgstr "Экспресс и торговля в один клик недосту
 msgid "No funds to claim"
 msgstr "Нет средств для клейма"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min size per part: {0}"
-msgstr "Мин. размер на часть: {0}"
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above liq. price"
 msgstr "Триггерная цена выше цены ликв."
@@ -1785,7 +1819,6 @@ msgstr "Хранилища на основе опций"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Mark"
@@ -1926,7 +1959,6 @@ msgstr "Стоимость комиссий в USD рассчитывается 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 msgid "Max"
 msgstr "Макс"
 
@@ -2003,9 +2035,9 @@ msgstr "Купить GMX на {chainName}"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
+#: src/components/TradeboxMarginFields/SizeField.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2086,6 +2118,11 @@ msgstr "Внесено {0} в {positionText}"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
+msgstr ""
+
+#: src/components/TPSLModal/TPSLInputRow.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
+msgid "Mark:"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
@@ -2171,6 +2208,7 @@ msgstr "Текущие эндпоинты ({0})"
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Initial collateral (collateral excluding borrow and funding fee)."
 msgstr "Начальный коллатераль (коллатераль без учета заимствования и комиссии финансирования)."
 
@@ -2215,6 +2253,11 @@ msgstr "День(и)"
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer NFT"
 msgstr "Перевод NFT"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below mark price"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
@@ -2433,10 +2476,6 @@ msgstr "Бридж и обмен"
 msgid "The execution price may vary from your set limit price due to fees and price impact, ensuring you receive the displayed minimum receive amount. <0>Read more</0>."
 msgstr "Цена исполнения может отличаться от установленной лимитной цены из-за комиссий и влияния на цену, гарантируя получение отображаемой минимальной суммы. <0>Подробнее</0>."
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above lowest limit price"
-msgstr "Триггерная цена выше минимальной лимитной цены"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2618,6 +2657,7 @@ msgstr "Экспозиция к Токенам Поддержки"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Creating..."
 msgstr "Создание…"
 
@@ -2673,7 +2713,7 @@ msgstr "В других токенах:"
 msgid "Returned Collateral"
 msgstr "Возвращённый Залог"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
 msgid "There are issues in the TP/SL orders."
 msgstr "Есть проблемы в ордерах TP/SL."
 
@@ -2762,10 +2802,6 @@ msgstr "Купить GMX на централизованных биржах:"
 msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr "Облигации GMX можно купить на Bond Protocol со скидкой и небольшим периодом вестинга:"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above highest limit price"
-msgstr "Триггерная цена выше максимальной лимитной цены"
-
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Yes, staking and providing liquidity are fully permissionless. The GMX, GLV, and GM tokens are liquid and can be unstaked and withdrawn at any time. For LP tokens, there could be some rare edge cases where your liquidity is being used for active trades. In that case, you can withdraw as soon as positions close."
 msgstr "Да, стейкинг и предоставление ликвидности полностью без разрешений. Токены GMX, GLV и GM ликвидны и могут быть выведены из стейкинга в любой момент. В редких случаях, когда ваша ликвидность используется в открытых позициях, вывод станет доступен сразу после их закрытия."
@@ -2824,6 +2860,10 @@ msgstr "V1 Arbitrum"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
+
+#: src/components/LeverageField/LeverageField.tsx
+msgid "High leverage increases liquidation risk."
+msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -2887,12 +2927,16 @@ msgstr "<0>Продажа {0}{1}<1>{poolName}</1></0>"
 msgid "No eligible tokens available on {0} for deposit"
 msgstr "Нет подходящих токенов на {0} для внесения"
 
+#: src/components/TPSLModal/TPSLInputRow.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Est. PnL"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "Макс. сумма закрытия превышена"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2981,6 +3025,7 @@ msgstr "20с"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -3020,7 +3065,8 @@ msgstr "Недостаточно доступной ликвидности. Ор
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -3104,12 +3150,15 @@ msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgid "Swap {0} to {1}"
 msgstr "Обмен {0} на {1}"
 
+#: src/components/LeverageField/LeverageField.tsx
+msgid "Adjust Leverage"
+msgstr ""
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Debug values are not available"
 msgstr "Значения отладки недоступны"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liq. price"
 msgstr "Триггерная цена ниже ликв. цены"
@@ -3214,11 +3263,6 @@ msgstr "Допустимая Цена Ордера"
 msgid "VOL."
 msgstr "ОБЪЁМ"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below limit price"
-msgstr "Триггерная цена ниже лимитной цены"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>Покупка {0}{1}<1>{poolName}</1></0> <2>с {tokensText}</2>"
@@ -3240,10 +3284,6 @@ msgstr "Средн. Размер"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take Profit PnL"
-msgstr "PnL Take Profit"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your GLV or GM tokens, and borrow against them, or put your LP tokens into strategies to maximize your yield."
@@ -3285,6 +3325,7 @@ msgstr "Требование..."
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 msgid "All"
 msgstr "Все"
 
@@ -3315,7 +3356,8 @@ msgstr "Позиции {longOrShort} {fundingAction} комиссию за фи�
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -3387,6 +3429,7 @@ msgstr "Пока нет сделок"
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/TradeBox/SwapSlippageField.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Allowed Slippage"
 msgstr "Допустимое Скольжение"
@@ -3394,10 +3437,6 @@ msgstr "Допустимое Скольжение"
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee."
 msgstr "Позиции {longOrShort} {fundingAction} комиссию за финансирование {fundingRate} в час и не платят комиссию за заимствование."
-
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is reached."
-msgstr "{typeString} Шорт TP/SL: {0} шорт позицию, когда достигнута триггерная цена."
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups."
@@ -3427,6 +3466,10 @@ msgstr "Запрос на Рыночный Обмен"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in the {0} market pool. Select a different pool for this market.{1}"
 msgstr "Недостаточно ликвидности в пуле рынка {0}. Выберите другой пул для этого рынка.{1}"
+
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "Loss"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
@@ -3462,6 +3505,10 @@ msgstr "Успешный клейм комиссий финансировани�
 msgid "<0>every</0> {hours} hours{0}"
 msgstr "<0>каждые</0> {hours} часов{0}"
 
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "{secondLabel}"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Fail External Swaps"
 msgstr "Неудача Внешних Обменов"
@@ -3473,10 +3520,6 @@ msgstr "Повторить транзакцию"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr "Высокая комиссия прибыли свопа"
-
-#: src/domain/synthetics/orders/utils.tsx
-msgid "Swap {fromTokenText} for {toTokenText}"
-msgstr "Обмен {fromTokenText} на {toTokenText}"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable Validation for Testing"
@@ -3490,12 +3533,16 @@ msgstr "Обмен отправлен."
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PnL"
 msgstr "PnL"
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "No TP/SL orders"
+msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is not available using network's native token {0}. Consider using {1} instead."
@@ -3674,6 +3721,7 @@ msgid "Stake submitted."
 msgstr "Стейк отправлен."
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/TradeBox/SwapSlippageField.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "Проскальзывание — это разница между ожидаемой и фактической ценой исполнения из-за волатильности. Ордера не будут исполнены, если проскальзывание превысит максимально допустимое значение. Значение по умолчанию можно изменить в настройках.<0/><1/>Низкое значение (например, менее -{0}) может привести к неисполненным ордерам при волатильности.<2/><3/>Примечание: проскальзывание отличается от влияния на цену, которое основано на дисбалансе открытого интереса. <4>Подробнее</4>."
@@ -3758,7 +3806,6 @@ msgstr "Заработок"
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "Collateral In"
 msgstr "Залог Внесён"
 
@@ -3769,6 +3816,10 @@ msgstr "Рынки GM"
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Your opinions and experiences matter to us. Your feedback helps us understand what we are doing well and where we can make enhancements."
 msgstr "Ваши мнения и опыт важны для нас. Ваш отзыв помогает нам понять, что мы делаем хорошо и где мы можем улучшиться."
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "Create TP/SL"
+msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -3803,6 +3854,10 @@ msgstr "Рибейты, заработанные этим аккаунтом в 
 msgid "Transfer account"
 msgstr "Перевести аккаунт"
 
+#: src/components/TPSLModal/TPSLModal.tsx
+msgid "Cancel all"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend out your tokens, or borrow against it."
@@ -3819,8 +3874,6 @@ msgstr "<0>GMX исполняет сделки против динамическ
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -3895,6 +3948,7 @@ msgstr "Ещё возможности"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -3921,6 +3975,8 @@ msgstr "Триггерная цена для ордера."
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -3988,10 +4044,6 @@ msgstr "Оповещения о Ценах Торговых Пар"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Links"
 msgstr "Ссылки"
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Use the \"Close\" button to reduce your position via market, TP/SL, or TWAP orders."
-msgstr "Используйте кнопку «Закрыть» для уменьшения позиции через рыночные, TP/SL или TWAP ордера."
 
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized Perpetual Exchange"
@@ -4203,7 +4255,7 @@ msgstr "Децентрализованные Опционные Стратеги
 msgid "Creating referral code"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This action will not apply for that position. <0>Switch to {1} collateral</0>"
 msgstr "У вас есть существующая позиция с {0} как коллатералем. Это действие не применится к этой позиции. <0>Переключиться на коллатераль {1}</0>"
 
@@ -4239,7 +4291,9 @@ msgid "Amount of traders you referred."
 msgstr "Количество трейдеров, которых вы пригласили."
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take Profit"
 msgstr "Take Profit"
@@ -4256,6 +4310,18 @@ msgstr "{typeString} Long Stop Market: {0} длинную позицию, ког
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "Недостаточно ликвидности {0}"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above mark price"
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "Unable to calculate order"
+msgstr ""
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "TP/SL: {positionTitle} Decrease"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -4367,7 +4433,7 @@ msgstr "Botanix"
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
 msgstr "Накопленные возмещения влияния цены. Они станут клеймабельными через 5 дней.<0/><1/><2>Подробнее</2>."
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take Profit / Stop Loss"
 msgstr "Take Profit / Stop Loss"
 
@@ -4454,6 +4520,10 @@ msgstr "Рынки не найдены."
 msgid "RPC Monitoring"
 msgstr "Мониторинг RPC"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market or TWAP orders."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ODOS"
 msgstr "ODOS"
@@ -4515,10 +4585,6 @@ msgstr "Высокое влияние на цену"
 msgid "<0>Solana Support</0><1>Botanix Support</1><2>GMX Express</2>"
 msgstr "<0>Поддержка Solana</0><1>Поддержка Botanix</1><2>GMX Express</2>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Combined take profits are at maximum (100%). Decrease existing values to add more orders."
-msgstr "Комбинированные take profit на максимуме (100%). Уменьшите существующие значения, чтобы добавить больше ордеров."
-
 #: src/components/GmList/GmList.tsx
 msgid "POOL"
 msgstr "ПУЛ"
@@ -4551,6 +4617,8 @@ msgstr "Продажа"
 msgid "Recommended"
 msgstr "Рекомендуемые"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -4563,6 +4631,11 @@ msgstr "Ссылка скопирована в буфер обмена."
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is -0.01%"
 msgstr "Максимальная точность проскальзывания -0.01%"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price above mark price"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Weekly Updates"
@@ -4750,11 +4823,12 @@ msgstr "V1 Avalanche"
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Collateral ({0})"
 msgstr "Залог ({0})"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "У вас есть существующая позиция с {0} в качестве обеспечения. Этот ордер не будет действителен для этой позиции. <0>Переключиться на обеспечение {1}</0>"
 
@@ -4850,10 +4924,6 @@ msgstr "Ошибка ордера. Цены в настоящее время в�
 msgid "Swap Price Impact for External Swap Threshold"
 msgstr "Влияние цены обмена для порога внешнего обмена"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Limit / Take Profit / Stop Loss"
-msgstr "Лимит / Тейк-профит / Стоп-лосс"
-
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
 msgstr "Стабильная доходность без управления"
@@ -4865,10 +4935,6 @@ msgstr "Спред"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "Эта позиция была ликвидирована, так как максимальное кредитное плечо {formattedMaxLeverage} было превышено с учетом комиссий."
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {0}"
-msgstr "Обмен {0}"
 
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -4961,10 +5027,6 @@ msgstr "APR wstETH"
 msgid "Telegram Group"
 msgstr "Группа в Telegram"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long TP/SL: {0} a long position when the trigger price is reached."
-msgstr "{typeString} Лонг TP/SL: {0} длинную позицию, когда достигнута цена триггера."
-
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> в </1>{toTokenIcon}"
@@ -4993,7 +5055,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/SwapCard/SwapCard.tsx
-#: src/components/TradeBox/components/SideOrderEntries.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/components/TVChart/Chart.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -5157,6 +5218,10 @@ msgstr "Начальный нереализованный PnL"
 msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
 msgstr "Недостаточно {nativeTokenSymbol} для газа в вашем кошельке на {0}. <0>Купить {nativeTokenSymbol}</0>"
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Size (% of Position)"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Одобрение подано! <0>Просмотреть статус.</0>"
@@ -5174,7 +5239,7 @@ msgid "Stake GMX to earn GMX rewards"
 msgstr "Стейкайте GMX, чтобы получать награды GMX"
 
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
@@ -5245,10 +5310,6 @@ msgstr ""
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Size, $"
 msgstr "Размер, $"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "Close {0} {1}{2}"
-msgstr "Закрыть {0} {1}{2}"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
@@ -5402,6 +5463,7 @@ msgstr "Управление"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Отменить"
@@ -5468,6 +5530,12 @@ msgstr "90д"
 msgid "Liquidation"
 msgstr "Ликвидация"
 
+#: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Add TP/SL"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Risk Monitoring"
 msgstr "Мониторинг рисков GMX"
@@ -5516,6 +5584,7 @@ msgid "Longs Net Rate / 1h"
 msgstr "Чистая ставка лонгов / 1ч"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Edit"
 msgstr "Редактировать"
 
@@ -5527,10 +5596,6 @@ msgstr "Доступное кредитное плечо не найдено"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr "У вас есть <0>ожидающий перевода</0> на {pendingReceiver}."
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Limit size is required"
-msgstr "Требуется лимит размера"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From Network"
@@ -5548,6 +5613,10 @@ msgstr "Вывести со счета GMX"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Collateral at Liquidation"
 msgstr "Залог при ликвидации"
+
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "Keep leverage at {currentLeverage}"
+msgstr ""
 
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -5773,6 +5842,7 @@ msgstr "{formattedNetRate} / 1ч"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Balance"
 msgstr "Баланс"
@@ -5871,8 +5941,6 @@ msgstr "Мин размер позиции: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "Цена триггера ниже маркированной цены"
@@ -5942,10 +6010,6 @@ msgstr "Отрицательная комиссия финансирования
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} в {toExecutionText}"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "Create {0} Order"
-msgstr "Создать {0} ордер"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated."
 msgstr "Настройки обновлены."
@@ -5965,6 +6029,10 @@ msgstr "Открытые позиции с ордерами"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 msgstr "<0>⬡ История данных Chainlink ⬡ <1/><2>#Chainlink</2> Data Streams обеспечили более $56B в объеме для протокола <3>@GMX_IO</3> V2.</0><4>Низколатентная доставка высококачественных рыночных данных Data Streams суперзарядила перпетуальные рынки GMX по <5>@arbitrum</5> и <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "TP price below limit price"
+msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -6025,15 +6093,6 @@ msgstr "Обмен {fromAmount} на {toAmount}"
 msgid "Amount"
 msgstr "Сумма"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create {0} order"
-msgstr "Создать {0} ордер"
-
-#: src/components/PositionEditor/PositionEditor.tsx
-msgid "Edit {0} {1}{2}"
-msgstr "Редактировать {0} {1}{2}"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
@@ -6042,6 +6101,10 @@ msgstr "Нет истории распределения возвратов."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Governance"
 msgstr "Управление GMX"
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{increaseOrDecreaseText}: {0} {longShortText}"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "trigger price"
@@ -6111,6 +6174,7 @@ msgstr "Возможно, не будет достаточно ликвидно�
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6121,6 +6185,10 @@ msgstr "Возможно, не будет достаточно ликвидно�
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
 msgstr "Введите сумму"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price above limit price"
+msgstr ""
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets are available for deposit"
@@ -6195,8 +6263,6 @@ msgstr "Сдвиг {symbol}..."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "Цена триггера выше маркированной цены"
@@ -6221,6 +6287,7 @@ msgstr "Комиссия за продажу"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Execution Details"
 msgstr "Детали исполнения"
@@ -6245,7 +6312,7 @@ msgstr "Обновить тейк-профит"
 msgid "Only addresses with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr "Только адреса с использованным капиталом более {0} включаются в рейтинг.<0/><1/>Использованный капитал рассчитывается как максимальное значение [<2>сумма обеспечения открытых позиций - реализованный PnL + ожидающий PnL на начало периода</2>]."
 
-#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active Orders"
 msgstr "Активные ордера"
 
@@ -6300,6 +6367,10 @@ msgstr "Аналитика протокола"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "More active management required compared to GLV"
 msgstr "Требует более активного управления по сравнению с GLV"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Take Profit Price"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed amount"
@@ -6407,6 +6478,10 @@ msgstr "Kudai AI агент"
 msgid "Current Price"
 msgstr "Текущая цена"
 
+#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
+msgid "Enter TP/SL price"
+msgstr ""
+
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT ID"
 msgstr "Введите ID NFT"
@@ -6415,6 +6490,7 @@ msgstr "Введите ID NFT"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Limit Price"
 msgstr "Лимитная цена"
 
@@ -6452,10 +6528,6 @@ msgstr "Депозит"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d Est. Fees"
 msgstr "Оценка комиссий за 365д"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below highest limit price"
-msgstr "Цена триггера ниже наивысшей лимитной цены"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
@@ -6524,7 +6596,9 @@ msgstr "Запросить <0>{0}</0>"
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -6569,7 +6643,9 @@ msgid "We Value Your Feedback"
 msgstr "Мы ценим ваш отзыв"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Loss"
 msgstr "Стоп-лосс"
@@ -6619,9 +6695,17 @@ msgstr "Создать код"
 msgid "Error submitting order"
 msgstr "Ошибка при отправке ордера"
 
+#: src/components/TradeboxMarginFields/MarginField.tsx
+msgid "Margin"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"
 msgstr "Продолжительность"
+
+#: src/components/TPSLModal/TPSLInputRow.tsx
+msgid "TP Price"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -6764,6 +6848,10 @@ msgstr "Дата"
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Купить GMX используя FIAT шлюзы:"
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Edit Collateral: {0} {1}{2}/USD"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed."
 msgstr "Одобрение не удалось."
@@ -6777,10 +6865,10 @@ msgstr "Награды GMX:"
 msgid "Referral code created!"
 msgstr ""
 
-#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderList/OrderList.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "Trigger Price"
@@ -6856,6 +6944,10 @@ msgstr "Внесение"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>С большинством голосов 75.5% GMX выбрал LayerZero как партнера по messaging для мультичейн-расширения! Интеграция приносит GMX:</0><1><2>Возможность расширения на 125+ цепей</2><3>Полное владение всеми контрактами и безопасностью</3><4>Быстрые переводы без slippage</4><5>Боевые рельсы, уже доверенные миллиардам долларов в активах и сотням приложений... <6>см. больше</6></5></1>"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below limit price"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6959,9 +7051,17 @@ msgstr "Заморозить"
 msgid "Failed to bridge in"
 msgstr "Не удалось получить через мост"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin per part: {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim completed!"
 msgstr "Заявка выполнена!"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin: {0}"
+msgstr ""
 
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
@@ -6992,11 +7092,6 @@ msgstr "Партнерства и интеграции"
 msgid "As a token of our appreciation, you'll receive a reward of <0>100 <1/></0>."
 msgstr "В знак нашей признательности вы получите вознаграждение в размере <0>100 <1/></0>."
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price above limit price"
-msgstr "Триггерная цена выше лимитной цены"
-
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} cancelled."
 msgstr "{ordersText} отменено."
@@ -7016,6 +7111,10 @@ msgstr "сдвиг"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
 msgstr "Почему клейм в токенах GLV?"
+
+#: src/components/TPSLModal/TPSLOrdersList.tsx
+msgid "Est. PNL"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
@@ -7083,6 +7182,8 @@ msgstr "Ошибка сдвига."
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -7101,7 +7202,7 @@ msgstr "Лонг"
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/MarketPoolSelectorRow.tsx
+#: src/components/TradeBox/MarketPoolSelectorField.tsx
 msgid "Pool"
 msgstr "Пул"
 
@@ -7195,6 +7296,8 @@ msgstr "SNAPSHOT"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Liquidation Price"
 msgstr "Цена ликвидации"
@@ -7224,10 +7327,6 @@ msgstr "Отправитель вывел все токены из GMX Vesting V
 msgid "Failed Settlement of Funding Fees"
 msgstr "Неудачный расчет комиссий за финансирование"
 
-#: src/domain/synthetics/orders/utils.tsx
-msgid "{increaseOrDecreaseText} {tokenText} by {sizeText}"
-msgstr "{increaseOrDecreaseText} {tokenText} на {sizeText}"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "Search opportunities"
 msgstr "Поиск возможностей"
@@ -7249,6 +7348,7 @@ msgstr "Подтверждение..."
 msgid "Deposited:"
 msgstr "Внесено:"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -7384,6 +7484,10 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "Условия рефералов"
 
+#: src/components/PositionDropdown/PositionDropdown.tsx
+msgid "Increase Size (TWAP)"
+msgstr ""
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "APY комиссий"
@@ -7393,7 +7497,6 @@ msgid "Can I build on top of GMX or integrate it into my DeFi app?"
 msgstr "Могу ли я строить на базе GMX или интегрировать его в мое DeFi-приложение?"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a settlement network."
 msgstr "Поддержка счетов GMX на Avalanche скоро будет прекращена. Открытие новых позиций с и пополнение счетов GMX на Avalanche больше недоступно. Мы рекомендуем переключиться на Arbitrum в качестве сети для расчетов."
 
@@ -7435,6 +7538,10 @@ msgstr "Допускаются только буквы, цифры и подче
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"
 msgstr "Высокая сетевая комиссия TWAP"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the TP/SL button to set TP/SL orders."
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
@@ -7562,6 +7669,7 @@ msgstr "<0>каждые</0> {minutes} минут{0}"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Entry Price"
@@ -7635,10 +7743,6 @@ msgstr "Конвертировать токены esGMX в GMX. Пожалуйс
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "У вас есть существующая позиция в пуле рынка {0}.<0>Переключиться на пул рынка {1}</0>"
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop Loss PnL"
-msgstr "PnL стоп-лосса"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Dec."
@@ -7779,6 +7883,7 @@ msgstr "<0>Делегируйте вашу не делегированную {0}
 msgid "Claim funds"
 msgstr "Клейм средств"
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
 msgstr "Чистое влияние цены / Комиссии"
@@ -7826,6 +7931,7 @@ msgstr "Это может занять несколько минут."
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Stored Price Impact"
 msgstr "Хранимое влияние цены"
@@ -7846,11 +7952,17 @@ msgstr "Для детальной статистики"
 msgid "Generate Referral Code"
 msgstr "Сгенерировать реферальный код"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "SL price below mark price"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/domain/synthetics/orders/utils.tsx
 msgid "Swap"
 msgstr "Своп"
 
@@ -7888,10 +8000,6 @@ msgstr "Язык"
 msgid "Complete Transfer"
 msgstr "Завершить перевод"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "Trigger price below lowest limit price"
-msgstr "Триггерная цена ниже минимальной лимитной цены"
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "Скидки GMX V2 автоматически применяются на каждой сделке и не отображаются в этой таблице."
@@ -7903,6 +8011,10 @@ msgstr "Поделиться позицией"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposit Fee"
 msgstr "Комиссия за депозит"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "{0}: {1} {2}{3}/USD decrease"
+msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
@@ -7975,10 +8087,6 @@ msgstr "Последние 30д"
 msgid "Dashboards"
 msgstr "Панели"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Create TWAP {0} order"
-msgstr "Создать TWAP {0} ордер"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied to your clipboard."
 msgstr "Адрес скопирован в буфер обмена."
@@ -8035,6 +8143,7 @@ msgstr "Перевод не удался."
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionList/PositionList.tsx
+#: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Mark Price"
@@ -8156,7 +8265,7 @@ msgstr "Очень вероятно"
 msgid "Withdrawing funds from GMX Account..."
 msgstr "Вывод средств с аккаунта GMX…"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "You have an existing limit order with {symbol} as collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "У вас есть существующий лимитный ордер с {symbol} как коллатералем. <0>Переключиться на коллатераль {symbol}</0>"
 
@@ -8271,7 +8380,6 @@ msgstr "Загрузка"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
@@ -8323,10 +8431,9 @@ msgid "multiple asset classes"
 msgstr "множество классов активов"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

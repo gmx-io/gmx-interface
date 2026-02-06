@@ -1,12 +1,19 @@
 import { useMemo } from "react";
 
+import { selectTradeboxIsTPSLEnabled } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+
 import { useSidecarOrders } from "./useSidecarOrders";
 
 export function useSidecarEntries() {
-  const { limit, stopLoss, takeProfit } = useSidecarOrders();
+  const { stopLoss, takeProfit } = useSidecarOrders();
+  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
 
-  return useMemo(
-    () => [...(stopLoss?.entries || []), ...(takeProfit?.entries || []), ...(limit?.entries || [])],
-    [stopLoss, takeProfit, limit]
-  );
+  return useMemo(() => {
+    if (!isTpSlEnabled) {
+      return [];
+    }
+
+    return [...(stopLoss?.entries || []), ...(takeProfit?.entries || [])];
+  }, [isTpSlEnabled, stopLoss, takeProfit]);
 }
