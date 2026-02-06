@@ -101,7 +101,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const swapFields = <SwapSlippageField disabled={isLimit || isTwap} />;
 
   const fieldsRow = (
-    <div className="h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-6">
+    <div className="h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-8">
       {isSwap ? swapFields : isPosition ? positionFields : null}
     </div>
   );

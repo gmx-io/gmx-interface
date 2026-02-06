@@ -224,7 +224,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             ref={setPopoverButtonRef}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
-            <span className="grow overflow-hidden text-ellipsis leading-[24px]">{props.label}</span>
+            <span className="grow overflow-hidden text-ellipsis leading-[20px]">{props.label}</span>
             <ChevronDownIcon
               className={cx(
                 "inline-block size-16 group-gmx-hover/selector-base:text-blue-300",

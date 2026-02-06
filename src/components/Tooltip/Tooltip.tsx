@@ -264,8 +264,8 @@ export default function Tooltip<T extends ElementType>({
           ) : (
             <>{handle ?? children}</>
           )}
-          {variant === "icon" && <InfoIcon className={cx("mb-1 h-16 w-16", iconClassName)} />}
-          {variant === "iconStroke" && <InfoIconStroke className={cx("mb-1 h-16 w-16", iconClassName)} />}
+          {variant === "icon" && <InfoIcon className={cx("h-16 w-16", iconClassName)} />}
+          {variant === "iconStroke" && <InfoIconStroke className={cx("h-16 w-16", iconClassName)} />}
           {variant === "underline" && (
             <svg className="absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
               <line
