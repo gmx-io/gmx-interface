@@ -50,7 +50,6 @@ export function PositionItemOrdersLarge({
   positionKey,
   onOrdersClick,
 }: {
-  isSmall?: boolean;
   positionKey: string;
   onOrdersClick?: (key?: string) => void;
 }) {

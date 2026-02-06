@@ -3,10 +3,8 @@ import range from "lodash/range";
 import { Handle, SliderTooltip } from "rc-slider";
 import { forwardRef, useCallback, useEffect, useMemo } from "react";
 
+import { DEFAULT_LEVERAGE, DEFAULT_LEVERAGE_MARKS } from "components/LeverageField/LeverageField";
 import { Slider } from "components/Slider";
-
-const defaultMarks = [0.1, 25, 50];
-const DEFAULT_LEVERAGE_KEY = 20;
 
 type Props = {
   isPositive?: boolean;
@@ -35,7 +33,7 @@ function getMarksWithLabel(marks: number[]) {
 
 export function LeverageSlider(p: Props) {
   const { onChange, value, marks } = p;
-  const finalMarks = marks ?? defaultMarks;
+  const finalMarks = marks ?? DEFAULT_LEVERAGE_MARKS;
 
   const { keyValueMap, valueKeyMap } = useMemo(() => generateKeyValueMap(finalMarks), [finalMarks]);
 
@@ -47,8 +45,8 @@ export function LeverageSlider(p: Props) {
 
   const handleChange = useCallback(
     (newKey: number) => {
-      const truncatedKey = Math.trunc(newKey ?? DEFAULT_LEVERAGE_KEY);
-      onChange(keyValueMap[truncatedKey] ?? keyValueMap[DEFAULT_LEVERAGE_KEY]);
+      const truncatedKey = Math.trunc(newKey ?? DEFAULT_LEVERAGE);
+      onChange(keyValueMap[truncatedKey] ?? keyValueMap[DEFAULT_LEVERAGE]);
     },
     [onChange, keyValueMap]
   );

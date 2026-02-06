@@ -414,7 +414,7 @@ export function useOrderEditorTPSL() {
     userReferralInfo?.referralCodeForTxn,
   ]);
 
-  const { hasTpSlValues, tpSlError, tpSlHasError } = useMemo(
+  const { tpSlError, tpSlHasError } = useMemo(
     () =>
       getTpSlErrorState({
         isTpSlEnabled,
@@ -453,7 +453,6 @@ export function useOrderEditorTPSL() {
     sidecarExecutionFee,
     tpSlError,
     tpSlHasError,
-    hasTpSlValues,
     setTpPriceInputValue,
     setSlPriceInputValue,
   };
@@ -580,7 +579,6 @@ export function getTpSlErrorState(p: {
   }
 
   return {
-    hasTpSlValues,
     tpSlError,
     tpSlHasError,
   };

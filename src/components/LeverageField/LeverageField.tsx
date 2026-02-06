@@ -19,8 +19,8 @@ import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import AlertIcon from "img/ic_alert.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 
-const defaultMarks = [0.1, 25, 50];
-const DEFAULT_LEVERAGE = 20;
+export const DEFAULT_LEVERAGE_MARKS = [0.1, 25, 50];
+export const DEFAULT_LEVERAGE = 20;
 
 type Props = {
   value: number | null;
@@ -39,7 +39,7 @@ function formatLeverage(value: number) {
 }
 
 export function LeverageField({ value, onChange, marks, disabled }: Props) {
-  const finalMarks = useMemo(() => (marks?.length ? marks : defaultMarks), [marks]);
+  const finalMarks = useMemo(() => (marks?.length ? marks : DEFAULT_LEVERAGE_MARKS), [marks]);
   const minMark = finalMarks[0] ?? DEFAULT_LEVERAGE;
   const maxMark = finalMarks.at(-1) ?? DEFAULT_LEVERAGE;
 
