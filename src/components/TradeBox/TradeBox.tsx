@@ -722,6 +722,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onInputValueChange={handleFromInputTokenChange}
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
+          maxDecimals={fromToken?.decimals}
         >
           {fromTokenAddress &&
             (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
@@ -797,6 +798,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
                 isDisabled={isTwap}
+                maxDecimals={toToken?.decimals}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -833,6 +835,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
+            maxDecimals={toToken?.decimals}
           >
             {toTokenAddress && (
               <MarketSelector
@@ -876,6 +879,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
         qa="close"
+        maxDecimals={USD_DECIMALS}
       >
         USD
       </BuyInputSection>
@@ -896,6 +900,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         inputValue={triggerPriceInputValue}
         onInputValueChange={handleTriggerPriceInputChange}
         qa="trigger-price"
+        maxDecimals={USD_DECIMALS}
       >
         USD
       </BuyInputSection>
@@ -912,6 +917,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         inputValue={triggerRatioInputValue}
         onInputValueChange={handleTriggerRatioInputChange}
         qa="trigger-price"
+        maxDecimals={USD_DECIMALS}
       >
         {markRatio && (
           <>

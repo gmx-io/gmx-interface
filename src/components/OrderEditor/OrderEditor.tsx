@@ -719,6 +719,7 @@ export function OrderEditor(p: Props) {
                     ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
                     : undefined
                 }
+                maxDecimals={USD_DECIMALS}
               >
                 USD
               </BuyInputSection>
@@ -743,6 +744,7 @@ export function OrderEditor(p: Props) {
                 }
                 inputValue={triggerPriceInputValue}
                 onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
+                maxDecimals={USD_DECIMALS}
               >
                 USD
               </BuyInputSection>
@@ -767,6 +769,7 @@ export function OrderEditor(p: Props) {
                   onInputValueChange={(e) => {
                     setTriggerRatioInputValue(e.target.value);
                   }}
+                  maxDecimals={USD_DECIMALS}
                 >
                   {`${triggerRatio.smallestToken.symbol} per ${triggerRatio.largestToken.symbol}`}
                 </BuyInputSection>

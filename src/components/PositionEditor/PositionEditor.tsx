@@ -365,6 +365,7 @@ export function PositionEditor() {
                 }
               }}
               qa="amount-input"
+              maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
             >
               {hasMultipleTokens ? (
                 <PositionEditorCollateralSelector

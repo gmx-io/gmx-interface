@@ -129,9 +129,9 @@ export default function EarnProductCard({
         </div>
 
         <div className="flex flex-col gap-12">
-          <h3 className="text-16 font-medium text-typography-primary">{content.title}</h3>
-          <p className="text-13 text-typography-secondary">{content.description}</p>
-          <ExternalLink href={content.readMoreUrl} variant="icon" className="text-12 font-medium">
+          <h3 className="text-body-large font-medium text-typography-primary">{content.title}</h3>
+          <p className="text-body-medium text-typography-secondary">{content.description}</p>
+          <ExternalLink href={content.readMoreUrl} variant="icon" className="text-body-small font-medium">
             {t`Read more`}
           </ExternalLink>
         </div>
@@ -142,7 +142,7 @@ export default function EarnProductCard({
           {content.bullets.map((bullet, index) => (
             <div key={index} className="flex items-center gap-8">
               <span className="size-8 shrink-0 rotate-[45deg]" style={BULLET_GRADIENT_STYLE} />
-              <span className="text-12 font-medium text-typography-primary">{bullet}</span>
+              <span className="text-body-small font-medium text-typography-primary">{bullet}</span>
             </div>
           ))}
         </div>

@@ -102,10 +102,6 @@ import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
 
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
-
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
   const [isApproving, setIsApproving] = useState(false);
@@ -884,6 +880,7 @@ export function PositionSeller() {
                       setCloseUsdInputValueRaw(formattedAmount);
                     }}
                     qa="amount-input"
+                    maxDecimals={USD_DECIMALS}
                   >
                     USD
                   </BuyInputSection>
