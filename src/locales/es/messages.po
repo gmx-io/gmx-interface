@@ -2797,6 +2797,10 @@ msgstr "Mostrar Valores de Depuración"
 msgid "Annualized data based on the past 7 days."
 msgstr "Datos anualizados basados en los últimos 7 días."
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "No hay liquidez disponible para aumentar cortos para<0/>este tamaño. Tamaño corto máximo: {0}<1/><2/>Precios de ejecución para reducir largos."
@@ -4798,6 +4802,10 @@ msgstr "Agricultura de Rendimiento"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Aprobando..."
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

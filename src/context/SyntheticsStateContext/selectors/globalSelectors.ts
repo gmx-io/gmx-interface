@@ -187,3 +187,8 @@ export const selectMultichainMarketTokensBalancesResult = (s: SyntheticsState) =
 
 export const selectMultichainMarketTokensBalancesIsLoading = (s: SyntheticsState) =>
   s.globals.multichainMarketTokensBalancesResult?.isLoading ?? false;
+
+export const selectUiFlags = (s: SyntheticsState) => s.uiFlags;
+export const selectShowServiceDisruptionBanner = createSelector(
+  (q) => q(selectUiFlags)?.showServiceDisruptionBanner ?? false
+);
