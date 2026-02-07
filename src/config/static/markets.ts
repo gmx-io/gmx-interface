@@ -727,8 +727,16 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
   },
   [MEGAETH]: {
-    // ETH/USD [WETH-WETH]
-    "0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7": {
+    // BTC/USD [USDM-USDM]
+    "0x31EdCc52bE2Fa55Ba68f50409F9e6b7d9EbF3D59": {
+      enabled: true,
+    },
+    // ETH/USD [USDM-USDM]
+    "0x9b1B72720f6D277F3b1e607a0c5fab1B300248b1": {
+      enabled: true,
+    },
+    // SOL/USD [USDM-USDM]
+    "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9": {
       enabled: true,
     },
   },
