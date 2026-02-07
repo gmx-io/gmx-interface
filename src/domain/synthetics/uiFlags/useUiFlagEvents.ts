@@ -46,7 +46,7 @@ export function useUiFlagEvents() {
             EventToast({
               event: {
                 id: event.id,
-                title: event.title as string,
+                title: event.title,
                 bodyText: event.content,
                 endDate: "",
               },
