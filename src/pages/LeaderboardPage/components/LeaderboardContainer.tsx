@@ -126,7 +126,7 @@ export function LeaderboardContainer() {
           <span className="link-underline" onClick={handleSwitchNetworkClick}>
             Change your network
           </span>{" "}
-          to participate.
+          to participate
         </Trans>
       </div>
     );

@@ -16,7 +16,7 @@ const LEFT_OPAQUE_TOOLTIP = (
   <Trans>
     Execution prices for increasing shorts
     <br />
-    and decreasing longs.
+    and decreasing longs
   </Trans>
 );
 
@@ -24,7 +24,7 @@ const RIGHT_OPAQUE_TOOLTIP = (
   <Trans>
     Execution prices for increasing longs
     <br />
-    and decreasing shorts.
+    and decreasing shorts
   </Trans>
 );
 
@@ -34,7 +34,7 @@ const LEFT_OPAQUE_NO_PRICE_IMPACT_TOOLTIP = (
     <br />
     increasing shorts or decreasing longs at
     <br />
-    this size.
+    this size
   </Trans>
 );
 
@@ -44,7 +44,7 @@ const RIGHT_OPAQUE_NO_PRICE_IMPACT_TOOLTIP = (
     <br />
     increasing longs or decreasing shorts at
     <br />
-    this size.
+    this size
   </Trans>
 );
 
@@ -217,7 +217,7 @@ export const ChartTooltip = forwardRef<
         <br />
         No price impact. Single execution price for
         <br />
-        decreasing longs at this size.
+        decreasing longs at this size
       </Trans>
     );
   } else if (isZeroPriceImpact && !isLogicallyLeft && isOpaqueCloser) {
@@ -232,7 +232,7 @@ export const ChartTooltip = forwardRef<
         <br />
         No price impact. Single execution price for
         <br />
-        decreasing shorts at this size.
+        decreasing shorts at this size
       </Trans>
     );
   } else if (stats.leftOpaqueSize !== null) {
@@ -247,7 +247,7 @@ export const ChartTooltip = forwardRef<
         this size. Max short size: {formatUsd(leftMin)}
         <br />
         <br />
-        Execution prices for decreasing longs.
+        Execution prices for decreasing longs
       </Trans>
     );
   } else if (stats.rightTransparentSize !== null) {
@@ -258,7 +258,7 @@ export const ChartTooltip = forwardRef<
         this size. Max long size: {formatUsd(rightMin)}
         <br />
         <br />
-        Execution prices for decreasing shorts.
+        Execution prices for decreasing shorts
       </Trans>
     );
   }

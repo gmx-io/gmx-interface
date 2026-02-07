@@ -147,7 +147,7 @@ function ReferralCodeForm({
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral code does not exist`,
+      text: t`Code not found`,
       disabled: true,
     };
   } else if (isEdit) {
@@ -393,7 +393,7 @@ function ReferralCodeFormMultichain({
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral code does not exist`,
+      text: t`Code not found`,
       disabled: true,
     };
   } else if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
@@ -466,7 +466,7 @@ function ReferralCodeFormMultichain({
       />
       {srcChainId && (
         <SyntheticsInfoRow
-          label={t`Network Fee`}
+          label={t`Network fee`}
           value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
       )}

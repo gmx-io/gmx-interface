@@ -172,7 +172,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={String(currentReferralsData?.affiliateTotalStats.registeredReferralsCount || 0)}
           label={t`Traders referred`}
-          labelTooltipText={t`Number of traders using your referral code.`}
+          labelTooltipText={t`Number of traders using your referral code`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -200,7 +200,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.volume)}
           label={t`Trading volume`}
-          labelTooltipText={t`Total trading volume from your referrals.`}
+          labelTooltipText={t`Total trading volume from your referrals`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -245,7 +245,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
           label={t`Rebates`}
-          labelTooltipText={t`Your affiliate earnings from referrals.`}
+          labelTooltipText={t`Your affiliate earnings from referrals`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -294,7 +294,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           label={t`Claimable rebates`}
           value={<span className="numbers">{formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}</span>}
-          labelTooltipText={t`Available to claim now.`}
+          labelTooltipText={t`Available to claim now`}
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
@@ -462,7 +462,7 @@ function AffiliatesStats({
               <Trans>Rebates distribution history</Trans>
             </span>
           }
-          tooltipText={t`Distribution history for claimed rebates and airdrops.`}
+          tooltipText={t`Distribution history for claimed rebates and airdrops`}
           bodyPadding={false}
           divider={true}
         >
@@ -492,7 +492,7 @@ function AffiliatesStats({
                     if (rebate.tokens[0] === esGmxAddress) {
                       rebateType = t`V1 esGMX`;
                     } else {
-                      rebateType = t`V1 Airdrop`;
+                      rebateType = t`V1 airdrop`;
                     }
                   } else if (rebate.typeId === RebateDistributionType.Claim) {
                     rebateType = t`V2 claim`;
@@ -549,7 +549,6 @@ function AffiliatesStats({
                                   <Trans>
                                     USD value may be inaccurate. Price data unavailable for{" "}
                                     {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
-                                    .
                                   </Trans>
                                   <br />
                                   <br />
@@ -606,7 +605,7 @@ function AffiliatesStats({
         </Card>
       ) : (
         <EmptyMessage
-          tooltipText={t`Distribution history for claimed rebates and airdrops.`}
+          tooltipText={t`Distribution history for claimed rebates and airdrops`}
           message={t`No rebates distribution history yet`}
         />
       )}

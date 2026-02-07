@@ -213,7 +213,7 @@ export function getOrderErrors(p: {
       });
 
       if (currentAcceptablePriceDeltaBps < 0 && currentAcceptablePriceDeltaBps < orderAcceptablePriceDeltaBps) {
-        const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit Price` : t`Trigger Price`;
+        const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit price` : t`Trigger price`;
         const formattedCurrentAcceptablePriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, {
           signed: true,
         });

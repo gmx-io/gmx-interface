@@ -66,7 +66,7 @@ export function getTxnErrorToast(
   if (errorData.errorMessage === signerAddressError) {
     toastParams.errorContent = (
       <Trans>
-        <div>Order failed: wallet address mismatch.</div>
+        <div>Order failed: wallet address mismatch</div>
         <br />
         <div>Refresh and retry</div>
       </Trans>
@@ -101,7 +101,7 @@ export function getTxnErrorToast(
   ) {
     toastParams.errorContent = (
       <Trans>
-        Order failed due to price volatility, try{" "}
+        Order failed due to price volatility. Try{" "}
         <span
           onClick={() => {
             if (slippageInputId) {
@@ -146,7 +146,7 @@ export function getTxnErrorToast(
       toastParams.errorContent = (
         <div>
           <Trans>
-            RPC error
+            RPC error.
             <br />
             <br />
             Enable{" "}
@@ -296,7 +296,7 @@ export function InvalidSignatureToastContent() {
   return (
     <div>
       <Trans>
-        Invalid signature
+        Invalid signature.
         <br />
         <br />
         Try a different wallet provider, or switch to Classic or One-Click Trading in{" "}
@@ -357,7 +357,7 @@ export function getInsufficientExecutionFeeToastContent({
       <span className="inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
         Express Trading
       </span>{" "}
-      in settings for better reliability
+      in settings for better reliability.
       <br />
       <br />
       Or increase the max network fee buffer {bufferText} in {settingsLink}
@@ -372,7 +372,7 @@ export function getInsufficientExecutionFeeToastContent({
   return (
     <div>
       <Trans>
-        Execution fee validation failed
+        Execution fee validation failed.
         <br />
         <br />
         {suggestText}
@@ -407,7 +407,7 @@ export async function validateSignerAddress(signer: Signer, receiverAddress: str
     if (!skipToast) {
       helperToast.error(
         <Trans>
-          <div>Order failed: wallet address mismatch.</div>
+          <div>Order failed: wallet address mismatch</div>
           <br />
           <div>Refresh and retry</div>
         </Trans>

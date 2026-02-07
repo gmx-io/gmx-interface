@@ -109,7 +109,7 @@ function AssetsList({
   return (
     <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
       <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
-        <Trans>My Assets</Trans>
+        <Trans>My assets</Trans>
       </h2>
 
       {hasAnyAssets && (
@@ -162,7 +162,7 @@ function AssetsList({
           </span>
           {!account && openConnectModal && (
             <ConnectWalletButton onClick={openConnectModal}>
-              <Trans>Connect Wallet</Trans>
+              <Trans>Connect wallet</Trans>
             </ConnectWalletButton>
           )}
         </div>

@@ -233,7 +233,7 @@ export function BridgeInModal({
   const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, refresh`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }

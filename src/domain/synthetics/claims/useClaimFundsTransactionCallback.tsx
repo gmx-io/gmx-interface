@@ -19,7 +19,7 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
           helperToast.success(
             <div className="flex flex-col gap-10">
               <div className="text-body-medium font-medium">
-                <Trans>Processing your claim…</Trans>
+                <Trans>Processing your claim...</Trans>
               </div>
               <div className="flex flex-row gap-10 text-gray-200">
                 <Trans>This may take a few minutes</Trans>

@@ -96,7 +96,7 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (hasOutdatedUi) {
-      return { text: t`Page outdated, please refresh`, disabled: true };
+      return { text: t`Page outdated. Refresh`, disabled: true };
     }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
@@ -167,7 +167,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
   const handleSubmit = useCallback(async () => {
     const onMissingParams = () => {
-      helperToast.error(t`Missing claim parameters, please retry in a few seconds`);
+      helperToast.error(t`Missing claim parameters, retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimPositionPriceImpactFees");
     };
 
@@ -253,7 +253,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (hasOutdatedUi) {
-      return { text: t`Page outdated, please refresh`, disabled: true };
+      return { text: t`Page outdated. Refresh`, disabled: true };
     }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };

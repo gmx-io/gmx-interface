@@ -439,7 +439,7 @@ function TriggerPrice({
         handle={handle}
         content={
           <StatsTooltipRow
-            label={t`Acceptable Price`}
+            label={t`Acceptable price`}
             value={formatUsd(positionOrder.acceptablePrice, {
               displayDecimals: priceDecimals,
               visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -471,7 +471,7 @@ function TriggerPrice({
               <>
                 {isSetAcceptablePriceImpactEnabled && (
                   <div className="pb-8">
-                    <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
+                    <StatsTooltipRow label={t`Acceptable price`} value={acceptablePriceText} showDollar={false} />
                   </div>
                 )}
                 {t`Receive at least ${toAmountText} if executed. Price updates based on fees and price impact.`}
@@ -510,7 +510,7 @@ function TriggerPrice({
         position="bottom-end"
         renderContent={() => (
           <StatsTooltipRow
-            label={t`Acceptable Price`}
+            label={t`Acceptable price`}
             value={
               isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
                 ? "N/A"

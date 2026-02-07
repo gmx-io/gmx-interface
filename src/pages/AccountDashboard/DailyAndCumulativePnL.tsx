@@ -110,7 +110,7 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
     <div className="flex flex-col rounded-8 bg-slate-900" ref={cardRef}>
       <div className="flex items-center justify-between px-20 py-15">
         <div className="text-20 font-medium">
-          <Trans>Daily and Cumulative PnL</Trans>
+          <Trans>Daily and cumulative PnL</Trans>
         </div>
         {isMobile ? null : <div className="flex flex-wrap items-stretch justify-end gap-8 py-8">{buttons}</div>}
       </div>

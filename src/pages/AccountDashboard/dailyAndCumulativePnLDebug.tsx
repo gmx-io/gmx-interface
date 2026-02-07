@@ -106,7 +106,7 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
   }
 
   if (!lastPoint) {
-    return t`Debug values are not available`;
+    return t`Debug values unavailable`;
   }
 
   return [

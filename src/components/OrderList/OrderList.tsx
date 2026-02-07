@@ -160,7 +160,7 @@ export function OrderList({
     if (!signer || !provider) return;
 
     if (hasOutdatedUi) {
-      helperToast.error(t`Page outdated, please refresh`);
+      helperToast.error(t`Page outdated. Refresh`);
       return;
     }
 

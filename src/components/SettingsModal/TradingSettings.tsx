@@ -122,7 +122,7 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading.</Trans>
+                  <Trans>Smart wallets are not supported on Express or One-Click Trading</Trans>
                 ) : undefined
               }
               chip={
@@ -141,7 +141,7 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading.</Trans>
+                  <Trans>Smart wallets are not supported on Express or One-Click Trading</Trans>
                 ) : undefined
               }
               info={
@@ -266,9 +266,7 @@ export function TradingSettings({
             title={<Trans>Max network fee buffer</Trans>}
             description={
               <div>
-                <Trans>
-                  Max network fee includes buffer for gas spikes. Unused fees refunded.
-                </Trans>
+                <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>
                 <br />
                 <br />
                 <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee-buffer">

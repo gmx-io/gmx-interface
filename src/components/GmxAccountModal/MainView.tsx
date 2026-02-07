@@ -360,9 +360,7 @@ const ActionButtons = () => {
     <div className="flex gap-12">
       {isAvalancheSettlement ? (
         <TooltipWithPortal
-          content={
-            <Trans>Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet.</Trans>
-          }
+          content={<Trans>Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet.</Trans>}
           as="div"
           position="bottom"
           variant="none"
@@ -474,7 +472,7 @@ const FundingHistorySection = () => {
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity matching your search</Trans>
+            <Trans>No funding activity matching search</Trans>
           </div>
         )}
         {isLoading && (

@@ -219,7 +219,7 @@ export const formatPositionMessage = (
       error?.args?.price !== undefined ? "" : undefined,
       error?.args?.price !== undefined
         ? infoRow(
-            t`Order Execution Price`,
+            t`Order execution price`,
             formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
               displayDecimals: marketPriceDecimals,
               visualMultiplier: tradeAction.indexToken.visualMultiplier,
@@ -252,7 +252,7 @@ export const formatPositionMessage = (
         priceComment: lines(
           t`Mark price for the order.`,
           "",
-          infoRow(t`Order Trigger Price`, t`N/A`),
+          infoRow(t`Order trigger price`, t`N/A`),
           ...priceImpactLines
         ),
         acceptablePrice: t`N/A`,
@@ -309,7 +309,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
         ...priceImpactLines
       ),
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
@@ -331,13 +331,13 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
         isAcceptablePriceUseful
-          ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
+          ? infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
         error?.args?.price !== undefined
           ? infoRow(
-              t`Order Execution Price`,
+              t`Order execution price`,
               formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
                 displayDecimals: marketPriceDecimals,
                 visualMultiplier: tradeAction.indexToken.visualMultiplier,
@@ -373,7 +373,7 @@ export const formatPositionMessage = (
       error?.args?.price !== undefined ? "" : undefined,
       error?.args?.price !== undefined
         ? infoRow(
-            t`Order Execution Price`,
+            t`Order execution price`,
             formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
               displayDecimals: marketPriceDecimals,
               visualMultiplier: tradeAction.indexToken.visualMultiplier,
@@ -440,7 +440,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
         ...priceImpactLines
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
@@ -460,11 +460,11 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
-        infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice),
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice),
         error?.args?.price !== undefined
           ? infoRow(
-              t`Order Execution Price`,
+              t`Order execution price`,
               formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
                 displayDecimals: marketPriceDecimals,
                 visualMultiplier: tradeAction.indexToken.visualMultiplier,
@@ -501,7 +501,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
         ...priceImpactLines
       ),
       pnl: formattedPnl,
@@ -521,13 +521,13 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the order.`,
         "",
-        infoRow(t`Order Trigger Price`, triggerPriceInequality + formattedTriggerPrice),
+        infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
         isAcceptablePriceUseful
-          ? infoRow(t`Order Acceptable Price`, acceptablePriceInequality + formattedAcceptablePrice)
+          ? infoRow(t`Order acceptable price`, acceptablePriceInequality + formattedAcceptablePrice)
           : undefined,
         error?.args?.price !== undefined
           ? infoRow(
-              t`Order Execution Price`,
+              t`Order execution price`,
               formatUsd(parseContractPrice(error.args.price, tradeAction.indexToken.decimals), {
                 displayDecimals: marketPriceDecimals,
                 visualMultiplier: tradeAction.indexToken.visualMultiplier,
@@ -649,34 +649,34 @@ export const formatPositionMessage = (
         "",
         t`This position was liquidated as the max. leverage of ${formattedMaxLeverage} was exceeded when taking into account fees.`,
         "",
-        infoRow(t`Initial Collateral`, formattedInitialCollateral!),
+        infoRow(t`Initial collateral`, formattedInitialCollateral!),
         infoRow(t`PnL`, {
           text: formattedBasePnl,
           state: numberToState(tradeAction.basePnlUsd!),
         }),
-        infoRow(t`Borrow Fee`, {
+        infoRow(t`Borrow fee`, {
           text: formattedBorrowFee,
           state: "error",
         }),
-        infoRow(t`Funding Fee`, {
+        infoRow(t`Funding fee`, {
           text: formattedFundingFee,
           state: "error",
         }),
-        infoRow(t`Close Fee`, {
+        infoRow(t`Close fee`, {
           text: formattedPositionFee,
           state: "error",
         }),
         "",
-        infoRow(t`Min. Required Collateral`, formattedMinCollateral),
-        infoRow(t`Collateral at Liquidation`, formattedLeftoverCollateral),
+        infoRow(t`Min. required collateral`, formattedMinCollateral),
+        infoRow(t`Collateral at liquidation`, formattedLeftoverCollateral),
         "",
         ...priceImpactLines,
-        infoRow(t`Liquidation Fee`, {
+        infoRow(t`Liquidation fee`, {
           text: formattedLiquidationFee,
           state: "error",
         }),
         "",
-        infoRow(t`Returned Collateral`, formattedReturnedCollateral)
+        infoRow(t`Returned collateral`, formattedReturnedCollateral)
       ),
       isActionError: true,
       pnl: formattedPnl,
@@ -713,7 +713,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
 
       lines.push(
-        infoRow(t`Net Price Impact`, {
+        infoRow(t`Net price impact`, {
           text: formattedNetPriceImpact!,
           state: numberToState(tradeAction.totalImpactUsd!),
         })
@@ -722,7 +722,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
 
       lines.push(
-        infoRow(t`Price Impact`, {
+        infoRow(t`Price impact`, {
           text: formattedPriceImpact!,
           state: numberToState(tradeAction.priceImpactUsd!),
         })
@@ -740,7 +740,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
     const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
 
     lines.push(
-      infoRow(t`Price Impact`, {
+      infoRow(t`Price impact`, {
         text: formattedPriceImpact!,
         state: numberToState(tradeAction.priceImpactUsd!),
       })
@@ -752,7 +752,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       const formattedNetPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
 
       lines.push(
-        infoRow(t`Net Price Impact`, {
+        infoRow(t`Net price impact`, {
           text: formattedNetPriceImpact!,
           state: numberToState(tradeAction.totalImpactUsd!),
         })
@@ -761,7 +761,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
       const formattedPriceImpact = formatDeltaUsd(tradeAction.priceImpactUsd);
 
       lines.push(
-        infoRow(t`Price Impact`, {
+        infoRow(t`Price impact`, {
           text: formattedPriceImpact!,
           state: numberToState(tradeAction.priceImpactUsd!),
         })

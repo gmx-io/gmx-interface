@@ -112,7 +112,7 @@ export const DepositStatusView = () => {
       <div className="mt-12 flex justify-between rounded-8 border-1/2 border-slate-600 bg-slate-950/50">
         <div className="flex flex-col gap-4 p-12">
           <h4 className="text-14 font-medium">
-            <Trans>Want to trade faster with One-Click?</Trans>
+            <Trans>Want to trade faster with One-Click Trading?</Trans>
           </h4>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-8">

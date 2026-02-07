@@ -334,9 +334,7 @@ export default function EarnYieldOverview() {
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix=""
-                tooltip={
-                  <Trans>GMX staking unavailable on Botanix. Use Arbitrum or Avalanche.</Trans>
-                }
+                tooltip={<Trans>GMX staking unavailable on Botanix. Use Arbitrum or Avalanche.</Trans>}
                 disabled
               />
             }
@@ -398,7 +396,7 @@ export default function EarnYieldOverview() {
     <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
       <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <h4 className="text-h3 py-20 text-typography-primary max-xl:text-body-large max-xl:pb-12 max-xl:pt-0">
-        <Trans>Current Yield Landscape</Trans>
+        <Trans>Current yield landscape</Trans>
       </h4>
 
       {isTabsMode ? (

@@ -107,7 +107,7 @@ export function ExpressTradingWarningCard({
     const nativeToken = getNativeToken(chainId);
     icon = ExpressIcon;
     content = (
-      <Trans>Express Trading is not available for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
+      <Trans>Express Trading is unavailable for wrapping or unwrapping native token {nativeToken.symbol}.</Trans>
     );
   } else if (shouldShowNativeTokenWarning) {
     const wrappedToken = getWrappedToken(chainId);
@@ -116,7 +116,7 @@ export function ExpressTradingWarningCard({
     icon = ExpressIcon;
     content = (
       <Trans>
-        Express Trading is not available using network's native token {nativeToken.symbol}. Consider using{" "}
+        Express Trading is unavailable using network's native token {nativeToken.symbol}. Consider using{" "}
         {wrappedToken.symbol} instead.
       </Trans>
     );
@@ -128,7 +128,7 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    content = <Trans>One-Click Approval nonce expired. Please sign a new approval.</Trans>;
+    content = <Trans>One-Click Approval nonce expired. Sign a new approval.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
@@ -146,8 +146,8 @@ export function ExpressTradingWarningCard({
     icon = OneClickIcon;
     content = (
       <Trans>
-        One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Please
-        sign a new approval to continue.
+        One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Sign a
+        new approval to continue.
       </Trans>
     );
     buttonText = <Trans>Re-sign</Trans>;

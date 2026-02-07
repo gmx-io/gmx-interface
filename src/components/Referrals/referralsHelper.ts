@@ -238,7 +238,7 @@ export function getCodeError(value) {
   }
 
   if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {
-    return t`Only letters, numbers, and underscores allowed.`;
+    return t`Only letters, numbers, and underscores allowed`;
   }
   return "";
 }

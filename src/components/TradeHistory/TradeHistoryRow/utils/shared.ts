@@ -168,7 +168,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
 
 export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
-    return t`Execution price didn't meet acceptable price. Order will fill when condition is met.`;
+    return t`Execution price didn't meet acceptable price. Order will fill when the condition is met.`;
   } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
     return t`Execution price didn't meet acceptable price.`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && !isMarketOrder) {

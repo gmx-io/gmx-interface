@@ -294,7 +294,7 @@ export function BridgeOutModal({
   } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh to continue`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }

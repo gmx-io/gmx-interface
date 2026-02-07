@@ -204,7 +204,7 @@ function PositionShare({
           setUploadedImageInfo(imageInfo);
         } catch (error) {
           setUploadedImageInfo(null);
-          setUploadedImageError(t`Image generation failed. Refresh and try again.`);
+          setUploadedImageError(t`Image generation failed. Refresh and try again`);
         }
       }
     })();
@@ -298,7 +298,7 @@ function PositionShare({
       contentClassName="md:!max-w-[500px]"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label={t`Share your successful GMX trade on X`}
+      label={t`Share your GMX trade on X`}
       contentPadding={false}
       withMobileBottomPosition
     >

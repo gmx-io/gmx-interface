@@ -23,9 +23,8 @@ export function GmSwapWarningsRow({
     warnings.push(
       <AlertInfoCard className="mb-14" type="error" key="avalancheGmxAccountWarning" hideClose>
         <Trans>
-          Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing
-          additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a
-          settlement network.
+          Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions and depositing
+          additional funds to Avalanche GMX accounts is unavailable. Switch to Arbitrum as a settlement network.
         </Trans>
       </AlertInfoCard>
     );

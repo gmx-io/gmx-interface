@@ -41,7 +41,7 @@ export function PoolSelector2(props: Props) {
   const disabled = props.options?.length === 1;
 
   return (
-    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select Pool`} disabled={disabled} qa="pool-selector">
+    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled} qa="pool-selector">
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </SelectorBase>
   );
@@ -130,7 +130,7 @@ function PoolListItemDesktop({
           "text-green-500": netRateState === "success",
         })}
       >
-        <Trans>{formattedNetRate} / 1h</Trans>
+        <Trans>{formattedNetRate} / 1H</Trans>
       </TableTd>
     </SelectorBaseDesktopRow>
   );

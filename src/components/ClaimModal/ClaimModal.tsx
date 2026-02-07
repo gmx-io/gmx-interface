@@ -103,7 +103,7 @@ function ClaimModalSettlementChain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh to continue`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }
@@ -282,7 +282,7 @@ function ClaimModalMultichain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh to continue`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }

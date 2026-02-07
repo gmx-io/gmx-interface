@@ -79,7 +79,7 @@ export const actionTextMap: Partial<
   "Deposit-OrderExecuted": msg`Deposit`,
   "Deposit-OrderCancelled": msg`Failed deposit`,
 
-  "Withdraw-OrderCreated": msg`Request Withdraw`,
+  "Withdraw-OrderCreated": msg`Request withdraw`,
   "Withdraw-OrderExecuted": msg`Withdraw`,
   "Withdraw-OrderCancelled": msg`Failed withdraw`,
 };

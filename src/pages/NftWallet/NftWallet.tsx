@@ -26,16 +26,16 @@ export default function NftWallet() {
       return t`Wallet not connected`;
     }
     if (!receiver || receiver.length === 0) {
-      return t`Enter Receiver Address`;
+      return t`Enter receiver address`;
     }
     if (!isAddress(receiver, { strict: false })) {
-      return t`Invalid Receiver Address`;
+      return t`Invalid receiver address`;
     }
     if (!nftAddress || nftAddress.length === 0) {
-      return t`Enter NFT Address`;
+      return t`Enter NFT address`;
     }
     if (!isAddress(nftAddress, { strict: false })) {
-      return t`Invalid NFT Address`;
+      return t`Invalid NFT address`;
     }
     if (!nftId || nftId.toString().length === 0) {
       return t`Enter NFT ID`;
@@ -48,7 +48,7 @@ export default function NftWallet() {
       return transferError;
     }
     if (isSubmitting) {
-      return t`Tranferring...`;
+      return t`Transferring...`;
     }
     return t`Transfer NFT`;
   }
@@ -61,8 +61,8 @@ export default function NftWallet() {
     setIsSubmitting(true);
     const contract = new ethers.Contract(nftAddress, abis.ERC721, signer);
     callContract(chainId, contract, "transferFrom", [account, receiver, nftId], {
-      sentMsg: t`Transfer submitted.`,
-      failMsg: t`Transfer failed.`,
+      sentMsg: t`Transfer submitted`,
+      failMsg: t`Transfer failed`,
     }).finally(() => {
       setIsSubmitting(false);
     });
@@ -73,13 +73,13 @@ export default function NftWallet() {
       <div className="NftWallet Page page-layout">
         <div className="Page-title-section">
           <div className="Page-title">
-            <Trans>NFT Wallet</Trans>
+            <Trans>NFT wallet</Trans>
           </div>
         </div>
         <div className="NftWallet-content">
           <div className="NftWallet-row">
             <label>
-              <Trans>Receiver Address</Trans>
+              <Trans>Receiver address</Trans>
             </label>
             <div>
               <input type="text" value={receiver} onChange={(e) => setReceiver(e.target.value)} />
@@ -87,7 +87,7 @@ export default function NftWallet() {
           </div>
           <div className="NftWallet-row">
             <label>
-              <Trans>NFT Address</Trans>
+              <Trans>NFT address</Trans>
             </label>
             <div>
               <input type="text" value={nftAddress} onChange={(e) => setNftAddress(e.target.value)} />

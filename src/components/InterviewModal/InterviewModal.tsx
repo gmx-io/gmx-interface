@@ -37,7 +37,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
 
   if (type === "lp") {
     return (
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous chat with GMX Team`}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous chat with GMX team`}>
         <div className="max-w-xl">
           <Trans>
             Help us improve GMX for Liquidity Providers. For security, we won't contact you first. Send "I'm a Liquidity
@@ -56,7 +56,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             <span className="font-400 text-green-500">
               100 <TokenSymbolWithIcon symbol="USDC" />
             </span>{" "}
-            for your feedback.
+            for your feedback
           </Trans>
         </div>
       </Modal>

@@ -51,7 +51,7 @@ export function RpcDebugSettings() {
   const debugEndpoints = _debugRpcTracker.getDebugRpcEndpoints(chainId);
 
   return (
-    <ExpandableRow title={<Trans>RPC Debug</Trans>} open={open} onToggle={setOpen}>
+    <ExpandableRow title={<Trans>RPC debug</Trans>} open={open} onToggle={setOpen}>
       <div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-12 pr-16">
         {Object.keys(FLAG_LABELS).map((flag) => (
           <ToggleSwitch

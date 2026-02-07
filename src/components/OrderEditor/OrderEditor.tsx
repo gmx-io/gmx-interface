@@ -518,7 +518,7 @@ export function OrderEditor(p: Props) {
   const submitButtonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, refresh`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }

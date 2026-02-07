@@ -47,7 +47,7 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
               experience may vary slightly.
               <br />
               <br />
-              Clicking on the button below will open GMTrade in a new tab.
+              The button below will open GMTrade in a new tab.
             </Trans>
           </p>
 

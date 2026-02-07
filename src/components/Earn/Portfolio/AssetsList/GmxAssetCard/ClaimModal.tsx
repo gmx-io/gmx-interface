@@ -128,7 +128,7 @@ export function ClaimModal(props: {
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated, please refresh`;
+      return t`Page outdated. Refresh`;
     }
     if (!hasAnyPendingRewards) {
       return <Trans>No rewards</Trans>;
@@ -137,10 +137,10 @@ export function ClaimModal(props: {
       return <Trans>Select rewards to claim</Trans>;
     }
     if (isApproving) {
-      return <Trans>Pending GMX approval</Trans>;
+      return <Trans>Pending GMX approval...</Trans>;
     }
     if (needApproval) {
-      return <Trans>Approve GMX to be spent</Trans>;
+      return <Trans>Approve GMX</Trans>;
     }
     if (isClaiming) {
       return <Trans>Claiming...</Trans>;
@@ -179,9 +179,9 @@ export function ClaimModal(props: {
         isNativeTokenToClaim ? shouldConvertWeth : false,
       ],
       {
-        sentMsg: t`Claim submitted.`,
-        failMsg: t`Claim failed.`,
-        successMsg: t`Claim completed.`,
+        sentMsg: t`Claim submitted`,
+        failMsg: t`Claim failed`,
+        successMsg: t`Claim completed`,
         successDetailsMsg: !shouldStakeGmx ? gmxUsageOptionsMsg : undefined,
         setPendingTxns,
       }
@@ -247,7 +247,7 @@ export function ClaimModal(props: {
     <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={t`Claim Rewards`}
+      label={t`Claim rewards`}
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12 pb-20 ">
@@ -348,7 +348,7 @@ function ClaimRewardOption({
         <div className="flex items-center gap-4">
           <TokenIcon symbol={tokenSymbol} displaySize={20} className="!rounded-0" />
           <span className="text-body-medium font-medium text-typography-primary">
-            <Trans>Claim {tokenSymbol} Rewards</Trans>
+            <Trans>Claim {tokenSymbol} rewards</Trans>
           </span>
         </div>
         <span className={cx("text-body-medium ml-auto numbers", "text-typography-secondary")}>{amountText}</span>
@@ -366,7 +366,7 @@ function ClaimRewardOption({
               Convert {tokenSymbol} to {nativeTokenSymbol}
             </Trans>
           ) : (
-            <Trans>Stake {tokenSymbol} Rewards</Trans>
+            <Trans>Stake {tokenSymbol} rewards</Trans>
           )}
         </span>
       </Checkbox>

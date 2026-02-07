@@ -30,7 +30,7 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: msg`Market Orders`,
+    groupName: msg`Market orders`,
     items: [
       {
         orderType: [OrderType.MarketIncrease],
@@ -99,7 +99,7 @@ const GROUPS: Groups = [
     ],
   },
   {
-    groupName: msg`Trigger Orders`,
+    groupName: msg`Trigger orders`,
     items: [
       TradeActionType.OrderExecuted,
       TradeActionType.OrderCreated,

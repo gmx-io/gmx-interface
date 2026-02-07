@@ -79,8 +79,7 @@ export default function Ecosystem() {
               subtitle={
                 <Trans>
                   Projects developed by the GMX community. <br />
-                  Please exercise caution when interacting with any app, apps are fully maintained by community
-                  developers.
+                  Exercise caution when interacting with any app, as apps are fully maintained by community developers.
                 </Trans>
               }
             />

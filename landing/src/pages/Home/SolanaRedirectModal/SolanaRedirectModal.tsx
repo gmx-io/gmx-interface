@@ -23,7 +23,7 @@ export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalP
           </Trans>
         </p>
         <p>
-          <Trans>Clicking on the button below will open GMTrade in a new tab.</Trans>
+          <Trans>Opens GMTrade in a new tab.</Trans>
         </p>
 
         <button

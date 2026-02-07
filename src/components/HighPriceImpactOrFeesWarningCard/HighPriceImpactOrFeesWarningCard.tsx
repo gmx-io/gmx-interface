@@ -36,7 +36,7 @@ export function HighPriceImpactOrFeesWarningCard({
     if (priceImpactWarningState.shouldShowWarningForCollateral && formattedCap) {
       warnings.push({
         id: "high-impact-on-collateral",
-        key: t`High Net Price Impact`,
+        key: t`High net price impact`,
         value: undefined,
         tooltipContent: (
           <Trans>

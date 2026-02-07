@@ -223,7 +223,7 @@ export function TradeBoxAdvancedGroups({
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap && isSwap ? (
-        <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />
+        <SyntheticsInfoRow label={<Trans>Acceptable swap impact</Trans>} value={<Trans>N/A</Trans>} />
       ) : null}
 
       {/* only when isSwap */}

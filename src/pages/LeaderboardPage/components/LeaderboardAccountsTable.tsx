@@ -438,7 +438,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
     if (hasSomeCapital)
       msg = t`Minimum ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,
-      })} capital required to qualify for rankings.`;
+      })} capital required for rankings.`;
     else if (isCompetition) msg = t`No eligible trades during the competition window.`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);

@@ -336,7 +336,7 @@ export function PositionItem(p: Props) {
       if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
         const symbol = p.position.collateralToken.symbol;
         const indexName = p.position.indexName;
-        liqPriceWarning = t`Your ${symbol} collateral exceeds the ${indexName} short position size. Collateral value rises with the index, covering any losses—no liquidation price.`;
+        liqPriceWarning = t`Your ${symbol} collateral exceeds the ${indexName} short position size. Collateral value rises with the index, covering any losses—no liquidation price`;
       } else if (
         p.position.isLong &&
         p.position.collateralToken.isStable &&
@@ -344,7 +344,7 @@ export function PositionItem(p: Props) {
       ) {
         const symbol = p.position.collateralToken.symbol;
         const indexName = p.position.indexName;
-        liqPriceWarning = t`Your ${symbol} collateral exceeds the ${indexName} long position size. Stable collateral covers any losses—no liquidation price.`;
+        liqPriceWarning = t`Your ${symbol} collateral exceeds the ${indexName} long position size. Stable collateral covers any losses—no liquidation price`;
       }
     }
 

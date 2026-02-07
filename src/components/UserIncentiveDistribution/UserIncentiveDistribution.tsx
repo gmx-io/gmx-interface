@@ -208,7 +208,7 @@ export default function UserIncentiveDistribution() {
 
 function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
   const isCompetition = typeId >= 2000n && typeId < 3000n;
-  return isCompetition ? t`Competition Airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
+  return isCompetition ? t`Competition airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
 }
 
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {

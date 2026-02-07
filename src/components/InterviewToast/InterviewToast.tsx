@@ -14,7 +14,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
   if (type === "trader") {
     return (
       <div>
-        <Trans>We value your experience and invite you to an anonymous one-on-one chat</Trans>
+        <Trans>Join an anonymous one-on-one chat to share your experience</Trans>
         <br />
         <br />
         <ColorfulButtonLink color="blue" onClick={onButtonClick}>
@@ -34,9 +34,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
   if (type === "lp") {
     return (
       <div>
-        <Trans>
-          We value your experience as a GMX Liquidity Provider and invite you to an anonymous one-on-one chat
-        </Trans>
+        <Trans>Join an anonymous one-on-one chat to share your GMX Liquidity Provider experience</Trans>
         <br />
         <br />
         <Trans>

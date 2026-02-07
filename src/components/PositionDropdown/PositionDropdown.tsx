@@ -82,7 +82,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
                 <IncreaseMarket className="size-16" />
                 <p>
-                  <Trans>Increase size (market)</Trans>
+                  <Trans>Increase size (Market)</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -92,7 +92,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
                 <IncreaseLimit className="size-16" />
                 <p>
-                  <Trans>Increase size (limit)</Trans>
+                  <Trans>Increase size (Limit)</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -102,7 +102,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleStopMarketIncreaseSize}>
                 <IncreaseMarket className="size-16" />
                 <p>
-                  <Trans>Increase size (stop market)</Trans>
+                  <Trans>Increase size (Stop Market)</Trans>
                 </p>
               </div>
             </Menu.Item>

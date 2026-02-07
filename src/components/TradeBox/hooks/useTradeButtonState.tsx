@@ -275,7 +275,7 @@ export function useTradeboxButtonState({
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-                <Trans>Set Max Leverage</Trans>
+                <Trans>Set max leverage</Trans>
               </span>
             </>
           );
@@ -499,7 +499,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Loading Express params...`}
+            {t`Loading Express parameters...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -531,7 +531,7 @@ export function useTradeboxButtonState({
     if (stage === "processing") {
       return {
         ...commonState,
-        text: t`Creating order`,
+        text: t`Creating order...`,
         disabled: true,
       };
     }
@@ -802,7 +802,7 @@ function NoSwapPathTooltipContent({
           <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
             Swap {fromToken.symbol} to STBTC
           </span>{" "}
-          to use {collateralToken.symbol} as collateral.
+          to use {collateralToken.symbol} as collateral
         </Trans>
       );
     }
@@ -825,7 +825,7 @@ function NoSwapPathTooltipContent({
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} is required for collateral.
         <br />
         <br />
-        There is no swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
+        No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
         <br />
         <br />

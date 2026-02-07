@@ -169,7 +169,7 @@ export default function BuyGMX() {
                 <div className="App-card-content">
                   <div className="BuyGMXGLP-description">
                     <Trans>
-                      Transfer {nativeTokenSymbol} from other networks to {chainName} using these options.
+                      Transfer {nativeTokenSymbol} from other networks to {chainName}.
                     </Trans>
                   </div>
                   <div className="buttons-group">

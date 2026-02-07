@@ -17,8 +17,8 @@ export function FaqSection() {
                 other supported assets, you can earn up to ~35% annualized yield on the largest pools.
               </p>
               <ul className="list-disc pl-14">
-                <li> GM Pools – choose single-market exposure for targeted returns</li>
-                <li> GLV Vaults – auto-diversify across markets for a hands-off strategy</li>
+                <li> GM pools – choose single-market exposure for targeted returns</li>
+                <li> GLV vaults – auto-diversify across markets for a hands-off strategy</li>
               </ul>
               <p>
                 Historically, both options have outperformed standard LP benchmarks. See live stats on the Pools page.

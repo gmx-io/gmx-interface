@@ -157,7 +157,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [isVisible]);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
-    if (hasOutdatedUi) return [t`Page outdated, please refresh`, true];
+    if (hasOutdatedUi) return [t`Page outdated. Refresh`, true];
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];

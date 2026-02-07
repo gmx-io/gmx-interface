@@ -187,7 +187,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <div className="h-8" />
             <p>
               <Trans>
-                Max network fee includes buffer for gas spikes. Unused fees refunded on execution.{" "}
+                Max network fee includes a buffer for gas spikes. Unused fees refunded on execution.{" "}
                 <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading#execution-fee">
                   Read more
                 </ExternalLink>
