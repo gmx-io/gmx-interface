@@ -125,6 +125,7 @@ export interface OracleFetcher {
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
+  fetchUiFlags(): Promise<Record<string, boolean>>;
   handleFailure(method: string): void;
 }
 

@@ -2797,6 +2797,10 @@ msgstr "Afficher les Valeurs de Débogage"
 msgid "Annualized data based on the past 7 days."
 msgstr "Données annualisées basées sur les 7 derniers jours."
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "Aucune liquidité n'est disponible pour augmenter les shorts pour<0/>cette taille. Taille short max : {0}<1/><2/>Prix d'exécution pour diminuer les longs."
@@ -4798,6 +4802,10 @@ msgstr "Yield Farming"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Approbation en cours…"
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
