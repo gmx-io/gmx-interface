@@ -10,6 +10,7 @@ import {
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   getChainName,
+  MEGAETH,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon } from "config/icons";
@@ -57,6 +58,12 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     value: SOURCE_ETHEREUM_MAINNET,
     icon: getChainIcon(SOURCE_ETHEREUM_MAINNET),
     color: "#627EEA",
+  },
+  {
+    label: getChainName(MEGAETH),
+    value: MEGAETH,
+    icon: getChainIcon(MEGAETH),
+    color: "#F7931A",
   },
 ];
 

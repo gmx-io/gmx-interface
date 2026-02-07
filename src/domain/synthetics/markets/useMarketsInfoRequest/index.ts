@@ -46,10 +46,6 @@ export function useMarketsInfoRequest(
       return apiMarketsInfoData as RawMarketsInfoData;
     }
 
-    if (fastMarketInfoData) {
-      return fastMarketInfoData;
-    }
-
     if (marketsAddresses && rpcMarketsInfoDataReady) {
       return composeRawMarketsInfoData({
         marketsAddresses,
@@ -58,6 +54,10 @@ export function useMarketsInfoRequest(
         marketsConfigsData,
         marketsConstants,
       });
+    }
+
+    if (fastMarketInfoData) {
+      return fastMarketInfoData;
     }
 
     return undefined;

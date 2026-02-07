@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId, MEGAETH } from "./chains";
 
 const API_URLS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "https://gmx-api-arbitrum-dev-ikpem.ondigitalocean.app/api/v1",
@@ -10,6 +10,8 @@ const API_URLS: Record<ContractsChainId, string> = {
   [BOTANIX]: "",
 
   [ARBITRUM_SEPOLIA]: "",
+
+  [MEGAETH]: "",
 };
 
 export function getApiUrl(chainId: number) {
