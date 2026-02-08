@@ -33,11 +33,10 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
           buttonText: _(buttonText),
           tooltipText: (
             <Trans>
-              Claimable positive funding fees.
+              Positive funding fees ready to claim.
               <br />
               <br />
-              They become available after modifying the position by increasing or decreasing it, depositing or
-              withdrawing collateral, or settling the fees using the "Settle" button.
+              Available after changing position size, adjusting collateral, or clicking "Settle".
             </Trans>
           ),
           onButtonClick: onClaimClick,
@@ -47,13 +46,10 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
           buttonText: _(buttonText),
           tooltipText: (
             <Trans>
-              Claimable price impact rebates.
-              <br />
-              <br />
+              Price impact rebates ready to claim.{" "}
               <ExternalLink newTab href="https://docs.gmx.io/docs/trading/#price-impact-rebates">
                 Read more
               </ExternalLink>
-              .
             </Trans>
           ),
           onButtonClick: onClaimablePositionPriceImpactFeesClick,

@@ -17,7 +17,7 @@ export function AbFlagSettings() {
   return (
     <ExpandableRow
       open={isShown}
-      title={t`AB Flags`}
+      title={t`AB flags`}
       onToggle={toggleAbFlags}
       disableCollapseOnError={false}
       contentClassName="flex flex-col gap-16 pt-8"

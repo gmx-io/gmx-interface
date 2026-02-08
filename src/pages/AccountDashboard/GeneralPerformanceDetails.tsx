@@ -23,8 +23,8 @@ const bucketLabelMap = {
   yesterday: msg`Yesterday`,
   week: msg`Last 7d`,
   month: msg`Last 30d`,
-  year: msg`This Year`,
-  all: msg`All Time`,
+  year: msg`This year`,
+  all: msg`All time`,
 };
 
 export function GeneralPerformanceDetails({ chainId, account }: { chainId: number; account: Address }) {
@@ -33,7 +33,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
       <div className="flex items-center gap-8 border-b-1/2 border-slate-600 p-20 text-20 font-medium">
-        <Trans>General Performance Details</Trans>
+        <Trans>General performance details</Trans>
         <TooltipWithPortal content={t`Performance and chart data are based on UTC times.`} variant="none">
           <InfoIconStroke className="h-16 w-16 cursor-help text-typography-secondary" />
         </TooltipWithPortal>
@@ -44,18 +44,18 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
           <thead>
             <TableTheadTr>
               <TableTh>
-                <Trans>Date</Trans>
+                <Trans>DATE</Trans>
               </TableTh>
               <TableTh>
-                <Trans>Volume</Trans>
+                <Trans>VOLUME</Trans>
               </TableTh>
               <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
-                  content={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                  content={t`Total PnL (realized + unrealized) after fees and price impact.`}
                   variant="iconStroke"
                 >
-                  <Trans>PnL ($)</Trans>
+                  <Trans>PNL ($)</Trans>
                 </TooltipWithPortal>
               </TableTh>
               <TableTh>
@@ -64,19 +64,19 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                   variant="iconStroke"
                   content={
                     <Trans>
-                      The PnL ($) compared to the capital used.
+                      Return on capital used (PnL / capital).
                       <br />
                       <br />
-                      The capital used is calculated as the highest value of [
-                      <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                      Capital used = max(
+                      <i>sum of collateral of open positions - realized PnL + starting pending PnL</i>).
                     </Trans>
                   }
                 >
-                  <Trans>PnL (%)</Trans>
+                  <Trans>PNL (%)</Trans>
                 </TooltipWithPortal>
               </TableTh>
               <TableTh className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right">
-                <Trans>Win / Loss</Trans>
+                <Trans>WIN/LOSS</Trans>
               </TableTh>
             </TableTheadTr>
           </thead>
@@ -132,7 +132,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
                   valueClassName="numbers"
                 />
                 <StatsTooltipRow
-                  label={t`Start Unrealized PnL`}
+                  label={t`Start unrealized PnL`}
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
                   value={formatUsd(row.startUnrealizedPnlUsd)}
@@ -156,7 +156,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           })}
           content={
             <StatsTooltipRow
-              label={t`Capital Used`}
+              label={t`Capital used`}
               showDollar={false}
               value={formatUsd(row.usedCapitalUsd)}
               valueClassName="numbers"
@@ -173,14 +173,14 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
           content={
             <>
               <StatsTooltipRow
-                label={t`Total Trades`}
+                label={t`Total trades`}
                 showDollar={false}
                 value={String(row.wins + row.losses)}
                 valueClassName="numbers"
               />
               {row.winsLossesRatioBps !== undefined && (
                 <StatsTooltipRow
-                  label={t`Win Rate`}
+                  label={t`Win rate`}
                   showDollar={false}
                   value={formatPercentage(row.winsLossesRatioBps)}
                   valueClassName="numbers"

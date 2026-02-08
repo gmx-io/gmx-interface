@@ -98,7 +98,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
                     alt="Proof of Reserves"
                   />
                   <p>
-                    <Trans>Proof of Reserves</Trans>
+                    <Trans>Proof of reserves</Trans>
                   </p>
                 </ExternalLink>
               )}

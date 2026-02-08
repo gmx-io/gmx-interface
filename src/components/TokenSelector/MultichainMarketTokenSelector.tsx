@@ -141,7 +141,7 @@ export function MultichainMarketTokenSelector({
       value: "wallet",
       label: (
         <span className="whitespace-nowrap">
-          <Trans>Wallet Balance</Trans>
+          <Trans>Wallet</Trans>
         </span>
       ),
     };
@@ -150,7 +150,7 @@ export function MultichainMarketTokenSelector({
       value: "gmxAccount",
       label: (
         <span className="whitespace-nowrap">
-          <Trans>GMX Account Balance</Trans>
+          <Trans>GMX Account</Trans>
         </span>
       ),
     };

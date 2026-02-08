@@ -171,23 +171,23 @@ function AffiliatesStats({
       <div className="grid grid-cols-4 max-lg:grid-cols-1">
         <ReferralInfoCard
           value={String(currentReferralsData?.affiliateTotalStats.registeredReferralsCount || 0)}
-          label={t`Traders Referred`}
-          labelTooltipText={t`Amount of traders you referred.`}
+          label={t`Traders referred`}
+          labelTooltipText={t`Number of traders using your referral code`}
           tooltipContent={
             <>
               <StatsTooltipRow
-                label={t`Traders Referred on Arbitrum`}
+                label={t`Traders referred on Arbitrum`}
                 value={arbitrumData.affiliateTotalStats.registeredReferralsCount}
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={t`Traders Referred on Avalanche`}
+                label={t`Traders referred on Avalanche`}
                 value={avalancheData.affiliateTotalStats.registeredReferralsCount}
                 showDollar={false}
               />
               {isDevelopment() && (
                 <StatsTooltipRow
-                  label={t`Traders Referred on Avalanche Fuji`}
+                  label={t`Traders referred on Avalanche Fuji`}
                   value={fujiData.affiliateTotalStats.registeredReferralsCount}
                   showDollar={false}
                 />
@@ -199,8 +199,8 @@ function AffiliatesStats({
         />
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.volume)}
-          label={t`Trading Volume`}
-          labelTooltipText={t`Volume traded by your referred traders.`}
+          label={t`Trading volume`}
+          labelTooltipText={t`Total trading volume from your referrals`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -245,7 +245,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
           label={t`Rebates`}
-          labelTooltipText={t`Rebates earned as an affiliate.`}
+          labelTooltipText={t`Your affiliate earnings from referrals`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -292,9 +292,9 @@ function AffiliatesStats({
           }
         />
         <ReferralInfoCard
-          label={t`Claimable Rebates`}
+          label={t`Claimable rebates`}
           value={<span className="numbers">{formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}</span>}
-          labelTooltipText={t`Claimable rebates from your referred traders.`}
+          labelTooltipText={t`Available to claim now`}
           className="AffiliateStats-claimable-rewards-card"
         >
           <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
@@ -312,7 +312,7 @@ function AffiliatesStats({
           className="Connect-wallet-modal"
           isVisible={isAddReferralCodeModalOpen}
           setIsVisible={close}
-          label={t`Create Referral Code`}
+          label={t`Create referral code`}
           onAfterOpen={() => addNewModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
@@ -329,7 +329,7 @@ function AffiliatesStats({
           title={
             <div className="referral-table-header">
               <p className="title text-body-large">
-                <Trans>Referral Codes</Trans>{" "}
+                <Trans>Referral codes</Trans>{" "}
                 <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-typography-secondary">
                   {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                 </span>
@@ -348,16 +348,16 @@ function AffiliatesStats({
               <thead>
                 <TableTheadTr>
                   <TableTh scope="col">
-                    <Trans>Referral Code</Trans>
+                    <Trans>REFERRAL CODE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Total Volume</Trans>
+                    <Trans>TOTAL VOLUME</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Traders Referred</Trans>
+                    <Trans>TRADERS REFERRED</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Total Rebates</Trans>
+                    <Trans>TOTAL REBATES</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>
@@ -400,12 +400,12 @@ function AffiliatesStats({
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
-                                label={t`Volume on V1`}
+                                label={t`V1 volume`}
                                 value={getUsdValue(stat?.v1Data.volume)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
-                                label={t`Volume on V2`}
+                                label={t`V2 volume`}
                                 value={getUsdValue(stat?.v2Data.volume)}
                                 valueClassName="numbers"
                               />
@@ -425,12 +425,12 @@ function AffiliatesStats({
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
-                                label={t`Rebates on V1`}
+                                label={t`V1 rebates`}
                                 value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
                               <StatsTooltipRow
-                                label={t`Rebates on V2`}
+                                label={t`V2 rebates`}
                                 value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
                                 valueClassName="numbers"
                               />
@@ -459,10 +459,10 @@ function AffiliatesStats({
         <Card
           title={
             <span className="text-body-large">
-              <Trans>Rebates Distribution History</Trans>
+              <Trans>Rebates distribution history</Trans>
             </span>
           }
-          tooltipText={t`Distribution history for claimed rebates and airdrops.`}
+          tooltipText={t`Distribution history for claimed rebates and airdrops`}
           bodyPadding={false}
           divider={true}
         >
@@ -471,16 +471,16 @@ function AffiliatesStats({
               <thead>
                 <TableTheadTr>
                   <TableTh scope="col">
-                    <Trans>Date</Trans>
+                    <Trans>DATE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Type</Trans>
+                    <Trans>TYPE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Amount</Trans>
+                    <Trans>AMOUNT</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Transaction</Trans>
+                    <Trans>TRANSACTION</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>
@@ -492,10 +492,10 @@ function AffiliatesStats({
                     if (rebate.tokens[0] === esGmxAddress) {
                       rebateType = t`V1 esGMX`;
                     } else {
-                      rebateType = t`V1 Airdrop`;
+                      rebateType = t`V1 airdrop`;
                     }
                   } else if (rebate.typeId === RebateDistributionType.Claim) {
-                    rebateType = t`V2 Claim`;
+                    rebateType = t`V2 claim`;
                   }
 
                   const amountsByTokens = rebate.tokens.reduce(
@@ -547,8 +547,9 @@ function AffiliatesStats({
                               {tokensWithoutPrices.length > 0 && (
                                 <>
                                   <Trans>
-                                    USD Value may not be accurate since the data does not contain prices for{" "}
+                                    USD value may be inaccurate. Price data unavailable for{" "}
                                     {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                    .
                                   </Trans>
                                   <br />
                                   <br />
@@ -605,8 +606,8 @@ function AffiliatesStats({
         </Card>
       ) : (
         <EmptyMessage
-          tooltipText={t`Distribution history for claimed rebates and airdrops.`}
-          message={t`No rebates distribution history yet.`}
+          tooltipText={t`Distribution history for claimed rebates and airdrops`}
+          message={t`No rebates distribution history yet`}
         />
       )}
 

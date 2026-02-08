@@ -179,32 +179,26 @@ export default function EarnAdditionalOpportunitiesPage() {
 
   const emptyStateMessage = useMemo(() => {
     if (chainId === BOTANIX) {
-      return (
-        <Trans>No additional opportunities at this time on Botanix. Change to Arbitrum or Avalanche to see more.</Trans>
-      );
+      return <Trans>No opportunities on Botanix yet</Trans>;
     }
 
     if (allOpportunities.length === 0) {
-      return <Trans>No additional opportunities are available on this chain yet.</Trans>;
+      return <Trans>No opportunities on this chain yet</Trans>;
     }
 
     if (activeFilter === "for-me") {
       if (userAssets.size === 0) {
-        return (
-          <Trans>
-            No eligible holdings detected. Acquire or stake GMX, GLV, or GM tokens to unlock personalized opportunities.
-          </Trans>
-        );
+        return <Trans>No eligible holdings detected</Trans>;
       }
 
-      return <Trans>No opportunities currently match your holdings. Try another filter or check back soon.</Trans>;
+      return <Trans>No opportunities match your holdings</Trans>;
     }
 
     if (searchQuery.trim().length > 0) {
-      return <Trans>No opportunities match your search.</Trans>;
+      return <Trans>No opportunities match your search</Trans>;
     }
 
-    return <Trans>No opportunities match the selected filters.</Trans>;
+    return <Trans>No matches for selected filters</Trans>;
   }, [activeFilter, allOpportunities.length, chainId, searchQuery, userAssets.size]);
 
   return (
@@ -214,10 +208,7 @@ export default function EarnAdditionalOpportunitiesPage() {
 
         {!isBannerDismissed && (
           <ColorfulBanner onClose={handleDismissBanner}>
-            <Trans>
-              Maximize your earnings on your ecosystem tokens (GMX, GLV and GM) with the following integrated partner
-              protocols.
-            </Trans>
+            <Trans>Maximize earnings on your GMX, GLV, and GM tokens with integrated partner protocols</Trans>
           </ColorfulBanner>
         )}
 

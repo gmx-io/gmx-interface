@@ -182,7 +182,7 @@ export function RecommendedAssets({
           </RecommendedAssetSection>
         )}
         {glvsToShow.length > 0 && (
-          <RecommendedAssetSection title={<Trans>GLV Vaults</Trans>}>
+          <RecommendedAssetSection title={<Trans>GLV vaults</Trans>}>
             {glvsToShow.map((glv) => (
               <GlvGmxRecommendedAssetItem
                 key={glv.glvTokenAddress}
@@ -194,7 +194,7 @@ export function RecommendedAssets({
         )}
         {gmsToShow.length > 0 && (
           <RecommendedAssetSection
-            title={<Trans>GM Pools</Trans>}
+            title={<Trans>GM pools</Trans>}
             additionalLink={
               <Link
                 to="/pools"

@@ -104,7 +104,7 @@ export function GmCard() {
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Market Cap</Trans>
+                  <Trans>Market cap</Trans>
                 </div>
                 <div>
                   <span className="numbers">{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</span>
@@ -115,7 +115,7 @@ export function GmCard() {
         }
         right={
           <AppCardSection>
-            <InteractivePieChart data={chartData} label={t`GM Markets`} />
+            <InteractivePieChart data={chartData} label={t`GM markets`} />
           </AppCardSection>
         }
       />

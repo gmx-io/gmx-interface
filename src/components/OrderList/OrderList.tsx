@@ -160,7 +160,7 @@ export function OrderList({
     if (!signer || !provider) return;
 
     if (hasOutdatedUi) {
-      helperToast.error(t`Page outdated, please refresh`);
+      helperToast.error(t`Page outdated. Refresh`);
       return;
     }
 
@@ -295,13 +295,13 @@ export function OrderList({
                   <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
                 </TableTh>
                 <TableTh className="w-[15%]">
-                  <Trans>Size</Trans>
+                  <Trans>SIZE</Trans>
                 </TableTh>
                 <TableTh className="w-[18%]">
-                  <Trans>Trigger Price</Trans>
+                  <Trans>TRIGGER PRICE</Trans>
                 </TableTh>
                 <TableTh className="w-[18%]">
-                  <Trans>Mark Price</Trans>
+                  <Trans>MARK PRICE</Trans>
                 </TableTh>
 
                 {!hideActions && <TableTh className="w-[10%]"></TableTh>}

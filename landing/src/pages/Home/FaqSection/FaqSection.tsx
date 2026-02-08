@@ -10,15 +10,15 @@ export function FaqSection() {
           <Trans>FAQ</Trans>
         </h2>
         <div className="flex w-full flex-col gap-12 sm:w-[800px]">
-          <FaqItem title="What makes GMX one of the best places to earn yield on my crypto?">
+          <FaqItem title={t`What makes GMX one of the best places to earn yield on my crypto?`}>
             <Trans>
               <p>
                 Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or
                 other supported assets, you can earn up to ~35% annualized yield on the largest pools.
               </p>
               <ul className="list-disc pl-14">
-                <li> GM Pools – choose single-market exposure for targeted returns</li>
-                <li> GLV Vaults – auto-diversify across markets for a hands-off strategy</li>
+                <li> GM pools – choose single-market exposure for targeted returns</li>
+                <li> GLV vaults – auto-diversify across markets for a hands-off strategy</li>
               </ul>
               <p>
                 Historically, both options have outperformed standard LP benchmarks. See live stats on the Pools page.
@@ -27,9 +27,7 @@ export function FaqSection() {
           </FaqItem>
           <FaqItem title={t`How do I get started on GMX?`}>
             <Trans>
-              <p>
-                No KYC, no lengthy onboarding, and no depositing is required. All you need is a self-custody wallet:
-              </p>
+              <p>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</p>
               <ul className="list-decimal pl-14">
                 <li>
                   Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger,

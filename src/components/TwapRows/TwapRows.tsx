@@ -84,7 +84,7 @@ const TwapRows = ({
       <SyntheticsInfoRow label={t`Duration`} className="h-20">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Number of Parts`}>
+      <SyntheticsInfoRow label={t`Number of parts`}>
         <div className="flex">
           <ValueInput
             value={numberOfParts}
@@ -158,13 +158,13 @@ const DurationField = ({
   return (
     <div className="flex gap-4">
       <ValueInput
-        label={t`Hour(s)`}
+        label={t`Hours`}
         value={duration.hours}
         onChange={(value) => setDuration({ ...duration, hours: value })}
         className="w-[112px]"
       />
       <ValueInput
-        label={t`Minute(s)`}
+        label={t`Minutes`}
         value={duration.minutes}
         onChange={(value) => setDuration({ ...duration, minutes: value })}
         className="w-[112px]"

@@ -48,13 +48,13 @@ export function SettlementChainWarningContainer() {
   }
 
   return (
-    <ColorfulBanner color="blue" icon={InfoIcon} className="text-body-small">
+    <ColorfulBanner color="yellow" icon={InfoIcon} className="text-body-small">
       <Trans>
-        You switched your settlement network to {getChainName(settlementChainId)}, but you still have{" "}
-        {formatUsd(gmxAccountUsd)} remaining in your {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account.
+        Settlement network changed to {getChainName(settlementChainId)}, but {formatUsd(gmxAccountUsd)} remains in your{" "}
+        {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account
       </Trans>
 
-      <ColorfulButtonLink color="blue" onClick={handleNetworkSwitch}>
+      <ColorfulButtonLink color="yellow" onClick={handleNetworkSwitch}>
         <Trans>Change to {getChainName(anyNonEmptyGmxAccountChainId)}</Trans>
       </ColorfulButtonLink>
     </ColorfulBanner>

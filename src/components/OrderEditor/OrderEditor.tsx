@@ -297,7 +297,7 @@ export function OrderEditor(p: Props) {
     if (newSizeDeltaUsd !== undefined) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     } else {
-      helperToast.error(t`No available leverage found`);
+      helperToast.error(t`No valid leverage available`);
     }
   }, [
     p.order,
@@ -518,22 +518,22 @@ export function OrderEditor(p: Props) {
   const submitButtonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }
 
     if (isMaxLeverageError) {
       return {
-        text: t`Max. Leverage Exceeded`,
+        text: t`Max leverage exceeded`,
         tooltip: (
           <>
-            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
+            <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
             <br />
             <br />
             <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-              <Trans>Set Max Leverage</Trans>
+              <Trans>Set max leverage</Trans>
             </span>
           </>
         ),
@@ -551,7 +551,7 @@ export function OrderEditor(p: Props) {
     const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
-      text: t`Update ${orderTypeName} Order`,
+      text: t`Update ${orderTypeName}`,
       disabled: false,
       onClick: onSubmit,
     };
@@ -649,10 +649,10 @@ export function OrderEditor(p: Props) {
   );
 
   const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
-    ? t`Trigger Price`
+    ? t`Trigger price`
     : isStopIncreaseOrderType(p.order.orderType)
-      ? t`Stop Price`
-      : t`Limit Price`;
+      ? t`Stop price`
+      : t`Limit price`;
 
   const positionSize = existingPosition?.sizeInUsd;
 
@@ -724,7 +724,7 @@ export function OrderEditor(p: Props) {
             <>
               {triggerRatio && (
                 <BuyInputSection
-                  topLeftLabel={t`Limit Price`}
+                  topLeftLabel={t`Limit price`}
                   topRightLabel={t`Mark`}
                   topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                   onClickTopRightLabel={() => {
@@ -781,7 +781,7 @@ export function OrderEditor(p: Props) {
             <>
               {isSetAcceptablePriceImpactEnabled && (
                 <SyntheticsInfoRow
-                  label={t`Acceptable Price`}
+                  label={t`Acceptable price`}
                   value={formatAcceptablePrice(acceptablePrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -790,7 +790,7 @@ export function OrderEditor(p: Props) {
 
               {existingPosition && (
                 <SyntheticsInfoRow
-                  label={t`Liq. Price`}
+                  label={t`Liquidation price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -810,7 +810,7 @@ export function OrderEditor(p: Props) {
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
-                        label={<div className="text-typography-primary">{t`Network Fee`}:</div>}
+                        label={<div className="text-typography-primary">{t`Network fee`}:</div>}
                         value={formatTokenAmountWithUsd(
                           networkFee.feeTokenAmount * -1n,
                           networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
@@ -825,7 +825,7 @@ export function OrderEditor(p: Props) {
                       />
                       <br />
                       <div className="text-typography-primary">
-                        <Trans>As network fees have increased, an additional network fee is needed.</Trans>
+                        <Trans>Network fees increased. Additional fee required.</Trans>
                       </div>
                     </>
                   )}
@@ -845,7 +845,7 @@ export function OrderEditor(p: Props) {
               />
               <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
-                label={t`Min. Receive`}
+                label={t`Min. receive`}
                 value={formatBalanceAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,

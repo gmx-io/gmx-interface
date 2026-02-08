@@ -43,7 +43,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Long Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a long position at the current
-            price.
+            price
           </Trans>
         </li>
         {isTradeBox ? (
@@ -55,7 +55,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
@@ -66,7 +65,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
           <ExternalLink href="https://docs.gmx.io/docs/trading/#take-profit-and-stop-loss-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
-          .
         </li>
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
@@ -77,7 +75,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
@@ -88,7 +85,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
           <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
-          .
         </li>
       </ul>
     ),
@@ -97,7 +93,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Short Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a short position at the current
-            price.
+            price
           </Trans>
         </li>
         {isTradeBox ? (
@@ -109,7 +105,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
@@ -120,7 +115,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
           <ExternalLink href="https://docs.gmx.io/docs/trading/#take-profit-and-stop-loss-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
-          .
         </li>
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
@@ -131,7 +125,6 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
@@ -142,20 +135,19 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
           <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
-          .
         </li>
       </ul>
     ),
     [TradeType.Swap]: (
       <ul className={UL_CLASS_NAME}>
         <li className={LI_CLASS_NAME}>
-          <Trans>Swap Market: Swap tokens at the current market price.</Trans>
+          <Trans>Swap Market: Swap tokens at the current market price</Trans>
         </li>
         <li className={LI_CLASS_NAME}>
-          <Trans>Swap Limit: Swap tokens when the trigger price is reached.</Trans>
+          <Trans>Swap Limit: Swap tokens when the trigger price is reached</Trans>
         </li>
         <li className={LI_CLASS_NAME}>
-          <Trans>Swap TWAP: Swap tokens in evenly distributed parts over a specified time.</Trans>
+          <Trans>Swap TWAP: Swap tokens in evenly distributed parts over a specified time</Trans>
         </li>
       </ul>
     ),

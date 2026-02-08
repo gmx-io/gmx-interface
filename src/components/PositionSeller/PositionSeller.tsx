@@ -190,6 +190,7 @@ export function PositionSeller() {
   );
 
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
+  const [isTwapBannerDismissed, setIsTwapBannerDismissed] = useState(false);
 
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
@@ -264,6 +265,7 @@ export function PositionSeller() {
   useEffect(() => {
     if (isVisible) {
       setIsDismissedLatestRef.current(false);
+      setIsTwapBannerDismissed(false);
     }
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
@@ -541,7 +543,7 @@ export function PositionSeller() {
       !signer ||
       !provider
     ) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(t`Order submission failed`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -669,7 +671,7 @@ export function PositionSeller() {
 
   const liqPriceRow = position && (
     <SyntheticsInfoRow
-      label={t`Liquidation Price`}
+      label={t`Liquidation price`}
       value={
         <ValueTransition
           from={
@@ -765,8 +767,8 @@ export function PositionSeller() {
       handle={keepLeverageText}
       content={
         <Trans>
-          Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+          Position exceeds max allowed leverage.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>
         </Trans>
       }
     />
@@ -842,7 +844,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
+            {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -853,7 +855,7 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
-        text: t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`,
+        text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
         disabled: false,
       };
     }
@@ -862,7 +864,7 @@ export function PositionSeller() {
       text:
         error ||
         (isTrigger || isTwap
-          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} Order`
+          ? t`Create ${isTwap ? "TWAP Decrease" : getNameByOrderType(decreaseAmounts?.triggerOrderType, isTwap)} order`
           : t`Close`),
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
@@ -916,8 +918,8 @@ export function PositionSeller() {
           {position && (
             <>
               <div className="flex flex-col gap-4">
-                {twapRecommendation && (
-                  <ColorfulBanner color="blue" icon={InfoCircleIcon}>
+                {twapRecommendation && !isTwapBannerDismissed && (
+                  <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
                     <div className="flex flex-col gap-8">
                       <span>
                         <span
@@ -928,7 +930,7 @@ export function PositionSeller() {
                         >
                           <Trans>Use a TWAP order</Trans>
                         </span>{" "}
-                        <Trans> for lower net price impact.</Trans>
+                        <Trans>for lower net price impact</Trans>
                       </span>
                     </div>
                   </ColorfulBanner>
@@ -962,7 +964,7 @@ export function PositionSeller() {
                   </BuyInputSection>
                   {isTrigger && (
                     <BuyInputSection
-                      topLeftLabel={t`Trigger Price`}
+                      topLeftLabel={t`Trigger price`}
                       topRightLabel={t`Mark`}
                       topRightValue={formatUsd(markPrice, {
                         displayDecimals: marketDecimals,

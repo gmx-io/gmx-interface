@@ -54,10 +54,10 @@ export function PositionSellerPriceImpactFeesRow() {
       label={
         <>
           <Tooltip
-            handle={t`Net Price Impact`}
+            handle={t`Net price impact`}
             content={
               <Trans>
-                Net price impact is the price impact for your position.{" "}
+                Price impact from closing. Positive values benefit you.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>
@@ -65,7 +65,7 @@ export function PositionSellerPriceImpactFeesRow() {
               </Trans>
             }
           />{" "}
-          / {t`Fees`}
+          / {t`fees`}
         </>
       }
       value={

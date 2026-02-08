@@ -49,12 +49,12 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
   if (!entriesInfo || entriesInfo.entries.every((e) => e.txnType === "cancel")) return;
 
   const label = {
-    stopLoss: t`Stop Loss`,
-    takeProfit: t`Take Profit`,
+    stopLoss: t`Stop-Loss`,
+    takeProfit: t`Take-Profit`,
     limit: t`Limit`,
   }[type];
 
-  const labelPnl = isStopLoss ? t`Stop Loss PnL` : t`Take Profit PnL`;
+  const labelPnl = isStopLoss ? t`Stop-Loss PnL` : t`Take-Profit PnL`;
 
   return (
     <>
@@ -71,8 +71,8 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                 disabled={entriesInfo.allowAddEntry}
                 content={
                   isStopLoss
-                    ? t`Combined stop losses are at maximum (100%). Decrease existing values to add more orders.`
-                    : t`Combined take profits are at maximum (100%). Decrease existing values to add more orders.`
+                    ? t`Stop-Loss at 100%. Reduce existing orders to add more.`
+                    : t`Take-Profit at 100%. Reduce existing orders to add more.`
                 }
               >
                 <EntryButton
@@ -210,12 +210,12 @@ export function LimitAndTPSLGroup() {
     <ExpandableRow
       open={isTpSlVisible}
       title={
-        hasExistingLimitOrder ? <Trans>Limit / Take Profit / Stop Loss</Trans> : <Trans>Take Profit / Stop Loss</Trans>
+        hasExistingLimitOrder ? <Trans>Limit / Take-Profit / Stop-Loss</Trans> : <Trans>Take-Profit / Stop-Loss</Trans>
       }
       hasError={hasError}
       disableCollapseOnError
       autoExpandOnError
-      errorMessage={<Trans>There are issues in the TP/SL orders.</Trans>}
+      errorMessage={<Trans>TP/SL orders have issues</Trans>}
       onToggle={toggleLimitOrTPSL}
       withToggleSwitch
     >

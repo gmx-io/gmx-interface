@@ -102,7 +102,7 @@ export function ClaimsHistory() {
       <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
         {!isMobile ? (
           <span className="text-body-medium font-medium">
-            <Trans>Claims History</Trans>
+            <Trans>Claims history</Trans>
           </span>
         ) : null}
 
@@ -125,7 +125,7 @@ export function ClaimsHistory() {
                   <MarketFilter excludeSpotOnly value={marketAddressesFilter} onChange={setMarketAddressesFilter} />
                 </TableTh>
                 <TableTh className="ClaimsHistory-price-header w-[20%]">
-                  <Trans>Size</Trans>
+                  <Trans>SIZE</Trans>
                 </TableTh>
               </TableTheadTr>
             </thead>
@@ -221,11 +221,11 @@ function useDownloadAsCsv(claimActions?: ClaimAction[]) {
     const timezone = formatDate(new Date(), "z");
 
     downloadAsCsv("claims-history", fullFormattedData, [], {
-      timestamp: t`Date` + ` (${timezone})`,
-      action: t`Action`,
-      market: t`Market`,
-      size: t`Size`,
-      explorerUrl: t`Transaction ID`,
+      timestamp: t`DATE` + ` (${timezone})`,
+      action: t`ACTION`,
+      market: t`MARKET`,
+      size: t`SIZE`,
+      explorerUrl: t`TRANSACTION ID`,
     });
   }, [chainId, claimActions, _]);
 

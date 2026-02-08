@@ -43,11 +43,8 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
         <div className="flex flex-col gap-16">
           <p className="mb-8 text-15 text-typography-secondary">
             <Trans>
-              GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the
-              experience may vary slightly.
-              <br />
-              <br />
-              Clicking on the button below will open GMTrade in a new tab.
+              GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the
+              experience may vary. Opens in a new tab.
             </Trans>
           </p>
 

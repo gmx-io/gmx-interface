@@ -24,7 +24,7 @@ export const AccruedPositionPriceImpactRebateModal = memo(
 
     return (
       <Modal
-        label={t`Accrued Price Impact Rebates`}
+        label={t`Accrued price impact rebates`}
         className="Confirmation-box ClaimableModal"
         setIsVisible={onClose}
         isVisible={isVisible}

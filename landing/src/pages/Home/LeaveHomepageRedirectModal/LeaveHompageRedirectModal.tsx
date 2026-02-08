@@ -48,25 +48,25 @@ export function LeaveHomepageRedirectModal({
   return (
     <Modal onClose={onClose}>
       <ModalHeader onClose={onClose}>
-        <Trans>Launch App</Trans>
+        <Trans>Launch app</Trans>
       </ModalHeader>
 
       <ModalBody>
         <div className="flex flex-col gap-12">
           <p>
-            <Trans>You are leaving GMX.io and will be redirected to a third party, independent website.</Trans>
+            <Trans>Leaving GMX.io for a third-party, independent website</Trans>
           </p>
           <p>
             <Trans>
               The website is a community deployed and maintained instance of the open source{" "}
               <a href="https://github.com/gmx-io/gmx-interface">GMX front end</a>, hosted and served on the distributed,
-              peer-to-peer <a href="https://ipfs.io/">IPFS network</a>.
+              peer-to-peer <a href="https://ipfs.io/">IPFS network</a>
             </Trans>
           </p>
           <p>
             <Trans>
-              Alternative links can be found in the <a href="https://docs.gmx.io/docs/frontends">docs</a>. By clicking
-              Agree you accept the <a href="https://gmx.io/#/terms-and-conditions">T&Cs</a> and{" "}
+              Alternative links are in the <a href="https://docs.gmx.io/docs/frontends">docs</a>. By clicking Agree you
+              accept the <a href="https://gmx.io/#/terms-and-conditions">T&Cs</a> and{" "}
               <a href="https://gmx.io/#/referral-terms">Referral T&Cs</a>.
             </Trans>
           </p>
@@ -86,7 +86,7 @@ export function LeaveHomepageRedirectModal({
                 "bg-white": !shouldHideRedirectModal,
               })}
             />
-            <Trans>Don't show this message again for 30 days.</Trans>
+            <Trans>Don't show this message again for 30 days</Trans>
           </label>
         </ModalBottom>
 
@@ -94,7 +94,7 @@ export function LeaveHomepageRedirectModal({
           className="btn-landing w-full rounded-8 py-18 text-center text-16 tracking-[-0.192px]"
           onClick={onClickAgree}
         >
-          <Trans>Launch App</Trans>
+          <Trans>Launch app</Trans>
         </button>
       </ModalBody>
     </Modal>

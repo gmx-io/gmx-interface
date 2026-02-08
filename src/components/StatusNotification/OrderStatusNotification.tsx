@@ -169,20 +169,20 @@ function OrderStatusNotification({
             initialCollateralToken?.decimals,
             symbol,
             { isStable: initialCollateralToken?.isStable }
-          )} to ${positionText}`;
+          )} to ${positionText}...`;
         } else {
           return t`Withdrawing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
             symbol,
             { isStable: initialCollateralToken?.isStable }
-          )} from ${positionText}`;
+          )} from ${positionText}...`;
         }
       } else {
         let orderTypeText = "";
 
         if (isMarketOrderType(orderType)) {
-          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
+          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing...` : t`Decreasing...`;
         } else {
           const txnTypeText = {
             create: t`Create`,
@@ -291,13 +291,13 @@ function OrderStatusNotification({
     }
 
     if (orderStatus?.executedTxnHash) {
-      text = t`Order executed`;
+      text = t`Order filled`;
       status = "success";
       txnHash = orderStatus?.executedTxnHash;
     }
 
     if (orderStatus?.cancelledTxnHash) {
-      text = t`Order cancelled`;
+      text = t`Order canceled`;
       txnHash = orderStatus?.cancelledTxnHash;
 
       if (orderData?.txnType !== "cancel") {
@@ -550,7 +550,7 @@ export function OrdersStatusNotificiation({
                 onClick={onCancelOrdersClick}
                 className="StatusNotification-cancel-all"
               >
-                {t`Cancel newly created orders`}
+                {t`Cancel new orders`}
               </button>
             )}
           </div>

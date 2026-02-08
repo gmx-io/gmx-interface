@@ -31,38 +31,37 @@ export function getCollateralInHintText(tradeType: TradeType, collateralToken: T
 
   if (tradeType === TradeType.Long) {
     if (collateralToken.isStable) {
-      return <Trans>You will be long {indexSymbol} only from your long position.</Trans>;
+      return <Trans>Pure {indexSymbol} long. Your exposure is only from the position.</Trans>;
     } else if (marketInfo.indexToken.isSynthetic) {
       return (
         <Trans>
-          You will be long {indexSymbol} from your long position, while being long {collateralSymbol} from your{" "}
-          {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}.
+          Double exposure: Long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price
+          varies with {collateralSymbol} price.
         </Trans>
       );
     } else {
       return (
         <Trans>
-          You will be long {indexSymbol} from your long position, as well as from your {collateralSymbol} collateral.
-          The liquidation price is higher compared to using a stablecoin as collateral since the worth of the collateral
-          will change with its price.
+          Double {indexSymbol} exposure from position and collateral. Higher liquidation price than stablecoin
+          collateral.
         </Trans>
       );
     }
   } else {
     if (collateralToken.isStable) {
-      return <Trans>You will be short {indexSymbol} only from your short position.</Trans>;
+      return <Trans>Pure {indexSymbol} short. Your exposure is only from the position.</Trans>;
     } else if (marketInfo.indexToken.isSynthetic) {
       return (
         <Trans>
-          You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your{" "}
-          {collateralSymbol} collateral. The liquidation price will vary based on the price of {collateralSymbol}.
+          Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with{" "}
+          {collateralSymbol} price.
         </Trans>
       );
     } else {
       return (
         <Trans>
-          You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your{" "}
-          {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees.
+          Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies
+          to earn funding.
         </Trans>
       );
     }

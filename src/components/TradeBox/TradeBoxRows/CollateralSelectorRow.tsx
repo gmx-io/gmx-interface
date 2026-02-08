@@ -42,7 +42,7 @@ export function CollateralSelectorRow(p: Props) {
       <SyntheticsInfoRow
         label={
           <TooltipWithPortal position="left-start" content={collateralInTooltipContent} variant="icon">
-            <Trans>Collateral In</Trans>
+            <Trans>Collateral in</Trans>
           </TooltipWithPortal>
         }
         value={
@@ -93,8 +93,7 @@ function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1">
             <Trans>
-              You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
-              apply for that position.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -103,6 +102,7 @@ function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
+              .
             </Trans>
           </AlertInfoCard>
         );
@@ -110,8 +110,7 @@ function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
             <Trans>
-              You have an existing position with {collateralWithPosition.symbol} as collateral. This order will not be
-              valid for that position.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -120,6 +119,7 @@ function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
+              .
             </Trans>
           </AlertInfoCard>
         );
@@ -133,7 +133,7 @@ function useCollateralWarnings() {
       messages.push(
         <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
           <Trans>
-            You have an existing limit order with {symbol} as collateral.{" "}
+            Existing limit order uses {symbol} collateral.{" "}
             <ColorfulButtonLink
               color="blue"
               onClick={() => {
@@ -142,6 +142,7 @@ function useCollateralWarnings() {
             >
               Switch to {symbol} collateral
             </ColorfulButtonLink>
+            .
           </Trans>
         </AlertInfoCard>
       );

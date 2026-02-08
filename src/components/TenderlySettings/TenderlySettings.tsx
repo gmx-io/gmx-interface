@@ -40,7 +40,7 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
   return (
     <ExpandableRow
       open={isShown}
-      title={t`Tenderly Settings`}
+      title={t`Tenderly settings`}
       onToggle={toggleTenderlySettings}
       disableCollapseOnError={false}
       contentClassName="flex flex-col gap-16 pt-8"
@@ -50,7 +50,7 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
       <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
       <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
       <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
-        <Trans>Simulate TXs</Trans>
+        <Trans>Simulate transactions</Trans>
       </ToggleSwitch>
       <div className="text-typography-secondary">
         <Trans>
@@ -58,7 +58,6 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
           <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
             Tenderly Docs
           </ExternalLink>
-          .
         </Trans>
       </div>
     </ExpandableRow>

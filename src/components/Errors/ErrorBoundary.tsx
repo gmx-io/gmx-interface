@@ -134,11 +134,11 @@ function ErrorFallback({ variant = "page", onReload, wrapperClassName: wrapperCl
     <div className={wrapperClassName}>
       <div className="flex max-w-[420px] flex-col items-center gap-12">
         <div className="text-20 font-medium text-typography-primary">
-          <Trans>Something Went Wrong</Trans>
+          <Trans>Something went wrong</Trans>
         </div>
         <div className="text-body-medium text-typography-secondary">
           <Trans>
-            Reload the page or report the issue if the <br /> problem persists.
+            Reload the page or report the issue if the <br /> problem persists
           </Trans>
         </div>
         <div className="mt-8 flex flex-col items-center gap-8">

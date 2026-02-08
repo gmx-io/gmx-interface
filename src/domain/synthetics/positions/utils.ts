@@ -171,7 +171,7 @@ export function getNameByOrderType(
       return t`take profit`;
     }
 
-    return t`Take Profit`;
+    return t`Take-Profit`;
   }
 
   if (orderType === OrderType.StopLossDecrease) {
@@ -183,7 +183,7 @@ export function getNameByOrderType(
       return t`stop loss`;
     }
 
-    return t`Stop Loss`;
+    return t`Stop-Loss`;
   }
 
   if (orderType === OrderType.StopIncrease) {

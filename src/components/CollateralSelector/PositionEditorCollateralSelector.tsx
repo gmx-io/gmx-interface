@@ -55,7 +55,7 @@ export function PositionEditorCollateralSelector(props: Props) {
           "..."
         )
       }
-      modalLabel={t`Collateral In`}
+      modalLabel={t`Collateral in`}
       qa="collateral-in-selector"
     >
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
@@ -143,7 +143,7 @@ function CollateralListItemDesktop({
                   className="size-16"
                 />
                 {tokenData.balanceType === TokenBalanceType.GmxAccount ? (
-                  <Trans>GMX Balance</Trans>
+                  <Trans>GMX balance</Trans>
                 ) : (
                   getChainName(chainId)
                 )}

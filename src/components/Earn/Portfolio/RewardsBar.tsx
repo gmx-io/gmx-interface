@@ -57,7 +57,7 @@ function RewardsBar({
           <div className="flex shrink-0 gap-28 max-lg:grid max-lg:grid-cols-2 max-lg:gap-12">
             <div className="flex flex-col gap-2">
               <span className="text-body-small font-medium text-typography-secondary">
-                <Trans>Total Investment Value</Trans>
+                <Trans>Total investment value</Trans>
               </span>
               <span className="text-body-large font-medium numbers">
                 {isInvestmentValueLoading ? (
@@ -70,7 +70,7 @@ function RewardsBar({
 
             <div className="flex flex-col gap-2">
               <span className="text-body-small font-medium text-typography-secondary">
-                <Trans>Total Earned</Trans>
+                <Trans>Total earned</Trans>
               </span>
               <TotalEarned
                 processedData={processedData}
@@ -87,7 +87,7 @@ function RewardsBar({
           <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
             <div className="flex flex-col gap-2">
               <span className="text-body-small font-medium text-typography-secondary">
-                <Trans>Total Pending Rewards</Trans>
+                <Trans>Total pending rewards</Trans>
               </span>
               <TotalPendingRewards
                 processedData={processedData}
@@ -203,16 +203,16 @@ function TotalEarned({
           </span>
           <div className="flex flex-col">
             <StatsTooltipRow
-              label={<Trans>GM Pools:</Trans>}
+              label={<Trans>GM pools:</Trans>}
               showDollar={false}
               value={<span className="text-body-medium numbers">{formatUsd(userEarnings.allMarkets.total)}</span>}
             />
             <StatsTooltipRow
-              label={<Trans>GLV Vaults:</Trans>}
+              label={<Trans>GLV vaults:</Trans>}
               showDollar={false}
               value={
                 <span className="text-body-medium text-typography-secondary">
-                  <Trans>coming soon</Trans>
+                  <Trans>Coming soon</Trans>
                 </span>
               }
             />
@@ -282,7 +282,7 @@ function TotalPendingRewards({
       content={
         <div className="flex flex-col">
           <StatsTooltipRow
-            label={<Trans>GMX Staked Rewards:</Trans>}
+            label={<Trans>GMX staked rewards:</Trans>}
             showDollar={false}
             value={
               <AmountWithUsdBalance
@@ -295,7 +295,7 @@ function TotalPendingRewards({
           />
 
           <StatsTooltipRow
-            label={<Trans>Vested Claimable GMX:</Trans>}
+            label={<Trans>Vested claimable GMX:</Trans>}
             showDollar={false}
             value={
               <AmountWithUsdBalance
@@ -309,7 +309,7 @@ function TotalPendingRewards({
 
           {hasEsGmxRewards && (
             <StatsTooltipRow
-              label={<Trans>esGMX Rewards:</Trans>}
+              label={<Trans>esGMX rewards:</Trans>}
               showDollar={false}
               value={
                 <AmountWithUsdBalance
@@ -324,7 +324,7 @@ function TotalPendingRewards({
 
           {hasNativeRewards && (
             <StatsTooltipRow
-              label={<Trans>{nativeTokenSymbol} Rewards:</Trans>}
+              label={<Trans>{nativeTokenSymbol} rewards:</Trans>}
               showDollar={false}
               value={
                 <AmountWithUsdBalance

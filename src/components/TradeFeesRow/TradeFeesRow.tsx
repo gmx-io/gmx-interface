@@ -60,7 +60,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-typography-primary">{t`Swap Price Impact`}:</div>
+              <div className="text-typography-primary">{t`Swap price impact`}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p.swapPriceImpact!.precisePercentage), {
@@ -83,7 +83,7 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-typography-primary">
-                  {t`External Swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
+                  {t`External swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
                     getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
                   }`}
                   :
@@ -140,7 +140,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapProfitFee",
             label: (
               <>
-                <div className="text-typography-primary">{t`Swap Profit Fee`}:</div>
+                <div className="text-typography-primary">{t`Swap profit fee`}:</div>
                 <div>
                   (
                   {formatPercentage(
@@ -161,7 +161,7 @@ export function TradeFeesRow(p: Props) {
           }
         : undefined;
 
-    const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
+    const feesTypeName = p.feesType === "increase" ? t`Open fee` : t`Close fee`;
     const positionFeeRow = (p.positionFee?.deltaUsd === undefined ? undefined : p.positionFee?.deltaUsd !== 0n)
       ? {
           id: "positionFee",
@@ -188,7 +188,7 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-typography-primary">{t`UI Fee`}:</div>
+              <div className="text-typography-primary">{t`UI fee`}:</div>
               <div>
                 (
                 {formatPercentage(bigMath.abs(p!.uiFee!.precisePercentage), {
@@ -210,7 +210,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapUiFee",
             label: (
               <>
-                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
+                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI fee` : t`Swap UI fee`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.uiSwapFee.precisePercentage), {
@@ -231,7 +231,7 @@ export function TradeFeesRow(p: Props) {
           id: "feeDiscount",
           label: (
             <div className="text-typography-primary">
-              <Trans>Referral Discount</Trans>:
+              <Trans>Referral discount</Trans>:
             </div>
           ),
           value: formatDeltaUsd(p.feeDiscountUsd),
@@ -243,7 +243,7 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: <div className="text-typography-primary">{t`Borrow Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Borrow fee`}:</div>,
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
@@ -253,7 +253,7 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div className="text-typography-primary">{t`Funding Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Funding fee`}:</div>,
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
@@ -267,7 +267,7 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-typography-primary">
-                  <Trans>Proportional Stored Impact</Trans>:
+                  <Trans>Proportional stored impact</Trans>:
                 </div>
                 <div>
                   (
@@ -291,7 +291,7 @@ export function TradeFeesRow(p: Props) {
             id: "closePriceImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">{t`Close Price Impact`}:</div>
+                <div className="text-typography-primary">{t`Close price impact`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.decreasePositionPriceImpact.precisePercentage), {
@@ -313,7 +313,7 @@ export function TradeFeesRow(p: Props) {
             id: "netPriceImpact",
             label: (
               <>
-                <div className="text-typography-primary">{t`Net Price Impact`}:</div>
+                <div className="text-typography-primary">{t`Net price impact`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.totalPendingImpact.precisePercentage), {
@@ -335,7 +335,7 @@ export function TradeFeesRow(p: Props) {
             id: "priceImpactDiff",
             label: (
               <>
-                <div className="text-typography-primary">{t`Price Impact Rebates`}:</div>
+                <div className="text-typography-primary">{t`Price impact rebates`}:</div>
                 <div>
                   (
                   {formatPercentage(bigMath.abs(p.priceImpactDiff.precisePercentage), {
@@ -358,7 +358,7 @@ export function TradeFeesRow(p: Props) {
               <>
                 <div className="text-typography-primary">
                   <span className="relative">
-                    <Trans>Bonus Rebate</Trans>
+                    <Trans>Bonus rebate</Trans>
                     <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
                   </span>
                   :
@@ -447,7 +447,7 @@ export function TradeFeesRow(p: Props) {
     let text = t`Fees`;
 
     if (p.feesType !== "swap" && p.swapFees && p.swapFees.length > 0) {
-      text = t`Fees (Incl. Swap)`;
+      text = t`Fees (including swap)`;
     }
 
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
@@ -475,8 +475,8 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The bonus rebate is an estimate and can be up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of
-        the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
+        Estimated rebate up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of open fee. Airdropped as{" "}
+        {incentivesTokenTitle} tokens pro-rata.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
@@ -494,10 +494,11 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        Price impact rebates for closing trades are claimable under the claims tab.{" "}
+        Price impact rebates from closing are claimable in the Claims tab.{" "}
         <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
           Read more
         </ExternalLink>
+        .
       </Trans>
     );
   }, [p.priceImpactDiff?.deltaUsd]);
@@ -510,7 +511,7 @@ export function TradeFeesRow(p: Props) {
     return (
       <>
         <br />
-        <Trans>This swap is routed through several GM pools for the lowest possible fees and price impact.</Trans>
+        <Trans>Swap routed through multiple GM pools for lowest fees and price impact.</Trans>
       </>
     );
   }, [p.swapFees]);

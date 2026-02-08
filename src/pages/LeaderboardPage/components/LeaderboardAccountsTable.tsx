@@ -180,64 +180,55 @@ export function LeaderboardAccountsTable({
           <thead>
             <TableTheadTr className="text-body-medium">
               <TableHeaderCell
-                title={t`Rank`}
+                title={t`RANK`}
                 width={6}
                 tooltip={
                   <Trans>
-                    Only addresses with over{" "}
+                    Minimum{" "}
                     {formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
                       displayDecimals: 0,
                     })}{" "}
-                    in capital used are ranked.
+                    capital required for rankings.
                     <br />
                     <br />
-                    The capital used is calculated as the highest value of [
-                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                    Capital = max(sum of collateral of open positions - realized PnL + starting pending PnL).
                   </Trans>
                 }
                 tooltipPosition="bottom-start"
               />
-              <TableHeaderCell title={t`Address`} width={16} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`ADDRESS`} width={16} tooltipPosition="bottom-end" />
               <TableHeaderCell
-                title={t`PnL ($)`}
+                title={t`PNL ($)`}
                 width={12}
-                tooltip={t`The total realized and unrealized profit and loss for the period, including fees and price impact.`}
+                tooltip={t`Total realized and unrealized PnL including fees and price impact`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("totalQualifyingPnl")}
               />
               <TableHeaderCell
-                title={t`PnL (%)`}
+                title={t`PNL (%)`}
                 width={10}
-                tooltip={
-                  <Trans>
-                    The PnL ($) compared to the capital used.
-                    <br />
-                    <br />
-                    The capital used is calculated as the highest value of [
-                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
-                  </Trans>
-                }
+                tooltip={<Trans>PnL relative to capital used (return on capital)</Trans>}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("pnlPercentage")}
               />
               <TableHeaderCell
-                title={t`Avg. Size`}
+                title={t`AVG. SIZE`}
                 width={12}
-                tooltip={t`Average position size.`}
+                tooltip={t`Average position size`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("averageSize")}
               />
               <TableHeaderCell
-                title={t`Avg. Lev.`}
+                title={t`AVG. LEV.`}
                 width={1}
-                tooltip={t`Average leverage used.`}
+                tooltip={t`Average leverage used`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("averageLeverage")}
               />
               <TableHeaderCell
-                title={t`Win/Loss`}
+                title={t`WIN/LOSS`}
                 width={10}
-                tooltip={t`Wins and losses for fully closed positions.`}
+                tooltip={t`Wins and losses for closed positions`}
                 tooltipPosition="bottom-end"
                 {...getSorterProps("wins")}
               />
@@ -335,13 +326,13 @@ const TableRow = memo(
       return (
         <div>
           <StatsTooltipRow
-            label={t`Total Trades`}
+            label={t`Total trades`}
             showDollar={false}
             value={account.wins + account.losses}
             valueClassName="numbers"
           />
           {account.wins + account.losses > 0 ? (
-            <StatsTooltipRow label={t`Win Rate`} showDollar={false} value={winRate} valueClassName="numbers" />
+            <StatsTooltipRow label={t`Win rate`} showDollar={false} value={winRate} valueClassName="numbers" />
           ) : null}
         </div>
       );
@@ -380,7 +371,7 @@ const TableRow = memo(
             handleClassName={cx("numbers", getSignedValueClassName(account.totalQualifyingPnl))}
             renderContent={() => (
               <StatsTooltipRow
-                label={t`Capital Used`}
+                label={t`Capital used`}
                 showDollar={false}
                 value={formatUsd(account.maxCapital)}
                 valueClassName="numbers"
@@ -443,12 +434,12 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const message = useMemo(() => {
     if (rank !== null) return null;
 
-    let msg = t`You have not traded during the selected period.`;
+    let msg = t`No trades during selected period`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+      msg = t`Minimum ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,
-      })} to qualify for the rankings.`;
-    else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
+      })} capital required for rankings`;
+    else if (isCompetition) msg = t`No eligible trades during the competition window`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
@@ -457,7 +448,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
     return (
       <TooltipWithPortal
         handleClassName="text-typography-secondary"
-        handle={t`NA`}
+        handle={t`N/A`}
         renderContent={tooltipContent}
         variant="underline"
       />
@@ -512,7 +503,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
       />
       {shouldShowStartValues && (
         <StatsTooltipRow
-          label={t`Start Unrealized PnL`}
+          label={t`Start unrealized PnL`}
           showDollar={false}
           value={
             <span className={cx("numbers", getSignedValueClassName(startUnrealizedPnl))}>
@@ -525,7 +516,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
         <>
           <br />
           <StatsTooltipRow
-            label={t`Realized Fees`}
+            label={t`Realized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
@@ -534,7 +525,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
             }
           />
           <StatsTooltipRow
-            label={t`Unrealized Fees`}
+            label={t`Unrealized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
@@ -544,7 +535,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           />
           {shouldShowStartValues && (
             <StatsTooltipRow
-              label={t`Start Unrealized Fees`}
+              label={t`Start unrealized fees`}
               showDollar={false}
               value={
                 <span className={cx("numbers", getSignedValueClassName(startUnrealizedFees))}>
@@ -555,7 +546,7 @@ const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAc
           )}
           <br />
           <StatsTooltipRow
-            label={t`Realized Price Impact`}
+            label={t`Realized price impact`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(account.realizedPriceImpact))}>

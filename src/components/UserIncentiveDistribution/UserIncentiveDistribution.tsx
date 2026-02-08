@@ -122,13 +122,13 @@ export default function UserIncentiveDistribution() {
   const claimableBalance = account ? (
     <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
       <div className="text-body-large font-medium text-typography-primary">
-        <Trans>Claimable Balance</Trans>
+        <Trans>Claimable balance</Trans>
       </div>
       {chainId !== AVALANCHE_FUJI ? (
         <ClaimableAmounts />
       ) : (
         <p className="p-18 text-gray-500">
-          <Trans>Claims are not available on Avalanche Fuji</Trans>
+          <Trans>Claims unavailable on Avalanche Fuji</Trans>
         </p>
       )}
     </div>
@@ -144,8 +144,8 @@ export default function UserIncentiveDistribution() {
               emptyText={
                 <div className="flex flex-col items-center">
                   <TooltipWithPortal
-                    handle={t`No distribution history yet`}
-                    content={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+                    handle={t`No distribution history`}
+                    content={t`Incentives, airdrops, and prizes will appear here`}
                   />
                   {!active ? (
                     <div className="mt-15">
@@ -166,19 +166,19 @@ export default function UserIncentiveDistribution() {
                 <thead>
                   <TableTheadTr>
                     <TableTh className="w-[25%]">
-                      <Trans>Date</Trans>
+                      <Trans>DATE</Trans>
                     </TableTh>
                     {!isMobile && (
                       <TableTh>
-                        <Trans>Type</Trans>
+                        <Trans>TYPE</Trans>
                       </TableTh>
                     )}
                     <TableTh className="max-xl:text-right">
-                      <Trans>Amount</Trans>
+                      <Trans>AMOUNT</Trans>
                     </TableTh>
                     {!isMobile && (
                       <TableTh className="text-right">
-                        <Trans>Transaction</Trans>
+                        <Trans>TRANSACTION</Trans>
                       </TableTh>
                     )}
                     <TableTh className="w-24" />
@@ -208,7 +208,7 @@ export default function UserIncentiveDistribution() {
 
 function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
   const isCompetition = typeId >= 2000n && typeId < 3000n;
-  return isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
+  return isCompetition ? t`Competition airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
 }
 
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
@@ -330,7 +330,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                     "h-28 items-center": !isMobile,
                   })}
                 >
-                  <Trans>{tokenInfo.symbol} Amount</Trans>
+                  <Trans>{tokenInfo.symbol} amount</Trans>
 
                   {isMobile && (
                     <span className="text-14 text-typography-primary">
@@ -346,7 +346,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                   "h-28 items-center": !isMobile,
                 })}
               >
-                <Trans>Transaction hash</Trans>
+                <Trans>Transaction</Trans>
                 {isMobile && <span className="text-14 text-typography-primary">{txnLink}</span>}
               </div>
               <div

@@ -87,7 +87,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div>{t`Price Impact`}:</div>
+                      <div>{t`Price impact`}:</div>
                       <div>
                         (
                         <span className="numbers">
@@ -114,7 +114,7 @@ export function GmFees(p: Props) {
                   <StatsTooltipRow
                     label={
                       <div>
-                        <div>{p.operation === Operation.Deposit ? t`Buy Fee` : t`Sell Fee`}:</div>
+                        <div>{p.operation === Operation.Deposit ? t`Buy fee` : t`Sell fee`}:</div>
                         <div>
                           (
                           <span className="numbers">
@@ -139,7 +139,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div>{t`UI Fee`}:</div>
+                      <div>{t`UI fee`}:</div>
                       <div>
                         (
                         <span className="numbers">
@@ -163,7 +163,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div>{t`Shift Fee`}:</div>
+                      <div>{t`Shift fee`}:</div>
                       <div>
                         (
                         <span className="numbers">
@@ -212,5 +212,5 @@ export function GmFees(p: Props) {
     totalFeesUsd,
   ]);
 
-  return <SyntheticsInfoRow label={<Trans>Price Impact / Fees</Trans>} value={value} />;
+  return <SyntheticsInfoRow label={<Trans>Price impact / fees</Trans>} value={value} />;
 }

@@ -161,7 +161,7 @@ function OrderSize({
 
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
-      return t`Collateral Delta`;
+      return t`Collateral delta`;
     }
     return t`Collateral`;
   }
@@ -218,11 +218,11 @@ function OrderSize({
                     ],
                     { isStable: positionOrder.initialCollateralToken.isStable }
                   )}{" "}
-                  will be swapped to{" "}
+                  swapped to{" "}
                   {positionOrder.targetCollateralToken.isNative
                     ? wrappedToken.symbol
                     : positionOrder.targetCollateralToken.symbol}{" "}
-                  on order execution.
+                  when executed.
                 </Trans>
               </div>
             )}
@@ -352,8 +352,8 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
         position="bottom-end"
         content={
           <Trans>
-            Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and
-            no oracle reports are produced or if there is not enough available liquidity.
+            In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if there is
+            insufficient liquidity.
           </Trans>
         }
       />
@@ -376,7 +376,7 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
           return (
             <Trans>
               <p>
-                The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
+                Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
                 {formatUsd(positionOrder.triggerPrice, {
                   displayDecimals: priceDecimals,
                   visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -385,8 +385,8 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
               </p>
               <br />
               <p>
-                Note that there may be rare cases where the order cannot be executed, for example, if the chain is down
-                and no oracle reports are produced or if the price impact exceeds your acceptable price.
+                In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if price
+                impact exceeds your acceptable price.
               </p>
             </Trans>
           );
@@ -439,7 +439,7 @@ function TriggerPrice({
         handle={handle}
         content={
           <StatsTooltipRow
-            label={t`Acceptable Price`}
+            label={t`Acceptable price`}
             value={formatUsd(positionOrder.acceptablePrice, {
               displayDecimals: priceDecimals,
               visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -471,10 +471,10 @@ function TriggerPrice({
               <>
                 {isSetAcceptablePriceImpactEnabled && (
                   <div className="pb-8">
-                    <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
+                    <StatsTooltipRow label={t`Acceptable price`} value={acceptablePriceText} showDollar={false} />
                   </div>
                 )}
-                {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
+                {t`Receive at least ${toAmountText} if executed. Price updates based on fees and price impact.`}
               </>
             )}
           />
@@ -510,10 +510,10 @@ function TriggerPrice({
         position="bottom-end"
         renderContent={() => (
           <StatsTooltipRow
-            label={t`Acceptable Price`}
+            label={t`Acceptable price`}
             value={
               isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
-                ? "NA"
+                ? "N/A"
                 : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                     displayDecimals: priceDecimals,
                     visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -796,7 +796,7 @@ function OrderItemSmall({
         )}
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Order Type</Trans>
+            <Trans>Order type</Trans>
           </div>
           <div>
             <OrderItemTypeLabel order={order} />
@@ -810,7 +810,7 @@ function OrderItemSmall({
         </div>
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Trigger Price</Trans>
+            <Trans>Trigger price</Trans>
           </div>
           <div>
             <TriggerPrice
@@ -823,7 +823,7 @@ function OrderItemSmall({
 
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Mark Price</Trans>
+            <Trans>Mark price</Trans>
           </div>
           <div>
             <MarkPrice order={order} />

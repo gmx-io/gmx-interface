@@ -66,17 +66,17 @@ export function GmxCard({
   const gmxDistributionData = useMemo(() => {
     let arr = [
       {
-        name: t`staked`,
+        name: t`Staked`,
         value: stakedPercent,
         color: "#4353fa",
       },
       {
-        name: t`in liquidity`,
+        name: t`In liquidity`,
         value: liquidityPercent,
         color: "#0598fa",
       },
       {
-        name: t`not staked`,
+        name: t`Not staked`,
         value: notStakedPercent,
         color: "#5c0af5",
       },
@@ -151,20 +151,20 @@ export function GmxCard({
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Total Supply</Trans>
+                  <Trans>Total supply</Trans>
                 </div>
                 <div>
                   <TooltipComponent
                     position="bottom-end"
                     handle={formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}
                     handleClassName="numbers"
-                    content={t`Total circulating supply of GMX tokens.`}
+                    content={t`Total circulating supply of GMX tokens`}
                   />
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Total Staked</Trans>
+                  <Trans>Total staked</Trans>
                 </div>
                 <div>
                   <TooltipComponent
@@ -218,7 +218,7 @@ export function GmxCard({
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Market Cap</Trans>
+                  <Trans>Market cap</Trans>
                 </div>
                 <div>
                   <span className="numbers">{formatAmountHuman(gmxMarketCap, USD_DECIMALS, true, 2)}</span>

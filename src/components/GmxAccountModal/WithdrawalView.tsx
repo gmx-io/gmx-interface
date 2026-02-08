@@ -1015,7 +1015,7 @@ export const WithdrawalView = () => {
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: t`Page outdated. Refresh`,
       disabled: true,
     };
   } else if (isSubmitting) {
@@ -1253,7 +1253,7 @@ export const WithdrawalView = () => {
 
   const networkItemDisabledMessage = useCallback(
     (option: { id: number; name: string; disabled?: boolean | string }) => {
-      return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not currently supported`;
+      return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not supported`;
     },
     [selectedToken?.symbol]
   );
@@ -1285,7 +1285,7 @@ export const WithdrawalView = () => {
 
         <div className="flex flex-col gap-6">
           <div className="text-body-medium text-typography-secondary">
-            <Trans>To Network</Trans>
+            <Trans>To network</Trans>
           </div>
           <DropdownSelector
             value={withdrawalViewChain}
@@ -1375,7 +1375,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4">
               <div>
                 <Trans>
-                  The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than{" "}
+                  Amount exceeds the withdrawal limit. Try an amount smaller than{" "}
                   <span className="numbers">{upperLimitFormatted}</span>.
                 </Trans>
               </div>
@@ -1385,7 +1385,7 @@ export const WithdrawalView = () => {
             <AlertInfoCard type="warning" className="my-4">
               <div>
                 <Trans>
-                  The amount you are trying to withdraw is below the limit. Please try an amount larger than{" "}
+                  Amount is below the withdrawal limit. Try an amount larger than{" "}
                   <span className="numbers">{lowerLimitFormatted}</span>.
                 </Trans>
               </div>
@@ -1410,20 +1410,20 @@ export const WithdrawalView = () => {
       {selectedTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
           <SyntheticsInfoRow
-            label={<Trans>Estimated Time</Trans>}
+            label={<Trans>Estimated time</Trans>}
             valueClassName="numbers"
             value={estimatedTimeValue}
           />
           <SyntheticsInfoRow
-            label={<Trans>Network Fee</Trans>}
+            label={<Trans>Network fee</Trans>}
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow
-            label={<Trans>Withdraw Fee</Trans>}
+            label={<Trans>Withdraw fee</Trans>}
             value={isWithdrawFeeLoading ? valueSkeleton : withdrawFeeValue}
           />
           <SyntheticsInfoRow
-            label={<Trans>GMX Balance</Trans>}
+            label={<Trans>GMX Account balance</Trans>}
             value={
               isGmxBalanceLoading ? (
                 valueSkeleton

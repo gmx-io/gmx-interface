@@ -334,12 +334,7 @@ export default function EarnYieldOverview() {
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix=""
-                tooltip={
-                  <Trans>
-                    Staking GMX is currently not supported on Botanix. For access to these features, please visit the
-                    Arbitrum and Avalanche deployments.
-                  </Trans>
-                }
+                tooltip={<Trans>GMX staking unavailable on Botanix. Use Arbitrum or Avalanche.</Trans>}
                 disabled
               />
             }
@@ -355,11 +350,11 @@ export default function EarnYieldOverview() {
                 suffix=""
                 tooltip={
                   <Trans>
-                    Botanix currently has no GLV vault(s) active. You can provide liquidity by{" "}
+                    No GLV vaults on Botanix. Provide liquidity via{" "}
                     <Link to="/pools" className="underline hover:text-blue-300">
-                      purchasing
+                      GM tokens
                     </Link>{" "}
-                    GM tokens.
+                    instead.
                   </Trans>
                 }
                 disabled
@@ -401,7 +396,7 @@ export default function EarnYieldOverview() {
     <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
       <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <h4 className="text-h3 py-20 text-typography-primary max-xl:text-body-large max-xl:pb-12 max-xl:pt-0">
-        <Trans>Current Yield Landscape</Trans>
+        <Trans>Current yield landscape</Trans>
       </h4>
 
       {isTabsMode ? (

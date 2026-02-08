@@ -200,7 +200,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                 )}
                 {marketEarnings && (
                   <PoolsDetailsMarketAmount
-                    label={<Trans>Total Earned Fees</Trans>}
+                    label={<Trans>Total earned fees</Trans>}
                     value={formatUsd(marketEarnings?.total)}
                   />
                 )}

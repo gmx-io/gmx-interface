@@ -71,7 +71,7 @@ function LeverageInfoRows() {
     let leverageValue: ReactNode = "-";
 
     if (decreaseAmounts?.isFullClose) {
-      leverageValue = t`NA`;
+      leverageValue = t`N/A`;
     } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
       leverageValue = "-";
     } else {
@@ -191,7 +191,7 @@ export function TradeBoxAdvancedGroups({
   return (
     <ExpandableRow
       open={isVisible}
-      title={t`Execution Details`}
+      title={t`Execution details`}
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
@@ -223,7 +223,7 @@ export function TradeBoxAdvancedGroups({
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap && isSwap ? (
-        <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />
+        <SyntheticsInfoRow label={<Trans>Acceptable swap impact</Trans>} value={<Trans>N/A</Trans>} />
       ) : null}
 
       {/* only when isSwap */}

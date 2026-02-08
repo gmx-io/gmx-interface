@@ -97,14 +97,13 @@ export function PriceImpactFeesRow() {
       <SyntheticsInfoRow
         label={
           <Tooltip
-            handle={t`Net Price Impact / Fees`}
+            handle={t`Net price impact / fees`}
             content={
               <Trans>
-                Net price impact is the price impact for your position.{" "}
+                Net price impact and fees from your trade.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>
-                .
               </Trans>
             }
           />
@@ -135,7 +134,7 @@ export function PriceImpactFeesRow() {
   if (isSwap) {
     return (
       <SyntheticsInfoRow
-        label={t`Price Impact / Fees`}
+        label={t`Price impact / fees`}
         value={
           <>
             <span
@@ -164,14 +163,13 @@ export function PriceImpactFeesRow() {
       label={
         <span>
           <Tooltip
-            handle={t`Price Impact`}
+            handle={t`Price impact`}
             content={
               <Trans>
-                There is no price impact for increase orders, orders are filled at the mark price.{" "}
+                No price impact on increases — orders execute at mark price.{" "}
                 <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
                   Read more
                 </ExternalLink>
-                .
               </Trans>
             }
           />

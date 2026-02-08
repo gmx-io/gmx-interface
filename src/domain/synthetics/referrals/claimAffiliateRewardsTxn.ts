@@ -30,9 +30,9 @@ export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer
     "claimAffiliateRewards",
     [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, account],
     {
-      sentMsg: t`Affiliate rewards claimed.`,
-      successMsg: t`Claiming successful.`,
-      failMsg: t`Claiming failed.`,
+      sentMsg: t`Claiming affiliate rewards...`,
+      successMsg: t`Affiliate rewards claimed`,
+      failMsg: t`Failed to claim affiliate rewards`,
       hideSuccessMsg: true,
       setPendingTxns,
     }

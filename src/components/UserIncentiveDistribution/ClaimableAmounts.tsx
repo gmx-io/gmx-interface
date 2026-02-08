@@ -173,7 +173,7 @@ export default function ClaimableAmounts() {
     let buttonText: React.ReactNode = <Trans>Claim funds</Trans>;
 
     if (hasOutdatedUi) {
-      buttonText = t`Page outdated, please refresh`;
+      buttonText = t`Refresh page`;
       isButtonDisabled = true;
     } else if (isClaiming) {
       buttonText = <Trans>Claiming...</Trans>;
@@ -182,7 +182,7 @@ export default function ClaimableAmounts() {
     let buttonTooltipText: React.ReactNode | null = null;
 
     if (selectedDistributionIds.length === 0) {
-      buttonTooltipText = <Trans>Select at least one distribution to claim.</Trans>;
+      buttonTooltipText = <Trans>Select at least one distribution to claim</Trans>;
       isButtonDisabled = true;
     }
 
@@ -278,8 +278,8 @@ export default function ClaimableAmounts() {
       </div>
 
       {displayInsufficientGasAlert ? (
-        <AlertInfoCard type="warning" hideClose>
-          <Trans>Insufficient gas for network fees.</Trans>
+        <AlertInfoCard type="error" hideClose>
+          <Trans>Insufficient gas for network fees</Trans>
         </AlertInfoCard>
       ) : null}
 
@@ -292,7 +292,7 @@ export default function ClaimableAmounts() {
             <ExternalLink href={GLP_REIMBURSEMENT_TERMS_URL} variant="underline" className="font-medium text-blue-300">
               GLP Reimbursement
             </ExternalLink>{" "}
-            terms.
+            terms
           </Trans>
         </div>
       )}

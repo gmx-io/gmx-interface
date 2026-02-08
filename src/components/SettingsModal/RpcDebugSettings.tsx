@@ -51,7 +51,7 @@ export function RpcDebugSettings() {
   const debugEndpoints = _debugRpcTracker.getDebugRpcEndpoints(chainId);
 
   return (
-    <ExpandableRow title={<Trans>RPC Debug</Trans>} open={open} onToggle={setOpen}>
+    <ExpandableRow title={<Trans>RPC debug</Trans>} open={open} onToggle={setOpen}>
       <div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-12 pr-16">
         {Object.keys(FLAG_LABELS).map((flag) => (
           <ToggleSwitch
@@ -64,7 +64,7 @@ export function RpcDebugSettings() {
         ))}
 
         <ExpandableRow
-          title={<Trans>Debug RPC Endpoints ({getChainName(chainId)})</Trans>}
+          title={<Trans>Debug RPC endpoints ({getChainName(chainId)})</Trans>}
           open={debugEndpointsOpen}
           onToggle={setDebugEndpointsOpen}
         >
@@ -73,7 +73,7 @@ export function RpcDebugSettings() {
             {debugEndpoints.length > 0 && (
               <div className="flex flex-col gap-8">
                 <div className="text-sm font-semibold text-white">
-                  <Trans>Current Endpoints ({debugEndpoints.length})</Trans>
+                  <Trans>Current endpoints ({debugEndpoints.length})</Trans>
                 </div>
                 {debugEndpoints.map((endpoint, index) => (
                   <div
@@ -168,7 +168,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
         </div>
         <div className="flex justify-end">
           <Button variant="primary" onClick={handleSubmit} disabled={!url.trim()}>
-            <Trans>Add Endpoint</Trans>
+            <Trans>Add endpoint</Trans>
           </Button>
         </div>
       </div>
