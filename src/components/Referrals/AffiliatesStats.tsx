@@ -172,7 +172,7 @@ function AffiliatesStats({
         <ReferralInfoCard
           value={String(currentReferralsData?.affiliateTotalStats.registeredReferralsCount || 0)}
           label={t`Traders referred`}
-          labelTooltipText={t`Number of traders using your referral code`}
+          labelTooltipText={t`Number of traders using your referral code.`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -548,7 +548,7 @@ function AffiliatesStats({
                                 <>
                                   <Trans>
                                     USD value may be inaccurate. Price data unavailable for{" "}
-                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}.
                                   </Trans>
                                   <br />
                                   <br />

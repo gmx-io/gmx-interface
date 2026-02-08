@@ -39,7 +39,7 @@ export function PoolCards() {
       <PoolCard
         name="GLV"
         apr={poolsData?.glvApy}
-        description={t`Steady returns without management.`}
+        description={t`Steady returns without management`}
         iconComponent={IcGlvPool}
         coinImage={glvCoin}
         onClick={onClickGlv}

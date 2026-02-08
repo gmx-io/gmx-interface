@@ -75,7 +75,7 @@ export const actionTextMap: Partial<
 > = {
   ...actionTextMapBase,
 
-  "Deposit-OrderCreated": msg`Request Deposit`,
+  "Deposit-OrderCreated": msg`Request deposit`,
   "Deposit-OrderExecuted": msg`Deposit`,
   "Deposit-OrderCancelled": msg`Failed deposit`,
 

@@ -126,7 +126,7 @@ export function LeaderboardContainer() {
           <span className="link-underline" onClick={handleSwitchNetworkClick}>
             Change your network
           </span>{" "}
-          to participate
+          to participate.
         </Trans>
       </div>
     );
@@ -135,7 +135,7 @@ export function LeaderboardContainer() {
   const description = useMemo(() => {
     switch (leaderboardPageKey) {
       case "leaderboard":
-        return t`Leaderboard for traders on GMX V2.`;
+        return t`Leaderboard for traders on GMX V2`;
 
       case "march_13-20_2024":
       case "march_20-27_2024":

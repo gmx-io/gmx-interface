@@ -70,7 +70,7 @@ export function SwitchToSettlementChainWarning({
   }
 
   return (
-    <AlertInfoCard type="warning" className="mb-12">
+    <AlertInfoCard type="error" className="mb-12">
       {message}
     </AlertInfoCard>
   );

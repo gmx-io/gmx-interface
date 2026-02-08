@@ -16,7 +16,7 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
     async (event: TxnEvent<WalletTxnCtx>) => {
       switch (event.event) {
         case TxnEventName.Submitted:
-          helperToast.success(
+          helperToast.info(
             <div className="flex flex-col gap-10">
               <div className="text-body-medium font-medium">
                 <Trans>Processing your claim...</Trans>

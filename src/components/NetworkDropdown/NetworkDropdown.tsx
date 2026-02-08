@@ -133,7 +133,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
               position="top"
               variant="none"
               className="flex"
-              content={<Trans>Wallet trading only on these networks.</Trans>}
+              content={<Trans>Wallet trading only on these networks</Trans>}
             />
           </div>
           {walletOnlyNetworks.map((network) => (
@@ -166,7 +166,7 @@ function NetworkMenuItem({
   return (
     <Menu.Item key={network.value} disabled={disabled}>
       {({ close }) => (
-        <Wrapper variant="none" as="div" content={<Trans>Smart wallets not supported on this network.</Trans>}>
+        <Wrapper variant="none" as="div" content={<Trans>Smart wallets not supported on this network</Trans>}>
           <div
             className={cx("network-dropdown-menu-item menu-item", {
               "disabled !cursor-not-allowed opacity-50": disabled,

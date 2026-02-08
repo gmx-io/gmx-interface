@@ -173,7 +173,7 @@ function OutOfTokenErrorAlert({
   }
 
   return (
-    <AlertInfoCard type="warning" hideClose>
+    <AlertInfoCard type="error" hideClose>
       <div>
         <Trans>
           Claiming requires{" "}
@@ -213,7 +213,7 @@ function OutOfTokenErrorAlert({
           >
             deposit
           </span>{" "}
-          more {token.symbol} to your GMX account
+          more {token.symbol} to your GMX Account.
         </Trans>
       </div>
     </AlertInfoCard>
@@ -326,7 +326,7 @@ export function ClaimAffiliatesModal(p: Props) {
         throw new Error("Transaction receipt status is failed");
       }
 
-      helperToast.success(t`Claiming successful`);
+      helperToast.success(t`Claim successful`);
       onClose();
     } catch (error) {
       helperToast.error(t`Claiming affiliate rewards failed`);

@@ -346,7 +346,7 @@ export function OverviewCard({
           <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row !mt-16">
-          <Trans>Annualized data based on the past 7 days.</Trans>
+          <Trans>Annualized data based on the past 7 days</Trans>
         </p>
       </>
     );
@@ -434,7 +434,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in the GLP pool.</Trans>
+                      <Trans>Total value of tokens in the GLP pool</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
@@ -471,7 +471,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in GM pools.</Trans>
+                      <Trans>Total value of tokens in GM pools</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow

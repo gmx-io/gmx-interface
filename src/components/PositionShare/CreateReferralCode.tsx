@@ -598,7 +598,7 @@ function CreateReferralCodeLayout({
           </div>
         )}
         {rpcFailedChains && rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
-          <AlertInfoCard type="info" className="text-left">
+          <AlertInfoCard type="warning" hideClose className="text-left">
             {rpcFailedChains.length === 1 ? (
               <Trans>
                 Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
@@ -613,10 +613,10 @@ function CreateReferralCodeLayout({
           </AlertInfoCard>
         )}
         {hasNoTokensOnSourceChain && srcChainId && (
-          <AlertInfoCard type="warning" className="text-left" hideClose>
+          <AlertInfoCard type="error" className="text-left" hideClose>
             <Trans>
               You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit
-              funds or switch to a different network
+              funds or switch to a different network.
             </Trans>
           </AlertInfoCard>
         )}

@@ -269,7 +269,7 @@ const useTradeboxPoolWarnings = () => {
 
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
-      <AlertInfoCard key="showHasNoSufficientLiquidityInAnyMarketWarning">
+      <AlertInfoCard key="showHasNoSufficientLiquidityInAnyMarketWarning" type="error" hideClose>
         <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD pool for your order.</Trans>
       </AlertInfoCard>
     );
@@ -277,7 +277,7 @@ const useTradeboxPoolWarnings = () => {
 
   if (showHasInsufficientLiquidityAndNoPositionWarning) {
     warning.push(
-      <AlertInfoCard key="showHasInsufficientLiquidityAndNoPositionWarning">
+      <AlertInfoCard key="showHasInsufficientLiquidityAndNoPositionWarning" type="error" hideClose>
         <Trans>
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool.
         </Trans>
@@ -292,7 +292,7 @@ const useTradeboxPoolWarnings = () => {
 
   if (showHasInsufficientLiquidityAndPositionWarning) {
     warning.push(
-      <AlertInfoCard key="showHasInsufficientLiquidityAndPositionWarning">
+      <AlertInfoCard key="showHasInsufficientLiquidityAndPositionWarning" type="error" hideClose>
         <Trans>
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Choosing a different pool
           creates a new position.

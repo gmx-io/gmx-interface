@@ -122,7 +122,7 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading</Trans>
+                  <Trans>Smart wallets are not supported on Express or One-Click Trading.</Trans>
                 ) : undefined
               }
               chip={
@@ -141,7 +141,7 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading</Trans>
+                  <Trans>Smart wallets are not supported on Express or One-Click Trading.</Trans>
                 ) : undefined
               }
               info={

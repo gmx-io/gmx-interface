@@ -82,7 +82,7 @@ export function NpsModal() {
         ))}
 
         <div className="mb-15 flex flex-col">
-          <TooltipWithPortal position="top-start" content={<Trans>Optional: Share for follow-up questions.</Trans>}>
+          <TooltipWithPortal position="top-start" content={<Trans>Share for follow-up questions.</Trans>}>
             <Trans>Telegram contact (optional)</Trans>
           </TooltipWithPortal>
           <input

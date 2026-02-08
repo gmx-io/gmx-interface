@@ -18,7 +18,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -287,14 +287,14 @@ export function ClaimModal(props: {
         )}
       </div>
       {isUndelegatedGovToken ? (
-        <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
+        <AlertInfoCard type="error" hideClose>
           <Trans>
             <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
               Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
             </ExternalLink>
             voting power before claiming.
           </Trans>
-        </AlertInfo>
+        </AlertInfoCard>
       ) : null}
       <SwitchToSettlementChainWarning topic="staking" />
       <div className="Exchange-swap-button-container">

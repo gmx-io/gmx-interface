@@ -267,9 +267,9 @@ export function useTradeboxButtonState({
           tooltipContent = (
             <>
               {isLeverageSliderEnabled ? (
-                <Trans>Decrease the leverage to match the max. allowed leverage.</Trans>
+                <Trans>Decrease the leverage to match the max allowed leverage.</Trans>
               ) : (
-                <Trans>Decrease the size to match the max. allowed leverage:</Trans>
+                <Trans>Decrease the size to match the max allowed leverage:</Trans>
               )}{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
               <br />
@@ -284,7 +284,7 @@ export function useTradeboxButtonState({
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
           tooltipContent = (
-            <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
+            <Trans>Position would be immediately liquidated upon execution. Try reducing the size.</Trans>
           );
           break;
         }
@@ -499,7 +499,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Loading Express parameters...`}
+            {t`Loading Express params...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -802,7 +802,7 @@ function NoSwapPathTooltipContent({
           <span onClick={makeHandleSwapClick(fromToken.symbol, "STBTC")} className="Tradebox-handle">
             Swap {fromToken.symbol} to STBTC
           </span>{" "}
-          to use {collateralToken.symbol} as collateral
+          to use {collateralToken.symbol} as collateral.
         </Trans>
       );
     }

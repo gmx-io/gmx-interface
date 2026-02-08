@@ -30,9 +30,9 @@ export function GmFees(p: Props) {
 
   let value: ReactNode = useMemo(() => {
     const operationTexts = {
-      [Operation.Deposit]: t`Buy`,
-      [Operation.Withdrawal]: t`Sell`,
-      [Operation.Shift]: t`Shift`,
+      [Operation.Deposit]: t`buy`,
+      [Operation.Withdrawal]: t`sell`,
+      [Operation.Shift]: t`shift`,
     };
 
     const operationText = operationTexts[p.operation];

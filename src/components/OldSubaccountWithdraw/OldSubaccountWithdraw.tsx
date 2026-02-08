@@ -51,7 +51,7 @@ export function OldSubaccountWithdraw() {
     try {
       setIsWithdrawing(true);
 
-      helperToast.success(
+      helperToast.info(
         <StatusNotification title={t`Withdrawing from subaccount...`}>
           <TransactionStatus status="loading" text={t`Withdrawing ${balanceFormatted} to main account...`} />
         </StatusNotification>,
@@ -95,8 +95,8 @@ export function OldSubaccountWithdraw() {
   }
 
   return (
-    <ColorfulBanner color="blue" icon={IconInfo}>
-      <Trans>{balanceFormatted} remaining in old 1CT subaccount.</Trans>
+    <ColorfulBanner color="blue" icon={IconInfo} onClose={() => setIsVisible(false)}>
+      <Trans>{balanceFormatted} remaining in old 1CT subaccount</Trans>
       <ColorfulButtonLink color="blue" onClick={withdrawWeth} disabled={isWithdrawing}>
         {isWithdrawing ? <Trans>Withdrawing...</Trans> : <Trans>Withdraw</Trans>}
       </ColorfulButtonLink>

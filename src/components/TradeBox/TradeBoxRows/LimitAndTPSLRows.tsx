@@ -71,8 +71,8 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                 disabled={entriesInfo.allowAddEntry}
                 content={
                   isStopLoss
-                    ? t`Stop-Loss at 100%. Reduce existing orders to add more`
-                    : t`Take-Profit at 100%. Reduce existing orders to add more`
+                    ? t`Stop-Loss at 100%. Reduce existing orders to add more.`
+                    : t`Take-Profit at 100%. Reduce existing orders to add more.`
                 }
               >
                 <EntryButton
@@ -215,7 +215,7 @@ export function LimitAndTPSLGroup() {
       hasError={hasError}
       disableCollapseOnError
       autoExpandOnError
-      errorMessage={<Trans>TP/SL orders have issues</Trans>}
+      errorMessage={<Trans>TP/SL orders have issues.</Trans>}
       onToggle={toggleLimitOrTPSL}
       withToggleSwitch
     >

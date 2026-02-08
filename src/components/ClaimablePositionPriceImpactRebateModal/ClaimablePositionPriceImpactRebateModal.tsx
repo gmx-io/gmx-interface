@@ -167,7 +167,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
   const handleSubmit = useCallback(async () => {
     const onMissingParams = () => {
-      helperToast.error(t`Missing claim parameters, retry in a few seconds`);
+      helperToast.error(t`Missing claim parameters. Retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimPositionPriceImpactFees");
     };
 
@@ -204,7 +204,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
           txnData,
         });
 
-        helperToast.success(
+        helperToast.info(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
               <Trans>Claiming price impact rebates...</Trans>

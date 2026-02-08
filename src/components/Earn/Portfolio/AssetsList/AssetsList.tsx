@@ -154,7 +154,7 @@ function AssetsList({
               <>
                 <Trans>You don't own any assets yet</Trans>
                 <br />
-                <Trans>Check the recommended section above to start earning</Trans>
+                <Trans>See recommended section above to start</Trans>
               </>
             ) : (
               <Trans>Connect your wallet to see your assets</Trans>

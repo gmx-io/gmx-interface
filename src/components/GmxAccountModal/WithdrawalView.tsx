@@ -1253,7 +1253,7 @@ export const WithdrawalView = () => {
 
   const networkItemDisabledMessage = useCallback(
     (option: { id: number; name: string; disabled?: boolean | string }) => {
-      return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not supported`;
+      return t`Withdrawing ${selectedToken?.symbol} to ${option.name} is not supported.`;
     },
     [selectedToken?.symbol]
   );

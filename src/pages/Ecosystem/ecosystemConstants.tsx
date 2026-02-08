@@ -104,7 +104,7 @@ export const communityProjects: EcosystemCommunityProject[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`GMX Swaps`,
+    title: msg`GMX swaps`,
     link: "https://t.me/GMXSwaps",
     linkLabel: "t.me",
     about: msg`Telegram bot for GMX swap monitoring`,
@@ -125,7 +125,7 @@ export const communityProjects: EcosystemCommunityProject[] = [
     title: msg`Copin`,
     link: "https://app.copin.io",
     linkLabel: "copin.io",
-    about: msg`Explore, analyze, and copy on-chain traders.`,
+    about: msg`Explore, analyze, and copy on-chain traders`,
     creatorLabel: ["@0xanol", "@tungle_eth"],
     creatorLink: ["https://x.com/0xanol", "https://x.com/tungle_eth"],
     chainIds: [ARBITRUM],
@@ -140,7 +140,7 @@ export const communityProjects: EcosystemCommunityProject[] = [
     chainIds: [ARBITRUM],
   },
   {
-    title: msg`Kudai AI Agent`,
+    title: msg`Kudai AI agent`,
     link: "https://x.com/Kudai_IO",
     linkLabel: "x.com",
     about: msg`AI agent for GMX Blueberry Club`,
@@ -171,7 +171,7 @@ type EcosystemDashboardProject = {
 
 export const dashboardProjects: EcosystemDashboardProject[] = [
   {
-    title: msg`GMX Referrals Dashboard`,
+    title: msg`GMX referrals dashboard`,
     link: "https://www.gmxreferrals.com/",
     linkLabel: "gmxreferrals.com",
     about: msg`Dashboard for GMX referral stats`,

@@ -77,7 +77,7 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   return (
     <AppPageLayout header={<ChainContentHeader />}>
-      <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
+      <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">
         <div className="overflow-x-auto scrollbar-hide">

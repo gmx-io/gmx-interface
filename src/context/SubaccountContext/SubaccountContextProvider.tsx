@@ -146,7 +146,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         return false;
       }
 
-      helperToast.success(
+      helperToast.info(
         <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT settings`}>
           <TransactionStatus status="loading" text={t`Updating settings...`} />
         </StatusNotification>
@@ -202,7 +202,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const toastId = Date.now();
 
-    helperToast.success(<SubaccountActivateNotification toastId={toastId} />, {
+    helperToast.info(<SubaccountActivateNotification toastId={toastId} />, {
       autoClose: false,
       toastId,
     });
@@ -281,7 +281,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const toastId = Date.now();
 
-    helperToast.success(<SubaccountDeactivateNotification toastId={toastId} />, {
+    helperToast.info(<SubaccountDeactivateNotification toastId={toastId} />, {
       autoClose: false,
       toastId,
     });

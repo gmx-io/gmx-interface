@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -43,12 +43,14 @@ export function SettlementChainWarningContainer() {
     setGmxAccountSettlementChainId(anyNonEmptyGmxAccountChainId);
   }, [setGmxAccountSettlementChainId, anyNonEmptyGmxAccountChainId]);
 
-  if (!anyNonEmptyGmxAccountChainId || !isCurrentSettlementChainEmpty) {
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  if (!anyNonEmptyGmxAccountChainId || !isCurrentSettlementChainEmpty || isDismissed) {
     return null;
   }
 
   return (
-    <ColorfulBanner color="blue" icon={InfoIcon} className="text-body-small">
+    <ColorfulBanner color="blue" icon={InfoIcon} className="text-body-small" onClose={() => setIsDismissed(true)}>
       <Trans>
         Settlement network changed to {getChainName(settlementChainId)}, but {formatUsd(gmxAccountUsd)} remains in your{" "}
         {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account.

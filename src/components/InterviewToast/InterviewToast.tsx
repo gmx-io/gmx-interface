@@ -34,7 +34,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
   if (type === "lp") {
     return (
       <div>
-        <Trans>Join an anonymous one-on-one chat to share your GMX Liquidity Provider experience</Trans>
+        <Trans>Join an anonymous one-on-one chat to share your GMX liquidity provider experience</Trans>
         <br />
         <br />
         <Trans>

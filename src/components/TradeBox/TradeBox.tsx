@@ -94,7 +94,6 @@ import { TradeMode } from "sdk/utils/trade/types";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
@@ -110,7 +109,6 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
-import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
@@ -1110,7 +1108,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             </div>
 
             {twapRecommendation && (
-              <ColorfulBanner color="blue" icon={InfoCircleIcon}>
+              <AlertInfoCard>
                 <div className="flex flex-col gap-8">
                   <span>
                     <span
@@ -1122,7 +1120,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     <Trans>for lower net price impact.</Trans>
                   </span>
                 </div>
-              </ColorfulBanner>
+              </AlertInfoCard>
             )}
 
             {showSectionBetweenInputsAndButton && (
@@ -1132,8 +1130,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   <AlertInfoCard type="error" hideClose>
                     <Trans>
                       Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and
-                      depositing additional funds to Avalanche GMX accounts is no longer available. We recommend
-                      switching to Arbitrum as a settlement network.
+                      depositing additional funds to Avalanche GMX accounts is no longer available. Switch to Arbitrum
+                      as a settlement network.
                     </Trans>
                   </AlertInfoCard>
                 )}
@@ -1174,7 +1172,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                       </div>
                     )}
                     {showHighLeverageWarning && (
-                      <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
+                      <AlertInfoCard type="warning" hideClose>
                         <Trans>High leverage increases liquidation risk.</Trans>
                       </AlertInfoCard>
                     )}

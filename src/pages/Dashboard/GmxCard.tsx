@@ -158,7 +158,7 @@ export function GmxCard({
                     position="bottom-end"
                     handle={formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}
                     handleClassName="numbers"
-                    content={t`Total circulating supply of GMX tokens.`}
+                    content={t`Total circulating supply of GMX tokens`}
                   />
                 </div>
               </div>

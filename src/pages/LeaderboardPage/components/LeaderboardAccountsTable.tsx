@@ -188,7 +188,7 @@ export function LeaderboardAccountsTable({
                     {formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
                       displayDecimals: 0,
                     })}{" "}
-                    capital required for ranking.
+                    capital required for rankings.
                     <br />
                     <br />
                     Capital = max(sum of collateral of open positions - realized PnL + starting pending PnL).

@@ -174,14 +174,14 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) 
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && !isMarketOrder) {
     return t`Insufficient liquidity. Order will fill when liquidity is available.`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && isMarketOrder) {
-    return t`Insufficient liquidity.`;
+    return t`Insufficient liquidity`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && !isMarketOrder) {
-    return t`Insufficient liquidity.`;
+    return t`Insufficient liquidity`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && isMarketOrder) {
-    return t`Insufficient liquidity.`;
+    return t`Insufficient liquidity`;
   }
 
-  return t`Reason: ${words(errorName).join(" ").toLowerCase()}.`;
+  return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
 }
 
 const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);

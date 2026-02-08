@@ -605,7 +605,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                         showDollar={false}
                       />
                       <StatsTooltipRow
-                        label={<Trans>Max Capacity:</Trans>}
+                        label={<Trans>Max capacity:</Trans>}
                         value={formatGmxAmount(depositConfig.maxVestableAmount)}
                         showDollar={false}
                       />

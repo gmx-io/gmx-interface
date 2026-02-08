@@ -190,6 +190,7 @@ export function PositionSeller() {
   );
 
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
+  const [isTwapBannerDismissed, setIsTwapBannerDismissed] = useState(false);
 
   const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
@@ -264,6 +265,7 @@ export function PositionSeller() {
   useEffect(() => {
     if (isVisible) {
       setIsDismissedLatestRef.current(false);
+      setIsTwapBannerDismissed(false);
     }
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
@@ -916,8 +918,8 @@ export function PositionSeller() {
           {position && (
             <>
               <div className="flex flex-col gap-4">
-                {twapRecommendation && (
-                  <ColorfulBanner color="blue" icon={InfoCircleIcon}>
+                {twapRecommendation && !isTwapBannerDismissed && (
+                  <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
                     <div className="flex flex-col gap-8">
                       <span>
                         <span

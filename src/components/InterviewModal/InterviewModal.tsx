@@ -56,7 +56,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             <span className="font-400 text-green-500">
               100 <TokenSymbolWithIcon symbol="USDC" />
             </span>{" "}
-            for your feedback
+            for your feedback.
           </Trans>
         </div>
       </Modal>

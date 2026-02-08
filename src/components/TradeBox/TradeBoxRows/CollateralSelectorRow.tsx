@@ -102,6 +102,7 @@ function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
+              .
             </Trans>
           </AlertInfoCard>
         );
@@ -118,6 +119,7 @@ function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
+              .
             </Trans>
           </AlertInfoCard>
         );
@@ -140,6 +142,7 @@ function useCollateralWarnings() {
             >
               Switch to {symbol} collateral
             </ColorfulButtonLink>
+            .
           </Trans>
         </AlertInfoCard>
       );

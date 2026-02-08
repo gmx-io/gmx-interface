@@ -43,7 +43,7 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
             renderContent={() => (
               <div>
                 <Trans>
-                  Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates there.
+                  Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates.
                 </Trans>
               </div>
             )}

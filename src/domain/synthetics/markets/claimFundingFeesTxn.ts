@@ -38,7 +38,7 @@ export async function claimFundingFeesTxn(chainId: ContractsChainId, signer: Sig
     [fundingFees.marketAddresses, fundingFees.tokenAddresses, account],
     {
       sentMsg: t`Funding claimed`,
-      successMsg: t`Claiming successful`,
+      successMsg: t`Claim successful`,
       failMsg: t`Claiming failed`,
       hideSuccessMsg: true,
       setPendingTxns,

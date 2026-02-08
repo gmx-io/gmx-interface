@@ -33,7 +33,7 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
         <Trans>
           Connect wallet to view
           <br />
-          all available payment options
+          payment options
         </Trans>
       </div>
       <ConnectWalletButton onClick={openConnectModal}>

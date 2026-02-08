@@ -361,19 +361,19 @@ export default function BeginAccountTransfer() {
         </div>
         <div className="flex flex-col gap-8 text-14 font-medium">
           <ValidationRow isValid={!hasVestedGmx}>
-            <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GMX Vesting Vault.</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedGlp}>
-            <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GLP Vesting Vault.</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedAffiliate}>
-            <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault.</Trans>
           </ValidationRow>
           {hasVestedAffiliate && (
             <>
               <p className="soft-error">
                 <Trans>
-                  You have esGMX tokens in the Affiliate Vault. Withdraw them to transfer to the new account
+                  You have esGMX tokens in the Affiliate Vault. Withdraw them to transfer to the new account.
                 </Trans>
               </p>
               <Checkbox
@@ -382,17 +382,17 @@ export default function BeginAccountTransfer() {
                 setIsChecked={setIsAffiliateVesterSkipValidation}
               >
                 <span className="text-body-small text-yellow-300">
-                  <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
+                  <Trans>I do not want to transfer the Affiliate esGMX tokens.</Trans>
                 </span>
               </Checkbox>
             </>
           )}
 
           <ValidationRow isValid={!hasStakedGmx}>
-            <Trans>Receiver has not staked GMX tokens before</Trans>
+            <Trans>Receiver has not staked GMX tokens before.</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasStakedGlp}>
-            <Trans>Receiver has not staked GLP tokens before</Trans>
+            <Trans>Receiver has not staked GLP tokens before.</Trans>
           </ValidationRow>
         </div>
 

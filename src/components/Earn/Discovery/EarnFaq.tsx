@@ -44,7 +44,7 @@ export default function EarnFaq() {
           answer={
             <Trans>
               GMX staking is available on Arbitrum and Avalanche. Different GLV vaults and GM tokens are available on
-              each chain. Visit the Pools page to see the liquidity options for your connected network.
+              each chain. Visit the pools page to see the liquidity options for your connected network.
             </Trans>
           }
         />

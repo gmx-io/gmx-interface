@@ -52,7 +52,7 @@ export function useMaxAutoCancelOrdersState({
 
   if (showWarning) {
     warning = (
-      <AlertInfoCard>
+      <AlertInfoCard type="warning" hideClose>
         <Trans>
           Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual
           cancellation. Existing orders still close with the position.{" "}

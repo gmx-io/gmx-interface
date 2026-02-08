@@ -36,7 +36,7 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
               Positive funding fees ready to claim.
               <br />
               <br />
-              Available after changing position size, adjusting collateral, or clicking "Settle"
+              Available after changing position size, adjusting collateral, or clicking "Settle".
             </Trans>
           ),
           onButtonClick: onClaimClick,

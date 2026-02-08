@@ -159,7 +159,7 @@ export const TransferDetailsView = () => {
       )}
       {selectedTransfer?.sentTxn && selectedTransfer.sourceChainId !== 0 && (
         <SyntheticsInfoRow
-          label={isTestnet ? <Trans>Testnet LayerZero Scan</Trans> : <Trans>LayerZero Scan</Trans>}
+          label={isTestnet ? <Trans>Testnet LayerZero scan</Trans> : <Trans>LayerZero scan</Trans>}
           value={
             <ExternalLink
               className="!no-underline"

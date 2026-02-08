@@ -44,7 +44,7 @@ export function NotifyModal() {
             </span>
             <ExternalLink href="https://notifi.network/privacy">Privacy Policy</ExternalLink>
             <span> and </span>
-            <ExternalLink href="https://notifi.network/terms">Terms of Use</ExternalLink>
+            <ExternalLink href="https://notifi.network/terms">Terms of Use</ExternalLink>.
           </Trans>
         </div>
         <div className="NotifyModal-notify text-caption">

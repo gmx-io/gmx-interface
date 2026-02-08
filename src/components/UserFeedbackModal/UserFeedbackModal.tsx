@@ -96,7 +96,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
 
     if (error) {
       return {
-        text: t`Error, please try again`,
+        text: t`Error, try again`,
         disabled: true,
       };
     }
@@ -119,7 +119,7 @@ export function UserFeedbackModal({ isVisible, setIsVisible }: Props) {
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`We value your feedback`}>
       <div className="mb-15 max-w-xl">
         {feedbackQuestion}
-        <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback here`} />
+        <Textarea value={feedback} onChange={onChangeFeedback} placeholder={t`Enter your feedback`} />
       </div>
       <div className="mb-15 flex flex-col">
         <TooltipWithPortal position="top-start" content={<Trans>Optional: Share for follow-up questions.</Trans>}>

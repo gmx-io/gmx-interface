@@ -26,13 +26,13 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
   }, [onClose, setGmxAccountModalOpen]);
 
   return (
-    <ColorfulBanner color="blue" icon={ExpressIcon}>
+    <ColorfulBanner color="red" icon={ExpressIcon}>
       <div>
         {srcChainId !== undefined ? (
           <>
             <Trans>Insufficient gas balance. Deposit more {gasPaymentTokensText}.</Trans>
             <br />
-            <ColorfulButtonLink color="blue" onClick={onDepositClick}>
+            <ColorfulButtonLink color="red" onClick={onDepositClick}>
               <Trans>Deposit {gasPaymentTokensText}</Trans>
             </ColorfulButtonLink>
           </>
@@ -40,7 +40,7 @@ export function ExpressTradingOutOfGasBanner({ onClose }: { onClose: () => void 
           <>
             <Trans>Insufficient gas balance. Express and One-Click Trading unavailable.</Trans>
             <br />
-            <ColorfulButtonLink color="blue" onClick={onBuyClick}>
+            <ColorfulButtonLink color="red" onClick={onBuyClick}>
               <Trans>Buy {gasPaymentTokensText}</Trans>
             </ColorfulButtonLink>
           </>

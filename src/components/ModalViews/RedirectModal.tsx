@@ -56,7 +56,7 @@ export function RedirectPopupModal({
         By clicking Agree, you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">
           T&Cs
         </ExternalLink>{" "}
-        and <ExternalLink href="https://gmx.io/#/referral-terms">Referral T&Cs</ExternalLink>
+        and <ExternalLink href="https://gmx.io/#/referral-terms">Referral T&Cs</ExternalLink>.
         <br />
         <br />
       </Trans>

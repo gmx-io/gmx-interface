@@ -209,7 +209,7 @@ export function getSwapError(p: {
   const noExternalSwap = !externalSwapQuote;
 
   if (noInternalSwap && noExternalSwap) {
-    return { buttonErrorMessage: t`Couldn't find a swap path with enough liquidity` };
+    return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
   }
 
   if (
@@ -441,7 +441,7 @@ export function getIncreaseError(p: {
 
     if (maxLeverageError) {
       return {
-        buttonErrorMessage: t`Max. Leverage exceeded`,
+        buttonErrorMessage: t`Max leverage exceeded`,
         buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
       };
     }
@@ -685,7 +685,7 @@ export function getEditCollateralError(p: {
 
     if (!isPositionCollateralSufficient) {
       return {
-        buttonErrorMessage: t`Max. Leverage exceeded`,
+        buttonErrorMessage: t`Max leverage exceeded`,
         buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
       };
     }
@@ -787,7 +787,7 @@ export function getGmSwapError(p: {
     return { buttonErrorMessage: t`Loading...` };
   }
 
-  const glvTooltipMessage = t`GM: ${marketInfo.name} buyable cap reached. Choose a different pool, reduce size, or pick a different token composition`;
+  const glvTooltipMessage = t`GM: ${marketInfo.name} buyable cap reached. Choose a different pool, reduce size, or pick a different token composition.`;
 
   if (isPair && isDeposit && paySource === "sourceChain") {
     return { buttonErrorMessage: t`Deposit from source chain supports only single token` };
@@ -858,7 +858,7 @@ export function getGmSwapError(p: {
   }
 
   if ((longTokenAmount ?? 0n) < 0 || (shortTokenAmount ?? 0n) < 0 || (marketTokenAmount ?? 0n) < 0) {
-    return { buttonErrorMessage: t`Amount should be greater than zero` };
+    return { buttonErrorMessage: t`Enter a valid amount` };
   }
 
   if (
@@ -911,8 +911,8 @@ export function getGmSwapError(p: {
           buttonErrorMessage: t`Max pool amount reached`,
           buttonTooltipMessage:
             longToken?.symbol === "GM"
-              ? t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
-              : t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please choose a different pool or reduce the buy size.`,
+              ? t`GM: ${marketInfo.name} buyable cap in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] reached. Reduce the buy size, pick a different GM token, or shift GM tokens to a different pool.`
+              : t`GM: ${marketInfo.name} buyable cap in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] reached. Choose a different pool or reduce the buy size.`,
         };
       }
     }
@@ -1029,7 +1029,7 @@ export function getGmShiftError({
   }
 
   if ((fromTokenAmount ?? 0n) < 0 || (toTokenAmount ?? 0n) < 0) {
-    return { buttonErrorMessage: t`Amount should be greater than zero` };
+    return { buttonErrorMessage: t`Enter a valid amount` };
   }
 
   if (fromTokenAmount === undefined || fromTokenAmount <= 0n || toTokenAmount === undefined || toTokenAmount <= 0n) {

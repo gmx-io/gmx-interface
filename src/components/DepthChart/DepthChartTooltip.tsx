@@ -270,13 +270,13 @@ export const ChartTooltip = forwardRef<
     >
       <p className="mb-8">{tooltip}</p>
       <StatsTooltipRow
-        label={t`Execution Price`}
+        label={t`Execution price`}
         value={formatUsdPrice(stats.executionPriceBigInt)}
         showDollar={false}
       />
-      <StatsTooltipRow label={t`Total Size`} value={formatUsd(size)} showDollar={false} />
+      <StatsTooltipRow label={t`Total size`} value={formatUsd(size)} showDollar={false} />
       <StatsTooltipRow
-        label={t`Price Impact`}
+        label={t`Price impact`}
         textClassName={getPositiveOrNegativeClass(stats.priceImpactBigInt)}
         value={formatPercentage(priceImpactFeeItem?.precisePercentage, {
           signed: true,

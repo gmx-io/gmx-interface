@@ -176,7 +176,7 @@ export function PriceImpactFeesRow() {
             }
           />
           {" / "}
-          {t`fees`}
+          {t`Fees`}
         </span>
       }
       value={

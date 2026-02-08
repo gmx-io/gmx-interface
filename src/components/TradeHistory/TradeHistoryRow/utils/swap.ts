@@ -133,7 +133,7 @@ export const formatSwapMessage = (
       );
       result = {
         price: executionRate,
-        priceComment: lines(t`Execution price for the order.`, "", infoRow(t`Order acceptable price`, t`N/A`)),
+        priceComment: lines(t`Execution price for the order`, "", infoRow(t`Order acceptable price`, t`N/A`)),
         size: t`${fromText} to ${toExecutionText}`,
         swapToTokenAmount: toExecutionAmountText,
       };
@@ -186,7 +186,7 @@ export const formatSwapMessage = (
     result = {
       price: executionRate,
       priceComment: lines(
-        t`Execution price for the order.`,
+        t`Execution price for the order`,
         "",
         infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
@@ -222,7 +222,7 @@ export const formatSwapMessage = (
         }),
       price: rate,
       priceComment: lines(
-        t`Execution price for the order.`,
+        t`Execution price for the order`,
         "",
         infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
@@ -254,7 +254,7 @@ export const formatSwapMessage = (
     result = {
       price: executionRate,
       priceComment: lines(
-        t`Execution price for the order.`,
+        t`Execution price for the order`,
         "",
         infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),
@@ -290,7 +290,7 @@ export const formatSwapMessage = (
         }),
       price: rate,
       priceComment: lines(
-        t`Execution price for the order.`,
+        t`Execution price for the order`,
         "",
         infoRow(t`Order acceptable price`, `${acceptablePriceInequality}${acceptableRate}`)
       ),

@@ -109,7 +109,7 @@ export function HighPriceImpactOrFeesWarningCard({
   }
 
   return (
-    <AlertInfoCard className="h-fit" type="warning" onClose={() => priceImpactWarningState.setIsDismissed(true)}>
+    <AlertInfoCard className="h-fit" type="warning" hideClose>
       <div className="flex flex-col gap-4">
         {warnings.map((warning) => {
           const warningContent = (

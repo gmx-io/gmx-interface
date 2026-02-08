@@ -22,7 +22,7 @@ function Jobs() {
                 <Trans>Jobs</Trans>
               </div>
               <div className="Page-description">
-                <Trans>Job openings at GMX.</Trans>
+                <Trans>Job openings at GMX</Trans>
               </div>
             </div>
           </div>

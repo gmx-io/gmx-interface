@@ -1164,7 +1164,7 @@ export const DepositView = () => {
         </AlertInfoCard>
       )}
       {isAboveLimit && (
-        <AlertInfoCard type="warning" className="mt-8">
+        <AlertInfoCard type="error" className="mt-8" hideClose>
           <div>
             <Trans>
               Amount exceeds the deposit limit. Try an amount smaller than{" "}
@@ -1174,7 +1174,7 @@ export const DepositView = () => {
         </AlertInfoCard>
       )}
       {isBelowLimit && (
-        <AlertInfoCard type="warning" className="mt-8">
+        <AlertInfoCard type="error" className="mt-8" hideClose>
           <div>
             <Trans>
               Amount is below the deposit limit. Try an amount larger than{" "}

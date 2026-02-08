@@ -47,7 +47,7 @@ export function getPositionOrderError({
     triggerPrice === positionOrder.triggerPrice! &&
     acceptablePrice === positionOrder.acceptablePrice
   ) {
-    return t`Enter new amount or price`;
+    return t`Enter a new amount or price`;
   }
 
   if (isLimitIncreaseOrderType(positionOrder.orderType)) {
@@ -62,9 +62,9 @@ export function getPositionOrderError({
     }
   } else if (isStopIncreaseOrderType(positionOrder.orderType)) {
     if (positionOrder.isLong && triggerPrice <= markPrice) {
-      return t`Stop market price below mark price`;
+      return t`Stop Market price below mark price`;
     } else if (!positionOrder.isLong && triggerPrice >= markPrice) {
-      return t`Stop market price above mark price`;
+      return t`Stop Market price above mark price`;
     }
   }
 

@@ -647,7 +647,7 @@ export const formatPositionMessage = (
       priceComment: lines(
         t`Mark price for the liquidation.`,
         "",
-        t`This position was liquidated as the max. leverage of ${formattedMaxLeverage} was exceeded when taking into account fees.`,
+        t`This position was liquidated as the max leverage of ${formattedMaxLeverage} was exceeded when accounting for fees.`,
         "",
         infoRow(t`Initial collateral`, formattedInitialCollateral!),
         infoRow(t`PnL`, {

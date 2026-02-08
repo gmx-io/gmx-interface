@@ -28,7 +28,7 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
     <div>
       <Trans>
         Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(chainId)}.{" "}
-        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
+        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>.
       </Trans>
     </div>
   );
@@ -44,7 +44,7 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
     <div>
       <Trans>
         Insufficient {localizedList} for gas in your wallet on {chainName}.{" "}
-        <ExternalLink href={getMatchaBuyTokenUrl(chainId, firstGasPaymentToken)}>Buy {localizedList}</ExternalLink>
+        <ExternalLink href={getMatchaBuyTokenUrl(chainId, firstGasPaymentToken)}>Buy {localizedList}</ExternalLink>.
       </Trans>
     </div>
   );
@@ -85,7 +85,7 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({
         Insufficient {tokensText} for gas in your GMX Account.{" "}
         <button className="cursor-pointer underline underline-offset-2" type="button" onClick={handleDeposit}>
           Deposit {tokensText}
-        </button>
+        </button>.
       </Trans>
     </div>
   );
@@ -105,7 +105,7 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }:
     <div>
       <Trans>
         Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(srcChainId)}.{" "}
-        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
+        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>.
       </Trans>
     </div>
   );

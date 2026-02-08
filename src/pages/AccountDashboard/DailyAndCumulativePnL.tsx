@@ -117,10 +117,10 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
 
       <div className="flex flex-wrap gap-24 px-16 pt-16 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
+          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Daily profit</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Daily Loss</Trans>
+          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Daily loss</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-4 rounded-full bg-blue-300" />{" "}

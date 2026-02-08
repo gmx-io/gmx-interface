@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import {
@@ -93,6 +93,7 @@ export function Chart() {
 
 function DepthChartContainer() {
   const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const [isDepthBannerDismissed, setIsDepthBannerDismissed] = useState(false);
 
   if (!marketInfo) {
     return null;
@@ -100,18 +101,20 @@ function DepthChartContainer() {
 
   return (
     <div className="flex h-full w-full flex-col gap-8 p-8">
-      <ColorfulBanner color="blue">
-        <span>
-          <Trans>
-            Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact
-            applies only on closes (capped, usually at 0.5%).{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
-              Read more
-            </ExternalLink>
-            .
-          </Trans>
-        </span>
-      </ColorfulBanner>
+      {!isDepthBannerDismissed && (
+        <ColorfulBanner color="blue" onClose={() => setIsDepthBannerDismissed(true)}>
+          <span>
+            <Trans>
+              Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact
+              applies only on closes (capped, usually at 0.5%).{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
+                Read more
+              </ExternalLink>
+              .
+            </Trans>
+          </span>
+        </ColorfulBanner>
+      )}
       <div className="w-full grow">
         <DepthChart marketInfo={marketInfo} />
       </div>

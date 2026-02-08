@@ -238,7 +238,7 @@ function ClaimModalMultichain(p: Props) {
           txnData,
         });
 
-        helperToast.success(
+        helperToast.info(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
               <Trans>Claiming...</Trans>
