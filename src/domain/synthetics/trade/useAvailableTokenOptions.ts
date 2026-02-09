@@ -68,7 +68,12 @@ const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<ContractsChainId, string[]> = {
     // pBTC
     "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
   ],
-  [MEGAETH]: [],
+  [MEGAETH]: [
+    // ETH - handled by wrapOrUnwrap
+    zeroAddress,
+    // WETH
+    "0x4200000000000000000000000000000000000006",
+  ],
   [AVALANCHE]: [],
   [ARBITRUM]: [],
   [AVALANCHE_FUJI]: [],
