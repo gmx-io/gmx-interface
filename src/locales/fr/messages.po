@@ -154,6 +154,10 @@ msgstr "Bot Telegram pour le suivi des échanges GMX"
 msgid "Debug values unavailable"
 msgstr "Valeurs de débogage indisponibles"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool but lacks liquidity for this order"
+msgstr "Ordre à cours limité existant dans le pool {0} mais liquidité insuffisante pour cet ordre"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop loss"
 msgstr "stop-loss"
@@ -536,6 +540,10 @@ msgstr "V1 airdrop"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "Prix d'exécution de l'ordre"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in any {0}/USD pool"
+msgstr "Liquidité insuffisante dans tous les pools {0}/USD"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
@@ -1572,10 +1580,6 @@ msgstr "Récupération échouée"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM pools"
 msgstr "Valeur totale des jetons dans les pools GM"
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in any {0}/USD pool for your order."
-msgstr "Liquidité insuffisante dans tous les pools {0}/USD pour votre ordre."
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -3146,10 +3150,6 @@ msgstr "Aucune réclamation ne correspond aux filtres sélectionnés"
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "Plateforme d'échange de perpétuels décentralisée | GMX"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool but lacks liquidity for this order."
-msgstr "Position existante dans le pool {0} mais liquidité insuffisante pour cet ordre."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "Jetons stakés réservés pour le vesting"
@@ -3281,6 +3281,10 @@ msgstr "Échange soumis"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "La différence entre le prix d'exécution attendu et réel due à la volatilité. Les ordres ne seront pas exécutés si le glissement dépasse votre maximum. Ajustez la valeur par défaut dans les paramètres.<0/><1/>Une valeur faible (par ex. inférieure à -{0}) peut entraîner des ordres échoués en période de volatilité.<2/><3/>Le glissement diffère de l'impact sur le prix, qui est basé sur les déséquilibres des positions ouvertes. <4>En savoir plus</4>."
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position in {0} pool but lacks liquidity for this order"
+msgstr "Position existante dans le pool {0} mais liquidité insuffisante pour cet ordre"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Collateral covers any losses."
@@ -4218,6 +4222,10 @@ msgstr "TP"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
 msgstr "Récupérable"
+
+#: src/components/TwapRows/TwapRows.tsx
+msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
+msgstr "Exécute {numberOfParts} ordres {0} {type} de {1} chacun sur les {2} prochaines pour {3}"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -5185,10 +5193,6 @@ msgstr "Débogage RPC"
 msgid "No items yet"
 msgstr "Aucun élément pour le moment"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing limit order in {0} pool but lacks liquidity for this order."
-msgstr "Ordre à cours limité existant dans le pool {0}, mais liquidité insuffisante pour cet ordre."
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade with confidence"
 msgstr "Tradez en toute confiance"
@@ -5868,10 +5872,6 @@ msgstr "Erreurs de négociation"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "Dépôt et retrait du GMX Account en cours..."
-
-#: src/components/TwapRows/TwapRows.tsx
-msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
-msgstr "Cet ordre TWAP exécutera {numberOfParts} ordres {type} {0} de {1} chacun sur les prochains {2} pour le marché {3}."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price above mark price"

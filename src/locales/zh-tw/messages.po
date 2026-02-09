@@ -154,6 +154,10 @@ msgstr "用於監控 GMX 兌換的 Telegram 機器人"
 msgid "Debug values unavailable"
 msgstr "除錯數值不可用"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool but lacks liquidity for this order"
+msgstr "在 {0} 池中有現有限價單，但該池流動性不足以執行此訂單"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop loss"
 msgstr "止損"
@@ -536,6 +540,10 @@ msgstr "V1 空投"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "訂單成交價格"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in any {0}/USD pool"
+msgstr "所有 {0}/USD 池的流動性不足"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
@@ -1572,10 +1580,6 @@ msgstr "領取失敗"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM pools"
 msgstr "GM 池中代幣的總價值"
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in any {0}/USD pool for your order."
-msgstr "所有 {0}/USD 池的流動性不足，無法執行您的訂單。"
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -3146,10 +3150,6 @@ msgstr "沒有符合所選篩選條件的領取記錄"
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "去中心化永續合約交易所 | GMX"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool but lacks liquidity for this order."
-msgstr "在 {0} 池中已有倉位，但該池的流動性不足以執行此訂單。"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "為歸屬鎖定保留的已質押代幣"
@@ -3281,6 +3281,10 @@ msgstr "兌換已提交"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "預期成交價格與實際成交價格之間因波動性產生的差異。若滑點超過您設定的最大值，訂單將不會執行。可在設定中調整預設值。<0/><1/>過低的值（例如低於 -{0}）可能導致訂單在波動時失敗。<2/><3/>滑點不同於價格影響，後者基於未平倉量的不平衡。<4>閱讀更多</4>。"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position in {0} pool but lacks liquidity for this order"
+msgstr "在 {0} 池中有現有倉位，但該池流動性不足以執行此訂單"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Collateral covers any losses."
@@ -4218,6 +4222,10 @@ msgstr "止盈"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
 msgstr "可領取"
+
+#: src/components/TwapRows/TwapRows.tsx
+msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
+msgstr "在接下來的 {2} 內，為 {3} 執行 {numberOfParts} 筆 {0} {type} 訂單，每筆 {1}"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -5185,10 +5193,6 @@ msgstr "RPC 除錯"
 msgid "No items yet"
 msgstr "尚無項目"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing limit order in {0} pool but lacks liquidity for this order."
-msgstr "在 {0} 池中已有限價單，但該池缺乏此訂單所需的流動性。"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade with confidence"
 msgstr "安心交易"
@@ -5868,10 +5872,6 @@ msgstr "交易錯誤"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "正在存入和提取 GMX Account..."
-
-#: src/components/TwapRows/TwapRows.tsx
-msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
-msgstr "此 TWAP 訂單將在接下來的 {2} 內，為 {3} 市場執行 {numberOfParts} 筆 {0} {type} 訂單，每筆 {1}。"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price above mark price"

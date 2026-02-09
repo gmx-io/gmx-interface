@@ -240,7 +240,7 @@ const useTradeboxPoolWarnings = () => {
 
   if (showHasExistingPositionWarning) {
     warning.push(
-      <AlertInfoCard key="showHasExistingPositionWarning">
+      <AlertInfoCard key="showHasExistingPositionWarning" type="warning" hideClose>
         <Trans>
           Existing position in {getMarketPoolName(marketWithPosition)} pool.
           <ColorfulButtonLink
@@ -261,7 +261,7 @@ const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingPositionButNotEnoughLiquidityWarning" type="warning" hideClose>
         <Trans>
-          Existing position in {getMarketPoolName(marketWithPosition)} pool but lacks liquidity for this order.
+          Existing position in {getMarketPoolName(marketWithPosition)} pool but lacks liquidity for this order
         </Trans>
       </AlertInfoCard>
     );
@@ -270,7 +270,7 @@ const useTradeboxPoolWarnings = () => {
   if (showHasNoSufficientLiquidityInAnyMarketWarning) {
     warning.push(
       <AlertInfoCard key="showHasNoSufficientLiquidityInAnyMarketWarning" type="error" hideClose>
-        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD pool for your order.</Trans>
+        <Trans>Insufficient liquidity in any {indexToken?.symbol}/USD pool</Trans>
       </AlertInfoCard>
     );
   }
@@ -311,7 +311,7 @@ const useTradeboxPoolWarnings = () => {
     const address = marketsOptions.collateralWithOrder!.address;
 
     warning.push(
-      <AlertInfoCard key="showHasExistingOrderWarning">
+      <AlertInfoCard key="showHasExistingOrderWarning" type="warning" hideClose>
         <Trans>
           Existing limit order in {getMarketPoolName(marketWithOrder)} pool.
           <ColorfulButtonLink
@@ -331,7 +331,7 @@ const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasExistingOrderWarning" type="warning" hideClose>
         <Trans>
-          Existing limit order in {getMarketPoolName(marketWithOrder)} pool but lacks liquidity for this order.
+          Existing limit order in {getMarketPoolName(marketWithOrder)} pool but lacks liquidity for this order
         </Trans>
       </AlertInfoCard>
     );

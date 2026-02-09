@@ -1250,7 +1250,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 </AlertInfoCard>
               )}
 
-              <div>{button}</div>
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}
                 payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
@@ -1258,6 +1257,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 disabled={shouldShowDepositButton}
                 isGmxAccount={isFromTokenGmxAccount}
               />
+              <div>{button}</div>
             </div>
           </div>
         </div>

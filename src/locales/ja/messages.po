@@ -154,6 +154,10 @@ msgstr "GMXスワップ監視用Telegramボット"
 msgid "Debug values unavailable"
 msgstr "デバッグ値は利用できません"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool but lacks liquidity for this order"
+msgstr "{0}プールに既存の指値注文がありますが、この注文に対する流動性が不足しています"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "stop loss"
 msgstr "ストップロス"
@@ -536,6 +540,10 @@ msgstr "V1エアドロップ"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "注文約定価格"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Insufficient liquidity in any {0}/USD pool"
+msgstr "{0}/USDプールに十分な流動性がありません"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
@@ -1572,10 +1580,6 @@ msgstr "受け取り失敗"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM pools"
 msgstr "GMプール内のトークン総額"
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Insufficient liquidity in any {0}/USD pool for your order."
-msgstr "ご注文に対して{0}/USDプールに十分な流動性がありません。"
 
 #: src/components/Claims/ClaimableCardUI.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -3146,10 +3150,6 @@ msgstr "選択したフィルターに一致する受取履歴はありません
 msgid "Decentralized perpetual exchange | GMX"
 msgstr "分散型パーペチュアル取引所 | GMX"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool but lacks liquidity for this order."
-msgstr "{0}プールに既存のポジションがありますが、この注文に対する流動性が不足しています。"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "べスティング用に予約済みのステークトークン"
@@ -3281,6 +3281,10 @@ msgstr "スワップを送信しました"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "ボラティリティによる予想約定価格と実際の約定価格の差です。スリッページが最大値を超えると注文は執行されません。デフォルト値は設定で調整できます。<0/><1/>低い値（例: -{0}未満）を設定すると、ボラティリティが高い時に注文が失敗する可能性があります。<2/><3/>スリッページは建玉の不均衡に基づく価格への影響とは異なります。<4>詳細はこちら</4>。"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position in {0} pool but lacks liquidity for this order"
+msgstr "{0}プールに既存のポジションがありますが、この注文に対する流動性が不足しています"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Collateral covers any losses."
@@ -4218,6 +4222,10 @@ msgstr "TP"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
 msgstr "受取可能"
+
+#: src/components/TwapRows/TwapRows.tsx
+msgid "Executes {numberOfParts} {0} {type} orders of {1} each over the next {2} for {3}"
+msgstr "{3}で{2}にわたり、それぞれ{1}の{0} {type}注文を{numberOfParts}回実行します"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -5185,10 +5193,6 @@ msgstr "RPC デバッグ"
 msgid "No items yet"
 msgstr "項目はまだありません"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing limit order in {0} pool but lacks liquidity for this order."
-msgstr "{0} プールに既存の指値注文がありますが、この注文に対する流動性が不足しています。"
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade with confidence"
 msgstr "安心して取引を"
@@ -5868,10 +5872,6 @@ msgstr "取引エラー"
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "GMX Accountへの入金と出金を処理中..."
-
-#: src/components/TwapRows/TwapRows.tsx
-msgid "This TWAP order will execute {numberOfParts} {0} {type} orders of {1} each over the next {2} for the {3} market."
-msgstr "このTWAP注文は、{3}マーケットで{2}にわたり、{1}ずつの{0} {type}注文を{numberOfParts}回実行します。"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Stop Market price above mark price"

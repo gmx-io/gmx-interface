@@ -97,6 +97,7 @@ export function ExpressTradingWarningCard({
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
   let icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>> | undefined = undefined;
+  let color: "blue" | "yellow" = "blue";
 
   let onClick: undefined | (() => void) = undefined;
 
@@ -123,31 +124,32 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
+    color = "yellow";
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
-    onCloseClick = () => setIsVisible(false);
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
+    color = "yellow";
     content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
-    onCloseClick = () => setIsVisible(false);
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
+    color = "yellow";
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
-    onCloseClick = () => setIsVisible(false);
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = ExpressIcon;
+    color = "yellow";
     content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance</Trans>;
     buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
     onClick = () => {
       history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
     };
-    onCloseClick = () => setIsVisible(false);
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
+    color = "yellow";
     content = (
       <Trans>
         One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign
@@ -156,16 +158,15 @@ export function ExpressTradingWarningCard({
     );
     buttonText = <Trans>Re-sign</Trans>;
     onClick = handleUpdateSubaccountSettings;
-    onCloseClick = () => setIsVisible(false);
   } else {
     return null;
   }
 
   return (
-    <ColorfulBanner color="blue" icon={icon} onClose={onCloseClick}>
+    <ColorfulBanner color={color} icon={icon} onClose={onCloseClick}>
       {content}
       {onClick && (
-        <ColorfulButtonLink color="blue" onClick={onClick}>
+        <ColorfulButtonLink color={color} onClick={onClick}>
           {buttonText}
         </ColorfulButtonLink>
       )}

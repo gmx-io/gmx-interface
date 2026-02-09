@@ -1031,6 +1031,13 @@ export function PositionSeller() {
                   </ToggleSwitch>
                 )}
 
+                <ExpressTradingWarningCard
+                  expressParams={expressParams}
+                  payTokenAddress={undefined}
+                  isWrapOrUnwrap={false}
+                  isGmxAccount={srcChainId !== undefined}
+                />
+
                 <Button
                   className="w-full"
                   variant="primary-action"
@@ -1041,13 +1048,6 @@ export function PositionSeller() {
                 >
                   {buttonState.text}
                 </Button>
-
-                <ExpressTradingWarningCard
-                  expressParams={expressParams}
-                  payTokenAddress={undefined}
-                  isWrapOrUnwrap={false}
-                  isGmxAccount={srcChainId !== undefined}
-                />
 
                 {!isTwap && (
                   <>

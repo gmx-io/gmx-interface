@@ -106,9 +106,9 @@ const TwapRows = ({
       {!isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
         <AlertInfoCard onClose={handleCloseTwapInfoCard}>
           <Trans>
-            This TWAP order will execute {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
+            Executes {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
             {formatUsd(numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)} each over the next{" "}
-            {getTwapDurationText(duration, locale)} for the {marketInfo.name} market.
+            {getTwapDurationText(duration, locale)} for {marketInfo.name}
           </Trans>
         </AlertInfoCard>
       )}
