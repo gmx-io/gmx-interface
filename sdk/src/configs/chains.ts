@@ -177,7 +177,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     defaultCollateralSymbol: "USDM",
     highExecutionFee: 5,
     shouldUseMaxPriorityFeePerGas: false,
-    defaultExecutionFeeBufferBps: 3000, // 30%
+    defaultExecutionFeeBufferBps: 6000, // 60% temporary while we are not sure about the gas price on MegaETH
     maxFeePerGas: undefined,
     gasPricePremium: 0n,
     maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
