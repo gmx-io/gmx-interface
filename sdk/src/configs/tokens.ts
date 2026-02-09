@@ -1998,7 +1998,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX",
       symbol: "GMX",
-      address: "",
+      address: GMX_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
       isPlatformToken: true,
@@ -2006,14 +2006,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Escrowed GMX",
       symbol: "ESGMX",
-      address: "",
+      address: ESGMX_STUB_ADDRESS,
       decimals: 18,
       isPlatformToken: true,
     },
     {
       name: "GMX LP",
       symbol: "GLP",
-      address: "",
+      address: GLP_STUB_ADDRESS,
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
       isPlatformToken: true,

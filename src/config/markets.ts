@@ -101,7 +101,7 @@ export const GLV_MARKETS: {
       subtitle: "GMX Liquidity Vault",
       shortening: "GLV",
       glvTokenAddress: "0x3782d91C5888dE31F627495e6aAAC3f09499fe72",
-      longTokenAddress: "0x4200000000000000000000000000000000000006",
+      longTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
       shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
     },
   },
