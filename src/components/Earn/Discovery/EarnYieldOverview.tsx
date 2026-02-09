@@ -253,7 +253,9 @@ export default function EarnYieldOverview() {
     period: PERIOD,
   });
 
-  const { marketsTokensApyData: megaethGmApy } = useGmMarketsApy(MEGAETH, undefined, { period: PERIOD });
+  const { glvApyInfoData: megaethGlvApy, marketsTokensApyData: megaethGmApy } = useGmMarketsApy(MEGAETH, undefined, {
+    period: PERIOD,
+  });
 
   const arbMaxGlv = useMemo(() => calculateMaxApr(arbGlvApy), [arbGlvApy]);
   const arbMaxGm = useMemo(() => calculateMaxApr(arbGmApy), [arbGmApy]);
@@ -261,6 +263,7 @@ export default function EarnYieldOverview() {
   const avaxMaxGlv = useMemo(() => calculateMaxApr(avaxGlvApy), [avaxGlvApy]);
   const avaxMaxGm = useMemo(() => calculateMaxApr(avaxGmApy), [avaxGmApy]);
 
+  const megaethMaxGlv = useMemo(() => calculateMaxApr(megaethGlvApy), [megaethGlvApy]);
   const megaethMaxGm = useMemo(() => calculateMaxApr(megaethGmApy), [megaethGmApy]);
 
   const networkCards = useMemo(
@@ -347,24 +350,9 @@ export default function EarnYieldOverview() {
           <YieldRow
             key="megaeth-glv"
             token="GLV"
-            disabled
+            to={poolsLink}
             chainId={MEGAETH}
-            metric={
-              <YieldMetric
-                value={<Trans>N/A</Trans>}
-                suffix=""
-                tooltip={
-                  <Trans>
-                    MegaETH currently has no GLV vault(s) active. You can provide liquidity by{" "}
-                    <Link to="/pools" className="underline hover:text-blue-300">
-                      purchasing
-                    </Link>{" "}
-                    GM tokens.
-                  </Trans>
-                }
-                disabled
-              />
-            }
+            metric={<YieldMetric value={formatAprValue(megaethMaxGlv)} suffix="APY" />}
           />,
           <YieldRow
             key="megaeth-gm"
@@ -376,7 +364,7 @@ export default function EarnYieldOverview() {
         ],
       },
     }),
-    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, megaethMaxGm, showGmxLink, poolsLink]
+    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, megaethMaxGlv, megaethMaxGm, showGmxLink, poolsLink]
   );
 
   const tabs = useMemo(

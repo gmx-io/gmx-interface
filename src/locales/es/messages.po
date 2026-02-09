@@ -5737,7 +5737,6 @@ msgid "Max {0} long exceeded"
 msgstr "Superados largos Máx. de {0}"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -6738,8 +6737,8 @@ msgid "Edit order"
 msgstr "Editar orden"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "MegaETH currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
-msgstr ""
+#~ msgid "MegaETH currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
+#~ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
