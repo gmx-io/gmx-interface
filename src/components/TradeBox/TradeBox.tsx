@@ -88,8 +88,8 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER } from "sdk/configs/express";
 import { getToken, isUsdBasedStableToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { TradeMode } from "sdk/types/trade";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { TradeMode } from "sdk/utils/trade/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -763,6 +763,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onInputValueChange={handleFromInputTokenChange}
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
+          maxDecimals={fromToken?.decimals}
         >
           {fromTokenAddress &&
             (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
@@ -838,6 +839,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
                 isDisabled={isTwap}
+                maxDecimals={toToken?.decimals}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -874,6 +876,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
+            maxDecimals={toToken?.decimals}
           >
             {toTokenAddress && (
               <MarketSelector
@@ -917,6 +920,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
         qa="close"
+        maxDecimals={USD_DECIMALS}
       >
         USD
       </BuyInputSection>
@@ -937,6 +941,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         inputValue={triggerPriceInputValue}
         onInputValueChange={handleTriggerPriceInputChange}
         qa="trigger-price"
+        maxDecimals={USD_DECIMALS}
       >
         USD
       </BuyInputSection>
@@ -953,6 +958,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         inputValue={triggerRatioInputValue}
         onInputValueChange={handleTriggerRatioInputChange}
         qa="trigger-price"
+        maxDecimals={USD_DECIMALS}
       >
         {markRatio && (
           <>
@@ -1238,6 +1244,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   externalSwapFeeItem={fees?.externalSwapFee}
                   maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
                 />
+              )}
+
+              {submitButtonState.bannerErrorContent && (
+                <AlertInfoCard type="error" hideClose>
+                  {submitButtonState.bannerErrorContent}
+                </AlertInfoCard>
               )}
 
               <div>{button}</div>

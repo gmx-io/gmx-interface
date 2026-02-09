@@ -42,6 +42,7 @@ import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext
 import { selectPoolsDetailsTokenOptions } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsTokenOptions";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
+  selectAccount,
   selectGlvAndMarketsInfoData,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -115,6 +116,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = usePoolsDetailsMarketOrGlvTokenInputValue();
   const setFocusedInput = useSelector(selectPoolsDetailsSetFocusedInput);
 
+  const account = useSelector(selectAccount);
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
@@ -183,7 +185,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const amounts = useSelector(selectDepositWithdrawalAmounts);
 
-  const technicalFees = useTechnicalFees();
+  const { data: technicalFees, error: technicalFeesError } = useTechnicalFees();
 
   const logicalFees = useDepositWithdrawalFees({
     amounts,
@@ -207,6 +209,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const submitState = useGmSwapSubmitState({
     logicalFees,
     technicalFees,
+    technicalFeesError,
     shouldDisableValidation: shouldDisableValidationForTesting,
     longTokenLiquidityUsd: longCollateralLiquidityUsd,
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
@@ -438,7 +441,14 @@ export function GmSwapBoxDepositWithdrawal() {
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal content={submitState.errorDescription} variant="none">
+        <TooltipWithPortal
+          content={submitState.errorDescription}
+          variant="none"
+          position="bottom"
+          className="w-full"
+          handleClassName="w-full"
+          contentClassName="w-full justify-center"
+        >
           {btn}
         </TooltipWithPortal>
       );
@@ -466,6 +476,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   onInputValueChange={handleFirstTokenInputValueChange}
                   onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
                   className={isPair ? "rounded-b-0" : undefined}
+                  maxDecimals={firstToken?.decimals}
                 >
                   {firstTokenAddress && isSingle && isDeposit ? (
                     <MultichainTokenSelectorForLp
@@ -480,10 +491,12 @@ export function GmSwapBoxDepositWithdrawal() {
                       }
                       tokens={tokenOptions}
                       onSelectTokenAddress={async (tokenAddress, isGmxAccount, newSrcChainId) => {
-                        if (newSrcChainId === undefined) {
-                          await switchNetwork(chainId, true);
-                        } else if (newSrcChainId !== srcChainId && newSrcChainId !== undefined) {
-                          await switchNetwork(newSrcChainId, true);
+                        if (account) {
+                          if (newSrcChainId === undefined) {
+                            await switchNetwork(chainId, true);
+                          } else if (newSrcChainId !== srcChainId && newSrcChainId !== undefined) {
+                            await switchNetwork(newSrcChainId, true);
+                          }
                         }
 
                         setPaySource(
@@ -537,6 +550,7 @@ export function GmSwapBoxDepositWithdrawal() {
                       onClickTopRightLabel={onMaxClickSecondToken}
                       onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
                       className={isPair ? "rounded-t-0" : undefined}
+                      maxDecimals={secondToken?.decimals}
                     >
                       <div className="selected-token">
                         <TokenWithIcon
@@ -566,6 +580,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   onInputValueChange={marketOrGlvTokenInputValueChange}
                   onClickTopRightLabel={marketTokenInputClickTopRightLabel}
                   onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
+                  maxDecimals={glvInfo ? glvInfo.glvToken.decimals : marketToken?.decimals ?? glvToken?.decimals}
                 >
                   {selectedGlvOrMarketAddress && isWithdrawal ? (
                     <MultichainMarketTokenSelector
@@ -577,12 +592,14 @@ export function GmSwapBoxDepositWithdrawal() {
                         if (newChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
                           setPaySource("gmxAccount");
                         } else if (newChainId === chainId) {
-                          if (srcChainId !== undefined) {
+                          if (srcChainId !== undefined && account) {
                             await switchNetwork(chainId, true);
                           }
                           setPaySource("settlementChain");
                         } else {
-                          await switchNetwork(newChainId, true);
+                          if (account) {
+                            await switchNetwork(newChainId, true);
+                          }
                           setPaySource("sourceChain");
                         }
                       }}
@@ -635,7 +652,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 shouldShowWarning={shouldShowWarning}
                 shouldShowWarningForPosition={shouldShowWarningForPosition}
                 shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
-                insufficientGasWarningText={submitState.warningText}
+                bannerErrorContent={submitState.bannerErrorContent}
                 shouldShowAvalancheGmxAccountWarning={shouldShowAvalancheGmxAccountWarning}
               />
             </div>
@@ -654,7 +671,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
         <InfoRows
           fees={logicalFees}
-          isLoading={(firstTokenAmount ?? 0n) === 0n ? false : !technicalFees}
+          isLoading={(firstTokenAmount ?? 0n) === 0n || technicalFeesError ? false : !technicalFees}
           isDeposit={isDeposit}
         />
       </form>

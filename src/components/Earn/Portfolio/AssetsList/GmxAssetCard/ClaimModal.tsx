@@ -19,7 +19,6 @@ import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -122,7 +121,6 @@ export function ClaimModal(props: {
   const isPrimaryEnabled =
     !isClaiming &&
     !isApproving &&
-    !needApproval &&
     !isUndelegatedGovToken &&
     hasAnyPendingRewards &&
     isAnySelectedToClaim &&
@@ -138,8 +136,11 @@ export function ClaimModal(props: {
     if (!isAnySelectedToClaim) {
       return <Trans>Select rewards to claim</Trans>;
     }
-    if (needApproval || isApproving) {
+    if (isApproving) {
       return <Trans>Pending GMX approval</Trans>;
+    }
+    if (needApproval) {
+      return <Trans>Approve GMX to be spent</Trans>;
     }
     if (isClaiming) {
       return <Trans>Claiming...</Trans>;
@@ -285,16 +286,6 @@ export function ClaimModal(props: {
           />
         )}
       </div>
-      {(needApproval || isApproving) && (
-        <div className="mb-12">
-          <ApproveTokenButton
-            tokenAddress={gmxAddress}
-            spenderAddress={stakedGmxTrackerAddress}
-            tokenSymbol={"GMX"}
-            isApproved={!needApproval}
-          />
-        </div>
-      )}
       {isUndelegatedGovToken ? (
         <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
           <Trans>
@@ -356,11 +347,11 @@ function ClaimRewardOption({
       >
         <div className="flex items-center gap-4">
           <TokenIcon symbol={tokenSymbol} displaySize={20} className="!rounded-0" />
-          <span className="text-14 font-medium text-typography-primary">
+          <span className="text-body-medium font-medium text-typography-primary">
             <Trans>Claim {tokenSymbol} Rewards</Trans>
           </span>
         </div>
-        <span className={cx("ml-auto text-14 numbers", "text-typography-secondary")}>{amountText}</span>
+        <span className={cx("text-body-medium ml-auto numbers", "text-typography-secondary")}>{amountText}</span>
       </Checkbox>
 
       <div className="border-t-1/2 border-slate-600" />
@@ -369,7 +360,7 @@ function ClaimRewardOption({
         setIsChecked={setSecondaryChecked}
         className="w-full justify-start px-16 py-14 text-left"
       >
-        <span className="text-14">
+        <span className="text-body-medium">
           {nativeTokenSymbol && isNativeTokenToClaim ? (
             <Trans>
               Convert {tokenSymbol} to {nativeTokenSymbol}

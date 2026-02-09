@@ -34,6 +34,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -277,7 +278,7 @@ export function BridgeInModal({
 
     if (sourceChainNativeFeeError) {
       return {
-        text: sourceChainNativeFeeError.buttonText,
+        text: sourceChainNativeFeeError.buttonErrorMessage,
         disabled: true,
       };
     }
@@ -323,6 +324,7 @@ export function BridgeInModal({
                 }
               : undefined
           }
+          maxDecimals={sourceChainDecimals}
         >
           <MultichainMarketTokenSelector
             chainId={chainId}
@@ -341,9 +343,13 @@ export function BridgeInModal({
             hideTabs
           />
         </BuyInputSection>
-        {sourceChainNativeFeeError?.warningText && (
-          <AlertInfoCard type="info" hideClose>
-            {sourceChainNativeFeeError.warningText}
+        {sourceChainNativeFeeError?.bannerErrorName && (
+          <AlertInfoCard type="error" hideClose>
+            <ValidationBannerErrorContent
+              validationBannerErrorName={sourceChainNativeFeeError.bannerErrorName}
+              chainId={chainId}
+              srcChainId={bridgeInChain}
+            />
           </AlertInfoCard>
         )}
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>

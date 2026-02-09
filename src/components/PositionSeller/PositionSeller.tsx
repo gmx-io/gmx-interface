@@ -421,7 +421,6 @@ export function PositionSeller() {
     });
 
     const expressError = getExpressError({
-      chainId,
       expressParams,
       tokensData,
     });
@@ -957,6 +956,7 @@ export function PositionSeller() {
                       setCloseUsdInputValueRaw(formattedAmount);
                     }}
                     qa="amount-input"
+                    maxDecimals={USD_DECIMALS}
                   >
                     USD
                   </BuyInputSection>
@@ -985,6 +985,7 @@ export function PositionSeller() {
                         setTriggerPriceInputValue(e.target.value);
                       }}
                       qa="trigger-input"
+                      maxDecimals={USD_DECIMALS}
                     >
                       USD
                     </BuyInputSection>

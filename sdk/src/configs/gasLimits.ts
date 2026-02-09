@@ -1,4 +1,4 @@
-import { GasLimitsConfig } from "types/fees";
+import { GasLimitsConfig } from "utils/fees/types";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, BOTANIX } from "./chainIds";
 import { ContractsChainId } from "./chains";

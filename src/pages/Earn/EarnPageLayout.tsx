@@ -39,8 +39,8 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   const tabOptions = useMemo(
     () => [
-      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
       { value: EarnTab.Portfolio, label: <Trans>Portfolio</Trans> },
+      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
       { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional Opportunities</Trans> },
       { value: EarnTab.Distributions, label: <Trans>Distributions</Trans> },
     ],

@@ -161,6 +161,11 @@ msgstr "Recompensas esGMX:"
 msgid ""
 msgstr ""
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMTrade"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
@@ -238,7 +243,7 @@ msgstr "Pools que proporcionan liquidez a mercados específicos de GMX, soportan
 msgid "In progress"
 msgstr "En progreso"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "Comprar {gasPaymentTokensText}"
@@ -357,6 +362,7 @@ msgstr "Intercambiado {0} por {1}."
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
 msgstr "No hay parámetros necesarios para reclamar. Intenta de nuevo en unos segundos."
 
@@ -483,6 +489,10 @@ msgstr "Tesorería"
 msgid "Want to trade faster with One-Click?"
 msgstr "¿Quieres operar más rápido con One-Click?"
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "Clicking on the button below will open GMTrade in a new tab."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
 msgstr "Clásico"
@@ -605,8 +615,7 @@ msgstr "No muestres este mensaje de nuevo en los próximos 30 días."
 msgid "in liquidity"
 msgstr "en liquidez"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
 msgstr "Saldo de gas insuficiente, por favor deposita más {gasPaymentTokensText}."
 
@@ -867,6 +876,10 @@ msgstr "No hay exchanges centralizados disponibles para esta red."
 msgid "Invalid slippage value"
 msgstr "Valor de deslizamiento no válido"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "Obtén un 5 % de reembolso y da a tu comunidad un 5 % de descuento en cada operación. Los niveles de referidos más altos desbloquean aún más. <0>Más información</0>."
@@ -917,10 +930,6 @@ msgstr "Este valor puede ser mayor en otros sitios web debido a que la garantía
 msgid "Rewards"
 msgstr "Recompensas"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "You're about to navigate to GMX Solana, which is operated by a separate team, so the experience may vary slightly."
-msgstr "Estás a punto de navegar a GMX Solana, que es operado por un equipo separado, por lo que la experiencia puede variar ligeramente."
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -930,10 +939,6 @@ msgstr "Estás a punto de navegar a GMX Solana, que es operado por un equipo sep
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "Pagar"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "Necesitarás algo de {wrappedNativeTokenSymbol} en tu cuenta para retirar fondos."
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings."
@@ -1010,10 +1015,6 @@ msgstr "Capitalización de Mercado"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
 msgstr "Apalancamiento promedio utilizado."
-
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Rewards"
-msgstr "Recompensas GMX"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
@@ -1180,8 +1181,9 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "Copiado"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr "Depositar en Cuenta GMX"
 
@@ -1476,10 +1478,6 @@ msgstr "Transferencia enviada."
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "Recompensas en {nativeTokenSymbol}:"
 
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-msgid "Insufficient {symbol} balance"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "Liquidez de token de recepción insuficiente"
@@ -1589,10 +1587,6 @@ msgstr "Valor Neto"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr "Retirado {balanceFormatted} a cuenta principal."
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Token"
-msgstr "Token GMX"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1666,7 +1660,8 @@ msgstr "Los stop losses combinados están al máximo (100%). Reduce valores exis
 msgid "4-18 Places"
 msgstr "4-18 Lugares"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Your deposit is in progress"
 msgstr "Tu depósito está en curso"
 
@@ -1687,7 +1682,8 @@ msgstr "Este token acumula automáticamente comisiones de trading con apalancami
 msgid "Withdrew {0} from {positionText}"
 msgstr "Retirado {0} de {positionText}"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select Asset to Deposit"
 msgstr "Seleccionar Activo para Depositar"
 
@@ -1743,7 +1739,7 @@ msgstr "GMX"
 msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 msgstr "Compra GMX desde Uniswap o directamente en GMX (asegúrate de seleccionar Arbitrum):"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "Trading Express y en Un Clic no disponibles debido a saldo de gas insuficiente."
@@ -1941,7 +1937,6 @@ msgstr "Máx."
 msgid "Checking code..."
 msgstr "Verificando código…"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -2038,6 +2033,7 @@ msgstr "Mercado - Short Inc."
 msgid "Deposit in progress"
 msgstr "Depósito en curso"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -2088,6 +2084,14 @@ msgstr "No hay suficiente liquidez GM: {0} [{1}] en GLV para cumplir con tu soli
 msgid "Deposited {0} into {positionText}"
 msgstr "Depositado {0} en {positionText}"
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "30d Performance APY"
+msgstr ""
+
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -2126,6 +2130,7 @@ msgstr ""
 msgid "Address"
 msgstr "Dirección"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2235,7 +2240,6 @@ msgstr "Intercambios"
 msgid "Creating order..."
 msgstr "Creando orden…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -2249,8 +2253,6 @@ msgid "Allow {0} to be spent"
 msgstr "Permitir gastar {0}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
 
@@ -2261,6 +2263,10 @@ msgstr "POSICIÓN"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet acceptable price. The order will fill when the condition is met."
 msgstr "El precio de ejecución no cumplió con el precio aceptable. La orden se llenará cuando se cumpla la condición."
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
+msgstr "<0>Depositar</0> o <1>comprar</1> {wrappedNativeTokenSymbol}."
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -2443,6 +2449,10 @@ msgstr "Número máximo de partes: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "Abrir App"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming affiliate rewards failed"
+msgstr "Error al reclamar recompensas de afiliados"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "Disponible para Pagar"
@@ -2478,6 +2488,10 @@ msgstr "Solicitud de relayer fallida"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "Transferir cuenta"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
+msgstr "Insuficiente {wrappedNativeTokenSymbol} para gas en tu Cuenta GMX."
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -2671,10 +2685,6 @@ msgstr "Stop Mercado - Largo Inc."
 msgid "Enter your feedback here."
 msgstr "Ingresa tus comentarios aquí."
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "Estás retirando {0}, tu token de gas. Se requiere gas para este retiro, por favor mantén al menos <0>{1}</0> en {2} o cambia tu token de gas en <1>configuraciones</1>."
-
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
 msgstr "La orden se ejecutará si hay suficiente liquidez y el precio de ejecución garantiza que recibirás la cantidad mínima de recepción."
@@ -2786,10 +2796,6 @@ msgstr "Mostrar Valores de Depuración"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "Datos anualizados basados en los últimos 7 días."
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
-msgstr "GMX Solana está alojado en otro sitio web y dirigido por un equipo diferente, por lo que la experiencia puede variar ligeramente.<0/><1/>Hacer clic en el botón a continuación abrirá el frontend de GMX Solana en una nueva pestaña."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -2935,6 +2941,10 @@ msgstr "Generando sesión..."
 msgid "How do I get started on GMX?"
 msgstr "¿Cómo empiezo en GMX?"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "coming soon"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -2950,10 +2960,6 @@ msgstr "Retiro fallido"
 msgid "Total Staked"
 msgstr "Total Stakeado"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like tens of thousands of other GMX users."
-msgstr "Descubre cómo los tokens GMX, GLV y GM trabajan juntos para potenciar una experiencia de trading descentralizada. Explora el rol de cada token y descubre cómo puedes hacer staking o proveer liquidez para ganar recompensas, igual que decenas de miles de otros usuarios de GMX."
-
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
@@ -2963,6 +2969,8 @@ msgstr "Descubre cómo los tokens GMX, GLV y GM trabajan juntos para potenciar u
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network Fee"
 msgstr "Comisión de Red"
 
@@ -3050,7 +3058,7 @@ msgstr "Impacto neto alto en el precio"
 msgid "Lev."
 msgstr "Apal."
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to Trade Assets"
 msgstr "Activos Disponibles para Operar"
 
@@ -3292,6 +3300,10 @@ msgstr "Editar {0}"
 msgid "Price impact rebates claimed."
 msgstr "Reembolsos de impacto de precio reclamados."
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
+msgstr "<0>Comprar</0> {wrappedNativeTokenSymbol}."
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
 msgstr "Reembolsos de impacto de precio reclamables.<0/><1/><2>Leer más</2>."
@@ -3496,10 +3508,6 @@ msgstr "Total ganado"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "La provisión de liquidez para este mercado solo está disponible en {chainNames}. Por favor, cambia a {chainNames} para acceder a oportunidades de ganancias."
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "Necesitarás <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} en tu cuenta para retirar fondos."
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3783,11 +3791,6 @@ msgstr "Airdrop de TRADING"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "Estarás corto en {indexSymbol} desde tu posición corta, mientras estás largo en {collateralSymbol} desde tu garantía {collateralSymbol}. Esto puede ser útil para estrategias delta-neutral para ganar comisiones de financiación."
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "Open GMX Solana"
-msgstr "Abrir GMX Solana"
-
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Market Traders' PnL"
 msgstr ""
@@ -4003,11 +4006,6 @@ msgstr "<0>Botanix</0> actualmente solo soporta"
 msgid "{daysConsidered}d Earned Fees"
 msgstr "Comisiones Ganadas en {daysConsidered}d"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Insufficient {0} balance to pay for gas"
-msgstr "Saldo de {0} insuficiente para pagar gas"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "Reserva adicional requerida:"
@@ -4087,10 +4085,6 @@ msgstr "{typeString} Largo Límite: {0} una posición larga cuando el precio est
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "{0} es requerido para garantía.<0/><1/>No se encontró ruta de intercambio para {1} a {2} dentro de GMX.<2/><3/><4>Puedes comprar {3} en 1inch.</4>"
-
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "Total Fee APY"
-msgstr "APY total por comisiones"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
@@ -4226,10 +4220,6 @@ msgstr "Stop Mercado Fallido"
 msgid "Address copied to your clipboard"
 msgstr "Dirección copiada a tu portapapeles"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "Documentation"
-msgstr "Documentación"
-
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -4287,6 +4277,11 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
 msgstr "Crear Límite"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Error simulating deposit"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
@@ -4421,16 +4416,10 @@ msgstr "Sin confirmaciones repetidas de wallet"
 msgid "Shorts Net Rate / 1h"
 msgstr "Tasa Neta de Cortos / 1h"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Discover GMX Earn"
-msgstr "Descubre GMX Earn"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Depositar {gasPaymentTokensText}"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4769,10 +4758,6 @@ msgstr "Garantía ({0})"
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "Tienes una posición existente con {0} como colateral. Esta orden no será válida para esa posición. <0>Cambiar a colateral {1}</0>"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "Estás retirando {0}, tu token de gas. Se requiere gas para el trading express, por favor mantén al menos <0>{1}</0> en {2} o cambia tu token de gas en <1>configuraciones</1>."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "Ganarás {0}% más recompensas con esta acción."
@@ -4852,11 +4837,6 @@ msgstr "Tipo de Orden"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Are you sure you want to skip creating a referral code?"
 msgstr "¿Estás seguro de que quieres saltarte la creación de un código de referido?"
-
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX Solana"
-msgstr "GMX Solana"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -5172,6 +5152,11 @@ msgstr "Hash TX del puente"
 msgid "Start unrealized pnl"
 msgstr "PnL no realizado inicial"
 
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "Insuficiente {nativeTokenSymbol} para gas en tu billetera en {0}. <0>Comprar {nativeTokenSymbol}</0>"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "¡Aprobación enviada! <0>Ver estado.</0>"
@@ -5265,7 +5250,7 @@ msgstr "Tamaño, $"
 msgid "Close {0} {1}{2}"
 msgstr "Cerrar {0} {1}{2}"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Saldo de gas insuficiente"
 
@@ -5390,7 +5375,7 @@ msgstr "Disminución del Mercado"
 msgid "Updating {orderText}..."
 msgstr "Actualizando {orderText}…"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Withdrawal from GMX Account"
 msgstr "Retiro de Cuenta GMX"
 
@@ -5517,6 +5502,10 @@ msgstr "Ingresa tu respuesta aquí."
 msgid "Max amount exceeded"
 msgstr "Superado el importe máximo"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GLV Vaults:"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "Para completar la transferencia, debes cambiar tu cuenta conectada a {receiver}."
@@ -5551,7 +5540,8 @@ msgstr "Desde Red"
 msgid "My assets"
 msgstr "Mis activos"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "Retirar de Cuenta GMX"
 
@@ -5776,7 +5766,6 @@ msgstr "Agregador de Perpetuos"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1h"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5896,10 +5885,6 @@ msgstr "y compone automáticamente su rendimiento (a diferencia de GLP, no se ne
 msgid "Sell request sent."
 msgstr "Solicitud de venta enviada."
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
-msgstr "Por favor, <0>intercambia</0> para obtener {wrappedNativeTokenSymbol}."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "Comunidad GMX con iniciativas de NFTs, Trading y Educación"
@@ -5915,6 +5900,14 @@ msgstr "<0>El OI de <1>#GMX V2</1> se ve genial</0><2>GMX V2 > GMX V1 + Kwenta +
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "Queremos tus insights para mejorar GMX. Por razones de seguridad, no te contactaremos primero. Por favor, envía el mensaje \"Tengo feedback\" a cualquiera de nuestras cuentas oficiales:"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Total Performance APY"
+msgstr ""
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open GMTrade in a new tab."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -6150,6 +6143,10 @@ msgstr "Impacto realizado en swap"
 msgid "1st Place"
 msgstr "1er Lugar"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -6320,6 +6317,10 @@ msgstr "Tasa de Ganancia"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "Tienes tokens esGMX en el Affiliate Vault; debes retirarlos si deseas transferirlos a la nueva cuenta"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
+msgstr "Insuficiente {tokensText} para gas en tu Cuenta GMX. <0>Depositar {tokensText}</0>"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
@@ -6675,7 +6676,7 @@ msgid "Size per part"
 msgstr "Tamaño por parte"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6687,10 +6688,6 @@ msgstr "Tamaño por parte"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "Balance {0} insuficiente"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
-msgstr "Por favor, <0>deposita</0> o <1>intercambia</1> para obtener {wrappedNativeTokenSymbol}."
 
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
@@ -6728,22 +6725,16 @@ msgstr "Comisión Máxima de Red incluye comisiones para órdenes adicionales. S
 msgid "Rebates"
 msgstr "Reembolsos"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Insufficient {nativeTokenSymbol} balance"
-msgstr "Saldo de {nativeTokenSymbol} insuficiente"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "Actualizar Límite"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
-msgstr "Retirar requiere <0/> mientras tienes <1/>. Por favor, <2>intercambia</2> o <3>deposita</3> más {0} a tu cuenta GMX."
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit order"
 msgstr "Editar orden"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "Error simulando retiro"
@@ -7061,7 +7052,7 @@ msgstr "Confirmar Reclamación"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
@@ -7250,6 +7241,7 @@ msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>Ganarás {1}% menos recompensas con esta acción.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "Confirmando..."
 
@@ -7287,9 +7279,18 @@ msgstr "Stakeado"
 msgid "Traders"
 msgstr "Traders"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Withdraw and Unreserve GMX"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
 msgstr "toma de ganancias"
+
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMTrade"
+msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
@@ -7314,7 +7315,8 @@ msgstr "Elige comprar en exchanges descentralizados o centralizados."
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -7382,7 +7384,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "Términos de Referido"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "APY de Comisión"
@@ -7535,6 +7536,7 @@ msgstr "Activar 1CT (Trading de Un Clic)"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "El APR de Bonificación se airdropeará como tokens {airdropTokenTitle}. <0>Leer más</0>."
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7777,10 +7779,6 @@ msgstr "<0>Delega tu poder de voto {0} GMX DAO no delegado</0> antes de reclamar
 msgid "Claim funds"
 msgstr "Reclamar fondos"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "30d Fee APY"
-msgstr "APY por comisiones (30 d)"
-
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
 msgstr "Impacto de Precio Neto / Tarifas"
@@ -7910,6 +7908,7 @@ msgstr "Comisión de Depósito"
 msgid "Enter a new size or price"
 msgstr "Ingresa un nuevo tamaño o precio"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool amount exceeded"
@@ -7934,6 +7933,10 @@ msgstr "Conteo Máximo de Acciones Alcanzado. <0>Haz clic aquí</0> para actuali
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
+msgstr "Insuficiente {localizedList} para gas en tu billetera en {chainName}. <0>Comprar {localizedList}</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
@@ -7983,6 +7986,10 @@ msgstr "Dirección copiada a tu portapapeles."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "Garantía restante por debajo de {0} USD"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr "Reclamar requiere <0/> mientras tienes <1/>. Por favor <2>intercambia</2> o <3>deposita</3> más {0} en tu cuenta GMX."
 
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
@@ -8433,6 +8440,7 @@ msgstr "DeBank"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"

@@ -8,15 +8,7 @@ import { useLatest } from "react-use";
 import { Hex, decodeErrorResult, encodeEventTopics, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
-import {
-  AVALANCHE,
-  AnyChainId,
-  SettlementChainId,
-  SourceChainId,
-  getChainName,
-  getViemChain,
-  isTestnetChain,
-} from "config/chains";
+import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
 import { getContract } from "config/contracts";
 import { getChainIcon } from "config/icons";
 import {
@@ -53,7 +45,9 @@ import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getNeedTokenApprove, useTokensAllowanceData, useTokensDataRequest } from "domain/synthetics/tokens";
+import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
+import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
@@ -66,7 +60,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, adjustForDecimals, formatAmountFree, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, adjustForDecimals, bigintToNumber, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -85,6 +79,7 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import NumberInput from "components/NumberInput/NumberInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -397,6 +392,7 @@ export const DepositView = () => {
     amountLD,
     isStable: selectedToken?.isStable,
     decimals: selectedTokenSourceChainTokenId?.decimals,
+    enabled: depositViewChain !== settlementChainId,
   });
 
   const sendParamsWithSlippage: SendParam | undefined = useMemo(() => {
@@ -490,6 +486,16 @@ export const DepositView = () => {
         helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
         setIsVisibleOrView("main");
         setIsSubmitting(false);
+
+        const sizeInUsdValue = latestInputAmountUsd.current;
+        if (sizeInUsdValue !== undefined && sizeInUsdValue > 0n) {
+          sendAddressablePixelEvent({
+            eventName: AddressablePixelEventName.DepositSuccess,
+            sizeInUsd: bigintToNumber(sizeInUsdValue, USD_DECIMALS),
+            chainId: depositViewChain ?? settlementChainId,
+          });
+        }
+
         if (txnEvent.data.type === "wallet" && depositViewTokenAddress && inputAmount !== undefined) {
           const txnHash = txnEvent.data.transactionHash;
           const mockId = setMultichainSubmittedDeposit({
@@ -537,8 +543,10 @@ export const DepositView = () => {
     },
     [
       account,
+      depositViewChain,
       depositViewTokenAddress,
       inputAmount,
+      latestInputAmountUsd,
       setIsVisibleOrView,
       setMultichainFundingPendingId,
       setMultichainSubmittedDeposit,
@@ -616,6 +624,14 @@ export const DepositView = () => {
 
           sendTxnSentMetric(params.metricId);
 
+          if (latestInputAmountUsd.current !== undefined) {
+            sendAddressablePixelEvent({
+              eventName: AddressablePixelEventName.DepositSuccess,
+              sizeInUsd: bigintToNumber(latestInputAmountUsd.current, USD_DECIMALS),
+              chainId: params.depositViewChain ?? settlementChainId,
+            });
+          }
+
           let submittedDepositGuid: string | undefined;
 
           if (txnEvent.data.type === "wallet") {
@@ -658,12 +674,13 @@ export const DepositView = () => {
         }
       },
     [
-      setIsVisibleOrView,
+      latestInputAmountUsd,
+      settlementChainId,
       setMultichainSubmittedDeposit,
       setSelectedTransferGuid,
-      settlementChainId,
       subaccountState.subaccount,
       isExpressTradingDisabled,
+      setIsVisibleOrView,
     ]
   );
 
@@ -852,6 +869,7 @@ export const DepositView = () => {
 
   let buttonState: {
     text: React.ReactNode;
+    bannerErrorName?: ValidationBannerErrorName;
     disabled?: boolean;
     onClick?: () => void;
   } = {
@@ -917,10 +935,9 @@ export const DepositView = () => {
     const value = isNative ? amountLD : 0n;
 
     if (depositViewChain !== undefined && quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
-      const nativeTokenSymbol = getViemChain(depositViewChain).nativeCurrency.symbol;
-
       buttonState = {
-        text: t`Insufficient ${nativeTokenSymbol} balance`,
+        text: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
         disabled: true,
       };
     }
@@ -1121,6 +1138,7 @@ export const DepositView = () => {
               className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
                          focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
               placeholder="0.00"
+              maxDecimals={selectedTokenSourceChainDecimals}
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
@@ -1163,6 +1181,15 @@ export const DepositView = () => {
               <span className="numbers">{lowerLimitFormatted}</span>.
             </Trans>
           </div>
+        </AlertInfoCard>
+      )}
+      {buttonState.bannerErrorName && (
+        <AlertInfoCard type="error" className="mt-8" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={buttonState.bannerErrorName}
+            chainId={settlementChainId}
+            srcChainId={depositViewChain}
+          />
         </AlertInfoCard>
       )}
       <div className="h-32 shrink-0 grow" />

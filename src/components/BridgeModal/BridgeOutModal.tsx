@@ -19,6 +19,7 @@ import {
   selectDepositMarketTokensData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -29,18 +30,22 @@ import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeOutTxn } from "domain/synthetics/markets/createBridgeOutTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { SelectedPoolLabel } from "components/GmSwap/GmSwapBox/SelectedPool";
 import { useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
@@ -61,6 +66,7 @@ export function BridgeOutModal({
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
 }) {
   const { chainId, srcChainId } = useChainId();
+  const hasOutdatedUi = useHasOutdatedUi();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [bridgeOutChain, setBridgeOutChain] = useState<SourceChainId | undefined>(srcChainId);
   const [bridgeOutInputValue, setBridgeOutInputValue] = useState("");
@@ -71,6 +77,8 @@ export function BridgeOutModal({
   const glvOrMarketAddress = glvOrMarketInfo ? getGlvOrMarketAddress(glvOrMarketInfo) : undefined;
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
   const isGlv = isGlvInfo(glvOrMarketInfo);
+  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gasPaymentToken = getTokenData(tokensData, gasPaymentTokenAddress);
 
   const marketTokenDecimals = isGlv ? glvOrMarketInfo?.glvToken.decimals : marketToken?.decimals;
   let marketTokenPrice: bigint | undefined = undefined;
@@ -154,7 +162,10 @@ export function BridgeOutModal({
     expressTransactionBuilder,
     isGmxAccount: true,
     enabled: isVisible,
+    overrideWnt: true,
   });
+
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
 
   const sendParams = useMemo(() => {
     if (!bridgeOutChain || !account || bridgeOutAmount === undefined || bridgeOutAmount <= 0n) {
@@ -180,6 +191,19 @@ export function BridgeOutModal({
 
   const networkFeeUsd = useMemo(() => {
     if (
+      errors?.isOutOfTokenError?.isGasPaymentToken &&
+      errors?.isOutOfTokenError?.requiredAmount !== undefined &&
+      gasPaymentToken !== undefined &&
+      gasPaymentToken.decimals !== undefined
+    ) {
+      return convertToUsd(
+        errors.isOutOfTokenError.requiredAmount,
+        gasPaymentToken.decimals,
+        gasPaymentToken.prices.maxPrice
+      );
+    }
+
+    if (
       transferNativeFee === undefined ||
       tokensData === undefined ||
       tokensData[zeroAddress] === undefined ||
@@ -201,10 +225,14 @@ export function BridgeOutModal({
     )!;
 
     return relayFeeUsd + transferNativeFeeUsd;
-  }, [transferNativeFee, tokensData, expressTxnParamsAsyncResult.data]);
-
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
-  const hasOutdatedUi = useHasOutdatedUi();
+  }, [
+    errors?.isOutOfTokenError?.isGasPaymentToken,
+    errors?.isOutOfTokenError?.requiredAmount,
+    gasPaymentToken,
+    transferNativeFee,
+    tokensData,
+    expressTxnParamsAsyncResult.data,
+  ]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -254,7 +282,11 @@ export function BridgeOutModal({
     }
   }, [bridgeOutChain, isVisible, srcChainId]);
 
-  const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
+  const buttonState = useMemo((): {
+    text: ReactNode;
+    disabled?: boolean;
+    bannerErrorName?: ValidationBannerErrorName;
+  } => {
     if (hasOutdatedUi) {
       return {
         text: t`Page outdated, please refresh`,
@@ -300,9 +332,25 @@ export function BridgeOutModal({
       };
     }
 
+    if (errors?.isOutOfTokenError?.isGasPaymentToken) {
+      return {
+        text: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
+        disabled: true,
+      };
+    }
+
+    if (errors?.isOutOfTokenError?.tokenAddress === getWrappedToken(chainId).address) {
+      return {
+        text: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountWntBalance,
+        disabled: true,
+      };
+    }
+
     if (errors?.isOutOfTokenError) {
       return {
-        text: errors.isOutOfTokenError.isGasPaymentToken ? t`Insufficient gas balance` : t`Insufficient balance`,
+        text: t`Insufficient balance`,
         disabled: true,
       };
     }
@@ -333,6 +381,7 @@ export function BridgeOutModal({
     bridgeOutAmount,
     errors?.isOutOfTokenError,
     expressTxnParamsAsyncResult.data,
+    chainId,
   ]);
 
   if (!glvOrMarketInfo) {
@@ -361,6 +410,7 @@ export function BridgeOutModal({
                 }
               : undefined
           }
+          maxDecimals={marketTokenDecimals}
         >
           <span className="inline-flex items-center">
             <TokenIcon
@@ -403,6 +453,18 @@ export function BridgeOutModal({
           item={NetworkItem}
           itemKey={networkItemKey}
         />
+
+        {buttonState.bannerErrorName && (
+          <AlertInfoCard type="error" hideClose>
+            <ValidationBannerErrorContent
+              validationBannerErrorName={buttonState.bannerErrorName}
+              chainId={chainId}
+              srcChainId={bridgeOutChain}
+              gasPaymentTokenAddress={gasPaymentTokenAddress}
+              onBeforeNavigation={() => setIsVisible(false)}
+            />
+          </AlertInfoCard>
+        )}
 
         <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
           {buttonState.text}

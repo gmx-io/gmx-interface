@@ -22,6 +22,7 @@ import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
 import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
+import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
@@ -41,8 +42,8 @@ import {
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { OrderInfo, OrdersInfoData } from "sdk/types/orders";
 import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
+import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
   CancelOrderTxnParams,
@@ -80,7 +81,7 @@ export function useOrderTxnCallbacks() {
     setPendingExpressTxn,
     setPendingFundingFeeSettlement,
   } = useSyntheticsEvents();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
@@ -247,6 +248,17 @@ export function useOrderTxnCallbacks() {
         case TxnEventName.Sent: {
           if (ctx.metricId) {
             sendTxnSentMetric(ctx.metricId);
+
+            if (mainActionType === "create" && batchParams.createOrderParams.length > 0) {
+              const firstOrder = batchParams.createOrderParams[0];
+              const orderType = firstOrder.orderPayload.orderType;
+              sendAddressablePixelEventForOrder({
+                metricId: ctx.metricId,
+                orderType,
+                chainId,
+                srcChainId,
+              });
+            }
           }
 
           if (!expressParams) {
@@ -357,6 +369,7 @@ export function useOrderTxnCallbacks() {
       addOptimisticTokensBalancesUpdates,
       blockNumber,
       chainId,
+      srcChainId,
       ordersInfoData,
       resetTokenPermits,
       setIsPermitsDisabled,

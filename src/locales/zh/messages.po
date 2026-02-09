@@ -161,6 +161,11 @@ msgstr "esGMX 奖励："
 msgid ""
 msgstr ""
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMTrade"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close Price Impact"
@@ -238,7 +243,7 @@ msgstr "向特定 GMX 市场提供流动性的资金池，支持 <0/> 单资产�
 msgid "In progress"
 msgstr "进行中"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Buy {gasPaymentTokensText}"
 msgstr "购买 {gasPaymentTokensText}"
@@ -357,6 +362,7 @@ msgstr "将 {0} 交换为 {1}。"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "No necessary params to claim. Retry in a few seconds."
 msgstr "没有必要的参数来申领。请几秒钟后重试。"
 
@@ -483,6 +489,10 @@ msgstr "国库"
 msgid "Want to trade faster with One-Click?"
 msgstr "想使用一键交易更快地交易吗？"
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "Clicking on the button below will open GMTrade in a new tab."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
 msgstr "经典"
@@ -605,8 +615,7 @@ msgstr "30 天内不再显示此消息。"
 msgid "in liquidity"
 msgstr "流动性中"
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance, please deposit more {gasPaymentTokensText}."
 msgstr "Gas 余额不足，请存入更多 {gasPaymentTokensText}。"
 
@@ -867,6 +876,10 @@ msgstr "此网络没有可用的中心化交易所。"
 msgid "Invalid slippage value"
 msgstr "无效滑点值"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "获得 5% 返还，并为您的社区提供每笔交易 5% 的折扣。更高的推荐等级可解锁更多优惠。<0>了解更多</0>。"
@@ -917,10 +930,6 @@ msgstr "由于仓位抵押品包含在计算中，此值在其他网站上可能
 msgid "Rewards"
 msgstr "奖励"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-msgid "You're about to navigate to GMX Solana, which is operated by a separate team, so the experience may vary slightly."
-msgstr "您即将导航到 GMX Solana，该平台由单独的团队运营，因此体验可能略有不同。"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -930,10 +939,6 @@ msgstr "您即将导航到 GMX Solana，该平台由单独的团队运营，因�
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Pay"
 msgstr "支付"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need some {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "您的账户需要一些 {wrappedNativeTokenSymbol} 来提取资金。"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Failed to update settings."
@@ -1010,10 +1015,6 @@ msgstr "市值"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
 msgstr "平均使用杠杆。"
-
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Rewards"
-msgstr "GMX 奖励"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
@@ -1180,8 +1181,9 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "已复制"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr "存入 GMX 账户"
 
@@ -1476,10 +1478,6 @@ msgstr "转移已提交。"
 msgid "{nativeTokenSymbol} rewards:"
 msgstr "{nativeTokenSymbol} 奖励："
 
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
-msgid "Insufficient {symbol} balance"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient receive token liquidity"
 msgstr "接收代币流动性不足"
@@ -1589,10 +1587,6 @@ msgstr "净值"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr "已提取 {balanceFormatted} 到主账户。"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Token"
-msgstr "GMX 代币"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1666,7 +1660,8 @@ msgstr "组合止损已达到最大 (100%)。减少现有值以添加更多订�
 msgid "4-18 Places"
 msgstr "4-18 名"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Your deposit is in progress"
 msgstr "您的存款进行中"
 
@@ -1687,7 +1682,8 @@ msgstr "此代币从 {marketName} 市场的杠杆交易和交换中自动累积�
 msgid "Withdrew {0} from {positionText}"
 msgstr "从 {positionText} 提取 {0}"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select Asset to Deposit"
 msgstr "选择要存入的资产"
 
@@ -1743,7 +1739,7 @@ msgstr "GMX"
 msgid "Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):"
 msgstr "从 Uniswap 购买 GMX 或直接在 GMX 上购买（确保选择 Arbitrum）："
 
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express and One-Click Trading are unavailable due to insufficient gas balance."
 msgstr "由于 Gas 余额不足，快速和一键交易不可用。"
@@ -1941,7 +1937,6 @@ msgstr "最大"
 msgid "Checking code..."
 msgstr "正在检查代码…"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -2038,6 +2033,7 @@ msgstr "市场 - 空头增加"
 msgid "Deposit in progress"
 msgstr "存款进行中"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -2088,6 +2084,14 @@ msgstr "GLV 中没有足够的 GM: {0} [{1}] 流动性来满足您的售卖请�
 msgid "Deposited {0} into {positionText}"
 msgstr "存款 {0} 到 {positionText}"
 
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "30d Performance APY"
+msgstr ""
+
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim Funding Fees"
@@ -2126,6 +2130,7 @@ msgstr ""
 msgid "Address"
 msgstr "地址"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
@@ -2235,7 +2240,6 @@ msgstr "交换"
 msgid "Creating order..."
 msgstr "正在创建订单…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -2249,8 +2253,6 @@ msgid "Allow {0} to be spent"
 msgstr "允许花费 {0}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/domain/multichain/useSourceChainNetworkFeeError.ts
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
 
@@ -2261,6 +2263,10 @@ msgstr "仓位"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "The execution price didn't meet acceptable price. The order will fill when the condition is met."
 msgstr "执行价格未达到可接受价格。当条件满足时，订单将成交。"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
+msgstr "<0>存入</0>或<1>购买</1> {wrappedNativeTokenSymbol}。"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -2443,6 +2449,10 @@ msgstr "最大部分数量：{MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "Launch App"
 msgstr "启动应用程序"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming affiliate rewards failed"
+msgstr "申领联盟奖励失败"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Pay"
 msgstr "可用支付"
@@ -2478,6 +2488,10 @@ msgstr "中继器请求失败"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "转账账户"
+
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
+msgstr "您的 GMX 账户中用于 gas 的 {wrappedNativeTokenSymbol} 不足。"
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
@@ -2671,10 +2685,6 @@ msgstr "止损市价 - 做多增加"
 msgid "Enter your feedback here."
 msgstr "在此输入您的反馈。"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for this withdrawal, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "您正在提取 {0}，您的 gas 代币。此提取需要 gas，因此请至少保留 <0>{1}</0> 在 {2} 中，或在<1>设置</1>中切换您的 gas 代币。"
-
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount."
 msgstr "如果有足够的流动性且执行价格保证您收到最低收到金额，则订单将被执行。"
@@ -2786,10 +2796,6 @@ msgstr "显示调试值"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days."
 msgstr "基于过去 7 天的年化数据。"
-
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX Solana is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open the GMX Solana frontend in a new tab."
-msgstr "GMX Solana 托管在另一个网站上，由不同的团队运行，因此体验可能略有不同。<0/><1/>点击下面的按钮将在新标签中打开 GMX Solana 前端。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
@@ -2935,6 +2941,10 @@ msgstr "生成会话中..."
 msgid "How do I get started on GMX?"
 msgstr "如何在 GMX 上入门？"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "coming soon"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -2950,10 +2960,6 @@ msgstr "提取失败"
 msgid "Total Staked"
 msgstr "总质押"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like tens of thousands of other GMX users."
-msgstr "了解 GMX、GLV 和 GM 代币如何协同工作，为去中心化交易体验提供动力。探索每个代币的作用，发现如何通过质押或提供流动性来获得奖励——就像数万名其他 GMX 用户一样。"
-
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
@@ -2963,6 +2969,8 @@ msgstr "了解 GMX、GLV 和 GM 代币如何协同工作，为去中心化交易
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network Fee"
 msgstr "网络费用"
 
@@ -3050,7 +3058,7 @@ msgstr "净价格冲击较高"
 msgid "Lev."
 msgstr "杠杆"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to Trade Assets"
 msgstr "可用交易资产"
 
@@ -3292,6 +3300,10 @@ msgstr "编辑 {0}"
 msgid "Price impact rebates claimed."
 msgstr "价格影响返利已申领。"
 
+#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
+msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
+msgstr "<0>购买</0> {wrappedNativeTokenSymbol}。"
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Claimable price impact rebates.<0/><1/><2>Read more</2>."
 msgstr "可领取价格影响回扣。<0/><1/><2>阅读更多</2>。"
@@ -3496,10 +3508,6 @@ msgstr "总收益"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "此市场的流动性提供仅在 {chainNames} 上可用。请切换到 {chainNames} 以访问赚取机会。"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "You’ll need <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} in your account to withdraw funds."
-msgstr "您的账户需要 <0>{formattedAmount}</0> (<1>{formattedUsd}</1>) {wrappedNativeTokenSymbol} 来提取资金。"
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -3783,11 +3791,6 @@ msgstr "交易空投"
 msgid "You will be short {indexSymbol} from your short position, while being long {collateralSymbol} from your {collateralSymbol} collateral. This can be useful for delta-neutral strategies to earn funding fees."
 msgstr "您将从您的做空仓位做空 {indexSymbol}，同时从您的 {collateralSymbol} 抵押品做多 {collateralSymbol}。这对于赚取资金费用的 delta 中性策略很有用。"
 
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "Open GMX Solana"
-msgstr "打开 GMX Solana"
-
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Market Traders' PnL"
 msgstr ""
@@ -4003,11 +4006,6 @@ msgstr "<0>Botanix</0> 当前仅支持"
 msgid "{daysConsidered}d Earned Fees"
 msgstr "{daysConsidered} 天赚取费用"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Insufficient {0} balance to pay for gas"
-msgstr "{0} 余额不足以支付 gas"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "需要额外保留："
@@ -4087,10 +4085,6 @@ msgstr "{typeString} 做多限价：当价格低于触发价格时 {0} 一个做
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "{0} 需要作为抵押品。<0/><1/>在 GMX 内未找到 {1} 到 {2} 的交换路径。<2/><3/><4>您可以在 1inch 上购买 {3}。</4>"
-
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "Total Fee APY"
-msgstr "总费用年化收益率"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
@@ -4226,10 +4220,6 @@ msgstr "止损市价失败"
 msgid "Address copied to your clipboard"
 msgstr "地址已复制到您的剪贴板"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "Documentation"
-msgstr "文档"
-
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -4287,6 +4277,11 @@ msgstr ""
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
 msgstr "创建限价"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+msgid "Error simulating deposit"
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
@@ -4421,16 +4416,10 @@ msgstr "无需重复钱包确认"
 msgid "Shorts Net Rate / 1h"
 msgstr "做空净率 / 1h"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Discover GMX Earn"
-msgstr "探索 GMX Earn"
-
-#: src/components/ExpressTradingOutOfGasBanner.ts/ExpressTradingOutOfGasBanner.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4769,10 +4758,6 @@ msgstr "抵押品 ({0})"
 msgid "You have an existing position with {0} as collateral. This order will not be valid for that position. <0>Switch to {1} collateral</0>"
 msgstr "您有一个以 {0} 作为抵押品的现有仓位。此订单对该仓位无效。<0>切换到 {1} 抵押品</0>"
 
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "You're withdrawing {0}, your gas token. Gas is required for express trading, so please keep at least <0>{1}</0> in {2} or switch your gas token in <1>settings</1>."
-msgstr "您正在提取 {0}，您的 gas 代币。快速交易需要 gas，因此请至少保留 <0>{1}</0> 在 {2} 中，或在<1>设置</1>中切换您的 gas 代币。"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "You will earn {0}% more rewards with this action."
 msgstr "通过此操作，您将赚取 {0}% 更多的奖励。"
@@ -4852,11 +4837,6 @@ msgstr "订单类型"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Are you sure you want to skip creating a referral code?"
 msgstr "您确定要跳过创建推荐码吗？"
-
-#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
-#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-msgid "GMX Solana"
-msgstr "GMX Solana"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
@@ -5172,6 +5152,11 @@ msgstr "跨链交易哈希"
 msgid "Start unrealized pnl"
 msgstr "起始未实现 PnL"
 
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+msgstr "钱包中 {0} 上的 {nativeTokenSymbol} 不足以支付 gas。<0>购买 {nativeTokenSymbol}</0>"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "批准已提交！<0>查看状态。</0>"
@@ -5265,7 +5250,7 @@ msgstr "大小，$"
 msgid "Close {0} {1}{2}"
 msgstr "关闭 {0} {1}{2}"
 
-#: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Gas余额不足"
 
@@ -5390,7 +5375,7 @@ msgstr "市场减少"
 msgid "Updating {orderText}..."
 msgstr "正在更新 {orderText}…"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Withdrawal from GMX Account"
 msgstr "从 GMX 账户提取"
 
@@ -5517,6 +5502,10 @@ msgstr "在此输入您的答案。"
 msgid "Max amount exceeded"
 msgstr "超出最大金额"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GLV Vaults:"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "要完成转账，您必须将已连接账户切换为 {receiver}。"
@@ -5551,7 +5540,8 @@ msgstr "从网络"
 msgid "My assets"
 msgstr "我的资产"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "从 GMX 账户提取"
 
@@ -5776,7 +5766,6 @@ msgstr "永续合约聚合器"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1 小时"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5896,10 +5885,6 @@ msgstr "并自动复合其收益率（与 GLP 不同，无需手动申领）"
 msgid "Sell request sent."
 msgstr "卖出请求已发送。"
 
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>swap</0> to get {wrappedNativeTokenSymbol}."
-msgstr "请 <0>交换</0> 以获取 {wrappedNativeTokenSymbol}。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Community with NFTs, Trading and Education initiatives"
 msgstr "GMX 社区，包含 NFT、交易和教育举措"
@@ -5915,6 +5900,14 @@ msgstr "<0><1>#GMX V2</1> 的 OI 看起来很棒</0><2>GMX V2 > GMX V1 + Kwenta 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "我们希望您的见解帮助改进 GMX。出于安全原因，我们不会先联系您。请将消息“我有反馈”发送到我们的任何官方账户："
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Total Performance APY"
+msgstr ""
+
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open GMTrade in a new tab."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -6150,6 +6143,10 @@ msgstr "已实现互换价格冲击"
 msgid "1st Place"
 msgstr "第一名"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -6320,6 +6317,10 @@ msgstr "胜率"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault, you need to withdraw these tokens if you want to transfer them to the new account"
 msgstr "您的联盟金库中有 esGMX 代币，如需转移到新账户则必须先提取这些代币"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
+msgstr "您的 GMX 账户中用于 gas 的 {tokensText} 不足。<0>存入 {tokensText}</0>"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "It allows you to earn rewards."
@@ -6675,7 +6676,7 @@ msgid "Size per part"
 msgstr "每个部分的大小"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6687,10 +6688,6 @@ msgstr "每个部分的大小"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} balance"
 msgstr "{0} 余额不足"
-
-#: src/components/GmxAccountModal/InsufficientWntBanner.tsx
-msgid "Please <0>deposit</0> or <1>swap</1> to get {wrappedNativeTokenSymbol}."
-msgstr "请 <0>存入</0> 或 <1>交换</1> 以获取 {wrappedNativeTokenSymbol}。"
 
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
@@ -6728,22 +6725,16 @@ msgstr "最大网络费用包括额外订单的费用。如果它们未触发并
 msgid "Rebates"
 msgstr "回扣"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Insufficient {nativeTokenSymbol} balance"
-msgstr "{nativeTokenSymbol} 余额不足"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr "更新限价"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Withdrawing requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
-msgstr "提取需要 <0/> 而您有 <1/>。请 <2>交换</2> 或 <3>存入</3> 更多 {0} 到您的 GMX 账户。"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Edit order"
 msgstr "编辑订单"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "模拟提取错误"
@@ -7061,7 +7052,7 @@ msgstr "确认领取"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
@@ -7250,6 +7241,7 @@ msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>通过此操作，您将赚取 {1}% 更少的奖励。</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "确认中..."
 
@@ -7287,9 +7279,18 @@ msgstr "已质押"
 msgid "Traders"
 msgstr "交易者"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Withdraw and Unreserve GMX"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
 msgstr "止盈"
+
+#: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+msgid "Open GMTrade"
+msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Force External Swaps"
@@ -7314,7 +7315,8 @@ msgstr "选择从去中心化或中心化交易所购买。"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -7382,7 +7384,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "推荐条款"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "费用年利率"
@@ -7535,6 +7536,7 @@ msgstr "激活 1CT（一键交易）"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "奖金年利率将作为 {airdropTokenTitle} 代币空投。<0>阅读更多</0>。"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7777,10 +7779,6 @@ msgstr "<0>在领取前委托您未委托的 {0} GMX DAO</0> 投票权。"
 msgid "Claim funds"
 msgstr "申领资金"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "30d Fee APY"
-msgstr "30 天费用年化收益率"
-
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
 msgstr "净价格影响 / 费用"
@@ -7910,6 +7908,7 @@ msgstr "存款费用"
 msgid "Enter a new size or price"
 msgstr "输入新规模或价格"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool amount exceeded"
@@ -7934,6 +7933,10 @@ msgstr "达到最大操作次数。<0>点击这里</0> 更新。"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
+
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
+msgstr "钱包中 {chainName} 上的 {localizedList} 不足以支付 gas。<0>购买 {localizedList}</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
@@ -7983,6 +7986,10 @@ msgstr "地址已复制到您的剪贴板。"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover collateral below {0} USD"
 msgstr "剩余抵押品低于 {0} USD"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming requires <0/> while you have <1/>. Please <2>swap</2> or <3>deposit</3> more {0} to your GMX account."
+msgstr "申领需要 <0/>，但您拥有 <1/>。请在您的 GMX 账户中<2>交换</2>或<3>存入</3>更多 {0}。"
 
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Gas payment token switched from {fromSymbol} to {toSymbol} due to insufficient {fromSymbol} balance."
@@ -8433,6 +8440,7 @@ msgstr "DeBank"
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"

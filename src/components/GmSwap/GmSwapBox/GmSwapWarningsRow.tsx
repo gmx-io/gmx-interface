@@ -8,13 +8,13 @@ export function GmSwapWarningsRow({
   shouldShowWarning,
   shouldShowWarningForPosition,
   shouldShowWarningForExecutionFee,
-  insufficientGasWarningText,
+  bannerErrorContent,
   shouldShowAvalancheGmxAccountWarning,
 }: {
   shouldShowWarning: boolean;
   shouldShowWarningForPosition: boolean;
   shouldShowWarningForExecutionFee: boolean;
-  insufficientGasWarningText?: string;
+  bannerErrorContent?: ReactNode;
   shouldShowAvalancheGmxAccountWarning?: boolean;
 }) {
   const warnings: ReactNode[] = [];
@@ -47,10 +47,10 @@ export function GmSwapWarningsRow({
     );
   }
 
-  if (insufficientGasWarningText) {
+  if (bannerErrorContent) {
     warnings.push(
-      <AlertInfoCard className="mb-14" type="info" key="swapBoxInsufficientGasWarning" hideClose>
-        {insufficientGasWarningText}
+      <AlertInfoCard className="mb-14" type="error" key="bannerErrorContent" hideClose>
+        {bannerErrorContent}
       </AlertInfoCard>
     );
   }
