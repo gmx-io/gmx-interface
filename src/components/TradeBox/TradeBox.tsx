@@ -206,8 +206,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     numberOfParts,
     setNumberOfParts,
     setDuration,
-    limitPriceWarningHidden,
-    setLimitPriceWarningHidden,
   } = useSelector(selectTradeboxState);
 
   const isTwapModeAvailable = useMemo(
@@ -1135,15 +1133,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                     </Trans>
                   </AlertInfoCard>
                 )}
-                {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
-                  <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
+                {isSwap && isLimit && !isTwap && (
+                  <AlertInfoCard type="warning" hideClose>
                     <Trans>
                       Execution price may differ from limit price due to fees and price impact. You'll receive at least
                       the minimum amount shown.{" "}
                       <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
                         Read more
                       </ExternalLink>
-                      .
                     </Trans>
                   </AlertInfoCard>
                 )}
