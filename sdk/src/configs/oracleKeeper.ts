@@ -23,7 +23,7 @@ const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
 
   [BOTANIX]: "https://botanix-api.gmxinfra.io",
 
-  [MEGAETH]: "https://gmx-synthetics-api-megaeth-44tgc.ondigitalocean.app",
+  [MEGAETH]: "https://megaeth-api.gmxinfra.io",
 
   [ARBITRUM_SEPOLIA]: "https://dolphin-app-a2dup.ondigitalocean.app",
 };
@@ -37,7 +37,7 @@ const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
 
   [BOTANIX]: ["https://botanix-api-fallback.gmxinfra.io", "https://botanix-api-fallback.gmxinfra2.io"],
 
-  [MEGAETH]: ["https://gmx-synthetics-api-megaeth-44tgc.ondigitalocean.app"],
+  [MEGAETH]: ["https://megaeth-api-fallback.gmxinfra.io"],
 
   [ARBITRUM_SEPOLIA]: ["https://dolphin-app-a2dup.ondigitalocean.app"],
 };

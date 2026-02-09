@@ -2098,8 +2098,8 @@ msgid "Claim Funding Fees"
 msgstr "펀딩 수수료 수령"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Botanix currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
-msgstr "현재 Botanix에는 활성화된 GLV 볼트가 없습니다. <0>구매</0>를 통해 GM 토큰으로 유동성을 제공할 수 있습니다."
+#~ msgid "Botanix currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
+#~ msgstr "현재 Botanix에는 활성화된 GLV 볼트가 없습니다. <0>구매</0>를 통해 GM 토큰으로 유동성을 제공할 수 있습니다."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display Settings"
@@ -3143,6 +3143,10 @@ msgstr "스왑 UI 수수료"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "최대 허용 레버리지에 맞게 크기 감소:"
+
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "Staking GMX is currently not supported on MegaETH. For access to these features, please visit the Arbitrum and Avalanche deployments."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Set Acceptable Price Impact"
@@ -4356,8 +4360,8 @@ msgid "Total value of tokens in GM Pools."
 msgstr "GM 풀의 토큰 총 가치."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Botanix"
-msgstr "Botanix"
+#~ msgid "Botanix"
+#~ msgstr "Botanix"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
@@ -6733,6 +6737,10 @@ msgstr "지정가 업데이트"
 msgid "Edit order"
 msgstr "주문 수정"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -7686,6 +7694,10 @@ msgstr "데이터 없음"
 msgid "These networks support only trading directly from wallet."
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr "펀딩 청구됨."
@@ -8251,8 +8263,8 @@ msgid "Market order will be cancellable in ..."
 msgstr "시장 주문 취소 가능 ..."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
-msgstr "현재 Botanix에서는 GMX 스테이킹이 지원되지 않습니다. 이 기능에 접근하려면 Arbitrum 및 Avalanche 배포를 방문하세요."
+#~ msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
+#~ msgstr "현재 Botanix에서는 GMX 스테이킹이 지원되지 않습니다. 이 기능에 접근하려면 Arbitrum 및 Avalanche 배포를 방문하세요."
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

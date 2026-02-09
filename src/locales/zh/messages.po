@@ -2098,8 +2098,8 @@ msgid "Claim Funding Fees"
 msgstr "领取资金费用"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Botanix currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
-msgstr "Botanix 当前没有活跃的 GLV 金库。您可以通过<0>购买</0>GM 代币来提供流动性。"
+#~ msgid "Botanix currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
+#~ msgstr "Botanix 当前没有活跃的 GLV 金库。您可以通过<0>购买</0>GM 代币来提供流动性。"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display Settings"
@@ -3143,6 +3143,10 @@ msgstr "交换 UI 费用"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "减少规模以匹配最大允许杠杆："
+
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "Staking GMX is currently not supported on MegaETH. For access to these features, please visit the Arbitrum and Avalanche deployments."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Set Acceptable Price Impact"
@@ -4356,8 +4360,8 @@ msgid "Total value of tokens in GM Pools."
 msgstr "GM 池中代币的总价值。"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Botanix"
-msgstr "Botanix"
+#~ msgid "Botanix"
+#~ msgstr "Botanix"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
@@ -6733,6 +6737,10 @@ msgstr "更新限价"
 msgid "Edit order"
 msgstr "编辑订单"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -7686,6 +7694,10 @@ msgstr "无可用数据"
 msgid "These networks support only trading directly from wallet."
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr "资金已申领。"
@@ -8251,8 +8263,8 @@ msgid "Market order will be cancellable in ..."
 msgstr "市价订单将在 ... 可取消"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
-msgstr "Botanix 当前不支持质押 GMX。如需使用这些功能，请访问 Arbitrum 和 Avalanche 部署。"
+#~ msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
+#~ msgstr "Botanix 当前不支持质押 GMX。如需使用这些功能，请访问 Arbitrum 和 Avalanche 部署。"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"

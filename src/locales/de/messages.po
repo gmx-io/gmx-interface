@@ -2098,8 +2098,8 @@ msgid "Claim Funding Fees"
 msgstr "Funding-Gebühren beanspruchen"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Botanix currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
-msgstr "Auf Botanix sind derzeit keine GLV-Vaults aktiv. Du kannst Liquidität durch den <0>Kauf</0> von GM-Token bereitstellen."
+#~ msgid "Botanix currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
+#~ msgstr "Auf Botanix sind derzeit keine GLV-Vaults aktiv. Du kannst Liquidität durch den <0>Kauf</0> von GM-Token bereitstellen."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display Settings"
@@ -3143,6 +3143,10 @@ msgstr "Tausch-UI-Gebühr"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease the size to match the max. allowed leverage:"
 msgstr "Verringere die Größe, um der max. erlaubten Hebelwirkung zu entsprechen:"
+
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "Staking GMX is currently not supported on MegaETH. For access to these features, please visit the Arbitrum and Avalanche deployments."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Set Acceptable Price Impact"
@@ -4356,8 +4360,8 @@ msgid "Total value of tokens in GM Pools."
 msgstr "Gesamtwert der Tokens in GM-Pools."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Botanix"
-msgstr "Botanix"
+#~ msgid "Botanix"
+#~ msgstr "Botanix"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Accrued price impact rebates. They will become claimable after 5 days.<0/><1/><2>Read more</2>."
@@ -6733,6 +6737,10 @@ msgstr "Limit aktualisieren"
 msgid "Edit order"
 msgstr "Order bearbeiten"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH currently has no GLV vault(s) active. You can provide liquidity by <0>purchasing</0> GM tokens."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -7686,6 +7694,10 @@ msgstr "Keine Daten verfügbar"
 msgid "These networks support only trading directly from wallet."
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH"
+msgstr ""
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed."
 msgstr "Funding eingelöst."
@@ -8251,8 +8263,8 @@ msgid "Market order will be cancellable in ..."
 msgstr "Marktorder wird abbrechbar in ..."
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
-msgstr "Das Staken von GMX wird derzeit auf Botanix nicht unterstützt. Für Zugriff auf diese Funktionen besuche bitte die Arbitrum- und Avalanche-Deployments."
+#~ msgid "Staking GMX is currently not supported on Botanix. For access to these features, please visit the Arbitrum and Avalanche deployments."
+#~ msgstr "Das Staken von GMX wird derzeit auf Botanix nicht unterstützt. Für Zugriff auf diese Funktionen besuche bitte die Arbitrum- und Avalanche-Deployments."
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Deposit {glvOrGm}"
