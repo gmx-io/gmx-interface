@@ -3,7 +3,7 @@ import { useMedia } from "react-use";
 
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
-type ThemeMode = "dark" | "light" | "system";
+export type ThemeMode = "dark" | "light" | "system";
 export type Theme = "dark" | "light";
 
 interface ThemeContextType {

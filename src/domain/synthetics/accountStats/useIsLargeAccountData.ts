@@ -34,7 +34,7 @@ export function useIsLargeAccountData(account?: string) {
   return isLargeAccount;
 }
 
-function useIsLargeAccountVolumeStats(params: { account?: string }) {
+export function useIsLargeAccountVolumeStats(params: { account?: string }) {
   const { account } = params;
 
   const { data, error, isLoading } = useSWR<{

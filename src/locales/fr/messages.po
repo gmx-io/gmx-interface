@@ -1148,6 +1148,10 @@ msgstr "Puisque le collatéral de votre position est en {symbol}, avec une valeu
 msgid "Short Liq."
 msgstr "Liq. short"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support Chat"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "Trading en un clic désactivé. Limite de temps expirée."

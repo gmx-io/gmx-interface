@@ -1148,6 +1148,10 @@ msgstr ""
 msgid "Short Liq."
 msgstr ""
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support Chat"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr ""

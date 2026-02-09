@@ -1148,6 +1148,10 @@ msgstr "Dado que la garantía de tu posición está en {symbol}, con un valor in
 msgid "Short Liq."
 msgstr "Liq. Corto"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support Chat"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "Trading en Un Clic desactivado. Límite de tiempo expirado."

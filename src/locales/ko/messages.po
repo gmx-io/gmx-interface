@@ -1148,6 +1148,10 @@ msgstr "포지션 담보가 {symbol}이고 초기 가치가 {indexName} 롱 포�
 msgid "Short Liq."
 msgstr "숏 청산"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support Chat"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "원클릭 트레이딩 비활성화. 시간 제한 만료."

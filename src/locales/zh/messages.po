@@ -1148,6 +1148,10 @@ msgstr "由于您的仓位抵押品为 {symbol}，初始价值高于 {indexName}
 msgid "Short Liq."
 msgstr "空头清算"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support Chat"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "一键交易已禁用。时间限制已过期。"

@@ -1148,6 +1148,10 @@ msgstr "Da dein Positionskollateral in {symbol} ist, mit einem anfänglichen Wer
 msgid "Short Liq."
 msgstr "Short Liq."
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support Chat"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "One-Click-Trading ist deaktiviert. Zeitlimit abgelaufen."
