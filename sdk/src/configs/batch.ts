@@ -47,6 +47,19 @@ const DEFAULT_TESTNET_BATCH_CONFIG: {
   },
 };
 
+const MEGAETH_BATCH_CONFIG: typeof DEFAULT_PROD_BATCH_CONFIG = {
+  http: {
+    batchSize: 0,
+    wait: 0,
+  },
+  client: {
+    multicall: {
+      batchSize: 4_096,
+      wait: 0,
+    },
+  },
+};
+
 export const BATCH_CONFIGS: Record<
   AnyChainId,
   {
@@ -57,7 +70,7 @@ export const BATCH_CONFIGS: Record<
   [ARBITRUM]: DEFAULT_PROD_BATCH_CONFIG,
   [AVALANCHE]: DEFAULT_PROD_BATCH_CONFIG,
   [BOTANIX]: DEFAULT_PROD_BATCH_CONFIG,
-  [MEGAETH]: DEFAULT_PROD_BATCH_CONFIG,
+  [MEGAETH]: MEGAETH_BATCH_CONFIG,
 
   [SOURCE_BASE_MAINNET]: DEFAULT_PROD_BATCH_CONFIG,
   [SOURCE_BSC_MAINNET]: DEFAULT_PROD_BATCH_CONFIG,
