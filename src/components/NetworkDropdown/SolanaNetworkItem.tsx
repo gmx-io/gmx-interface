@@ -48,7 +48,7 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
             </Trans>
           </p>
 
-          <ExternalLink href="https://gmtrade.xyz" className="!no-underline">
+          <ExternalLink href="https://gmtrade.xyz" className="!no-underline inline-flex w-full">
             <Button variant="primary-action" className="w-full">
               <Trans>Open GMTrade</Trans>
             </Button>
