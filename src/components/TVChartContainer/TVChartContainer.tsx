@@ -1,18 +1,32 @@
 import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
+import { isAddressEqual, type Address } from "viem";
 
 import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
+import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTheme } from "context/ThemeContext/ThemeContext";
+import { OrderType, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import { parseContractPrice } from "domain/synthetics/tokens";
+import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
+import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
+import { formatUsd, calculateDisplayDecimals } from "lib/numbers";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken } from "sdk/configs/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
+import { TradeActionType, isPositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import Loader from "components/Loader/Loader";
+import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 import { ChartContextMenu } from "./ChartContextMenu";
 import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
@@ -30,6 +44,7 @@ import type {
   IChartingLibraryWidget,
   PlusClickParams,
   ResolutionString,
+  Mark,
 } from "../../charting_library";
 
 type Props = {
@@ -71,6 +86,48 @@ export default function TVChartContainer({
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
+  const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const tokensData = useSelector(selectTokensData);
+  const { chartToken: selectedChartToken } = useSelector(selectChartToken);
+  const { account } = useWallet();
+  const marksStateRef = useRef({
+    positionIncreaseEvents,
+    positionDecreaseEvents,
+    marketsInfoData,
+    tokensData,
+    selectedChartToken,
+    visualMultiplier,
+    chainId,
+    account,
+  });
+  const marksHistoryCacheRef = useRef<{
+    key?: string;
+    raw?: Awaited<ReturnType<typeof fetchRawTradeActions>>;
+    fetchedAt?: number;
+  }>({});
+
+  useEffect(() => {
+    marksStateRef.current = {
+      positionIncreaseEvents,
+      positionDecreaseEvents,
+      marketsInfoData,
+      tokensData,
+      selectedChartToken,
+      visualMultiplier,
+      chainId,
+      account,
+    };
+  }, [
+    positionIncreaseEvents,
+    positionDecreaseEvents,
+    marketsInfoData,
+    tokensData,
+    selectedChartToken,
+    visualMultiplier,
+    chainId,
+    account,
+  ]);
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && true) {
@@ -83,6 +140,215 @@ export default function TVChartContainer({
 
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
+    newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
+      const {
+        positionIncreaseEvents: inc,
+        positionDecreaseEvents: dec,
+        marketsInfoData: markets,
+        tokensData,
+        selectedChartToken: selToken,
+        visualMultiplier: vm,
+        chainId: cid,
+        account: acc,
+      } = marksStateRef.current;
+      if (!selToken?.address) {
+        return [];
+      }
+      const RES_TO_SEC: Record<string, number> = {
+        1: 60,
+        5: 300,
+        15: 900,
+        60: 3600,
+        240: 14400,
+        "1D": 86400,
+        "1W": 604800,
+        "1M": 2592000,
+      };
+      const periodSeconds = RES_TO_SEC[String(resolution)];
+      if (!periodSeconds) {
+        return [];
+      }
+      const wrappedSelected = convertTokenAddress(cid as ContractsChainId, selToken.address, "wrapped");
+      if (!acc || !markets || !tokensData) {
+        return [];
+      }
+
+      const makeMark = (p: {
+        id: string;
+        isIncrease: boolean;
+        isLong: boolean;
+        ts: number;
+        marketAddress: string;
+        executionPrice?: bigint;
+      }): Mark | null => {
+        const market = markets?.[p.marketAddress];
+        if (!market) {
+          return null;
+        }
+        const marketIndexWrapped = convertTokenAddress(cid as ContractsChainId, market.indexTokenAddress, "wrapped");
+        if (!isAddressEqual(marketIndexWrapped as Address, wrappedSelected as Address)) {
+          return null;
+        }
+
+        const label = p.isIncrease ? (p.isLong ? "B" : "S") : p.isLong ? "S" : "B";
+        const color = label === "B" ? "green" : "red";
+
+        if (p.ts < from || p.ts > to) {
+          return null;
+        }
+        const time = Math.floor(p.ts / periodSeconds) * periodSeconds;
+
+        const action = p.isIncrease ? (p.isLong ? "Open Long" : "Open Short") : p.isLong ? "Close Long" : "Close Short";
+        const indexToken = market.indexToken;
+        const tokenVm = indexToken?.visualMultiplier ?? vm ?? 1;
+        const marketPriceDecimals = indexToken?.prices?.minPrice
+          ? calculateDisplayDecimals(indexToken.prices.minPrice, undefined, tokenVm)
+          : undefined;
+        const priceText = p.executionPrice
+          ? ` at ${formatUsd(p.executionPrice, { displayDecimals: marketPriceDecimals, visualMultiplier: tokenVm })}`
+          : "";
+
+        return {
+          id: p.id,
+          time,
+          color,
+          text: `${action}${priceText}`,
+          label,
+          labelFontColor: "#ffffff",
+          minSize: 12,
+        };
+      };
+
+      const pageSize = 100;
+      const combinations = [
+        {
+          eventName: TradeActionType.OrderExecuted,
+          orderType: [
+            OrderType.MarketIncrease,
+            OrderType.LimitIncrease,
+            OrderType.StopIncrease,
+            OrderType.MarketDecrease,
+            OrderType.LimitDecrease,
+            OrderType.StopLossDecrease,
+            OrderType.Liquidation,
+          ],
+        },
+      ];
+
+      let raw;
+      let marketAddresses: string[] = [];
+      try {
+        const now = Math.floor(Date.now() / 1000 / 60) * 60;
+        const toClamped = Math.min(to, now);
+        const maxSpan = 60 * 60 * 24 * 90; // 90d
+        const fromClamped = Math.max(from, toClamped - maxSpan);
+
+        marketAddresses = Object.values(markets)
+          .filter((m) =>
+            isAddressEqual(
+              convertTokenAddress(cid as ContractsChainId, m.indexTokenAddress, "wrapped") as Address,
+              wrappedSelected as Address
+            )
+          )
+          .map((m) => m.marketTokenAddress);
+
+        const marketFilters: MarketFilterLongShortItemData[] = marketAddresses.map((addr) => ({
+          marketAddress: addr as Address,
+          direction: "any",
+        }));
+
+        const marketAddressesKey = marketAddresses.slice().sort().join(",");
+        const cacheKey = `${cid}:${acc}:${wrappedSelected}:${resolution}:${fromClamped}:${toClamped}:${marketAddressesKey}`;
+        const cached = marksHistoryCacheRef.current;
+
+        if (cached.key === cacheKey && cached.raw && cached.fetchedAt && Date.now() - cached.fetchedAt < 60_000) {
+          raw = cached.raw;
+        } else {
+          raw = await fetchRawTradeActions({
+            chainId: cid,
+            pageIndex: 0,
+            pageSize,
+            marketsDirectionsFilter: marketFilters,
+            forAllAccounts: false,
+            account: acc,
+            fromTxTimestamp: fromClamped,
+            toTxTimestamp: toClamped,
+            orderEventCombinations: combinations,
+            showDebugValues: false,
+          });
+          marksHistoryCacheRef.current = { key: cacheKey, raw, fetchedAt: Date.now() };
+        }
+      } catch {
+        return [];
+      }
+
+      const marks: Mark[] = [];
+
+      if (raw && markets && tokensData) {
+        const processed = processRawTradeActions({
+          chainId: cid,
+          rawActions: raw,
+          marketsInfoData: markets,
+          tokensData,
+          marketsDirectionsFilter: undefined,
+        });
+
+        (processed || []).forEach((pa) => {
+          if (!isPositionTradeAction(pa)) return;
+          const ot = pa.orderType;
+          const isIncrease = isIncreaseOrderType(ot);
+          const isDecrease = isDecreaseOrderType(ot) || ot === OrderType.Liquidation;
+          if (!isIncrease && !isDecrease) return;
+          const m = makeMark({
+            id: pa.orderKey || pa.id,
+            isIncrease,
+            isLong: pa.isLong,
+            ts: Number(pa.timestamp),
+            marketAddress: pa.marketAddress,
+            executionPrice: pa.executionPrice,
+          });
+          if (m) marks.push(m);
+        });
+      }
+
+      if (marks.length === 0) {
+        const incMarks = (inc || [])
+          .map((e) => {
+            const marketForEvent = markets?.[e.marketAddress];
+            const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
+            const execPrice =
+              e.executionPrice !== undefined && e.executionPrice !== null && tokenDecimals !== undefined
+                ? parseContractPrice(BigInt(e.executionPrice), tokenDecimals)
+                : undefined;
+            return makeMark({
+              id: e.orderKey,
+              isIncrease: true,
+              isLong: e.isLong,
+              ts: Number(e.increasedAtTime),
+              marketAddress: e.marketAddress,
+              executionPrice: execPrice,
+            });
+          })
+          .filter((m): m is Mark => Boolean(m));
+
+        const decMarks = (dec || [])
+          .map((e) =>
+            makeMark({
+              id: e.orderKey,
+              isIncrease: false,
+              isLong: e.isLong,
+              ts: Number(e.decreasedAtTime),
+              marketAddress: e.marketAddress,
+            })
+          )
+          .filter((m): m is Mark => Boolean(m));
+
+        marks.push(...incMarks, ...decMarks);
+      }
+
+      marks.sort((a, b) => (a.time !== b.time ? a.time - b.time : String(a.id).localeCompare(String(b.id))));
+      return marks;
+    });
     if (setIsCandlesLoaded) {
       newDatafeed.addEventListener("candlesDisplay.success", (event: Event) => {
         const isFirstDraw = (event as CustomEvent).detail.isFirstTimeLoad;
@@ -162,6 +428,24 @@ export default function TVChartContainer({
       );
     }
   }, [datafeed, lastPeriod, lastSupportedResolutions]);
+
+  const hasMarketsInfo = Boolean(marketsInfoData);
+  const hasTokensData = Boolean(tokensData);
+
+  useEffect(() => {
+    if (chartReady) {
+      tvWidgetRef.current?.activeChart().refreshMarks();
+    }
+  }, [
+    chartReady,
+    positionIncreaseEvents,
+    positionDecreaseEvents,
+    account,
+    selectedChartToken?.address,
+    hasMarketsInfo,
+    hasTokensData,
+    visualMultiplier,
+  ]);
 
   useEffect(() => {
     if (!datafeed) return;
@@ -302,6 +586,7 @@ export default function TVChartContainer({
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
       <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content">
+        {/* TODO: render via portal to avoid DOM conflict with TradingView */}
         {chartReady && <CrosshairPercentageLabel state={crosshairPercentageState} />}
       </div>
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (

@@ -4,6 +4,7 @@ import {
   DatafeedErrorCallback,
   HistoryCallback,
   IBasicDataFeed,
+  Mark,
   LibrarySymbolInfo,
   OnReadyCallback,
   PeriodParams,
@@ -63,6 +64,12 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
   private visibilityHandler: () => void;
+  private marksGetter?: (
+    symbolInfo: LibrarySymbolInfo,
+    from: number,
+    to: number,
+    resolution: ResolutionString
+  ) => Mark[] | Promise<Mark[]>;
 
   declare addEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
   declare removeEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
@@ -89,6 +96,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   searchSymbols(): void {
     // noop
+  }
+
+  setMarksGetter(
+    getter: (
+      symbolInfo: LibrarySymbolInfo,
+      from: number,
+      to: number,
+      resolution: ResolutionString
+    ) => Mark[] | Promise<Mark[]>
+  ): void {
+    this.marksGetter = getter;
   }
 
   resolveSymbol(symbolNameWithMultiplier: string, onResolve: ResolveCallback): void {
@@ -301,11 +319,26 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     setTimeout(() => {
       callback({
         supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS_V2) as ResolutionString[],
-        supports_marks: false,
+        supports_marks: true,
         supports_timescale_marks: false,
         supports_time: true,
       });
     }, 0);
+  }
+
+  getMarks(
+    symbolInfo: LibrarySymbolInfo,
+    from: number,
+    to: number,
+    onDataCallback: (marks: Mark[]) => void,
+    resolution: ResolutionString
+  ): void {
+    const result = this.marksGetter?.(symbolInfo, from, to, resolution) ?? [];
+    if (result instanceof Promise) {
+      result.then(onDataCallback, () => onDataCallback([]));
+    } else {
+      onDataCallback(result);
+    }
   }
 
   prefetchBars(symbol: string, resolution: ResolutionString): void {
