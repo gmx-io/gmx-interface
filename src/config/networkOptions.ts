@@ -30,6 +30,12 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     color: "#264f79",
   },
   {
+    label: getChainName(MEGAETH),
+    value: MEGAETH,
+    icon: getChainIcon(MEGAETH),
+    color: "#F7931A",
+  },
+  {
     label: getChainName(AVALANCHE),
     value: AVALANCHE,
     icon: getChainIcon(AVALANCHE),
@@ -58,12 +64,6 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     value: SOURCE_ETHEREUM_MAINNET,
     icon: getChainIcon(SOURCE_ETHEREUM_MAINNET),
     color: "#627EEA",
-  },
-  {
-    label: getChainName(MEGAETH),
-    value: MEGAETH,
-    icon: getChainIcon(MEGAETH),
-    color: "#F7931A",
   },
 ];
 
