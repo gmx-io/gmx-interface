@@ -43,6 +43,6 @@ export function usePerformanceAnnualized({
   return {
     performance,
     error,
-    isLoading,
+    isLoading: isLoading && !error,
   };
 }
