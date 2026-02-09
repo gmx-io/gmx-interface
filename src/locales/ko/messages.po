@@ -4395,6 +4395,10 @@ msgstr "Botanix"
 msgid "Price impact / fees"
 msgstr "가격 영향 / 수수료"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Execution price may differ from limit price due to fees and price impact. You'll receive at least the minimum amount shown. <0>Read more</0>"
+msgstr "체결가는 수수료 및 가격 영향으로 인해 지정가와 다를 수 있습니다. 표시된 최소 수령액 이상을 받게 됩니다. <0>자세히 보기</0>"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals"
 msgstr "GMX 제안"
@@ -8533,10 +8537,6 @@ msgstr "체결 시 {0}이(가) {1}(으)로 스왑됩니다."
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
 msgstr "포지션 추가 (Stop Market)"
-
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Execution price may differ from limit price due to fees and price impact. You'll receive at least the minimum amount shown. <0>Read more</0>."
-msgstr "수수료 및 가격 영향으로 인해 체결가가 지정가와 다를 수 있습니다. 최소한 표시된 최소 금액을 수령하게 됩니다. <0>자세히 보기</0>."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required collateral"

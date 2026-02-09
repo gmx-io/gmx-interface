@@ -4395,6 +4395,10 @@ msgstr "Botanix"
 msgid "Price impact / fees"
 msgstr "価格への影響 / 手数料"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Execution price may differ from limit price due to fees and price impact. You'll receive at least the minimum amount shown. <0>Read more</0>"
+msgstr "約定価格は手数料と価格への影響により指値価格と異なる場合があります。表示されている最低受取額以上を受け取ることができます。<0>詳細を見る</0>"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals"
 msgstr "GMX 提案"
@@ -8533,10 +8537,6 @@ msgstr "約定時に{0}が{1}にスワップされます。"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
 msgstr "サイズを増やす（ストップ成行）"
-
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Execution price may differ from limit price due to fees and price impact. You'll receive at least the minimum amount shown. <0>Read more</0>."
-msgstr "手数料と価格への影響により、約定価格が指値価格と異なる場合があります。表示されている最低受取額以上を受け取れます。<0>詳細はこちら</0>。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required collateral"
