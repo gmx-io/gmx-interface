@@ -876,6 +876,10 @@ msgstr "No hay exchanges centralizados disponibles para esta red."
 msgid "Invalid slippage value"
 msgstr "Valor de deslizamiento no válido"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "Obtén un 5 % de reembolso y da a tu comunidad un 5 % de descuento en cada operación. Los niveles de referidos más altos desbloquean aún más. <0>Más información</0>."
@@ -1011,10 +1015,6 @@ msgstr "Capitalización de Mercado"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
 msgstr "Apalancamiento promedio utilizado."
-
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Rewards"
-msgstr "Recompensas GMX"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
@@ -1587,10 +1587,6 @@ msgstr "Valor Neto"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr "Retirado {balanceFormatted} a cuenta principal."
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Token"
-msgstr "Token GMX"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1941,7 +1937,6 @@ msgstr "Máx."
 msgid "Checking code..."
 msgstr "Verificando código…"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -2038,6 +2033,7 @@ msgstr "Mercado - Short Inc."
 msgid "Deposit in progress"
 msgstr "Depósito en curso"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -2090,6 +2086,10 @@ msgstr "Depositado {0} en {positionText}"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "30d Performance APY"
 msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
@@ -2240,7 +2240,6 @@ msgstr "Intercambios"
 msgid "Creating order..."
 msgstr "Creando orden…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -2938,6 +2937,10 @@ msgstr "Generando sesión..."
 msgid "How do I get started on GMX?"
 msgstr "¿Cómo empiezo en GMX?"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "coming soon"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -2952,10 +2955,6 @@ msgstr "Retiro fallido"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "Total Stakeado"
-
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like tens of thousands of other GMX users."
-msgstr "Descubre cómo los tokens GMX, GLV y GM trabajan juntos para potenciar una experiencia de trading descentralizada. Explora el rol de cada token y descubre cómo puedes hacer staking o proveer liquidez para ganar recompensas, igual que decenas de miles de otros usuarios de GMX."
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -4083,10 +4082,6 @@ msgstr "{typeString} Largo Límite: {0} una posición larga cuando el precio est
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "{0} es requerido para garantía.<0/><1/>No se encontró ruta de intercambio para {1} a {2} dentro de GMX.<2/><3/><4>Puedes comprar {3} en 1inch.</4>"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "Total Fee APY"
-msgstr "APY total por comisiones"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
 msgstr "{gmOrGlvLabel} Puente a"
@@ -4220,10 +4215,6 @@ msgstr "Stop Mercado Fallido"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
 msgstr "Dirección copiada a tu portapapeles"
-
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "Documentation"
-msgstr "Documentación"
 
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -4421,15 +4412,10 @@ msgstr "Sin confirmaciones repetidas de wallet"
 msgid "Shorts Net Rate / 1h"
 msgstr "Tasa Neta de Cortos / 1h"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Discover GMX Earn"
-msgstr "Descubre GMX Earn"
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Depositar {gasPaymentTokensText}"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -5512,6 +5498,10 @@ msgstr "Ingresa tu respuesta aquí."
 msgid "Max amount exceeded"
 msgstr "Superado el importe máximo"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GLV Vaults:"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "Para completar la transferencia, debes cambiar tu cuenta conectada a {receiver}."
@@ -5772,7 +5762,6 @@ msgstr "Agregador de Perpetuos"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1h"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5907,6 +5896,10 @@ msgstr "<0>El OI de <1>#GMX V2</1> se ve genial</0><2>GMX V2 > GMX V1 + Kwenta +
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "Queremos tus insights para mejorar GMX. Por razones de seguridad, no te contactaremos primero. Por favor, envía el mensaje \"Tengo feedback\" a cualquiera de nuestras cuentas oficiales:"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Total Performance APY"
+msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open GMTrade in a new tab."
@@ -6145,6 +6138,10 @@ msgstr "Impacto realizado en swap"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st Place"
 msgstr "1er Lugar"
+
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
@@ -7244,6 +7241,7 @@ msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>Ganarás {1}% menos recompensas con esta acción.</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "Confirmando..."
 
@@ -7280,6 +7278,10 @@ msgstr "Stakeado"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "Traders"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Withdraw and Unreserve GMX"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
@@ -7382,7 +7384,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "Términos de Referido"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "APY de Comisión"
@@ -7535,6 +7536,7 @@ msgstr "Activar 1CT (Trading de Un Clic)"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "El APR de Bonificación se airdropeará como tokens {airdropTokenTitle}. <0>Leer más</0>."
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7776,10 +7778,6 @@ msgstr "<0>Delega tu poder de voto {0} GMX DAO no delegado</0> antes de reclamar
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
 msgstr "Reclamar fondos"
-
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "30d Fee APY"
-msgstr "APY por comisiones (30 d)"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"

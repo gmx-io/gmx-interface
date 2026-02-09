@@ -6,7 +6,7 @@ import { ExpandableRow } from "components/ExpandableRow";
 export default function EarnFaq() {
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
-      <h4 className="text-16 font-medium text-typography-primary">
+      <h4 className="text-body-large font-medium text-typography-primary">
         <Trans>FAQ</Trans>
       </h4>
       <div className="flex flex-col">
@@ -70,7 +70,7 @@ function EarnFaqItem({ question, answer }: { question: ReactNode; answer: ReactN
       open={open}
       onToggle={handleToggle}
       title={question}
-      contentClassName="text-13 text-typography-primary"
+      contentClassName="text-body-medium text-typography-primary"
       handleClassName="text-body-medium pt-16 text-left font-medium"
       className="border-b-1/2 border-slate-600 pb-16 last:border-b-0 last:pb-0"
       chevronClassName="mr-8 mt-12"
