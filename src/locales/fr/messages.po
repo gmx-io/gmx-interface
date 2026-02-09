@@ -1148,10 +1148,6 @@ msgstr "Puisque le collatéral de votre position est en {symbol}, avec une valeu
 msgid "Short Liq."
 msgstr "Liq. short"
 
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "Support Chat"
-msgstr ""
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "Trading en un clic désactivé. Limite de temps expirée."
@@ -4685,6 +4681,10 @@ msgstr "Échec de l'annulation de {ordersText}."
 msgid "Vesting"
 msgstr "Vesting"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "Assistance"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "Annuler les ordres nouvellement créés"
@@ -7139,6 +7139,10 @@ msgstr "Qu’est-ce que GMX ?"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "Rabais bonus"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "NEW"
+msgstr "NOUVEAU"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."

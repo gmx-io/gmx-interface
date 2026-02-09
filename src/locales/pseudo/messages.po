@@ -1148,10 +1148,6 @@ msgstr ""
 msgid "Short Liq."
 msgstr ""
 
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "Support Chat"
-msgstr ""
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr ""
@@ -4685,6 +4681,10 @@ msgstr ""
 msgid "Vesting"
 msgstr ""
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr ""
@@ -7138,6 +7138,10 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
+msgstr ""
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "NEW"
 msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx

@@ -1148,10 +1148,6 @@ msgstr "ポジションの担保が{symbol}であり、初期価値が{indexName
 msgid "Short Liq."
 msgstr "ショート清算"
 
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "Support Chat"
-msgstr ""
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "ワンクリックトレーディング無効。時間制限超過。"
@@ -4685,6 +4681,10 @@ msgstr "{ordersText}のキャンセルに失敗しました。"
 msgid "Vesting"
 msgstr "ベスティング"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "サポート"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "新規作成注文をキャンセル"
@@ -7139,6 +7139,10 @@ msgstr "GMXとは？"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "ボーナスリベート"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "NEW"
+msgstr "新着"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."

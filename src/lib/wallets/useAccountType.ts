@@ -74,22 +74,21 @@ async function getAccountType(
   return AccountType.SmartAccount;
 }
 
-export function useIsNonEoaAccountOnAnyChain({ enabled }: { enabled?: boolean } = {}): {
+export function useIsNonEoaAccountOnAnyChain(): {
   isNonEoaAccountOnAnyChain: boolean;
   isLoading: boolean;
 } {
   const { address } = useAccount();
   const { chainId: currentChainId } = useChainId();
+  const isCurrentChainTestnet = isTestnetChain(currentChainId);
 
   const { data: isNonEoaAccountOnAnyChain = false, isLoading } = useSWR<boolean | undefined>(
-    address && enabled && [address, "detectIsNonEoaAccountOnAnyChain"],
+    address && [address, isCurrentChainTestnet, "detectIsNonEoaAccountOnAnyChain"],
     {
       fetcher: async (): Promise<boolean | undefined> => {
         if (!address) {
           return undefined;
         }
-
-        const isCurrentChainTestnet = isTestnetChain(currentChainId);
 
         const chainIds = ([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
           (chainId) => isTestnetChain(chainId) === isCurrentChainTestnet

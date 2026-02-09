@@ -28,6 +28,8 @@ const SUPPORT_CHAT_MIN_DAILY_VOLUME = expandDecimals(1n, USD_DECIMALS);
 const SUPPORT_CHAT_MIN_AGG_14_DAYS_VOLUME = expandDecimals(1n, USD_DECIMALS);
 const SUPPORT_CHAT_MIN_AGG_ALL_TIME_VOLUME = expandDecimals(1n, USD_DECIMALS);
 
+const TIME_PERIODS = getTimePeriodsInSeconds();
+
 export function useEligibleToShowSupportChat() {
   const { isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
   const { isConnected, address: account } = useAccount();
@@ -58,8 +60,6 @@ export function useEligibleToShowSupportChat() {
   return eligibleToShowSupportChat;
 }
 
-const TIME_PERIODS = getTimePeriodsInSeconds();
-
 export function useSupportChat() {
   const eligibleToShowSupportChat = useEligibleToShowSupportChat();
   const { address: account } = useAccount();
@@ -70,9 +70,7 @@ export function useSupportChat() {
   const { chainId, srcChainId } = useChainId();
   const initialized = useRef(false);
 
-  const { isNonEoaAccountOnAnyChain, isLoading: isIsNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain({
-    enabled: eligibleToShowSupportChat,
-  });
+  const { isNonEoaAccountOnAnyChain, isLoading: isIsNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
 
   const { data: lastMonthAccountStats, loading: isLastMonthAccountStatsLoading } = usePeriodAccountStats(chainId, {
     account,

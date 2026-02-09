@@ -1148,10 +1148,6 @@ msgstr "포지션 담보가 {symbol}이고 초기 가치가 {indexName} 롱 포�
 msgid "Short Liq."
 msgstr "숏 청산"
 
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "Support Chat"
-msgstr ""
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "원클릭 트레이딩 비활성화. 시간 제한 만료."
@@ -4685,6 +4681,10 @@ msgstr "{ordersText} 취소 실패."
 msgid "Vesting"
 msgstr "베스팅"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "지원"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "새로 생성된 주문 취소"
@@ -7139,6 +7139,10 @@ msgstr "GMX란 무엇인가요?"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "보너스 리베이트"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "NEW"
+msgstr "새로운"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."

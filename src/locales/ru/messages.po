@@ -1148,10 +1148,6 @@ msgstr "Поскольку залог вашей позиции в {symbol}, с 
 msgid "Short Liq."
 msgstr "Ликв. шорта"
 
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "Support Chat"
-msgstr ""
-
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "Торговля в один клик отключена. Истекло время."
@@ -4685,6 +4681,10 @@ msgstr "Не удалось отменить {ordersText}."
 msgid "Vesting"
 msgstr "Вестинг"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "Поддержка"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "Отменить недавно созданные ордера"
@@ -7139,6 +7139,10 @@ msgstr "Что такое GMX?"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "Бонусный рибейт"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "NEW"
+msgstr "НОВОЕ"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."

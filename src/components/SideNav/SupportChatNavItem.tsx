@@ -1,5 +1,5 @@
 import { show } from "@intercom/messenger-js-sdk";
-import { t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 
 import { useEligibleToShowSupportChat } from "lib/supportChat";
@@ -28,7 +28,14 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
   return (
     <NavItem
       icon={<SupportChatIcon className="size-24" />}
-      label={t`Support Chat`}
+      label={
+        <>
+          <Trans>Support</Trans>{" "}
+          <span className="text-body-small rounded-8 bg-slate-600 px-6 py-2 text-typography-primary">
+            <Trans>NEW</Trans>
+          </span>
+        </>
+      }
       isCollapsed={isCollapsed}
       onClick={handleClick}
     />
