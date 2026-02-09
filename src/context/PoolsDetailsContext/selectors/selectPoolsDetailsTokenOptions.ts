@@ -9,7 +9,7 @@ import {
   GmxAccountPseudoChainId,
   SettlementChainId,
 } from "config/chains";
-import { getMappedTokenId } from "config/multichain";
+import { getMappedTokenId, isSettlementChain } from "config/multichain";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -155,7 +155,7 @@ const selectPoolsDetailsDepositTokenOptions = createSelector((q): DisplayToken[]
 
     result.push(createDisplayToken(token, chainId, token.walletBalance));
 
-    if (chainId !== AVALANCHE && tokenAddress !== zeroAddress) {
+    if (isSettlementChain(chainId) && chainId !== AVALANCHE && tokenAddress !== zeroAddress) {
       result.push(createDisplayToken(token, GMX_ACCOUNT_PSEUDO_CHAIN_ID, token.gmxAccountBalance ?? 0n));
     }
   }
