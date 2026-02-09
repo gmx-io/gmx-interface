@@ -68,7 +68,7 @@ export function useSupportChat() {
   const { data: isLargeAccountVolumeStats, isLoading: isIsLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
   const { chainId, srcChainId } = useChainId();
-  const initialized = useRef(false);
+  const initializedAddress = useRef<string | undefined>(undefined);
 
   const { isNonEoaAccountOnAnyChain, isLoading: isIsNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
 
@@ -147,14 +147,13 @@ export function useSupportChat() {
   }, [eligibleToShowSupportChat, themeMode]);
 
   useEffect(() => {
-    if (initialized.current || !eligibleToShowSupportChat || !customUserAttributes) {
+    if (initializedAddress.current === account || !eligibleToShowSupportChat || !customUserAttributes) {
       return;
     }
 
+    initializedAddress.current = account;
     update(customUserAttributes);
-
-    initialized.current = true;
-  }, [eligibleToShowSupportChat, customUserAttributes]);
+  }, [eligibleToShowSupportChat, customUserAttributes, account]);
 }
 
 function themeToIntercomTheme(themeMode: ThemeMode): "light" | "dark" | "system" {

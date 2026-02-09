@@ -1,3 +1,4 @@
+import uniq from "lodash/uniq";
 import useSWR from "swr";
 import { Hex, PublicClient } from "viem";
 import { useAccount } from "wagmi";
@@ -90,7 +91,7 @@ export function useIsNonEoaAccountOnAnyChain(): {
           return undefined;
         }
 
-        const chainIds = ([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
+        const chainIds = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
           (chainId) => isTestnetChain(chainId) === isCurrentChainTestnet
         );
 
