@@ -106,7 +106,7 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
           case TxnEventName.Error:
             reject(event.data.error);
 
-            helperToast.error(t`Failed to ${p.isStake ? "stake" : "unstake"}`);
+            helperToast.error(p.isStake ? t`Failed to stake` : t`Failed to unstake`);
             break;
 
           case TxnEventName.Sent: {

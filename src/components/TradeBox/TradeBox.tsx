@@ -1105,22 +1105,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
             </div>
 
-            {twapRecommendation && (
-              <AlertInfoCard>
-                <div className="flex flex-col gap-8">
-                  <span>
-                    <span
-                      className="cursor-pointer font-medium text-blue-300"
-                      onClick={() => onSelectTradeMode(TradeMode.Twap)}
-                    >
-                      <Trans>Use a TWAP order</Trans>
-                    </span>{" "}
-                    <Trans>for lower net price impact</Trans>
-                  </span>
-                </div>
-              </AlertInfoCard>
-            )}
-
             {showSectionBetweenInputsAndButton && (
               <div className="flex flex-col gap-14">
                 {maxAutoCancelOrdersWarning}
@@ -1239,6 +1223,20 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   externalSwapFeeItem={fees?.externalSwapFee}
                   maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
                 />
+              )}
+
+              {twapRecommendation && (
+                <AlertInfoCard>
+                  <Trans>
+                    <span
+                      className="cursor-pointer font-medium text-blue-300"
+                      onClick={() => onSelectTradeMode(TradeMode.Twap)}
+                    >
+                      Use a TWAP order
+                    </span>{" "}
+                    for lower net price impact
+                  </Trans>
+                </AlertInfoCard>
               )}
 
               {submitButtonState.bannerErrorContent && (

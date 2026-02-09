@@ -19,7 +19,6 @@ msgstr "GLP 풀"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Wallet not connected"
 msgstr "지갑이 연결되지 않았습니다"
 
@@ -51,10 +50,6 @@ msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하�
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "추천 코드"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT address"
-msgstr "NFT 주소"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
@@ -123,6 +118,10 @@ msgstr "BonsaiDAO"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "승인 서명 완료"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
+msgstr "<0>멀티체인</0><1>MegaETH 지원</1><2>적시 유동성</2>"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
@@ -573,7 +572,6 @@ msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run b
 msgstr "GMTrade(이전 GMX Solana)는 별도의 웹사이트에서 호스팅되며 다른 팀이 운영하므로, 사용 경험이 다를 수 있습니다. 새 탭에서 열립니다."
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "for lower net price impact"
 msgstr "더 낮은 순 가격 영향을 위해"
 
@@ -1119,10 +1117,6 @@ msgstr "Beefy"
 msgid "Deactivating..."
 msgstr "비활성화 중..."
 
-#: src/config/events.tsx
-msgid "Lending and borrowing are now available for GLV assets: <0/> <1>[BTC-USDC]</1> and <2/> <3>[ETH-USDC]</3> on <4>Morpho</4>"
-msgstr "GLV 자산에 대한 대출 및 차입이 가능합니다: <0/> <1>[BTC-USDC]</1> 및 <2/> <3>[ETH-USDC]</3> (<4>Morpho</4>)"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "베스팅은 {chainNames} 또는 {lastChainName}에서만 가능합니다. 계속하려면 네트워크를 전환하십시오."
@@ -1590,10 +1584,6 @@ msgstr "가격 영향 리베이트"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Trigger price accounts for swap fees and price impact, ensuring at least {toMinText} on execution."
 msgstr "조건가는 스왑 수수료와 가격 영향을 고려하여, 체결 시 최소 {toMinText}을(를) 보장합니다."
-
-#: src/config/events.tsx
-msgid "The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on position close. <0>Read more</0>"
-msgstr "앱 인터페이스가 새로워졌으며, 새로운 라이트 테마가 추가되었습니다. 가격 영향은 이제 상한이 설정되었으며 포지션 종료 시에만 부과됩니다. <0>자세히 보기</0>"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit Swap"
@@ -2242,10 +2232,6 @@ msgstr "GLV 보유에 대한 보너스 인센티브는 무엇입니까?"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "일"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Transfer NFT"
-msgstr "NFT 전송"
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
@@ -2899,17 +2885,9 @@ msgstr "거래"
 msgid "No deposits required"
 msgstr "입금 불필요"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WETH-USDC]</2>, or GLV <3>[WBTC-USDC]</3>"
-msgstr "<0>거래</0>하거나 GM, GLV <2>[WETH-USDC]</2> 또는 GLV <3>[WBTC-USDC]</3>를 사용하여 <1>유동성을 공급</1>하십시오"
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
 msgstr "거래 에어드롭"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Invalid NFT address"
-msgstr "유효하지 않은 NFT 주소"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
@@ -3432,10 +3410,6 @@ msgstr "{0} 편집"
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>구매</0> {wrappedNativeTokenSymbol}."
 
-#: src/config/events.tsx
-msgid "From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance accuracy. <0>Read more</0>"
-msgstr "12월 22일부터 잔액 정확성 향상을 위해 미결제약정이 USD 값 대신 토큰 수량으로 추적됩니다. <0>자세히 보기</0>"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩비를 {fundingAction}하고 시간당 {borrowRate}의 차입 수수료를 {borrowAction}합니다."
@@ -3501,7 +3475,6 @@ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is 
 msgstr "{typeString} 숏 TP/SL: 조건가에 도달하면 숏 포지션을 {0}합니다."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter receiver address"
 msgstr "수신자 주소를 입력하십시오"
 
@@ -3721,6 +3694,10 @@ msgstr "설정 업데이트 중..."
 msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "GMX는 개별 서명 없이 거래를 실행합니다. 네트워크 혼잡 시에도 GMX가 후원하는 프리미엄 RPC를 사용하여 안정적으로 거래합니다.<0/><1/>가스 결제: {gasPaymentTokensText}."
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "<0>Use a TWAP order</0> for lower net price impact"
+msgstr "<0>TWAP 주문을 사용하면</0> 순 가격 영향을 줄일 수 있습니다"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "최근 리밸런싱"
@@ -3740,6 +3717,10 @@ msgstr "기타 토큰"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "신규 주문 취소"
+
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to unstake"
+msgstr "언스테이킹 실패"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -4378,10 +4359,6 @@ msgstr "분할 수"
 msgid "No open orders"
 msgstr "미결 주문 없음"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WBTC-USDC]</2>"
-msgstr "<0>거래</0>하거나 GM 또는 GLV <2>[WBTC-USDC]</2>를 사용하여 <1>유동성을 공급</1>하십시오"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted"
 msgstr "언스테이킹 제출됨"
@@ -4729,10 +4706,6 @@ msgstr "GLP 및 GMX 자동 복리 볼트"
 msgid "Short liq."
 msgstr "숏 유동성"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2> for AERO and BRETT, or GM <3>[PBTC]</3> for BTC"
-msgstr "<0>거래</0>하거나, AERO 및 BRETT의 경우 GM 또는 GLV <2>[WETH-USDC]</2>를 통해, BTC의 경우 GM <3>[PBTC]</3>를 통해 <1>유동성을 공급</1>하십시오"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "청산 수수료"
@@ -4803,10 +4776,6 @@ msgstr "전송을 수락하려면 이 페이지에 있어야 합니다. <0>링�
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr "<0>지갑이 {0}에 연결되어 있지 않습니다</0><1/><2>{1}(으)로 전환</2>"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "for potentially lower price impact"
-msgstr "가격 영향을 줄이기 위해"
-
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/CAP"
@@ -4852,10 +4821,6 @@ msgstr "체결 시 최소 {toAmountText}을(를) 수령합니다. 가격은 수�
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "매도 주문 체결됨"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to {0}"
-msgstr "{0} 실패"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -5170,10 +5135,6 @@ msgstr "거래 실패: 프로바이더를 사용할 수 없습니다"
 msgid "Disable validation for testing"
 msgstr "테스트를 위한 유효성 검사 비활성화"
 
-#: src/config/events.tsx
-msgid "Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is recommended.<0/><1/>The listing committee will evaluate the listing of ELIZAOS/USD."
-msgstr "AI16Z/USD 포지션 개설이 더 이상 불가합니다. 기존 포지션은 유지되지만, 종료를 권장합니다.<0/><1/>상장 위원회에서 ELIZAOS/USD 상장을 검토할 예정입니다."
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "One-Click Trading으로 더 빠르게 거래하시겠습니까?"
@@ -5299,7 +5260,6 @@ msgstr "종료가"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer failed"
 msgstr "전송 실패"
 
@@ -5336,7 +5296,6 @@ msgstr "<0>시장 그룹</0><1>순 미결제약정</1>"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer submitted"
 msgstr "전송 제출됨"
 
@@ -5378,7 +5337,6 @@ msgid "Supported by"
 msgstr "지원 파트너"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "Use a TWAP order"
 msgstr "TWAP 주문 사용"
 
@@ -5641,7 +5599,6 @@ msgid "Limit Increase"
 msgstr "Limit Increase"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transferring..."
 msgstr "전송 중..."
 
@@ -5743,10 +5700,6 @@ msgstr "누적 스테이킹 보상:"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 claim"
 msgstr "V2 수령"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT wallet"
-msgstr "NFT 지갑"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
@@ -6134,6 +6087,10 @@ msgstr "거래 모드"
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>교차 마진</0><1>교차 담보</1>"
 
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to stake"
+msgstr "스테이킹 실패"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6245,7 +6202,6 @@ msgstr "종료 수수료"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "{0} 풀로 전환"
 
@@ -6288,10 +6244,6 @@ msgstr "V2 리베이트는 수수료 할인으로 자동 적용되며 여기에 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "아래 한도까지 {0}으로 GM을 구매하십시오"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT address"
-msgstr "NFT 주소를 입력하십시오"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "V2 trading"
@@ -6410,10 +6362,6 @@ msgstr "<0>→ </0><1>{0}</1>"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "가격 영향"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT ID"
-msgstr "NFT ID를 입력하십시오"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "You don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -6634,10 +6582,6 @@ msgstr "입금할 자산 선택"
 msgid "Max GM buyable amount reached"
 msgstr "GM 최대 구매 가능 수량에 도달했습니다"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> this market, or <1>provide liquidity</1> using GM or GLV <2>[WAVAX-USDC]</2> for WLFI on Avalanche, and GM or GLV <3>[WETH-USDC]</3> on Arbitrum"
-msgstr "<0>거래</0>하거나, Avalanche에서 GM 또는 GLV <2>[WAVAX-USDC]</2>를 사용하여, 그리고 Arbitrum에서 GM 또는 GLV <3>[WETH-USDC]</3>를 사용하여 WLFI에 <1>유동성을 제공</1>하십시오"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "세션이 생성되었습니다"
@@ -6739,11 +6683,6 @@ msgstr "출금 시뮬레이션 오류"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "수령 내역"
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2>"
-msgstr "이 마켓에서 <0>거래</0>하거나, GM 또는 GLV <2>[WETH-USDC]</2>를 사용하여 <1>유동성을 제공</1>하십시오"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -6905,10 +6844,6 @@ msgstr "가장 좋았던 점은 무엇인가요?"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol} 판매"
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just-in-time liquidity</1><2>MegaETH support</2>"
-msgstr "<0>멀티체인</0><1>적시 유동성</1><2>MegaETH 지원</2>"
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -7192,7 +7127,6 @@ msgid "Leverage trading terminal"
 msgstr "레버리지 거래 터미널"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Receiver address"
 msgstr "수신자 주소"
 
@@ -7361,10 +7295,6 @@ msgstr "구매"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
 msgstr "기술 세부 정보 복사"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT ID"
-msgstr "NFT ID"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -7550,18 +7480,9 @@ msgstr "아래 한도까지 GM을 {0}(으)로 판매할 수 있습니다. 나머
 msgid "Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "최대 100x 레버리지와 호가창 깊이에 의존하지 않는 보장된 온체인 유동성의 혜택을 누리십시오"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM <2>[XAUt0-XAUt0]</2> or GM <3>[XAUt0-USDT]</3>"
-msgstr "<0>거래</0>하거나, GM <2>[XAUt0-XAUt0]</2> 또는 GM <3>[XAUt0-USDT]</3>를 사용하여 <1>유동성을 공급</1>하십시오"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "알림"
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2>, or GLV <3>[WETH-USDC]</3>"
-msgstr "<0>거래</0>하거나, GM, GLV <2>[WBTC-USDC]</2> 또는 GLV <3>[WETH-USDC]</3>를 사용하여 <1>유동성을 공급</1>하십시오"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take-Profit at 100%. Reduce existing orders to add more."
@@ -8253,6 +8174,10 @@ msgstr "슬리피지가 너무 높습니다"
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "이 규모에서 숏 추가를 위한 유동성이 없습니다.<0/>최대 숏 규모: {0}<1/><2/>롱 축소 체결 가격입니다."
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
+msgstr "<0>{0} 풀로 전환</0>하면 가격 영향을 줄일 수 있습니다"
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "다른 플랫폼에서 구매"
@@ -8359,7 +8284,6 @@ msgid "Hours"
 msgstr "시간"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid receiver address"
 msgstr "수신자 주소가 유효하지 않습니다"
 

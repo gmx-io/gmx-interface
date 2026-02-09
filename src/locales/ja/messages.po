@@ -19,7 +19,6 @@ msgstr "GLP プール"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Wallet not connected"
 msgstr "ウォレット未接続"
 
@@ -51,10 +50,6 @@ msgstr "または<0>chainlist.org</0>からウォレットのRPCを更新して�
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "リファラルコード"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT address"
-msgstr "NFTアドレス"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
@@ -123,6 +118,10 @@ msgstr "BonsaiDAO"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "承認署名完了"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
+msgstr "<0>マルチチェーン</0><1>MegaETHサポート</1><2>ジャストインタイム流動性</2>"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
@@ -573,7 +572,6 @@ msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run b
 msgstr "GMTrade（旧GMX Solana）は別のウェブサイトでホストされており、異なるチームによって運営されているため、体験が異なる場合があります。新しいタブで開きます。"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "for lower net price impact"
 msgstr "より低い正味価格への影響のために"
 
@@ -1119,10 +1117,6 @@ msgstr "Beefy"
 msgid "Deactivating..."
 msgstr "無効化中..."
 
-#: src/config/events.tsx
-msgid "Lending and borrowing are now available for GLV assets: <0/> <1>[BTC-USDC]</1> and <2/> <3>[ETH-USDC]</3> on <4>Morpho</4>"
-msgstr "GLV資産のレンディングとボローイングが利用可能になりました: <0/> <1>[BTC-USDC]</1> および <2/> <3>[ETH-USDC]</3> （<4>Morpho</4>）"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "べスティングは{chainNames}または{lastChainName}でのみ利用可能です。続行するにはネットワークを切り替えてください。"
@@ -1590,10 +1584,6 @@ msgstr "価格への影響リベート"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Trigger price accounts for swap fees and price impact, ensuring at least {toMinText} on execution."
 msgstr "トリガー価格はスワップ手数料と価格への影響を考慮し、約定時に少なくとも{toMinText}を確保します。"
-
-#: src/config/events.tsx
-msgid "The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on position close. <0>Read more</0>"
-msgstr "アプリのインターフェースが刷新され、新しいライトテーマが追加されました。価格への影響は上限が設けられ、ポジション決済時のみ請求されます。<0>詳しくはこちら</0>"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit Swap"
@@ -2242,10 +2232,6 @@ msgstr "GLVを保有するボーナスインセンティブとは何ですか？
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "日"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Transfer NFT"
-msgstr "NFTを送金"
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
@@ -2899,17 +2885,9 @@ msgstr "取引"
 msgid "No deposits required"
 msgstr "入金不要"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WETH-USDC]</2>, or GLV <3>[WBTC-USDC]</3>"
-msgstr "これらのマーケットで<0>取引</0>するか、GM、GLV <2>[WETH-USDC]</2>、またはGLV <3>[WBTC-USDC]</3>を使用して<1>流動性を提供</1>できます"
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
 msgstr "取引エアドロップ"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Invalid NFT address"
-msgstr "無効なNFTアドレス"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
@@ -3432,10 +3410,6 @@ msgstr "{0}を編集"
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>購入</0> {wrappedNativeTokenSymbol}。"
 
-#: src/config/events.tsx
-msgid "From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance accuracy. <0>Read more</0>"
-msgstr "12月22日より、残高精度向上のため、建玉はUSD値ではなくトークン数量で追跡されます。<0>詳細はこちら</0>"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort}ポジションは1時間あたり{fundingRate}の資金調達手数料を{fundingAction}し、1時間あたり{borrowRate}の借入手数料を{borrowAction}します。"
@@ -3501,7 +3475,6 @@ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is 
 msgstr "{typeString}ショートTP/SL: トリガー価格に達した時にショートポジションを{0}します。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter receiver address"
 msgstr "受取アドレスを入力してください"
 
@@ -3721,6 +3694,10 @@ msgstr "設定を更新中..."
 msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "GMXは個別の署名なしでトランザクションを実行します。取引はネットワーク混雑時でも信頼性を確保するため、GMX提供のプレミアムRPCを使用します。<0/><1/>ガスの支払いは{gasPaymentTokensText}で行われます。"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "<0>Use a TWAP order</0> for lower net price impact"
+msgstr "<0>TWAP注文を使用</0>すると、価格への影響を抑えられます"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "最終リバランス"
@@ -3740,6 +3717,10 @@ msgstr "その他のトークン"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "新規注文をキャンセル"
+
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to unstake"
+msgstr "アンステークに失敗しました"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -4378,10 +4359,6 @@ msgstr "分割数"
 msgid "No open orders"
 msgstr "未決注文はありません"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WBTC-USDC]</2>"
-msgstr "<0>取引</0>するか、GM または GLV <2>[WBTC-USDC]</2> を使用して<1>流動性を提供</1>してください"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted"
 msgstr "アンステークが送信されました"
@@ -4729,10 +4706,6 @@ msgstr "GLP・GMX自動複利ボールト"
 msgid "Short liq."
 msgstr "ショート流動性"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2> for AERO and BRETT, or GM <3>[PBTC]</3> for BTC"
-msgstr "<0>取引</0>するか、AERO・BRETTにはGMまたはGLV <2>[WETH-USDC]</2>で、BTCにはGM <3>[PBTC]</3>で<1>流動性を提供</1>してください"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "清算手数料"
@@ -4803,10 +4776,6 @@ msgstr "送金を受け取るにはこのページにいる必要があります
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr "<0>ウォレットが{0}に接続されていません</0><1/><2>{1}に切り替える</2>"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "for potentially lower price impact"
-msgstr "価格への影響を軽減できる可能性があります"
-
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/CAP"
@@ -4852,10 +4821,6 @@ msgstr "約定時に最低{toAmountText}を受け取ります。手数料と価�
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "売却注文が約定しました"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to {0}"
-msgstr "{0}に失敗しました"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -5170,10 +5135,6 @@ msgstr "トランザクション失敗: プロバイダーが利用できませ�
 msgid "Disable validation for testing"
 msgstr "テスト用にバリデーションを無効化"
 
-#: src/config/events.tsx
-msgid "Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is recommended.<0/><1/>The listing committee will evaluate the listing of ELIZAOS/USD."
-msgstr "AI16Z/USD の新規ポジションは利用できなくなりました。既存のポジションは維持されますが、決済を推奨いたします。<0/><1/>上場委員会が ELIZAOS/USD の上場を評価する予定です。"
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "One-Click Trading でより速く取引しませんか？"
@@ -5299,7 +5260,6 @@ msgstr "決済価格"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer failed"
 msgstr "送金失敗"
 
@@ -5336,7 +5296,6 @@ msgstr "<0>マーケットグループ</0><1>ネット建玉</1>"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer submitted"
 msgstr "送金を送信しました"
 
@@ -5378,7 +5337,6 @@ msgid "Supported by"
 msgstr "サポートパートナー"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "Use a TWAP order"
 msgstr "TWAP 注文を使用する"
 
@@ -5641,7 +5599,6 @@ msgid "Limit Increase"
 msgstr "Limit Increase"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transferring..."
 msgstr "送金中..."
 
@@ -5743,10 +5700,6 @@ msgstr "累計ステーキング報酬："
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 claim"
 msgstr "V2受け取り"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT wallet"
-msgstr "NFTウォレット"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
@@ -6134,6 +6087,10 @@ msgstr "取引モード"
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>クロスマージン</0><1>クロスコラテラル</1>"
 
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to stake"
+msgstr "ステークに失敗しました"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6245,7 +6202,6 @@ msgstr "決済手数料"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "{0}プールに切り替える"
 
@@ -6288,10 +6244,6 @@ msgstr "V2リベートは手数料割引として自動的に適用されるた�
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "以下の上限まで{0}でGMを購入できます"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT address"
-msgstr "NFTアドレスを入力"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "V2 trading"
@@ -6410,10 +6362,6 @@ msgstr "<0>宛先: </0><1>{0}</1>"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "価格への影響"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT ID"
-msgstr "NFT IDを入力"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "You don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -6634,10 +6582,6 @@ msgstr "入金するアセットを選択"
 msgid "Max GM buyable amount reached"
 msgstr "GM の最大購入可能量に達しました"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> this market, or <1>provide liquidity</1> using GM or GLV <2>[WAVAX-USDC]</2> for WLFI on Avalanche, and GM or GLV <3>[WETH-USDC]</3> on Arbitrum"
-msgstr "<0>取引</0>するか、Avalanche では GM または GLV <2>[WAVAX-USDC]</2>、Arbitrum では GM または GLV <3>[WETH-USDC]</3> を使用して WLFI に<1>流動性を提供</1>できます"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "セッションが生成されました"
@@ -6739,11 +6683,6 @@ msgstr "出金シミュレーションエラー"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "請求"
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2>"
-msgstr "<0>取引</0>するか、GM または GLV <2>[WETH-USDC]</2> を使用して<1>流動性を提供</1>できます"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -6905,10 +6844,6 @@ msgstr "最も気に入った点は何ですか？"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol} を売却"
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just-in-time liquidity</1><2>MegaETH support</2>"
-msgstr "<0>マルチチェーン</0><1>ジャストインタイム流動性</1><2>MegaETH サポート</2>"
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -7192,7 +7127,6 @@ msgid "Leverage trading terminal"
 msgstr "レバレッジ取引ターミナル"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Receiver address"
 msgstr "受取アドレス"
 
@@ -7361,10 +7295,6 @@ msgstr "購入"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
 msgstr "技術詳細をコピー"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT ID"
-msgstr "NFT ID"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -7550,18 +7480,9 @@ msgstr "以下の上限までGMを{0}で売却できます。残りのトーク�
 msgid "Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "最大100倍のレバレッジと、オーダーブックの深さに依存しない保証されたオンチェーン流動性を活用できます"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM <2>[XAUt0-XAUt0]</2> or GM <3>[XAUt0-USDT]</3>"
-msgstr "これらのマーケットを<0>取引</0>するか、GM <2>[XAUt0-XAUt0]</2>またはGM <3>[XAUt0-USDT]</3>で<1>流動性を提供</1>できます"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "アラート"
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2>, or GLV <3>[WETH-USDC]</3>"
-msgstr "これらのマーケットを<0>取引</0>するか、GM、GLV <2>[WBTC-USDC]</2>、またはGLV <3>[WETH-USDC]</3>で<1>流動性を提供</1>できます"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take-Profit at 100%. Reduce existing orders to add more."
@@ -8253,6 +8174,10 @@ msgstr "スリッページが高すぎます"
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "このサイズでのショート増加に利用可能な流動性がありません。<0/>最大ショートサイズ: {0}<1/><2/>ロング減少の約定価格。"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
+msgstr "<0>{0}プールに切り替える</0>ことで価格への影響を軽減できる場合があります"
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "他のプラットフォームで購入"
@@ -8359,7 +8284,6 @@ msgid "Hours"
 msgstr "時間"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid receiver address"
 msgstr "無効な受取アドレス"
 

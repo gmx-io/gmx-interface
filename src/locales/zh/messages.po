@@ -19,7 +19,6 @@ msgstr "GLP 池"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Wallet not connected"
 msgstr "钱包未连接"
 
@@ -51,10 +50,6 @@ msgstr "或通过 <0>chainlist.org</0> 更新您钱包的 RPC"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "推荐码"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT address"
-msgstr "NFT 地址"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
@@ -123,6 +118,10 @@ msgstr "BonsaiDAO"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "授权已签署"
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
+msgstr "<0>多链</0><1>MegaETH 支持</1><2>即时流动性</2>"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
@@ -573,7 +572,6 @@ msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run b
 msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由不同的团队运营，因此体验可能有所不同。将在新标签页中打开。"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "for lower net price impact"
 msgstr "以降低净价格影响"
 
@@ -1119,10 +1117,6 @@ msgstr "Beefy"
 msgid "Deactivating..."
 msgstr "正在停用…"
 
-#: src/config/events.tsx
-msgid "Lending and borrowing are now available for GLV assets: <0/> <1>[BTC-USDC]</1> and <2/> <3>[ETH-USDC]</3> on <4>Morpho</4>"
-msgstr "GLV 资产现已支持借贷功能：<0/> <1>[BTC-USDC]</1> 和 <2/> <3>[ETH-USDC]</3>，在 <4>Morpho</4> 上"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "归属仅在 {chainNames} 或 {lastChainName} 上可用。请切换网络以继续。"
@@ -1590,10 +1584,6 @@ msgstr "价格影响返还"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Trigger price accounts for swap fees and price impact, ensuring at least {toMinText} on execution."
 msgstr "触发价格已计入兑换手续费和价格影响，确保执行时至少获得 {toMinText}。"
-
-#: src/config/events.tsx
-msgid "The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on position close. <0>Read more</0>"
-msgstr "应用界面已全面升级，包含全新的浅色主题。价格影响现已设置上限，且仅在平仓时收取。<0>了解更多</0>"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit Swap"
@@ -2242,10 +2232,6 @@ msgstr "持有 GLV 的额外激励是什么？"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "天"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Transfer NFT"
-msgstr "转移 NFT"
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
@@ -2899,17 +2885,9 @@ msgstr "交易"
 msgid "No deposits required"
 msgstr "无需存入资金"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WETH-USDC]</2>, or GLV <3>[WBTC-USDC]</3>"
-msgstr "<0>交易</0>这些市场，或使用 GM、GLV <2>[WETH-USDC]</2> 或 GLV <3>[WBTC-USDC]</3> <1>提供流动性</1>"
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
 msgstr "交易空投"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Invalid NFT address"
-msgstr "无效的 NFT 地址"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
@@ -3432,10 +3410,6 @@ msgstr "编辑 {0}"
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>买入</0> {wrappedNativeTokenSymbol}。"
 
-#: src/config/events.tsx
-msgid "From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance accuracy. <0>Read more</0>"
-msgstr "自12月22日起，未平仓量将以代币数量而非 USD 价值进行跟踪，以提高余额准确性。<0>阅读更多</0>"
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr "{longOrShort}仓位每小时{fundingAction}资金费率 {fundingRate}，并每小时{borrowAction}借贷费用 {borrowRate}。"
@@ -3501,7 +3475,6 @@ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is 
 msgstr "{typeString} 做空止盈/止损：当触发价格达到时{0}做空仓位。"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter receiver address"
 msgstr "请输入接收地址"
 
@@ -3721,6 +3694,10 @@ msgstr "正在更新设置..."
 msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "GMX 无需逐笔签名即可执行交易。交易使用 GMX 赞助的高级 RPC，即使在网络拥堵时也能确保可靠性。<0/><1/>Gas 以 {gasPaymentTokensText} 支付。"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "<0>Use a TWAP order</0> for lower net price impact"
+msgstr "<0>使用 TWAP 订单</0>以降低净价格影响"
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "上次再平衡"
@@ -3740,6 +3717,10 @@ msgstr "其他代币"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
 msgstr "取消新订单"
+
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to unstake"
+msgstr "解除质押失败"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "Existing executable trigger orders"
@@ -4378,10 +4359,6 @@ msgstr "分割数量"
 msgid "No open orders"
 msgstr "没有未结订单"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WBTC-USDC]</2>"
-msgstr "<0>交易</0>这些市场，或使用 GM 或 GLV <2>[WBTC-USDC]</2> <1>提供流动性</1>"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted"
 msgstr "解除质押已提交"
@@ -4729,10 +4706,6 @@ msgstr "GLP 和 GMX 自动复投金库"
 msgid "Short liq."
 msgstr "做空流动性"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2> for AERO and BRETT, or GM <3>[PBTC]</3> for BTC"
-msgstr "<0>交易</0>这些市场，或使用 GM 或 GLV <2>[WETH-USDC]</2> 为 AERO 和 BRETT <1>提供流动性</1>，或使用 GM <3>[PBTC]</3> 为 BTC 提供流动性"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "清算费用"
@@ -4803,10 +4776,6 @@ msgstr "您必须在此页面上才能接受转账。<0>复制链接</0>"
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr "<0>钱包未连接到 {0}</0><1/><2>切换到 {1}</2>"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "for potentially lower price impact"
-msgstr "以获得可能更低的价格影响"
-
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/CAP"
@@ -4852,10 +4821,6 @@ msgstr "执行后至少收到 {toAmountText}。价格根据费用和价格影响
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "卖出订单已执行"
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to {0}"
-msgstr "{0}失败"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -5170,10 +5135,6 @@ msgstr "交易失败：提供商不可用"
 msgid "Disable validation for testing"
 msgstr "禁用验证以进行测试"
 
-#: src/config/events.tsx
-msgid "Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is recommended.<0/><1/>The listing committee will evaluate the listing of ELIZAOS/USD."
-msgstr "AI16Z/USD 已停止开仓。现有仓位保持开启，但建议平仓。<0/><1/>上币委员会将评估 ELIZAOS/USD 的上线事宜。"
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click Trading?"
 msgstr "想通过 One-Click Trading 更快交易吗？"
@@ -5299,7 +5260,6 @@ msgstr "出场价格"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer failed"
 msgstr "转账失败"
 
@@ -5336,7 +5296,6 @@ msgstr "<0>市场分组</0><1>净未平仓量</1>"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer submitted"
 msgstr "转账已提交"
 
@@ -5378,7 +5337,6 @@ msgid "Supported by"
 msgstr "合作伙伴"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "Use a TWAP order"
 msgstr "使用 TWAP 订单"
 
@@ -5641,7 +5599,6 @@ msgid "Limit Increase"
 msgstr "限价增加"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transferring..."
 msgstr "转账中..."
 
@@ -5743,10 +5700,6 @@ msgstr "终身质押奖励："
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 claim"
 msgstr "V2 领取"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT wallet"
-msgstr "NFT 钱包"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
@@ -6134,6 +6087,10 @@ msgstr "交易模式"
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>全仓保证金</0><1>交叉抵押</1>"
 
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to stake"
+msgstr "质押失败"
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6245,7 +6202,6 @@ msgstr "平仓费用"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr "切换到 {0} 池"
 
@@ -6288,10 +6244,6 @@ msgstr "V2 返佣以手续费折扣形式自动生效，不在此处显示"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "使用 {0} 买入 GM，上限如下"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT address"
-msgstr "输入 NFT 地址"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "V2 trading"
@@ -6410,10 +6362,6 @@ msgstr "<0>至 </0><1>{0}</1>"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "价格影响"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT ID"
-msgstr "输入 NFT ID"
 
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "You don't have a referral code to share. <0/> Create one now and start earning rebates!"
@@ -6634,10 +6582,6 @@ msgstr "选择要存入的资产"
 msgid "Max GM buyable amount reached"
 msgstr "已达到 GM 最大可买入量"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> this market, or <1>provide liquidity</1> using GM or GLV <2>[WAVAX-USDC]</2> for WLFI on Avalanche, and GM or GLV <3>[WETH-USDC]</3> on Arbitrum"
-msgstr "<0>交易</0>此市场，或使用 GM 或 GLV <2>[WAVAX-USDC]</2> 在 Avalanche 上为 WLFI <1>提供流动性</1>，以及 GM 或 GLV <3>[WETH-USDC]</3> 在 Arbitrum 上"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr "会话已生成"
@@ -6739,11 +6683,6 @@ msgstr "模拟提取时出错"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "领取"
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2>"
-msgstr "<0>交易</0>这些市场，或使用 GM 或 GLV <2>[WETH-USDC]</2> <1>提供流动性</1>"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -6905,10 +6844,6 @@ msgstr "您最喜欢什么？"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "卖出 {operationTokenSymbol}"
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just-in-time liquidity</1><2>MegaETH support</2>"
-msgstr "<0>多链</0><1>即时流动性</1><2>MegaETH 支持</2>"
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -7192,7 +7127,6 @@ msgid "Leverage trading terminal"
 msgstr "杠杆交易终端"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Receiver address"
 msgstr "接收地址"
 
@@ -7361,10 +7295,6 @@ msgstr "买入"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
 msgstr "复制技术详情"
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT ID"
-msgstr "NFT ID"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -7550,18 +7480,9 @@ msgstr "卖出 GM 兑换 {0}，上限如下。剩余代币为未平仓头寸预�
 msgid "Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "享受高达 100x 杠杆，以及不依赖于订单簿深度的链上保障流动性"
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM <2>[XAUt0-XAUt0]</2> or GM <3>[XAUt0-USDT]</3>"
-msgstr "<0>交易</0>这些市场，或使用 GM <2>[XAUt0-XAUt0]</2> 或 GM <3>[XAUt0-USDT]</3> <1>提供流动性</1>"
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "提醒"
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2>, or GLV <3>[WETH-USDC]</3>"
-msgstr "<0>交易</0>这些市场，或使用 GM、GLV <2>[WBTC-USDC]</2> 或 GLV <3>[WETH-USDC]</3> <1>提供流动性</1>"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take-Profit at 100%. Reduce existing orders to add more."
@@ -8253,6 +8174,10 @@ msgstr "滑点过高"
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "当前规模无可用流动性用于增加做空仓位。<0/>最大做空规模: {0}<1/><2/>减少做多仓位的成交价格。"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
+msgstr "<0>切换至 {0} 池</0>以获得更低的价格影响"
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "在其他平台购买"
@@ -8359,7 +8284,6 @@ msgid "Hours"
 msgstr "小时"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid receiver address"
 msgstr "接收地址无效"
 

@@ -2,7 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import { forwardRef, useState } from "react";
 
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import solanaIcon from "img/tokens/ic_sol.svg";
@@ -48,11 +47,9 @@ const SolanaNetworkItem = forwardRef<HTMLDivElement>(function SolanaNetworkItem(
             </Trans>
           </p>
 
-          <ExternalLink href="https://gmtrade.xyz" className="!no-underline inline-flex w-full">
-            <Button variant="primary-action" className="w-full">
-              <Trans>Open GMTrade</Trans>
-            </Button>
-          </ExternalLink>
+          <Button variant="primary-action" className="w-full" to="https://gmtrade.xyz" newTab>
+            <Trans>Open GMTrade</Trans>
+          </Button>
         </div>
       </ModalWithPortal>
     </>

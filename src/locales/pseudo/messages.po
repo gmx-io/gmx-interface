@@ -19,7 +19,6 @@ msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Wallet not connected"
 msgstr ""
 
@@ -50,10 +49,6 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
-msgstr ""
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT address"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -122,6 +117,10 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
+msgstr ""
+
+#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
+msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -573,7 +572,6 @@ msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run b
 msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "for lower net price impact"
 msgstr ""
 
@@ -1119,10 +1117,6 @@ msgstr ""
 msgid "Deactivating..."
 msgstr ""
 
-#: src/config/events.tsx
-msgid "Lending and borrowing are now available for GLV assets: <0/> <1>[BTC-USDC]</1> and <2/> <3>[ETH-USDC]</3> on <4>Morpho</4>"
-msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr ""
@@ -1589,10 +1583,6 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Trigger price accounts for swap fees and price impact, ensuring at least {toMinText} on execution."
-msgstr ""
-
-#: src/config/events.tsx
-msgid "The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on position close. <0>Read more</0>"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -2241,10 +2231,6 @@ msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
-msgstr ""
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Transfer NFT"
 msgstr ""
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
@@ -2899,16 +2885,8 @@ msgstr ""
 msgid "No deposits required"
 msgstr ""
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WETH-USDC]</2>, or GLV <3>[WBTC-USDC]</3>"
-msgstr ""
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
-msgstr ""
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Invalid NFT address"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3432,10 +3410,6 @@ msgstr ""
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr ""
 
-#: src/config/events.tsx
-msgid "From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance accuracy. <0>Read more</0>"
-msgstr ""
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour."
 msgstr ""
@@ -3501,7 +3475,6 @@ msgid "{typeString} Short TP/SL: {0} a short position when the trigger price is 
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter receiver address"
 msgstr ""
 
@@ -3721,6 +3694,10 @@ msgstr ""
 msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr ""
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "<0>Use a TWAP order</0> for lower net price impact"
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr ""
@@ -3739,6 +3716,10 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
+msgstr ""
+
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to unstake"
 msgstr ""
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
@@ -4378,10 +4359,6 @@ msgstr ""
 msgid "No open orders"
 msgstr ""
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WBTC-USDC]</2>"
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted"
 msgstr ""
@@ -4729,10 +4706,6 @@ msgstr ""
 msgid "Short liq."
 msgstr ""
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2> for AERO and BRETT, or GM <3>[PBTC]</3> for BTC"
-msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr ""
@@ -4803,10 +4776,6 @@ msgstr ""
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "for potentially lower price impact"
-msgstr ""
-
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr ""
@@ -4851,10 +4820,6 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
-msgstr ""
-
-#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
-msgid "Failed to {0}"
 msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -5170,10 +5135,6 @@ msgstr ""
 msgid "Disable validation for testing"
 msgstr ""
 
-#: src/config/events.tsx
-msgid "Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is recommended.<0/><1/>The listing committee will evaluate the listing of ELIZAOS/USD."
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click Trading?"
 msgstr ""
@@ -5299,7 +5260,6 @@ msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer failed"
 msgstr ""
 
@@ -5336,7 +5296,6 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transfer submitted"
 msgstr ""
 
@@ -5378,7 +5337,6 @@ msgid "Supported by"
 msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/TradeBox.tsx
 msgid "Use a TWAP order"
 msgstr ""
 
@@ -5641,7 +5599,6 @@ msgid "Limit Increase"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Transferring..."
 msgstr ""
 
@@ -5742,10 +5699,6 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "V2 claim"
-msgstr ""
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT wallet"
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
@@ -6134,6 +6087,10 @@ msgstr ""
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr ""
 
+#: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
+msgid "Failed to stake"
+msgstr ""
+
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6245,7 +6202,6 @@ msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Switch to {0} pool"
 msgstr ""
 
@@ -6287,10 +6243,6 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
-msgstr ""
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT address"
 msgstr ""
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
@@ -6409,10 +6361,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
-msgstr ""
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "Enter NFT ID"
 msgstr ""
 
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -6634,10 +6582,6 @@ msgstr ""
 msgid "Max GM buyable amount reached"
 msgstr ""
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> this market, or <1>provide liquidity</1> using GM or GLV <2>[WAVAX-USDC]</2> for WLFI on Avalanche, and GM or GLV <3>[WETH-USDC]</3> on Arbitrum"
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generated"
 msgstr ""
@@ -6738,11 +6682,6 @@ msgstr ""
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
-msgstr ""
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM or GLV <2>[WETH-USDC]</2>"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -6904,10 +6843,6 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
-msgstr ""
-
-#: landing/src/pages/Home/RoadmapSection/Quareters.tsx
-msgid "<0>Multichain</0><1>Just-in-time liquidity</1><2>MegaETH support</2>"
 msgstr ""
 
 #: src/lib/contracts/callContract.tsx
@@ -7192,7 +7127,6 @@ msgid "Leverage trading terminal"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Receiver address"
 msgstr ""
 
@@ -7360,10 +7294,6 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
-msgstr ""
-
-#: src/pages/NftWallet/NftWallet.tsx
-msgid "NFT ID"
 msgstr ""
 
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -7550,17 +7480,8 @@ msgstr ""
 msgid "Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr ""
 
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM <2>[XAUt0-XAUt0]</2> or GM <3>[XAUt0-USDT]</3>"
-msgstr ""
-
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
-msgstr ""
-
-#: src/config/events.tsx
-#: src/config/events.tsx
-msgid "<0>Trade</0> these markets, or <1>provide liquidity</1> using GM, GLV <2>[WBTC-USDC]</2>, or GLV <3>[WETH-USDC]</3>"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
@@ -8253,6 +8174,10 @@ msgstr ""
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr ""
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr ""
@@ -8359,7 +8284,6 @@ msgid "Hours"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/NftWallet/NftWallet.tsx
 msgid "Invalid receiver address"
 msgstr ""
 
