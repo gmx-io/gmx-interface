@@ -31,7 +31,7 @@ import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -292,7 +292,7 @@ function AffiliateCodeFormMultichain({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (isApproving) {
@@ -580,7 +580,7 @@ export function AffiliateCodeForm({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (!debouncedReferralCode) {

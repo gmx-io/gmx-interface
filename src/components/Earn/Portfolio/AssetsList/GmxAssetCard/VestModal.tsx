@@ -13,7 +13,7 @@ import { StakingProcessedData } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
@@ -323,7 +323,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
   const actionPrimaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated, please refresh`;
+      return getPageOutdatedError();
     }
 
     if (activeAction === "deposit") {

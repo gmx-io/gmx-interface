@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
@@ -15,7 +15,7 @@ import { estimateExecutionGasPrice, getExecutionFeeBufferBps } from "domain/synt
 import { useTokenBalances } from "domain/synthetics/tokens";
 import { formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -173,7 +173,7 @@ export default function ClaimableAmounts() {
     let buttonText: React.ReactNode = <Trans>Claim funds</Trans>;
 
     if (hasOutdatedUi) {
-      buttonText = t`Page outdated, please refresh`;
+      buttonText = getPageOutdatedError();
       isButtonDisabled = true;
     } else if (isClaiming) {
       buttonText = <Trans>Claiming...</Trans>;

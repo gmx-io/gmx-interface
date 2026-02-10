@@ -33,7 +33,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -375,7 +375,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       };
     }
     if (hasOutdatedUi) {
-      return { text: t`Page outdated, please refresh`, disabled: true };
+      return { text: getPageOutdatedError(), disabled: true };
     }
     if (isApproving) {
       return { text: t`Approving...`, disabled: true };

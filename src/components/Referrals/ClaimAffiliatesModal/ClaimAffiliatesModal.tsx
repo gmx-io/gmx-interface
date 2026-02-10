@@ -32,6 +32,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import type { AsyncResult } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -224,6 +225,7 @@ export function ClaimAffiliatesModal(p: Props) {
   const { onClose, setPendingTxns = () => null } = p;
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
+  const hasOutdatedUi = useHasOutdatedUi();
 
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
@@ -337,6 +339,9 @@ export function ClaimAffiliatesModal(p: Props) {
   };
 
   const handleSubmit = () => {
+    if (hasOutdatedUi) {
+      return;
+    }
     if (srcChainId === undefined) {
       handleSubmitSettlementChain();
     } else {
@@ -355,7 +360,12 @@ export function ClaimAffiliatesModal(p: Props) {
   }, [isAllChecked, visibleRewards]);
 
   const submitButtonState = useMemo(() => {
-    if (isSubmitting) {
+    if (hasOutdatedUi) {
+      return {
+        text: getPageOutdatedError(),
+        disabled: true,
+      };
+    } else if (isSubmitting) {
       return {
         text: t`Claiming...`,
         disabled: true,
@@ -377,7 +387,7 @@ export function ClaimAffiliatesModal(p: Props) {
         disabled: false,
       };
     }
-  }, [chainId, errors?.isOutOfTokenError, isSubmitting, selectedMarketAddresses.length]);
+  }, [chainId, errors?.isOutOfTokenError, hasOutdatedUi, isSubmitting, selectedMarketAddresses.length]);
 
   return (
     <Modal

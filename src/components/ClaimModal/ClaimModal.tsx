@@ -20,7 +20,7 @@ import { metrics } from "lib/metrics";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
@@ -103,7 +103,7 @@ function ClaimModalSettlementChain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }
@@ -282,7 +282,7 @@ function ClaimModalMultichain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }
