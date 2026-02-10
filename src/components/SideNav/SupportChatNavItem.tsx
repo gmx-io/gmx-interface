@@ -2,11 +2,15 @@ import { show } from "@intercom/messenger-js-sdk";
 import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 
-import { useEligibleToShowSupportChat } from "lib/supportChat";
+import { SUPPORT_CHAT_WAS_EVER_CLICKED_KEY } from "config/localStorage";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useEligibleToShowSupportChat, useSupportChatUnreadCount } from "lib/supportChat";
 
 import SupportChatIcon from "img/ic_support_chat.svg?react";
 
 import { NavItem } from "./SideNav";
+
+import "./SupportChatNavItem.scss";
 
 interface SupportChatNavItemProps {
   isCollapsed: boolean | undefined;
@@ -15,11 +19,17 @@ interface SupportChatNavItemProps {
 
 export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemProps) {
   const eligibleToShowSupportChat = useEligibleToShowSupportChat();
+  const [supportChatWasEverClicked, setSupportChatWasEverClicked] = useLocalStorageSerializeKey<boolean>(
+    SUPPORT_CHAT_WAS_EVER_CLICKED_KEY,
+    false
+  );
+  const [supportChatUnreadCount] = useSupportChatUnreadCount();
 
   const handleClick = useCallback(() => {
+    setSupportChatWasEverClicked(true);
     onClick?.();
     show();
-  }, [onClick]);
+  }, [onClick, setSupportChatWasEverClicked]);
 
   if (!eligibleToShowSupportChat) {
     return null;
@@ -27,13 +37,24 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
 
   return (
     <NavItem
-      icon={<SupportChatIcon className="size-24" />}
+      icon={
+        <span className="relative">
+          <SupportChatIcon className="size-24" />
+          {supportChatUnreadCount > 0 && (
+            <span className="absolute -right-2 -top-3 size-8 animate-pulse rounded-full bg-red-400" />
+          )}
+        </span>
+      }
       label={
         <>
           <Trans>Support</Trans>{" "}
-          <span className="text-body-small rounded-8 bg-slate-600 px-6 py-2 text-typography-primary">
-            <Trans>NEW</Trans>
-          </span>
+          {!supportChatWasEverClicked && (
+            <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
+              <span className="support-chat-new-badge inline-block font-medium">
+                <Trans>New</Trans>
+              </span>
+            </span>
+          )}
         </>
       }
       isCollapsed={isCollapsed}

@@ -1,5 +1,6 @@
-import Intercom, { update } from "@intercom/messenger-js-sdk";
+import Intercom, { onUnreadCountChange, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
+import { createGlobalState } from "react-use";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
 
@@ -29,6 +30,8 @@ const SUPPORT_CHAT_MIN_AGG_14_DAYS_VOLUME = expandDecimals(1n, USD_DECIMALS);
 const SUPPORT_CHAT_MIN_AGG_ALL_TIME_VOLUME = expandDecimals(1n, USD_DECIMALS);
 
 const TIME_PERIODS = getTimePeriodsInSeconds();
+
+export const useSupportChatUnreadCount = createGlobalState<number>(0);
 
 export function useEligibleToShowSupportChat() {
   const { isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
@@ -88,6 +91,8 @@ export function useSupportChat() {
     enabled: eligibleToShowSupportChat,
   });
 
+  const [, setSupportChatUnreadCount] = useSupportChatUnreadCount();
+
   const customUserAttributes = useMemo(() => {
     if (
       isWalletPortfolioUsdLoading ||
@@ -132,9 +137,13 @@ export function useSupportChat() {
         hide_default_launcher: true,
       });
 
+      onUnreadCountChange((unreadCount: number) => {
+        setSupportChatUnreadCount(unreadCount);
+      });
+
       setSupportChatWasEverShown(true);
     }
-  }, [eligibleToShowSupportChat, setSupportChatWasEverShown]);
+  }, [eligibleToShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
 
   useEffect(() => {
     if (!eligibleToShowSupportChat) {

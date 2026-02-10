@@ -62,6 +62,7 @@ export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
 export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
+export const SUPPORT_CHAT_WAS_EVER_CLICKED_KEY = "support-chat-was-ever-clicked";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";

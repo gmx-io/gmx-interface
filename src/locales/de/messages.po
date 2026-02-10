@@ -6205,6 +6205,10 @@ msgstr "{symbol} verschieben..."
 msgid "Trigger price above mark price"
 msgstr "Trigger-Preis über Markpreis"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "Neu"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
 msgstr "<0>Cross-Margin</0><1>Cross-Collateral</1>"
@@ -7139,10 +7143,6 @@ msgstr "Was ist GMX?"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "Bonus-Rebate"
-
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "NEW"
-msgstr "NEU"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."

@@ -6205,6 +6205,10 @@ msgstr "正在转移 {symbol}..."
 msgid "Trigger price above mark price"
 msgstr "触发价格高于标记价格"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "新"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
 msgstr "<0>交叉保证金</0><1>交叉抵押品</1>"
@@ -7139,10 +7143,6 @@ msgstr "什么是 GMX？"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "奖金返利"
-
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "NEW"
-msgstr "新"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."

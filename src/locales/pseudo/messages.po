@@ -6205,6 +6205,10 @@ msgstr ""
 msgid "Trigger price above mark price"
 msgstr ""
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
 msgstr ""
@@ -7138,10 +7142,6 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
-msgstr ""
-
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "NEW"
 msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx

@@ -6205,6 +6205,10 @@ msgstr "{symbol} 이전 중..."
 msgid "Trigger price above mark price"
 msgstr "트리거 가격이 마크 가격 초과"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "새로운"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
 msgstr "<0>크로스 마진</0><1>크로스 담보</1>"
@@ -7139,10 +7143,6 @@ msgstr "GMX란 무엇인가요?"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Bonus Rebate"
 msgstr "보너스 리베이트"
-
-#: src/components/SideNav/SupportChatNavItem.tsx
-msgid "NEW"
-msgstr "새로운"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "You have an existing position in the {0} market pool, but it lacks liquidity for this order."
