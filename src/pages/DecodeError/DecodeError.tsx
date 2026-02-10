@@ -6,6 +6,7 @@ import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import PageTitle from "components/PageTitle/PageTitle";
+import { t, Trans } from "@lingui/macro";
 
 type DecodedError = {
   errorName: string;
@@ -116,13 +117,19 @@ export function DecodeError() {
     <AppPageLayout>
       <div className="default-container page-layout">
         <PageTitle
-          title="Decode Error"
+          title={t`Decode error`}
           className="p-12"
-          subtitle={<div className="text-body-medium mb-20">Paste hex error data to decode</div>}
+          subtitle={
+            <div className="text-body-medium mb-20">
+              <Trans>Paste hex error data to decode</Trans>
+            </div>
+          }
         />
 
         <div className="mb-20">
-          <div className="text-body-medium mb-8">Error Data (hex)</div>
+          <div className="text-body-medium mb-8">
+            <Trans>Error data (hex)</Trans>
+          </div>
           <textarea
             value={hexInput}
             onChange={(e) => setHexInput(e.target.value)}
@@ -134,18 +141,24 @@ export function DecodeError() {
         {decodedError && (
           <div className="mb-20 rounded-8 border border-slate-800 bg-slate-900 p-20">
             <div className="text-body-medium mb-12">
-              <span className="font-medium">Error Name:</span>{" "}
+              <span className="font-medium">
+                <Trans>Error Name:</Trans>
+              </span>{" "}
               <span className="text-blue-400">{decodedError.errorName}</span>
             </div>
             <div className="text-body-medium mb-12">
-              <span className="font-medium">Source:</span>{" "}
+              <span className="font-medium">
+                <Trans>Source:</Trans>
+              </span>{" "}
               <span className={decodedError.source === "CustomErrors" ? "text-green-400" : "text-purple-400"}>
                 {decodedError.source}
               </span>
             </div>
             {formattedArgs && formattedArgs.length > 0 && (
               <div>
-                <div className="text-body-medium mb-8 font-medium">Arguments:</div>
+                <div className="text-body-medium mb-8 font-medium">
+                  <Trans>Arguments</Trans>
+                </div>
                 <div className="space-y-8">
                   {formattedArgs.map(({ key, value }) => (
                     <div key={key} className="rounded-4 bg-slate-800 p-12">
@@ -169,7 +182,9 @@ export function DecodeError() {
 
         {!hexInput.trim() && (
           <div className="mb-20 rounded-8 border border-slate-800 bg-slate-900 p-20">
-            <div className="text-body-medium text-typography-secondary">Enter hex error data above to decode it.</div>
+            <div className="text-body-medium text-typography-secondary">
+              <Trans>Enter hex error data above to decode it</Trans>
+            </div>
           </div>
         )}
       </div>

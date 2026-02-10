@@ -70,11 +70,21 @@ const RebateStatsTable = memo(({ rebateGroups }: { rebateGroups: RebateGroup[] }
   return (
     <div className="PriceImpactRebatesStatsPage-table">
       <div className="PriceImpactRebatesStatsPage-row">
-        <div className="PriceImpactRebatesStatsPage-cell-timekey">Timekey</div>
-        <div className="PriceImpactRebatesStatsPage-cell-time">Time</div>
-        <div className="PriceImpactRebatesStatsPage-cell-market">Market</div>
-        <div className="PriceImpactRebatesStatsPage-cell-token">Token</div>
-        <div className="PriceImpactRebatesStatsPage-cell-approved">Factor</div>
+        <div className="PriceImpactRebatesStatsPage-cell-timekey">
+          <Trans>TIMEKEY</Trans>
+        </div>
+        <div className="PriceImpactRebatesStatsPage-cell-time">
+          <Trans>TIME</Trans>
+        </div>
+        <div className="PriceImpactRebatesStatsPage-cell-market">
+          <Trans>MARKET</Trans>
+        </div>
+        <div className="PriceImpactRebatesStatsPage-cell-token">
+          <Trans>TOKEN</Trans>
+        </div>
+        <div className="PriceImpactRebatesStatsPage-cell-approved">
+          <Trans>FACTOR</Trans>
+        </div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">$</div>
         <div className="PriceImpactRebatesStatsPage-cell-actions"></div>
       </div>
@@ -172,9 +182,13 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
       <div className="PriceImpactRebatesStatsPage-row">
         <div className="PriceImpactRebatesStatsPage-cell-timekey"></div>
         <div className="PriceImpactRebatesStatsPage-cell-time"></div>
-        <div className="PriceImpactRebatesStatsPage-cell-market">Address</div>
+        <div className="PriceImpactRebatesStatsPage-cell-market">
+          <Trans>ADDRESS</Trans>
+        </div>
         <div className="PriceImpactRebatesStatsPage-cell-token"></div>
-        <div className="PriceImpactRebatesStatsPage-cell-approved">Factor</div>
+        <div className="PriceImpactRebatesStatsPage-cell-approved">
+          <Trans>FACTOR</Trans>
+        </div>
         <div className="PriceImpactRebatesStatsPage-cell-usd">USD</div>
         <div className="PriceImpactRebatesStatsPage-cell-actions"></div>
       </div>

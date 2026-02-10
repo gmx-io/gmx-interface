@@ -274,9 +274,9 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   return (
     <>
       <TableTrActionable onClick={onClick}>
-        <TableTdActionable data-label="Date">{formatDate(transaction.timestamp)}</TableTdActionable>
-        {!isMobile && <TableTdActionable data-label="Type">{type}</TableTdActionable>}
-        <TableTdActionable className="max-xl:text-right" data-label="Amount">
+        <TableTdActionable data-label={t`Date`}>{formatDate(transaction.timestamp)}</TableTdActionable>
+        {!isMobile && <TableTdActionable data-label={t`Type`}>{type}</TableTdActionable>}
+        <TableTdActionable className="max-xl:text-right" data-label={t`Amount`}>
           <Tooltip
             handle={formatUsd(totalUsd)}
             handleClassName="numbers"

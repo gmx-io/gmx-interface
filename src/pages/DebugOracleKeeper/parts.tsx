@@ -6,6 +6,7 @@ import { OracleKeeperDebugFlags } from "lib/oracleKeeperFetcher/_debug";
 import Button from "components/Button/Button";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import { Trans } from "@lingui/macro";;
 
 export type OracleEndpointStats = {
   endpoint: string;
@@ -35,18 +36,18 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
   return (
     <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">Oracle Endpoints</h3>
+        <h3 className="text-xl muted font-bold uppercase"><Trans>Oracle endpoints</Trans></h3>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="overflow-x-auto">
           <Table>
             <thead className="sticky top-0 z-10 bg-slate-900">
               <TableTheadTr>
-                <TableTh padding="compact">Endpoint</TableTh>
-                <TableTh padding="compact">Status</TableTh>
-                <TableTh padding="compact">Failures</TableTh>
-                <TableTh padding="compact">Banned</TableTh>
-                <TableTh padding="compact">Response Time</TableTh>
+                <TableTh padding="compact"><Trans>ENDPOINT</Trans></TableTh>
+                <TableTh padding="compact"><Trans>STATUS</Trans></TableTh>
+                <TableTh padding="compact"><Trans>FAILURES</Trans></TableTh>
+                <TableTh padding="compact"><Trans>BANNED</Trans></TableTh>
+                <TableTh padding="compact"><Trans>RESPONSE TIME</Trans></TableTh>
               </TableTheadTr>
             </thead>
             <tbody>
@@ -57,8 +58,8 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
                   </TableTd>
                   <TableTd padding="compact">
                     <div className="text-xs flex flex-wrap gap-1">
-                      {endpoint.isPrimary && <span className="text-green-400">Primary</span>}
-                      {endpoint.isSecondary && <span className="text-yellow-300">Secondary</span>}
+                      {endpoint.isPrimary && <span className="text-green-400"><Trans>Primary</Trans></span>}
+                      {endpoint.isSecondary && <span className="text-yellow-300"><Trans>Secondary</Trans></span>}
                     </div>
                   </TableTd>
                   <TableTd padding="compact">
@@ -105,7 +106,7 @@ export function EventsPanel({
   return (
     <div className="flex min-h-0 min-w-[320px] flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">Oracle Keeper Events</h3>
+        <h3 className="text-xl muted font-bold uppercase"><Trans>Oracle keeper events</Trans></h3>
         <Button variant="secondary" onClick={onClearEvents}>
           Clear Events
         </Button>
@@ -116,7 +117,7 @@ export function EventsPanel({
             <tbody>
               <TableTr>
                 <TableTd padding="compact">
-                  <div className="text-sm font-semibold">No events</div>
+                  <div className="text-sm font-semibold"><Trans>No events</Trans></div>
                 </TableTd>
               </TableTr>
             </tbody>
@@ -177,7 +178,7 @@ export function DebugControlsPanel({
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">Debug Controls</h3>
+        <h3 className="text-xl muted font-bold uppercase"><Trans>Debug controls</Trans></h3>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="overflow-x-auto">
@@ -186,7 +187,7 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">Force Failures</div>
+                    <div className="text-base mb-6 font-semibold text-gray-400"><Trans>Force failures</Trans></div>
                     <div className="space-y-4">
                       <Button
                         variant="secondary"
@@ -211,7 +212,7 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">Tickers Simulation</div>
+                    <div className="text-base mb-6 font-semibold text-gray-400"><Trans>Tickers simulation</Trans></div>
                     <div className="space-y-6">
                       <ToggleSwitch
                         isChecked={debugState.triggerTickersFailure ?? false}

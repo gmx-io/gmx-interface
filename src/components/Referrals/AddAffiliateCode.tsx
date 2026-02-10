@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { type TransactionResponse } from "ethers";
@@ -421,7 +421,7 @@ function AffiliateCodeFormMultichain({
       {error && <p className="AffiliateCode-error">{error}</p>}
       {srcChainId && (
         <SyntheticsInfoRow
-          label="Network Fee"
+          label={t`Network fee`}
           value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
       )}

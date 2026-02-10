@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 import { zeroAddress } from "viem";
@@ -529,7 +529,10 @@ export function OrderEditor(p: Props) {
         tooltip: (
           <>
             <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
+              <Trans>Read more</Trans>
+            </ExternalLink>
+            .
             <br />
             <br />
             <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">

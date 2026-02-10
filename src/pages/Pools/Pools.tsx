@@ -17,6 +17,7 @@ import { GmList } from "components/GmList/GmList";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
 import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
+import { Trans } from "@lingui/macro";
 
 export default function Pools() {
   const { timeRange, setTimeRange } = usePoolsTimeRange();
@@ -110,7 +111,9 @@ function PoolsTvl() {
   return (
     <div className="flex flex-col gap-8">
       <span className="text-h1 normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
-      <span className="text-body-medium font-medium text-typography-secondary">TVL in vaults and pools.</span>
+      <span className="text-body-medium font-medium text-typography-secondary">
+        <Trans>TVL in vaults and pools</Trans>
+      </span>
     </div>
   );
 }

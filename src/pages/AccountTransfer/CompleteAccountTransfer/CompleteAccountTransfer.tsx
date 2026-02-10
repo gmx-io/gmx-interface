@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";;
 import { ethers } from "ethers";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -98,7 +98,7 @@ export default function CompleteAccountTransfer() {
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
-        label="Transfer Completed"
+        label={t`Transfer completed`}
       >
         <Trans>Your transfer is complete</Trans>
         <br />

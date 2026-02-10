@@ -340,7 +340,7 @@ export function SyntheticsPage(p: Props) {
           leftContent={
             isTablet ? (
               <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
-                <img src={logoIcon} alt="GMX Logo" />
+                <img src={logoIcon} alt={t`GMX logo`} />
                 <LogoText className="max-md:hidden" />
               </Link>
             ) : (

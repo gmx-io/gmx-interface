@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -372,7 +372,7 @@ export function PositionItem(p: Props) {
             <br />
             <br />
             <StatsTooltipRow
-              label={"Estimated Time to Liquidation"}
+              label={t`Estimated time to liquidation`}
               value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
               valueClassName="numbers"
               showDollar={false}
@@ -471,7 +471,7 @@ export function PositionItem(p: Props) {
                       <>
                         <br />
                         <StatsTooltipRow
-                          label={"Key"}
+                          label={t`Key`}
                           value={<div className="debug-key muted">{p.position.contractKey}</div>}
                           showDollar={false}
                         />
@@ -622,7 +622,9 @@ export function PositionItem(p: Props) {
         <AppCardSection>
           {showDebugValues && (
             <div className="App-card-row">
-              <div className="font-medium text-typography-secondary">Key</div>
+              <div className="font-medium text-typography-secondary">
+                <Trans>Key</Trans>
+              </div>
               <div className="debug-key muted">{p.position.contractKey}</div>
             </div>
           )}

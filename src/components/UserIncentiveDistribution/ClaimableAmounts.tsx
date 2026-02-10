@@ -248,7 +248,9 @@ export default function ClaimableAmounts() {
   if (claimableEntries.length === 0) {
     return (
       <div className="flex flex-col gap-16">
-        <span className="text-body-medium font-medium text-typography-secondary">No distributions to claim</span>
+        <span className="text-body-medium font-medium text-typography-secondary">
+          <Trans>No distributions to claim</Trans>
+        </span>
       </div>
     );
   }
@@ -268,7 +270,9 @@ export default function ClaimableAmounts() {
         ))}
 
       <div className="flex items-center justify-between">
-        <span className="text-body-medium font-medium text-typography-secondary">Total to claim</span>
+        <span className="text-body-medium font-medium text-typography-secondary">
+          <Trans>Total to claim</Trans>
+        </span>
         <Tooltip
           handle={formatUsd(totalFundsToClaimUsd)}
           handleClassName="cursor-help numbers"

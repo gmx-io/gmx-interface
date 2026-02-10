@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -222,7 +222,11 @@ export function ParseTransactionPage() {
   }
 
   if (!txHash) {
-    return <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">Invalid transaction</div>;
+    return (
+      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
+        <Trans>Invalid transaction</Trans>
+      </div>
+    );
   }
 
   if (error) {
@@ -259,7 +263,9 @@ export function ParseTransactionPage() {
         />
         {orderLifecycleEntries.length ? (
           <div className="mt-32">
-            <h2 className="text-body-large mb-12">Order lifecycle</h2>
+            <h2 className="text-body-large mb-12">
+              <Trans>Order lifecycle</Trans>
+            </h2>
             {isOrderTransactionsLoading ? (
               <Loader />
             ) : orderTransactionsError ? (
@@ -275,7 +281,9 @@ export function ParseTransactionPage() {
                   <div key={entry.orderKey} className="mb-24 last:mb-0">
                     <div className="text-body-medium mb-8">Order key: {entry.orderKey}</div>
                     {!entry.transactions ? (
-                      <div className="text-body-medium text-typography-secondary">Order data is not available yet.</div>
+                      <div className="text-body-medium text-typography-secondary">
+                        <Trans>Order data unavailable yet</Trans>
+                      </div>
                     ) : lifecycleTarget ? (
                       isOrderLifecycleEventsLoading ? (
                         <Loader />
@@ -683,7 +691,9 @@ const ParseTransactionEvents = ({
     <Table key={`${keyPrefix}-${event.key}`} className="mt-[24px] overflow-hidden !rounded-8 first:mt-0">
       <tbody>
         <TableTr>
-          <TableTd className="w-[25rem] font-medium">Name</TableTd>
+          <TableTd className="w-[25rem] font-medium">
+            <Trans>Name</Trans>
+          </TableTd>
           <TableTd className="group !text-left" colSpan={2}>
             <div className="flex flex-row items-center justify-between gap-8">
               <span className="flex flex-row items-center gap-8 whitespace-nowrap">
@@ -695,7 +705,9 @@ const ParseTransactionEvents = ({
           </TableTd>
         </TableTr>
         <TableTr>
-          <TableTd className="w-[25rem] font-medium">Topics</TableTd>
+          <TableTd className="w-[25rem] font-medium">
+            <Trans>Topics</Trans>
+          </TableTd>
           <TableTd className="group !text-left" colSpan={3}>
             {event.topics.length > 0
               ? event.topics.map((t) => (

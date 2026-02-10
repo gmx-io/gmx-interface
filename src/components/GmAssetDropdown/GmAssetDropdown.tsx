@@ -1,6 +1,6 @@
 import { Placement, autoUpdate, flip, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import React, { useCallback, type ReactNode } from "react";
 import { createBreakpoint } from "react-use";
 
@@ -117,7 +117,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           {market && (
             <Menu.Item as="div">
               <ExternalLink href={`${explorerUrl}address/${token?.address}`} className="asset-item">
-                <img className="asset-item-icon" src={chainIcon} alt="Open in explorer" />
+                <img className="asset-item-icon" src={chainIcon} alt={t`Open in explorer`} />
                 <p>
                   <Trans>Open {marketName} in explorer</Trans>
                 </p>

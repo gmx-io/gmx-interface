@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { Component, ErrorInfo, ReactNode, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -90,7 +90,7 @@ function ErrorBoundaryDebugWrapper({ children }: { children: ReactNode }) {
     return createPortal(
       <button
         type="button"
-        aria-label="Trigger error boundary"
+        aria-label={t`Trigger error boundary`}
         className="absolute z-[11000] size-8 rounded-full bg-red-700 hover:bg-red-500"
         style={debugButtonStyle}
         onClick={() => setShouldThrow(true)}

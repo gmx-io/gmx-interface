@@ -21,6 +21,7 @@ import { formatUsd } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokensMap, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketFullName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
+import { t, Trans } from "@lingui/macro";
 
 function DebugMarketGraph() {
   const chainId = useSelector(selectChainId);
@@ -126,16 +127,32 @@ function DebugMarketGraph() {
   ]);
 
   if (!fromTokenAddress) {
-    return <div className="flex justify-center gap-8 overflow-auto p-16">No from token address</div>;
+    return (
+      <div className="flex justify-center gap-8 overflow-auto p-16">
+        <Trans>No from token address</Trans>
+      </div>
+    );
   }
   if (!toTokenWrappedAddress) {
-    return <div className="flex justify-center gap-8 overflow-auto p-16">No to token address</div>;
+    return (
+      <div className="flex justify-center gap-8 overflow-auto p-16">
+        <Trans>No to token address</Trans>
+      </div>
+    );
   }
   if (isWrap) {
-    return <div className="flex justify-center gap-8 overflow-auto p-16">Its just a wrap</div>;
+    return (
+      <div className="flex justify-center gap-8 overflow-auto p-16">
+        <Trans>It's just a wrap</Trans>
+      </div>
+    );
   }
   if (isUnwrap) {
-    return <div className="flex justify-center gap-8 overflow-auto p-16">Its just an unwrap</div>;
+    return (
+      <div className="flex justify-center gap-8 overflow-auto p-16">
+        <Trans>It's just an unwrap</Trans>
+      </div>
+    );
   }
 
   return (
@@ -150,7 +167,11 @@ function DebugMarketGraph() {
         don't forget to clear it when you are done.
       </div>
 
-      {!allRouteTypes?.length && <div>No routes</div>}
+      {!allRouteTypes?.length && (
+        <div>
+          <Trans>No routes</Trans>
+        </div>
+      )}
       {allRouteTypes?.map((routeType) => (
         <div key={routeType.toString()} className="flex gap-8">
           <div>{tokens[fromTokenAddress].symbol}</div>
@@ -217,7 +238,9 @@ function DebugMarketGraph() {
 
       {swapPath && !isUsingManualPath && (
         <div className="flex flex-col gap-8">
-          <div>Best swap path</div>
+          <div>
+            <Trans>Best swap path</Trans>
+          </div>
           <div className="flex justify-between gap-8">
             <div className="flex grow items-center gap-8">
               {swapPath.swapSteps.map((step, index) => (
@@ -235,7 +258,7 @@ function DebugMarketGraph() {
                             ? "bg-red-700"
                             : "bg-slate-600"
                         )}
-                        title="Click to toggle market"
+                        title={t`Click to toggle market`}
                         onClick={() => handleToggleMarket(step.marketAddress)}
                       >
                         {marketsInfoData ? getMarketFullName(marketsInfoData[step.marketAddress]) : step.marketAddress}
@@ -258,7 +281,9 @@ function DebugMarketGraph() {
 
       {isUsingManualPath && (
         <div className="flex flex-col gap-8">
-          <div>Manual swap path (click on market to remove it)</div>
+          <div>
+            <Trans>Manual swap path (click market to remove)</Trans>
+          </div>
           <div className="flex justify-between gap-8">
             <div className="flex grow flex-wrap items-center gap-8">
               {debugSwapMarketsConfig?.manualPath?.map((marketAddress, index, arr) => (
@@ -285,10 +310,14 @@ function DebugMarketGraph() {
 
       <div className="flex items-start justify-between gap-8 rounded-4 border border-red-700/50 p-8">
         <div className="flex grow flex-col gap-8">
-          <div>Disabled markets</div>
+          <div>
+            <Trans>Disabled markets</Trans>
+          </div>
           <div className="flex flex-wrap gap-8">
             {!debugSwapMarketsConfig?.disabledSwapMarkets?.length ? (
-              <span className="py-2 text-typography-secondary">No disabled markets</span>
+              <span className="py-2 text-typography-secondary">
+                <Trans>No disabled markets</Trans>
+              </span>
             ) : (
               debugSwapMarketsConfig?.disabledSwapMarkets?.map((m) => (
                 <button
@@ -308,7 +337,15 @@ function DebugMarketGraph() {
       </div>
 
       <div className="flex flex-col gap-8">
-        {isUsingManualPath ? <div>All markets</div> : <div>Related markets</div>}
+        {isUsingManualPath ? (
+          <div>
+            <Trans>All markets</Trans>
+          </div>
+        ) : (
+          <div>
+            <Trans>Related markets</Trans>
+          </div>
+        )}
         <div className="flex gap-8 overflow-x-scroll">
           {entries(groupBy(relatedMarkets, (m) => m.name[0]))
             .sort((a, b) => a[0].localeCompare(b[0]))
@@ -320,7 +357,7 @@ function DebugMarketGraph() {
                   .map((m) => (
                     <div key={m.market} className="flex items-center gap-4">
                       <div
-                        title="Click to toggle market"
+                        title={t`Click to toggle market`}
                         onClick={() => handleToggleMarket(m.market)}
                         className="min-w-[220px] rounded-4 bg-slate-600 px-4 py-2"
                       >

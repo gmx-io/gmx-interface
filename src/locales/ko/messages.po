@@ -19,6 +19,7 @@ msgstr "GLP 풀"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Wallet not connected"
 msgstr "지갑이 연결되지 않았습니다"
 
@@ -48,8 +49,13 @@ msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하십시오"
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "추천 코드"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Funding exponent factor"
+msgstr "펀딩 지수 팩터"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request deposit"
@@ -83,6 +89,7 @@ msgstr "주문 시뮬레이션 실패"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
+#: src/pages/RpcDebug/parts.tsx
 msgid "PRICE"
 msgstr "가격"
 
@@ -138,6 +145,9 @@ msgid "Include rPnL in leverage display"
 msgstr "레버리지 표시에 실현 손익 포함"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
@@ -166,6 +176,9 @@ msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>.
 msgstr "종료 시 가격 영향입니다. 양수 값은 유리하게 작용합니다. <0>자세히 보기</0>."
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
 msgstr "유형"
@@ -195,9 +208,17 @@ msgstr "RPC 모니터링"
 msgid "Show rPnL amounts"
 msgstr "실현 손익 금액 표시"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max factor for liquidations"
+msgstr "청산 최대 팩터"
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime LP rewards:"
 msgstr "누적 LP 보상:"
+
+#: src/pages/DebugOracleKeeper/parts.tsx
+msgid "Oracle keeper events"
+msgstr "Oracle Keeper 이벤트"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d est. fees"
@@ -234,6 +255,10 @@ msgstr "몇 분 정도 소요될 수 있습니다"
 msgid "V2 Arbitrum"
 msgstr "V2 Arbitrum"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Other"
+msgstr "기타"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 13-20 Mar"
 msgstr "EIP-4844, 3월 13~20일"
@@ -251,6 +276,10 @@ msgstr "앱 열기"
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express Trading"
 msgstr "Express Trading을 사용해 보십시오"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Virtual inventory for positions"
+msgstr "포지션용 가상 인벤토리"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield"
@@ -318,6 +347,10 @@ msgstr "GLV를 판매할 수 있나요? 어디서 가능한가요?"
 msgid "FAQ"
 msgstr "FAQ"
 
+#: src/pages/TestPermits/TestPermits.tsx
+msgid "Permit details"
+msgstr "허가 상세정보"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Network fees increased. Additional fee required."
 msgstr "네트워크 수수료가 인상되었습니다. 추가 수수료가 필요합니다."
@@ -342,6 +375,10 @@ msgstr "필수 매개변수가 누락되었습니다"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GLV?"
 msgstr "GLV란?"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Percentage"
+msgstr "비율"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
@@ -373,6 +410,10 @@ msgstr "포지션과 담보에서 {indexSymbol}에 대한 이중 노출이 발�
 msgid "GMX Account balance"
 msgstr "GMX Account 잔액"
 
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "Best swap path"
+msgstr "최적 스왑 경로"
+
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "@username"
@@ -398,6 +439,10 @@ msgstr "미실현 기본 PnL"
 msgid "Sending referral code transaction"
 msgstr "추천 코드 거래 전송 중"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Funding exponent"
+msgstr "펀딩 지수"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "토큰 선택"
@@ -417,6 +462,10 @@ msgstr "언스테이킹 중..."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "출발 네트워크"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min collateral factor for liquidation"
+msgstr "청산 최소 담보 팩터"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
@@ -490,12 +539,17 @@ msgstr "판매"
 msgid "Switch to {0}"
 msgstr "{0}(으)로 전환"
 
+#: src/pages/TestPermits/TestPermits.tsx
+msgid "Value:"
+msgstr "값:"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "GMX 커뮤니티에서 개발한 프로젝트입니다. <0/>모든 앱은 커뮤니티 개발자가 전적으로 관리하므로, 이용 시 주의하십시오."
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "ADDRESS"
 msgstr "주소"
 
@@ -529,6 +583,7 @@ msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive exp
 msgstr "<0><1>@GMX_IO</1>를 처음 사용해 봤습니다. </0><2> 꽤 인상적인 경험 - 슬리피지 없고, 빠른 체결 </2><3> 사이즈 캡은 낮지만, 디젠 도박하기엔 재미있네요 </3>"
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
 msgid "V1 airdrop"
 msgstr "V1 에어드롭"
 
@@ -582,6 +637,10 @@ msgstr "순 비율"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "No rewards"
 msgstr "보상 없음"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "PROVIDER"
+msgstr "제공자"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Increased {positionText}, +{0}"
@@ -684,6 +743,10 @@ msgstr "사용 가능한 유동성"
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "이 웹사이트는 오픈소스 <0>GMX 프론트엔드</0>의 커뮤니티 배포 인스턴스로, 분산형 P2P <1>IPFS 네트워크</1>에 호스팅됩니다"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Funding decrease factor"
+msgstr "펀딩 감소 팩터"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
 msgstr "STIP.b 소급 보너스"
@@ -703,6 +766,10 @@ msgstr "수령 시, <0>GLP 보상</0> 약관에 동의하는 것으로 간주됩
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to wallet"
 msgstr "{marketName}을(를) 지갑에 추가"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Position impact"
+msgstr "포지션 영향"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Insufficient staked tokens"
@@ -745,6 +812,10 @@ msgstr "{chainName}에서 {nativeTokenSymbol}을(를) 구매할 수 있는 옵�
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "수수료 값은 획득 시점에 계산됩니다. 인센티브는 제외됩니다."
 
+#: src/pages/Pools/Pools.tsx
+msgid "TVL in vaults and pools"
+msgstr "볼트 및 풀 내 TVL"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -756,6 +827,10 @@ msgstr "지정가가 기준가보다 높습니다"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Trading simulations on GMX using DOJO"
 msgstr "DOJO를 활용한 GMX 트레이딩 시뮬레이션"
+
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "Manual swap path (click market to remove)"
+msgstr "수동 스왑 경로 (마켓 클릭 시 제거)"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
@@ -773,6 +848,10 @@ msgstr "1위"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No matching markets"
 msgstr "일치하는 마켓이 없습니다"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Position fee factor (positive PI)"
+msgstr "포지션 수수료 팩터 (양의 PI)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
@@ -828,6 +907,9 @@ msgstr "연간 매수 압력 (BB&D):"
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
+#: src/pages/RpcDebug/parts.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "MARKET"
 msgstr "마켓"
 
@@ -838,6 +920,15 @@ msgstr "활성 추천 코드"
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "View breakdown"
 msgstr "상세 내역 보기"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Borrowing factor short"
+msgstr "숏 차입 계수"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Swap fee factor (positive PI)"
+msgstr "스왑 수수료 팩터 (양의 PI)"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Paraswap"
@@ -868,6 +959,10 @@ msgstr "최대 풀 금액 도달"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and integrations"
 msgstr "파트너십 및 통합"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Swap fee factor (negative PI)"
+msgstr "스왑 수수료 팩터 (음의 PI)"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
@@ -1045,6 +1140,10 @@ msgstr "GMX 유동성의 시뮬레이션 호가창입니다. 개설 주문은 �
 msgid "Disable share modal PnL check"
 msgstr "공유 모달 PnL 검사 비활성화"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Threshold for stable funding"
+msgstr "안정 펀딩 임계값"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Competition airdrop"
 msgstr "대회 에어드랍"
@@ -1091,9 +1190,17 @@ msgstr "반영까지 몇 분이 소요될 수 있습니다. 나중에 다시 확
 msgid "Mark price for the order"
 msgstr "주문 기준가"
 
+#: src/components/Errors/ErrorBoundary.tsx
+msgid "Trigger error boundary"
+msgstr "에러 바운더리 트리거"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX fundamentals"
 msgstr "GMX 펀더멘털"
+
+#: src/pages/AccountEvents/AccountEvents.tsx
+msgid "EVENT DATA"
+msgstr "이벤트 데이터"
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
@@ -1112,6 +1219,10 @@ msgstr "풀을 찾을 수 없습니다"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr "Beefy"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Virtual long token ID"
+msgstr "가상 롱 토큰 ID"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
@@ -1151,6 +1262,15 @@ msgstr "Limit 체결"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
 msgstr "기본 APY"
+
+#: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
+msgid "TIME"
+msgstr "시간"
+
+#: src/pages/DebugOracleKeeper/parts.tsx
+msgid "Oracle endpoints"
+msgstr "Oracle 엔드포인트"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -1207,6 +1327,10 @@ msgstr "GMX Account에 입금"
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error"
 msgstr "입금 오류"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Name"
+msgstr "이름"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid TWAP number of parts value"
@@ -1270,6 +1394,10 @@ msgstr "브릿지 거래 해시"
 msgid "Select pool"
 msgstr "풀 선택"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool max short amount"
+msgstr "풀 최대 숏 수량"
+
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
@@ -1280,6 +1408,10 @@ msgstr "APR"
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of collateral of open positions - realized PnL + period start pending PnL</2>]."
 msgstr "{0} 이상의 사용 자본을 가진 포지션만 순위에 포함됩니다.<0/><1/>사용 자본은 [<2>미결 포지션 담보 합계 - 실현 손익 + 기간 시작 미확정 손익</2>]의 최고 값으로 계산됩니다."
 
+#: src/pages/ReferralsTier/ReferralsTier.tsx
+msgid "Affiliate address:"
+msgstr "제휴 주소:"
+
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -1288,8 +1420,12 @@ msgstr "{0} 이상의 사용 자본을 가진 포지션만 순위에 포함됩�
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Total"
 msgstr "전체"
 
@@ -1338,6 +1474,10 @@ msgstr "최소 주문: {0}"
 msgid "100+ crypto tokens"
 msgstr "100개 이상의 암호화폐 토큰"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Optimal usage factor short"
+msgstr "숏 최적 사용 팩터"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "In liquidity"
 msgstr "유동성 보유분"
@@ -1369,6 +1509,10 @@ msgstr "공개"
 msgid "Hide error"
 msgstr "오류 숨기기"
 
+#: src/components/AlertInfo/AlertInfo.tsx
+msgid "Alert icon"
+msgstr "알림 아이콘"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Passive management"
 msgstr "패시브 운용"
@@ -1389,6 +1533,15 @@ msgstr "차입 수수료 / 일"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending buy request..."
 msgstr "구매 요청 전송 중..."
+
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Key"
+msgstr "키"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Distributions"
@@ -1463,6 +1616,10 @@ msgstr "GMX 포지션 업데이트를 위한 Telegram 봇"
 msgid "Express Trading is unavailable for wrapping or unwrapping native token {0}"
 msgstr "Express Trading은 네이티브 토큰 {0}의 래핑 또는 언래핑에 사용할 수 없습니다"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Virtual short token ID"
+msgstr "가상 숏 토큰 ID"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "EIP-4844"
@@ -1497,6 +1654,10 @@ msgstr "타임스탬프"
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer"
 msgstr "답변을 입력하세요"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "Markets info"
+msgstr "마켓 정보"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage must be less than 5%"
@@ -1533,6 +1694,10 @@ msgstr "가격 영향 리베이트 수령 중..."
 msgid "Explore"
 msgstr "탐색"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max positive factor"
+msgstr "최대 양의 계수"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge out failed"
 msgstr "브릿지 아웃 실패"
@@ -1540,6 +1705,10 @@ msgstr "브릿지 아웃 실패"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending sell request..."
 msgstr "판매 요청 전송 중..."
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "PURPOSE"
+msgstr "용도"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -1652,6 +1821,10 @@ msgstr "일간 및 누적 PnL"
 msgid "Search pools"
 msgstr "풀 검색"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Funding increase factor"
+msgstr "펀딩 증가 팩터"
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "May take a few minutes to appear. Check back later"
 msgstr "표시되기까지 몇 분이 소요될 수 있습니다. 나중에 다시 확인하세요"
@@ -1723,6 +1896,10 @@ msgstr "청산 시 담보"
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs update weekly on Wednesday based on fees collected"
 msgstr "APR은 징수된 수수료를 기준으로 매주 수요일에 업데이트됩니다"
+
+#: src/pages/ReferralsTier/ReferralsTier.tsx
+msgid "Referrals tier"
+msgstr "리퍼럴 등급"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizer on Avalanche"
@@ -1796,6 +1973,10 @@ msgstr "금액이 출금 한도 미만입니다. <0>{lowerLimitFormatted}</0>보
 msgid "No funds to claim"
 msgstr "수령할 자금이 없습니다"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Reserve factor shorts"
+msgstr "숏 준비금 계수"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total staked"
 msgstr "총 스테이킹"
@@ -1846,6 +2027,10 @@ msgstr "기준가"
 msgid "Keep leverage at {keepLeverageAtValue}"
 msgstr "레버리지를 {keepLeverageAtValue}로 유지"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Open interest reserve factor longs"
+msgstr "롱 미결제약정 준비금 팩터"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Layer 2"
@@ -1888,6 +2073,10 @@ msgstr "어떤 점이 개선되면 좋겠습니까?"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
 msgstr "이 크기로 롱 포지션을 추가할 수 있는 유동성이 없습니다.<0/>최대 롱 크기: {0}<1/><2/>숏 포지션 축소를 위한 체결가입니다."
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Transfer completed"
+msgstr "전송 완료"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
@@ -1996,6 +2185,10 @@ msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 저희가 먼저 
 msgid "Affiliates"
 msgstr "제휴"
 
+#: src/pages/RpcDebug/parts.tsx
+msgid "Global network"
+msgstr "글로벌 네트워크"
+
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
 msgid "Try Express"
 msgstr "Express Trading 체험"
@@ -2049,6 +2242,10 @@ msgstr "크기"
 msgid "Loading Express params..."
 msgstr "Express 파라미터 로딩 중..."
 
+#: src/pages/DebugOracleKeeper/parts.tsx
+msgid "RESPONSE TIME"
+msgstr "응답 시간"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Short Inc."
 msgstr "시장가 - 숏 추가"
@@ -2086,6 +2283,10 @@ msgstr "코드를 공유하여 보상을 받으십시오!"
 msgid "GM markets"
 msgstr "GM 마켓"
 
+#: src/pages/DebugOracleKeeper/parts.tsx
+msgid "Tickers simulation"
+msgstr "티커 시뮬레이션"
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
 msgstr "STIP.b 거래 인센티브"
@@ -2119,6 +2320,10 @@ msgstr "One-Click Trading 설정"
 msgid "{typeString} Short Market: {0} a short position at the current price"
 msgstr "{typeString} 숏 시장가: 현재 가격에서 숏 포지션을 {0}"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Strictest deposit USD capacity"
+msgstr "최소 입금 USD 용량"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily profit"
 msgstr "일일 수익"
@@ -2131,6 +2336,11 @@ msgstr "{positionText}에 {0}을(를) 입금했습니다"
 msgid "Current price"
 msgstr "현재 가격"
 
+#: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "CURRENT"
+msgstr "현재"
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Long positions"
@@ -2139,6 +2349,10 @@ msgstr "롱 포지션"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
 msgstr "구매 수수료"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Claimable collateral reduction factor"
+msgstr "수령 가능 담보 감소 팩터"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -2151,6 +2365,11 @@ msgstr "주소 검색"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collateral."
 msgstr "스왑 경로가 없습니다. {1}을(를) 담보로 사용하려면 <0>{0}을(를) STBTC로 스왑</0>하십시오."
+
+#: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "Data freshness"
+msgstr "데이터 최신성"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
@@ -2189,6 +2408,10 @@ msgstr "<0>KYC, 복잡한 가입 절차, 입금이 필요 없습니다. 자기 �
 msgid "May be higher on other sites that include position collateral."
 msgstr "포지션 담보를 포함하는 다른 사이트에서는 더 높을 수 있습니다."
 
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "It's just a wrap"
+msgstr "단순 래핑입니다"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "구독"
@@ -2219,6 +2442,10 @@ msgstr "보상 및 거버넌스 권리를 위한 스테이킹"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} sellable amount exceeded"
 msgstr "최대 {0} 판매 가능 수량 초과"
+
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
+msgid "TOKEN"
+msgstr "토큰"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -2300,9 +2527,22 @@ msgstr "업데이트"
 msgid "DODO"
 msgstr "DODO"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Impact pool amount"
+msgstr "영향 풀 수량"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI agent for GMX Blueberry Club"
 msgstr "GMX Blueberry Club용 AI 에이전트"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max lendable impact USD"
+msgstr "최대 대출 가능 영향 USD"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Negative factor"
+msgstr "음의 팩터"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Faster execution with GMX premium RPCs"
@@ -2343,6 +2583,10 @@ msgstr "{gmOrGlvSymbol} 판매"
 #: src/components/TableOptionsFilter/TableOptionsFilter.tsx
 msgid "Clear selection"
 msgstr "선택 해제"
+
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "Disabled markets"
+msgstr "비활성 마켓"
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
@@ -2455,6 +2699,11 @@ msgstr "<0>권장 영향 설정: {0}</0>."
 msgid "Claiming affiliate rewards failed"
 msgstr "제휴 보상 수령 실패"
 
+#: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "DATA TYPE"
+msgstr "데이터 유형"
+
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "{minutesText}{seconds}초 후 취소 가능"
@@ -2466,6 +2715,10 @@ msgstr "{minutesText}{seconds}초 후 취소 가능"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Trigger price"
 msgstr "조건가"
+
+#: src/components/AbFlagsSettings/AbFlagsSettings.tsx
+msgid "No AB flags"
+msgstr "AB 플래그 없음"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Telegram & Discord analytics"
@@ -2483,6 +2736,10 @@ msgstr "Dune Analytics for GMX"
 msgid "Shorts net rate / 1h"
 msgstr "숏 순펀딩비 / 1시간"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "Remove endpoint"
+msgstr "엔드포인트 제거"
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Community-led Telegram groups"
 msgstr "커뮤니티 운영 Telegram 그룹"
@@ -2490,6 +2747,10 @@ msgstr "커뮤니티 운영 Telegram 그룹"
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
 msgstr "{0}(으)로 변경"
+
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "It's just an unwrap"
+msgstr "단순 언래핑입니다"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "This position was liquidated as the max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
@@ -2510,6 +2771,7 @@ msgstr "GMX Account에 가스용 {wrappedNativeTokenSymbol}이(가) 부족합니
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/pages/AccountEvents/AccountEvents.tsx
 msgid "TRANSACTION"
 msgstr "거래"
 
@@ -2533,6 +2795,10 @@ msgstr "문자, 숫자, 밑줄만 사용할 수 있습니다"
 msgid "Trade from your wallet"
 msgstr "지갑에서 직접 거래"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Deposit USD capacity"
+msgstr "입금 USD 용량"
+
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Funding claimed"
 msgstr "펀딩 수령 완료"
@@ -2545,10 +2811,23 @@ msgstr "<0>{0}에서는 스마트 지갑이 지원되지 않습니다</0><1/><2>
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "탈중앙화 또는 중앙화 거래소에서 구매"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Impact pool after reserved positive impact"
+msgstr "예약된 양의 영향 차감 후 영향 풀"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} → {toMinText}"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Fee factors"
+msgstr "수수료 계수"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Funding factor"
+msgstr "펀딩 팩터"
 
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
@@ -2558,6 +2837,10 @@ msgstr "입금 전송 완료"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
 msgstr "<0><1>$GMX</1>는 무기한 선물 거래의 강자라는 타이틀을 정당하게 획득했으며, 이러한 인정 뒤에는 다양한 이유가 있습니다.</0><2><3>@GMX_IO</3>는 VC 지원 없이 독자적으로 성장한 프로젝트로 두각을 나타내고 있습니다. 놀랍게도 Arbitrum Chain에서 TVL 기준 1위($488.34M)를 차지하고 DeFiLlama 전체 순위 23위라는 인상적인 성과를 달성했습니다... <4>더 보기</4></2>"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "Network status"
+msgstr "네트워크 상태"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
@@ -2610,6 +2893,10 @@ msgstr "접기"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (including swap)"
 msgstr "수수료 (스왑 포함)"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Exponent (positive)"
+msgstr "지수 (양)"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -2736,6 +3023,10 @@ msgstr "<0>Threshold</0>를 사용하여 BTC로 tBTC 발행"
 msgid "Failed TWAP part"
 msgstr "TWAP 부분 실패"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min collateral factor OI short"
+msgstr "숏 미결제약정 최소 담보 팩터"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} long. Your exposure is only from the position."
 msgstr "순수 {indexSymbol} 롱. 익스포저는 포지션에서만 발생합니다."
@@ -2751,6 +3042,10 @@ msgstr "Stop Market - 롱 추가"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days"
 msgstr "최근 7일 기준 연간 환산 데이터"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "Worker thread"
+msgstr "워커 스레드"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -2893,6 +3188,10 @@ msgstr "거래 에어드롭"
 msgid "{gmOrGlvLabel} bridging to..."
 msgstr "{gmOrGlvLabel} 브리징 대상..."
 
+#: src/pages/TestPermits/TestPermits.tsx
+msgid "Deadline:"
+msgstr "만료 기한:"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
 msgstr "체결 수수료 검증에 실패했습니다.<0/><1/>{suggestText}<2/><3/><4>상태 보기</4>"
@@ -2905,6 +3204,9 @@ msgid "V1 Arbitrum"
 msgstr "V1 Arbitrum"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
 
@@ -2935,6 +3237,10 @@ msgstr "개선에 참여해 주십시오"
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
 msgid "Claim rewards"
 msgstr "보상 수령"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "Multicall idle"
+msgstr "Multicall 유휴"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claiming requires <0/> while you have <1/>. <2>Swap</2> or <3>deposit</3> more {0} to your GMX Account."
@@ -2978,6 +3284,14 @@ msgstr "손절매 축소"
 msgid "Max close amount exceeded"
 msgstr "최대 종료 수량 초과"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool max short USD for deposit"
+msgstr "입금용 풀 최대 숏 USD"
+
+#: src/components/GmxAccountModal/DepositStatusView.tsx
+msgid "One-Click"
+msgstr "One-Click"
+
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
 msgstr "다른 사용자가 {takenNetworkNames}에서 이미 해당 코드를 사용 중입니다. 해당 네트워크에서는 리베이트가 지급되지 않습니다."
@@ -3001,6 +3315,10 @@ msgstr "TVL에는 GMX 스테이킹, GLP 풀, GM 풀, 포지션 담보가 포함�
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed"
 msgstr "거래 완료"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Base borrowing factor short"
+msgstr "숏 기본 차입 팩터"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
@@ -3032,6 +3350,10 @@ msgstr "다양한 자산"
 msgid "Market composition"
 msgstr "마켓 구성"
 
+#: src/pages/Dashboard/GmCard.tsx
+msgid "GM icon"
+msgstr "GM 아이콘"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/InfoRows.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -3052,10 +3374,6 @@ msgstr "세션 생성 중..."
 msgid "How do I get started on GMX?"
 msgstr "GMX를 어떻게 시작하나요?"
 
-#: src/components/OrderItem/OrderItem.tsx
-msgid "In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if there is insufficient liquidity."
-msgstr "드문 경우 주문이 체결되지 않을 수 있습니다. 예를 들어, 체인이 중단되어 Oracle 보고가 없거나 유동성이 부족한 경우입니다."
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -3075,6 +3393,10 @@ msgstr "서브 계정에서 출금 중..."
 msgid "Withdrawal failed"
 msgstr "출금 실패"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "POOL VALUE"
+msgstr "풀 가치"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake completed"
 msgstr "언스테이킹 완료"
@@ -3082,6 +3404,10 @@ msgstr "언스테이킹 완료"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "20s"
 msgstr "20초"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Virtual market ID"
+msgstr "가상 마켓 ID"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Order failed due to price volatility. Try <0>increasing the allowed slippage</0>"
@@ -3108,6 +3434,10 @@ msgstr "총 거래량"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
 msgstr "{daysConsidered}일 수익 수수료"
+
+#: src/components/TokenSelector/ConnectWalletModalContent.tsx
+msgid "Wallet icon"
+msgstr "지갑 아이콘"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -3144,6 +3474,10 @@ msgstr "베스팅용으로 예약된 스테이킹 토큰"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Market"
 msgstr "마켓"
+
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Executes when oracle price is {0} {1}"
+msgstr "Oracle 가격이 {0} {1}일 때 체결됩니다"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -3192,6 +3526,10 @@ msgstr "상세 보기"
 msgid "Can I unstake anytime?"
 msgstr "언제든지 언스테이킹할 수 있나요?"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Virtual inventory for swaps (long / short)"
+msgstr "스왑용 가상 인벤토리 (롱 / 숏)"
+
 #: src/components/GmxAccountModal/keys.ts
 msgid "Withdrawal"
 msgstr "출금"
@@ -3212,6 +3550,11 @@ msgstr "제출 중..."
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "PNL ($)"
 msgstr "PNL ($)"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Borrowing exponent long"
+msgstr "롱 차입 지수"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
@@ -3297,6 +3640,11 @@ msgstr "귀하의 피드백은 저희가 잘하고 있는 점과 개선할 수 �
 msgid "<0>Invalid permit signature. Try again</0>"
 msgstr "<0>유효하지 않은 허가 서명입니다. 다시 시도하십시오</0>"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Positive factor"
+msgstr "양의 계수"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop-Loss"
 msgstr "손절매 생성"
@@ -3304,6 +3652,10 @@ msgstr "손절매 생성"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Direction"
 msgstr "방향"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Base borrowing factor long"
+msgstr "롱 기본 차입 팩터"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "VOL."
@@ -3423,6 +3775,10 @@ msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩비를 {fund
 msgid "TWAP"
 msgstr "TWAP"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min impact pool amount"
+msgstr "최소 영향 풀 수량"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "출금 금액을 입력하십시오"
@@ -3508,6 +3864,10 @@ msgstr "언스테이킹"
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "최대 작업 횟수에 도달했습니다. <0>여기를 클릭</0>하여 업데이트하십시오"
 
+#: src/pages/TestPermits/TestPermits.tsx
+msgid "Signature:"
+msgstr "서명:"
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
 msgstr "수령 처리 중..."
@@ -3548,6 +3908,10 @@ msgstr "PnL"
 msgid "Stored price impact"
 msgstr "보관된 가격 영향"
 
+#: src/pages/DecodeError/DecodeError.tsx
+msgid "Arguments"
+msgstr "인수"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -3558,6 +3922,10 @@ msgstr "LayerZero scan"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "차입 수수료"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Swap impact"
+msgstr "스왑 영향"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}..."
@@ -3611,11 +3979,16 @@ msgstr "출금"
 msgid "Update Stop Market"
 msgstr "스톱 마켓 업데이트"
 
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Order lifecycle"
+msgstr "주문 수명 주기"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "{nativeTokenSymbol} 구매"
 
 #: src/components/AprInfo/AprInfo.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Bonus APR"
 msgstr "보너스 APR"
 
@@ -3626,6 +3999,10 @@ msgstr "전환 요청이 전송되었습니다"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "현재 영향: {0}. 더 나은 주문 체결을 위해 0.30% 버퍼를 추가하십시오."
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Positive impact factor"
+msgstr "양의 영향 계수"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GM pools:"
@@ -3643,6 +4020,10 @@ msgstr "{0} 풀에 기존 지정가 주문이 있습니다.<0>{1} 풀로 전환<
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "GMX Account를 통해 추천 코드를 생성하려면 {0}에 USDC 또는 ETH가 필요합니다. 자금을 입금하거나 다른 네트워크로 전환하십시오."
+
+#: src/pages/ReferralsTier/ReferralsTier.tsx
+msgid "Current tier:"
+msgstr "현재 등급:"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -3813,6 +4194,10 @@ msgstr "{gmOrGlvLabel} 구매에 실패했습니다."
 msgid "TP - Short Dec."
 msgstr "TP - 숏 축소"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool max long USD for deposit"
+msgstr "풀 롱 최대 입금 USD"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "순자산"
@@ -3853,6 +4238,11 @@ msgstr "계정 전송"
 msgid "LONGS NET RATE / 1H"
 msgstr "롱 순 비율 / 1H"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool USD long"
+msgstr "풀 USD 롱"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for open interest on GMX"
 msgstr "GMX 미결제약정 조회 Telegram 봇"
@@ -3877,9 +4267,11 @@ msgstr "<0>GMX는 기존 오더북과 달리 동적으로 균형 잡힌 유동�
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -3890,6 +4282,10 @@ msgstr "<0>GMX는 기존 오더북과 달리 동적으로 균형 잡힌 유동�
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Read more"
 msgstr "자세히 보기"
+
+#: src/pages/DecodeError/DecodeError.tsx
+msgid "Error Name:"
+msgstr "오류 이름:"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
@@ -3934,6 +4330,10 @@ msgstr "최대 {MAX_REFERRAL_CODE_LENGTH}자"
 msgid "Provide isolated liquidity per market"
 msgstr "시장별 격리 유동성 제공"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Use open interest in tokens for balance"
+msgstr "잔액 계산에 토큰 미결제약정 사용"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "매끄러운 거래"
@@ -3971,6 +4371,8 @@ msgstr "설정이 업데이트되었습니다"
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Short"
 msgstr "숏"
 
@@ -4006,6 +4408,11 @@ msgstr "LEV."
 msgid "3rd place"
 msgstr "3위"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max rate long"
+msgstr "롱 최대 비율"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames}. Switch networks to continue."
 msgstr "스테이킹은 {chainNames}에서만 가능합니다. 계속하려면 네트워크를 전환하십시오."
@@ -4013,6 +4420,10 @@ msgstr "스테이킹은 {chainNames}에서만 가능합니다. 계속하려면 �
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Links"
 msgstr "링크"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max lendable impact factor for withdrawals"
+msgstr "출금 시 최대 대출 가능 영향 계수"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate Vault. Withdraw them to transfer to the new account."
@@ -4022,9 +4433,17 @@ msgstr "Affiliate Vault에 esGMX 토큰이 있습니다. 새 계정으로 전송
 msgid "Claim completed"
 msgstr "수령 완료"
 
+#: src/components/GmAssetDropdown/GmAssetDropdown.tsx
+msgid "Open in explorer"
+msgstr "탐색기에서 열기"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Permits testing"
 msgstr "Permits testing"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Invalid transaction"
+msgstr "유효하지 않은 거래"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
@@ -4065,6 +4484,10 @@ msgstr "펀딩 수수료"
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "REWARDS"
 msgstr "보상"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max negative factor"
+msgstr "최대 음의 계수"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Asset management"
@@ -4145,9 +4568,22 @@ msgstr "구매 실패"
 msgid "Users"
 msgstr "사용자"
 
+#: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+msgid "Primary"
+msgstr "기본"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a token"
 msgstr "토큰 선택"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "Main thread"
+msgstr "메인 스레드"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Difference"
+msgstr "차이"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "No valid leverage available"
@@ -4240,6 +4676,10 @@ msgstr "{typeString} 롱 스탑 마켓: 가격이 조건가 이하일 때 롱 �
 msgid "Insufficient {0} liquidity"
 msgstr "{0} 유동성 부족"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "POOL CAP SHORT"
+msgstr "풀 상한 숏"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GMX vault"
 msgstr "GMX 볼트"
@@ -4280,6 +4720,11 @@ msgstr "GMX는 TradingView를 사용하여 실시간 암호화폐 차트를 제�
 msgid "Error simulating deposit"
 msgstr "입금 시뮬레이션 오류"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Borrowing factor long"
+msgstr "롱 차입 계수"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer already initiated"
 msgstr "전송이 이미 시작됨"
@@ -4317,6 +4762,11 @@ msgstr "GLV 보너스 인센티브"
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Short Dec."
 msgstr "시장가 - 숏 축소"
+
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "Click to toggle market"
+msgstr "클릭하여 마켓 전환"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
@@ -4364,6 +4814,8 @@ msgid "Unstake submitted"
 msgstr "언스테이킹 제출됨"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Dashboard/OverviewCard.tsx
 msgid "Botanix"
 msgstr "Botanix"
 
@@ -4462,6 +4914,10 @@ msgstr "귀하의 자금은 대상 체인의 GMX 컨트랙트에 안전하게 �
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Impact exponent (negative)"
+msgstr "영향 지수 (음수)"
+
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "using GLV and GM tokens. Staking GMX and referrals are not yet supported."
 msgstr "GLV 및 GM 토큰을 사용합니다. GMX 스테이킹과 추천은 아직 지원되지 않습니다."
@@ -4490,6 +4946,10 @@ msgstr "Stryke"
 msgid "GMX APR"
 msgstr "GMX APR"
 
+#: src/pages/DecodeError/DecodeError.tsx
+msgid "Enter hex error data above to decode it"
+msgstr "위에 16진수 오류 데이터를 입력하여 디코딩하십시오"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
@@ -4501,6 +4961,10 @@ msgstr "허용된 작업"
 #: src/components/GmList/GmList.tsx
 msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 msgstr "특정 GMX 마켓에 유동성을 공급하는 풀입니다. 단일 자산 및 네이티브 자산 옵션을 지원합니다."
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor"
+msgstr "최대 펀딩 계수"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "High price impact"
@@ -4554,6 +5018,8 @@ msgstr "조건가가 청산가보다 낮음"
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/RpcDebug/parts.tsx
 msgid "TYPE"
 msgstr "유형"
 
@@ -4651,6 +5117,10 @@ msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 여유분이
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "아래 상한까지 GM을 {0} 및 {1}(으)로 판매할 수 있습니다. 나머지 토큰은 미결 포지션을 위해 예약되어 있습니다."
 
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "No routes"
+msgstr "경로 없음"
+
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -4710,6 +5180,10 @@ msgstr "숏 유동성"
 msgid "Liquidation fee"
 msgstr "청산 수수료"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Swap impact exponent"
+msgstr "스왑 영향 지수"
+
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Concluded competitions"
 msgstr "종료된 경쟁"
@@ -4733,6 +5207,10 @@ msgstr "Stop Market 생성"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Choosing a different pool creates a new position."
 msgstr "{0} 풀에 유동성이 부족합니다. 다른 풀을 선택하면 새 포지션이 개설됩니다."
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max leverage"
+msgstr "최대 레버리지"
 
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/CollateralSelector.tsx
@@ -4784,6 +5262,10 @@ msgstr "TVL/CAP"
 msgid "Connect wallet to see your assets"
 msgstr "자산을 확인하려면 지갑을 연결하십시오"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Impact exponent (positive)"
+msgstr "영향 지수 (양수)"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -4826,6 +5308,14 @@ msgstr "매도 주문 체결됨"
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
 msgstr "가격 영향 리베이트 수령에 실패했습니다"
+
+#: src/pages/DecodeError/DecodeError.tsx
+msgid "Paste hex error data to decode"
+msgstr "디코드할 hex 오류 데이터를 붙여넣으십시오"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min collateral"
+msgstr "최소 담보"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Steady returns without management"
@@ -4888,6 +5378,10 @@ msgstr "공유"
 msgid "Use your preferred token to pay and collateralize positions"
 msgstr "원하는 토큰으로 결제하고 포지션을 담보화하십시오"
 
+#: src/pages/RpcDebug/parts.tsx
+msgid "Multicall events"
+msgstr "Multicall 이벤트"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "체결"
@@ -4945,6 +5439,10 @@ msgstr "wstETH APR"
 msgid "About the GLP incident"
 msgstr "GLP 사건에 대하여"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Estimated time to liquidation"
+msgstr "예상 청산 소요 시간"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the liquidation"
 msgstr "청산 기준가"
@@ -4969,9 +5467,17 @@ msgstr "{typeString} 롱 TP/SL: 조건가에 도달하면 롱 포지션을 {0}�
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{toTokenIcon}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> → </1>{toTokenIcon}"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool max long amount"
+msgstr "풀 롱 최대 수량"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "GLV보다 더 적극적인 관리가 필요합니다"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor"
+msgstr "최소 펀딩 계수"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -5052,6 +5558,12 @@ msgstr "보유 자산과 일치하는 기회가 없습니다"
 msgid "Lend your tokens or borrow against them"
 msgstr "토큰을 대출하거나 담보로 차입하십시오"
 
+#: src/components/AppHeader/AppHeaderLogo.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+msgid "GMX logo"
+msgstr "GMX 로고"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
 msgstr "분"
@@ -5092,6 +5604,10 @@ msgstr "트랜잭션"
 msgid "Last year"
 msgstr "지난 1년"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Reserve factor longs"
+msgstr "롱 준비금 계수"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr "구매"
@@ -5119,6 +5635,10 @@ msgstr "리베이트 배분 내역이 아직 없습니다"
 msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
 msgstr "{0}의 지갑에 가스용 {nativeTokenSymbol}이 부족합니다. <0>{nativeTokenSymbol} 구매</0>"
 
+#: src/pages/RpcDebug/parts.tsx
+msgid "THREAD"
+msgstr "스레드"
+
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Optional: share for follow-up questions"
 msgstr "선택 사항: 후속 질문을 위해 공유"
@@ -5134,6 +5654,11 @@ msgstr "거래 실패: 프로바이더를 사용할 수 없습니다"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "테스트를 위한 유효성 검사 비활성화"
+
+#: src/pages/Dashboard/GmCard.tsx
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "GMX icon"
+msgstr "GMX 아이콘"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click Trading?"
@@ -5151,6 +5676,7 @@ msgid "Asset"
 msgstr "자산"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC 디버그"
 
@@ -5182,6 +5708,15 @@ msgstr "높은 레버리지는 청산 위험을 증가시킵니다"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancelled"
 msgstr "{orderText} 취소됨"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max lendable impact factor"
+msgstr "최대 대출 가능 영향 계수"
+
+#: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+msgid "BANNED"
+msgstr "차단"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dashboard for GMX referral stats"
@@ -5285,6 +5820,7 @@ msgstr "배분 내역 없음"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionShare/PositionShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Mark price"
 msgstr "기준가"
@@ -5429,11 +5965,18 @@ msgstr "Tradao"
 msgid "Insufficient liquidity"
 msgstr "유동성 부족"
 
+#: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+msgid "STATUS"
+msgstr "상태"
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>매</0> {seconds}초마다"
 
 #. Filter option for tokens favorites
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All markets"
 msgstr "전체 시장"
@@ -5449,6 +5992,10 @@ msgstr "SNTL esGMX 마켓"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "Summary"
+msgstr "요약"
 
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -5466,6 +6013,18 @@ msgstr "포지션 공유"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for Liquidity Providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
 msgstr "유동성 공급자를 위한 GMX 개선에 도움을 주세요. 보안을 위해 먼저 연락드리지 않습니다. 공식 Telegram 계정으로 \"I'm a Liquidity Provider\"를 보내주세요:"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min collateral factor"
+msgstr "최소 담보 계수"
+
+#: src/pages/DecodeError/DecodeError.tsx
+msgid "Source:"
+msgstr "소스:"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Position fee factor (negative PI)"
+msgstr "포지션 수수료 계수 (음의 PI)"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
@@ -5487,6 +6046,11 @@ msgstr "수신자가 이전에 GLP 토큰을 스테이킹한 적이 없습니다
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
 msgstr "최소 담보: {0}"
+
+#: src/lib/tenderly.tsx
+#: src/lib/tenderly.tsx
+msgid "View transaction"
+msgstr "거래 보기"
 
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Stop-Loss PnL"
@@ -5522,6 +6086,10 @@ msgstr "최대 금액 초과"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Limit size required"
 msgstr "지정가 주문 수량을 입력하세요"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "RPC endpoints"
+msgstr "RPC 엔드포인트"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -5586,6 +6154,10 @@ msgstr "규모"
 msgid "From"
 msgstr "시작일"
 
+#: src/pages/DebugOracleKeeper/parts.tsx
+msgid "No events"
+msgstr "이벤트 없음"
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
 msgstr "채팅 일정을 잡아드리겠습니다. 감사의 표시로 피드백에 대해 <0>100 <1/></0>을 드립니다."
@@ -5645,6 +6217,10 @@ msgstr "Dolomite"
 msgid "Order request sent"
 msgstr "주문 요청이 전송되었습니다"
 
+#: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
+msgid "Oracle Keeper debug"
+msgstr "Oracle Keeper 디버그"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Funding fee / day"
 msgstr "일일 펀딩비"
@@ -5690,6 +6266,7 @@ msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "순위 자격을 위해 최소 {0}의 사용 자본이 필요합니다"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
 msgstr "준비금 증명"
 
@@ -5728,6 +6305,11 @@ msgstr "{0} 승인"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL, fees, and net price impact"
 msgstr "PnL, 수수료 및 순 가격 영향을 반영한 포지션 가치"
+
+#: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "PREVIOUS"
+msgstr "이전"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} long exceeded"
@@ -5768,10 +6350,19 @@ msgstr "투명성, 탈중앙화 및 무제한 접근을 보장하는 개방형 �
 msgid "Balance"
 msgstr "잔액"
 
+#: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+msgid "Force failures"
+msgstr "강제 실패"
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-enable"
 msgstr "다시 활성화"
+
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "Related markets"
+msgstr "관련 마켓"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
@@ -5811,6 +6402,7 @@ msgid "Leaderboard for traders on GMX V2"
 msgstr "GMX V2 트레이더 리더보드"
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "TOTAL REBATES"
 msgstr "총 리베이트"
 
@@ -5838,17 +6430,26 @@ msgstr "스톱 시장가가 기준가 이상입니다"
 msgid "SHORT LIQ."
 msgstr "숏 유동성"
 
+#: src/pages/RpcDebug/parts.tsx
+msgid "Account type"
+msgstr "계정 유형"
+
 #: src/components/CollateralSelector/CollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorRow.tsx
 msgid "Collateral in"
 msgstr "담보 입력"
 
+#: src/pages/AccountEvents/AccountEvents.tsx
+msgid "EVENT NAME"
+msgstr "이벤트 이름"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM token dashboard"
 msgstr "Compass Labs GM 토큰 대시보드"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "OPEN INTEREST"
 msgstr "미결제약정"
 
@@ -5880,6 +6481,10 @@ msgstr "최소 포지션 크기: {0}"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "조건가가 기준가 미만입니다"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Open interest reserve factor shorts"
+msgstr "숏 미결제약정 준비 계수"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on Botanix yet"
@@ -5947,6 +6552,10 @@ msgstr "Limit Swap 체결"
 msgid "GMX referrals dashboard"
 msgstr "GMX 추천 대시보드"
 
+#: src/pages/DecodeError/DecodeError.tsx
+msgid "Error data (hex)"
+msgstr "오류 데이터 (hex)"
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions with orders"
 msgstr "주문이 있는 미결 포지션"
@@ -5954,6 +6563,10 @@ msgstr "주문이 있는 미결 포지션"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have secured over $56B in volume for the <3>@GMX_IO</3> V2 protocol.</0><4>Data Streams’ low-latency delivery of high-quality market data has supercharged GMX's perpetual markets across <5>@arbitrum</5> and <6>@avax</6>. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 msgstr "<0>⬡ Chainlink 데이터 스토리 ⬡ <1/><2>#Chainlink</2> Data Streams는 <3>@GMX_IO</3> V2 프로토콜에 $56B 이상의 거래량을 보안했습니다.</0><4>Data Streams의 저지연 고품질 시장 데이터 전달은 <5>@arbitrum</5> 및 <6>@avax</6>에서 GMX의 영구 시장을 초강화했습니다. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min collateral factor OI long"
+msgstr "롱 미결제약정 최소 담보 계수"
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -6022,6 +6635,10 @@ msgid "Swap {fromAmount} for {toAmount}"
 msgstr "{fromAmount}을(를) {toAmount}(으)로 스왑"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Amount"
 msgstr "금액"
 
@@ -6052,6 +6669,10 @@ msgstr "미결제약정 (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
 msgid "Claim"
 msgstr "수령"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "POSITION IMPACT POOL"
+msgstr "포지션 영향 풀"
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Not staked"
 msgstr "미스테이킹"
@@ -6074,6 +6695,10 @@ msgstr "총 성과 APY"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
 msgstr "{0}에 입금 가능한 토큰이 없습니다"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "Total to claim"
+msgstr "총 수령 금액"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
@@ -6185,6 +6810,15 @@ msgstr "상위 주소"
 msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "금액이 출금 한도를 초과합니다. <0>{upperLimitFormatted}</0> 미만의 금액을 입력하십시오."
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Claimable collateral delay"
+msgstr "수령 가능 담보 지연"
+
+#: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+msgid "Debug controls"
+msgstr "디버그 제어"
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Concluded"
 msgstr "종료됨"
@@ -6277,6 +6911,10 @@ msgstr "이 규모에서 숏 추가에 사용 가능한 유동성이 없습니�
 msgid "~5 min"
 msgstr "약 5분"
 
+#: src/pages/ReferralsTier/ReferralsTier.tsx
+msgid "New tier:"
+msgstr "새 등급:"
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "See <0>Tenderly Docs</0>"
 msgstr "<0>Tenderly 문서</0> 참조"
@@ -6295,6 +6933,7 @@ msgstr "오류가 발생했습니다. 다시 시도하십시오"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/StakeNotification.tsx
+#: src/components/TransactionStatus/TransactionStatus.tsx
 msgid "View"
 msgstr "보기"
 
@@ -6352,6 +6991,11 @@ msgstr "숏 포지션"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "<0>to </0><1>{0}</1>"
 msgstr "<0>→ </0><1>{0}</1>"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Borrowing exponent short"
+msgstr "숏 차입 지수"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -6448,6 +7092,7 @@ msgid "Decentralised permissionless on-chain exchange with deep liquidity and lo
 msgstr "2021년부터 운영 중인 깊은 유동성과 낮은 비용의 탈중앙화 무허가 온체인 거래소"
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
 msgid "TOTAL VOLUME"
 msgstr "총 거래량"
 
@@ -6489,6 +7134,10 @@ msgstr "<0>{0}</0> 수령"
 msgid "Receive"
 msgstr "수령"
 
+#: src/pages/DebugOracleKeeper/parts.tsx
+msgid "ENDPOINT"
+msgstr "엔드포인트"
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Display settings"
 msgstr "화면 설정"
@@ -6501,6 +7150,11 @@ msgstr "주문 체결됨"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "풀"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool long amount"
+msgstr "롱 풀 수량"
 
 #: src/components/GmList/GlvList.tsx
 msgid "VAULT"
@@ -6525,6 +7179,10 @@ msgstr "수수료 및 순 가격 영향 차감 후 실현 PnL"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
 msgstr "{nativeTokenSymbol} 전송"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "LIQUIDITY SHORT"
+msgstr "숏 유동성"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Meme"
@@ -6564,6 +7222,11 @@ msgstr "구성 비율"
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable rebates"
 msgstr "수령 가능한 리베이트"
+
+#: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+msgid "Secondary"
+msgstr "보조"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signing cancelled"
@@ -6659,9 +7322,17 @@ msgstr "{0}에서 코드 사용 가능 여부를 확인할 수 없습니다. 코
 msgid "Rebates"
 msgstr "리베이트"
 
+#: src/pages/AccountEvents/AccountEvents.tsx
+msgid "Events for account:"
+msgstr "계정 이벤트:"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
 msgstr "AVG. SIZE"
+
+#: src/pages/DecodeError/DecodeError.tsx
+msgid "Decode error"
+msgstr "오류 디코딩"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
@@ -6685,6 +7356,9 @@ msgid "Claims"
 msgstr "수령 내역"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/TradersStats.tsx
+#: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Date"
 msgstr "날짜"
@@ -6697,6 +7371,10 @@ msgstr "유동성 및 가격 조건이 충족되면 체결됩니다"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Failed settlement of funding fees"
 msgstr "펀딩비 정산 실패"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Distribution rate per day, USD"
+msgstr "일일 분배율, USD"
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show for 30 days"
@@ -6721,6 +7399,10 @@ msgstr "판매 가능"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Select positions where accrued funding fee exceeds the {0} gas cost to settle"
 msgstr "발생한 펀딩비가 정산에 필요한 {0} Gas 비용을 초과하는 포지션을 선택하십시오"
+
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "No from token address"
+msgstr "출발 토큰 주소 없음"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"
@@ -6787,9 +7469,18 @@ msgstr "{glvOrGm} 입금: {0}"
 msgid "Force external swaps"
 msgstr "외부 스왑 강제 사용"
 
+#: src/pages/TestPermits/TestPermits.tsx
+#: src/pages/TestPermits/TestPermits.tsx
+msgid "Onchain data error"
+msgstr "온체인 데이터 오류"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr "주문 요청 체결 중..."
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Negative impact factor"
+msgstr "음의 영향 계수"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete transfer"
@@ -6815,6 +7506,10 @@ msgstr "승인이 제출되었습니다<0/><1/><2>상태 보기</2>"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Referral discount"
 msgstr "추천 할인"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Threshold for decrease funding"
+msgstr "펀딩 감소 임계값"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn GMX rewards by staking"
@@ -6855,6 +7550,10 @@ msgstr "거래가 전송되었습니다"
 msgid "Perfectswap"
 msgstr "Perfectswap"
 
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Referral code"
+msgstr "리퍼럴 코드"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6885,6 +7584,10 @@ msgstr "문제가 발생했습니다"
 msgid "Freeze"
 msgstr "동결"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "CONFIG"
+msgstr "설정"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -6897,6 +7600,11 @@ msgstr "마켓 검색"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "음수 펀딩비"
+
+#: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/RpcDebug/parts.tsx
+msgid "FAILURES"
+msgstr "실패"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
@@ -7016,6 +7724,8 @@ msgstr "{gmOrGlvLabel} 판매가 완료되었으나, Base로의 브릿지가 실
 #: src/domain/synthetics/orders/utils.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Long"
 msgstr "롱"
 
@@ -7060,9 +7770,21 @@ msgstr "수익률 볼트"
 msgid "{title}"
 msgstr "{title}"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool USD capacity (swap)"
+msgstr "풀 USD 용량 (스왑)"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool amount capacity"
+msgstr "풀 수량 용량"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "가장 빠름"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "POOL BALANCE"
+msgstr "풀 잔액"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in tooltips and execution details. <0>Read more</0>"
@@ -7113,6 +7835,15 @@ msgstr "DeFi"
 #: src/components/GmList/GmList.tsx
 msgid "SNAPSHOT"
 msgstr "스냅샷"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "BLOCK"
+msgstr "블록"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pending borrowing fee"
+msgstr "대기 중인 차입 수수료"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "No active management required"
@@ -7296,6 +8027,10 @@ msgstr "구매"
 msgid "Copy technical details"
 msgstr "기술 세부 정보 복사"
 
+#: src/pages/RpcDebug/parts.tsx
+msgid "TRACKER"
+msgstr "트래커"
+
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -7352,6 +8087,11 @@ msgstr "비활성화 실패"
 msgid "Share your GMX trade on X"
 msgstr "GMX 거래를 X에 공유하기"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool short amount"
+msgstr "숏 풀 수량"
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "수수료 APY"
@@ -7387,6 +8127,10 @@ msgstr "브릿지 인 실패"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversified exposure to GMX's markets. The Vault auto-rebalances to high-demand markets, unlocking higher potential yield compared to isolated pools."
 msgstr "GLV (GMX Liquidity Vault)는 다양한 GM 토큰을 보유하여 GMX 시장에 대한 분산 노출을 제공합니다. Vault는 수요가 높은 시장으로 자동 리밸런싱하여 격리 풀 대비 더 높은 잠재 수익률을 제공합니다."
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "RESPONSE"
+msgstr "응답"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High TWAP network fee"
@@ -7480,6 +8224,15 @@ msgstr "아래 한도까지 GM을 {0}(으)로 판매할 수 있습니다. 나머
 msgid "Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "최대 100x 레버리지와 호가창 깊이에 의존하지 않는 보장된 온체인 유동성의 혜택을 누리십시오"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Reserved positive impact"
+msgstr "예약된 양의 영향"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max rate short"
+msgstr "최대 숏 비율"
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "알림"
@@ -7487,6 +8240,10 @@ msgstr "알림"
 #: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 msgid "Take-Profit at 100%. Reduce existing orders to add more."
 msgstr "익절매가 100%에 도달했습니다. 추가하려면 기존 주문을 축소하십시오."
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Topics"
+msgstr "토픽"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -7504,6 +8261,10 @@ msgstr "베스팅은 {chainNames}에서만 가능합니다. 계속하려면 네�
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "esGMX rewards:"
 msgstr "esGMX 보상:"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Optimal usage factor long"
+msgstr "최적 롱 사용 비율"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -7565,6 +8326,14 @@ msgstr "Stabilize Protocol"
 msgid "Auto-cancel TP/SL"
 msgstr "TP/SL 자동 취소"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "LIQUIDITY LONG"
+msgstr "롱 유동성"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "PnL short"
+msgstr "숏 PnL"
+
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized perpetual exchange"
 msgstr "GMX | 탈중앙화 무기한 거래소"
@@ -7576,6 +8345,10 @@ msgstr "전체 자산"
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
 msgstr "세부 내역 숨기기"
+
+#: src/pages/ParseTransaction/ParseTransaction.tsx
+msgid "Order data unavailable yet"
+msgstr "주문 데이터를 아직 사용할 수 없습니다"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Earn fees from leverage trading, swaps, and spreads"
@@ -7618,6 +8391,7 @@ msgstr "정산 중..."
 msgid "Leaderboard"
 msgstr "리더보드"
 
+#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "추천된 트레이더"
@@ -7663,6 +8437,10 @@ msgstr "RPC 오류. <0>chainlist.org</0>에서 지갑의 RPC를 업데이트하�
 msgid "Claim funding fees"
 msgstr "펀딩비 수령"
 
+#: src/pages/TestPermits/TestPermits.tsx
+msgid "Token permit testing"
+msgstr "토큰 허가 테스트"
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy GMX directly"
 msgstr "GMX 직접 구매"
@@ -7682,9 +8460,17 @@ msgstr "오류, 다시 시도"
 msgid "Available to trade"
 msgstr "거래 가능 금액"
 
+#: src/pages/RpcDebug/parts.tsx
+msgid "Multicall simulation"
+msgstr "Multicall 시뮬레이션"
+
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "ACCEPTABLE PRICE"
 msgstr "허용 가격"
+
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "No disabled markets"
+msgstr "비활성화된 시장 없음"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral codes"
@@ -7697,6 +8483,11 @@ msgstr "선택 기간 대비 벤치마크 성과"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code updated"
 msgstr "추천 코드가 업데이트되었습니다"
+
+#: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/AccountEvents/AccountEvents.tsx
+msgid "Account events"
+msgstr "계정 이벤트"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -7848,6 +8639,11 @@ msgstr "소개"
 msgid "24h high"
 msgstr "24시간 최고가"
 
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
+msgid "FACTOR"
+msgstr "계수"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Insufficient liquidity for pay-to-collateral swap at trigger price."
 msgstr "조건가에서 담보 전환을 위한 유동성이 부족합니다."
@@ -7863,6 +8659,10 @@ msgstr "GMX trading chat"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "PnL long"
+msgstr "롱 PnL"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "For detailed stats"
@@ -7892,6 +8692,10 @@ msgstr "스왑"
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 스테이킹 보상은 어디서 발생하나요?"
 
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "GMX token icon"
+msgstr "GMX 토큰 아이콘"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "long"
 msgstr "롱"
@@ -7899,6 +8703,10 @@ msgstr "롱"
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
 msgstr "롱 순 비율 / 1시간"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "EVENT"
+msgstr "이벤트"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
@@ -7920,6 +8728,10 @@ msgstr "조건가가 최저 지정가보다 낮습니다"
 msgid "GLV vaults:"
 msgstr "GLV 볼트:"
 
+#: src/components/DownloadAsCsv/DownloadAsCsv.tsx
+msgid "Download as CSV"
+msgstr "CSV로 다운로드"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr "Oracle keeper 모니터링"
@@ -7940,6 +8752,7 @@ msgid "Unknown order"
 msgstr "알 수 없는 주문"
 
 #: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/TradeBox/TradeBoxRows/EntryPriceRow.tsx
 msgid "Entry price"
 msgstr "진입가"
@@ -7960,9 +8773,9 @@ msgstr "{column}"
 msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
 msgstr "{chainName} 지갑에 가스비를 위한 {localizedList}이(가) 부족합니다. <0>{localizedList} 구매</0>"
 
-#: src/components/OrderItem/OrderItem.tsx
-msgid "<0>Executes when oracle price is {0} {1}.</0><1/><2>In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if price impact exceeds your acceptable price.</2>"
-msgstr "<0>Oracle 가격이 {0} {1}일 때 체결됩니다.</0><1/><2>드문 경우, 체인 중단으로 Oracle 보고가 없거나 가격 영향이 허용 가격을 초과하면 주문이 체결되지 않을 수 있습니다.</2>"
+#: src/pages/RpcDebug/parts.tsx
+msgid "No trackers registered"
+msgstr "등록된 트래커 없음"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request withdraw"
@@ -7997,6 +8810,15 @@ msgstr "조건"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "7d"
 msgstr "7일"
+
+#: src/pages/TestPermits/TestPermits.tsx
+msgid "Token permit"
+msgstr "토큰 허가"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Pool USD short"
+msgstr "풀 USD 숏"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
@@ -8110,6 +8932,10 @@ msgstr "Generative Market eXplore - AIGMX agent"
 msgid "Smart wallets not supported on this network"
 msgstr "이 네트워크에서는 스마트 지갑이 지원되지 않습니다"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Lent position impact pool amount"
+msgstr "대출 포지션 영향 풀 수량"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "숏"
@@ -8191,6 +9017,10 @@ msgstr "어제"
 msgid "Remind me later"
 msgstr "나중에 알림"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Exponent (negative)"
+msgstr "지수 (음수)"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Technical updates and developer announcements"
 msgstr "기술 업데이트 및 개발자 공지"
@@ -8198,6 +9028,10 @@ msgstr "기술 업데이트 및 개발자 공지"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Switch to account {receiver} to complete this transfer"
 msgstr "이 전송을 완료하려면 계정 {receiver}(으)로 전환하십시오"
+
+#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+msgid "No distributions to claim"
+msgstr "수령할 배분 내역 없음"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Copy link"
@@ -8224,6 +9058,7 @@ msgstr "자금 브릿지 중..."
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network fee"
@@ -8261,6 +9096,10 @@ msgstr "GMX와 익명 채팅"
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 취소됨"
 
+#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
+msgid "No to token address"
+msgstr "수신 토큰 주소 없음"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -8278,6 +9117,14 @@ msgstr "기존 포지션이 {0} 담보를 사용 중입니다. 이 주문은 해
 #: src/components/Errors/errorToasts.tsx
 msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
 msgstr "{1}에서 가스비를 위한 {0}이(가) 부족합니다<0/><1/><2>{3}(으)로 {2}을(를) 구매하거나 전송하십시오</2>"
+
+#: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
+msgid "TIMEKEY"
+msgstr "TIMEKEY"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min position size"
+msgstr "최소 포지션 크기"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
@@ -8404,6 +9251,10 @@ msgstr "{longOrShort} 포지션은 펀딩비를 지불하지 않으며 시간당
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."
 msgstr "Express Trading 매개변수 로딩 중..."
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "POOL CAP LONG"
+msgstr "롱 풀 한도"
 
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"

@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
@@ -98,7 +98,7 @@ export function GmxCard({
               <div className="flex flex-wrap items-center justify-between gap-8">
                 <div className="flex items-center gap-8">
                   <div className="App-card-title-mark-icon">
-                    <img src={currentIcons.gmx} width="40" alt="GMX Token Icon" />
+                    <img src={currentIcons.gmx} width="40" alt={t`GMX token icon`} />
                   </div>
                   <div>
                     <div className="text-body-medium font-medium">GMX</div>
@@ -106,7 +106,7 @@ export function GmxCard({
                 </div>
                 <div className="h-32">
                   <Button size="small" variant="secondary" to="/buy_gmx">
-                    <img src={currentIcons.gmx} width="16" alt="GMX Icon" />
+                    <img src={currentIcons.gmx} width="16" alt={t`GMX icon`} />
                     <Trans>Buy GMX</Trans>
                   </Button>
                 </div>

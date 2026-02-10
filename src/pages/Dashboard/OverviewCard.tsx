@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
@@ -398,23 +398,23 @@ export function OverviewCard({
                       <br />
                       <br />
                       <StatsTooltipRow
-                        label="Arbitrum"
+                        label={t`Arbitrum`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvlArbitrum, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Avalanche"
+                        label={t`Avalanche`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Botanix"
+                        label={t`Botanix`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvlBotanix, USD_DECIMALS, true, 2)}
                       />
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
-                        label="Total"
+                        label={t`Total`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
                       />
@@ -438,18 +438,18 @@ export function OverviewCard({
                       <br />
                       <br />
                       <StatsTooltipRow
-                        label="Arbitrum"
+                        label={t`Arbitrum`}
                         showDollar={false}
                         value={formatAmountHuman(glpTvlArbitrum, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Avalanche"
+                        label={t`Avalanche`}
                         showDollar={false}
                         value={formatAmountHuman(glpTvlAvalanche, USD_DECIMALS, true, 2)}
                       />
                       <div className="my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
-                        label="Total"
+                        label={t`Total`}
                         showDollar={false}
                         value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
                       />
@@ -475,23 +475,23 @@ export function OverviewCard({
                       <br />
                       <br />
                       <StatsTooltipRow
-                        label="Arbitrum"
+                        label={t`Arbitrum`}
                         showDollar={false}
                         value={formatAmountHuman(gmTvlArbitrum, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Avalanche"
+                        label={t`Avalanche`}
                         showDollar={false}
                         value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Botanix"
+                        label={t`Botanix`}
                         showDollar={false}
                         value={formatAmountHuman(gmTvlBotanix, USD_DECIMALS, true, 2)}
                       />
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
-                        label="Total"
+                        label={t`Total`}
                         showDollar={false}
                         value={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
                       />

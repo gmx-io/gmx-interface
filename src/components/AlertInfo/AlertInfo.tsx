@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 
 import InfoIconComponent from "img/ic_info.svg?react";
 import WarnIconComponent from "img/ic_warn.svg?react";
+import { t } from "@lingui/macro";
 
 type Props = {
   type: "warning" | "info";
@@ -43,7 +44,7 @@ export function AlertInfo({
       onClick={onClick}
     >
       <div className="pr-6 pt-2">
-        <Icon aria-label="Alert Icon" className="block" />
+        <Icon aria-label={t`Alert icon`} className="block" />
       </div>
       <div className="text-body-small">{children}</div>
     </div>

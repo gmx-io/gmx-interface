@@ -24,6 +24,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Loader from "components/Loader/Loader";
 import PageTitle from "components/PageTitle/PageTitle";
 import { Table, TableTd, TableTh, TableTr } from "components/Table/Table";
+import { t, Trans } from "@lingui/macro";
 
 type EventLogEntry = {
   eventName: string;
@@ -265,7 +266,7 @@ export function AccountEvents() {
     return (
       <AppPageLayout>
         <div className="default-container page-layout">
-          <PageTitle title="Account Events" className="p-12" />
+          <PageTitle title={t`Account events`} className="p-12" />
           <div className="text-center text-red-500">
             Please connect your wallet or provide an account address in the URL
           </div>
@@ -278,11 +279,13 @@ export function AccountEvents() {
     <AppPageLayout>
       <div className="default-container page-layout">
         <PageTitle
-          title="Account Events"
+          title={t`Account events`}
           subtitle={
             <div className="text-body-medium mb-20">
               <div className="mb-8 flex items-center gap-4">
-                <span>Events for account:</span>
+                <span>
+                  <Trans>Events for account:</Trans>
+                </span>
                 <AddressView noLink address={account} size={20} />
               </div>
               {fromBlock !== null && fromTimestamp !== null && (
@@ -328,11 +331,21 @@ export function AccountEvents() {
           <Table>
             <thead>
               <TableTr>
-                <TableTh>Event Name</TableTh>
-                <TableTh>Type</TableTh>
-                <TableTh>Time</TableTh>
-                <TableTh>Transaction</TableTh>
-                <TableTh>Event Data</TableTh>
+                <TableTh>
+                  <Trans>EVENT NAME</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>TYPE</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>TIME</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>TRANSACTION</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>EVENT DATA</Trans>
+                </TableTh>
               </TableTr>
             </thead>
             <tbody>

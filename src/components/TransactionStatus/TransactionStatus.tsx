@@ -6,6 +6,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
+import { Trans } from "@lingui/macro";
 
 export type TransactionStatusType = "muted" | "loading" | "success" | "error";
 
@@ -26,7 +27,11 @@ export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
       <div>{text}</div>
       <div className="flex flex-shrink-0 items-center justify-center">
         {status === "loading" && <SpinnerIcon className="spin size-15 text-typography-primary" />}
-        {status !== "loading" && _txnLink && <ExternalLink href={_txnLink}>View</ExternalLink>}
+        {status !== "loading" && _txnLink && (
+          <ExternalLink href={_txnLink}>
+            <Trans>View</Trans>
+          </ExternalLink>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
@@ -134,12 +134,12 @@ function OrderSize({
           content={
             <>
               <StatsTooltipRow
-                label={"Key"}
+                label={t`Key`}
                 value={<div className="debug-key muted">{order.key}</div>}
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={"Amount"}
+                label={t`Amount`}
                 value={<div className="debug-key muted">{order.minOutputAmount.toString()}</div>}
                 showDollar={false}
               />
@@ -230,7 +230,7 @@ function OrderSize({
             {showDebugValues && (
               <div className="OrderItem-tooltip-row">
                 <StatsTooltipRow
-                  label={"Key"}
+                  label={t`Key`}
                   value={<div className="debug-key muted">{positionOrder.key}</div>}
                   showDollar={false}
                 />
@@ -345,18 +345,7 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return (
-      <TooltipWithPortal
-        handle={
-          <span className={className}>{isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}</span>
-        }
-        position="bottom-end"
-        content={
-          <Trans>
-            In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if there is
-            insufficient liquidity.
-          </Trans>
-        }
-      />
+      <span className={className}>{isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}</span>
     );
   }
 
@@ -375,19 +364,11 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
         renderContent={() => {
           return (
             <Trans>
-              <p>
-                Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
-                {formatUsd(positionOrder.triggerPrice, {
-                  displayDecimals: priceDecimals,
-                  visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-                })}
-                .
-              </p>
-              <br />
-              <p>
-                In rare cases, orders may not execute, e.g., if the chain is down with no oracle reports or if price
-                impact exceeds your acceptable price.
-              </p>
+              Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
+              {formatUsd(positionOrder.triggerPrice, {
+                displayDecimals: priceDecimals,
+                visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+              })}
             </Trans>
           );
         }}
@@ -790,7 +771,9 @@ function OrderItemSmall({
       <AppCardSection>
         {showDebugValues && (
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">Key</div>
+            <div className="font-medium text-typography-secondary">
+              <Trans>Key</Trans>
+            </div>
             <div className="debug-key muted">{order.key}</div>
           </div>
         )}

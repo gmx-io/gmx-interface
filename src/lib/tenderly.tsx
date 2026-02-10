@@ -19,6 +19,7 @@ import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
 import { ISigner } from "./transactions/iSigner";
 import { getPublicClientWithRpc } from "./wallets/rainbowKitConfig";
+import { Trans } from "@lingui/macro";
 
 export type TenderlyConfig = {
   accountSlug: string;
@@ -241,7 +242,10 @@ async function processSimulation({
       <>
         {sentReports.map(({ url, comment }) => (
           <div key={url}>
-            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+            <ExternalLink href={url}>
+              <Trans>View transaction</Trans>
+            </ExternalLink>{" "}
+            for {comment}
           </div>
         ))}
       </>,
@@ -257,7 +261,10 @@ async function processSimulation({
         <br />
         {sentReports.map(({ url, comment }) => (
           <div key={url}>
-            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+            <ExternalLink href={url}>
+              <Trans>View transaction</Trans>
+            </ExternalLink>{" "}
+            for {comment}
           </div>
         ))}
       </>

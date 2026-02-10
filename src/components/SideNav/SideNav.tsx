@@ -70,7 +70,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <img src={logoIcon} alt="GMX Logo" />
+      <img src={logoIcon} alt={t`GMX logo`} />
       {!isCollapsed ? <LogoText /> : null}
     </Link>
   );

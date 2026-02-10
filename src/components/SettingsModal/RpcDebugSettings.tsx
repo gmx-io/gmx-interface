@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { ChangeEvent, useCallback, useState } from "react";
 
 import { getChainName } from "config/chains";
@@ -89,7 +89,7 @@ export function RpcDebugSettings() {
                     <button
                       className="absolute right-8 top-8 flex h-20 w-20 items-center justify-center rounded-4 text-slate-400 hover:bg-slate-500 hover:text-white"
                       onClick={() => handleRemoveEndpoint(endpoint.url)}
-                      aria-label="Remove endpoint"
+                      aria-label={t`Remove endpoint`}
                     >
                       <CloseIcon className="size-16" />
                     </button>

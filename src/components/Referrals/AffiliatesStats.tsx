@@ -365,7 +365,7 @@ function AffiliatesStats({
                 {currentAffiliatesData.map((stat, index) => {
                   return (
                     <TableTr key={index}>
-                      <TableTd data-label="Referral Code">
+                      <TableTd data-label={t`REFERRAL CODE`}>
                         <div className="flex items-center gap-8">
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
@@ -391,7 +391,7 @@ function AffiliatesStats({
                           <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                         </div>
                       </TableTd>
-                      <TableTd data-label="Total Volume">
+                      <TableTd data-label={t`TOTAL VOLUME`}>
                         <Tooltip
                           handle={formatBigUsd(stat.volume)}
                           handleClassName="numbers"
@@ -413,10 +413,10 @@ function AffiliatesStats({
                           )}
                         />
                       </TableTd>
-                      <TableTd data-label="Traders Referred" className="numbers">
+                      <TableTd data-label={t`TRADERS REFERRED`} className="numbers">
                         {stat.registeredReferralsCount}
                       </TableTd>
-                      <TableTd data-label="Total Rebates">
+                      <TableTd data-label={t`TOTAL REBATES`}>
                         <Tooltip
                           handle={formatBigUsd(stat.affiliateRebateUsd)}
                           handleClassName="numbers"
@@ -526,9 +526,9 @@ function AffiliatesStats({
                   const explorerURL = getExplorerUrl(chainId);
                   return (
                     <TableTr key={index}>
-                      <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
-                      <TableTd data-label="Type">{rebateType}</TableTd>
-                      <TableTd data-label="Amount">
+                      <TableTd data-label={t`Date`}>{formatDate(rebate.timestamp)}</TableTd>
+                      <TableTd data-label={t`Type`}>{rebateType}</TableTd>
+                      <TableTd data-label={t`Amount`}>
                         <Tooltip
                           className="whitespace-nowrap"
                           handle={

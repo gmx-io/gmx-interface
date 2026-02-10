@@ -21,6 +21,7 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { t, Trans } from "@lingui/macro";
 
 export function TestPermits() {
   const { account } = useWallet();
@@ -165,7 +166,9 @@ export function TestPermits() {
   return (
     <AppPageLayout>
       <div className="mx-auto max-w-4xl p-4">
-        <h1 className="text-2xl mb-6 font-medium">Token Permit Testing</h1>
+        <h1 className="text-2xl mb-6 font-medium">
+          <Trans>Token permit testing</Trans>
+        </h1>
 
         <div className="mt-8 space-y-16">
           {tokens
@@ -214,7 +217,9 @@ export function TestPermits() {
                       </div>
                       {params?.error && (
                         <div>
-                          <span className="font-semibold text-red-500">Onchain data error</span>
+                          <span className="font-semibold text-red-500">
+                            <Trans>Onchain data error</Trans>
+                          </span>
                         </div>
                       )}
                     </div>
@@ -224,7 +229,7 @@ export function TestPermits() {
             })}
         </div>
 
-        <Modal isVisible={isModalOpen} setIsVisible={setIsModalOpen} label="Token Permit">
+        <Modal isVisible={isModalOpen} setIsVisible={setIsModalOpen} label={t`Token permit`}>
           {selectedToken && (
             <div className="flex min-w-[400px] flex-col  space-y-8">
               <div className="mb-6 flex flex-col space-x-4">
@@ -264,7 +269,9 @@ export function TestPermits() {
                   </div>
                   {selectedToken.isPermitDisabled && (
                     <div>
-                      <span className="font-semibold text-red-500">Onchain data error</span>
+                      <span className="font-semibold text-red-500">
+                        <Trans>Onchain data error</Trans>
+                      </span>
                     </div>
                   )}
                 </div>
@@ -272,16 +279,25 @@ export function TestPermits() {
 
               {permitData && (
                 <div className="rounded-xl text-slate-200 text-base bg-slate-800 p-6 shadow-inner">
-                  <h2 className="text-lg mb-4 font-medium tracking-wide text-typography-secondary">Permit Details</h2>
+                  <h2 className="text-lg mb-4 font-medium tracking-wide text-typography-secondary">
+                    <Trans>Permit details</Trans>
+                  </h2>
                   <div className="space-y-2">
                     <div>
-                      <span className="font-semibold">Deadline:</span>{" "}
+                      <span className="font-semibold">
+                        <Trans>Deadline:</Trans>
+                      </span>{" "}
                       {new Date(Number(permitData.deadline) * 1000).toLocaleString()}
                     </div>
                     <div>
-                      <span className="font-semibold">Value:</span> {permitData.value.toString()}
+                      <span className="font-semibold">
+                        <Trans>Value:</Trans>
+                      </span>{" "}
+                      {permitData.value.toString()}
                     </div>
-                    <div className="mb-1 mt-16 font-semibold">Signature:</div>
+                    <div className="mb-1 mt-16 font-semibold">
+                      <Trans>Signature:</Trans>
+                    </div>
                     <div className="rounded text-xs text-slate-300 space-y-1 overflow-x-auto p-3">
                       <div>
                         <span className="font-medium">r:</span> {permitData.r}

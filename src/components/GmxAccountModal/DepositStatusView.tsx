@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useEffect, useState } from "react";
 
@@ -135,7 +135,7 @@ export const DepositStatusView = () => {
             </div>
           </div>
         </div>
-        <img src={OneClickCoinImage} alt="One-Click" className="mr-6 mt-6 h-93 w-92 transform" />
+        <img src={OneClickCoinImage} alt={t`One-Click`} className="mr-6 mt-6 h-93 w-92 transform" />
       </div>
       <Button variant="primary" size="medium" onClick={onEnableOneClickClick} disabled={isSubaccountActivating}>
         {isSubaccountActivating ? <SpinnerIcon className="size-16 animate-spin" /> : null}

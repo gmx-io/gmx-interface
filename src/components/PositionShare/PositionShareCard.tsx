@@ -105,7 +105,9 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
             </div>
             <div className="flex gap-20 max-md:gap-10">
               <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Entry Price</p>
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
+                  <Trans>Entry price</Trans>
+                </p>
                 <p className="text-13 font-medium text-white">
                   {formatUsd(entryPrice, {
                     displayDecimals: priceDecimals,
@@ -114,7 +116,9 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 </p>
               </div>
               <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Mark Price</p>
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
+                  <Trans>Mark price</Trans>
+                </p>
                 <p className="text-13 font-medium text-white">
                   {formatUsd(markPrice, {
                     displayDecimals: priceDecimals,
@@ -124,7 +128,9 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               </div>
 
               <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Referral Code:</p>
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
+                  <Trans>Referral code</Trans>
+                </p>
                 {success && code ? (
                   <p className="text-13 font-medium text-white">{code}</p>
                 ) : (
