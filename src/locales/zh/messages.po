@@ -1058,6 +1058,7 @@ msgstr "GMX 基础"
 msgid "Alternative links can be found in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr "可以在 <0>文档</0> 中找到替代链接。通过点击同意，您接受 <1>条款与条件</1> 和 <2>推荐条款与条件</2>。"
 
+#: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "推荐代码"
@@ -2636,6 +2637,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly Settings"
 msgstr "Tenderly 设置"
+
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Referral Code"
+msgstr "使用的推荐代码"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."

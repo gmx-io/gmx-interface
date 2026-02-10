@@ -1058,6 +1058,7 @@ msgstr "GMX 펀더멘탈"
 msgid "Alternative links can be found in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr "<0>문서</0>에서 대체 링크를 찾을 수 있습니다. 동의를 클릭하면 <1>T&Cs</1> 및 <2>추천 T&Cs</2>를 수락합니다."
 
+#: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "추천인 코드"
@@ -2636,6 +2637,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly Settings"
 msgstr "Tenderly 설정"
+
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Referral Code"
+msgstr "사용된 추천인 코드"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."

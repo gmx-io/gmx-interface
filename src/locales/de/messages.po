@@ -1058,6 +1058,7 @@ msgstr "GMX-Grundlagen"
 msgid "Alternative links can be found in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr "Alternative Links finden Sie in den <0>Dokumenten</0>. Durch Klicken auf Zustimmen akzeptieren Sie die <1>AGB</1> und <2>Empfehlungs-AGB</2>."
 
+#: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "Referral Code"
@@ -2636,6 +2637,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly Settings"
 msgstr "Tenderly-Einstellungen"
+
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Referral Code"
+msgstr "Verwendeter Referral-Code"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."

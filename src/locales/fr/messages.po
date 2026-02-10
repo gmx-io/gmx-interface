@@ -1058,6 +1058,7 @@ msgstr "Fondamentaux GMX"
 msgid "Alternative links can be found in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr "Des liens alternatifs peuvent être trouvés dans les <0>docs</0>. En cliquant sur Accepter, vous acceptez les <1>CGU</1> et les <2>CGU de Parrainage</2>."
 
+#: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Referral Code"
 msgstr "Code de parrainage"
@@ -2636,6 +2637,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly Settings"
 msgstr "Paramètres Tenderly"
+
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Referral Code"
+msgstr "Code de parrainage utilisé"
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "You will be short {indexSymbol} only from your short position."

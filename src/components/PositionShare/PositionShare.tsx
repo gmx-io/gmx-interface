@@ -3,7 +3,7 @@ import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 
-import { useAffiliateCodes } from "domain/referrals";
+import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { Token } from "domain/tokens";
 import downloadImage from "lib/downloadImage";
 import { helperToast } from "lib/helperToast";
@@ -12,6 +12,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
+import useWallet from "lib/wallets/useWallet";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -82,7 +83,9 @@ function PositionShare({
   shareSource,
   isRpnl = false,
 }: Props) {
+  const { signer } = useWallet();
   const userAffiliateCode = useAffiliateCodes(chainId, account);
+  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(signer, chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
@@ -102,6 +105,16 @@ function PositionShare({
     return userAffiliateCode;
   }, [createdReferralCode, userAffiliateCode]);
   const hasReferralCode = Boolean(shareAffiliateCode?.code);
+
+  const { referralCodeOwnerKind, code } = useMemo(() => {
+    if (hasReferralCode && shareAffiliateCode?.code) {
+      return { referralCodeOwnerKind: "created" as const, code: shareAffiliateCode.code };
+    }
+    if (usedReferralCode) {
+      return { referralCodeOwnerKind: "used" as const, code: usedReferralCode };
+    }
+    return { referralCodeOwnerKind: null, code: null };
+  }, [hasReferralCode, shareAffiliateCode?.code, usedReferralCode]);
 
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
 
@@ -313,7 +326,8 @@ function PositionShare({
               markPrice={cachedPositionData.markPrice}
               pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
               pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
-              userAffiliateCode={shareAffiliateCode}
+              referralCodeOwnerKind={referralCodeOwnerKind}
+              code={code}
               ref={cardRef}
               loading={!uploadedImageInfo && !uploadedImageError}
               sharePositionBgImg={sharePositionBgImg}
