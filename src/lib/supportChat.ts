@@ -34,19 +34,20 @@ const TIME_PERIODS = getTimePeriodsInSeconds();
 export const useSupportChatUnreadCount = createGlobalState<number>(0);
 
 export function useEligibleToShowSupportChat() {
-  const { isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain, isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
   const { isConnected, address: account } = useAccount();
-  const isLargeAccountVolumeStats = useIsLargeAccountVolumeStats({ account });
+  const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
+    useIsLargeAccountVolumeStats({ account });
   const [supportChatWasEverShown] = useLocalStorageSerializeKey<boolean>(SUPPORT_CHAT_WAS_EVER_SHOWN_KEY, false);
 
-  const totalVolume = isLargeAccountVolumeStats.data?.totalVolume;
+  const totalVolume = largeAccountVolumeStatsData?.totalVolume;
 
   const isLargeAccountForSupportChat = useMemo(() => {
-    if (!isLargeAccountVolumeStats.data || totalVolume === undefined) {
+    if (!largeAccountVolumeStatsData || totalVolume === undefined) {
       return false;
     }
 
-    const { volumeInLast30DaysInfo } = isLargeAccountVolumeStats.data;
+    const { volumeInLast30DaysInfo } = largeAccountVolumeStatsData;
     const { maxDailyVolume, last14DaysVolume } = volumeInLast30DaysInfo;
 
     return (
@@ -54,26 +55,34 @@ export function useEligibleToShowSupportChat() {
       last14DaysVolume >= SUPPORT_CHAT_MIN_AGG_14_DAYS_VOLUME ||
       totalVolume >= SUPPORT_CHAT_MIN_AGG_ALL_TIME_VOLUME
     );
-  }, [isLargeAccountVolumeStats.data, totalVolume]);
+  }, [largeAccountVolumeStatsData, totalVolume]);
 
   const eligibleToShowSupportChat =
-    (isConnected && !isAccountTypeLoading && !isLargeAccountVolumeStats.isLoading && isLargeAccountForSupportChat) ||
+    (isConnected && !isAccountTypeLoading && !isLargeAccountVolumeStatsLoading && isLargeAccountForSupportChat) ||
     supportChatWasEverShown;
 
-  return eligibleToShowSupportChat;
+  return {
+    eligibleToShowSupportChat,
+    isNonEoaAccountOnAnyChain,
+    isNonEoaAccountOnAnyChainLoading: isAccountTypeLoading,
+    largeAccountVolumeStatsData,
+    isLargeAccountVolumeStatsLoading,
+  };
 }
 
 export function useSupportChat() {
-  const eligibleToShowSupportChat = useEligibleToShowSupportChat();
+  const {
+    eligibleToShowSupportChat,
+    isNonEoaAccountOnAnyChain,
+    isNonEoaAccountOnAnyChainLoading,
+    largeAccountVolumeStatsData,
+    isLargeAccountVolumeStatsLoading,
+  } = useEligibleToShowSupportChat();
   const { address: account } = useAccount();
   const [, setSupportChatWasEverShown] = useLocalStorageSerializeKey<boolean>(SUPPORT_CHAT_WAS_EVER_SHOWN_KEY, false);
   const { themeMode } = useTheme();
-  const { data: isLargeAccountVolumeStats, isLoading: isIsLargeAccountVolumeStatsLoading } =
-    useIsLargeAccountVolumeStats({ account });
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
-
-  const { isNonEoaAccountOnAnyChain, isLoading: isIsNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
 
   const { data: lastMonthAccountStats, loading: isLastMonthAccountStatsLoading } = usePeriodAccountStats(chainId, {
     account,
@@ -97,15 +106,19 @@ export function useSupportChat() {
     if (
       isWalletPortfolioUsdLoading ||
       isLastMonthAccountStatsLoading ||
-      isIsNonEoaAccountOnAnyChainLoading ||
-      isIsLargeAccountVolumeStatsLoading ||
+      isNonEoaAccountOnAnyChainLoading ||
+      isLargeAccountVolumeStatsLoading ||
       isGmxAccountUsdLoading
     ) {
       return undefined;
     }
 
     return {
-      "Total Volume": formatAmountForMetrics(isLargeAccountVolumeStats?.totalVolume, USD_DECIMALS, "toSecondOrderInt"),
+      "Total Volume": formatAmountForMetrics(
+        largeAccountVolumeStatsData?.totalVolume,
+        USD_DECIMALS,
+        "toSecondOrderInt"
+      ),
       "Last 30d Volume": formatAmountForMetrics(lastMonthAccountStats?.volume, USD_DECIMALS, "toSecondOrderInt"),
       "Wallet Portfolio USD": formatAmountForMetrics(walletPortfolioUsd, USD_DECIMALS, "toSecondOrderInt"),
       "GMX Account Portfolio USD": formatAmountForMetrics(gmxAccountUsd, USD_DECIMALS, "toSecondOrderInt"),
@@ -115,10 +128,10 @@ export function useSupportChat() {
   }, [
     isWalletPortfolioUsdLoading,
     isLastMonthAccountStatsLoading,
-    isIsNonEoaAccountOnAnyChainLoading,
-    isIsLargeAccountVolumeStatsLoading,
+    isNonEoaAccountOnAnyChainLoading,
+    isLargeAccountVolumeStatsLoading,
     isGmxAccountUsdLoading,
-    isLargeAccountVolumeStats?.totalVolume,
+    largeAccountVolumeStatsData?.totalVolume,
     lastMonthAccountStats?.volume,
     walletPortfolioUsd,
     gmxAccountUsd,

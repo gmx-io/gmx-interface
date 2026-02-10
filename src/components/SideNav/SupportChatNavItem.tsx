@@ -18,7 +18,7 @@ interface SupportChatNavItemProps {
 }
 
 export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemProps) {
-  const eligibleToShowSupportChat = useEligibleToShowSupportChat();
+  const { eligibleToShowSupportChat } = useEligibleToShowSupportChat();
   const [supportChatWasEverClicked, setSupportChatWasEverClicked] = useLocalStorageSerializeKey<boolean>(
     SUPPORT_CHAT_WAS_EVER_CLICKED_KEY,
     false
