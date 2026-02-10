@@ -7126,6 +7126,10 @@ msgstr "Erstellung des Referral-Codes fehlgeschlagen."
 msgid "GMX dashboards and analytics."
 msgstr "GMX-Dashboards und -Analysen."
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Temporary disabled"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "Externer Tausch {0} zu {1}"

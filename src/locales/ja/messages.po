@@ -7126,6 +7126,10 @@ msgstr "紹介コード作成に失敗しました。"
 msgid "GMX dashboards and analytics."
 msgstr "GMXダッシュボードと分析。"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Temporary disabled"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "外部スワップ {0} から {1}"

@@ -176,11 +176,11 @@ const CONTRACTS_CHAIN_CONFIGS = {
     wrappedTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDM",
     highExecutionFee: 5,
-    shouldUseMaxPriorityFeePerGas: false,
+    shouldUseMaxPriorityFeePerGas: true,
     defaultExecutionFeeBufferBps: 3000, // 30%
     maxFeePerGas: undefined,
     gasPricePremium: 0n,
-    maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
+    maxPriorityFeePerGas: 500000n, // 0.0005 gwei
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
     gasPriceBuffer: 2000n, // 20%

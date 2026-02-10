@@ -7126,6 +7126,10 @@ msgstr "推荐代码创建失败。"
 msgid "GMX dashboards and analytics."
 msgstr "GMX 仪表板和分析。"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Temporary disabled"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "外部交换 {0} 到 {1}"

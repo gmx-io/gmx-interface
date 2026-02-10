@@ -7126,6 +7126,10 @@ msgstr "Creación del código de referido fallida."
 msgid "GMX dashboards and analytics."
 msgstr "Paneles y análisis de GMX."
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Temporary disabled"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
 msgstr "Intercambio Externo {0} a {1}"
