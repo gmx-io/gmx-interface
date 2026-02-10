@@ -72,17 +72,15 @@ export function DynamicLine({
       return;
     }
 
-    chart.dataReady(() => {
-      const range = chart.getVisibleRange();
+    let cancelled = false;
 
-      if (range.from === 0 && range.to === 0) {
-        chart.onVisibleRangeChanged().subscribe(null, init, true);
-      } else {
-        init();
+    const init = () => {
+      if (cancelled) {
+        return;
       }
-    });
 
-    function init() {
+      lineApi.current?.remove();
+
       lineApi.current = chart!
         .createOrderLine({ disableUndo: true })
         .setText(title)
@@ -146,9 +144,26 @@ export function DynamicLine({
       } else {
         lineApi.current.setLineLength(-1, "pixel");
       }
-    }
+    };
+
+    chart.dataReady(() => {
+      if (cancelled) {
+        return;
+      }
+
+      const range = chart.getVisibleRange();
+
+      if (range.from === 0 && range.to === 0) {
+        chart.onVisibleRangeChanged().subscribe(null, init, true);
+      } else {
+        init();
+      }
+    });
 
     return () => {
+      cancelled = true;
+      chart.onVisibleRangeChanged().unsubscribe(null, init);
+
       lineApi.current?.remove();
       lineApi.current = undefined;
     };
