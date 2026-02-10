@@ -443,6 +443,10 @@ msgstr "Empfehlungscode-Transaktion wird gesendet"
 msgid "Funding exponent"
 msgstr "Finanzierungsexponent"
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
+msgstr "<0>Kein KYC, kein langwieriges Onboarding und keine Einzahlung erforderlich. Alles, was Sie benötigen, ist eine Self-Custody-Wallet:</0><1><2>Verbinden Sie eine beliebige EVM-Wallet (z. B. MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger usw.)</2><3>Wählen Sie ein unterstütztes Blockchain-Netzwerk, auf dem Sie Guthaben haben</3><4>Beginnen Sie mit dem Handel</4></1><5>Sie können direkt mit Guthaben auf Arbitrum, MegaETH, Avalanche, Solana oder Botanix handeln oder auf Ihr GMX Account einzahlen, um von jedem unterstützten Multichain-Netzwerk aus zu handeln, einschließlich Ethereum, Base und BSC.</5>"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "Token auswählen"
@@ -2399,10 +2403,6 @@ msgstr "GUTHABEN"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX market token price chart"
 msgstr "GMX Markttoken-Preisdiagramm"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network.</5>"
-msgstr "<0>Kein KYC, kein langwieriges Onboarding und keine Einzahlung erforderlich. Alles, was Sie benötigen, ist ein Self-Custody Wallet:</0><1><2>Verbinden Sie ein beliebiges EVM Wallet (wie MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger usw.)</2><3>Wählen Sie ein unterstütztes Blockchain-Netzwerk, auf dem Sie Guthaben haben</3><4>Beginnen Sie mit dem Handel</4></1><5>Sie können direkt mit Guthaben auf Arbitrum, Avalanche, Solana oder Botanix handeln oder auf Ihr GMX Account einzahlen, um von jedem unterstützten Multichain-Netzwerk aus zu handeln.</5>"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "May be higher on other sites that include position collateral."
@@ -5199,6 +5199,10 @@ msgstr "Sie verlassen GMX.io zu einer externen, unabhängigen Website"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL relativ zum eingesetzten Kapital (Kapitalrendite)"
+
+#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+msgid "Alternative links are in the <0>docs</0>. By clicking Launch app you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
+msgstr "Alternative Links finden Sie in den <0>Docs</0>. Durch Klicken auf Launch app akzeptieren Sie die <1>AGB</1> und die <2>Empfehlungs-AGB</2>."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
@@ -9229,10 +9233,6 @@ msgstr "Zum Einzahlen verfügbar"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter a referral code to get fee discounts"
 msgstr "Geben Sie einen Empfehlungscode ein, um Gebührenrabatte zu erhalten"
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
-msgstr "Alternative Links finden Sie in den <0>Docs</0>. Durch Klicken auf Zustimmen akzeptieren Sie die <1>AGB</1> und die <2>Empfehlungs-AGB</2>."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"

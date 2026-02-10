@@ -443,6 +443,10 @@ msgstr "Enviando transacción de código de referido"
 msgid "Funding exponent"
 msgstr "Exponente de financiación"
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
+msgstr "<0>Sin KYC, sin procesos de registro prolongados y sin depósito requerido. Todo lo que necesita es un monedero de autocustodia:</0><1><2>Conecte cualquier monedero EVM (como MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Seleccione una red blockchain compatible donde tenga fondos disponibles</3><4>Empiece a operar</4></1><5>Puede operar directamente utilizando fondos en Arbitrum, MegaETH, Avalanche, Solana o Botanix, o depositar en su GMX Account para operar desde cualquier red Multichain compatible, incluyendo Ethereum, Base y BSC.</5>"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "Seleccionar token"
@@ -2399,10 +2403,6 @@ msgstr "SALDO"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX market token price chart"
 msgstr "Gráfico de precio del token de mercado GMX"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network.</5>"
-msgstr "<0>Sin KYC, sin registro prolongado y sin depósito requerido. Solo necesita un monedero de autocustodia:</0><1><2>Conecte cualquier monedero EVM (como MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Seleccione una red blockchain compatible donde tenga fondos disponibles</3><4>Comience a operar</4></1><5>Puede operar directamente utilizando fondos en Arbitrum, Avalanche, Solana o Botanix, o depositar en su GMX Account para operar desde cualquier red Multichain compatible.</5>"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "May be higher on other sites that include position collateral."
@@ -5199,6 +5199,10 @@ msgstr "Abandonando GMX.io hacia un sitio web independiente de terceros"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL relativo al capital utilizado (rendimiento del capital)"
+
+#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+msgid "Alternative links are in the <0>docs</0>. By clicking Launch app you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
+msgstr "Los enlaces alternativos se encuentran en la <0>documentación</0>. Al hacer clic en Iniciar aplicación, usted acepta los <1>T&Cs</1> y los <2>Referral T&Cs</2>."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
@@ -9229,10 +9233,6 @@ msgstr "Disponible para depositar"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter a referral code to get fee discounts"
 msgstr "Introduzca un código de referido para obtener descuentos en comisiones"
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
-msgstr "Los enlaces alternativos se encuentran en la <0>documentación</0>. Al hacer clic en Aceptar, usted acepta los <1>T&Cs</1> y los <2>T&Cs de referidos</2>."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"

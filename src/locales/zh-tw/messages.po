@@ -443,6 +443,10 @@ msgstr "正在發送推薦碼交易"
 msgid "Funding exponent"
 msgstr "資金指數"
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
+msgstr "<0>無需 KYC、無需冗長的開戶流程，也無需存入資金。您只需要一個自託管錢包：</0><1><2>連接任何 EVM 錢包（如 MetaMask、Rabby、Coinbase Wallet、Trust Wallet、OKX Wallet、Ledger 等）</2><3>選擇一個您有可用資金的受支援區塊鏈網路</3><4>開始交易</4></1><5>您可以直接使用 Arbitrum、MegaETH、Avalanche、Solana 或 Botanix 上的資金進行交易，或存入您的 GMX Account，從任何受支援的 Multichain 網路（包括 Ethereum、Base 和 BSC）進行交易。</5>"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "選擇代幣"
@@ -2399,10 +2403,6 @@ msgstr "餘額"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX market token price chart"
 msgstr "GMX 市場代幣價格圖表"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network.</5>"
-msgstr "<0>無需 KYC、無需繁瑣的註冊流程，也不需要存入資金。您只需要一個自託管錢包：</0><1><2>連接任何 EVM 錢包（如 MetaMask、Rabby、Coinbase Wallet、Trust Wallet、OKX Wallet、Ledger 等）</2><3>選擇一個您有可用資金的支援區塊鏈網路</3><4>開始交易</4></1><5>您可以直接使用 Arbitrum、Avalanche、Solana 或 Botanix 上的資金進行交易，或存入您的 GMX Account 從任何支援的多鏈網路進行交易。</5>"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "May be higher on other sites that include position collateral."
@@ -5199,6 +5199,10 @@ msgstr "即將離開 GMX.io 前往第三方獨立網站"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL 相對於使用資本（資本回報率）"
+
+#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+msgid "Alternative links are in the <0>docs</0>. By clicking Launch app you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
+msgstr "替代連結請參閱<0>文件</0>。點擊 Launch app 即表示您接受<1>條款與細則</1>及<2>推薦條款與細則</2>。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
@@ -9229,10 +9233,6 @@ msgstr "可存入"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter a referral code to get fee discounts"
 msgstr "輸入推薦碼以獲得手續費折扣"
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
-msgstr "替代連結請見<0>文件</0>。點擊同意即表示您接受<1>條款與細則</1>及<2>推薦條款與細則</2>。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"

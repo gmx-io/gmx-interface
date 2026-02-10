@@ -443,6 +443,10 @@ msgstr "リファラルコードトランザクションを送信中"
 msgid "Funding exponent"
 msgstr "資金調達指数"
 
+#: landing/src/pages/Home/FaqSection/FaqSection.tsx
+msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
+msgstr "<0>KYCは不要、長い登録手続きも不要、入金も不要です。必要なのはセルフカストディウォレットのみです：</0><1><2>任意のEVMウォレットを接続（MetaMask、Rabby、Coinbase Wallet、Trust Wallet、OKX Wallet、Ledgerなど）</2><3>資金のあるサポート対象のブロックチェーンネットワークを選択</3><4>取引を開始</4></1><5>Arbitrum、MegaETH、Avalanche、Solana、またはBotanixの資金を使用して直接取引するか、GMX Accountに入金してEthereum、Base、BSCを含むサポート対象のMultichainネットワークから取引できます。</5>"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select token"
 msgstr "トークンを選択"
@@ -2399,10 +2403,6 @@ msgstr "残高"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX market token price chart"
 msgstr "GMXマーケットトークン価格チャート"
-
-#: landing/src/pages/Home/FaqSection/FaqSection.tsx
-msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX Account to trade from any supported Multichain network.</5>"
-msgstr "<0>KYC不要、長い登録手続き不要、入金も不要です。必要なのはセルフカストディウォレットのみです：</0><1><2>任意のEVMウォレット（MetaMask、Rabby、Coinbase Wallet、Trust Wallet、OKX Wallet、Ledgerなど）を接続します</2><3>資金が利用可能なサポート対象のブロックチェーンネットワークを選択します</3><4>取引を開始します</4></1><5>Arbitrum、Avalanche、Solana、またはBotanix上の資金で直接取引するか、GMX Accountに入金してサポート対象のマルチチェーンネットワークから取引できます。</5>"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "May be higher on other sites that include position collateral."
@@ -5199,6 +5199,10 @@ msgstr "GMX.ioから外部の第三者ウェブサイトへ移動します"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "使用資本に対するPnL（投下資本利益率）"
+
+#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
+msgid "Alternative links are in the <0>docs</0>. By clicking Launch app you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
+msgstr "代替リンクは<0>ドキュメント</0>に記載されています。Launch appをクリックすると、<1>T&Cs</1>および<2>Referral T&Cs</2>に同意したものとみなされます。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
@@ -9229,10 +9233,6 @@ msgstr "入金可能"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Enter a referral code to get fee discounts"
 msgstr "リファラルコードを入力して手数料割引を受けましょう"
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>. By clicking Agree you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
-msgstr "代替リンクは<0>ドキュメント</0>に記載されています。「同意する」をクリックすると、<1>利用規約</1>および<2>リファラル利用規約</2>に同意したことになります。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"

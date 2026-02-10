@@ -37,8 +37,8 @@ export function FaqSection() {
                 <li>Start trading</li>
               </ul>
               <p>
-                You can trade directly using funds on Arbitrum, Avalanche, Solana, or Botanix, or deposit to your GMX
-                Account to trade from any supported Multichain network.
+                You can trade directly using funds on Arbitrum, MegaETH, Avalanche, Solana, or Botanix, or deposit to
+                your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.
               </p>
             </Trans>
           </FaqItem>
