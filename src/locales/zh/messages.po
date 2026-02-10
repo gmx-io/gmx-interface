@@ -53,6 +53,10 @@ msgstr "STIP.b 交易激励"
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 msgstr "您可以使用以下任何选项将 {nativeTokenSymbol} 从其他网络转移到 {chainName}："
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Total Discounts shows how much you've saved in fees since applying your referral code."
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr "买入订单已执行。"
@@ -292,6 +296,7 @@ msgstr "至"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Referrals/ReferralsTradersFaq.tsx
 msgid "FAQ"
 msgstr "常见问题解答"
 
@@ -390,6 +395,10 @@ msgstr "止损市场价格高于标记价格"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value is the amount held in the position inclusive of PnL, fees and net price impact."
 msgstr "净值是仓位中持有的金额，包括 PnL、费用和净价格影响。"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Which fees does my discount apply to?"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -758,10 +767,6 @@ msgstr "查看 <0>Tenderly 文档</0>。"
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Sent referral code transaction"
-msgstr "已发送推荐码交易"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
 msgstr "{typeString} 空头市场：以当前价格 {0} 空头仓位。"
@@ -773,6 +778,10 @@ msgstr "存款已完成"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr "领取 {totalUsd}"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Referral discounts apply to opening and closing fees for leverage trading (perpetuals). Swap fees are not included. <0>View fee structure →</0>"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1128,6 +1137,10 @@ msgstr "执行限价"
 msgid "Base APY"
 msgstr "基础 APY"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Referral codes are shared by affiliates (content creators, community members, and traders). You can:<0><1>Ask in the <2>GMX Discord</2> community</1><3>Check social media for GMX creators and traders</3></0>"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr "快速"
@@ -1437,6 +1450,10 @@ msgstr "转移 GM"
 msgid "Timestamp"
 msgstr "时间戳"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "You can still trade without a code, but you'll get no discounts when trading. So we recommend finding a code to save up to 10% on every trade!"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "您尝试提取的金额超过限制。请尝试小于 <0>{upperLimitFormatted}</0> 的金额。"
@@ -1460,6 +1477,10 @@ msgstr "未知订单"
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
 msgstr "正在领取价格影响返还…"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What does \"Total Discounts\" mean?"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"
@@ -1486,6 +1507,10 @@ msgstr "接收代币流动性不足"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Permits Testing"
 msgstr "权限测试"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "No problem! You can change your referral code at any time by entering a new one. Your new code will apply to all future trades."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -1549,6 +1574,10 @@ msgstr "NFT 钱包"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
 msgstr "GMX 提案投票页面"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Discounts are applied automatically at the time of trade execution. You'll see the reduced fee amount in your trade confirmation before submitting."
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
@@ -2106,6 +2135,10 @@ msgstr "Botanix 当前没有活跃的 GLV 金库。您可以通过<0>购买</0>G
 msgid "Display Settings"
 msgstr "显示设置"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What if I don't have a code?"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "总计："
@@ -2132,8 +2165,8 @@ msgid "Address"
 msgstr "地址"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
 msgstr "申领成功。"
 
@@ -2363,6 +2396,10 @@ msgstr "主题"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
 msgstr "默认允许滑点"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Can I change my code later?"
+msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -2818,6 +2855,10 @@ msgstr "无需存入"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "添加推荐代码失败。"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "How is the discount applied to my trades?"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3459,6 +3500,10 @@ msgstr "结算链是用于您的 GMX 账户和开仓的网络。GMX 账户余额
 msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr "是的，GLV 完全流动且无许可。您可以通过 GMX 接口出售以兑换底层资产，费用低。"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Where do I get a referral code?"
+msgstr ""
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Success claiming funding fees"
 msgstr "申领资金费用成功"
@@ -3594,6 +3639,10 @@ msgstr "推荐码已提交。"
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMX 目前没有积极招聘新员工。但是，如果您认为可以为项目做出贡献，请发送电子邮件至 <0>jobs@gmx.io</0>。"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Immediately! Your very next trade will have the discount applied automatically."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -3945,7 +3994,6 @@ msgid "PnL ($)"
 msgstr "PnL ($)"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed."
 msgstr "申领失败。"
 
@@ -4335,6 +4383,10 @@ msgstr "在 Avalanche 上质押"
 msgid "Media Kit"
 msgstr "媒体工具包"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes. If you trade on both Arbitrum and Avalanche, you'll need to apply a referral code on each network separately."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
 msgstr "UniDex 杠杆"
@@ -4496,10 +4548,6 @@ msgstr "GMX 年化收益率"
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
-msgstr "GLV (GMX 流动性金库) 应视为 GMX V2 的 GLP 改进版。它是一个收益率优化的加密指数代币"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr "减少"
@@ -4560,6 +4608,10 @@ msgstr "推荐"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
 msgstr "减少"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What if I entered the wrong code?"
+msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -4804,6 +4856,10 @@ msgstr "收益耕作"
 msgid "Approving..."
 msgstr "授权中..."
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes! You can change your active referral code at any time. Simply enter a new code in the Traders tab and it will replace your current one. Your new discount will apply to all future trades. <0>Read more →</0>"
+msgstr ""
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "利用率"
@@ -4816,6 +4872,10 @@ msgstr "一键设置"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
 msgstr "GMX 公告"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes! You can change your referral code at any time. If you want to switch to a different code, just enter the new one in the Traders tab."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approve {tokenSymbol} to be spent"
@@ -5415,6 +5475,10 @@ msgstr "取消"
 msgid "{orderText} updated."
 msgstr "{orderText} 已更新。"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "How do I know it's working?"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"
@@ -5434,6 +5498,10 @@ msgstr "执行 TWAP 交换部分"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>每</0> {seconds} 秒"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Hide assets with small value"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -5727,6 +5795,10 @@ msgstr "<0>🔷 24 小时交易量：10.1 亿美元。</0><1>感谢数十万 GMX
 msgid "Enter deposit amount"
 msgstr "输入存入金额"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming failed"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Loss"
 msgstr "更新止损"
@@ -5808,6 +5880,10 @@ msgstr "从去中心化交易所购买 GMX"
 msgid "Powered by"
 msgstr "由...提供支持"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "After applying a code, you'll see: your active referral code displayed on the Traders tab, the discount percentage you're receiving, and fee discounts reflected in your trade confirmations."
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr "没有选项将 {nativeTokenSymbol} 转移到 {chainName}。"
@@ -5824,10 +5900,6 @@ msgstr "此 TWAP 订单将在接下来的 {2} 内为 {3} 市场执行 {numberOfP
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted."
 msgstr "领取已提交。"
-
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Affiliate rewards claimed."
-msgstr "附属奖励已申领。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "CEX-like experience with Express reliability."
@@ -6301,6 +6373,10 @@ msgstr "{orderText} 取消失败。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "协议分析"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What does \"Trading Volume\" mean?"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "More active management required compared to GLV"
@@ -6862,6 +6938,10 @@ msgstr "存入中"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>以 75.5% 的多数票，GMX 已选择 LayerZero 作为其多链扩展的消息合作伙伴！该集成为 GMX 带来：</0><1><2>扩展到 125+ 链的能力</2><3>所有合约和安全的完全所有权</3><4>快速、无滑点转移</4><5>已由数十亿美元资产和数百个应用信任的经过战斗测试的轨道... <6>查看更多</6></5></1>"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Do I need to do this on each network?"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -6870,6 +6950,10 @@ msgstr "超过最大 {0} 金额"
 #: src/components/BridgeModal/BridgeInModal.tsx
 msgid "Deposit {glvOrGm}: {0}"
 msgstr "存入 {glvOrGm}：{0}"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Show assets with small value ({0})"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request..."
@@ -7581,6 +7665,10 @@ msgstr "限价减少"
 msgid "Stabilize Protocol"
 msgstr "稳定协议"
 
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
+msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2's improved version of GLP. It is a yield-optimizing crypto-index token that"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "All assets"
 msgstr "所有资产"
@@ -8220,6 +8308,10 @@ msgstr "复制链接"
 msgid "Number of Parts"
 msgstr "部分数量"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Trading Volume is the total USD value of all your leveraged trades (opens + closes) since you applied your referral code."
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
 msgstr "已停用"
@@ -8275,6 +8367,10 @@ msgstr "可用："
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "限价"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Can I change my referral code to a different one?"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
@@ -8431,6 +8527,10 @@ msgstr "余额不足"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "You have {balanceFormatted} remaining in your old version 1CT subaccount."
 msgstr "您的旧版 1CT 子账户中剩余 {balanceFormatted}。"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "When does the discount start?"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"

@@ -38,6 +38,7 @@ import {
   deserializeSampleStats,
   isRecentReferralCodeNotExpired,
 } from "components/Referrals/referralsHelper";
+import { ReferralsTradersFaq } from "components/Referrals/ReferralsTradersFaq";
 import TradersStats from "components/Referrals/TradersStats";
 import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
@@ -138,17 +139,26 @@ function Referrals() {
 
   function renderTradersTab() {
     if (loading) return <Loader />;
-    if (isHashZero(userReferralCode) || !account || !userReferralCode) {
-      return <JoinReferralCode active={active} />;
-    }
+    const isWizard = isHashZero(userReferralCode) || !account || !userReferralCode;
     return (
-      <TradersStats
-        userReferralCodeString={userReferralCodeString}
-        chainId={chainId}
-        referralsData={referralsData}
-        traderTier={traderTier}
-        discountShare={discountShare}
-      />
+      <div className="flex gap-8 max-md:flex-col">
+        <div className="flex grow flex-col gap-8">
+          {isWizard ? (
+            <JoinReferralCode active={active} />
+          ) : (
+            <TradersStats
+              userReferralCodeString={userReferralCodeString}
+              chainId={chainId}
+              referralsData={referralsData}
+              traderTier={traderTier}
+              discountShare={discountShare}
+            />
+          )}
+        </div>
+        <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
+          <ReferralsTradersFaq isWizard={isWizard} />
+        </div>
+      </div>
     );
   }
 

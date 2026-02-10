@@ -53,6 +53,10 @@ msgstr "STIP.b 取引インセンティブ"
 msgid "You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below options:"
 msgstr "以下のオプションのいずれかを使用して、他のネットワークから {nativeTokenSymbol} を {chainName} に転送できます："
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Total Discounts shows how much you've saved in fees since applying your referral code."
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order executed."
 msgstr "買い注文が実行されました。"
@@ -292,6 +296,7 @@ msgstr "宛先"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Referrals/ReferralsTradersFaq.tsx
 msgid "FAQ"
 msgstr "よくある質問"
 
@@ -390,6 +395,10 @@ msgstr "ストップ市場価格がマーク価格を上回っています"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value is the amount held in the position inclusive of PnL, fees and net price impact."
 msgstr "純価値は、PnL、手数料、および純価格影響を含むポジションで保有される金額です。"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Which fees does my discount apply to?"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -758,10 +767,6 @@ msgstr "<0>Tenderlyドキュメント</0>を参照してください。"
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr ""
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Sent referral code transaction"
-msgstr "リファラルコード取引を送信しました"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Market: {0} a short position at the current price."
 msgstr "{typeString} ショート市場: 現在の価格でショートポジションを{0}。"
@@ -773,6 +778,10 @@ msgstr "入金完了"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr "{totalUsd}を請求"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Referral discounts apply to opening and closing fees for leverage trading (perpetuals). Swap fees are not included. <0>View fee structure →</0>"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1128,6 +1137,10 @@ msgstr "指値執行"
 msgid "Base APY"
 msgstr "ベースAPY"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Referral codes are shared by affiliates (content creators, community members, and traders). You can:<0><1>Ask in the <2>GMX Discord</2> community</1><3>Check social media for GMX creators and traders</3></0>"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr "エクスプレス"
@@ -1437,6 +1450,10 @@ msgstr "GMをシフト"
 msgid "Timestamp"
 msgstr "タイムスタンプ"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "You can still trade without a code, but you'll get no discounts when trading. So we recommend finding a code to save up to 10% on every trade!"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The amount you are trying to withdraw exceeds the limit. Please try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "引き出そうとしている金額が上限を超えています。<0>{upperLimitFormatted}</0>より小さい金額をお試しください。"
@@ -1460,6 +1477,10 @@ msgstr "不明な注文"
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
 msgstr "価格影響リベートを請求中…"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What does \"Total Discounts\" mean?"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"
@@ -1486,6 +1507,10 @@ msgstr "受け取りトークン流動性不足"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Permits Testing"
 msgstr "パーミットテスト"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "No problem! You can change your referral code at any time by entering a new one. Your new code will apply to all future trades."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements and Updates"
@@ -1549,6 +1574,10 @@ msgstr "NFTウォレット"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals Voting page"
 msgstr "GMXのプロポーザル投票ページ"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Discounts are applied automatically at the time of trade execution. You'll see the reduced fee amount in your trade confirmation before submitting."
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLP Reimbursement"
@@ -2106,6 +2135,10 @@ msgstr "現在BotanixにはGLVボールトが稼働していません。<0>購�
 msgid "Display Settings"
 msgstr "表示設定"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What if I don't have a code?"
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "Total:"
 msgstr "合計:"
@@ -2132,8 +2165,8 @@ msgid "Address"
 msgstr "アドレス"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming successful."
 msgstr "請求に成功しました。"
 
@@ -2363,6 +2396,10 @@ msgstr "テーマ"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default Allowed Slippage"
 msgstr "デフォルトの最大許容スリッページ"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Can I change my code later?"
+msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -2818,6 +2855,10 @@ msgstr "入金不要"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Adding referral code failed."
 msgstr "紹介コードが追加できませんでした"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "How is the discount applied to my trades?"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3459,6 +3500,10 @@ msgstr "決済チェーンはGMXアカウントとポジション開設に使用
 msgid "Yes, GLV is fully liquid and permissionless. You can sell via the GMX interface to redeem for underlying assets, with low fees."
 msgstr "はい、GLVは完全に流動的でパーミッションレスです。GMXインターフェース経由で売却して基盤資産を償還でき、低手数料です。"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Where do I get a referral code?"
+msgstr ""
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Success claiming funding fees"
 msgstr "資金手数料の請求に成功"
@@ -3594,6 +3639,10 @@ msgstr "リファラルコードが送信されました。"
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr "GMXは現在積極的には求人を行っていませんが、プロジェクトに貢献できると思われる方は、<0>jobs@gmx.io</0>にメールをしてください。"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Immediately! Your very next trade will have the discount applied automatically."
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
@@ -3945,7 +3994,6 @@ msgid "PnL ($)"
 msgstr "損益 ($)"
 
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Claiming failed."
 msgstr "請求に失敗しました。"
 
@@ -4335,6 +4383,10 @@ msgstr "Avalancheでステーク済"
 msgid "Media Kit"
 msgstr "メディアキット"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes. If you trade on both Arbitrum and Avalanche, you'll need to apply a referral code on each network separately."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
 msgstr "UniDexレバレッジ"
@@ -4496,10 +4548,6 @@ msgstr "GMX APR"
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2’s improved version of GLP. It is a yield-optimizing crypto-index token that"
-msgstr "GLV (GMX Liquidity Vaults) はGMX V2のGLPの改善版として見るべきです。利回り最適化暗号インデックストークンで"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing"
 msgstr "減少中"
@@ -4560,6 +4608,10 @@ msgstr "おすすめ"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
 msgstr "減少"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What if I entered the wrong code?"
+msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard."
@@ -4804,6 +4856,10 @@ msgstr "イールドファーミング"
 msgid "Approving..."
 msgstr "承認中..."
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes! You can change your active referral code at any time. Simply enter a new code in the Traders tab and it will replace your current one. Your new discount will apply to all future trades. <0>Read more →</0>"
+msgstr ""
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "利用率"
@@ -4816,6 +4872,10 @@ msgstr "ワンクリック設定"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Announcements"
 msgstr "GMXのお知らせ"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes! You can change your referral code at any time. If you want to switch to a different code, just enter the new one in the Traders tab."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approve {tokenSymbol} to be spent"
@@ -5415,6 +5475,10 @@ msgstr "キャンセル"
 msgid "{orderText} updated."
 msgstr "{orderText} が更新されました。"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "How do I know it's working?"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"
@@ -5434,6 +5498,10 @@ msgstr "TWAPスワップ部分を執行"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>毎</0> {seconds} 秒"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Hide assets with small value"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -5727,6 +5795,10 @@ msgstr "<0>🔷 24時間ボリューム: 10.1億ドル。</0><1>パーミッシ�
 msgid "Enter deposit amount"
 msgstr "入金額を入力"
 
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Claiming failed"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Loss"
 msgstr "ストップロスを更新"
@@ -5808,6 +5880,10 @@ msgstr "分散型取引所からGMXを購入"
 msgid "Powered by"
 msgstr "提供:"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "After applying a code, you'll see: your active referral code displayed on the Traders tab, the discount percentage you're receiving, and fee discounts reflected in your trade confirmations."
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options available to transfer {nativeTokenSymbol} to {chainName}."
 msgstr "{nativeTokenSymbol} を {chainName} に転送するオプションはありません。"
@@ -5824,10 +5900,6 @@ msgstr "このTWAP注文は{3}市場で次の{2}にわたって各{1}の{numberO
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted."
 msgstr "請求提出済。"
-
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Affiliate rewards claimed."
-msgstr "アフィリエイト報酬が請求されました。"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "CEX-like experience with Express reliability."
@@ -6301,6 +6373,10 @@ msgstr "{orderText} キャンセルに失敗。"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "プロトコルの分析"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What does \"Trading Volume\" mean?"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "More active management required compared to GLV"
@@ -6862,6 +6938,10 @@ msgstr "入金中"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>75.5%の多数決でGMXはマルチチェーン拡張のメッセージングパートナーとしてLayerZeroを選択！統合によりGMXに：</0><1><2>125+チェーンへの拡張能力</2><3>すべてのコントラクトとセキュリティの完全所有</3><4>高速、ゼロスリッページ転送</4><5>数十億ドルの資産と数百のアプリケーションで信頼されたバトルテスト済みレール... <6>もっと見る</6></5></1>"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Do I need to do this on each network?"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -6870,6 +6950,10 @@ msgstr "最大{0}額を超えました"
 #: src/components/BridgeModal/BridgeInModal.tsx
 msgid "Deposit {glvOrGm}: {0}"
 msgstr "{glvOrGm}を入金: {0}"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Show assets with small value ({0})"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request..."
@@ -7581,6 +7665,10 @@ msgstr "リミット減少"
 msgid "Stabilize Protocol"
 msgstr "Stabilizeプロトコル"
 
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
+msgid "GLV (GMX Liquidity Vaults) should be seen as GMX V2's improved version of GLP. It is a yield-optimizing crypto-index token that"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "All assets"
 msgstr "すべての資産"
@@ -8220,6 +8308,10 @@ msgstr "リンクをコピー"
 msgid "Number of Parts"
 msgstr "パート数"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Trading Volume is the total USD value of all your leveraged trades (opens + closes) since you applied your referral code."
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
 msgstr "非活性化"
@@ -8275,6 +8367,10 @@ msgstr "利用可能："
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "リミット"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Can I change my referral code to a different one?"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading Settings"
@@ -8431,6 +8527,10 @@ msgstr "残高不足"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "You have {balanceFormatted} remaining in your old version 1CT subaccount."
 msgstr "古いバージョン1CTサブアカウントに{balanceFormatted}が残っています。"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "When does the discount start?"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
