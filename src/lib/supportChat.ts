@@ -1,4 +1,4 @@
-import Intercom, { onUnreadCountChange, update } from "@intercom/messenger-js-sdk";
+import Intercom, { onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 import { createGlobalState } from "react-use";
 import useSWR from "swr";
@@ -58,8 +58,9 @@ export function useEligibleToShowSupportChat() {
   }, [largeAccountVolumeStatsData, totalVolume]);
 
   const eligibleToShowSupportChat =
-    (isConnected && !isAccountTypeLoading && !isLargeAccountVolumeStatsLoading && isLargeAccountForSupportChat) ||
-    supportChatWasEverShown;
+    isConnected &&
+    ((!isAccountTypeLoading && !isLargeAccountVolumeStatsLoading && isLargeAccountForSupportChat) ||
+      supportChatWasEverShown);
 
   return {
     eligibleToShowSupportChat,
@@ -141,21 +142,27 @@ export function useSupportChat() {
   ]);
 
   useEffect(() => {
-    if (eligibleToShowSupportChat) {
-      Intercom({
-        app_id: INTERCOM_APP_ID,
-        alignment: "left",
-        horizontal_padding: 20,
-        vertical_padding: 20,
-        hide_default_launcher: true,
-      });
-
-      onUnreadCountChange((unreadCount: number) => {
-        setSupportChatUnreadCount(unreadCount);
-      });
-
-      setSupportChatWasEverShown(true);
+    if (!eligibleToShowSupportChat) {
+      return;
     }
+
+    Intercom({
+      app_id: INTERCOM_APP_ID,
+      alignment: "left",
+      horizontal_padding: 20,
+      vertical_padding: 20,
+      hide_default_launcher: true,
+    });
+
+    onUnreadCountChange((unreadCount: number) => {
+      setSupportChatUnreadCount(unreadCount);
+    });
+
+    setSupportChatWasEverShown(true);
+
+    return () => {
+      shutdown();
+    };
   }, [eligibleToShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
 
   useEffect(() => {
