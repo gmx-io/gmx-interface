@@ -318,7 +318,6 @@ function ReferralCodeFormMultichain({
           args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
         }),
         value,
-        msg: t`Sent referral code transaction`,
       });
 
       const receipt = await txnResult.wait();

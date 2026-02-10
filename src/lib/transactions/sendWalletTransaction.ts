@@ -37,6 +37,9 @@ export async function sendWalletTransaction({
   gasLimit?: bigint;
   gasPriceData?: GasPriceData;
   nonce?: number | bigint;
+  /**
+   * Comment for tenderly simulation
+   */
   msg?: string;
   runSimulation?: () => Promise<void>;
   callback?: TxnCallback<WalletTxnCtx>;

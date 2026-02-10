@@ -1,12 +1,11 @@
-import { t } from "@lingui/macro";
-import { Signer, ethers } from "ethers";
+import { encodeFunctionData } from "viem";
 
-import { getContract } from "config/contracts";
-import { callContract } from "lib/contracts";
+import { ISigner } from "lib/transactions/iSigner";
+import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
+import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-
-import { validateSignerAddress } from "components/Errors/errorToasts";
+import { getContract } from "sdk/configs/contracts";
 
 type Params = {
   account: string;
@@ -14,27 +13,19 @@ type Params = {
     marketAddresses: string[];
     tokenAddresses: string[];
   };
-  setPendingTxns: (txns: any) => void;
 };
 
-export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer: Signer, p: Params) {
-  const { setPendingTxns, rewardsParams, account } = p;
+export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer: WalletSigner | ISigner, p: Params) {
+  const { rewardsParams, account } = p;
 
-  await validateSignerAddress(signer, account);
-
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
-
-  return callContract(
+  return await sendWalletTransaction({
     chainId,
-    contract,
-    "claimAffiliateRewards",
-    [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, account],
-    {
-      sentMsg: t`Affiliate rewards claimed.`,
-      successMsg: t`Claiming successful.`,
-      failMsg: t`Claiming failed.`,
-      hideSuccessMsg: true,
-      setPendingTxns,
-    }
-  );
+    signer,
+    to: getContract(chainId, "ExchangeRouter"),
+    callData: encodeFunctionData({
+      abi: abis.ExchangeRouter,
+      functionName: "claimAffiliateRewards",
+      args: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, account],
+    }),
+  });
 }

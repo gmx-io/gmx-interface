@@ -542,7 +542,7 @@ function AffiliatesStats({
                               {formatBigUsd(totalUsd)}
                             </div>
                           }
-                          renderContent={() => (
+                          content={
                             <>
                               {tokensWithoutPrices.length > 0 && (
                                 <>
@@ -575,7 +575,7 @@ function AffiliatesStats({
                                 );
                               })}
                             </>
-                          )}
+                          }
                         />
                       </TableTd>
                       <TableTd data-label="Transaction">

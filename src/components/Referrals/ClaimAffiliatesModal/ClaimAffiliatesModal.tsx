@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import partition from "lodash/partition";
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
@@ -30,7 +31,7 @@ import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import type { AsyncResult } from "lib/useThrottledAsync";
@@ -52,13 +53,34 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 type Props = {
   onClose: () => void;
-  setPendingTxns?: (txns: any) => void;
 };
 
 type RewardsParams = {
   marketAddresses: string[];
   tokenAddresses: string[];
 };
+
+const MIN_REWARD_USD_THRESHOLD = expandDecimals(1, 30); // $1 in USD_DECIMALS
+
+function getRewardUsd(reward: AffiliateReward, marketsInfoData: MarketsInfoData | undefined): bigint {
+  const marketInfo = marketsInfoData ? getByKey(marketsInfoData, reward.marketAddress) : undefined;
+  if (!marketInfo) {
+    return 0n;
+  }
+
+  const { longToken, shortToken, isSameCollaterals } = marketInfo;
+  const { longTokenAmount, shortTokenAmount } = reward;
+
+  const longRewardUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
+  let totalReward = longRewardUsd;
+
+  if (!isSameCollaterals) {
+    const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
+    totalReward += shortRewardUsd;
+  }
+
+  return totalReward;
+}
 
 function buildRewardsParams(chainId: ContractsChainId, rewards: AffiliateReward[], selectedMarketAddresses: string[]) {
   const selectedRewards = rewards.filter((reward) => selectedMarketAddresses.includes(reward.marketAddress));
@@ -222,7 +244,7 @@ function OutOfTokenErrorAlert({
 }
 
 export function ClaimAffiliatesModal(p: Props) {
-  const { onClose, setPendingTxns = () => null } = p;
+  const { onClose } = p;
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -239,6 +261,20 @@ export function ClaimAffiliatesModal(p: Props) {
     [rewards]
   );
 
+  const { mainRewards, smallRewards } = useMemo(() => {
+    const withUsd = visibleRewards
+      .map((reward) => ({ reward, usd: getRewardUsd(reward, marketsInfoData) }))
+      .filter(({ usd }) => usd > 0n)
+      .sort((a, b) => (a.usd > b.usd ? -1 : a.usd < b.usd ? 1 : 0));
+
+    const [main, small] = partition(withUsd, ({ usd }) => usd > MIN_REWARD_USD_THRESHOLD);
+    return {
+      mainRewards: main.map(({ reward }) => reward),
+      smallRewards: small.map(({ reward }) => reward),
+    };
+  }, [visibleRewards, marketsInfoData]);
+
+  const [showSmallRewards, setShowSmallRewards] = useState(false);
   const [selectedMarketAddresses, setSelectedMarketAddresses] = useState<string[]>([]);
 
   const handleToggleSelect = useCallback((marketAddress: string) => {
@@ -270,15 +306,17 @@ export function ClaimAffiliatesModal(p: Props) {
       const tx = await claimAffiliateRewardsTxn(chainId, signer, {
         account,
         rewardsParams,
-        setPendingTxns,
       });
 
       const receipt = await tx.wait();
-      if (receipt?.status === 1) {
+      if (receipt?.status === "success") {
         onClose();
       }
+
+      helperToast.success(t`Claiming successful.`);
     } catch (error) {
       metrics.pushError(error, "expressClaimAffiliateRewards");
+      helperToast.error(t`Claiming failed`);
     } finally {
       setIsSubmitting(false);
     }
@@ -349,15 +387,22 @@ export function ClaimAffiliatesModal(p: Props) {
     }
   };
 
-  const isAllChecked = selectedMarketAddresses.length === visibleRewards.length && visibleRewards.length > 0;
+  const selectableRewards = useMemo(
+    () => (showSmallRewards ? [...mainRewards, ...smallRewards] : mainRewards),
+    [showSmallRewards, mainRewards, smallRewards]
+  );
+
+  const isAllChecked =
+    selectableRewards.length > 0 &&
+    selectableRewards.every((reward) => selectedMarketAddresses.includes(reward.marketAddress));
 
   const handleToggleSelectAll = useCallback(() => {
     if (isAllChecked) {
       setSelectedMarketAddresses([]);
     } else {
-      setSelectedMarketAddresses(visibleRewards.map((reward) => reward.marketAddress));
+      setSelectedMarketAddresses(selectableRewards.map((reward) => reward.marketAddress));
     }
-  }, [isAllChecked, visibleRewards]);
+  }, [isAllChecked, selectableRewards]);
 
   const submitButtonState = useMemo(() => {
     if (hasOutdatedUi) {
@@ -407,7 +452,7 @@ export function ClaimAffiliatesModal(p: Props) {
                 isChecked={isAllChecked}
                 setIsChecked={handleToggleSelectAll}
                 isPartialChecked={
-                  selectedMarketAddresses.length > 0 && selectedMarketAddresses.length < visibleRewards.length
+                  selectedMarketAddresses.length > 0 && selectedMarketAddresses.length < selectableRewards.length
                 }
               />
             </TableTh>
@@ -418,7 +463,7 @@ export function ClaimAffiliatesModal(p: Props) {
               <Trans>Rewards</Trans>
             </TableTh>
           </TableTheadTr>
-          {visibleRewards.map((reward) => (
+          {mainRewards.map((reward) => (
             <ClaimRewardRow
               key={reward.marketAddress}
               reward={reward}
@@ -427,6 +472,35 @@ export function ClaimAffiliatesModal(p: Props) {
               onToggleSelect={handleToggleSelect}
             />
           ))}
+          {smallRewards.length > 0 && (
+            <>
+              <tr>
+                <TableTd colSpan={3} className="!p-0 !pt-8">
+                  <Button
+                    variant="ghost"
+                    className="w-full text-13 text-typography-secondary"
+                    onClick={() => setShowSmallRewards((v) => !v)}
+                  >
+                    {showSmallRewards ? (
+                      <Trans>Hide assets with small value</Trans>
+                    ) : (
+                      <Trans>Show assets with small value ({smallRewards.length})</Trans>
+                    )}
+                  </Button>
+                </TableTd>
+              </tr>
+              {showSmallRewards &&
+                smallRewards.map((reward) => (
+                  <ClaimRewardRow
+                    key={reward.marketAddress}
+                    reward={reward}
+                    marketsInfoData={marketsInfoData}
+                    isSelected={selectedMarketAddresses.includes(reward.marketAddress)}
+                    onToggleSelect={handleToggleSelect}
+                  />
+                ))}
+            </>
+          )}
         </Table>
 
         <OutOfTokenErrorAlert errors={errors} token={isOutOfTokenErrorToken} onClose={onClose} />
@@ -466,24 +540,15 @@ function ClaimRewardRow({
     return null;
   }
 
-  const { longToken, shortToken, isSameCollaterals } = marketInfo;
-  const indexName = getMarketIndexName(marketInfo);
-  const poolName = getMarketPoolName(marketInfo);
-
-  const { longTokenAmount, shortTokenAmount } = reward;
-
-  const longRewardUsd = convertToUsd(longTokenAmount, longToken.decimals, longToken.prices.minPrice)!;
-
-  let totalReward = longRewardUsd;
-
-  if (!isSameCollaterals) {
-    const shortRewardUsd = convertToUsd(shortTokenAmount, shortToken.decimals, shortToken.prices.minPrice)!;
-    totalReward += shortRewardUsd;
-  }
-
+  const totalReward = getRewardUsd(reward, marketsInfoData);
   if (totalReward <= 0) {
     return null;
   }
+
+  const { longToken, shortToken, isSameCollaterals } = marketInfo;
+  const indexName = getMarketIndexName(marketInfo);
+  const poolName = getMarketPoolName(marketInfo);
+  const { longTokenAmount, shortTokenAmount } = reward;
 
   const claimableAmountsItems: string[] = [];
 
