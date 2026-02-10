@@ -4,7 +4,7 @@ import cx from "classnames";
 import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 
-import { AVALANCHE, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
+import { AVALANCHE, GMX_ACCOUNT_PSEUDO_CHAIN_ID, MEGAETH } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
@@ -150,15 +150,27 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
-  const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
+  const { swapTokens: rawSwapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
   const tokensData = useTokensData();
   const { tokenChainDataArray: multichainTokens } = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;
+
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
+
+  const swapTokens = useMemo(() => {
+    if (isSwap || chainId !== MEGAETH) {
+      return rawSwapTokens;
+    }
+
+    // Temporary filter out native and wrapped tokens for MegaETH because they can
+    // not be used for open positions
+    return rawSwapTokens.filter((token) => !token.isNative && !token.isWrapped);
+  }, [rawSwapTokens, isSwap, chainId]);
+
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
   const { openConnectModal } = useConnectModal();
