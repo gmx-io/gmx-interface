@@ -1,4 +1,4 @@
-import Intercom, { onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
+import Intercom, { hide, hideNotifications, onUnreadCountChange, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 import { createGlobalState } from "react-use";
 import useSWR from "swr";
@@ -152,6 +152,7 @@ export function useSupportChat() {
       horizontal_padding: 20,
       vertical_padding: 20,
       hide_default_launcher: true,
+      hide_notifications: false,
     });
 
     onUnreadCountChange((unreadCount: number) => {
@@ -161,7 +162,8 @@ export function useSupportChat() {
     setSupportChatWasEverShown(true);
 
     return () => {
-      shutdown();
+      hide();
+      hideNotifications(true);
     };
   }, [eligibleToShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
 
