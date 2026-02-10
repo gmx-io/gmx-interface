@@ -73,6 +73,7 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
       lines.push({
         title: t`Liq. ${longOrShortText} ${marketIndexName}`,
         price: parseFloat(liquidationPrice),
+        lineType: "liquidation",
       });
     }
 

@@ -3,6 +3,9 @@ import { useLingui } from "@lingui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
+import { colors } from "config/colors";
+import { useTheme } from "context/ThemeContext/ThemeContext";
+import { OrderType } from "domain/synthetics/orders";
 import { helperToast } from "lib/helperToast";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -10,7 +13,6 @@ import { orderTypeToTitle } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
 import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 
-const BODY_BACKGROUND_COLOR = "#3a3e5e";
 const BUTTON_BACKGROUND_COLOR = "#121421";
 const BORDER_COLOR = "#9295ad";
 const BODY_ERROR_BACKGROUND_COLOR = "#831e2d";
@@ -41,6 +43,7 @@ export function DynamicLine({
   lineLength: number;
 } & Omit<DynamicChartLine, "updatedAtTime">) {
   const { _ } = useLingui();
+  const { theme } = useTheme();
   const lineApi = useRef<IOrderLineAdapter | undefined>(undefined);
   const latestOnEdit = useLatest(onEdit);
   const latestOnCancel = useLatest(onCancel);
@@ -49,6 +52,13 @@ export function DynamicLine({
   const prevIsEdited = usePrevious(isEdited);
 
   const [error, setError] = useState<string | undefined>(undefined);
+
+  const orderLineColor =
+    orderType === OrderType.LimitDecrease || orderType === OrderType.StopLossDecrease
+      ? colors.red[500][theme]
+      : isLong
+        ? colors.green[500][theme]
+        : colors.red[500][theme];
 
   const title = useMemo(() => {
     const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
@@ -88,16 +98,16 @@ export function DynamicLine({
         })
         .setEditable(true)
         .setLineStyle(LineStyle.Dashed)
-        .setLineColor(BODY_BACKGROUND_COLOR)
+        .setLineColor(orderLineColor)
 
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
         .setBodyTextColor("#fff")
-        .setBodyBackgroundColor(BODY_BACKGROUND_COLOR)
-        .setBodyBorderColor(BORDER_COLOR)
+        .setBodyBackgroundColor(orderLineColor)
+        .setBodyBorderColor(orderLineColor)
 
         .setQuantityBackgroundColor(BUTTON_BACKGROUND_COLOR)
         .setQuantityFont(`normal 16pt "Relative", sans-serif`)
-        .setQuantityBorderColor(BORDER_COLOR)
+        .setQuantityBorderColor(orderLineColor)
 
         .setCancelButtonBackgroundColor(BUTTON_BACKGROUND_COLOR)
         .setCancelButtonBorderColor(BORDER_COLOR)
@@ -125,7 +135,8 @@ export function DynamicLine({
                 </>
               );
               lineApi.current!.setPrice(latestPrice.current);
-              lineApi.current!.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
+              lineApi.current!.setBodyBackgroundColor(orderLineColor);
+              lineApi.current!.setBodyBorderColor(orderLineColor);
               lineApi.current!.setText(title);
               return;
             }
@@ -152,6 +163,7 @@ export function DynamicLine({
     latestPrice,
     lineLength,
     orderType,
+    orderLineColor,
     price,
     title,
     tvWidgetRef,
@@ -173,11 +185,12 @@ export function DynamicLine({
 
       if (prevIsEdited && !isEdited && !(isPending || prevIsPending)) {
         lineApi.current.setPrice(price);
-        lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
+        lineApi.current?.setBodyBackgroundColor(orderLineColor);
+        lineApi.current?.setBodyBorderColor(orderLineColor);
         lineApi.current?.setText(title);
       }
     },
-    [isEdited, isPending, prevIsEdited, prevIsPending, price, title]
+    [isEdited, isPending, orderLineColor, prevIsEdited, prevIsPending, price, title]
   );
 
   useEffect(
@@ -198,23 +211,26 @@ export function DynamicLine({
           clearInterval(interval);
           lineApi.current?.setQuantity("\u270E");
           lineApi.current?.setPrice(latestPrice.current);
-          lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
+          lineApi.current?.setBodyBackgroundColor(orderLineColor);
+          lineApi.current?.setBodyBorderColor(orderLineColor);
           lineApi.current?.setText(title);
         }, FREQUENT_UPDATE_INTERVAL);
       }
     },
-    [isPending, latestPrice, prevIsPending, title]
+    [isPending, latestPrice, orderLineColor, prevIsPending, title]
   );
 
   useEffect(() => {
     if (error) {
       lineApi.current?.setBodyBackgroundColor(BODY_ERROR_BACKGROUND_COLOR);
+      lineApi.current?.setBodyBorderColor(BODY_ERROR_BACKGROUND_COLOR);
       lineApi.current?.setText(error);
     } else {
-      lineApi.current?.setBodyBackgroundColor(BODY_BACKGROUND_COLOR);
+      lineApi.current?.setBodyBackgroundColor(orderLineColor);
+      lineApi.current?.setBodyBorderColor(orderLineColor);
       lineApi.current?.setText(title);
     }
-  }, [error, title]);
+  }, [error, orderLineColor, title]);
 
   return null;
 }

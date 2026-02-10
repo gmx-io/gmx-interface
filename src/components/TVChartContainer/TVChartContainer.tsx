@@ -2,6 +2,7 @@ import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } 
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { isAddressEqual, type Address } from "viem";
 
+import { colors } from "config/colors";
 import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -431,6 +432,48 @@ export default function TVChartContainer({
 
   const hasMarketsInfo = Boolean(marketsInfoData);
   const hasTokensData = Boolean(tokensData);
+
+  const markPriceDirectionRef = useRef<"up" | "down" | "flat" | undefined>(undefined);
+
+  useEffect(() => {
+    markPriceDirectionRef.current = undefined;
+  }, [theme]);
+
+  useEffect(() => {
+    if (!datafeed) return;
+
+    const onCurrentCandleUpdate = (event: Event) => {
+      if (!chartReady || !tvWidgetRef.current) return;
+
+      const detail = (event as CustomEvent).detail as {
+        resolution: ResolutionString;
+        bar: { open: number; close: number };
+      };
+
+      if (tvWidgetRef.current.activeChart().resolution() !== detail.resolution) return;
+
+      const direction =
+        detail.bar.close > detail.bar.open ? "up" : detail.bar.close < detail.bar.open ? "down" : "flat";
+      if (markPriceDirectionRef.current === direction) return;
+      markPriceDirectionRef.current = direction;
+
+      const neutralColor =
+        theme === "light"
+          ? chartOverridesLight["mainSeriesProperties.priceLineColor"]!
+          : chartOverridesDark["mainSeriesProperties.priceLineColor"]!;
+      const priceLineColor =
+        direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+
+      tvWidgetRef.current.applyOverrides({
+        "mainSeriesProperties.priceLineColor": priceLineColor,
+      });
+    };
+
+    datafeed.addEventListener("currentCandle.update", onCurrentCandleUpdate);
+    return () => {
+      datafeed.removeEventListener("currentCandle.update", onCurrentCandleUpdate);
+    };
+  }, [chartReady, datafeed, theme]);
 
   useEffect(() => {
     if (chartReady) {

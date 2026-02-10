@@ -71,8 +71,14 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     resolution: ResolutionString
   ) => Mark[] | Promise<Mark[]>;
 
-  declare addEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
-  declare removeEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
+  declare addEventListener: (
+    event: "candlesDisplay.success" | "currentCandle.update",
+    callback: EventListenerOrEventListenerObject
+  ) => void;
+  declare removeEventListener: (
+    event: "candlesDisplay.success" | "currentCandle.update",
+    callback: EventListenerOrEventListenerObject
+  ) => void;
 
   constructor(
     private chainId: number,
@@ -289,6 +295,18 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         onTick(multiplyBarValues(formatTimeInBarToMs(price), visualMultiplier));
 
         newLastReturnedValue = price;
+      }
+
+      if (newLastReturnedValue) {
+        this.dispatchEvent(
+          new CustomEvent("currentCandle.update", {
+            detail: {
+              symbol: symbolInfo.name,
+              resolution,
+              bar: multiplyBarValues(formatTimeInBarToMs(newLastReturnedValue), visualMultiplier),
+            },
+          })
+        );
       }
 
       return newLastReturnedValue;

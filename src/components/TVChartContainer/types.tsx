@@ -9,6 +9,7 @@ export enum LineStyle {
 export type StaticChartLine = {
   price: number;
   title: string;
+  lineType?: "liquidation";
   /** Position entry line data for displaying PnL and size */
   positionData?: {
     pnl: bigint;

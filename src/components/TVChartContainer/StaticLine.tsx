@@ -1,31 +1,42 @@
 import { useEffect, useRef, useState } from "react";
 import { useLatest } from "react-use";
 
+import { colors } from "config/colors";
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
 import { LineStyle, StaticChartLine } from "./types";
 import type { IChartingLibraryWidget, IPositionLineAdapter } from "../../charting_library";
 
-const PROFIT_COLOR = "#0ecc83";
-const LOSS_COLOR = "#fa3c58";
 const NEUTRAL_COLOR = "#3a3e5e";
 
 export function StaticLine({
   title,
   price,
   positionData,
+  lineType,
   tvWidgetRef,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
 } & StaticChartLine) {
+  const { theme } = useTheme();
   const lineApi = useRef<IPositionLineAdapter | undefined>(undefined);
   const [showSizeInUsd, setShowSizeInUsd] = useState(true);
 
   const isPositionEntry = !!positionData;
+  const isLiquidation = lineType === "liquidation";
   const isProfit = positionData ? positionData.pnl > 0n : false;
   const isLoss = positionData ? positionData.pnl < 0n : false;
 
-  const lineColor = isPositionEntry ? (isProfit ? PROFIT_COLOR : isLoss ? LOSS_COLOR : NEUTRAL_COLOR) : NEUTRAL_COLOR;
+  const lineColor = isPositionEntry
+    ? isProfit
+      ? colors.green[500][theme]
+      : isLoss
+        ? colors.red[500][theme]
+        : NEUTRAL_COLOR
+    : isLiquidation
+      ? colors.red[500][theme]
+      : NEUTRAL_COLOR;
 
   const getDisplayText = (sizeInUsd: boolean) => {
     if (!positionData) return title;
