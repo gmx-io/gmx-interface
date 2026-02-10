@@ -7127,8 +7127,8 @@ msgid "GMX dashboards and analytics."
 msgstr "Tableaux de bord et analyses GMX."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Temporary disabled"
-msgstr ""
+#~ msgid "Temporary disabled"
+#~ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External Swap {0} to {1}"
