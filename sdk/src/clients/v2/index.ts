@@ -8,9 +8,15 @@ export class GmxApiSdk {
   ctx: { chainId: ContractsChainId; api: IHttp };
 
   constructor({ chainId }: { chainId: ContractsChainId }) {
+    const apiUrl = getApiUrl(chainId);
+
+    if (!apiUrl) {
+      throw new Error("api is not supported for current chainId");
+    }
+
     this.ctx = {
       chainId,
-      api: new HttpClient(getApiUrl(chainId)),
+      api: new HttpClient(apiUrl),
     };
   }
 
