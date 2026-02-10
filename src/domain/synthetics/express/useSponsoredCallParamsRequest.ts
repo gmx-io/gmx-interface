@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getIsFlagEnabled } from "config/ab";
-import { ARBITRUM_SEPOLIA, BOTANIX } from "config/chains";
+import { ARBITRUM_SEPOLIA, BOTANIX, MEGAETH } from "config/chains";
 import { convertToUsd, TokensData } from "domain/tokens";
 import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
@@ -42,7 +42,7 @@ export function useIsSponsoredCallBalanceAvailable(
         const amountInExecution = BigInt(mainBalance.amountInExecution);
 
         const balanceLeft = remainingBalance - amountInExecution;
-        const mainTokenSymbol = chainId === BOTANIX ? "USDC.E" : mainBalanceToken.symbol;
+        const mainTokenSymbol = chainId === BOTANIX ? "USDC.E" : chainId === MEGAETH ? "USDM" : mainBalanceToken.symbol;
 
         const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainTokenSymbol).address);
 
