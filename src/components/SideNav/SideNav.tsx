@@ -44,10 +44,10 @@ function SideNav({ className }: { className?: string }) {
         <MenuSection isCollapsed={isCollapsed} />
 
         <ul className="flex list-none flex-col px-0">
+          <SupportChatNavItem isCollapsed={isCollapsed} />
           <SettingsNavItem isCollapsed={isCollapsed} />
           <LanguageNavItem isCollapsed={isCollapsed} />
           <DocsNavItem isCollapsed={isCollapsed} />
-          <SupportChatNavItem isCollapsed={isCollapsed} />
           <NavItem
             icon={<CollapseIcon />}
             label={isCollapsed ? t`Expand` : t`Collapse`}

@@ -45,10 +45,10 @@ export function MobileSideNav() {
 
               <div className="border-b-1/2 border-slate-600 p-8">
                 <ul className="flex list-none flex-col px-0">
+                  <SupportChatNavItem isCollapsed={false} onClick={handleToggle} />
                   <SettingsNavItem isCollapsed={false} onClick={handleToggle} />
                   <LanguageNavItem isCollapsed={false} />
                   <DocsNavItem isCollapsed={false} />
-                  <SupportChatNavItem isCollapsed={false} onClick={handleToggle} />
                 </ul>
               </div>
               <div className="py-8">
