@@ -61,5 +61,7 @@ export function useShowSupportChat() {
     isNonEoaAccountOnAnyChainLoading: isAccountTypeLoading,
     largeAccountVolumeStatsData,
     isLargeAccountVolumeStatsLoading,
+    walletPortfolioUsd,
+    isWalletPortfolioUsdLoading,
   };
 }

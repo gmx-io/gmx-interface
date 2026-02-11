@@ -16,7 +16,6 @@ import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/h
 import { INTERCOM_APP_ID, TIME_PERIODS } from "./constants";
 import { useShowSupportChat } from "./useShowSupportChat";
 import { useSupportChatUnreadCount } from "./useSupportChatUnreadCount";
-import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
 import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 
 export function useSupportChat() {
@@ -26,6 +25,8 @@ export function useSupportChat() {
     isNonEoaAccountOnAnyChainLoading,
     largeAccountVolumeStatsData,
     isLargeAccountVolumeStatsLoading,
+    walletPortfolioUsd,
+    isWalletPortfolioUsdLoading,
   } = useShowSupportChat();
   const { address: account } = useAccount();
   const [, setSupportChatWasEverShown] = useLocalStorageSerializeKey<boolean>(SUPPORT_CHAT_WAS_EVER_SHOWN_KEY, false);
@@ -40,8 +41,6 @@ export function useSupportChat() {
     enabled: shouldShowSupportChat,
     refreshInterval: 0,
   });
-
-  const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
 
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain({
     enabled: shouldShowSupportChat,
