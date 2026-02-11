@@ -1,4 +1,4 @@
-import Intercom, { hide, hideNotifications, onUnreadCountChange, update } from "@intercom/messenger-js-sdk";
+import Intercom, { onUnreadCountChange, shutdown, update } from "@intercom/messenger-js-sdk";
 import { useEffect, useMemo, useRef } from "react";
 import { createGlobalState } from "react-use";
 import useSWR from "swr";
@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 
 import { getChainName, SettlementChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { SUPPORT_CHAT_WAS_EVER_SHOWN_KEY } from "config/localStorage";
+import { SUPPORT_CHAT_USER_ID_KEY, SUPPORT_CHAT_WAS_EVER_SHOWN_KEY } from "config/localStorage";
 import { ThemeMode, useTheme } from "context/ThemeContext/ThemeContext";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
@@ -32,6 +32,18 @@ const SUPPORT_CHAT_MIN_AGG_ALL_TIME_VOLUME = expandDecimals(1n, USD_DECIMALS);
 const TIME_PERIODS = getTimePeriodsInSeconds();
 
 export const useSupportChatUnreadCount = createGlobalState<number>(0);
+
+function getOrCreateSupportChatUserId() {
+  const existingSupportChatUserId = localStorage.getItem(SUPPORT_CHAT_USER_ID_KEY);
+  if (existingSupportChatUserId) {
+    return existingSupportChatUserId;
+  }
+
+  const newSupportChatUserId = crypto.randomUUID();
+  localStorage.setItem(SUPPORT_CHAT_USER_ID_KEY, newSupportChatUserId);
+
+  return newSupportChatUserId;
+}
 
 export function useEligibleToShowSupportChat() {
   const { isNonEoaAccountOnAnyChain, isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
@@ -146,6 +158,8 @@ export function useSupportChat() {
       return;
     }
 
+    const supportChatUserId = getOrCreateSupportChatUserId();
+
     Intercom({
       app_id: INTERCOM_APP_ID,
       alignment: "left",
@@ -153,6 +167,7 @@ export function useSupportChat() {
       vertical_padding: 20,
       hide_default_launcher: true,
       hide_notifications: false,
+      user_id: supportChatUserId,
     });
 
     onUnreadCountChange((unreadCount: number) => {
@@ -162,8 +177,7 @@ export function useSupportChat() {
     setSupportChatWasEverShown(true);
 
     return () => {
-      hide();
-      hideNotifications(true);
+      shutdown();
     };
   }, [eligibleToShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
 
