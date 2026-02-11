@@ -4,7 +4,7 @@ import { useCallback } from "react";
 
 import { SUPPORT_CHAT_WAS_EVER_CLICKED_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEligibleToShowSupportChat, useSupportChatUnreadCount } from "lib/supportChat";
+import { useShowSupportChat, useSupportChatUnreadCount } from "lib/supportChat";
 
 import SupportChatIcon from "img/ic_support_chat.svg?react";
 
@@ -18,7 +18,7 @@ interface SupportChatNavItemProps {
 }
 
 export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemProps) {
-  const { eligibleToShowSupportChat } = useEligibleToShowSupportChat();
+  const { shouldShowSupportChat } = useShowSupportChat();
   const [supportChatWasEverClicked, setSupportChatWasEverClicked] = useLocalStorageSerializeKey<boolean>(
     SUPPORT_CHAT_WAS_EVER_CLICKED_KEY,
     false
@@ -31,7 +31,7 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
     show();
   }, [onClick, setSupportChatWasEverClicked]);
 
-  if (!eligibleToShowSupportChat) {
+  if (!shouldShowSupportChat) {
     return null;
   }
 

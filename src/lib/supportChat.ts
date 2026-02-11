@@ -6,7 +6,11 @@ import { useAccount } from "wagmi";
 
 import { getChainName, SettlementChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { SUPPORT_CHAT_USER_ID_KEY, SUPPORT_CHAT_WAS_EVER_SHOWN_KEY } from "config/localStorage";
+import {
+  SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY,
+  SUPPORT_CHAT_USER_ID_KEY,
+  SUPPORT_CHAT_WAS_EVER_SHOWN_KEY,
+} from "config/localStorage";
 import { ThemeMode, useTheme } from "context/ThemeContext/ThemeContext";
 import { fetchMultichainTokenBalances } from "domain/multichain/fetchMultichainTokenBalances";
 import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
@@ -45,12 +49,16 @@ function getOrCreateSupportChatUserId() {
   return newSupportChatUserId;
 }
 
-export function useEligibleToShowSupportChat() {
+export function useShowSupportChat() {
   const { isNonEoaAccountOnAnyChain, isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
-  const { isConnected, address: account } = useAccount();
+  const { isConnected, address: account, isConnecting, isReconnecting } = useAccount();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
   const [supportChatWasEverShown] = useLocalStorageSerializeKey<boolean>(SUPPORT_CHAT_WAS_EVER_SHOWN_KEY, false);
+  const [lastConnectedState, setLastConnectedState] = useLocalStorageSerializeKey<boolean>(
+    SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY,
+    false
+  );
 
   const totalVolume = largeAccountVolumeStatsData?.totalVolume;
 
@@ -69,13 +77,22 @@ export function useEligibleToShowSupportChat() {
     );
   }, [largeAccountVolumeStatsData, totalVolume]);
 
-  const eligibleToShowSupportChat =
-    isConnected &&
-    ((!isAccountTypeLoading && !isLargeAccountVolumeStatsLoading && isLargeAccountForSupportChat) ||
-      supportChatWasEverShown);
+  const showWhileConnecting = (isConnecting || isReconnecting) && lastConnectedState;
+
+  const isLoadedAndEligible =
+    !isAccountTypeLoading && !isLargeAccountVolumeStatsLoading && isLargeAccountForSupportChat;
+
+  const shouldShowSupportChat =
+    (isConnected || showWhileConnecting) && (isLoadedAndEligible || supportChatWasEverShown);
+
+  useEffect(() => {
+    if (!isConnecting) {
+      setLastConnectedState(isConnected);
+    }
+  }, [isConnecting, isConnected, setLastConnectedState]);
 
   return {
-    eligibleToShowSupportChat,
+    shouldShowSupportChat,
     isNonEoaAccountOnAnyChain,
     isNonEoaAccountOnAnyChainLoading: isAccountTypeLoading,
     largeAccountVolumeStatsData,
@@ -85,12 +102,12 @@ export function useEligibleToShowSupportChat() {
 
 export function useSupportChat() {
   const {
-    eligibleToShowSupportChat,
+    shouldShowSupportChat,
     isNonEoaAccountOnAnyChain,
     isNonEoaAccountOnAnyChainLoading,
     largeAccountVolumeStatsData,
     isLargeAccountVolumeStatsLoading,
-  } = useEligibleToShowSupportChat();
+  } = useShowSupportChat();
   const { address: account } = useAccount();
   const [, setSupportChatWasEverShown] = useLocalStorageSerializeKey<boolean>(SUPPORT_CHAT_WAS_EVER_SHOWN_KEY, false);
   const { themeMode } = useTheme();
@@ -101,16 +118,16 @@ export function useSupportChat() {
     account,
     from: TIME_PERIODS.month[0],
     to: TIME_PERIODS.month[1],
-    enabled: eligibleToShowSupportChat,
+    enabled: shouldShowSupportChat,
     refreshInterval: 0,
   });
 
   const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd({
-    enabled: eligibleToShowSupportChat,
+    enabled: shouldShowSupportChat,
   });
 
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain({
-    enabled: eligibleToShowSupportChat,
+    enabled: shouldShowSupportChat,
   });
 
   const [, setSupportChatUnreadCount] = useSupportChatUnreadCount();
@@ -154,7 +171,7 @@ export function useSupportChat() {
   ]);
 
   useEffect(() => {
-    if (!eligibleToShowSupportChat) {
+    if (!shouldShowSupportChat) {
       return;
     }
 
@@ -179,26 +196,26 @@ export function useSupportChat() {
     return () => {
       shutdown();
     };
-  }, [eligibleToShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
+  }, [shouldShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
 
   useEffect(() => {
-    if (!eligibleToShowSupportChat) {
+    if (!shouldShowSupportChat) {
       return;
     }
 
     update({
       theme_mode: themeToIntercomTheme(themeMode),
     });
-  }, [eligibleToShowSupportChat, themeMode]);
+  }, [shouldShowSupportChat, themeMode]);
 
   useEffect(() => {
-    if (initializedAddress.current === account || !eligibleToShowSupportChat || !customUserAttributes) {
+    if (initializedAddress.current === account || !shouldShowSupportChat || !customUserAttributes) {
       return;
     }
 
     initializedAddress.current = account;
     update(customUserAttributes);
-  }, [eligibleToShowSupportChat, customUserAttributes, account]);
+  }, [shouldShowSupportChat, customUserAttributes, account]);
 }
 
 function themeToIntercomTheme(themeMode: ThemeMode): "light" | "dark" | "system" {
