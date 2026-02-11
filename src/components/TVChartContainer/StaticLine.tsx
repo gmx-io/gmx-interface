@@ -50,6 +50,7 @@ export function StaticLine({
   };
 
   const showSizeInUsdRef = useLatest(showSizeInUsd);
+  const getDisplayTextRef = useLatest(getDisplayText);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -70,7 +71,7 @@ export function StaticLine({
 
       lineApi.current = positionLine;
 
-      const displayText = getDisplayText(showSizeInUsdRef.current);
+      const displayText = getDisplayTextRef.current(showSizeInUsdRef.current);
 
       positionLine
         .setText(displayText)
@@ -93,7 +94,7 @@ export function StaticLine({
           .onModify(() => {
             setShowSizeInUsd((prev) => {
               const newValue = !prev;
-              lineApi.current?.setText(getDisplayText(newValue));
+              lineApi.current?.setText(getDisplayTextRef.current(newValue));
               return newValue;
             });
           });
