@@ -10,17 +10,17 @@ import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { buildTokenChainDataArray } from "components/GmxAccountModal/hooks";
 
-export function useWalletPortfolioUsd({ enabled }: { enabled?: boolean } = {}): {
+export function useWalletPortfolioUsd(): {
   walletPortfolioUsd: bigint | undefined;
   isWalletPortfolioUsdLoading: boolean;
 } {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
-  const tokensData = useTokensDataRequest(chainId, undefined, { enabled });
-  const { pricesData } = useTokenRecentPricesRequest(chainId, { enabled });
+  const tokensData = useTokensDataRequest(chainId, undefined);
+  const { pricesData } = useTokenRecentPricesRequest(chainId);
 
   const { data: multichainTokenBalances, isLoading: isMultichainBalancesLoading } = useSWR(
-    account !== undefined && enabled ? ["multichain-trade-tokens-balances-static", chainId, account] : null,
+    account !== undefined ? ["multichain-trade-tokens-balances-static", chainId, account] : null,
     {
       fetcher: async () =>
         fetchMultichainTokenBalances({

@@ -50,10 +50,10 @@ export function useShowSupportChat() {
     (isConnected || showWhileConnecting) && (isLoadedAndEligible || supportChatWasEverShown);
 
   useEffect(() => {
-    if (!isConnecting) {
+    if (!isConnecting && !isReconnecting) {
       setLastConnectedState(isConnected);
     }
-  }, [isConnecting, isConnected, setLastConnectedState]);
+  }, [isConnecting, isReconnecting, isConnected, setLastConnectedState]);
 
   return {
     shouldShowSupportChat,

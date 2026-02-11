@@ -41,9 +41,7 @@ export function useSupportChat() {
     refreshInterval: 0,
   });
 
-  const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd({
-    enabled: shouldShowSupportChat,
-  });
+  const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
 
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain({
     enabled: shouldShowSupportChat,
