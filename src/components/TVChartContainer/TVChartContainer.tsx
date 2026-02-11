@@ -629,7 +629,6 @@ export default function TVChartContainer({
     <div className="ExchangeChart-error">
       {chartDataLoading && <Loader />}
       <div style={style} ref={chartContainerRef} className="ExchangeChart-bottom-content">
-        {/* TODO: render via portal to avoid DOM conflict with TradingView */}
         {chartReady && <CrosshairPercentageLabel state={crosshairPercentageState} />}
       </div>
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (

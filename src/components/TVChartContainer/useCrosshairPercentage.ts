@@ -7,14 +7,20 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { CrossHairMovedEventParams, IChartingLibraryWidget } from "../../charting_library";
 
 export interface CrosshairPercentageState {
+  formattedPrice: string;
   percentage: number;
   offsetY: number;
+  priceAxisCenterX: number | null;
+  priceAxisWidth: number | null;
   isVisible: boolean;
 }
 
 const INITIAL_STATE: CrosshairPercentageState = {
+  formattedPrice: "",
   percentage: 0,
   offsetY: 0,
+  priceAxisCenterX: null,
+  priceAxisWidth: null,
   isVisible: false,
 };
 
@@ -25,6 +31,9 @@ export function useCrosshairPercentage(
   visualMultiplier: number | undefined
 ): CrosshairPercentageState {
   const markPriceBn = useSelector(selectTradeboxMarkPrice);
+  const markPriceRef = useRef<number | undefined>(undefined);
+  const priceAxisCenterXRef = useRef<number | null>(null);
+  const priceAxisWidthRef = useRef<number | null>(null);
 
   const markPrice = useMemo(() => {
     if (markPriceBn === undefined) return undefined;
@@ -34,11 +43,59 @@ export function useCrosshairPercentage(
   }, [markPriceBn, visualMultiplier]);
 
   const [state, setState] = useState<CrosshairPercentageState>(INITIAL_STATE);
-  const callbackRef = useRef<((params: CrossHairMovedEventParams) => void) | null>(null);
+
+  useEffect(() => {
+    markPriceRef.current = markPrice;
+
+    if (markPrice === undefined) {
+      setState(INITIAL_STATE);
+    }
+  }, [markPrice]);
 
   const hideLabel = useCallback(() => {
     setState((prev) => (prev.isVisible ? { ...prev, isVisible: false } : prev));
   }, []);
+
+  const getPriceAxisMetrics = useCallback(() => {
+    const container = chartContainerRef.current;
+    if (!container) return null;
+
+    const iframe = container.querySelector("iframe");
+    if (!iframe?.contentDocument) return null;
+
+    const priceAxes = Array.from(iframe.contentDocument.querySelectorAll(".price-axis"));
+    if (priceAxes.length === 0) return null;
+
+    let rightmostPriceAxisRect: DOMRect | null = null;
+
+    for (const el of priceAxes) {
+      const rect = el.getBoundingClientRect();
+      if (rightmostPriceAxisRect === null || rect.left > rightmostPriceAxisRect.left) {
+        rightmostPriceAxisRect = rect;
+      }
+    }
+
+    if (!rightmostPriceAxisRect) return null;
+
+    const containerRect = container.getBoundingClientRect();
+    const iframeRect = iframe.getBoundingClientRect();
+    const axisRect = rightmostPriceAxisRect;
+
+    // axisRect coords are relative to iframe viewport, not to main document
+    const axisLeftInContainer = iframeRect.left - containerRect.left + axisRect.left;
+
+    return {
+      centerX: axisLeftInContainer + axisRect.width / 2,
+      width: axisRect.width,
+    };
+  }, [chartContainerRef]);
+
+  useEffect(() => {
+    if (!chartReady) {
+      priceAxisCenterXRef.current = null;
+      priceAxisWidthRef.current = null;
+    }
+  }, [chartReady]);
 
   useEffect(() => {
     const container = chartContainerRef.current;
@@ -58,39 +115,63 @@ export function useCrosshairPercentage(
   }, [chartContainerRef, chartReady, hideLabel]);
 
   useEffect(() => {
-    if (!chartReady || !tvWidgetRef.current || markPrice === undefined) {
+    if (!chartReady || !tvWidgetRef.current) {
       setState(INITIAL_STATE);
       return;
     }
 
-    const chart = tvWidgetRef.current.activeChart();
+    let chart;
+    try {
+      chart = tvWidgetRef.current.activeChart();
+    } catch {
+      setState(INITIAL_STATE);
+      return;
+    }
+
+    const priceFormatter = chart.priceFormatter();
+    let cancelled = false;
+
+    const onSymbolChanged = () => {
+      priceAxisCenterXRef.current = null;
+      priceAxisWidthRef.current = null;
+      hideLabel();
+    };
 
     const callback = (params: CrossHairMovedEventParams) => {
-      if (params.price === undefined || params.offsetY === undefined) {
+      const currentMarkPrice = markPriceRef.current;
+      if (cancelled || params.offsetY === undefined || currentMarkPrice === undefined) {
         hideLabel();
         return;
       }
 
       const crosshairPrice = params.price;
-      const percentage = ((crosshairPrice - markPrice) / markPrice) * 100;
+      const percentage = ((crosshairPrice - currentMarkPrice) / currentMarkPrice) * 100;
+
+      if (priceAxisCenterXRef.current === null || priceAxisWidthRef.current === null) {
+        const metrics = getPriceAxisMetrics();
+        priceAxisCenterXRef.current = metrics?.centerX ?? null;
+        priceAxisWidthRef.current = metrics?.width ?? null;
+      }
 
       setState({
+        formattedPrice: priceFormatter.format(crosshairPrice),
         percentage,
         offsetY: params.offsetY,
+        priceAxisCenterX: priceAxisCenterXRef.current,
+        priceAxisWidth: priceAxisWidthRef.current,
         isVisible: true,
       });
     };
 
-    callbackRef.current = callback;
     chart.crossHairMoved().subscribe(null, callback);
+    chart.onSymbolChanged().subscribe(null, onSymbolChanged);
 
     return () => {
-      if (callbackRef.current) {
-        chart.crossHairMoved().unsubscribe(null, callbackRef.current);
-        callbackRef.current = null;
-      }
+      cancelled = true;
+      chart.crossHairMoved().unsubscribe(null, callback);
+      chart.onSymbolChanged().unsubscribe(null, onSymbolChanged);
     };
-  }, [chartReady, tvWidgetRef, markPrice, hideLabel]);
+  }, [chartReady, tvWidgetRef, getPriceAxisMetrics, hideLabel]);
 
   return state;
 }

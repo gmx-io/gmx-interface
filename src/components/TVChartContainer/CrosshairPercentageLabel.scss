@@ -1,8 +1,7 @@
 .CrosshairPercentageLabel {
   position: absolute;
-  right: 4px;
-  transform: translateY(12px);
-  padding: 2px 6px;
+  box-sizing: border-box;
+  padding: 4px 8px;
   font-size: 11px;
   font-weight: 500;
   font-family:
@@ -16,4 +15,18 @@
   white-space: nowrap;
   background: #363a45;
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.CrosshairPercentageLabel-price {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.CrosshairPercentageLabel-percentage {
+  font-size: 11px;
+  line-height: 13px;
 }

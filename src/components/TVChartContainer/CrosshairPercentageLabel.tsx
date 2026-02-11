@@ -9,9 +9,20 @@ interface CrosshairPercentageLabelProps {
 }
 
 function CrosshairPercentageLabelComponent({ state }: CrosshairPercentageLabelProps) {
-  const { percentage, offsetY, isVisible } = state;
+  const { formattedPrice, percentage, offsetY, priceAxisCenterX, priceAxisWidth, isVisible } = state;
 
-  const style = useMemo<CSSProperties>(() => ({ top: offsetY }), [offsetY]);
+  const style = useMemo<CSSProperties>(() => {
+    if (priceAxisCenterX === null) {
+      return { top: offsetY, right: 4, transform: "translateY(-12px)" };
+    }
+
+    return {
+      top: offsetY,
+      left: priceAxisCenterX,
+      width: priceAxisWidth ?? undefined,
+      transform: "translate(-50%, -12px)",
+    };
+  }, [offsetY, priceAxisCenterX, priceAxisWidth]);
 
   if (!isVisible) {
     return null;
@@ -21,7 +32,8 @@ function CrosshairPercentageLabelComponent({ state }: CrosshairPercentageLabelPr
 
   return (
     <div className="CrosshairPercentageLabel" style={style}>
-      {formattedPercentage}
+      <div className="CrosshairPercentageLabel-price">{formattedPrice}</div>
+      <div className="CrosshairPercentageLabel-percentage">{formattedPercentage}</div>
     </div>
   );
 }
