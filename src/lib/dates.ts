@@ -131,6 +131,7 @@ export function getTimePeriodsInSeconds() {
     today: [todayStart, todayEnd],
     yesterday: [todayStart - 1 * SECONDS_IN_DAY, todayStart],
     week: [todayStart - 7 * SECONDS_IN_DAY, todayEnd],
+    last14Days: [todayStart - 14 * SECONDS_IN_DAY, todayEnd],
     month: [todayStart - 30 * SECONDS_IN_DAY, todayEnd],
     year: [yearStart, todayEnd],
   };

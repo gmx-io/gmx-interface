@@ -3,8 +3,9 @@ import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 
 import { SUPPORT_CHAT_WAS_EVER_CLICKED_KEY } from "config/localStorage";
+import { useShowSupportChat } from "domain/supportChat/useShowSupportChat";
+import { useSupportChatUnreadCount } from "domain/supportChat/useSupportChatUnreadCount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useShowSupportChat, useSupportChatUnreadCount } from "lib/supportChat";
 
 import SupportChatIcon from "img/ic_support_chat.svg?react";
 
