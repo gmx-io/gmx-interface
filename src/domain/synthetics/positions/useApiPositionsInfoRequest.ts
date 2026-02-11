@@ -30,9 +30,9 @@ export function useApiPositionsInfoRequest(
   const mountedAtRef = useRef<number | undefined>(mountedAtCache.get(chainId));
 
   const { data, error } = useSWR<ApiPositionsInfoResponse>(
-    enabled && account ? ["apiPositionsInfoRequest", chainId, account] : null,
+    enabled && account && sdk ? ["apiPositionsInfoRequest", chainId, account] : null,
     async () => {
-      const positions: ApiPositionInfo[] = await sdk.fetchPositionsInfo({
+      const positions: ApiPositionInfo[] = await sdk!.fetchPositionsInfo({
         account: account!,
         includeRelatedOrders: false,
       });

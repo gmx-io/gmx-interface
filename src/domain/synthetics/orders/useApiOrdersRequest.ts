@@ -30,9 +30,9 @@ export function useApiOrdersRequest(
   const mountedAtRef = useRef<number | undefined>(mountedAtCache.get(chainId));
 
   const { data, error } = useSWR<ApiOrdersResponse>(
-    enabled && account ? ["apiOrdersRequest", chainId, account] : null,
+    enabled && account && sdk ? ["apiOrdersRequest", chainId, account] : null,
     async () => {
-      const orders: ApiOrderInfo[] = await sdk.fetchOrders({ account: account! });
+      const orders: ApiOrderInfo[] = await sdk!.fetchOrders({ account: account! });
       const ordersData = keyBy(orders, "key");
       return {
         ordersData,
