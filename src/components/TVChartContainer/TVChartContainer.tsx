@@ -22,7 +22,7 @@ import { formatUsd, calculateDisplayDecimals } from "lib/numbers";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
-import { isChartAvailableForToken } from "sdk/configs/tokens";
+import { isChartAvailableForToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { TradeActionType, isPositionTradeAction } from "sdk/utils/tradeHistory/types";
 
@@ -417,6 +417,18 @@ export default function TVChartContainer({
       });
     }
   }, [chainId, chartReady, chartToken.symbol, visualMultiplier]);
+
+  useEffect(() => {
+    if (!chartReady || !tvWidgetRef.current || !chartToken.symbol) return;
+
+    const token = getTokenBySymbolSafe(chainId, chartToken.symbol);
+    const isStable = token?.isStable ?? false;
+
+    tvWidgetRef.current.applyOverrides({
+      "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": !isStable,
+      "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": !isStable,
+    });
+  }, [chainId, chartReady, chartToken.symbol]);
 
   const lastPeriod = useLatest(period);
   const lastSupportedResolutions = useLatest(supportedResolutions);

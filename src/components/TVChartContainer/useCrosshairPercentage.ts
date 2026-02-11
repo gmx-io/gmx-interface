@@ -32,8 +32,6 @@ export function useCrosshairPercentage(
 ): CrosshairPercentageState {
   const markPriceBn = useSelector(selectTradeboxMarkPrice);
   const markPriceRef = useRef<number | undefined>(undefined);
-  const priceAxisCenterXRef = useRef<number | null>(null);
-  const priceAxisWidthRef = useRef<number | null>(null);
 
   const markPrice = useMemo(() => {
     if (markPriceBn === undefined) return undefined;
@@ -91,13 +89,6 @@ export function useCrosshairPercentage(
   }, [chartContainerRef]);
 
   useEffect(() => {
-    if (!chartReady) {
-      priceAxisCenterXRef.current = null;
-      priceAxisWidthRef.current = null;
-    }
-  }, [chartReady]);
-
-  useEffect(() => {
     const container = chartContainerRef.current;
     if (!container || !chartReady) return;
 
@@ -131,12 +122,6 @@ export function useCrosshairPercentage(
     const priceFormatter = chart.priceFormatter();
     let cancelled = false;
 
-    const onSymbolChanged = () => {
-      priceAxisCenterXRef.current = null;
-      priceAxisWidthRef.current = null;
-      hideLabel();
-    };
-
     const callback = (params: CrossHairMovedEventParams) => {
       const currentMarkPrice = markPriceRef.current;
       if (cancelled || params.offsetY === undefined || currentMarkPrice === undefined) {
@@ -146,30 +131,23 @@ export function useCrosshairPercentage(
 
       const crosshairPrice = params.price;
       const percentage = ((crosshairPrice - currentMarkPrice) / currentMarkPrice) * 100;
-
-      if (priceAxisCenterXRef.current === null || priceAxisWidthRef.current === null) {
-        const metrics = getPriceAxisMetrics();
-        priceAxisCenterXRef.current = metrics?.centerX ?? null;
-        priceAxisWidthRef.current = metrics?.width ?? null;
-      }
+      const metrics = getPriceAxisMetrics();
 
       setState({
         formattedPrice: priceFormatter.format(crosshairPrice),
         percentage,
         offsetY: params.offsetY,
-        priceAxisCenterX: priceAxisCenterXRef.current,
-        priceAxisWidth: priceAxisWidthRef.current,
+        priceAxisCenterX: metrics?.centerX ?? null,
+        priceAxisWidth: metrics?.width ?? null,
         isVisible: true,
       });
     };
 
     chart.crossHairMoved().subscribe(null, callback);
-    chart.onSymbolChanged().subscribe(null, onSymbolChanged);
 
     return () => {
       cancelled = true;
       chart.crossHairMoved().unsubscribe(null, callback);
-      chart.onSymbolChanged().unsubscribe(null, onSymbolChanged);
     };
   }, [chartReady, tvWidgetRef, getPriceAxisMetrics, hideLabel]);
 
