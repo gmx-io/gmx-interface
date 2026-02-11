@@ -23,9 +23,9 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
   const mountedAtRef = useRef<number | undefined>(mountedAtCache.get(chainId));
 
   const { data, error } = useSWR<ApiMarketsInfoResponse>(
-    enabled ? ["apiMarketsInfoRequest", chainId] : null,
+    enabled && sdk ? ["apiMarketsInfoRequest", chainId] : null,
     async () => {
-      const marketsInfo: RawMarketInfo[] = await sdk.fetchMarketsInfo();
+      const marketsInfo: RawMarketInfo[] = await sdk!.fetchMarketsInfo();
       const marketsInfoData = toDict(marketsInfo, "marketTokenAddress");
       return {
         marketsInfoData,

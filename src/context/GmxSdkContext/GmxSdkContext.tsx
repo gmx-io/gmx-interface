@@ -1,10 +1,11 @@
 import { createContext, PropsWithChildren, useContext, useMemo, useRef } from "react";
 
 import { GmxApiSdk } from "sdk/clients/v2";
+import { isApiSupported } from "sdk/configs/api";
 import { ContractsChainId } from "sdk/configs/chains";
 
 type GmxSdkContextType = {
-  getSdk: (chainId: ContractsChainId) => GmxApiSdk;
+  getSdk: (chainId: ContractsChainId) => GmxApiSdk | undefined;
 };
 
 const context = createContext<GmxSdkContextType | null>(null);
@@ -15,6 +16,10 @@ export function GmxSdkProvider({ children }: PropsWithChildren) {
   const value = useMemo(
     (): GmxSdkContextType => ({
       getSdk: (chainId: ContractsChainId) => {
+        if (!isApiSupported(chainId)) {
+          return undefined;
+        }
+
         let sdk = sdkCache.current.get(chainId);
 
         if (!sdk) {
@@ -31,7 +36,7 @@ export function GmxSdkProvider({ children }: PropsWithChildren) {
   return <context.Provider value={value}>{children}</context.Provider>;
 }
 
-export function useGmxSdk(chainId: ContractsChainId): GmxApiSdk {
+export function useGmxSdk(chainId: ContractsChainId): GmxApiSdk | undefined {
   const ctx = useContext(context);
 
   if (!ctx) {
