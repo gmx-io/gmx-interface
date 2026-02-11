@@ -2255,7 +2255,6 @@ msgid "Transfer NFT"
 msgstr "NFT 전송하기"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
-#: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price below mark price"
 msgstr ""
 
@@ -4632,7 +4631,6 @@ msgstr "클립보드로 링크가 복사되었습니다."
 msgid "Max slippage precision is -0.01%"
 msgstr "최대 슬리피지 정밀도는 -0.01%입니다"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr ""

@@ -82,13 +82,13 @@ export function MarginField({
       <div className="flex cursor-default items-center justify-between gap-8 rounded-8 bg-slate-900">
         <div className="shrink-0 pl-4 text-12 font-medium text-typography-secondary">{t`Margin`}</div>
 
-        <div className="group flex min-w-0 items-center rounded-8 border border-slate-800 bg-slate-800 hover:border-fill-surfaceElevatedHover hover:bg-fill-surfaceElevatedHover">
-          <div className="flex items-center gap-8 rounded-8 border border-slate-800 px-8 py-5 focus-within:border-blue-300 group-hover:border-fill-surfaceElevatedHover">
+        <div className="flex min-w-0 items-center rounded-8 border border-slate-800 bg-slate-800">
+          <div className="flex items-center gap-8 rounded-8 border border-slate-800 px-8 py-5 hover:bg-fill-surfaceElevatedHover focus-within:border-blue-300">
             <TooltipWithPortal
               handle={
                 <NumberInput
                   value={inputValue}
-                  className="max-w-100 bg-transparent text-body-large w-auto min-w-40 p-1 text-13 outline-none"
+                  className="max-w-[100px] bg-transparent text-body-large w-auto min-w-40 p-1 text-13 outline-none"
                   inputRef={inputRef}
                   onValueChange={onInputValueChange}
                   onFocus={onFocus}

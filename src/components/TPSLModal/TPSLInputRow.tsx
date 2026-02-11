@@ -348,6 +348,11 @@ export function TPSLInputRow({
     return formatUsdPrice(referencePrice, { visualMultiplier });
   }, [referencePrice, visualMultiplier]);
 
+  const handleMarkPriceClick = useCallback(() => {
+    if (referencePrice === undefined || referencePrice === 0n) return;
+    onPriceChange(formatPrice(referencePrice));
+  }, [referencePrice, formatPrice, onPriceChange]);
+
   const estimatedPnlRow = (
     <div className="text-body-small flex justify-end">
       <span className="text-typography-secondary">
@@ -452,7 +457,10 @@ export function TPSLInputRow({
             <div className="flex items-center justify-between">
               <div className="text-body-small text-typography-secondary">{priceLabel}</div>
               {formattedMarkPrice !== undefined && (
-                <div className="text-12 text-typography-secondary numbers">
+                <div
+                  className="cursor-pointer text-12 text-typography-secondary numbers"
+                  onClick={handleMarkPriceClick}
+                >
                   <Trans>Mark:</Trans> <span className="text-typography-primary">{formattedMarkPrice}</span>
                 </div>
               )}

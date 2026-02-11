@@ -38,7 +38,7 @@ import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
 
-import PlusIcon from "img/ic_buy.svg?react";
+import PlusIcon from "img/ic_plus.svg?react";
 
 import { AddTPSLModal } from "./AddTPSLModal";
 import { TPSLOrdersList } from "./TPSLOrdersList";

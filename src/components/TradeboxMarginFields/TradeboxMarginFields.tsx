@@ -32,6 +32,7 @@ type Props = {
   setToTokenInputValue: (value: string, resetPriceImpact: boolean) => void;
   triggerPriceInputValue?: string;
   onTriggerPriceInputChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onMarkPriceClick?: () => void;
 };
 
 export function TradeboxMarginFields({
@@ -44,6 +45,7 @@ export function TradeboxMarginFields({
   setToTokenInputValue,
   triggerPriceInputValue,
   onTriggerPriceInputChange,
+  onMarkPriceClick,
 }: Props) {
   const tokensData = useTokensData();
 
@@ -196,6 +198,7 @@ export function TradeboxMarginFields({
             markPrice={markPrice}
             inputValue={triggerPriceInputValue}
             onInputValueChange={onTriggerPriceInputChange}
+            onMarkPriceClick={onMarkPriceClick}
             tradeMode={tradeMode}
             qa="trigger-price"
           />

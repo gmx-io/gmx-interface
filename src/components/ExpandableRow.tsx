@@ -119,7 +119,7 @@ export function ExpandableRow({
   );
 
   const label = useMemo(() => {
-    return hasError && disableCollapseOnError ? (
+    return hasError && disableCollapseOnError && errorMessage ? (
       <TooltipWithPortal handle={title} handleClassName={handleClassName} content={errorMessage} />
     ) : (
       <span className={handleClassName}>{title}</span>
