@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
@@ -41,6 +41,11 @@ import type { IChartingLibraryWidget } from "../../charting_library";
 
 const BASE_ORDER_LINE_LENGTH = -40;
 const ORDER_SPACING_PX = 190;
+/**
+ * Approximate height of an order line label in pixels.
+ * If two orders are closer than this on the Y axis, their labels will visually overlap.
+ */
+const OVERLAP_THRESHOLD_PX = 30;
 
 export function DynamicLines({
   tvWidgetRef,
@@ -180,6 +185,36 @@ export function DynamicLines({
     [chainId, marketsData, ordersInfoData, setEditingOrderState, setTriggerPriceInputValue]
   );
 
+  const [pricePerPixel, setPricePerPixel] = useState<number>(0);
+
+  useEffect(() => {
+    const chart = tvWidgetRef.current?.activeChart();
+    if (!chart) return;
+
+    const update = () => {
+      const pane = chart.getPanes()?.[0];
+      if (!pane) return;
+
+      const priceScale = pane.getMainSourcePriceScale();
+      if (!priceScale) return;
+
+      const range = priceScale.getVisiblePriceRange();
+      if (!range) return;
+
+      const height = pane.getHeight();
+      if (height <= 0) return;
+
+      setPricePerPixel((range.to - range.from) / height);
+    };
+
+    update();
+    chart.onVisibleRangeChanged().subscribe(null, update);
+
+    return () => {
+      chart.onVisibleRangeChanged().unsubscribe(null, update);
+    };
+  }, [tvWidgetRef]);
+
   const linesWithStackedOffsets = useMemo(() => {
     if (dynamicChartLines.length === 0) {
       return [];
@@ -192,20 +227,30 @@ export function DynamicLines({
       return Number(b.updatedAtTime - a.updatedAtTime);
     });
 
-    const priceGroupIndices = new Map<number, number>();
+    const proximityThreshold = pricePerPixel > 0 ? OVERLAP_THRESHOLD_PX * pricePerPixel : 0;
 
-    return sortedLines.map((line) => {
-      const indexInGroup = priceGroupIndices.get(line.price) ?? 0;
-      priceGroupIndices.set(line.price, indexInGroup + 1);
+    let groupIndex = 0;
 
-      const lineLength = BASE_ORDER_LINE_LENGTH - indexInGroup * ORDER_SPACING_PX;
+    return sortedLines.map((line, i) => {
+      if (i === 0) {
+        groupIndex = 0;
+      } else {
+        const prevPrice = sortedLines[i - 1].price;
+        const priceDiff = Math.abs(line.price - prevPrice);
+
+        if (priceDiff === 0 || (proximityThreshold > 0 && priceDiff < proximityThreshold)) {
+          groupIndex++;
+        } else {
+          groupIndex = 0;
+        }
+      }
 
       return {
         ...line,
-        lineLength,
+        lineLength: BASE_ORDER_LINE_LENGTH - groupIndex * ORDER_SPACING_PX,
       };
     });
-  }, [dynamicChartLines]);
+  }, [dynamicChartLines, pricePerPixel]);
 
   return linesWithStackedOffsets.map(({ updatedAtTime: _, ...line }) => (
     <DynamicLine
