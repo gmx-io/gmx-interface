@@ -43,27 +43,26 @@ export function useUiFlagEvents() {
 
         activeToastIds.current.add(toastId);
         toast.custom(
-          (t) =>
-            EventToast({
-              event: {
+          (t) => (
+            <EventToast
+              // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
+              event={{
                 id: event.id,
                 title: event.title,
                 bodyText: event.content,
                 endDate: "",
-              },
-              id: event.id,
-              toast: t,
-              variant: event.variant,
-              onClick: () => {
+              }}
+              id={event.id}
+              toast={t}
+              variant={event.variant}
+              onClick={() => {
                 toast.dismiss(toastId);
                 activeToastIds.current.delete(toastId);
                 dismissEvent(event.id);
-              },
-            }),
-          {
-            id: toastId,
-            style: {},
-          }
+              }}
+            />
+          ),
+          { id: toastId, style: {} }
         );
       } else if (!flagEnabled && isShowing) {
         toast.dismiss(toastId);
