@@ -300,6 +300,10 @@ msgstr "받는 사람"
 msgid "FAQ"
 msgstr "자주 묻는 질문"
 
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+msgid "Approve {depositTokenSymbol}"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -334,6 +338,10 @@ msgstr "GMX에서 거래를 시작하려면 GMX 계정에 자산을 입금하세
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
 msgstr "TWAP 부분 수"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Go to Trader Dashboard"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "The mark price has changed, consider increasing your allowed slippage by clicking on the \"...\" icon next to your address."
@@ -478,7 +486,7 @@ msgstr "<0>처음으로 <1>@GMX_IO</1>를 시도했습니다. </0><2> 꽤 인상
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "RPC 오류로 트랜잭션 실패.<0/><1/>설정에서 <2>익스프레스 트레이딩</2>을 활성화하세요. 더 나은 경험을 제공할 것입니다."
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Referral code added!"
 msgstr "추천 코드가 추가되었습니다!"
 
@@ -991,8 +999,8 @@ msgstr "{symbol} 판매 중..."
 msgid "Asset Management"
 msgstr "자산 관리"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Adding..."
 msgstr "추가 중…"
 
@@ -1361,6 +1369,7 @@ msgid "Sending buy request..."
 msgstr "매수 요청을 전송하는 중…"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Referrals/Referrals.tsx
 msgid "Distributions"
 msgstr "분배"
 
@@ -1922,7 +1931,7 @@ msgstr "{0, plural, one {주문 취소} other {# 주문 취소}}"
 msgid "Display PnL After Fees"
 msgstr "수수료 후 PnL 표시"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Referral code added."
 msgstr "추천 코드 추가됨."
 
@@ -2068,7 +2077,7 @@ msgstr "입금 진행 중"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Connect Wallet"
 msgstr "지갑 연동"
@@ -2315,8 +2324,8 @@ msgstr "시장별 격리 유동성 지원"
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr "{0} 마켓 풀에 기존 지정가 주문이 있지만 이 주문에 대한 유동성이 부족합니다."
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Update"
@@ -2852,7 +2861,7 @@ msgstr "트레이드"
 msgid "No deposits required"
 msgstr "입금 필요 없음"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Adding referral code failed."
 msgstr "추천 코드 추가 실패"
 
@@ -2870,6 +2879,10 @@ msgstr "V1 Arbitrum"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Your 15% discount is now active!"
+msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3016,7 +3029,7 @@ msgstr "총 스테이킹"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Network Fee"
 msgstr "네트워크 수수료"
 
@@ -3080,11 +3093,10 @@ msgid "Market"
 msgstr "마켓"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeInput.tsx
 msgid "Enter referral code"
 msgstr "추천 코드 입력"
 
@@ -3115,6 +3127,10 @@ msgstr "연간"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake anytime?"
 msgstr "언제든지 언스테이킹할 수 있나요?"
+
+#: src/components/Referrals/JoinReferralCode/ApplyReferralCodeButtonContent.tsx
+msgid "Apply referal code"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed."
@@ -3454,10 +3470,6 @@ msgstr "커뮤니티 주도 텔레그램 그룹"
 msgid "Settled Funding Fees"
 msgstr "정산된 자금 수수료"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Please input a referral code to benefit from fee discounts."
-msgstr "수수료 할인의 혜택을 받으려면 추천인 코드를 입력해주세요."
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Deposit"
 msgstr "입금 실패"
@@ -3632,7 +3644,7 @@ msgid "Bonus APR"
 msgstr "보너스 APR"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/ReferralsAffiliatesTab.tsx
 msgid "Referral code submitted."
 msgstr "추천 코드 제출됨."
 
@@ -4014,8 +4026,8 @@ msgstr "어필리에이트 볼트"
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Updating..."
 msgstr "업데이트 중…"
 
@@ -4175,6 +4187,10 @@ msgstr "토큰 선택"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Click here to give us your feedback on GMX"
 msgstr "GMX에 대한 피드백을 제공하려면 여기를 클릭하세요"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Trade smarter with up<0/> to 10% fee savings"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
@@ -4455,6 +4471,7 @@ msgstr "손절 생성"
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -4603,6 +4620,10 @@ msgstr "판매 중"
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr "추천"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Start trading"
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -4851,7 +4872,7 @@ msgstr "수익 농사"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "승인 중..."
@@ -4950,7 +4971,7 @@ msgstr "{0} 스왑"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5047,7 +5068,7 @@ msgstr "선택한 기간 동안 거래하지 않았습니다."
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr "이 주문의 트리거 가격은 스왑 수수료와 가격 영향을 기반으로 하여 주문 실행 시 최소 {toMinText}를 받을 수 있도록 보장합니다."
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Referral code updated failed."
 msgstr "추천인 코드 업데이트 실패."
 
@@ -5249,8 +5270,8 @@ msgstr "TP/SL"
 msgid "Asset"
 msgstr "자산"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Checking code"
 msgstr "코드 확인 중"
 
@@ -5298,6 +5319,10 @@ msgstr "긍정적 펀딩 수수료"
 msgid "Error submitting withdrawal"
 msgstr "출금 제출 오류"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
+msgstr ""
+
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
@@ -5335,7 +5360,7 @@ msgstr "STIP.b 소급 보너스"
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "{BLOCKCHAIN_COUNT} 블록체인에서"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Referral code updated."
 msgstr "추천 코드 업데이트됨."
 
@@ -5499,6 +5524,10 @@ msgstr "TWAP 스왑 부분 실행"
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>매</0> {seconds} 초"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
+msgstr ""
+
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
 msgstr ""
@@ -5552,6 +5581,10 @@ msgstr "수신자가 이전에 GLP 토큰을 스테이킹한 적이 없습니다
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In GMX:"
 msgstr "GMX에서:"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "You can find referral code in <0>X</0> or on other social media platforms."
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
@@ -5805,7 +5838,6 @@ msgstr "손절 업데이트"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Approve {0}"
 msgstr ""
 
@@ -5925,8 +5957,8 @@ msgstr "시장"
 msgid "Withdrawing {0} to {1} is not currently supported"
 msgstr "{0}을(를) {1}로 출금하는 것은 현재 지원되지 않습니다"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Same as current active code"
 msgstr "현재 활성 코드와 동일"
 
@@ -6044,8 +6076,6 @@ msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have s
 msgstr "<0>⬡ Chainlink 데이터 스토리 ⬡ <1/><2>#Chainlink</2> Data Streams는 <3>@GMX_IO</3> V2 프로토콜에 $56B 이상의 거래량을 보안했습니다.</0><4>Data Streams의 저지연 고품질 시장 데이터 전달은 <5>@arbitrum</5> 및 <6>@avax</6>에서 GMX의 영구 시장을 초강화했습니다. <7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "제출"
@@ -7177,7 +7207,7 @@ msgstr "비너스"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/ReferralsAffiliatesTab.tsx
 msgid "Referral code creation failed."
 msgstr "추천 코드 생성 실패."
 
@@ -7945,8 +7975,8 @@ msgstr ""
 msgid "Distribution"
 msgstr "분배"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Referral code does not exist"
 msgstr "추천 코드가 존재하지 않습니다"
 
@@ -8027,7 +8057,7 @@ msgstr "롱 증가 및<0/>숏 감소 실행 가격."
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "It will take a couple of minutes to be reflected. Please check back later."
 msgstr "반영되는 데 몇 분 걸립니다. 나중에 확인하세요."
 
@@ -8532,10 +8562,15 @@ msgstr "구 버전 1CT 서브계정에 {balanceFormatted} 남음."
 msgid "When does the discount start?"
 msgstr ""
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Learn more"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr "종료 거래의 가격 영향 리베이트는 청구 탭에서 청구 가능합니다. <0>더 읽기</0>"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr "성공"

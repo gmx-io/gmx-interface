@@ -2,15 +2,7 @@
   margin: 0 auto;
   text-align: center;
 }
-.mt-large {
-  margin-top: 3.1rem;
-}
-.mt-medium {
-  margin-top: 1.5rem;
-}
-.referral-tab-container {
-  margin: 1.5rem auto 3.1rem auto;
-}
+
 .referral-card {
   position: relative;
   padding: 2.4rem;
@@ -18,6 +10,7 @@
   background: var(--color-slate-900);
   border-radius: 8px;
 }
+
 .referral-card .title {
   font-weight: 500;
   font-size: var(--font-size-h2);
@@ -26,6 +19,7 @@
   padding: 0.775rem 0;
   margin: 0;
 }
+
 .referral-card .sub-title {
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
@@ -33,6 +27,7 @@
   color: var(--color-typography-primary);
   margin-top: 1.1625rem;
 }
+
 .referral-card .card-action {
   margin-top: 3.1rem;
 }
@@ -44,23 +39,11 @@
   box-sizing: border-box;
   margin-right: 1.5rem;
 }
-.referral-body-container .list {
+
+.list {
   margin-top: 3.1rem;
 }
-.active-referral-code .edit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.active-referral-code .edit span {
-  margin-right: 1.5rem;
-}
-.active-referral-code .edit svg {
-  cursor: pointer;
-}
-.active-referral-code .edit svg:hover {
-  opacity: 0.75;
-}
+
 .active-referral-code .tier {
   margin-top: 0.775rem;
   display: flex;
@@ -68,53 +51,8 @@
   justify-content: center;
 }
 
-.active-referral-code .tier .tier-discount-warning span {
-  color: var(--warning-yellow);
-}
-
-.active-referral-code .tier a {
-  text-decoration: none;
-  font-size: 0;
-}
-
 .edit-referral-modal {
   width: 31rem;
-}
-.referral-code-edit span {
-  margin-right: 0.775rem;
-}
-.referral-code-edit svg {
-  opacity: 0.75;
-  cursor: pointer;
-}
-
-.referral-code-edit svg:hover {
-  opacity: 1;
-}
-.create-referrar-code {
-  text-align: center;
-  max-width: 50rem;
-  margin: 3.1rem auto;
-}
-.transparent-btn {
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  background: transparent;
-  padding: 0.75rem 1.25rem;
-  color: var(--color-typography-primary);
-  font-size: var(--font-size-body-small);
-  border: 1px solid var(--dark-blue-border);
-  border-radius: var(--border-radius-sm);
-  cursor: pointer;
-}
-
-.transparent-btn:hover {
-  background: var(--dark-blue-hover);
-}
-
-.transparent-btn:active {
-  background: var(--dark-blue-active);
 }
 
 .referral-table-header {
@@ -123,56 +61,22 @@
   align-items: center;
   width: 100%;
 }
+
 .referral-table-header .title {
   margin: 0;
 }
-.referral-table-header .sub-title {
-  color: var(--color-gray-400);
-  font-size: var(--font-size-body-small);
-  margin-left: 0.775rem;
+
+.referral-text {
+  margin-right: 0.775rem;
+  font-family: monospace;
 }
 
-.referral-table-header .ml-small {
-  margin-left: 0.775rem;
-}
-.create-referrar-code form {
-  display: flex;
-  align-items: inherit;
-  justify-content: center;
-  margin: 3.1rem 0;
-}
-.create-referrar-code form input {
-  border: 1px solid var(--color-slate-700);
-  border-radius: 0.4rem;
-  padding: 1.1625rem;
-  font-size: var(--font-size-body-medium);
-  width: 40rem;
-}
-.create-referrar-code form button {
-  margin-left: 1.5rem;
+.referral-code-icon {
+  cursor: pointer;
+  display: inline-flex;
 }
 
-.info-card {
-  min-height: 13rem;
-  background: var(--dark-blue-bg);
-  border-radius: 0.4rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.info-card .card-label {
-  font-size: var(--font-size-body-medium);
-  line-height: 2.1rem;
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-typography-primary);
-  margin-top: 16px;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.info-card .card-data {
+.card-data {
   font-size: var(--font-size-body-large);
   font-weight: normal;
   text-align: center;
@@ -180,48 +84,11 @@
   margin: 1.5rem 0;
 }
 
-.info-card .info-card-question-icon {
-  vertical-align: middle;
-  font-size: var(--font-size-body-small);
-  opacity: 0.8;
-}
-
-.table-referral-code {
-  align-items: center;
-  display: flex;
-}
-
-.table-referral-code .referral-text {
-  margin-right: 0.775rem;
-  font-family: monospace;
-}
-
-.table-referral-code .referral-code-icon {
-  cursor: pointer;
-  display: inline-flex;
-}
-
-.table-referral-code .info {
-  margin-left: 0.775rem;
-}
-
-.table-referral-code p {
-  margin: 0;
-  margin-left: 0.775rem;
-  padding: 0;
-}
-
 .AffiliateCode-error {
   margin: 0;
   padding: 0.775rem 0 1.5rem;
   color: var(--error-red);
   font-size: var(--font-size-body-small);
-}
-
-.table-wrapper {
-  display: block;
-  width: 100%;
-  font-size: var(--font-size-body-medium);
 }
 
 .empty-message {
@@ -235,22 +102,4 @@
   font-size: var(--font-size-body-medium);
   color: var(--color-slate-100);
   flex-direction: column;
-}
-
-.confirm-checkbox .Checkbox {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  direction: rtl;
-  font-size: var(--font-size-body-small);
-  margin-bottom: 1.5rem;
-}
-
-@media (max-width: 800px) {
-  .table-wrapper {
-    overflow-x: auto;
-  }
-  .table-head {
-    white-space: nowrap;
-  }
 }

@@ -300,6 +300,10 @@ msgstr "至"
 msgid "FAQ"
 msgstr "常见问题解答"
 
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+msgid "Approve {depositTokenSymbol}"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
@@ -334,6 +338,10 @@ msgstr "要在 GMX 上开始交易，请将资产存入 GMX 账户。"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP Number of Parts"
 msgstr "TWAP 部分数量"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Go to Trader Dashboard"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "The mark price has changed, consider increasing your allowed slippage by clicking on the \"...\" icon next to your address."
@@ -478,7 +486,7 @@ msgstr "<0>第一次尝试 <1>@GMX_IO</1>。</0><2> 非常令人印象深刻的�
 msgid "Transaction failed due to RPC error.<0/><1/>Please enable <2>Express trading</2> under settings, which should offer a better experience."
 msgstr "由于 RPC 错误，交易失败。<0/><1/>请在设置下启用 <2>快速交易</2>，这应该提供更好的体验。"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Referral code added!"
 msgstr "推荐码已添加！"
 
@@ -991,8 +999,8 @@ msgstr "售卖 {symbol}..."
 msgid "Asset Management"
 msgstr "资产管理"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Adding..."
 msgstr "正在添加…"
 
@@ -1361,6 +1369,7 @@ msgid "Sending buy request..."
 msgstr "正在发送买入请求…"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Referrals/Referrals.tsx
 msgid "Distributions"
 msgstr "分配"
 
@@ -1922,7 +1931,7 @@ msgstr "{0, plural, one {取消订单} other {取消 # 个订单}}"
 msgid "Display PnL After Fees"
 msgstr "显示费用后盈亏"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Referral code added."
 msgstr "推荐码已添加。"
 
@@ -2068,7 +2077,7 @@ msgstr "存款进行中"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 msgid "Connect Wallet"
 msgstr "连接钱包"
@@ -2315,8 +2324,8 @@ msgstr "支持每个市场独立的隔离流动性"
 msgid "You have an existing limit order in the {0} market pool but it lacks liquidity for this order."
 msgstr "您在 {0} 市场池中有现有限价订单，但该订单缺乏流动性。"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Update"
@@ -2852,7 +2861,7 @@ msgstr "交易"
 msgid "No deposits required"
 msgstr "无需存入"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Adding referral code failed."
 msgstr "添加推荐代码失败。"
 
@@ -2870,6 +2879,10 @@ msgstr "V1 Arbitrum"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Your 15% discount is now active!"
+msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3016,7 +3029,7 @@ msgstr "总质押"
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Network Fee"
 msgstr "网络费用"
 
@@ -3080,11 +3093,10 @@ msgid "Market"
 msgstr "市场"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeInput.tsx
 msgid "Enter referral code"
 msgstr "输入推荐码"
 
@@ -3115,6 +3127,10 @@ msgstr "每年"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake anytime?"
 msgstr "可以随时解除质押吗？"
+
+#: src/components/Referrals/JoinReferralCode/ApplyReferralCodeButtonContent.tsx
+msgid "Apply referal code"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed."
@@ -3454,10 +3470,6 @@ msgstr "社区主导的 Telegram 群组。"
 msgid "Settled Funding Fees"
 msgstr "结算资金费用"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Please input a referral code to benefit from fee discounts."
-msgstr "请输入推荐代码以享受费用折扣。"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Deposit"
 msgstr "存入失败"
@@ -3632,7 +3644,7 @@ msgid "Bonus APR"
 msgstr "奖金年化收益率"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/ReferralsAffiliatesTab.tsx
 msgid "Referral code submitted."
 msgstr "推荐码已提交。"
 
@@ -4014,8 +4026,8 @@ msgstr "联盟金库"
 msgid "Enter a price"
 msgstr "输入价格"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Updating..."
 msgstr "正在更新…"
 
@@ -4175,6 +4187,10 @@ msgstr "选择代币"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Click here to give us your feedback on GMX"
 msgstr "点击这里给我们关于 GMX 的反馈"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Trade smarter with up<0/> to 10% fee savings"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Optimal"
@@ -4455,6 +4471,7 @@ msgstr "创建止损"
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -4603,6 +4620,10 @@ msgstr "正在卖出"
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr "推荐"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Start trading"
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -4851,7 +4872,7 @@ msgstr "收益耕作"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "授权中..."
@@ -4950,7 +4971,7 @@ msgstr "交换 {0}"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5047,7 +5068,7 @@ msgstr "您在选定期间未进行交易。"
 msgid "The trigger price for this order is based on the swap fees and price impact to guarantee that you will receive at least {toMinText} on order execution."
 msgstr "此订单的触发价格基于交换费用和价格影响，以保证您在订单执行时至少收到 {toMinText}。"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Referral code updated failed."
 msgstr "推荐代码更新失败。"
 
@@ -5249,8 +5270,8 @@ msgstr "TP/SL"
 msgid "Asset"
 msgstr "资产"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Checking code"
 msgstr "检查代码"
 
@@ -5298,6 +5319,10 @@ msgstr "正资金费用"
 msgid "Error submitting withdrawal"
 msgstr "提交提款时出错"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
+msgstr ""
+
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 msgid "No open positions"
@@ -5335,7 +5360,7 @@ msgstr "STIP.b 追溯奖金"
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "来自 {BLOCKCHAIN_COUNT} 个区块链"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
 msgid "Referral code updated."
 msgstr "推荐码已更新。"
 
@@ -5499,6 +5524,10 @@ msgstr "执行 TWAP 交换部分"
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>每</0> {seconds} 秒"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
+msgstr ""
+
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
 msgstr ""
@@ -5552,6 +5581,10 @@ msgstr "接收方此前未质押过 GLP 代币"
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In GMX:"
 msgstr "在 GMX 中："
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "You can find referral code in <0>X</0> or on other social media platforms."
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
@@ -5805,7 +5838,6 @@ msgstr "更新止损"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Approve {0}"
 msgstr ""
 
@@ -5925,8 +5957,8 @@ msgstr "市场"
 msgid "Withdrawing {0} to {1} is not currently supported"
 msgstr "目前不支持将 {0} 提取到 {1}"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Same as current active code"
 msgstr "与当前活跃代码相同"
 
@@ -6044,8 +6076,6 @@ msgid "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams have s
 msgstr "<0>⬡ Chainlink 数据故事 ⬡ <1/><2>#Chainlink</2> 数据流已为 <3>@GMX_IO</3> V2 协议保障超过 560 亿美元的交易量。</0><4>数据流的低延迟交付高质量市场数据已为 GMX 的永续市场提供动力，跨 <5>@arbitrum</5> 和 <6>@avax</6>。<7>https://dune.com/gmx-io/gmx-analytics#v2-volume</7></4>"
 
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "提交"
@@ -7177,7 +7207,7 @@ msgstr "Venus"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/ReferralsAffiliatesTab.tsx
 msgid "Referral code creation failed."
 msgstr "推荐代码创建失败。"
 
@@ -7945,8 +7975,8 @@ msgstr ""
 msgid "Distribution"
 msgstr "分配"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeForm.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Referral code does not exist"
 msgstr "推荐码不存在"
 
@@ -8027,7 +8057,7 @@ msgstr "增加多头和<0/>减少空头的执行价格。"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "It will take a couple of minutes to be reflected. Please check back later."
 msgstr "需要几分钟才能反映。请稍后检查。"
 
@@ -8532,10 +8562,15 @@ msgstr "您的旧版 1CT 子账户中剩余 {balanceFormatted}。"
 msgid "When does the discount start?"
 msgstr ""
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Learn more"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Price impact rebates for closing trades are claimable under the claims tab. <0>Read more</0>"
 msgstr "平仓交易的价格影响返利可在申领标签下申领。<0>阅读更多</0>"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr "成功"

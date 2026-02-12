@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { getBasisPoints } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import {
@@ -36,7 +35,7 @@ export type PositionsInfoResult = {
 export function usePositionsInfoRequest(
   chainId: ContractsChainId,
   p: {
-    account: string | null | undefined;
+    account: string | undefined;
     marketsInfoData?: MarketsInfoData;
     marketsData?: MarketsData;
     tokensData?: TokensData;
@@ -57,11 +56,10 @@ export function usePositionsInfoRequest(
     positionsError,
   } = p;
 
-  const { signer } = useWallet();
   const { positionsConstants, error: positionsConstantsError } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
   const { error: uiFeeFactorError } = useUiFeeFactorRequest(chainId);
-  const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
+  const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
 
   const error = positionsError || positionsConstantsError || uiFeeFactorError || userReferralInfo?.error;
 

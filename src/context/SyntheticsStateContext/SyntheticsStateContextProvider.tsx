@@ -231,7 +231,7 @@ export function SyntheticsStateContextProvider({
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
-  const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
+  const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
   const [closingPositionKey, setClosingPositionKey] = useState<string>();
   const [isCandlesLoaded, setIsCandlesLoaded] = useState(false);
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(chainId, {

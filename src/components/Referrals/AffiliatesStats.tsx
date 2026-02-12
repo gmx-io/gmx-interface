@@ -15,7 +15,6 @@ import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount, formatBigUsd, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
@@ -68,7 +67,6 @@ function AffiliatesStats({
   handleCreateReferralCode,
   setRecentlyAddedCodes,
 }: Props) {
-  const { signer } = useWallet();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
@@ -131,7 +129,7 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
-  const { totalRebate } = useTiers(signer, chainId, tierId);
+  const { totalRebate } = useTiers(chainId, tierId);
   const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate, true);
 
   const totalClaimableRewardsUsd = useMemo(() => {

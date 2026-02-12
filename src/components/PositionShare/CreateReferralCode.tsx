@@ -45,7 +45,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "components/Referrals/referralsHelper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ReferralsIcon from "img/referrals.svg?react";
+import ReferralsIcon from "img/ic_referrals.svg?react";
 
 type Props = {
   onSuccess: (code: string) => void;

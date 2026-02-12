@@ -7,7 +7,6 @@ import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { formatDate } from "lib/dates";
 import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount, formatBigUsd } from "lib/numbers";
-import useWallet from "lib/wallets/useWallet";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -20,7 +19,7 @@ import EditIcon from "img/ic_edit.svg?react";
 import WarnIcon from "img/ic_warn.svg?react";
 
 import EmptyMessage from "./EmptyMessage";
-import { ReferralCodeEditFormContainer } from "./JoinReferralCode";
+import { ReferralCodeEditFormContainer } from "./JoinReferralCode/ReferralCodeEditFormContainer";
 import ReferralInfoCard from "./ReferralInfoCard";
 import { getSharePercentage, getTierIdDisplay, getUsdValue, tierDiscountInfo } from "./referralsHelper";
 import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
@@ -39,7 +38,6 @@ type Props = {
 };
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, discountShare }: Props) {
-  const { signer } = useWallet();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef<HTMLDivElement>(null);
 
@@ -57,8 +55,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
   );
 
   const currentDiscountDistributions = getCurrentData();
-  const { totalRebate } = useTiers(signer, chainId, traderTier);
-  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
+  const { totalRebate } = useTiers(chainId, traderTier);
+  const currentTierDiscount = getSharePercentage(traderTier, discountShare ?? 0n, totalRebate);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => setIsEditModalOpen(false);

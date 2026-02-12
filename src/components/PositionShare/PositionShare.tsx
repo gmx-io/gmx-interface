@@ -12,7 +12,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -55,8 +55,8 @@ type Props = {
   pnlAfterFeesUsd: bigint;
   setIsPositionShareModalOpen: (isOpen: boolean) => void;
   isPositionShareModalOpen: boolean;
-  account: string | undefined | null;
-  chainId: number;
+  account: string | undefined;
+  chainId: ContractsChainId;
   doNotShowAgain?: boolean;
   onDoNotShowAgainChange?: (value: boolean) => void;
   onShareAction?: () => void;
@@ -83,9 +83,8 @@ function PositionShare({
   shareSource,
   isRpnl = false,
 }: Props) {
-  const { signer } = useWallet();
   const userAffiliateCode = useAffiliateCodes(chainId, account);
-  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(signer, chainId, account);
+  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);

@@ -5,7 +5,7 @@ import { GMX_DISCORD_URL, FEE_STRUCTURE_URL, REFERRALS_DOCS_URL } from "config/l
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq, FaqItem } from "components/Faq/Faq";
 
-const WIZARD_FAQS: FaqItem[] = [
+export const WIZARD_FAQS: FaqItem[] = [
   {
     title: <Trans>Where do I get a referral code?</Trans>,
     content: (
@@ -71,7 +71,7 @@ const WIZARD_FAQS: FaqItem[] = [
   },
 ];
 
-const POST_WIZARD_FAQS: FaqItem[] = [
+export const POST_WIZARD_FAQS: FaqItem[] = [
   {
     title: <Trans>Which fees does my discount apply to?</Trans>,
     content: (

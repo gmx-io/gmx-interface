@@ -140,7 +140,7 @@ export const tierDiscountInfo = {
 export function getSharePercentage(
   tierId: number | undefined,
   discountShare: bigint | undefined,
-  totalRebate: bigint,
+  totalRebate: bigint | undefined,
   isRebate?: boolean
 ) {
   if (tierId === undefined || totalRebate === undefined) return;
