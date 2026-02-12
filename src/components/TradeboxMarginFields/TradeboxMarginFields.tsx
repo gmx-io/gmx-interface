@@ -126,8 +126,13 @@ export function TradeboxMarginFields({
       if (fromToken?.balance === undefined || fromToken.balance === 0n) return;
 
       const amount = (fromToken.balance * BigInt(percentage)) / 100n;
-      const displayDecimals = calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable);
-      const formatted = limitDecimals(formatAmountFree(amount, fromToken.decimals), displayDecimals);
+      const formatted =
+        percentage === 100
+          ? formatAmountFree(amount, fromToken.decimals)
+          : limitDecimals(
+              formatAmountFree(amount, fromToken.decimals),
+              calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable)
+            );
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
