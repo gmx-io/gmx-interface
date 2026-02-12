@@ -2,7 +2,7 @@ import cx from "classnames";
 import camelCase from "lodash/camelCase";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
-import { memo, SVGProps, useEffect, useState } from "react";
+import { memo, SVGProps, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
@@ -73,7 +73,7 @@ const otherImages = Object.keys(otherImagesContext)
     return {
       path: key,
       name: name,
-      importUrl: `import ${name} from "${key}";`,
+      importUrl: `import ${name} from "img/${key}";`,
       src: otherImagesContext[key],
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
@@ -244,9 +244,6 @@ export default memo(function UiPage() {
 function IconsAndImages() {
   const [searchTerm, setSearchTerm] = useState("");
   const [clipboardState, copyToClipboard] = useCopyToClipboard();
-  useEffect(() => {
-    console.log(clipboardState);
-  }, [clipboardState]);
 
   const filteredIcons = icons.filter(
     (icon) =>

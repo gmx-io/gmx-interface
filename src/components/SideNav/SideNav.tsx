@@ -21,6 +21,7 @@ import TradeIcon from "img/trade.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";
 import { SettingsNavItem } from "./SettingsNavItem";
+import { SupportChatNavItem } from "./SupportChatNavItem";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
@@ -43,6 +44,7 @@ function SideNav({ className }: { className?: string }) {
         <MenuSection isCollapsed={isCollapsed} />
 
         <ul className="flex list-none flex-col px-0">
+          <SupportChatNavItem isCollapsed={isCollapsed} />
           <SettingsNavItem isCollapsed={isCollapsed} />
           <LanguageNavItem isCollapsed={isCollapsed} />
           <DocsNavItem isCollapsed={isCollapsed} />
@@ -112,7 +114,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
         >
           <div className="flex items-center gap-8 rounded-8 bg-blue-400/20 px-12 py-10 dark:bg-slate-700">
             <div className="flex size-24 shrink-0 items-center justify-center">{icon}</div>
-            <span className={cx("text-body-medium font-medium tracking-[-1.2%]")}>{label}</span>
+            <span className={cx("text-body-medium whitespace-nowrap font-medium tracking-[-1.2%]")}>{label}</span>
           </div>
         </div>
       </div>

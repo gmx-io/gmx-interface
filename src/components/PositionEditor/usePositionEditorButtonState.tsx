@@ -375,8 +375,10 @@ export function usePositionEditorButtonState(operation: Operation): {
       minCollateralFactor,
     });
 
-    const error = commonError[0] || editCollateralError[0] || expressError[0];
-    const tooltipName = commonError[1] || editCollateralError[1] || expressError[1];
+    const error =
+      commonError.buttonErrorMessage || editCollateralError.buttonErrorMessage || expressError.buttonErrorMessage;
+    const tooltipName =
+      commonError.buttonTooltipName || editCollateralError.buttonTooltipName || expressError.buttonTooltipName;
 
     if (error) {
       return [error, tooltipName];

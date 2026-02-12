@@ -1,7 +1,7 @@
 import { msg, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { USD_DECIMALS } from "config/factors";
@@ -15,7 +15,6 @@ import {
 } from "domain/referrals";
 import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
-import { SECONDS_IN_DAY } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { formatUsd, numberToBigint } from "lib/numbers";
 
@@ -75,6 +74,7 @@ function PoolsTimeRangeFilter({
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ReferralsTradersContent({ account, referralsData }: ReferralsTradersContentProps) {
   const { chainId } = useChainId();
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(chainId, account);

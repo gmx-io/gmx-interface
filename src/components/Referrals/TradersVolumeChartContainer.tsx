@@ -1,10 +1,9 @@
 import { lightFormat } from "date-fns";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
-import { SECONDS_IN_DAY } from "lib/dates";
 import { bigintToNumber } from "lib/numbers";
 import { sleep } from "lib/sleep";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
