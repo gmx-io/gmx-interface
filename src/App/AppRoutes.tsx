@@ -9,6 +9,7 @@ import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
+import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
@@ -49,6 +50,7 @@ export function AppRoutes() {
   const history = useHistory();
 
   useEventToast();
+  useUiFlagEvents();
   useConfigureMetrics();
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();

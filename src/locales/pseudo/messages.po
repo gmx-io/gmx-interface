@@ -2832,6 +2832,10 @@ msgstr ""
 msgid "Annualized data based on the past 7 days."
 msgstr ""
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr ""
@@ -4870,6 +4874,10 @@ msgstr ""
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
+msgstr ""
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
 msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx

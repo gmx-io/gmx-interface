@@ -2832,6 +2832,10 @@ msgstr "Показать значения отладки"
 msgid "Annualized data based on the past 7 days."
 msgstr "Годовые данные на основе последних 7 дней."
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "Нет доступной ликвидности для увеличения шортов для<0/>этого размера. Макс. размер шорта: {0}<1/><2/>Цены выполнения для уменьшения лонгов."
@@ -4871,6 +4875,10 @@ msgstr "Доходное фермерство"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Одобрение…"
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

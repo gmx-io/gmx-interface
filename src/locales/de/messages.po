@@ -2832,6 +2832,10 @@ msgstr "Debug-Werte anzeigen"
 msgid "Annualized data based on the past 7 days."
 msgstr "Annualisierte Daten basierend auf den letzten 7 Tagen."
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "Keine Liquidität verfügbar für die Erhöhung von Shorts für<0/>diese Größe. Max. Short-Größe: {0}<1/><2/>Ausführungspreise für die Verringerung von Longs."
@@ -4871,6 +4875,10 @@ msgstr "Yield Farming"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Genehmige…"
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

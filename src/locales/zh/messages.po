@@ -2832,6 +2832,10 @@ msgstr "显示调试值"
 msgid "Annualized data based on the past 7 days."
 msgstr "基于过去 7 天的年化数据。"
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "没有流动性可用于增加此规模的做空。<0/>最大做空规模：{0}<1/><2/>减少做多的执行价格。"
@@ -4871,6 +4875,10 @@ msgstr "收益耕作"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "授权中..."
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
