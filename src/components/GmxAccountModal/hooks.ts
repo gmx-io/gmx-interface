@@ -119,16 +119,17 @@ function getTotalGmxAccountUsdFromTokensData(tokensData: TokensData) {
 
 export function useAvailableToTradeAssetMultichainRequest(
   chainId: ContractsChainId,
-  srcChainId: SourceChainId | undefined
+  srcChainId: SourceChainId | undefined,
+  params?: { enabled?: boolean }
 ): {
   gmxAccountUsd: bigint | undefined;
   isLoading: boolean;
 } {
-  const { tokensData, isGmxAccountBalancesLoaded, error } = useTokensDataRequest(chainId, srcChainId);
+  const { tokensData, isGmxAccountBalancesLoaded, error } = useTokensDataRequest(chainId, srcChainId, params);
   const isLoading = !isGmxAccountBalancesLoaded && !error;
 
   if (!tokensData || !isGmxAccountBalancesLoaded) {
-    return { gmxAccountUsd: undefined, isLoading: false };
+    return { gmxAccountUsd: undefined, isLoading };
   }
 
   const gmxAccountUsd = getTotalGmxAccountUsdFromTokensData(tokensData);
@@ -136,12 +137,12 @@ export function useAvailableToTradeAssetMultichainRequest(
   return { gmxAccountUsd, isLoading };
 }
 
-export function useAvailableToTradeAssetMultichain(): {
+export function useAvailableToTradeAssetMultichain({ enabled }: { enabled?: boolean } = {}): {
   gmxAccountUsd: bigint | undefined;
   isLoading: boolean;
 } {
   const { chainId, srcChainId } = useChainId();
-  return useAvailableToTradeAssetMultichainRequest(chainId, srcChainId);
+  return useAvailableToTradeAssetMultichainRequest(chainId, srcChainId, { enabled });
 }
 
 const subscribeMultichainTokenBalances: SWRSubscription<
@@ -226,34 +227,11 @@ export function useMultichainTradeTokensRequest(
   const isBalanceDataLoading = balanceData?.isLoading === undefined ? true : balanceData.isLoading;
 
   const tokenChainDataArray: TokenChainData[] = useMemo(() => {
-    const tokenChainDataArray: TokenChainData[] = [];
-
-    if (!tokenBalances) {
-      return tokenChainDataArray;
-    }
-
-    for (const sourceChainIdString in tokenBalances) {
-      const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
-      const tokensChainBalanceData = tokenBalances[sourceChainId];
-
-      const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[sourceChainId];
-
-      if (!sourceChainTokenIdMap) {
-        continue;
-      }
-
-      const tokenChainData = getTokensChainData({
-        chainId,
-        sourceChainTokenIdMap,
-        pricesData,
-        sourceChainId,
-        tokensChainBalanceData,
-      });
-
-      tokenChainDataArray.push(...Object.values(tokenChainData));
-    }
-
-    return tokenChainDataArray;
+    return buildTokenChainDataArray({
+      tokenBalances,
+      chainId,
+      pricesData,
+    });
   }, [tokenBalances, chainId, pricesData]);
 
   return {
@@ -330,6 +308,45 @@ export function useMultichainMarketTokensBalancesRequest({
     tokenBalances: balances,
     isLoading: balancesResult?.isLoading ?? true,
   };
+}
+
+export function buildTokenChainDataArray({
+  tokenBalances,
+  chainId,
+  pricesData,
+}: {
+  tokenBalances: Record<number, Record<string, bigint>> | undefined;
+  chainId: ContractsChainId;
+  pricesData: TokenPricesData | undefined;
+}): TokenChainData[] {
+  const tokenChainDataArray: TokenChainData[] = [];
+
+  if (!tokenBalances) {
+    return tokenChainDataArray;
+  }
+
+  for (const sourceChainIdString in tokenBalances) {
+    const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
+    const tokensChainBalanceData = tokenBalances[sourceChainId];
+
+    const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[sourceChainId];
+
+    if (!sourceChainTokenIdMap) {
+      continue;
+    }
+
+    const tokenChainData = getTokensChainData({
+      chainId,
+      sourceChainTokenIdMap,
+      pricesData,
+      sourceChainId,
+      tokensChainBalanceData,
+    });
+
+    tokenChainDataArray.push(...Object.values(tokenChainData));
+  }
+
+  return tokenChainDataArray;
 }
 
 function getTokensChainData({

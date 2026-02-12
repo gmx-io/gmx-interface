@@ -4685,6 +4685,10 @@ msgstr "{ordersText} 취소 실패."
 msgid "Vesting"
 msgstr "베스팅"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "지원"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "새로 생성된 주문 취소"
@@ -6208,6 +6212,10 @@ msgstr "{symbol} 이전 중..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "트리거 가격이 마크 가격 초과"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "새로운"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
