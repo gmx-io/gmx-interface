@@ -6,7 +6,7 @@ import { zeroAddress } from "viem";
 import { getBridgingOptionsForToken } from "config/bridging";
 import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { get1InchSwapUrlFromAddresses } from "config/links";
+import { getExternalAggregatorSwapUrlFromAddresses, isMegaEthChain } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -778,6 +778,7 @@ function NoSwapPathTooltipContent({
   chainId: number;
   toToken: TokenData | undefined;
 }) {
+  const isMegaEth = isMegaEthChain(chainId);
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
 
   const makeHandleSwapClick = useCallback(
@@ -829,8 +830,10 @@ function NoSwapPathTooltipContent({
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
         <br />
         <br />
-        <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
-          You can buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch.
+        <ExternalLink
+          href={getExternalAggregatorSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}
+        >
+          You can buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on {isMegaEth ? "Jumper" : "1inch"}.
         </ExternalLink>
       </Trans>
       {getBridgingOptionsForToken(collateralToken?.symbol) && (

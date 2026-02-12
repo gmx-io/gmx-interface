@@ -29,12 +29,12 @@ export default function EarnPortfolioPage() {
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
-  const { performance: performanceTotal } = usePerformanceAnnualized({
+  const { performance: performanceTotal, isLoading: isPerformanceTotalLoading } = usePerformanceAnnualized({
     chainId,
     period: "total",
   });
 
-  const { performance: performance30d } = usePerformanceAnnualized({
+  const { performance: performance30d, isLoading: isPerformance30dLoading } = usePerformanceAnnualized({
     chainId,
     period: "30d",
   });
@@ -95,6 +95,7 @@ export default function EarnPortfolioPage() {
                 gmGlvAssets={gmGlvAssets}
                 performanceTotal={performanceTotal}
                 performance30d={performance30d}
+                isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
               />
             </ErrorBoundary>
@@ -120,6 +121,7 @@ export default function EarnPortfolioPage() {
                 gmGlvAssets={gmGlvAssets}
                 performanceTotal={performanceTotal}
                 performance30d={performance30d}
+                isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
               />
             </ErrorBoundary>

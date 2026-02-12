@@ -24,6 +24,15 @@ export function getPendingOrderKey(
 
 export function getPendingDepositKey(data: PendingDepositData) {
   if (data.isGlvDeposit) {
+    // For same-collateral markets, the contract's recordTransferIn lumps both
+    // token transfers into initialLongTokenAmount (since it's the same token),
+    // while the frontend splits them 50/50. Combine amounts to match the event.
+    const isSameCollaterals = data.initialLongTokenAddress === data.initialShortTokenAddress;
+    const longAmount = isSameCollaterals
+      ? data.initialLongTokenAmount + data.initialShortTokenAmount
+      : data.initialLongTokenAmount;
+    const shortAmount = isSameCollaterals ? 0n : data.initialShortTokenAmount;
+
     return [
       data.account,
       data.glvAddress,
@@ -32,8 +41,8 @@ export function getPendingDepositKey(data: PendingDepositData) {
       data.longTokenSwapPath.join("-"),
       data.shortTokenSwapPath.join("-"),
       data.shouldUnwrapNativeToken,
-      data.initialLongTokenAmount.toString(),
-      data.initialShortTokenAmount.toString(),
+      longAmount.toString(),
+      shortAmount.toString(),
       (data.initialMarketTokenAmount ?? 0n).toString(),
     ].join(":");
   }

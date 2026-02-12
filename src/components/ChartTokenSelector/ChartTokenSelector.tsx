@@ -632,7 +632,7 @@ function MarketListItem({
       onClick={handleSelectLargePosition}
     >
       <td
-        className={cx("px-12 text-center text-typography-secondary", rowVerticalPadding)}
+        className={cx("w-0 px-12 text-center text-typography-secondary", rowVerticalPadding)}
         onClick={handleFavoriteClick}
       >
         <FavoriteStar isFavorite={isFavorite} className="!size-12" />
