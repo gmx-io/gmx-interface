@@ -2797,6 +2797,10 @@ msgstr "デバッグ値を表示"
 msgid "Annualized data based on the past 7 days."
 msgstr "過去7日間の年換算データ。"
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "このサイズのショート増加のための流動性がありません。<0/>最大ショートサイズ: {0}<1/><2/>ロング減少のための実行価格。"
@@ -4681,6 +4685,10 @@ msgstr "{ordersText}のキャンセルに失敗しました。"
 msgid "Vesting"
 msgstr "ベスティング"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "サポート"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "新規作成注文をキャンセル"
@@ -4798,6 +4806,10 @@ msgstr "イールドファーミング"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "承認中..."
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -6200,6 +6212,10 @@ msgstr "{symbol} をシフト中..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "トリガー価格がマーク価格を上回る"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "新着"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
