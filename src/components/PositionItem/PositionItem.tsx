@@ -39,7 +39,6 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
 import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
-import { AddTPSLModal } from "../TPSLModal/AddTPSLModal";
 import { TPSLModal } from "../TPSLModal/TPSLModal";
 
 import "./PositionItem.scss";
@@ -67,7 +66,7 @@ export function PositionItem(p: Props) {
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
-  const [isAddTPSLModalVisible, setIsAddTPSLModalVisible] = useState(false);
+  const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
   const isActionsDisabled = p.position.isOpening;
   const isCloseDisabled = isActionsDisabled || p.position.sizeInUsd == 0n;
 
@@ -78,22 +77,12 @@ export function PositionItem(p: Props) {
   }, []);
 
   const handleOpenTPSLModal = useCallback(() => {
-    setIsAddTPSLModalVisible(false);
+    setTpslInitialView("list");
     setIsTPSLModalVisible(true);
   }, []);
 
   const handleOpenAddTPSLModal = useCallback(() => {
-    setIsTPSLModalVisible(false);
-    setIsAddTPSLModalVisible(true);
-  }, []);
-
-  const handleAddTPSLBack = useCallback(() => {
-    setIsAddTPSLModalVisible(false);
-    setIsTPSLModalVisible(true);
-  }, []);
-
-  const handleAddTPSLSuccess = useCallback(() => {
-    setIsAddTPSLModalVisible(false);
+    setTpslInitialView("add");
     setIsTPSLModalVisible(true);
   }, []);
 
@@ -834,13 +823,11 @@ export function PositionItem(p: Props) {
   return (
     <>
       {p.isLarge ? renderLarge() : renderSmall()}
-      <TPSLModal isVisible={isTPSLModalVisible} setIsVisible={setIsTPSLModalVisible} position={p.position} />
-      <AddTPSLModal
-        isVisible={isAddTPSLModalVisible}
-        setIsVisible={setIsAddTPSLModalVisible}
+      <TPSLModal
+        isVisible={isTPSLModalVisible}
+        setIsVisible={setIsTPSLModalVisible}
         position={p.position}
-        onBack={handleAddTPSLBack}
-        onSuccess={handleAddTPSLSuccess}
+        initialView={tpslInitialView}
       />
     </>
   );

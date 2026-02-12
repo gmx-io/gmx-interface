@@ -49,14 +49,17 @@ type Props = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   position: PositionInfo;
+  /**
+   * When "add", the modal opens directly into the AddTPSLModal form.
+   * When "list" (default), it shows the TP/SL orders list.
+   */
+  initialView?: "list" | "add";
 };
 
-export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
+export function TPSLModal({ isVisible, setIsVisible, position, initialView = "list" }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
-  const [shouldReopenOnAddClose, setShouldReopenOnAddClose] = useState(false);
-  const [shouldReopenOnEditClose, setShouldReopenOnEditClose] = useState(false);
 
   const { isTablet } = useBreakpoints();
   const isMobile = isTablet;
@@ -188,58 +191,65 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
     setCancellingOrdersKeys,
   ]);
 
+  // When the modal opens, sync the view to initialView.
+  // When it closes, reset the add form state.
+  useEffect(() => {
+    if (isVisible) {
+      setIsAddFormVisible(initialView === "add");
+    } else {
+      setIsAddFormVisible(false);
+    }
+  }, [isVisible, initialView]);
+
   const handleAddTPSLOpen = useCallback(() => {
-    setShouldReopenOnAddClose(false);
-    setIsVisible(false);
     setIsAddFormVisible(true);
-  }, [setIsAddFormVisible, setIsVisible, setShouldReopenOnAddClose]);
+  }, []);
+
+  /**
+   * Wrapper for AddTPSLModal's setIsVisible.
+   * When AddTPSLModal closes for ANY reason (X button, backdrop, Escape, back, success),
+   * this fires with visible=false and always reopens the TPSLModal list view.
+   */
+  const handleAddFormVisibilityChange = useCallback(
+    (visible: boolean) => {
+      setIsAddFormVisible(visible);
+      if (!visible) {
+        // Always reopen TPSLModal when AddTPSLModal closes
+        setIsVisible(true);
+      }
+    },
+    [setIsVisible]
+  );
 
   const handleAddTPSLBack = useCallback(() => {
-    setShouldReopenOnAddClose(true);
     setIsAddFormVisible(false);
-  }, [setIsAddFormVisible, setShouldReopenOnAddClose]);
+  }, []);
 
-  const handleAddTPSLSuccess = useCallback(() => {
-    setShouldReopenOnAddClose(true);
-  }, [setShouldReopenOnAddClose]);
+  // Reactively hide TPSLModal when OrderEditor is open from this modal.
+  // This avoids timing issues from trying to coordinate setIsVisible + setEditingOrderState.
+  const isEditingFromTPSL = !!editingOrderState?.orderKey && editingOrderState.source === "TPSLModal";
+
+  // Clean up intermediate state left by OrderEditor's "Back" action
+  // (sets orderKey=undefined but keeps source="TPSLModal")
+  useEffect(() => {
+    if (editingOrderState && editingOrderState.source === "TPSLModal" && !editingOrderState.orderKey) {
+      setEditingOrderState(undefined);
+    }
+  }, [editingOrderState, setEditingOrderState]);
 
   const handleEditOrder = useCallback(
     (orderKey: string) => {
-      setIsVisible(false);
-      setShouldReopenOnEditClose(true);
       setEditingOrderState({ orderKey, source: "TPSLModal" });
     },
-    [setEditingOrderState, setIsVisible]
+    [setEditingOrderState]
   );
-
-  useEffect(() => {
-    if (!isAddFormVisible && shouldReopenOnAddClose) {
-      setIsVisible(true);
-      setShouldReopenOnAddClose(false);
-    }
-  }, [isAddFormVisible, shouldReopenOnAddClose, setIsVisible]);
-
-  useEffect(() => {
-    if (shouldReopenOnEditClose && editingOrderState?.source === "TPSLModal" && !editingOrderState.orderKey) {
-      setIsVisible(true);
-      setEditingOrderState(undefined);
-      setShouldReopenOnEditClose(false);
-    }
-  }, [editingOrderState, setEditingOrderState, setIsVisible, shouldReopenOnEditClose]);
-
-  useEffect(() => {
-    if (!shouldReopenOnEditClose) return;
-    if (!editingOrderState || editingOrderState.source !== "TPSLModal") {
-      setShouldReopenOnEditClose(false);
-    }
-  }, [editingOrderState, shouldReopenOnEditClose]);
 
   const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${getMarketIndexName({ indexToken: position.indexToken, isSpotOnly: false })} `;
 
   return (
     <>
       <Modal
-        isVisible={isVisible}
+        isVisible={isVisible && !isAddFormVisible && !isEditingFromTPSL}
         setIsVisible={setIsVisible}
         label={<Trans>TP/SL: {positionTitle}</Trans>}
         className="max-lg:!w-full max-lg:!items-end"
@@ -335,10 +345,9 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
 
       <AddTPSLModal
         isVisible={isAddFormVisible}
-        setIsVisible={setIsAddFormVisible}
+        setIsVisible={handleAddFormVisibilityChange}
         position={position}
         onBack={handleAddTPSLBack}
-        onSuccess={handleAddTPSLSuccess}
       />
     </>
   );
