@@ -324,6 +324,7 @@ export function getMarket24Stats(dayPriceCandle: DayPriceCandle) {
 }
 
 export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPriceCandle): MarketTicker {
+  const { minPrice, maxPrice } = marketInfo.indexToken.prices;
   const markPrice = getMidPrice(marketInfo.indexToken.prices);
 
   const SECONDS_PER_HOUR = BigInt(periodToSeconds(1, "1h"));
@@ -335,8 +336,12 @@ export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPrice
   const netRateLong = fundingRateLong - borrowingRateLong;
   const netRateShort = fundingRateShort - borrowingRateShort;
 
-  const openInterestLong = getOpenInterestUsd(marketInfo, true);
-  const openInterestShort = getOpenInterestUsd(marketInfo, false);
+  const longInterestInTokens = getOpenInterestInTokens(marketInfo, true);
+  const shortInterestInTokens = getOpenInterestInTokens(marketInfo, false);
+  const longInterestUsd = getOpenInterestUsd(marketInfo, true);
+  const shortInterestUsd = getOpenInterestUsd(marketInfo, false);
+  const longInterestUsdMark = convertToUsd(longInterestInTokens, marketInfo.indexToken.decimals, markPrice)!;
+  const shortInterestUsdMark = convertToUsd(shortInterestInTokens, marketInfo.indexToken.decimals, markPrice)!;
 
   const availableLiquidityLong = getAvailableUsdLiquidityForCollateral(marketInfo, true);
   const availableLiquidityShort = getAvailableUsdLiquidityForCollateral(marketInfo, false);
@@ -350,6 +355,8 @@ export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPrice
   return {
     symbol: marketInfo.name,
     marketTokenAddress: marketInfo.marketTokenAddress,
+    minPrice,
+    maxPrice,
     markPrice,
     high24h,
     low24h,
@@ -357,8 +364,12 @@ export function getMarketTicker(marketInfo: MarketInfo, dayPriceCandle: DayPrice
     close24h,
     priceChange24h,
     priceChangePercent24hBps,
-    openInterestLong,
-    openInterestShort,
+    longInterestInTokens,
+    shortInterestInTokens,
+    longInterestUsd,
+    shortInterestUsd,
+    longInterestUsdMark,
+    shortInterestUsdMark,
     availableLiquidityLong,
     availableLiquidityShort,
     poolAmountLongUsd,
