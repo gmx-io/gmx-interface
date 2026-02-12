@@ -1,37 +1,26 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { selectOracleSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import {
-  OrderErrors,
-  PositionOrderInfo,
-  isIncreaseOrderType,
-  isMarketOrderType,
-  isTwapOrder,
-} from "domain/synthetics/orders";
-import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
-import {
   PositionInfo,
   formatEstimatedLiquidationTime,
   formatLeverage,
   formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
-  getNameByOrderType,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { CHART_PERIODS } from "lib/legacy";
-import { calculateDisplayDecimals, formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getMarketIndexName } from "sdk/utils/markets";
 
@@ -44,13 +33,13 @@ import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ChevronRightIcon from "img/ic_chevron_right.svg?react";
-import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { TwapOrderProgress } from "../OrderItem/OrderItem";
+import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
+import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
+import { TPSLModal } from "../TPSLModal/TPSLModal";
 
 import "./PositionItem.scss";
 
@@ -58,7 +47,7 @@ export type Props = {
   position: PositionInfo;
   hideActions?: boolean;
   showPnlAfterFees: boolean;
-  onClosePositionClick?: () => void;
+  onClosePositionClick?: (orderOption?: OrderOption) => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
@@ -75,8 +64,27 @@ export function PositionItem(p: Props) {
   const { minCollateralUsd } = usePositionsConstants();
   const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
+  const [showSizeInTokens, setShowSizeInTokens] = useState(false);
+  const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
+  const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
+  const isActionsDisabled = p.position.isOpening;
+  const isCloseDisabled = isActionsDisabled || p.position.sizeInUsd == 0n;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
+
+  const handleSizeClick = useCallback(() => {
+    setShowSizeInTokens((prev) => !prev);
+  }, []);
+
+  const handleOpenTPSLModal = useCallback(() => {
+    setTpslInitialView("list");
+    setIsTPSLModalVisible(true);
+  }, []);
+
+  const handleOpenAddTPSLModal = useCallback(() => {
+    setTpslInitialView("add");
+    setIsTPSLModalVisible(true);
+  }, []);
 
   function renderNetValue() {
     return (
@@ -469,7 +477,10 @@ export function PositionItem(p: Props) {
                       <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
                       <br />
                       <br />
-                      <Trans>Use the "Close" button to reduce your position via market, TP/SL, or TWAP orders.</Trans>
+                      <Trans>Use the TP/SL button to set TP/SL orders.</Trans>
+                      <br />
+                      <br />
+                      <Trans>Use the "Close" button to reduce your position via market or TWAP orders.</Trans>
                     </div>
 
                     {showDebugValues && (
@@ -501,7 +512,15 @@ export function PositionItem(p: Props) {
         </TableTd>
         <TableTd>
           <div className="flex flex-col gap-2">
-            <span className="numbers">{formatUsd(p.position.sizeInUsd)}</span>
+            <span className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
+              {showSizeInTokens
+                ? formatBalanceAmount(
+                    p.position.sizeInTokens,
+                    p.position.indexToken.decimals,
+                    p.position.indexToken.symbol
+                  )
+                : formatUsd(p.position.sizeInUsd)}
+            </span>
             <PositionItemOrdersLarge positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
           </div>
         </TableTd>
@@ -523,7 +542,7 @@ export function PositionItem(p: Props) {
                   onClick={p.onShareClick}
                 >
                   {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                  {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14" />}
+                  {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14 shrink-0" />}
                 </div>
               )}
             </div>
@@ -559,36 +578,54 @@ export function PositionItem(p: Props) {
           {/* liqPrice */}
           {renderLiquidationPrice()}
         </TableTd>
-        {/* Close */}
         {!p.hideActions && (
-          <>
-            {!p.position.isOpening ? (
-              <TableTd>
-                <div className="flex items-center justify-end gap-4">
-                  <Button
-                    variant="ghost"
-                    onClick={p.onClosePositionClick}
-                    disabled={p.position.sizeInUsd == 0n}
-                    data-qa="position-close-button"
-                  >
-                    <Trans>Close</Trans>
-                  </Button>
+          <TableTd className="w-[9%]">
+            <PositionItemTPSLCell
+              positionKey={p.position.key}
+              markPrice={p.position.markPrice}
+              marketDecimals={marketDecimals}
+              visualMultiplier={p.position.indexToken.visualMultiplier}
+              isLarge={true}
+              onOpenTPSLModal={handleOpenTPSLModal}
+              isDisabled={isActionsDisabled}
+            />
+          </TableTd>
+        )}
+        {!p.hideActions && (
+          <TableTd>
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
+                  disabled={isCloseDisabled}
+                  data-qa="position-close-market-button"
+                >
+                  <Trans>Market</Trans>
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
+                  disabled={isCloseDisabled}
+                  data-qa="position-close-twap-button"
+                >
+                  <Trans>TWAP</Trans>
+                </Button>
+              </div>
 
-                  <PositionDropdown
-                    handleEditCollateral={p.onEditCollateralClick}
-                    handleMarketSelect={() => p.onSelectPositionClick?.()}
-                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
-                    handleShare={p.onShareClick}
-                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
-                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
-                    handleTriggerClose={() => p.onSelectPositionClick?.(TradeMode.Trigger)}
-                  />
-                </div>
-              </TableTd>
-            ) : (
-              <TableTd />
-            )}
-          </>
+              <PositionDropdown
+                handleEditCollateral={p.onEditCollateralClick}
+                handleMarketSelect={() => p.onSelectPositionClick?.()}
+                handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
+                handleShare={p.onShareClick}
+                handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
+                handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
+                handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
+                handleTriggerClose={handleOpenAddTPSLModal}
+                disabled={isActionsDisabled}
+              />
+            </div>
+          </TableTd>
         )}
       </TableTr>
     );
@@ -643,10 +680,18 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="cursor-pointer select-none font-medium text-typography-secondary" onClick={handleSizeClick}>
               <Trans>Size</Trans>
             </div>
-            <div className="numbers">{formatUsd(p.position.sizeInUsd)}</div>
+            <div className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
+              {showSizeInTokens
+                ? formatBalanceAmount(
+                    p.position.sizeInTokens,
+                    p.position.indexToken.decimals,
+                    p.position.indexToken.symbol
+                  )
+                : formatUsd(p.position.sizeInUsd)}
+            </div>
           </div>
           <div className="App-card-row">
             <div className="font-medium text-typography-secondary">
@@ -669,7 +714,7 @@ export function PositionItem(p: Props) {
                 onClick={p.onShareClick}
               >
                 {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
-                {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16" />}
+                {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16 shrink-0" />}
               </span>
             </div>
           </div>
@@ -709,6 +754,24 @@ export function PositionItem(p: Props) {
             </div>
             <div>{renderLiquidationPrice()}</div>
           </div>
+          {!p.hideActions && (
+            <div className="App-card-row">
+              <div className="font-medium text-typography-secondary">
+                <Trans>TP/SL</Trans>
+              </div>
+              <div>
+                <PositionItemTPSLCell
+                  positionKey={p.position.key}
+                  markPrice={p.position.markPrice}
+                  marketDecimals={marketDecimals}
+                  visualMultiplier={p.position.indexToken.visualMultiplier}
+                  isLarge={false}
+                  onOpenTPSLModal={handleOpenTPSLModal}
+                  isDisabled={isActionsDisabled}
+                />
+              </div>
+            </div>
+          )}
         </AppCardSection>
         <AppCardSection>
           <div className="font-medium text-typography-secondary">
@@ -722,32 +785,33 @@ export function PositionItem(p: Props) {
           <AppCardSection>
             <div className="flex items-center justify-between">
               <div className="flex gap-8">
-                <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onClosePositionClick}>
-                  <Trans>Close</Trans>
-                </Button>
-                <Button variant="secondary" disabled={p.position.sizeInUsd == 0n} onClick={p.onEditCollateralClick}>
-                  <Trans>Edit Collateral</Trans>
+                <Button
+                  variant="secondary"
+                  disabled={isCloseDisabled}
+                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
+                >
+                  <Trans>Market</Trans>
                 </Button>
                 <Button
                   variant="secondary"
-                  disabled={p.position.sizeInUsd == 0n}
-                  onClick={() => {
-                    p.onSelectPositionClick?.(TradeMode.Trigger, true);
-                  }}
+                  disabled={isCloseDisabled}
+                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
                 >
-                  <Trans>TP/SL</Trans>
+                  <Trans>TWAP</Trans>
                 </Button>
               </div>
               <div>
-                {!p.position.isOpening && !p.hideActions && (
-                  <PositionDropdown
-                    handleMarketSelect={() => p.onSelectPositionClick?.()}
-                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
-                    handleShare={p.onShareClick}
-                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                  />
-                )}
+                <PositionDropdown
+                  handleEditCollateral={p.onEditCollateralClick}
+                  handleMarketSelect={() => p.onSelectPositionClick?.()}
+                  handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
+                  handleShare={p.onShareClick}
+                  handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
+                  handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
+                  handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
+                  handleTriggerClose={handleOpenAddTPSLModal}
+                  disabled={isActionsDisabled}
+                />
               </div>
             </div>
           </AppCardSection>
@@ -756,186 +820,15 @@ export function PositionItem(p: Props) {
     );
   }
 
-  return p.isLarge ? renderLarge() : renderSmall();
-}
-
-function PositionItemOrdersSmall({
-  positionKey,
-  onOrdersClick,
-}: {
-  positionKey: string;
-  onOrdersClick?: (key?: string) => void;
-}) {
-  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
-
-  if (ordersWithErrors.length === 0) return null;
-
   return (
-    <div className="flex flex-col gap-8">
-      {ordersWithErrors.map((params) => (
-        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
-      ))}
-    </div>
-  );
-}
-
-function PositionItemOrdersLarge({
-  positionKey,
-  onOrdersClick,
-}: {
-  isSmall?: boolean;
-  positionKey: string;
-  onOrdersClick?: (key?: string) => void;
-}) {
-  const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
-
-  const [ordersErrorList, ordersWarningsList] = useMemo(() => {
-    const ordersErrorList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "error");
-    const ordersWarningsList = ordersWithErrors.filter(({ orderErrors }) => orderErrors.level === "warning");
-    return [ordersErrorList, ordersWarningsList];
-  }, [ordersWithErrors]);
-
-  if (ordersWithErrors.length === 0) return null;
-
-  return (
-    <div>
-      <TooltipWithPortal
-        className="Position-list-active-orders"
-        handle={
-          <>
-            <Trans>Orders ({ordersWithErrors.length})</Trans>
-            {ordersWarningsList.length > 0 || ordersErrorList.length > 0 ? (
-              <div
-                className={cx("relative top-3 size-6 rounded-full", {
-                  "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
-                  "bg-red-500": ordersErrorList.length > 0,
-                })}
-              />
-            ) : null}
-          </>
-        }
-        position="bottom"
-        handleClassName={cx([
-          "Exchange-list-info-label",
-          "Exchange-position-list-orders",
-          "clickable",
-          "text-typography-secondary",
-        ])}
-        maxAllowedWidth={370}
-        tooltipClassName="!z-10 w-[370px]"
-        content={
-          <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
-            <div className="font-medium">
-              <Trans>Active Orders</Trans>
-            </div>
-            {ordersWithErrors.map((params) => (
-              <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
-            ))}
-          </div>
-        }
+    <>
+      {p.isLarge ? renderLarge() : renderSmall()}
+      <TPSLModal
+        isVisible={isTPSLModalVisible}
+        setIsVisible={setIsTPSLModalVisible}
+        position={p.position}
+        initialView={tpslInitialView}
       />
-    </div>
-  );
-}
-
-function PositionItemOrder({
-  order,
-  orderErrors,
-  onOrdersClick,
-}: {
-  order: PositionOrderInfo;
-  orderErrors: OrderErrors;
-  onOrdersClick?: (key?: string) => void;
-}) {
-  const [, setEditingOrderState] = useEditingOrderState();
-  const [isCancelling, cancel] = useCancelOrder(order);
-  const handleOrdersClick = useCallback(() => {
-    onOrdersClick?.(order.key);
-  }, [onOrdersClick, order.key]);
-
-  const errors = orderErrors.errors;
-
-  const handleEditClick = useCallback(() => {
-    setEditingOrderState({ orderKey: order.key, source: "PositionsList" });
-  }, [order.key, setEditingOrderState]);
-
-  const oracleSettings = useSelector(selectOracleSettings);
-  const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
-
-  const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
-
-  const cancelButton = (
-    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
-      <CloseIcon className="size-16" />
-    </Button>
-  );
-
-  return (
-    <div key={order.key}>
-      <div className="flex items-start justify-between gap-6">
-        <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
-          <div className="flex items-center justify-between">
-            <PositionItemOrderText order={order} />
-            <ChevronRightIcon className="ml-4 size-14" />
-          </div>
-        </Button>
-        {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-          <Button variant="secondary" onClick={handleEditClick} className="px-8">
-            <EditIcon className="size-16" />
-          </Button>
-        )}
-        {disabledCancelMarketOrderMessage ? (
-          <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
-        ) : (
-          cancelButton
-        )}
-      </div>
-
-      {errors.length !== 0 && (
-        <div className="mt-8 flex flex-col gap-8 text-start">
-          {errors.map((err) => (
-            <div
-              key={err.key}
-              className={cx("hyphens-auto [overflow-wrap:anywhere]", {
-                "text-red-500": err.level === "error",
-                "text-yellow-300": err.level === "warning",
-              })}
-            >
-              {err.msg}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
-  const triggerThresholdType = order.triggerThresholdType;
-  const isIncrease = isIncreaseOrderType(order.orderType);
-  const isTwap = isTwapOrder(order);
-
-  return (
-    <div key={order.key} className="text-start">
-      {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
-      {!isTwap && !isMarketOrderType(order.orderType) ? `: ${triggerThresholdType} ` : null}
-      {!isTwap && !isMarketOrderType(order.orderType) && (
-        <span className="numbers">
-          {formatUsd(order.triggerPrice, {
-            displayDecimals: calculateDisplayDecimals(
-              order.triggerPrice,
-              undefined,
-              order.indexToken?.visualMultiplier
-            ),
-            visualMultiplier: order.indexToken?.visualMultiplier,
-          })}
-        </span>
-      )}
-      :{" "}
-      <span className="numbers">
-        {isIncrease ? "+" : "-"}
-        {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
-      </span>
-    </div>
+    </>
   );
 }

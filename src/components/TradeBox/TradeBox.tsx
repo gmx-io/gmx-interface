@@ -1,10 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 
-import { AVALANCHE, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
@@ -22,7 +22,6 @@ import {
   selectExpressOrdersEnabled,
   selectGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
-  selectSettingsWarningDotVisible,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
@@ -37,7 +36,6 @@ import {
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
-  selectTradeboxLeverageSliderMarks,
   selectTradeboxMarkPrice,
   selectTradeboxMaxLeverage,
   selectTradeboxNextPositionValues,
@@ -96,9 +94,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
-import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -107,11 +103,12 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
+import { TradeboxMarginFields } from "components/TradeboxMarginFields";
+import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
-import SettingsIcon from "img/ic_settings.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
@@ -120,18 +117,15 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
-import { useShowHighLeverageWarning } from "./hooks/useShowHighLeverageWarning";
-import { useExpressTradingWarnings } from "./hooks/useShowOneClickTradingInfo";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
-import { MarketPoolSelectorRow } from "./MarketPoolSelectorRow";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
-import { CollateralSelectorRow } from "./TradeBoxRows/CollateralSelectorRow";
-import { LimitAndTPSLGroup } from "./TradeBoxRows/LimitAndTPSLRows";
+import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
+import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
 import "./TradeBox.scss";
 
@@ -155,7 +149,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const { tokenChainDataArray: multichainTokens } = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isMarket, isTwap } = tradeFlags;
+  const { isLong, isSwap, isIncrease, isPosition, isLimit, isTrigger, isTwap } = tradeFlags;
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
@@ -178,7 +172,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setFromTokenInputValue: setFromTokenInputValueRaw,
     toTokenInputValue,
     setToTokenInputValue: setToTokenInputValueRaw,
-    setCollateralAddress: onSelectCollateralAddress,
     setFromTokenAddress: onSelectFromTokenAddress,
     isFromTokenGmxAccount,
     setIsFromTokenGmxAccount,
@@ -191,8 +184,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setTriggerPriceInputValue,
     triggerRatioInputValue,
     setTriggerRatioInputValue,
-    leverageInputValue,
-    setLeverageInputValue,
     leverageOption,
     setLeverageOption,
     isSwitchTokensAllowed,
@@ -222,11 +213,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = getByKey(tokensData, toTokenAddress);
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
-  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS) ?? 0n;
 
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
@@ -248,7 +239,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
 
-  const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
   const maxLeverage = useSelector(selectTradeboxMaxLeverage);
 
   const maxAllowedLeverage = maxLeverage / 2;
@@ -279,8 +269,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           priceImpactPrecise: fees?.decreasePositionPriceImpact?.precisePercentage,
         }
   );
-
-  const { showHighLeverageWarning, dismissHighLeverageWarning } = useShowHighLeverageWarning();
 
   const setIsDismissedRef = useLatest(priceImpactWarningState.setIsDismissed);
 
@@ -380,6 +368,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     nativeToken,
     fromTokenAmount,
     fromTokenInputValue,
+    tokenBalanceType: fromToken?.balanceType,
     minResidualAmount: getMinResidualGasPaymentTokenAmount({
       gasPaymentToken: gasPaymentTokenData,
       gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
@@ -712,35 +701,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     [isCursorInside, wrappedOnSubmit, submitButtonState, shouldDisableValidation]
   );
 
-  const handleLeverageInputBlur = useCallback(() => {
-    if (leverageOption === 0) {
-      setLeverageOption(leverageSliderMarks[0]);
-      return;
-    }
-
-    if (leverageInputValue === "" && leverageOption !== undefined) {
-      setLeverageInputValue(leverageOption.toString());
-    }
-  }, [leverageInputValue, leverageOption, leverageSliderMarks, setLeverageInputValue, setLeverageOption]);
-
-  const handleLeverageInputKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-        e.preventDefault();
-
-        const isAlt = e.altKey;
-        const direction = e.key === "ArrowUp" ? 1 : -1;
-        const increment = isAlt ? 0.1 : 1;
-        const diff = direction * increment;
-        const newValue = Math.round(((leverageOption ?? leverageSliderMarks[0]) + diff) * 10) / 10;
-        const clampedValue = Math.min(Math.max(newValue, leverageSliderMarks[0]), leverageSliderMarks.at(-1)!);
-
-        setLeverageOption(clampedValue);
-      }
-    },
-    [leverageOption, leverageSliderMarks, setLeverageOption]
-  );
-
   const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
 
   function renderTokenInputs() {
@@ -1036,26 +996,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const keepLeverage = useSelector(selectTradeboxKeepLeverage);
   const keepLeverageChecked = decreaseAmounts?.isFullClose ? false : keepLeverage ?? false;
   const setKeepLeverage = useSelector(selectTradeboxSetKeepLeverage);
-  const settingsWarningDotVisible = useSelector(selectSettingsWarningDotVisible);
-
-  const { shouldShowWarning: shouldShowOneClickTradingWarning } = useExpressTradingWarnings({
-    expressParams: submitButtonState.expressParams,
-    payTokenAddress: fromTokenAddress,
-    isWrapOrUnwrap,
-    isGmxAccount: isFromTokenGmxAccount,
-  });
-
-  const shouldShowAvalancheGmxAccountWarning = isFromTokenGmxAccount && chainId === AVALANCHE;
-
-  const showSectionBetweenInputsAndButton =
-    isPosition ||
-    priceImpactWarningState.shouldShowWarning ||
-    (!isTrigger && !isSwap) ||
-    (isSwap && isLimit) ||
-    isTwap ||
-    maxAutoCancelOrdersWarning ||
-    shouldShowOneClickTradingWarning ||
-    shouldShowAvalancheGmxAccountWarning;
 
   const tabsOptions = useMemo(() => {
     const modeToOptions = (mode: TradeMode) => ({
@@ -1073,40 +1013,44 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 
+  const collateralWarnings = useCollateralWarnings();
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 py-12 pb-16">
+      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
         <div className="flex flex-col gap-12 px-12">
           <div className="flex items-center justify-between">
             <Tabs
               options={tabsOptions}
-              type="inline"
+              type="pills"
               selectedValue={tradeMode}
               onChange={onSelectTradeMode}
               qa="trade-mode"
               className="bg-slate-900 text-13"
               regularOptionClassname="grow"
             />
-            <div className="flex items-center gap-4">
-              <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
-
-              <div className="relative">
-                <SettingsIcon
-                  className="size-16 cursor-pointer text-typography-secondary gmx-hover:text-typography-primary"
-                  onClick={() => setIsSettingsVisible(true)}
-                />
-                {settingsWarningDotVisible && (
-                  <div className="absolute bottom-6 right-3 h-6 w-6 rounded-full bg-red-400" />
-                )}
-              </div>
-            </div>
+            <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
           </div>
           <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
-              {(isSwap || isIncrease) && renderTokenInputs()}
+              {isSwap && renderTokenInputs()}
+              {isIncrease && (
+                <TradeboxMarginFields
+                  onSelectFromTokenAddress={handleSelectFromTokenAddress}
+                  onDepositTokenAddress={onDepositTokenAddress}
+                  fromTokenInputValue={fromTokenInputValue}
+                  setFromTokenInputValue={setFromTokenInputValue}
+                  setFocusedInput={setFocusedInput}
+                  toTokenInputValue={toTokenInputValue}
+                  setToTokenInputValue={setToTokenInputValue}
+                  triggerPriceInputValue={triggerPriceInputValue}
+                  onTriggerPriceInputChange={handleTriggerPriceInputChange}
+                  onMarkPriceClick={setMarkPriceAsTriggerPrice}
+                />
+              )}
               {isTrigger && renderDecreaseSizeInput()}
               {isSwap && isLimit && renderTriggerRatioInput()}
-              {isPosition && (isLimit || isTrigger) && renderTriggerPriceInput()}
+              {isTrigger && renderTriggerPriceInput()}
             </div>
 
             {twapRecommendation && (
@@ -1125,147 +1069,98 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </ColorfulBanner>
             )}
 
-            {showSectionBetweenInputsAndButton && (
-              <div className="flex flex-col gap-14">
-                {maxAutoCancelOrdersWarning}
-                {shouldShowAvalancheGmxAccountWarning && (
-                  <AlertInfoCard type="error" hideClose>
-                    <Trans>
-                      Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and
-                      depositing additional funds to Avalanche GMX accounts is no longer available. We recommend
-                      switching to Arbitrum as a settlement network.
-                    </Trans>
-                  </AlertInfoCard>
-                )}
-                {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
-                  <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
-                    <Trans>
-                      The execution price may vary from your set limit price due to fees and price impact, ensuring you
-                      receive the displayed minimum receive amount.{" "}
-                      <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
-                        Read more
-                      </ExternalLink>
-                      .
-                    </Trans>
-                  </AlertInfoCard>
-                )}
-
-                {isPosition && (
-                  <>
-                    {isIncrease && isLeverageSliderEnabled && (
-                      <div className="flex items-start gap-12">
-                        <LeverageSlider
-                          className="grow"
-                          marks={leverageSliderMarks}
-                          value={leverageOption}
-                          onChange={setLeverageOption}
-                          isPositive={isLong}
-                          isSlim
-                        />
-                        <SuggestionInput
-                          className="w-48 !rounded-8 py-5"
-                          inputClassName="text-clip"
-                          value={leverageInputValue}
-                          setValue={setLeverageInputValue}
-                          onBlur={handleLeverageInputBlur}
-                          onKeyDown={handleLeverageInputKeyDown}
-                          symbol="x"
-                        />
-                      </div>
-                    )}
-                    {showHighLeverageWarning && (
-                      <AlertInfoCard type="info" onClose={dismissHighLeverageWarning}>
-                        <Trans>Using high leverage increases the risk of liquidation.</Trans>
-                      </AlertInfoCard>
-                    )}
-                    {isTrigger && (
-                      <SyntheticsInfoRow
-                        label={t`Market`}
-                        value={
-                          <MarketSelector
-                            chainId={chainId}
-                            label={t`Market`}
-                            selectedIndexName={
-                              toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
-                            }
-                            markets={sortedAllMarkets ?? EMPTY_ARRAY}
-                            isSideMenu
-                            onSelectMarket={handleSelectMarket}
-                          />
-                        }
-                      />
-                    )}
-
-                    <MarketPoolSelectorRow />
-
-                    <CollateralSelectorRow
-                      selectedMarketAddress={marketInfo?.marketTokenAddress}
-                      onSelectCollateralAddress={onSelectCollateralAddress}
-                      isMarket={isMarket}
-                    />
-                  </>
-                )}
-
-                {isTwap && (
-                  <TwapRows
-                    duration={duration}
-                    numberOfParts={numberOfParts}
-                    setNumberOfParts={setNumberOfParts}
-                    setDuration={setDuration}
-                    sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
-                    marketInfo={marketInfo}
-                    type={isSwap ? "swap" : "increase"}
-                    isLong={isLong}
-                  />
-                )}
-              </div>
+            {maxAutoCancelOrdersWarning}
+            {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+              <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
+                <Trans>
+                  The execution price may vary from your set limit price due to fees and price impact, ensuring you
+                  receive the displayed minimum receive amount.{" "}
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
+                    Read more
+                  </ExternalLink>
+                  .
+                </Trans>
+              </AlertInfoCard>
             )}
-            <div className="flex flex-col gap-14">
-              {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
-                <ToggleSwitch
-                  isChecked={keepLeverageChecked}
-                  setIsChecked={setKeepLeverage}
-                  disabled={decreaseAmounts?.isFullClose}
-                >
-                  <span className="text-14 text-typography-secondary">
-                    <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
-                  </span>
-                </ToggleSwitch>
-              )}
 
-              {!isTrigger && !isSwap && !isTwap && <LimitAndTPSLGroup />}
-
-              {priceImpactWarningState.shouldShowWarning && (
-                <HighPriceImpactOrFeesWarningCard
-                  priceImpactWarningState={priceImpactWarningState}
-                  swapPriceImpact={fees?.swapPriceImpact}
-                  swapProfitFee={fees?.swapProfitFee}
-                  executionFeeUsd={executionFee?.feeUsd}
-                  externalSwapFeeItem={fees?.externalSwapFee}
-                  maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
-                />
-              )}
-
-              {submitButtonState.bannerErrorContent && (
-                <AlertInfoCard type="error" hideClose>
-                  {submitButtonState.bannerErrorContent}
-                </AlertInfoCard>
-              )}
-
-              <div>{button}</div>
-              <ExpressTradingWarningCard
-                expressParams={submitButtonState.expressParams}
-                payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
-                isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
-                disabled={shouldShowDepositButton}
-                isGmxAccount={isFromTokenGmxAccount}
+            {isTrigger && (
+              <SyntheticsInfoRow
+                label={t`Market`}
+                value={
+                  <MarketSelector
+                    chainId={chainId}
+                    label={t`Market`}
+                    selectedIndexName={
+                      toToken ? getMarketIndexName({ indexToken: toToken, isSpotOnly: false }) : undefined
+                    }
+                    markets={sortedAllMarkets ?? EMPTY_ARRAY}
+                    isSideMenu
+                    onSelectMarket={handleSelectMarket}
+                  />
+                }
               />
-            </div>
+            )}
+
+            {isPosition ? (
+              <>
+                <TradeboxPoolWarnings />
+
+                {collateralWarnings}
+              </>
+            ) : null}
+
+            {isTwap && (
+              <TwapRows
+                duration={duration}
+                numberOfParts={numberOfParts}
+                setNumberOfParts={setNumberOfParts}
+                setDuration={setDuration}
+                sizeUsd={isSwap ? payUsd : increaseAmounts?.sizeDeltaUsd}
+                marketInfo={marketInfo}
+                type={isSwap ? "swap" : "increase"}
+                isLong={isLong}
+              />
+            )}
           </div>
+        </div>
+        <div className="flex flex-col gap-14 border-t-1/2 border-t-slate-600 px-12 pt-12">
+          {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
+            <ToggleSwitch
+              isChecked={keepLeverageChecked}
+              setIsChecked={setKeepLeverage}
+              disabled={decreaseAmounts?.isFullClose}
+            >
+              <span className="text-14 text-typography-secondary">
+                <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
+              </span>
+            </ToggleSwitch>
+          )}
+
+          {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
+
+          {priceImpactWarningState.shouldShowWarning && (
+            <HighPriceImpactOrFeesWarningCard
+              priceImpactWarningState={priceImpactWarningState}
+              swapPriceImpact={fees?.swapPriceImpact}
+              swapProfitFee={fees?.swapProfitFee}
+              executionFeeUsd={executionFee?.feeUsd}
+              externalSwapFeeItem={fees?.externalSwapFee}
+              maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
+            />
+          )}
+
+          <div>{button}</div>
+          <ExpressTradingWarningCard
+            expressParams={submitButtonState.expressParams}
+            payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
+            isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
+            disabled={shouldShowDepositButton}
+            isGmxAccount={isFromTokenGmxAccount}
+          />
         </div>
       </div>
 
-      <div className="flex flex-col gap-14 rounded-8 bg-slate-900 p-12 pb-16">
+      <div className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16")}>
         {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
         {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
           <SyntheticsInfoRow
