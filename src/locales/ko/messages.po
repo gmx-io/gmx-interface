@@ -2797,6 +2797,10 @@ msgstr "디버그 값 표시"
 msgid "Annualized data based on the past 7 days."
 msgstr "지난 7일에 기반한 연환산 데이터."
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "이 크기로 숏 증가를 위한 유동성이 없습니다. 최대 숏 크기: {0}<1/><2/>롱 감소를 위한 실행 가격."
@@ -4802,6 +4806,10 @@ msgstr "수익 농사"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "승인 중..."
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

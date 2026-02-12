@@ -56,6 +56,7 @@ import { PositionEditorState, usePositionEditorState } from "domain/synthetics/t
 import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
+import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ProgressiveTokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -148,6 +149,7 @@ export type SyntheticsState = {
   confirmationBox: ConfirmationBoxState;
   poolsDetails: PoolsDetailsState | undefined;
   features: FeaturesSettings | undefined;
+  uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
   sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
@@ -246,6 +248,7 @@ export function SyntheticsStateContextProvider({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
+  const { uiFlags } = useUiFlagsRequest();
 
   const {
     isLoading,
@@ -407,6 +410,7 @@ export function SyntheticsStateContextProvider({
       confirmationBox: confirmationBoxState,
       poolsDetails: poolsDetailsState,
       features,
+      uiFlags,
       sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
@@ -461,6 +465,7 @@ export function SyntheticsStateContextProvider({
     confirmationBoxState,
     poolsDetailsState,
     features,
+    uiFlags,
     sponsoredCallBalanceData,
     gasPaymentTokenAllowance,
     l1ExpressOrderGasReference,
