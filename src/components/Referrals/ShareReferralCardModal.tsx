@@ -88,11 +88,11 @@ export function ShareReferralCardModal({
 
             <div className="">
               <div className="mb-8 inline-block rounded-full bg-blue-300/20 px-6 py-2 text-16 font-medium text-blue-300">
-                {referralCode}
+                <div className="support-chat-new-badge">{referralCode}</div>
               </div>
               <h3 className="mb-12 text-32 font-medium leading-1 text-white">
                 <Trans>
-                  Save up to <span className="text-blue-300">10%</span> on every
+                  <span className="support-chat-new-badge">Save up to 10%</span> on every
                   <br /> trade on GMX.
                 </Trans>
               </h3>

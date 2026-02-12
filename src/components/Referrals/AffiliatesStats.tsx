@@ -26,6 +26,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import CopyIcon from "img/ic_copy.svg?react";
+import EarnIcon from "img/ic_earn.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 
@@ -206,26 +207,10 @@ export function AffiliatesStats({
         </div>
         <div className="flex flex-col gap-12">
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
-            <TradingVolumeChartCard
-              periodStart={periodStart}
-              periodEnd={periodEnd}
-              timeRangeInfo={timeRangeInfo}
-            />
-            <NumberOfTradesChartCard
-              periodStart={periodStart}
-              periodEnd={periodEnd}
-              timeRangeInfo={timeRangeInfo}
-            />
-            <TradersReferredChartCard
-              periodStart={periodStart}
-              periodEnd={periodEnd}
-              timeRangeInfo={timeRangeInfo}
-            />
-            <RebatesChartCard
-              periodStart={periodStart}
-              periodEnd={periodEnd}
-              timeRangeInfo={timeRangeInfo}
-            />
+            <TradingVolumeChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+            <NumberOfTradesChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+            <TradersReferredChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+            <RebatesChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
           </div>
         </div>
         <div className="text-body-small font-medium text-typography-secondary">
@@ -399,19 +384,15 @@ export function AffiliatesStats({
           <div className="text-body-medium mb-8 font-medium text-typography-secondary">
             <Trans>Claimable Rebates</Trans>
           </div>
-          <div className="mb-12 flex items-center gap-4">
+          <div className="flex items-center justify-between gap-4">
             <div className="text-24 font-medium text-typography-primary numbers">
-              {formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}
+              {formatUsd(totalClaimableRewardsUsd)}
             </div>
+            <Button variant="primary" onClick={() => setIsClaiming(true)} disabled={totalClaimableRewardsUsd <= 0}>
+              <Trans>Claim Rebates</Trans>
+              <EarnIcon className="size-16" />
+            </Button>
           </div>
-          <Button
-            variant="primary-action"
-            className="w-full"
-            onClick={() => setIsClaiming(true)}
-            disabled={totalClaimableRewardsUsd <= 0}
-          >
-            <Trans>Claim Rebates</Trans>
-          </Button>
         </div>
         <Faq items={AFFILIATE_POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
       </div>
