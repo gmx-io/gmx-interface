@@ -4083,8 +4083,8 @@ msgid "{typeString} Long Limit: {0} a long position when the price is below the 
 msgstr "{typeString} 롱 지정가: 가격이 트리거 가격 아래로 떨어질 때 롱 포지션 {0}."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
-msgstr "담보에 {0}이 필요합니다.<0/><1/>GMX 내에서 {1}에서 {2}로 스왑 경로가 없습니다.<2/><3/><4>1inch에서 {3} 구매 가능.</4>"
+#~ msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
+#~ msgstr "담보에 {0}이 필요합니다.<0/><1/>GMX 내에서 {1}에서 {2}로 스왑 경로가 없습니다.<2/><3/><4>1inch에서 {3} 구매 가능.</4>"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
@@ -5458,6 +5458,10 @@ msgstr "최대 주문 한도에 도달하여 {0} 주문이 업데이트되지 �
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} distributions have been claimed successfully."
 msgstr "{0}개의 배분이 성공적으로 청구되었습니다."
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on {4}.</4>"
+msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"

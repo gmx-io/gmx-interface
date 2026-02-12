@@ -4083,8 +4083,8 @@ msgid "{typeString} Long Limit: {0} a long position when the price is below the 
 msgstr "{typeString} Long Limit : {0} une position long lorsque le prix est inférieur au prix de déclenchement."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
-msgstr "{0} est requis pour le collatéral.<0/><1/>Aucun chemin d'échange trouvé pour {1} vers {2} dans GMX.<2/><3/><4>Vous pouvez acheter {3} sur 1inch.</4>"
+#~ msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
+#~ msgstr "{0} est requis pour le collatéral.<0/><1/>Aucun chemin d'échange trouvé pour {1} vers {2} dans GMX.<2/><3/><4>Vous pouvez acheter {3} sur 1inch.</4>"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
@@ -5458,6 +5458,10 @@ msgstr "{0} ordres n'ont pas été mis à jour car la limite maximale d'ordres a
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "{0} distributions have been claimed successfully."
 msgstr "{0} distributions ont été réclamées avec succès."
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on {4}.</4>"
+msgstr ""
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "90d"
