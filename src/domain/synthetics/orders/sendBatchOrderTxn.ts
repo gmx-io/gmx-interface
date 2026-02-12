@@ -106,7 +106,6 @@ export async function sendBatchOrderTxn({
           sendExpressTransaction({
             chainId,
             txnData,
-            isSponsoredCall: expressParams.isSponsoredCall,
           }),
         {
           retryCount: 3,

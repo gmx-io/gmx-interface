@@ -36,8 +36,9 @@ export const selectGasPaymentToken = createSelector((q) => {
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
   const isRelayRouterEnabled = q(selectIsRelayRouterEnabled);
+  const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
 
-  return isExpressOrdersEnabledSetting && isRelayRouterEnabled;
+  return isExpressOrdersEnabledSetting && isRelayRouterEnabled && isSponsoredCallAvailable;
 });
 
 export const selectExpressGlobalParams = createSelector(function selectExpressGlobalParamsForActions(q):
@@ -60,7 +61,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
   const gasPaymentAllowance = q(selectGasPaymentTokenAllowance);
   const bufferBps = q(selectExecutionFeeBufferBps);
   const tokenPermits = q(selectTokenPermits);
-  const isSponsoredCallAvailable = q(selectIsSponsoredCallAvailable);
 
   const gasPaymentToken = getByKey(tokensData, gasPaymentTokenAddress);
   const relayerFeeToken = getByKey(tokensData, relayerFeeTokenAddress);
@@ -86,7 +86,6 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
     l1Reference,
     tokensData,
     marketsInfoData,
-    isSponsoredCall: isSponsoredCallAvailable,
     findFeeSwapPath,
     tokenPermits,
     gasPaymentAllowanceData: gasPaymentAllowance?.tokensAllowanceData ?? EMPTY_OBJECT,

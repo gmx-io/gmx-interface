@@ -45,12 +45,11 @@ import { convertToTokenAmount } from "domain/tokens";
 import { CustomError, isCustomError } from "lib/errors";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
-import { expandDecimals, USD_DECIMALS } from "lib/numbers";
+import { applyFactor, expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { fallbackCustomError } from "./fallbackCustomError";
@@ -240,6 +239,8 @@ export async function estimateArbitraryRelayFee({
   gasPaymentParams,
   subaccount,
   additionalBalanceOverrideTokens,
+  gasPrice,
+  gelatoRelayFeeMultiplierFactor,
 }: {
   chainId: ContractsChainId;
   client: PublicClient;
@@ -249,6 +250,8 @@ export async function estimateArbitraryRelayFee({
   subaccount: Subaccount | undefined;
   account: string;
   additionalBalanceOverrideTokens?: string[];
+  gasPrice: bigint;
+  gelatoRelayFeeMultiplierFactor: bigint;
 }) {
   const gasLimit = await estimateArbitraryGasLimit({
     chainId,
@@ -261,14 +264,7 @@ export async function estimateArbitraryRelayFee({
     additionalBalanceOverrideTokens,
   });
 
-  const fee = await gelatoRelay.getEstimatedFee(
-    BigInt(chainId),
-    gasPaymentParams.relayerFeeTokenAddress,
-    gasLimit,
-    false
-  );
-
-  return fee;
+  return applyFactor(gasLimit * gasPrice, gelatoRelayFeeMultiplierFactor);
 }
 
 export function getArbitraryRelayParamsAndPayload({

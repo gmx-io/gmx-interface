@@ -200,7 +200,6 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
         const request = await sendExpressTransaction({
           chainId,
-          isSponsoredCall: params.isSponsoredCall,
           txnData,
         });
 

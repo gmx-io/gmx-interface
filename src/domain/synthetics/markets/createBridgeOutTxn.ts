@@ -41,7 +41,6 @@ export async function createBridgeOutTxn({
 
   const receipt = await sendExpressTransaction({
     chainId,
-    isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,
   });
 

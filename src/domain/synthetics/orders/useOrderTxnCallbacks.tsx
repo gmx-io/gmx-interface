@@ -199,7 +199,6 @@ export function useOrderTxnCallbacks() {
           setPendingExpressTxn({
             key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
-            isSponsoredCall: expressParams.isSponsoredCall,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
             payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),

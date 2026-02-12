@@ -1,4 +1,4 @@
-import type { TaskState } from "@gelatonetwork/relay-sdk";
+import type { StatusCode } from "sdk/utils/gelatoRelay";
 import type { ReactNode } from "react";
 
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
@@ -80,7 +80,6 @@ export type PendingPositionUpdate = {
 export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
-  isSponsoredCall: boolean;
   isGmxAccount: boolean;
   subaccountApproval?: SignedSubacсountApproval;
   tokenPermits?: SignedTokenPermit[];
@@ -99,8 +98,8 @@ export type PendingExpressTxnParams = {
 
 export type GelatoTaskStatus = {
   taskId: string;
-  taskState: TaskState;
-  lastCheckMessage?: string;
+  statusCode: StatusCode;
+  message?: string;
   transactionHash?: string;
 };
 

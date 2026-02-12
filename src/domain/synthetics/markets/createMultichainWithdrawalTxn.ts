@@ -118,7 +118,6 @@ export async function createMultichainWithdrawalTxn({
 
   return await sendExpressTransaction({
     chainId,
-    isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,
   });
 }

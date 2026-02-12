@@ -234,7 +234,6 @@ function ClaimModalMultichain(p: Props) {
 
         const request = await sendExpressTransaction({
           chainId,
-          isSponsoredCall: expressTxnParams.isSponsoredCall,
           txnData,
         });
 

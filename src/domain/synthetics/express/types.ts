@@ -21,7 +21,6 @@ export type GlobalExpressParams = {
   gasLimits: GasLimitsConfig;
   l1Reference: L1ExpressOrderGasReference | undefined;
   bufferBps: number;
-  isSponsoredCall: boolean;
 };
 
 export type ExpressParamsEstimationMethod = "approximate" | "estimateGas";
@@ -39,7 +38,6 @@ export type ExpressTxnParams = {
   estimationMethod: ExpressParamsEstimationMethod;
   gasPaymentValidations: GasPaymentValidations;
   subaccountValidations: SubaccountValidations | undefined;
-  isSponsoredCall: boolean;
   isGmxAccount: boolean;
 };
 

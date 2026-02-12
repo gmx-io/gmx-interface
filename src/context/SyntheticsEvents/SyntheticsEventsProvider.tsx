@@ -1,4 +1,3 @@
-import { TaskState } from "@gelatonetwork/relay-sdk";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -57,7 +56,7 @@ import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalyt
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
@@ -1005,55 +1004,86 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [chainId, currentAccount]
   );
 
-  useEffect(() => {
-    const handler = async (taskStatus) => {
-      if (isDevelopment()) {
-        const { accountSlug, projectSlug } = getTenderlyAccountParams();
-        getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
-          // eslint-disable-next-line no-console
-          console.log("gelatoDebugData", taskStatus, debugInfo)
-        );
-      }
+  const pollingTaskIdsRef = useRef<Set<string>>(new Set());
 
-      switch (taskStatus.taskState) {
-        case TaskState.ExecSuccess:
-        case TaskState.ExecReverted:
-        case TaskState.Cancelled: {
-          gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
-          setGelatoTaskStatuses((old) =>
-            setByKey(old, taskStatus.taskId, {
-              taskId: taskStatus.taskId,
-              taskState: taskStatus.taskState,
-              lastCheckMessage: taskStatus.lastCheckMessage,
-              transactionHash: taskStatus.transactionHash,
-            })
-          );
-          break;
-        }
-        default:
-          break;
-      }
+  useEffect(() => {
+    const GELATO_API = "https://api.gelato.digital";
+    const POLL_INTERVAL = 2000;
+    const FINAL_TASK_STATES = ["ExecSuccess", "ExecReverted", "Cancelled"];
+    const TASK_STATE_TO_STATUS_CODE: Record<string, StatusCode> = {
+      ExecSuccess: StatusCode.Success,
+      ExecReverted: StatusCode.Reverted,
+      Cancelled: StatusCode.Rejected,
     };
 
-    gelatoRelay.onTaskStatusUpdate(handler);
+    const abortController = new AbortController();
+
+    const taskIds = Object.values(pendingExpressTxnParams)
+      .map((p) => p.taskId)
+      .filter((id): id is string => Boolean(id) && !gelatoTaskStatuses[id!] && !pollingTaskIdsRef.current.has(id!));
+
+    for (const taskId of taskIds) {
+      pollingTaskIdsRef.current.add(taskId);
+
+      (async () => {
+        try {
+          while (!abortController.signal.aborted) {
+            try {
+              const res = await fetch(`${GELATO_API}/tasks/status/${taskId}`, {
+                signal: abortController.signal,
+              });
+              const { task: taskStatus } = await res.json();
+
+              if (isDevelopment()) {
+                const { accountSlug, projectSlug } = getTenderlyAccountParams();
+                getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
+                  // eslint-disable-next-line no-console
+                  console.log("gelatoDebugData", taskStatus, debugInfo)
+                );
+              }
+
+              if (FINAL_TASK_STATES.includes(taskStatus.taskState)) {
+                setGelatoTaskStatuses((old) =>
+                  setByKey(old, taskStatus.taskId, {
+                    taskId: taskStatus.taskId,
+                    statusCode: TASK_STATE_TO_STATUS_CODE[taskStatus.taskState] ?? StatusCode.Rejected,
+                    message: taskStatus.lastCheckMessage,
+                    transactionHash: taskStatus.transactionHash,
+                  })
+                );
+                return;
+              }
+            } catch (e) {
+              if (abortController.signal.aborted) return;
+              // eslint-disable-next-line no-console
+              console.error(e);
+            }
+
+            await sleep(POLL_INTERVAL);
+          }
+        } finally {
+          pollingTaskIdsRef.current.delete(taskId);
+        }
+      })();
+    }
 
     return () => {
-      gelatoRelay.offTaskStatusUpdate(handler);
+      abortController.abort();
     };
-  }, []);
+  }, [pendingExpressTxnParams, gelatoTaskStatuses]);
 
   useEffect(
     function notifyPendingExpressTxn() {
       Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
         if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
-          const status = gelatoTaskStatuses[pendingExpressTxn.taskId].taskState;
+          const status = gelatoTaskStatuses[pendingExpressTxn.taskId].statusCode;
 
-          if (status === TaskState.ExecSuccess && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
+          if (status === StatusCode.Success && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
             helperToast.success(pendingExpressTxn.successMessage);
             setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
           }
 
-          if (status === TaskState.ExecReverted || status === TaskState.Cancelled) {
+          if (status === StatusCode.Reverted || status === StatusCode.Rejected) {
             let isRelayerMetricSent = false;
             let isViewed = false;
 
