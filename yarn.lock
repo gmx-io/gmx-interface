@@ -3113,7 +3113,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gelatocloud/gasless@npm:^0.0.7":
+"@gelatocloud/gasless@npm:0.0.7":
   version: 0.0.7
   resolution: "@gelatocloud/gasless@npm:0.0.7"
   dependencies:
@@ -11412,7 +11412,7 @@ __metadata:
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
-    "@gelatocloud/gasless": "npm:^0.0.7"
+    "@gelatocloud/gasless": "npm:0.0.7"
     "@headlessui/react": "npm:1.7.19"
     "@layerzerolabs/lz-v2-utilities": "npm:3.0.85"
     "@lingui/cli": "npm:4.10.0"
