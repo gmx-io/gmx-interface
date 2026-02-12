@@ -1,16 +1,15 @@
 import { CSSProperties, useEffect, useMemo, useRef } from "react";
 
-import type { ChartContextMenuItem, ChartContextMenuState, ChartOrderAction } from "./useChartContextMenu";
+import type { ChartContextMenuState } from "./useChartContextMenu";
 
 import "./ChartContextMenu.scss";
 
 interface ChartContextMenuProps {
   menuState: ChartContextMenuState;
   onClose: () => void;
-  onAction: (action: ChartOrderAction, direction: "long" | "short", price: number) => void;
 }
 
-export function ChartContextMenu({ menuState, onClose, onAction }: ChartContextMenuProps) {
+export function ChartContextMenu({ menuState, onClose }: ChartContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const menuStyle = useMemo<CSSProperties>(
@@ -49,15 +48,11 @@ export function ChartContextMenu({ menuState, onClose, onAction }: ChartContextM
     return null;
   }
 
-  const handleItemClick = (item: ChartContextMenuItem) => {
-    onAction(item.action, item.direction, menuState.price);
-  };
-
   return (
     <div ref={menuRef} className="ChartContextMenu" style={menuStyle}>
       {menuState.items.map((item, index) => (
-        <button key={index} className="ChartContextMenu-item" onClick={() => handleItemClick(item)}>
-          {item.label}
+        <button key={index} className="ChartContextMenu-item" onClick={() => item.click()}>
+          {item.text}
         </button>
       ))}
     </div>

@@ -124,23 +124,19 @@ export function StaticLine({
       lineApi.current?.remove();
       lineApi.current = undefined;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [price, title, tvWidgetRef, lineColor, isPositionEntry]);
+  }, [price, title, tvWidgetRef, lineColor, isPositionEntry, getDisplayTextRef, showSizeInUsdRef]);
 
-  // Update text when positionData changes (PnL updates in real-time)
+  const displayText = getDisplayText(showSizeInUsd);
+
   useEffect(() => {
-    if (lineApi.current && positionData) {
-      const displayText = getDisplayText(showSizeInUsd);
-      lineApi.current.setText(displayText);
-      lineApi.current.setLineColor(lineColor);
-      lineApi.current.setBodyBackgroundColor(lineColor);
-      lineApi.current.setBodyBorderColor(lineColor);
-      if (isPositionEntry) {
-        lineApi.current.setQuantityBorderColor(lineColor);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionData?.pnl, positionData?.sizeInUsd, positionData?.sizeInTokens, lineColor]);
+    if (!lineApi.current || !isPositionEntry) return;
+
+    lineApi.current.setText(displayText);
+    lineApi.current.setLineColor(lineColor);
+    lineApi.current.setBodyBackgroundColor(lineColor);
+    lineApi.current.setBodyBorderColor(lineColor);
+    lineApi.current.setQuantityBorderColor(lineColor);
+  }, [displayText, lineColor, isPositionEntry]);
 
   return null;
 }

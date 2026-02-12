@@ -11,34 +11,81 @@ import {
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { bigintToNumber, formatAmount, numberToBigint } from "lib/numbers";
 import { formatUsdPrice } from "sdk/utils/numbers";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import type { ContextMenuItem, PlusClickParams } from "../../charting_library";
 
-export type ChartOrderAction = "limit" | "stopMarket" | "takeProfit" | "stopLoss";
+type ChartOrderAction = "limit" | "stopMarket" | "takeProfit" | "stopLoss";
 
 export interface ChartContextMenuState {
   isOpen: boolean;
   x: number;
   y: number;
-  price: number;
-  items: ChartContextMenuItem[];
-}
-
-export interface ChartContextMenuItem {
-  label: string;
-  action: ChartOrderAction;
-  direction: "long" | "short";
+  items: ContextMenuItem[];
 }
 
 const INITIAL_MENU_STATE: ChartContextMenuState = {
   isOpen: false,
   x: 0,
   y: 0,
-  price: 0,
   items: [],
 };
+
+function buildMenuItems(p: {
+  clickPrice: number;
+  markPrice: number;
+  isLong: boolean;
+  formattedPrice: string | undefined;
+  onAction: (action: ChartOrderAction, direction: "long" | "short", price: number) => void;
+}): ContextMenuItem[] {
+  const direction = p.isLong ? "long" : "short";
+  const isAboveMarkPrice = p.clickPrice > p.markPrice;
+  const items: ContextMenuItem[] = [];
+
+  if (isAboveMarkPrice) {
+    if (p.isLong) {
+      items.push({
+        position: "top",
+        text: t`Set Long Take Profit @ ${p.formattedPrice}`,
+        click: () => p.onAction("takeProfit", direction, p.clickPrice),
+      });
+    } else {
+      items.push({
+        position: "top",
+        text: t`Set Short Stop Loss @ ${p.formattedPrice}`,
+        click: () => p.onAction("stopLoss", direction, p.clickPrice),
+      });
+      items.push({
+        position: "top",
+        text: t`Set Short Stop Market @ ${p.formattedPrice}`,
+        click: () => p.onAction("stopMarket", direction, p.clickPrice),
+      });
+    }
+  } else {
+    if (p.isLong) {
+      items.push({
+        position: "top",
+        text: t`Set Long Stop Loss @ ${p.formattedPrice}`,
+        click: () => p.onAction("stopLoss", direction, p.clickPrice),
+      });
+      items.push({
+        position: "top",
+        text: t`Set Long Limit @ ${p.formattedPrice}`,
+        click: () => p.onAction("limit", direction, p.clickPrice),
+      });
+    } else {
+      items.push({
+        position: "top",
+        text: t`Set Short Take Profit @ ${p.formattedPrice}`,
+        click: () => p.onAction("takeProfit", direction, p.clickPrice),
+      });
+    }
+  }
+
+  return items;
+}
 
 export function useChartContextMenu(
   visualMultiplier: number | undefined,
@@ -55,8 +102,7 @@ export function useChartContextMenu(
 
   const markPrice = useMemo(() => {
     if (markPriceBn === undefined) return undefined;
-    const divisor = 10n ** BigInt(USD_DECIMALS);
-    const priceFloat = Number(markPriceBn) / Number(divisor);
+    const priceFloat = bigintToNumber(markPriceBn, USD_DECIMALS);
     return visualMultiplier ? priceFloat * visualMultiplier : priceFloat;
   }, [markPriceBn, visualMultiplier]);
 
@@ -92,8 +138,7 @@ export function useChartContextMenu(
           position.isLong === isLong &&
           position.sizeInUsd !== undefined
         ) {
-          const positionSizeFloat = Number(position.sizeInUsd) / Number(10n ** BigInt(USD_DECIMALS));
-          setCloseSizeInputValue(positionSizeFloat.toString());
+          setCloseSizeInputValue(formatAmount(position.sizeInUsd, USD_DECIMALS, 2));
         }
       }, 0);
 
@@ -106,6 +151,11 @@ export function useChartContextMenu(
     setMenuState(INITIAL_MENU_STATE);
   }, []);
 
+  const formatClickPrice = useCallback(
+    (clickPrice: number) => formatUsdPrice(numberToBigint(clickPrice / (visualMultiplier || 1), USD_DECIMALS)),
+    [visualMultiplier]
+  );
+
   const handlePlusClick = useCallback(
     (params: PlusClickParams) => {
       if (menuState.isOpen) {
@@ -113,143 +163,56 @@ export function useChartContextMenu(
         return;
       }
 
-      if (!markPrice || !tradeType) {
+      if (!markPrice || (tradeType !== TradeType.Long && tradeType !== TradeType.Short)) {
         return;
       }
+
+      const isLong = tradeType === TradeType.Long;
 
       const iframe = chartContainerRef.current?.querySelector("iframe");
       const iframeRect = iframe?.getBoundingClientRect();
       const iframeOffsetX = iframeRect?.left ?? 0;
       const iframeOffsetY = iframeRect?.top ?? 0;
 
-      const clickPrice = params.price;
-      const isLong = tradeType === TradeType.Long;
-      const direction = isLong ? "long" : "short";
-
-      const formattedPrice = formatUsdPrice(
-        BigInt(Math.round((clickPrice * Number(10n ** BigInt(USD_DECIMALS))) / (visualMultiplier || 1)))
-      );
-
-      const items: ChartContextMenuItem[] = [];
-      const isAboveMarkPrice = clickPrice > markPrice;
-
-      if (isAboveMarkPrice) {
-        if (isLong) {
-          items.push({
-            label: t`Set Long Take Profit @ ${formattedPrice}`,
-            action: "takeProfit",
-            direction,
-          });
-        } else {
-          items.push({
-            label: t`Set Short Stop Loss @ ${formattedPrice}`,
-            action: "stopLoss",
-            direction,
-          });
-          items.push({
-            label: t`Set Short Stop Market @ ${formattedPrice}`,
-            action: "stopMarket",
-            direction,
-          });
-        }
-      } else {
-        if (isLong) {
-          items.push({
-            label: t`Set Long Stop Loss @ ${formattedPrice}`,
-            action: "stopLoss",
-            direction,
-          });
-          items.push({
-            label: t`Set Long Limit @ ${formattedPrice}`,
-            action: "limit",
-            direction,
-          });
-        } else {
-          items.push({
-            label: t`Set Short Take Profit @ ${formattedPrice}`,
-            action: "takeProfit",
-            direction,
-          });
-        }
-      }
+      const items = buildMenuItems({
+        clickPrice: params.price,
+        markPrice,
+        isLong,
+        formattedPrice: formatClickPrice(params.price),
+        onAction: handleOrderAction,
+      });
 
       setMenuState({
         isOpen: true,
         x: params.clientX + iframeOffsetX,
         y: params.clientY + iframeOffsetY,
-        price: clickPrice,
         items,
       });
     },
-    [markPrice, tradeType, visualMultiplier, menuState.isOpen, chartContainerRef]
+    [markPrice, tradeType, menuState.isOpen, chartContainerRef, formatClickPrice, handleOrderAction]
   );
 
   const getContextMenuItems = useCallback(
     (clickPrice: number): ContextMenuItem[] => {
-      if (!markPrice || !tradeType) {
+      if (!markPrice || (tradeType !== TradeType.Long && tradeType !== TradeType.Short)) {
         return [];
       }
 
-      const isLong = tradeType === TradeType.Long;
-      const direction = isLong ? "long" : "short";
-
-      const formattedPrice = formatUsdPrice(
-        BigInt(Math.round((clickPrice * Number(10n ** BigInt(USD_DECIMALS))) / (visualMultiplier || 1)))
-      );
-
-      const items: ContextMenuItem[] = [];
-      const isAboveMarkPrice = clickPrice > markPrice;
-
-      if (isAboveMarkPrice) {
-        if (isLong) {
-          items.push({
-            position: "top",
-            text: t`Set Long Take Profit @ ${formattedPrice}`,
-            click: () => handleOrderAction("takeProfit", direction, clickPrice),
-          });
-        } else {
-          items.push({
-            position: "top",
-            text: t`Set Short Stop Loss @ ${formattedPrice}`,
-            click: () => handleOrderAction("stopLoss", direction, clickPrice),
-          });
-          items.push({
-            position: "top",
-            text: t`Set Short Stop Market @ ${formattedPrice}`,
-            click: () => handleOrderAction("stopMarket", direction, clickPrice),
-          });
-        }
-      } else {
-        if (isLong) {
-          items.push({
-            position: "top",
-            text: t`Set Long Stop Loss @ ${formattedPrice}`,
-            click: () => handleOrderAction("stopLoss", direction, clickPrice),
-          });
-          items.push({
-            position: "top",
-            text: t`Set Long Limit @ ${formattedPrice}`,
-            click: () => handleOrderAction("limit", direction, clickPrice),
-          });
-        } else {
-          items.push({
-            position: "top",
-            text: t`Set Short Take Profit @ ${formattedPrice}`,
-            click: () => handleOrderAction("takeProfit", direction, clickPrice),
-          });
-        }
-      }
-
-      return items;
+      return buildMenuItems({
+        clickPrice,
+        markPrice,
+        isLong: tradeType === TradeType.Long,
+        formattedPrice: formatClickPrice(clickPrice),
+        onAction: handleOrderAction,
+      });
     },
-    [markPrice, tradeType, visualMultiplier, handleOrderAction]
+    [markPrice, tradeType, formatClickPrice, handleOrderAction]
   );
 
   return {
     menuState,
     closeMenu,
     handlePlusClick,
-    handleOrderAction,
     getContextMenuItems,
   };
 }

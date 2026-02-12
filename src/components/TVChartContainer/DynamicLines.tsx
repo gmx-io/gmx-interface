@@ -40,6 +40,10 @@ import { DynamicLine } from "./DynamicLine";
 import type { IChartingLibraryWidget } from "../../charting_library";
 
 const BASE_ORDER_LINE_LENGTH = -40;
+/**
+ * Horizontal offset in pixels between stacked order lines at the same price level.
+ * Chosen to accommodate the full width of an order line label (~180px) plus padding.
+ */
 const ORDER_SPACING_PX = 190;
 /**
  * Approximate height of an order line label in pixels.

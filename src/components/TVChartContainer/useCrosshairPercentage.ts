@@ -3,6 +3,7 @@ import { RefObject, useCallback, useEffect, useMemo, useRef, useState } from "re
 import { USD_DECIMALS } from "config/factors";
 import { selectTradeboxMarkPrice } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { bigintToNumber } from "lib/numbers";
 
 import type { CrossHairMovedEventParams, IChartingLibraryWidget } from "../../charting_library";
 
@@ -35,8 +36,7 @@ export function useCrosshairPercentage(
 
   const markPrice = useMemo(() => {
     if (markPriceBn === undefined) return undefined;
-    const divisor = 10n ** BigInt(USD_DECIMALS);
-    const priceFloat = Number(markPriceBn) / Number(divisor);
+    const priceFloat = bigintToNumber(markPriceBn, USD_DECIMALS);
     return visualMultiplier ? priceFloat * visualMultiplier : priceFloat;
   }, [markPriceBn, visualMultiplier]);
 

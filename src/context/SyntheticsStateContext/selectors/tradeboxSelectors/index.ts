@@ -322,8 +322,6 @@ export const selectTradeboxSetCloseSizeInputValue = (s: SyntheticsState) => s.tr
 export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
 export const selectTradeboxSetTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.setTriggerPriceInputValue;
 const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
-export const selectTradeboxSetTradeMode = (s: SyntheticsState) => s.tradebox.setTradeMode;
-export const selectTradeboxSetTradeType = (s: SyntheticsState) => s.tradebox.setTradeType;
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
 export const selectTradeboxSetActivePosition = (s: SyntheticsState) => s.tradebox.setActivePosition;

@@ -1,10 +1,11 @@
+import { t } from "@lingui/macro";
 import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { isAddressEqual, type Address } from "viem";
 
 import { colors } from "config/colors";
 import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
-import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -41,12 +42,16 @@ import { useCrosshairPercentage } from "./useCrosshairPercentage";
 import type {
   ChartData,
   ChartingLibraryWidgetOptions,
-  ContextMenuItem,
   IChartingLibraryWidget,
   PlusClickParams,
   ResolutionString,
   Mark,
 } from "../../charting_library";
+
+/** Maximum number of trade actions to fetch per marks request */
+const MARKS_PAGE_SIZE = 100;
+/** How long fetched marks data stays valid in cache */
+const MARKS_CACHE_TTL_MS = 60_000;
 
 type Props = {
   chainId: number;
@@ -92,7 +97,7 @@ export default function TVChartContainer({
   const tokensData = useSelector(selectTokensData);
   const { chartToken: selectedChartToken } = useSelector(selectChartToken);
   const { account } = useWallet();
-  const marksStateRef = useRef({
+  const marksStateRef = useLatest({
     positionIncreaseEvents,
     positionDecreaseEvents,
     marketsInfoData,
@@ -107,28 +112,6 @@ export default function TVChartContainer({
     raw?: Awaited<ReturnType<typeof fetchRawTradeActions>>;
     fetchedAt?: number;
   }>({});
-
-  useEffect(() => {
-    marksStateRef.current = {
-      positionIncreaseEvents,
-      positionDecreaseEvents,
-      marketsInfoData,
-      tokensData,
-      selectedChartToken,
-      visualMultiplier,
-      chainId,
-      account,
-    };
-  }, [
-    positionIncreaseEvents,
-    positionDecreaseEvents,
-    marketsInfoData,
-    tokensData,
-    selectedChartToken,
-    visualMultiplier,
-    chainId,
-    account,
-  ]);
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && true) {
@@ -155,17 +138,7 @@ export default function TVChartContainer({
       if (!selToken?.address) {
         return [];
       }
-      const RES_TO_SEC: Record<string, number> = {
-        1: 60,
-        5: 300,
-        15: 900,
-        60: 3600,
-        240: 14400,
-        "1D": 86400,
-        "1W": 604800,
-        "1M": 2592000,
-      };
-      const periodSeconds = RES_TO_SEC[String(resolution)];
+      const periodSeconds = RESOLUTION_TO_SECONDS[String(resolution)];
       if (!periodSeconds) {
         return [];
       }
@@ -191,15 +164,22 @@ export default function TVChartContainer({
           return null;
         }
 
-        const label = p.isIncrease ? (p.isLong ? "B" : "S") : p.isLong ? "S" : "B";
-        const color = label === "B" ? "green" : "red";
+        const isBuy = p.isIncrease ? p.isLong : !p.isLong;
+        const label = isBuy ? "B" : "S";
+        const color = isBuy ? "green" : "red";
 
         if (p.ts < from || p.ts > to) {
           return null;
         }
         const time = Math.floor(p.ts / periodSeconds) * periodSeconds;
 
-        const action = p.isIncrease ? (p.isLong ? "Open Long" : "Open Short") : p.isLong ? "Close Long" : "Close Short";
+        const action = p.isIncrease
+          ? p.isLong
+            ? t`Open Long`
+            : t`Open Short`
+          : p.isLong
+            ? t`Close Long`
+            : t`Close Short`;
         const indexToken = market.indexToken;
         const tokenVm = indexToken?.visualMultiplier ?? vm ?? 1;
         const marketPriceDecimals = indexToken?.prices?.minPrice
@@ -220,7 +200,6 @@ export default function TVChartContainer({
         };
       };
 
-      const pageSize = 100;
       const combinations = [
         {
           eventName: TradeActionType.OrderExecuted,
@@ -241,8 +220,6 @@ export default function TVChartContainer({
       try {
         const now = Math.floor(Date.now() / 1000 / 60) * 60;
         const toClamped = Math.min(to, now);
-        const maxSpan = 60 * 60 * 24 * 90; // 90d
-        const fromClamped = Math.max(from, toClamped - maxSpan);
 
         marketAddresses = Object.values(markets)
           .filter((m) =>
@@ -259,20 +236,25 @@ export default function TVChartContainer({
         }));
 
         const marketAddressesKey = marketAddresses.slice().sort().join(",");
-        const cacheKey = `${cid}:${acc}:${wrappedSelected}:${resolution}:${fromClamped}:${toClamped}:${marketAddressesKey}`;
+        const cacheKey = `${cid}:${acc}:${wrappedSelected}:${resolution}:${from}:${toClamped}:${marketAddressesKey}`;
         const cached = marksHistoryCacheRef.current;
 
-        if (cached.key === cacheKey && cached.raw && cached.fetchedAt && Date.now() - cached.fetchedAt < 60_000) {
+        if (
+          cached.key === cacheKey &&
+          cached.raw &&
+          cached.fetchedAt &&
+          Date.now() - cached.fetchedAt < MARKS_CACHE_TTL_MS
+        ) {
           raw = cached.raw;
         } else {
           raw = await fetchRawTradeActions({
             chainId: cid,
             pageIndex: 0,
-            pageSize,
+            pageSize: MARKS_PAGE_SIZE,
             marketsDirectionsFilter: marketFilters,
             forAllAccounts: false,
             account: acc,
-            fromTxTimestamp: fromClamped,
+            fromTxTimestamp: from,
             toTxTimestamp: toClamped,
             orderEventCombinations: combinations,
             showDebugValues: false,
@@ -364,27 +346,21 @@ export default function TVChartContainer({
       }
       return newDatafeed;
     });
-  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded]);
+  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
 
-  const { menuState, closeMenu, handlePlusClick, handleOrderAction, getContextMenuItems } = useChartContextMenu(
+  const { menuState, closeMenu, handlePlusClick, getContextMenuItems } = useChartContextMenu(
     visualMultiplier,
     chartContainerRef
   );
 
   const crosshairPercentageState = useCrosshairPercentage(tvWidgetRef, chartContainerRef, chartReady, visualMultiplier);
 
-  const getContextMenuItemsRef = useRef<(price: number) => ContextMenuItem[]>(getContextMenuItems);
-  const handlePlusClickRef = useRef<(params: PlusClickParams) => void>(handlePlusClick);
-  const closeMenuRef = useRef<() => void>(closeMenu);
-
-  useEffect(() => {
-    getContextMenuItemsRef.current = getContextMenuItems;
-    handlePlusClickRef.current = handlePlusClick;
-    closeMenuRef.current = closeMenu;
-  }, [getContextMenuItems, handlePlusClick, closeMenu]);
+  const getContextMenuItemsRef = useLatest(getContextMenuItems);
+  const handlePlusClickRef = useLatest(handlePlusClick);
+  const closeMenuRef = useLatest(closeMenu);
 
   useEffect(() => {
     if (
@@ -649,7 +625,7 @@ export default function TVChartContainer({
           <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />
         </>
       )}
-      <ChartContextMenu menuState={menuState} onClose={closeMenu} onAction={handleOrderAction} />
+      <ChartContextMenu menuState={menuState} onClose={closeMenu} />
     </div>
   );
 }

@@ -12,7 +12,7 @@ import {
   ResolveCallback,
   SubscribeBarsCallback,
 } from "charting_library";
-import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
@@ -40,17 +40,6 @@ import {
   getTokenVisualMultiplier,
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
-
-const RESOLUTION_TO_SECONDS = {
-  1: 60,
-  5: 60 * 5,
-  15: 60 * 15,
-  60: 60 * 60,
-  240: 60 * 60 * 4,
-  "1D": 60 * 60 * 24,
-  "1W": 60 * 60 * 24 * 7,
-  "1M": 60 * 60 * 24 * 30,
-};
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
