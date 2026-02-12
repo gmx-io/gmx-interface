@@ -175,7 +175,7 @@ export function PositionSeller() {
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
 
   const isMarket = orderOption === OrderOption.Market;
-  const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
+  const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS) ?? 0n;
   const maxCloseSize = position?.sizeInUsd || 0n;
 
   const closePercentage = useMemo(() => {
@@ -433,8 +433,8 @@ export function PositionSeller() {
       numberOfParts,
     });
 
-    if (commonError[0] || decreaseError[0] || expressError[0]) {
-      return commonError[0] || decreaseError[0] || expressError[0];
+    if (commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage) {
+      return commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage;
     }
 
     if (isSubmitting) {
@@ -901,7 +901,7 @@ export function PositionSeller() {
               </div>
 
               {isTwap && (
-                <div className="pt-14">
+                <div className="px-20 py-14">
                   <TwapRows
                     duration={duration}
                     numberOfParts={numberOfParts}

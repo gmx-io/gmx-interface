@@ -441,8 +441,8 @@ export function OrderEditor(p: Props) {
         tokensData,
       });
 
-      if (expressError[0]) {
-        return expressError[0];
+      if (expressError.buttonErrorMessage) {
+        return expressError.buttonErrorMessage;
       }
 
       return;
@@ -661,7 +661,7 @@ export function OrderEditor(p: Props) {
 
   const positionSize = existingPosition?.sizeInUsd;
 
-  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
+  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS) ?? 0n;
 
   const sizePercentage = useMemo(() => {
     if (positionSize === undefined || positionSize === 0n) return 0;
