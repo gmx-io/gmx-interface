@@ -1,4 +1,4 @@
-import { TaskState } from "@gelatonetwork/relay-sdk";
+import { StatusCode } from "sdk/utils/gelatoRelay";
 
 import { ErrorLike } from "lib/errors";
 
@@ -6,7 +6,8 @@ export type TransactionWaiterResult = {
   relayStatus?:
     | {
         taskId: string;
-        taskState: TaskState;
+        statusCode: StatusCode;
+        message?: string;
       }
     | undefined;
   transactionHash: string | undefined;
@@ -15,17 +16,10 @@ export type TransactionWaiterResult = {
 };
 
 export type GelatoTaskStatus = {
-  chainId: number;
   taskId: string;
-  taskState: TaskState;
-  creationDate: string;
-  lastCheckDate?: string;
-  lastCheckMessage?: string;
+  statusCode: StatusCode;
+  message?: string;
   transactionHash?: string;
-  blockNumber?: number;
-  executionDate?: string;
-  gasUsed?: string;
-  effectiveGasPrice?: string;
 };
 
 export enum TxnEventName {

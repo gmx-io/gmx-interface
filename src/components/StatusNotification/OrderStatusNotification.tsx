@@ -40,7 +40,7 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 import { useToastAutoClose } from "./useToastAutoClose";
 
 // eslint-disable-next-line import/order
-import { TaskState } from "@gelatonetwork/relay-sdk";
+import { StatusCode } from "sdk/utils/gelatoRelay";
 import "./StatusNotification.scss";
 
 type Props = {
@@ -76,7 +76,7 @@ function OrderStatusNotification({
   const isGelatoTaskFailed = useMemo(() => {
     const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
 
-    return gelatoTaskStatus && [TaskState.Cancelled, TaskState.ExecReverted].includes(gelatoTaskStatus.taskState);
+    return gelatoTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(gelatoTaskStatus.statusCode);
   }, [gelatoTaskStatuses, pendingExpressTxn?.taskId]);
 
   const hasError =

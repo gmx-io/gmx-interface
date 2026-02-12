@@ -118,7 +118,6 @@ export async function createMultichainGlvDepositTxn({
 
   return await sendExpressTransaction({
     chainId,
-    isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,
   });
 }
