@@ -1,5 +1,4 @@
-import { t } from "@lingui/macro";
-import { useAccount } from "wagmi";
+import { Trans, t } from "@lingui/macro";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { ReferralCodeStats, registerReferralCode, TotalReferralsStats } from "domain/referrals";
@@ -8,10 +7,13 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { serializeBigIntsInObject } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
+import { Faq } from "components/Faq/Faq";
 import Loader from "components/Loader/Loader";
-import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
-import AffiliatesStats from "components/Referrals/AffiliatesStats";
+import { AffiliatesStats } from "components/Referrals/AffiliatesStats";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
+
+import { CreateAffiliateWizard } from "./CreateAffiliateCode/CreateAffiliateWizard";
+import { AFFILIATE_WIZARD_FAQS } from "./ReferralsAffiliatesFaq";
 
 type ReferralsAffiliatesTabProps = {
   loading: boolean;
@@ -26,9 +28,8 @@ export function ReferralsAffiliatesTab({
   referralsData,
   initialReferralCode,
 }: ReferralsAffiliatesTabProps) {
-  const { isConnected } = useAccount();
   const { signer } = useWallet();
-  const { chainId, srcChainId } = useChainId();
+  const { chainId } = useChainId();
   const { pendingTxns } = usePendingTxns();
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey<ReferralCodeStats[]>(
     [chainId, "REFERRAL", account],
@@ -53,25 +54,34 @@ export function ReferralsAffiliatesTab({
   const isSomeReferralCodeAvailable = ownsSomeChainCode || hasRecentCode;
 
   if (loading) return <Loader />;
-  if (account && isSomeReferralCodeAvailable) {
+
+  const isWizard = !account || !isSomeReferralCodeAvailable;
+
+  if (!isWizard) {
     return (
       <AffiliatesStats
         referralsData={referralsData}
         handleCreateReferralCode={handleCreateReferralCode}
         setRecentlyAddedCodes={setRecentlyAddedCodes}
         recentlyAddedCodes={recentlyAddedCodes}
-        chainId={chainId}
-        srcChainId={srcChainId}
       />
     );
   }
+
   return (
-    <AddAffiliateCode
-      handleCreateReferralCode={handleCreateReferralCode}
-      active={isConnected}
-      recentlyAddedCodes={recentlyAddedCodes}
-      setRecentlyAddedCodes={setRecentlyAddedCodes}
-      initialReferralCode={initialReferralCode}
-    />
+    <div className="flex gap-8 max-md:flex-col">
+      <div className="flex grow flex-col gap-8">
+        <CreateAffiliateWizard
+          onGoToAffiliateDashboard={() => undefined}
+          handleCreateReferralCode={handleCreateReferralCode}
+          recentlyAddedCodes={recentlyAddedCodes}
+          setRecentlyAddedCodes={setRecentlyAddedCodes}
+          initialReferralCode={initialReferralCode}
+        />
+      </div>
+      <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
+        <Faq items={AFFILIATE_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
+      </div>
+    </div>
   );
 }

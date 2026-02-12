@@ -19,13 +19,13 @@ import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHe
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import { ReferralsAffiliatesTab } from "components/Referrals/ReferralsAffiliatesTab";
+import { ReferralsDistributionsTab } from "components/Referrals/ReferralsDistributionsTab";
 import { CREATE_REFERRAL_CODE_QUERY_PARAM } from "components/Referrals/referralsHelper";
 import { ReferralsTradersTab } from "components/Referrals/ReferralsTradersTab";
 import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
 import { Option } from "components/Tabs/types";
 
-import LockIcon from "img/ic_lock.svg?react";
 import "./Referrals.css";
 
 enum ReferralsTab {
@@ -64,8 +64,6 @@ function Referrals() {
     return TAB_OPTIONS.map((option) => ({
       value: option,
       label: localizedTabOptionLabels[option],
-      icon: option === ReferralsTab.Distributions ? <LockIcon className="size-16" /> : undefined,
-      disabled: option === ReferralsTab.Distributions,
     }));
   }, [localizedTabOptionLabels]);
 
@@ -117,7 +115,13 @@ function Referrals() {
                   initialReferralCode={createReferralCodePrefill}
                 />
               )}
-              {activeTab === ReferralsTab.Distributions && null}
+              {activeTab === ReferralsTab.Distributions && (
+                <ReferralsDistributionsTab
+                  loading={isLoading}
+                  account={account}
+                  referralsData={referralsData}
+                />
+              )}
             </div>
           )}
         </div>

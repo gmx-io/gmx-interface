@@ -136,7 +136,7 @@ function AffiliateCodeFormMultichain({
 }: {
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const { chainId, srcChainId } = useChainId();
@@ -261,7 +261,7 @@ function AffiliateCodeFormMultichain({
         setReferralCode("");
 
         if (callAfterSuccess) {
-          callAfterSuccess();
+          callAfterSuccess(trimmedCode);
         }
 
         helperToast.success(
@@ -475,7 +475,7 @@ export function AffiliateCodeForm({
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const [referralCode, setReferralCode] = useState(initialReferralCode?.trim() ?? "");
@@ -547,7 +547,7 @@ export function AffiliateCodeForm({
       const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
 
       if (callAfterSuccess) {
-        callAfterSuccess();
+        callAfterSuccess(trimmedCode);
       }
 
       const receipt = await tx.wait();
@@ -664,7 +664,7 @@ export function AffiliateCodeFormContainer({
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const { srcChainId } = useChainId();
