@@ -1,6 +1,6 @@
+import { bigMath } from "utils/bigmath";
 import { formatUnits, parseUnits } from "viem";
 
-import { bigMath } from "utils/bigmath";
 
 export type Numeric = number | bigint;
 export type BigNumberish = string | Numeric;
@@ -15,7 +15,7 @@ export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 
 export const BN_ZERO = 0n;
-export const BN_ONE = 1n;
+export const BN_ONE = 1n; 
 export const BN_NEGATIVE_ONE = -1n;
 
 export const MaxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -710,11 +710,19 @@ export function bigNumberify(n?: BigNumberish | null | undefined) {
 export const parseValue = (value: string, tokenDecimals: number) => {
   const pValue = parseFloat(value);
 
-  if (isNaN(pValue)) {
+  if (isNaN(pValue) || !isFinite(pValue)) {
     return undefined;
   }
+
   value = limitDecimals(value, tokenDecimals);
   const amount = parseUnits(value, tokenDecimals);
+
+  // Cap at a safe maximum to prevent downstream BigInt overflow errors
+  const MAX_ALLOWED = expandDecimals(1, 62);
+  if (amount > MAX_ALLOWED || amount < -MAX_ALLOWED) {
+    return undefined;
+  }
+
   return bigNumberify(amount);
 };
 

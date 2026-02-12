@@ -64,7 +64,7 @@ export function MarginField({
   const { fromTokenAddress, isFromTokenGmxAccount } = useSelector(selectTradeboxState);
 
   const fromToken = useSelector(selectTradeboxFromToken);
-  const fromTokenAmount = fromToken ? parseValue(inputValue || "0", fromToken.decimals)! : 0n;
+  const fromTokenAmount = fromToken ? parseValue(inputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
