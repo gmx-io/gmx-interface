@@ -2931,6 +2931,7 @@ msgstr "在 {0} 上没有符合条件的代币可存入"
 msgid "Est. PnL"
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "最大关闭金额超出"

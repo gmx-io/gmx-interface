@@ -2931,6 +2931,7 @@ msgstr "No hay tokens elegibles disponibles en {0} para depósito"
 msgid "Est. PnL"
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "Cantidad máxima de cierre excedida"

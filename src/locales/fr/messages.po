@@ -2931,6 +2931,7 @@ msgstr "Aucun jeton éligible disponible sur {0} pour dépôt"
 msgid "Est. PnL"
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "Montant de fermeture max dépassé"

@@ -696,6 +696,12 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     if (!tpPriceInput && !slPriceInput) {
       return t`Enter an amount`;
     }
+    if (editTPSLSize && closeSizeInput) {
+      const maxParsed = parseValue(formattedMaxCloseSize, USD_DECIMALS);
+      if (maxParsed !== undefined && closeSizeUsd > maxParsed) {
+        return t`Max close amount exceeded`;
+      }
+    }
     if (tpPriceError && tpPriceInput) {
       return tpPriceError;
     }
@@ -706,7 +712,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       return t`Unable to calculate order`;
     }
     return undefined;
-  }, [tpPriceInput, slPriceInput, tpPriceError, slPriceError, orderPayloads.length]);
+  }, [tpPriceInput, slPriceInput, tpPriceError, slPriceError, orderPayloads.length, editTPSLSize, closeSizeInput, closeSizeUsd, formattedMaxCloseSize]);
 
   const handleSubmit = useCallback(async () => {
     if (!signer || !provider || !batchParams || !tokensData || !marketsInfoData) return;

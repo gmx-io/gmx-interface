@@ -2931,6 +2931,7 @@ msgstr "{0}에서 입금 가능한 적격 토큰 없음"
 msgid "Est. PnL"
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "최대 닫기 금액 초과"

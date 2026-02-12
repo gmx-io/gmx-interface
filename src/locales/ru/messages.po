@@ -2931,6 +2931,7 @@ msgstr "Нет подходящих токенов на {0} для внесен�
 msgid "Est. PnL"
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "Макс. сумма закрытия превышена"

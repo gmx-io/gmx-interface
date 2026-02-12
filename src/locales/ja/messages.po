@@ -2931,6 +2931,7 @@ msgstr "{0} で入金可能な対象トークンなし"
 msgid "Est. PnL"
 msgstr ""
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "最大クローズ額を超えています"
