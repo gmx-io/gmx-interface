@@ -22,7 +22,7 @@ export function useMarketsInfoRequest(
 ): MarketsInfoResult {
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
 
-  const isApiSdkEnabled = getIsFlagEnabled("apiSdk");
+  const isApiSdkEnabled = getIsFlagEnabled("apiSdk2");
 
   const {
     marketsInfoData: apiMarketsInfoData,
