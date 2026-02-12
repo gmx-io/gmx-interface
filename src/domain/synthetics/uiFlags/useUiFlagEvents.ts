@@ -1,13 +1,14 @@
 import { useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 
+import { UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX } from "config/localStorage";
 import { getUiFlagEventDismissCooldown, uiFlagEventsData } from "config/uiFlagEvents";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 
 import EventToast from "components/EventToast/EventToast";
 
 function getLocalStorageKey(eventId: string) {
-  return `ui-flag-event-dismissed-${eventId}`;
+  return `${UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX}-${eventId}`;
 }
 
 function isDismissedByCooldown(eventId: string, cooldownMs: number): boolean {
