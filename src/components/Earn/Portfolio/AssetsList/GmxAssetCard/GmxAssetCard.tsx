@@ -203,8 +203,6 @@ export function GmxAssetCard({
         }
       >
         <div className="flex flex-col gap-12">
-          <SyntheticsInfoRow label={<Trans>Price</Trans>} value={priceRowValue} />
-          <SyntheticsInfoRow label={<Trans>APR</Trans>} value={aprRowValue} />
           <SyntheticsInfoRow
             label={<Trans>Wallet</Trans>}
             value={
@@ -217,6 +215,8 @@ export function GmxAssetCard({
               <AmountWithUsdBalance amount={stakedAmount} decimals={18} usd={stakedUsd} symbol={stakeTokenSymbol} />
             }
           />
+          <SyntheticsInfoRow label={<Trans>Price</Trans>} value={priceRowValue} />
+          <SyntheticsInfoRow label={<Trans>APR</Trans>} value={aprRowValue} />
         </div>
       </BaseAssetCard>
 

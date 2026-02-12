@@ -7,7 +7,7 @@ import { isAddress, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { getNeedTokenApprove, useTokenBalances, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
@@ -15,7 +15,6 @@ import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
@@ -47,6 +46,7 @@ export default function BeginAccountTransfer() {
   if (isAddress(receiver, { strict: false })) {
     parsedReceiver = receiver;
   }
+  const hasValidReceiver = parsedReceiver !== zeroAddress;
 
   const gmxAddress = getContract(chainId, "GMX");
   const gmxVesterAddress = getContract(chainId, "GmxVester");
@@ -129,6 +129,32 @@ export default function BeginAccountTransfer() {
   });
   const gmxAllowance = gmxAllowanceData?.[gmxAddress];
 
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
+
+  const { tokensAllowanceData: feeGmxAllowanceData } = useTokensAllowanceData(chainId, {
+    spenderAddress: parsedReceiver,
+    tokenAddresses: [feeGmxTrackerAddress],
+  });
+
+  const { data: feeGmxTrackerBalance } = useSWR(
+    active && [active, chainId, feeGmxTrackerAddress, "balanceOf", account],
+    {
+      fetcher: contractFetcher(signer, "Token"),
+      refreshInterval: 1000,
+    }
+  );
+
+  const needFeeGmxTrackerApproval = useMemo(
+    () =>
+      Boolean(
+        hasValidReceiver &&
+          feeGmxTrackerBalance !== undefined &&
+          feeGmxAllowanceData &&
+          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance, [])
+      ),
+    [feeGmxTrackerAddress, feeGmxTrackerBalance, hasValidReceiver, feeGmxAllowanceData]
+  );
+
   const { data: gmxStaked } = useSWR(
     active && [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
@@ -207,8 +233,7 @@ export default function BeginAccountTransfer() {
     if (isTransferring) {
       return false;
     }
-
-    if (needFeeGmxTrackerApproval) {
+    if (hasValidReceiver && !feeGmxAllowanceData) {
       return false;
     }
     return true;
@@ -219,18 +244,20 @@ export default function BeginAccountTransfer() {
     if (error) {
       return error;
     }
-    if (needApproval) {
-      return t`Approve GMX`;
-    }
     if (isApproving) {
       return t`Approving...`;
     }
+    if (needApproval) {
+      return t`Approve GMX`;
+    }
+    if (needFeeGmxTrackerApproval) {
+      if (!isReadyForSbfGmxTokenApproval) {
+        return t`Pending Transfer Approval`;
+      }
+      return t`Allow all my tokens to be transferred to a new account`;
+    }
     if (isTransferring) {
       return t`Transferring`;
-    }
-
-    if (needFeeGmxTrackerApproval) {
-      return t`Pending Transfer Approval`;
     }
 
     return t`Begin Transfer`;
@@ -246,6 +273,19 @@ export default function BeginAccountTransfer() {
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+      });
+      return;
+    }
+
+    if (needFeeGmxTrackerApproval && isReadyForSbfGmxTokenApproval) {
+      approveTokens({
+        setIsApproving,
+        signer,
+        tokenAddress: feeGmxTrackerAddress,
+        spender: parsedReceiver,
+        chainId,
+        permitParams: undefined,
+        approveAmount: feeGmxTrackerBalance,
       });
       return;
     }
@@ -268,30 +308,6 @@ export default function BeginAccountTransfer() {
 
   const completeTransferLink = `/complete_account_transfer/${account}/${parsedReceiver}`;
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`;
-
-  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
-
-  const { tokensAllowanceData: feeGmxAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: parsedReceiver,
-    tokenAddresses: [feeGmxTrackerAddress],
-  });
-  const { balancesData } = useTokenBalances(chainId, {
-    overrideTokenList: [{ address: feeGmxTrackerAddress }],
-    refreshInterval: 1000,
-  });
-
-  const feeGmxTrackerBalance = balancesData?.[feeGmxTrackerAddress];
-  const needFeeGmxTrackerApproval = useMemo(
-    () =>
-      Boolean(
-        parsedReceiver &&
-          feeGmxTrackerBalance !== undefined &&
-          parsedReceiver !== zeroAddress &&
-          feeGmxAllowanceData &&
-          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance, [])
-      ),
-    [feeGmxTrackerAddress, feeGmxTrackerBalance, parsedReceiver, feeGmxAllowanceData]
-  );
 
   return (
     <AppPageLayout>
@@ -380,19 +396,6 @@ export default function BeginAccountTransfer() {
             <Trans>Receiver has not staked GLP tokens before</Trans>
           </ValidationRow>
         </div>
-
-        {isReadyForSbfGmxTokenApproval && needFeeGmxTrackerApproval && (
-          <>
-            <ApproveTokenButton
-              tokenAddress={feeGmxTrackerAddress}
-              tokenSymbol={"sbfGMX"}
-              customLabel={t`Allow all my tokens to be transferred to a new account`}
-              spenderAddress={parsedReceiver}
-              approveAmount={feeGmxTrackerBalance}
-            />
-            <br />
-          </>
-        )}
 
         <Button
           variant="primary-action"

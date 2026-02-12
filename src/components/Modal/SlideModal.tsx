@@ -313,6 +313,7 @@ export function SlideModal({
   footerContent,
   className,
   desktopContentClassName,
+  desktopClassName,
   disableOverflowHandling = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
@@ -325,6 +326,10 @@ export function SlideModal({
   footerContent?: React.ReactNode;
   className?: string;
   desktopContentClassName?: string;
+  /**
+   * Additional className for the desktop modal wrapper (overrides Modal positioning)
+   */
+  desktopClassName?: string;
   disableOverflowHandling?: boolean;
 }>) {
   const { isMobile } = useBreakpoints();
@@ -357,7 +362,7 @@ export function SlideModal({
         headerContent={headerContent}
         contentPadding={contentPadding}
         footerContent={footerContent}
-        className={className}
+        className={cx(className, desktopClassName)}
         contentClassName={desktopContentClassName}
         disableOverflowHandling={disableOverflowHandling}
       >
