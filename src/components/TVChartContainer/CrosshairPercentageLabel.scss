@@ -13,12 +13,16 @@
   pointer-events: none;
   z-index: 10;
   white-space: nowrap;
-  background: var(--color-slate-600);
-  color: var(--color-gray-50);
+  background: #363a45;
+  color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
+
+  :global(.theme-light) & {
+    background: #131722;
+  }
 }
 
 .CrosshairPercentageLabel-price {

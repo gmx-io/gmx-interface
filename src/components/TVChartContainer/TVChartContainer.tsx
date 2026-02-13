@@ -9,6 +9,7 @@ import { RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingv
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTheme } from "context/ThemeContext/ThemeContext";
@@ -35,6 +36,7 @@ import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFea
 import { CrosshairPercentageLabel } from "./CrosshairPercentageLabel";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
+import { stackOverlappingChartLines } from "./stackOverlappingChartLines";
 import { StaticLines } from "./StaticLines";
 import type { StaticChartLine } from "./types";
 import { useChartContextMenu } from "./useChartContextMenu";
@@ -96,6 +98,7 @@ export default function TVChartContainer({
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
   const { chartToken: selectedChartToken } = useSelector(selectChartToken);
+  const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { account } = useWallet();
   const marksStateRef = useLatest({
     positionIncreaseEvents,
@@ -350,6 +353,86 @@ export default function TVChartContainer({
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
+
+  const [pricePerPixel, setPricePerPixel] = useState<number>(0);
+  const [plotWidthPx, setPlotWidthPx] = useState<number>(0);
+
+  useEffect(() => {
+    if (!chartReady || !tvWidgetRef.current) return;
+
+    let chart;
+    try {
+      chart = tvWidgetRef.current.activeChart();
+    } catch {
+      return;
+    }
+
+    const update = () => {
+      const pane = chart.getPanes()?.[0];
+      if (!pane) return;
+
+      const priceScale = pane.getMainSourcePriceScale();
+      if (!priceScale) return;
+
+      const range = priceScale.getVisiblePriceRange();
+      if (!range) return;
+
+      const height = pane.getHeight();
+      if (height <= 0) return;
+
+      setPricePerPixel((range.to - range.from) / height);
+
+      const container = chartContainerRef.current;
+      const iframe = container?.querySelector("iframe");
+      if (!container || !iframe?.contentDocument) return;
+
+      const priceAxes = Array.from(iframe.contentDocument.querySelectorAll(".price-axis"));
+      if (priceAxes.length === 0) return;
+
+      let rightmostPriceAxisRect: DOMRect | null = null;
+      for (const el of priceAxes) {
+        const rect = el.getBoundingClientRect();
+        if (rightmostPriceAxisRect === null || rect.left > rightmostPriceAxisRect.left) {
+          rightmostPriceAxisRect = rect;
+        }
+      }
+
+      if (!rightmostPriceAxisRect) return;
+
+      const containerRect = container.getBoundingClientRect();
+      const iframeRect = iframe.getBoundingClientRect();
+      const axisLeftInContainer = iframeRect.left - containerRect.left + rightmostPriceAxisRect.left;
+
+      if (Number.isFinite(axisLeftInContainer) && axisLeftInContainer > 0) {
+        setPlotWidthPx(axisLeftInContainer);
+      }
+    };
+
+    update();
+    chart.onVisibleRangeChanged().subscribe(null, update);
+    const resizeObserver =
+      chartContainerRef.current && typeof ResizeObserver !== "undefined" ? new ResizeObserver(update) : null;
+    if (resizeObserver && chartContainerRef.current) {
+      resizeObserver.observe(chartContainerRef.current);
+    }
+
+    return () => {
+      chart.onVisibleRangeChanged().unsubscribe(null, update);
+      resizeObserver?.disconnect();
+    };
+  }, [chartReady]);
+
+  const { staticLines: stackedStaticLines, dynamicLines: stackedDynamicLines } = useMemo(
+    () =>
+      stackOverlappingChartLines({
+        staticLines: chartLines,
+        dynamicLines: dynamicChartLines,
+        pricePerPixel,
+        isMobile,
+        plotWidthPx,
+      }),
+    [chartLines, dynamicChartLines, isMobile, plotWidthPx, pricePerPixel]
+  );
 
   const { menuState, closeMenu, handlePlusClick, getContextMenuItems } = useChartContextMenu(
     visualMultiplier,
@@ -621,8 +704,8 @@ export default function TVChartContainer({
       </div>
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
         <>
-          <StaticLines tvWidgetRef={tvWidgetRef} chartLines={chartLines} />
-          <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} />
+          <StaticLines tvWidgetRef={tvWidgetRef} chartLines={stackedStaticLines} />
+          <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} lines={stackedDynamicLines} />
         </>
       )}
       <ChartContextMenu menuState={menuState} onClose={closeMenu} />

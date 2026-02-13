@@ -35,12 +35,20 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
         convertTokenAddress(chainId, chartTokenAddress, "wrapped")
   );
 
+  const poolsCount = new Set(filteredPositions.map((p) => p.poolName).filter(Boolean)).size;
+  const collateralsCount = new Set(filteredPositions.map((p) => p.collateralToken?.symbol).filter(Boolean)).size;
+
   const positionLines = filteredPositions.flatMap((position) => {
     const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
     const longOrShortText = position.isLong ? t`Long` : t`Short`;
     const token = q((state) => getTokenData(selectTokensData(state), position.marketInfo?.indexTokenAddress, "native"));
     const marketIndexName = getMarketIndexName(position.marketInfo!) ?? "";
     const tokenVisualMultiplier = token?.visualMultiplier;
+    const extraLabelParts = [
+      collateralsCount > 1 ? position.collateralToken?.symbol : undefined,
+      poolsCount > 1 ? position.poolName : undefined,
+    ].filter(Boolean);
+    const extraLabel = extraLabelParts.length ? ` (${extraLabelParts.join(", ")})` : "";
 
     const liquidationPrice = formatAmount(
       position?.liquidationPrice,
@@ -53,7 +61,8 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
 
     const lines: StaticChartLine[] = [
       {
-        title: t`Open ${longOrShortText} ${marketIndexName}`,
+        id: `${position.key}-entry`,
+        title: t`Open ${longOrShortText} ${marketIndexName}${extraLabel}`,
         price: parseFloat(
           formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
         ),
@@ -71,7 +80,8 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
 
     if (liquidationPrice && liquidationPrice !== "NA") {
       lines.push({
-        title: t`Liq. ${longOrShortText} ${marketIndexName}`,
+        id: `${position.key}-liquidation`,
+        title: t`Liq. ${longOrShortText} ${marketIndexName}${extraLabel}`,
         price: parseFloat(liquidationPrice),
         lineType: "liquidation",
       });

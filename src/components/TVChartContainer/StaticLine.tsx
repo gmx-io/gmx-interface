@@ -16,8 +16,10 @@ export function StaticLine({
   positionData,
   lineType,
   tvWidgetRef,
+  lineLength = -40,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
+  lineLength?: number;
 } & StaticChartLine) {
   const { theme } = useTheme();
   const lineApi = useRef<IPositionLineAdapter | undefined>(undefined);
@@ -38,6 +40,16 @@ export function StaticLine({
       ? colors.red[500][theme]
       : NEUTRAL_COLOR;
 
+  const lineBorderColor = isPositionEntry
+    ? isProfit
+      ? colors.green[800][theme]
+      : isLoss
+        ? colors.red[700][theme]
+        : colors.slate[600].dark
+    : isLiquidation
+      ? colors.red[700][theme]
+      : colors.slate[600].dark;
+
   const getDisplayText = (sizeInUsd: boolean) => {
     if (!positionData) return title;
 
@@ -51,6 +63,7 @@ export function StaticLine({
 
   const showSizeInUsdRef = useLatest(showSizeInUsd);
   const getDisplayTextRef = useLatest(getDisplayText);
+  const lineLengthRef = useLatest(lineLength);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -77,12 +90,12 @@ export function StaticLine({
         .setText(displayText)
         .setPrice(price)
         .setLineStyle(LineStyle.Dashed)
-        .setLineLength(-40, "pixel")
+        .setLineLength(lineLengthRef.current, "pixel")
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
         .setBodyTextColor("#fff")
         .setLineColor(lineColor)
         .setBodyBackgroundColor(lineColor)
-        .setBodyBorderColor(lineColor);
+        .setBodyBorderColor(lineBorderColor);
 
       if (isPositionEntry) {
         positionLine
@@ -124,7 +137,23 @@ export function StaticLine({
       lineApi.current?.remove();
       lineApi.current = undefined;
     };
-  }, [price, title, tvWidgetRef, lineColor, isPositionEntry, getDisplayTextRef, showSizeInUsdRef]);
+  }, [
+    price,
+    title,
+    tvWidgetRef,
+    lineColor,
+    lineBorderColor,
+    isPositionEntry,
+    getDisplayTextRef,
+    showSizeInUsdRef,
+    lineLengthRef,
+  ]);
+
+  useEffect(() => {
+    if (!lineApi.current) return;
+
+    lineApi.current.setLineLength(lineLength, "pixel");
+  }, [lineLength]);
 
   const displayText = getDisplayText(showSizeInUsd);
 
@@ -134,9 +163,9 @@ export function StaticLine({
     lineApi.current.setText(displayText);
     lineApi.current.setLineColor(lineColor);
     lineApi.current.setBodyBackgroundColor(lineColor);
-    lineApi.current.setBodyBorderColor(lineColor);
+    lineApi.current.setBodyBorderColor(lineBorderColor);
     lineApi.current.setQuantityBorderColor(lineColor);
-  }, [displayText, lineColor, isPositionEntry]);
+  }, [displayText, lineBorderColor, lineColor, isPositionEntry]);
 
   return null;
 }

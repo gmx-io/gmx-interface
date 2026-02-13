@@ -48,6 +48,7 @@ export function DynamicLine({
   const latestOnEdit = useLatest(onEdit);
   const latestOnCancel = useLatest(onCancel);
   const latestPrice = useLatest(price);
+  const lineLengthRef = useLatest(lineLength);
   const prevIsPending = usePrevious(isPending);
   const prevIsEdited = usePrevious(isEdited);
 
@@ -59,6 +60,11 @@ export function DynamicLine({
       : isLong
         ? colors.green[500][theme]
         : colors.red[500][theme];
+
+  const orderLineBorderColor =
+    orderType !== OrderType.LimitDecrease && orderType !== OrderType.StopLossDecrease && isLong
+      ? colors.green[800][theme]
+      : colors.red[700][theme];
 
   const title = useMemo(() => {
     const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
@@ -101,7 +107,7 @@ export function DynamicLine({
         .setBodyFont(`normal 12pt "Relative", sans-serif`)
         .setBodyTextColor("#fff")
         .setBodyBackgroundColor(orderLineColor)
-        .setBodyBorderColor(orderLineColor)
+        .setBodyBorderColor(orderLineBorderColor)
 
         .setQuantityBackgroundColor(BUTTON_BACKGROUND_COLOR)
         .setQuantityFont(`normal 16pt "Relative", sans-serif`)
@@ -113,7 +119,7 @@ export function DynamicLine({
 
       if (!isMobile) {
         lineApi.current
-          .setLineLength(lineLength, "pixel")
+          .setLineLength(lineLengthRef.current, "pixel")
           .onMoving(() => {
             const error = getError(id, lineApi.current!.getPrice());
             setError(error);
@@ -134,7 +140,7 @@ export function DynamicLine({
               );
               lineApi.current!.setPrice(latestPrice.current);
               lineApi.current!.setBodyBackgroundColor(orderLineColor);
-              lineApi.current!.setBodyBorderColor(orderLineColor);
+              lineApi.current!.setBodyBorderColor(orderLineBorderColor);
               lineApi.current!.setText(title);
               return;
             }
@@ -176,13 +182,22 @@ export function DynamicLine({
     latestOnCancel,
     latestOnEdit,
     latestPrice,
-    lineLength,
+    lineLengthRef,
     orderType,
     orderLineColor,
+    orderLineBorderColor,
     price,
     title,
     tvWidgetRef,
   ]);
+
+  useEffect(() => {
+    if (!lineApi.current || isMobile) {
+      return;
+    }
+
+    lineApi.current.setLineLength(lineLength, "pixel");
+  }, [isMobile, lineLength]);
 
   useEffect(() => {
     if (!lineApi.current || lineApi.current.getPrice() === price) {
@@ -201,11 +216,11 @@ export function DynamicLine({
       if (prevIsEdited && !isEdited && !(isPending || prevIsPending)) {
         lineApi.current.setPrice(price);
         lineApi.current?.setBodyBackgroundColor(orderLineColor);
-        lineApi.current?.setBodyBorderColor(orderLineColor);
+        lineApi.current?.setBodyBorderColor(orderLineBorderColor);
         lineApi.current?.setText(title);
       }
     },
-    [isEdited, isPending, orderLineColor, prevIsEdited, prevIsPending, price, title]
+    [isEdited, isPending, orderLineBorderColor, orderLineColor, prevIsEdited, prevIsPending, price, title]
   );
 
   useEffect(
@@ -227,12 +242,12 @@ export function DynamicLine({
           lineApi.current?.setQuantity("\u270E");
           lineApi.current?.setPrice(latestPrice.current);
           lineApi.current?.setBodyBackgroundColor(orderLineColor);
-          lineApi.current?.setBodyBorderColor(orderLineColor);
+          lineApi.current?.setBodyBorderColor(orderLineBorderColor);
           lineApi.current?.setText(title);
         }, FREQUENT_UPDATE_INTERVAL);
       }
     },
-    [isPending, latestPrice, orderLineColor, prevIsPending, title]
+    [isPending, latestPrice, orderLineBorderColor, orderLineColor, prevIsPending, title]
   );
 
   useEffect(() => {
@@ -242,10 +257,10 @@ export function DynamicLine({
       lineApi.current?.setText(error);
     } else {
       lineApi.current?.setBodyBackgroundColor(orderLineColor);
-      lineApi.current?.setBodyBorderColor(orderLineColor);
+      lineApi.current?.setBodyBorderColor(orderLineBorderColor);
       lineApi.current?.setText(title);
     }
-  }, [error, orderLineColor, title]);
+  }, [error, orderLineBorderColor, orderLineColor, title]);
 
   return null;
 }

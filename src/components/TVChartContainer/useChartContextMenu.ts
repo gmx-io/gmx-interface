@@ -44,27 +44,19 @@ function buildMenuItems(p: {
   const isAboveMarkPrice = p.clickPrice > p.markPrice;
   const items: ContextMenuItem[] = [];
 
-  if (isAboveMarkPrice) {
-    if (p.isLong) {
+  if (p.isLong) {
+    if (isAboveMarkPrice) {
       items.push({
         position: "top",
         text: t`Set Long Take Profit @ ${p.formattedPrice}`,
         click: () => p.onAction("takeProfit", direction, p.clickPrice),
       });
-    } else {
       items.push({
         position: "top",
-        text: t`Set Short Stop Loss @ ${p.formattedPrice}`,
-        click: () => p.onAction("stopLoss", direction, p.clickPrice),
-      });
-      items.push({
-        position: "top",
-        text: t`Set Short Stop Market @ ${p.formattedPrice}`,
+        text: t`Set Long Stop Market @ ${p.formattedPrice}`,
         click: () => p.onAction("stopMarket", direction, p.clickPrice),
       });
-    }
-  } else {
-    if (p.isLong) {
+    } else {
       items.push({
         position: "top",
         text: t`Set Long Stop Loss @ ${p.formattedPrice}`,
@@ -75,11 +67,29 @@ function buildMenuItems(p: {
         text: t`Set Long Limit @ ${p.formattedPrice}`,
         click: () => p.onAction("limit", direction, p.clickPrice),
       });
+    }
+  } else {
+    if (isAboveMarkPrice) {
+      items.push({
+        position: "top",
+        text: t`Set Short Stop Loss @ ${p.formattedPrice}`,
+        click: () => p.onAction("stopLoss", direction, p.clickPrice),
+      });
+      items.push({
+        position: "top",
+        text: t`Set Short Limit @ ${p.formattedPrice}`,
+        click: () => p.onAction("limit", direction, p.clickPrice),
+      });
     } else {
       items.push({
         position: "top",
         text: t`Set Short Take Profit @ ${p.formattedPrice}`,
         click: () => p.onAction("takeProfit", direction, p.clickPrice),
+      });
+      items.push({
+        position: "top",
+        text: t`Set Short Stop Market @ ${p.formattedPrice}`,
+        click: () => p.onAction("stopMarket", direction, p.clickPrice),
       });
     }
   }
@@ -163,24 +173,48 @@ export function useChartContextMenu(
         return;
       }
 
-      if (!markPrice || (tradeType !== TradeType.Long && tradeType !== TradeType.Short)) {
+      if (markPrice === undefined) {
         return;
       }
-
-      const isLong = tradeType === TradeType.Long;
 
       const iframe = chartContainerRef.current?.querySelector("iframe");
       const iframeRect = iframe?.getBoundingClientRect();
       const iframeOffsetX = iframeRect?.left ?? 0;
       const iframeOffsetY = iframeRect?.top ?? 0;
 
-      const items = buildMenuItems({
-        clickPrice: params.price,
-        markPrice,
-        isLong,
-        formattedPrice: formatClickPrice(params.price),
-        onAction: handleOrderAction,
-      });
+      const formattedPrice = formatClickPrice(params.price);
+
+      const items =
+        tradeType === TradeType.Long || tradeType === TradeType.Short
+          ? buildMenuItems({
+              clickPrice: params.price,
+              markPrice,
+              isLong: tradeType === TradeType.Long,
+              formattedPrice,
+              onAction: handleOrderAction,
+            })
+          : tradeType === TradeType.Swap
+            ? [
+                ...buildMenuItems({
+                  clickPrice: params.price,
+                  markPrice,
+                  isLong: true,
+                  formattedPrice,
+                  onAction: handleOrderAction,
+                }),
+                ...buildMenuItems({
+                  clickPrice: params.price,
+                  markPrice,
+                  isLong: false,
+                  formattedPrice,
+                  onAction: handleOrderAction,
+                }),
+              ]
+            : [];
+
+      if (items.length === 0) {
+        return;
+      }
 
       setMenuState({
         isOpen: true,
@@ -194,17 +228,42 @@ export function useChartContextMenu(
 
   const getContextMenuItems = useCallback(
     (clickPrice: number): ContextMenuItem[] => {
-      if (!markPrice || (tradeType !== TradeType.Long && tradeType !== TradeType.Short)) {
+      if (markPrice === undefined) {
         return [];
       }
 
-      return buildMenuItems({
-        clickPrice,
-        markPrice,
-        isLong: tradeType === TradeType.Long,
-        formattedPrice: formatClickPrice(clickPrice),
-        onAction: handleOrderAction,
-      });
+      const formattedPrice = formatClickPrice(clickPrice);
+
+      if (tradeType === TradeType.Long || tradeType === TradeType.Short) {
+        return buildMenuItems({
+          clickPrice,
+          markPrice,
+          isLong: tradeType === TradeType.Long,
+          formattedPrice,
+          onAction: handleOrderAction,
+        });
+      }
+
+      if (tradeType === TradeType.Swap) {
+        return [
+          ...buildMenuItems({
+            clickPrice,
+            markPrice,
+            isLong: true,
+            formattedPrice,
+            onAction: handleOrderAction,
+          }),
+          ...buildMenuItems({
+            clickPrice,
+            markPrice,
+            isLong: false,
+            formattedPrice,
+            onAction: handleOrderAction,
+          }),
+        ];
+      }
+
+      return [];
     },
     [markPrice, tradeType, formatClickPrice, handleOrderAction]
   );

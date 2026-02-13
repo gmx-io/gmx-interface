@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
@@ -8,7 +8,6 @@ import {
   useEditingOrderState,
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
@@ -37,28 +36,18 @@ import { getOrderKeys } from "sdk/utils/orders";
 import { PositionOrderInfo } from "sdk/utils/orders/types";
 
 import { DynamicLine } from "./DynamicLine";
+import type { DynamicChartLine } from "./types";
 import type { IChartingLibraryWidget } from "../../charting_library";
-
-const BASE_ORDER_LINE_LENGTH = -40;
-/**
- * Horizontal offset in pixels between stacked order lines at the same price level.
- * Chosen to accommodate the full width of an order line label (~180px) plus padding.
- */
-const ORDER_SPACING_PX = 190;
-/**
- * Approximate height of an order line label in pixels.
- * If two orders are closer than this on the Y axis, their labels will visually overlap.
- */
-const OVERLAP_THRESHOLD_PX = 30;
 
 export function DynamicLines({
   tvWidgetRef,
   isMobile,
+  lines,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
   isMobile: boolean;
+  lines: Array<DynamicChartLine & { lineLength: number }>;
 }) {
-  const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -189,74 +178,7 @@ export function DynamicLines({
     [chainId, marketsData, ordersInfoData, setEditingOrderState, setTriggerPriceInputValue]
   );
 
-  const [pricePerPixel, setPricePerPixel] = useState<number>(0);
-
-  useEffect(() => {
-    const chart = tvWidgetRef.current?.activeChart();
-    if (!chart) return;
-
-    const update = () => {
-      const pane = chart.getPanes()?.[0];
-      if (!pane) return;
-
-      const priceScale = pane.getMainSourcePriceScale();
-      if (!priceScale) return;
-
-      const range = priceScale.getVisiblePriceRange();
-      if (!range) return;
-
-      const height = pane.getHeight();
-      if (height <= 0) return;
-
-      setPricePerPixel((range.to - range.from) / height);
-    };
-
-    update();
-    chart.onVisibleRangeChanged().subscribe(null, update);
-
-    return () => {
-      chart.onVisibleRangeChanged().unsubscribe(null, update);
-    };
-  }, [tvWidgetRef]);
-
-  const linesWithStackedOffsets = useMemo(() => {
-    if (dynamicChartLines.length === 0) {
-      return [];
-    }
-
-    const sortedLines = [...dynamicChartLines].sort((a, b) => {
-      if (a.price !== b.price) {
-        return a.price - b.price;
-      }
-      return Number(b.updatedAtTime - a.updatedAtTime);
-    });
-
-    const proximityThreshold = pricePerPixel > 0 ? OVERLAP_THRESHOLD_PX * pricePerPixel : 0;
-
-    let groupIndex = 0;
-
-    return sortedLines.map((line, i) => {
-      if (i === 0) {
-        groupIndex = 0;
-      } else {
-        const prevPrice = sortedLines[i - 1].price;
-        const priceDiff = Math.abs(line.price - prevPrice);
-
-        if (priceDiff === 0 || (proximityThreshold > 0 && priceDiff < proximityThreshold)) {
-          groupIndex++;
-        } else {
-          groupIndex = 0;
-        }
-      }
-
-      return {
-        ...line,
-        lineLength: BASE_ORDER_LINE_LENGTH - groupIndex * ORDER_SPACING_PX,
-      };
-    });
-  }, [dynamicChartLines, pricePerPixel]);
-
-  return linesWithStackedOffsets.map(({ updatedAtTime: _, ...line }) => (
+  return lines.map(({ updatedAtTime: _, ...line }) => (
     <DynamicLine
       {...line}
       key={line.id}
