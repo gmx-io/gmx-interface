@@ -17,7 +17,7 @@ type Props = {
 export function AddressDropdown({ account }: Props) {
   const { chainId } = useChainId();
 
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const hasRelatedSourceChains = useMemo(

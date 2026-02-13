@@ -7,7 +7,6 @@ import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlat
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
-import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
@@ -22,7 +21,7 @@ import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
 
 export default function EarnPortfolioPage() {
-  const { account } = useWallet();
+  const { account, status } = useWallet();
   const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
 
   const { chainId, srcChainId } = useChainId();
@@ -30,23 +29,15 @@ export default function EarnPortfolioPage() {
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
-  const { marketsTokensApyData: marketsTotalApyData, glvApyInfoData: glvTotalApyData } = useGmMarketsApy(
+  const { performance: performanceTotal } = usePerformanceAnnualized({
     chainId,
-    srcChainId,
-    { period: "total" }
-  );
+    period: "total",
+  });
 
-  const { marketsTokensApyData: markets30dApyData, glvApyInfoData: glv30dApyData } = useGmMarketsApy(
+  const { performance: performance30d } = usePerformanceAnnualized({
     chainId,
-    srcChainId,
-    { period: "30d" }
-  );
-
-  const { marketsTokensApyData: markets90dApyData, glvApyInfoData: glv90dApyData } = useGmMarketsApy(
-    chainId,
-    srcChainId,
-    { period: "90d" }
-  );
+    period: "30d",
+  });
 
   const { performance: performance90d } = usePerformanceAnnualized({
     chainId,
@@ -84,10 +75,14 @@ export default function EarnPortfolioPage() {
 
   const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets;
 
+  const isWalletInitializing = status === "connecting" || status === "reconnecting";
+
   return (
     <EarnPageLayout>
-      {processedData && <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />}
-      {processedData ? (
+      {processedData && !isWalletInitializing && (
+        <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
+      )}
+      {processedData && !isWalletInitializing ? (
         <>
           {hasAnyAssets && (
             <ErrorBoundary id="EarnPortfolio-AssetsList" variant="block" wrapperClassName="rounded-t-8">
@@ -98,22 +93,18 @@ export default function EarnPortfolioPage() {
                 hasGmx={hasGmxAssets}
                 hasEsGmx={hasEsGmxAssets}
                 gmGlvAssets={gmGlvAssets}
-                glvTotalApyData={glvTotalApyData}
-                marketsTotalApyData={marketsTotalApyData}
-                glv30dApyData={glv30dApyData}
-                markets30dApyData={markets30dApyData}
+                performanceTotal={performanceTotal}
+                performance30d={performance30d}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
               />
             </ErrorBoundary>
           )}
-          {glv90dApyData && markets90dApyData && performance90d && marketTokensData && (
+          {performance90d && marketTokensData && marketsInfoData && (
             <ErrorBoundary id="EarnPortfolio-RecommendedAssets" variant="block" wrapperClassName="rounded-t-8">
               <RecommendedAssets
                 hasGmxAssets={hasGmxAssets}
                 marketsInfoData={marketsInfoData}
                 marketTokensData={marketTokensData}
-                marketsApyInfo={markets90dApyData}
-                glvsApyInfo={glv90dApyData}
                 performance={performance90d}
               />
             </ErrorBoundary>
@@ -127,10 +118,8 @@ export default function EarnPortfolioPage() {
                 hasGmx={hasGmxAssets}
                 hasEsGmx={hasEsGmxAssets}
                 gmGlvAssets={gmGlvAssets}
-                glvTotalApyData={glvTotalApyData}
-                marketsTotalApyData={marketsTotalApyData}
-                glv30dApyData={glv30dApyData}
-                markets30dApyData={markets30dApyData}
+                performanceTotal={performanceTotal}
+                performance30d={performance30d}
                 multichainMarketTokensBalances={multichainMarketTokensBalances}
               />
             </ErrorBoundary>

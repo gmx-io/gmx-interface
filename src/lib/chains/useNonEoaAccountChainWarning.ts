@@ -23,7 +23,7 @@ const toastGetSnapshot = () => toast.isActive(NON_EOA_ACCOUNT_CHAIN_WARNING_TOAS
 
 export function useNonEoaAccountChainWarning() {
   const { srcChainId } = useChainId();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 

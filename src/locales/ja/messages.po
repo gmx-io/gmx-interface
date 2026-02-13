@@ -876,6 +876,10 @@ msgstr "このネットワークに中央集権取引所が利用できません
 msgid "Invalid slippage value"
 msgstr "無効なスリッページ値"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+msgid "Approve GMX to be spent"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "5%のキャッシュバックを獲得し、コミュニティに取引ごとに5%オフを提供しましょう。より高いリファラルティアでさらに多くのメリットが解除されます。<0>詳細はこちら</0>。"
@@ -1011,10 +1015,6 @@ msgstr "時価総額"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used."
 msgstr "使用された平均レバレッジ。"
-
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Rewards"
-msgstr "GMX報酬"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX for Liquidity Providers. For security reasons, we won't contact you first. Please send the message \"I’m a Liquidity Provider\" to our official telegram account:"
@@ -1181,8 +1181,9 @@ msgstr "1inch"
 msgid "Copied"
 msgstr "コピー済"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr "GMXアカウントに入金"
 
@@ -1586,10 +1587,6 @@ msgstr "ネット価値"
 msgid "Withdrawn {balanceFormatted} to main account."
 msgstr "{balanceFormatted} をメインアカウントに引き出しました。"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "GMX Token"
-msgstr "GMXトークン"
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -1663,7 +1660,8 @@ msgstr "組み合わせストップロスが最大(100%)です。既存値を減
 msgid "4-18 Places"
 msgstr "4-18位"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Your deposit is in progress"
 msgstr "入金処理中です"
 
@@ -1684,7 +1682,8 @@ msgstr "このトークンは{marketName}市場のレバレッジ取引とスワ
 msgid "Withdrew {0} from {positionText}"
 msgstr "{positionText}から{0}を出金"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Select Asset to Deposit"
 msgstr "入金する資産を選択"
 
@@ -1938,7 +1937,6 @@ msgstr "最大"
 msgid "Checking code..."
 msgstr "コードを確認中…"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -2035,6 +2033,7 @@ msgstr "市場 - ショート増加"
 msgid "Deposit in progress"
 msgstr "入金処理中"
 
+#: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -2087,6 +2086,10 @@ msgstr "{positionText}に{0}を入金"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "30d Performance APY"
 msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
@@ -2237,7 +2240,6 @@ msgstr "スワップ"
 msgid "Creating order..."
 msgstr "注文を作成中…"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -2795,6 +2797,10 @@ msgstr "デバッグ値を表示"
 msgid "Annualized data based on the past 7 days."
 msgstr "過去7日間の年換算データ。"
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "このサイズのショート増加のための流動性がありません。<0/>最大ショートサイズ: {0}<1/><2/>ロング減少のための実行価格。"
@@ -2939,6 +2945,10 @@ msgstr "セッション生成中..."
 msgid "How do I get started on GMX?"
 msgstr "GMXを始めるにはどうしたらいいですか？"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "coming soon"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
@@ -2953,10 +2963,6 @@ msgstr "引き出し失敗"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total Staked"
 msgstr "ステーク総額"
-
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Learn how the GMX, GLV, and GM tokens work together to power a decentralized trading experience. Explore the role of each token, and discover how you can stake or provide liquidity to earn rewards — just like tens of thousands of other GMX users."
-msgstr "GMX、GLV、GMトークンがどのように連携して分散型取引体験を実現しているかをご覧ください。各トークンの役割を探り、数万人の他のGMXユーザーと同様に、ステーキングや流動性提供で報酬を得る方法を発見しましょう。"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -3056,7 +3062,7 @@ msgstr "高いネット価格インパクト"
 msgid "Lev."
 msgstr "レバレッジ"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to Trade Assets"
 msgstr "取引可能な資産"
 
@@ -4084,10 +4090,6 @@ msgstr "{typeString} ロングリミット: 価格がトリガー価格を下回
 msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
 msgstr "担保に{0}が必要です。<0/><1/>GMX内で{1}から{2}へのスワップパスが見つかりません。<2/><3/><4>1inchで{3}を購入できます。</4>"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "Total Fee APY"
-msgstr "総手数料APY"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} Bridging to"
 msgstr "{gmOrGlvLabel} ブリッジ中"
@@ -4221,10 +4223,6 @@ msgstr "ストップマーケット失敗"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Address copied to your clipboard"
 msgstr "アドレスがクリップボードにコピーされました"
-
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
-msgid "Documentation"
-msgstr "ドキュメント"
 
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -4422,15 +4420,10 @@ msgstr "繰り返しのウォレット確認不要"
 msgid "Shorts Net Rate / 1h"
 msgstr "1時間あたりのショートネットレート"
 
-#: src/pages/Earn/EarnDiscoveryPage.tsx
-msgid "Discover GMX Earn"
-msgstr "GMX Earnを発見"
-
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText}を入金"
 
-#: src/components/Earn/Discovery/EarnDocumentation.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4692,6 +4685,10 @@ msgstr "{ordersText}のキャンセルに失敗しました。"
 msgid "Vesting"
 msgstr "ベスティング"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "サポート"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "新規作成注文をキャンセル"
@@ -4809,6 +4806,10 @@ msgstr "イールドファーミング"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "承認中..."
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -5386,7 +5387,7 @@ msgstr "市場減少"
 msgid "Updating {orderText}..."
 msgstr "{orderText}を更新中…"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Withdrawal from GMX Account"
 msgstr "GMXアカウントからの引き出し"
 
@@ -5513,6 +5514,10 @@ msgstr "ここに回答を入力してください。"
 msgid "Max amount exceeded"
 msgstr "最大値超過"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "GLV Vaults:"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "転送を完了するには接続アカウントを{receiver}に切り替える必要があります。"
@@ -5547,7 +5552,8 @@ msgstr "送信元ネットワーク"
 msgid "My assets"
 msgstr "私の資産"
 
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 msgid "Withdraw from GMX Account"
 msgstr "GMXアカウントから引き出し"
 
@@ -5772,7 +5778,6 @@ msgstr "パーペチュアルアグリゲーター"
 msgid "{formattedNetRate} / 1h"
 msgstr "{formattedNetRate} / 1 時間"
 
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5907,6 +5912,10 @@ msgstr "<0><1>#GMX V2</1>のOIは素晴らしい</0><2>GMX V2 > GMX V1 + Kwenta 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We want your insights to help improve GMX. For security reasons, we won't contact you first. Please send the message \"I have feedback\" to any of our official accounts:"
 msgstr "GMXの改善にあなたの洞察をお願いします。セキュリティのため、最初に連絡しません。公式アカウントのいずれかに\"I have feedback\"のメッセージを送ってください:"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+msgid "Total Performance APY"
+msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience may vary slightly.<0/><1/>Clicking on the button below will open GMTrade in a new tab."
@@ -6146,6 +6155,10 @@ msgstr "実現スワップインパクト"
 msgid "1st Place"
 msgstr "1位"
 
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+msgid "Performance APY"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
 msgstr "D2.Finance"
@@ -6199,6 +6212,10 @@ msgstr "{symbol} をシフト中..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "トリガー価格がマーク価格を上回る"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "新着"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
@@ -7051,7 +7068,7 @@ msgstr "請求を確認"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "GMX Account Balance"
@@ -7240,6 +7257,7 @@ msgid "{0}<0>You will earn {1}% less rewards with this action.</0>"
 msgstr "{0}<0>このアクションで{1}%少ない報酬を獲得します。</0>"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirming..."
 msgstr "確認中..."
 
@@ -7277,6 +7295,10 @@ msgstr "ステーク済"
 msgid "Traders"
 msgstr "トレーダー"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+msgid "Withdraw and Unreserve GMX"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "take profit"
 msgstr "テイクプロフィット"
@@ -7309,7 +7331,8 @@ msgstr "分散型または集中型取引所から購入を選択。"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
-#: src/components/GmxAccountModal/GmxAccountModal.tsx
+#: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
+#: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -7377,7 +7400,6 @@ msgstr ""
 msgid "Referral Terms"
 msgstr "紹介規約"
 
-#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "手数料APY"
@@ -7530,6 +7552,7 @@ msgstr "1CT (ワンクリック取引)を有効化"
 msgid "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read more</0>."
 msgstr "ボーナスAPRは{airdropTokenTitle}トークンとしてエアドロップされます。<0>詳細を読む</0>。"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -7771,10 +7794,6 @@ msgstr "<0>請求前に未委任の{0} GMX DAO</0>投票権を委任。"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claim funds"
 msgstr "資金を請求"
-
-#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-msgid "30d Fee APY"
-msgstr "30日手数料APY"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net Price Impact / Fees"
