@@ -32,8 +32,8 @@ export const appEventsData: EventData[] = [
   {
     id: "cc-met-arbitrum-listing",
     isActive: true,
-    startDate: "13 Feb 2026, 12:00",
-    endDate: "20 Feb 2026, 12:00",
+    startDate: "13 Feb 2026, 12:30",
+    endDate: "20 Feb 2026, 12:30",
     title: "CC (Canton) and MET (Meteora) markets added on Arbitrum",
     bodyText: (
       <>
