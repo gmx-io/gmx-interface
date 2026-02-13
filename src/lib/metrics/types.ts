@@ -164,6 +164,8 @@ export enum FreshnessMetricId {
   MarketsValues = "marketsValues",
   MarketsConfigs = "marketsConfigs",
   ApiMarketsInfo = "apiMarketsInfo",
+  ApiPositionsInfo = "apiPositionsInfo",
+  ApiOrders = "apiOrders",
   Positions = "positions",
   Orders = "orders",
   Balances = "balances",
