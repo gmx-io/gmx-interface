@@ -7574,6 +7574,10 @@ msgstr "文字、数字、アンダースコアのみ許可されます。"
 msgid "High TWAP network fee"
 msgstr "高いTWAPネットワーク手数料"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the TP/SL button to set TP/SL orders."
+msgstr ""
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close Long"
 msgstr ""

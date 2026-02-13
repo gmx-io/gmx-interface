@@ -7574,6 +7574,10 @@ msgstr "문자, 숫자 및 언더스코어만 허용됩니다."
 msgid "High TWAP network fee"
 msgstr "높은 TWAP 네트워크 수수료"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the TP/SL button to set TP/SL orders."
+msgstr ""
+
 #: src/components/TVChartContainer/TVChartContainer.tsx
 msgid "Close Long"
 msgstr ""

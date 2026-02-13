@@ -39,6 +39,7 @@ import { SaveLoadAdapter } from "./SaveLoadAdapter";
 import { stackOverlappingChartLines } from "./stackOverlappingChartLines";
 import { StaticLines } from "./StaticLines";
 import type { StaticChartLine } from "./types";
+import type { OpenChartTPSLModalParams } from "./useChartContextMenu";
 import { useChartContextMenu } from "./useChartContextMenu";
 import { useCrosshairPercentage } from "./useCrosshairPercentage";
 import type {
@@ -68,6 +69,7 @@ type Props = {
   supportedResolutions: typeof SUPPORTED_RESOLUTIONS_V2;
   visualMultiplier?: number;
   setIsCandlesLoaded?: (isCandlesLoaded: boolean) => void;
+  onOpenTPSLModal?: (params: OpenChartTPSLModalParams) => void;
 };
 
 export default function TVChartContainer({
@@ -79,6 +81,7 @@ export default function TVChartContainer({
   supportedResolutions,
   visualMultiplier,
   setIsCandlesLoaded,
+  onOpenTPSLModal,
 }: Props) {
   const { shouldShowPositionLines } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -436,7 +439,8 @@ export default function TVChartContainer({
 
   const { menuState, closeMenu, handlePlusClick, getContextMenuItems } = useChartContextMenu(
     visualMultiplier,
-    chartContainerRef
+    chartContainerRef,
+    { onOpenTPSLModal }
   );
 
   const crosshairPercentageState = useCrosshairPercentage(tvWidgetRef, chartContainerRef, chartReady, visualMultiplier);

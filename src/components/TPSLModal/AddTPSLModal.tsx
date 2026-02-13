@@ -97,9 +97,19 @@ type Props = {
   position: PositionInfo;
   onSuccess?: () => void;
   onBack?: () => void;
+  initialTpPriceInput?: string;
+  initialSlPriceInput?: string;
 };
 
-export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onBack }: Props) {
+export function AddTPSLModal({
+  isVisible,
+  setIsVisible,
+  position,
+  onSuccess,
+  onBack,
+  initialTpPriceInput,
+  initialSlPriceInput,
+}: Props) {
   const [tpPriceInput, setTpPriceInput] = useState("");
   const [slPriceInput, setSlPriceInput] = useState("");
   const [keepLeverage, setKeepLeverage] = useState(true);
@@ -712,7 +722,17 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       return t`Unable to calculate order`;
     }
     return undefined;
-  }, [tpPriceInput, slPriceInput, tpPriceError, slPriceError, orderPayloads.length, editTPSLSize, closeSizeInput, closeSizeUsd, formattedMaxCloseSize]);
+  }, [
+    tpPriceInput,
+    slPriceInput,
+    tpPriceError,
+    slPriceError,
+    orderPayloads.length,
+    editTPSLSize,
+    closeSizeInput,
+    closeSizeUsd,
+    formattedMaxCloseSize,
+  ]);
 
   const handleSubmit = useCallback(async () => {
     if (!signer || !provider || !batchParams || !tokensData || !marketsInfoData) return;
@@ -763,7 +783,10 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   ]);
 
   useEffect(() => {
-    if (!isVisible) {
+    if (isVisible) {
+      setTpPriceInput(initialTpPriceInput ?? "");
+      setSlPriceInput(initialSlPriceInput ?? "");
+    } else {
       setTpPriceInput("");
       setSlPriceInput("");
       setCloseSizeInput("");
@@ -771,7 +794,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       setClosePercentage(100);
       setPreviewTab("tp");
     }
-  }, [isVisible]);
+  }, [isVisible, initialTpPriceInput, initialSlPriceInput]);
 
   useEffect(() => {
     if (tpDecreaseAmounts && !slDecreaseAmounts) {
