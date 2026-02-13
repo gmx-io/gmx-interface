@@ -34,3 +34,16 @@ export function getIncentivesV2Url(chainId: number): string {
 
 export const GLP_REIMBURSEMENT_TERMS_URL =
   "https://gateway.pinata.cloud/ipfs/bafkreiemqapoduhh2j5spg7ndmkqdx2l5s2uloqqcv4egu5qiy5oiv4kaq";
+
+export const GMX_DISCORD_URL = "https://discord.gg/H5PeQru3Aa";
+export const FEE_STRUCTURE_URL = "https://docs.gmx.io/docs/trading/fees-and-pricing/";
+export const REFERRALS_DOCS_URL = "https://docs.gmx.io/docs/referrals/";
+
+export const REFERRALS_DOCS_SECTION_LINKS = {
+  howItWorks: "https://docs.gmx.io/docs/referrals#how-it-works",
+  claimingRewards: "https://docs.gmx.io/docs/referrals#claiming-rewards",
+  tiers: "https://docs.gmx.io/docs/referrals#tiers",
+  transferringReferralCode: "https://docs.gmx.io/docs/referrals#transferring-a-referral-code",
+} as const;
+
+export const GMX_PARTNER_TELEGRAM_URL = "https://t.me/GMX_Announcements";

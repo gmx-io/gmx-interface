@@ -13,10 +13,10 @@ import DatabaseIcon from "img/database.svg?react";
 import DocsIcon from "img/docs.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
+import ReferralsIcon from "img/ic_referrals.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
 import LogoText from "img/logo-text.svg?react";
-import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
 import { LanguageNavItem } from "./LanguageNavItem";

@@ -103,7 +103,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
-  const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(chainId, account);
 
   const toToken = getByKey(tokensData, toTokenAddress);
 

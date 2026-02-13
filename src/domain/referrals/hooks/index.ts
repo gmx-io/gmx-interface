@@ -1,16 +1,15 @@
 import { gql } from "@apollo/client";
-import { BigNumberish, ethers, Signer } from "ethers";
+import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import useSWR from "swr";
 import { Hash, isAddress, zeroAddress, zeroHash } from "viem";
 
-import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
 import { isAddressZero, isHashZero } from "lib/legacy";
+import { useMulticall } from "lib/multicall/useMulticall";
 import { basisPointsToFloat } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
@@ -26,23 +25,20 @@ export * from "./useReferralsData";
 export * from "./useUserCodesOnAllChain";
 
 export function useUserReferralInfoRequest(
-  signer: Signer | undefined,
   chainId: ContractsChainId,
-  account?: string | null,
+  account: string | undefined,
   skipLocalReferralCode = false
 ): UserReferralInfo | undefined {
   const { userReferralCode, userReferralCodeString, attachedOnChain, referralCodeForTxn } = useUserReferralCode(
-    signer,
     chainId,
     account,
     skipLocalReferralCode
   );
 
-  const { codeOwner, error: codeOwnerError } = useCodeOwner(signer, chainId, account, userReferralCode);
-  const { affiliateTier: tierId, error: tierError } = useAffiliateTier(signer, chainId, codeOwner);
-  const { totalRebate, discountShare, error: tiersError } = useTiers(signer, chainId, tierId);
+  const { codeOwner, error: codeOwnerError } = useCodeOwner(chainId, account, userReferralCode);
+  const { affiliateTier: tierId, error: tierError } = useAffiliateTier(chainId, codeOwner);
+  const { totalRebate, discountShare, error: tiersError } = useTiers(chainId, tierId);
   const { discountShare: customDiscountShare, error: discountShareError } = useReferrerDiscountShare(
-    signer,
     chainId,
     codeOwner
   );
@@ -89,43 +85,67 @@ export function useUserReferralInfoRequest(
   ]);
 }
 
-export function useAffiliateTier(signer, chainId, account) {
+export function useAffiliateTier(chainId: ContractsChainId, account: string | undefined) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const {
-    data: affiliateTier,
-    mutate: mutateReferrerTier,
-    error,
-  } = useSWR<bigint>(
-    account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
-    {
-      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
+  const validAccount = useMemo(() => (account && isAddress(account) ? account : undefined), [account]);
+
+  const result = useMulticall(chainId, "affiliate-tier", {
+    key: validAccount && referralStorageAddress !== zeroAddress ? [validAccount] : null,
+    request: {
+      referralStorage: {
+        contractAddress: referralStorageAddress,
+        abiId: "ReferralStorage",
+        calls: {
+          referrerTiers: {
+            methodName: "referrerTiers",
+            params: [validAccount!],
+          },
+        },
+      },
+    },
+    parseResponse: (res) => {
+      const tier = res.data.referralStorage.referrerTiers.returnValues[0] as bigint;
+      return tier === undefined ? undefined : Number(tier);
+    },
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
+  });
+
   return {
-    affiliateTier: affiliateTier === undefined ? undefined : Number(affiliateTier),
-    mutateReferrerTier,
-    error,
+    affiliateTier: result.data,
+    mutateReferrerTier: result.mutate,
+    error: result.error,
   };
 }
 
-export function useTiers(signer: Signer | undefined, chainId: ContractsChainId, tierLevel?: BigNumberish) {
+export function useTiers(chainId: ContractsChainId, tierLevel: number | undefined) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const tierLevelParam = tierLevel !== undefined ? String(tierLevel) : undefined;
 
-  const { data: [totalRebate, discountShare] = [], error } = useSWR<bigint[]>(
-    tierLevel !== undefined
-      ? [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "tiers", tierLevel.toString()]
-      : null,
-    {
-      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
+  const result = useMulticall(chainId, "tiers", {
+    key: tierLevelParam !== undefined && referralStorageAddress !== zeroAddress ? [tierLevelParam] : null,
+    request: {
+      referralStorage: {
+        contractAddress: referralStorageAddress,
+        abiId: "ReferralStorage",
+        calls: {
+          tiers: {
+            methodName: "tiers",
+            params: [tierLevelParam!],
+          },
+        },
+      },
+    },
+    parseResponse: (res) => {
+      const [totalRebate, discountShare] = res.data.referralStorage.tiers.returnValues as [bigint, bigint];
+      return { totalRebate, discountShare };
+    },
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
+  });
 
   return {
-    totalRebate,
-    discountShare,
-    error,
+    totalRebate: result.data?.totalRebate,
+    discountShare: result.data?.discountShare,
+    error: result.error,
   };
 }
 
@@ -173,26 +193,51 @@ export async function getReferralCodeOwner(chainId: ContractsChainId, referralCo
   return codeOwner;
 }
 
-export function useUserReferralCode(signer, chainId, account, skipLocalReferralCode = false) {
+export function useUserReferralCode(
+  chainId: ContractsChainId,
+  account: string | undefined,
+  skipLocalReferralCode = false
+) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: onChainCode, error: onChainCodeError } = useSWR<string>(
-    account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    {
-      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
 
-  const { data: localStorageCodeOwner, error: localStorageCodeOwnerError } = useSWR<string>(
-    localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
-      ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
-      : null,
-    {
-      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
+  const referralCodeResult = useMulticall(chainId, "user-referral-code", {
+    key: account && referralStorageAddress !== zeroAddress ? [account, localStorageCode] : null,
+    request: () => {
+      const localCodeCall =
+        localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
+          ? {
+              codeOwners: {
+                methodName: "codeOwners",
+                params: [localStorageCode!],
+              },
+            }
+          : undefined;
+
+      return {
+        referralStorage: {
+          contractAddress: referralStorageAddress,
+          abiId: "ReferralStorage",
+          calls: {
+            traderReferralCodes: {
+              methodName: "traderReferralCodes",
+              params: [account!],
+            },
+            ...localCodeCall,
+          },
+        },
+      };
+    },
+    parseResponse: (result) => {
+      return {
+        onChainCode: result.data.referralStorage.traderReferralCodes.returnValues[0] as string,
+        localStorageCodeOwner: result.data.referralStorage.codeOwners?.returnValues[0] as string | undefined,
+      };
+    },
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
+  });
+  const onChainCode = referralCodeResult.data?.onChainCode;
+  const localStorageCodeOwner = referralCodeResult.data?.localStorageCodeOwner;
 
   const { attachedOnChain, userReferralCode, userReferralCodeString, referralCodeForTxn } = useMemo(() => {
     let attachedOnChain = false;
@@ -203,11 +248,11 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
     if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;
       userReferralCode = onChainCode;
-      userReferralCodeString = decodeReferralCode(onChainCode as Hash);
+      userReferralCodeString = decodeReferralCode(onChainCode);
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
       attachedOnChain = false;
       userReferralCode = localStorageCode!;
-      userReferralCodeString = decodeReferralCode(localStorageCode! as Hash);
+      userReferralCodeString = decodeReferralCode(localStorageCode!);
       referralCodeForTxn = localStorageCode!;
     }
 
@@ -216,16 +261,9 @@ export function useUserReferralCode(signer, chainId, account, skipLocalReferralC
       userReferralCode,
       userReferralCodeString,
       referralCodeForTxn,
-      error: onChainCodeError | localStorageCodeOwnerError,
+      error: referralCodeResult.error,
     };
-  }, [
-    localStorageCode,
-    localStorageCodeOwner,
-    localStorageCodeOwnerError,
-    onChainCode,
-    onChainCodeError,
-    skipLocalReferralCode,
-  ]);
+  }, [localStorageCode, localStorageCodeOwner, onChainCode, referralCodeResult.error, skipLocalReferralCode]);
 
   return {
     userReferralCode,
@@ -252,64 +290,92 @@ export function useLocalReferralCode() {
   }, [userReferralCode]);
 }
 
-export function useReferrerTier(signer, chainId, account) {
+export function useReferrerTier(chainId: ContractsChainId, account: string) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const validAccount = useMemo(() => (isAddress(account) ? account : null), [account]);
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR<bigint>(
-    validAccount && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", validAccount],
-    {
-      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
-    }
-  );
+  const validAccount = useMemo(() => (isAddress(account) ? account : undefined), [account]);
+
+  const referrerTierResult = useMulticall(chainId, "referrer-tier", {
+    key: validAccount && referralStorageAddress !== zeroAddress ? [validAccount] : null,
+    request: {
+      referralStorage: {
+        contractAddress: referralStorageAddress,
+        abiId: "ReferralStorage",
+        calls: {
+          referrerTiers: {
+            methodName: "referrerTiers",
+            params: [validAccount!],
+          },
+        },
+      },
+    },
+    parseResponse: (result) => {
+      return result.data.referralStorage.referrerTiers.returnValues[0] as bigint;
+    },
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
+  });
+
   return {
-    referrerTier,
-    mutateReferrerTier,
+    referrerTier: referrerTierResult.data,
+    mutateReferrerTier: referrerTierResult.mutate,
   };
 }
 
-export function useCodeOwner(signer, chainId, account, code) {
+export function useCodeOwner(chainId: ContractsChainId, account: string | undefined, code: string | undefined) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const {
-    data: codeOwner,
-    mutate: mutateCodeOwner,
-    error,
-  } = useSWR<string>(
-    account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
-    {
-      fetcher: chainId !== BOTANIX ? (contractFetcher(signer, "ReferralStorage") as any) : undefined,
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
+
+  const codeOwnerResult = useMulticall(chainId, "code-owner", {
+    key: account && code && referralStorageAddress !== zeroAddress ? [account, code] : null,
+    request: {
+      referralStorage: {
+        contractAddress: referralStorageAddress,
+        abiId: "ReferralStorage",
+        calls: {
+          codeOwner: {
+            methodName: "codeOwners",
+            params: [code],
+          },
+        },
+      },
+    },
+    parseResponse: (result) => {
+      return result.data.referralStorage.codeOwner.returnValues[0] as string;
+    },
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
+  });
+
   return {
-    codeOwner,
-    mutateCodeOwner,
-    error,
+    codeOwner: codeOwnerResult.data,
+    mutateCodeOwner: codeOwnerResult.mutate,
+    error: codeOwnerResult.error,
   };
 }
 
-export function useReferrerDiscountShare(library, chainId, owner) {
+export function useReferrerDiscountShare(chainId: ContractsChainId, owner: string | undefined) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const {
-    data: discountShare,
-    mutate: mutateDiscountShare,
-    error,
-  } = useSWR<bigint | undefined>(
-    owner && [
-      `ReferralStorage:referrerDiscountShares`,
-      chainId,
-      referralStorageAddress,
-      "referrerDiscountShares",
-      owner.toLowerCase(),
-    ],
-    {
-      fetcher: contractFetcher(library, "ReferralStorage") as any,
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-    }
-  );
+  const validOwner = useMemo(() => (owner && isAddress(owner) ? owner.toLowerCase() : undefined), [owner]);
+
+  const result = useMulticall(chainId, "referrer-discount-share", {
+    key: validOwner && referralStorageAddress !== zeroAddress ? [validOwner] : null,
+    request: {
+      referralStorage: {
+        contractAddress: referralStorageAddress,
+        abiId: "ReferralStorage",
+        calls: {
+          referrerDiscountShares: {
+            methodName: "referrerDiscountShares",
+            params: [validOwner!],
+          },
+        },
+      },
+    },
+    parseResponse: (res) => res.data.referralStorage.referrerDiscountShares.returnValues[0] as bigint,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
+  });
+
   return {
-    discountShare,
-    mutateDiscountShare,
-    error,
+    discountShare: result.data,
+    mutateDiscountShare: result.mutate,
+    error: result.error,
   };
 }
 

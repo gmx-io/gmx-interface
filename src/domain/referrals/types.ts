@@ -119,7 +119,7 @@ export type ReferralsStats = {
   affiliateTotalStats: AffiliateTotalStats;
   traderReferralTotalStats: TraderReferralTotalStats;
   codes: string[];
-  affiliateTierInfo: TierInfo;
+  affiliateTierInfo: TierInfo | undefined;
 };
 
 export type TotalReferralsStats = {

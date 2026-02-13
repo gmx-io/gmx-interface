@@ -161,7 +161,7 @@ function AddToWalletButton({
   contractSymbol,
 }: {
   active?: boolean;
-  walletClient: WalletClient;
+  walletClient: WalletClient | undefined;
   token?: Token;
   marketName: ReactNode;
   contractSymbol?: string;

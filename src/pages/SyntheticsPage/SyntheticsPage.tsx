@@ -51,7 +51,7 @@ import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -547,7 +547,7 @@ function useOrdersControl() {
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(getPageOutdatedError());
         return;
       }
       if (!signer || !provider) return;
@@ -611,7 +611,7 @@ function useOrdersControl() {
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(getPageOutdatedError());
         return;
       }
       if (!signer || !provider) return;

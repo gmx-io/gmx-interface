@@ -1,4 +1,4 @@
-import { t, Plural, Trans } from "@lingui/macro";
+import { Plural, Trans } from "@lingui/macro";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
@@ -40,7 +40,7 @@ import { helperToast } from "lib/helperToast";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 
@@ -160,7 +160,7 @@ export function OrderList({
     if (!signer || !provider) return;
 
     if (hasOutdatedUi) {
-      helperToast.error(t`Page outdated, please refresh`);
+      helperToast.error(getPageOutdatedError());
       return;
     }
 
