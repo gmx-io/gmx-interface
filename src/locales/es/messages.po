@@ -457,7 +457,7 @@ msgstr "Posiciones"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} no se puede enviar a direcciones de contratos inteligentes. Selecciona otro token."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "Expandir"
 
@@ -580,7 +580,7 @@ msgstr "Pools GM:"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "Compra {nativeTokenSymbol} directamente en {chainName} o transfiérelo allí."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -2589,7 +2589,7 @@ msgstr "Orden cancelada"
 msgid "Slippage is too high."
 msgstr "El slippage es demasiado alto."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "Contraer"
 
@@ -4184,8 +4184,8 @@ msgid "Claimable"
 msgstr "Reclamable"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Docs"
@@ -6106,8 +6106,8 @@ msgstr "Depósito fallido"
 msgid "Referral code created."
 msgstr "Código de referencia creado."
 
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark Theme"
 msgstr ""
 
@@ -7905,9 +7905,9 @@ msgstr "Distribución"
 msgid "Referral code does not exist"
 msgstr "El código de referencia no existe"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "Idioma"
 

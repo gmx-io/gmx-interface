@@ -457,7 +457,7 @@ msgstr "ポジション"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}はスマートコントラクトアドレスに送信できません。別のトークンを選択してください。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "展開"
 
@@ -580,7 +580,7 @@ msgstr "GMプール："
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "{chainName} で直接 {nativeTokenSymbol} を購入するか、そこに転送してください。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -2589,7 +2589,7 @@ msgstr "注文はキャンセルされました"
 msgid "Slippage is too high."
 msgstr "スリッページが高すぎます。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "折りたたむ"
 
@@ -4184,8 +4184,8 @@ msgid "Claimable"
 msgstr "請求可能"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "ドキュメント"
@@ -6106,8 +6106,8 @@ msgstr "入金に失敗しました"
 msgid "Referral code created."
 msgstr "リファラルコードが作成されました。"
 
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark Theme"
 msgstr ""
 
@@ -7905,9 +7905,9 @@ msgstr "分配"
 msgid "Referral code does not exist"
 msgstr "リファラルコードが存在しません"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "言語"
 

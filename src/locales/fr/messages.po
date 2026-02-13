@@ -457,7 +457,7 @@ msgstr "Positions"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} ne peut pas être envoyé à des adresses de contrats intelligents. Sélectionnez un autre token."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "Développer"
 
@@ -580,7 +580,7 @@ msgstr "Pools GM :"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "Achetez {nativeTokenSymbol} directement sur {chainName} ou transférez-le là-bas."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -2589,7 +2589,7 @@ msgstr "Ordre annulé"
 msgid "Slippage is too high."
 msgstr "Le slippage est trop élevé."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "Réduire"
 
@@ -4184,8 +4184,8 @@ msgid "Claimable"
 msgstr "Réclamable"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Documents"
@@ -6106,8 +6106,8 @@ msgstr "Dépôt échoué"
 msgid "Referral code created."
 msgstr "Code de parrainage créé."
 
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark Theme"
 msgstr ""
 
@@ -7905,9 +7905,9 @@ msgstr "Distribution"
 msgid "Referral code does not exist"
 msgstr "Le code de parrainage n'existe pas"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "Langue"
 

@@ -457,7 +457,7 @@ msgstr ""
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr ""
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr ""
 
@@ -580,7 +580,7 @@ msgstr ""
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr ""
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -2589,7 +2589,7 @@ msgstr ""
 msgid "Slippage is too high."
 msgstr ""
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr ""
 
@@ -4184,8 +4184,8 @@ msgid "Claimable"
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr ""
@@ -6106,8 +6106,8 @@ msgstr ""
 msgid "Referral code created."
 msgstr ""
 
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark Theme"
 msgstr ""
 
@@ -7905,9 +7905,9 @@ msgstr ""
 msgid "Referral code does not exist"
 msgstr ""
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr ""
 

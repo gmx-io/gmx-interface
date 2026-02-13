@@ -457,7 +457,7 @@ msgstr "포지션"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}은 스마트 컨트랙트 주소로 보낼 수 없습니다. 다른 토큰을 선택하세요."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "확장"
 
@@ -580,7 +580,7 @@ msgstr "GM 풀:"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "{chainName}에서 직접 {nativeTokenSymbol}을 구매하거나 그곳으로 전송하세요."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -2589,7 +2589,7 @@ msgstr "주문 최소됨"
 msgid "Slippage is too high."
 msgstr "슬리피지가 너무 높습니다."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "접기"
 
@@ -4184,8 +4184,8 @@ msgid "Claimable"
 msgstr "수령가능"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "문서"
@@ -6106,8 +6106,8 @@ msgstr "입금 실패"
 msgid "Referral code created."
 msgstr "추천 코드 생성됨."
 
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark Theme"
 msgstr ""
 
@@ -7905,9 +7905,9 @@ msgstr "분배"
 msgid "Referral code does not exist"
 msgstr "추천 코드가 존재하지 않습니다"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "언어"
 

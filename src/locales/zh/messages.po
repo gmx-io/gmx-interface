@@ -457,7 +457,7 @@ msgstr "仓位"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} 无法发送到智能合约地址。请选择另一个代币。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "展开"
 
@@ -580,7 +580,7 @@ msgstr "GM 资金池："
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "直接在 {chainName} 上购买 {nativeTokenSymbol} 或将其转移到那里。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -2589,7 +2589,7 @@ msgstr "订单已取消"
 msgid "Slippage is too high."
 msgstr "滑点过高。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "折叠"
 
@@ -4184,8 +4184,8 @@ msgid "Claimable"
 msgstr "可领取"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "文档"
@@ -6106,8 +6106,8 @@ msgstr "存入失败"
 msgid "Referral code created."
 msgstr "推荐码已创建。"
 
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark Theme"
 msgstr ""
 
@@ -7905,9 +7905,9 @@ msgstr "分配"
 msgid "Referral code does not exist"
 msgstr "推荐码不存在"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
-#: src/components/SideNav/SideNav.tsx
-#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "语言"
 
