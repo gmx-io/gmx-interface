@@ -28,6 +28,7 @@ import WarnIcon from "img/ic_warn.svg?react";
 
 import { ClaimableRebatesCard } from "./ClaimableRebatesCard";
 import EmptyMessage from "./EmptyMessage";
+import { ReferralsDocsCard } from "./ReferralsDocsCard";
 import usePagination from "./usePagination";
 
 function DistributionTimestamp({ timestamp }: { timestamp: number }) {
@@ -429,6 +430,7 @@ export function ReferralsDistributionsTab({ loading, account, referralsData }: R
       </div>
       <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
         <ClaimableRebatesCard />
+        <ReferralsDocsCard />
       </div>
     </div>
   );

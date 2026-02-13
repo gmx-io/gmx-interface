@@ -16,7 +16,6 @@ import useWallet from "lib/wallets/useWallet";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BotanixBanner } from "components/BotanixBanner/BotanixBanner";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 import { ReferralsAffiliatesTab } from "components/Referrals/ReferralsAffiliatesTab";
 import { ReferralsDistributionsTab } from "components/Referrals/ReferralsDistributionsTab";
@@ -83,10 +82,7 @@ function Referrals() {
             subtitle={
               !isBotanix ? (
                 <Trans>
-                  Get fee discounts and earn rebates through the GMX referral program.
-                  <br />
-                  For more information, please read the{" "}
-                  <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
+                  Get fee discounts and earn up to 20% commission through the GMX <br /> referral programs.
                 </Trans>
               ) : undefined
             }

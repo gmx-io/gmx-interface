@@ -155,7 +155,6 @@ msgstr "ストップロス"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
@@ -219,11 +218,6 @@ msgstr "ポジションの価格影響手数料を請求中…"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName} Order"
 msgstr "{orderTypeName}注文を更新"
-
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Arbitrum"
-msgstr "V2 Arbitrum"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 13-20 Mar"
@@ -694,7 +688,6 @@ msgid "About GLP Incident"
 msgstr "GLPインシデントについて"
 
 #: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "Distribution history for claimed rebates and airdrops."
 msgstr "請求されたリベートおよびエアドロップの分配履歴。"
 
@@ -717,6 +710,10 @@ msgstr "{tokenSymbol}報酬をステーク"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}..."
 msgstr "{ordersText}をキャンセル中…"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Enter the referral code and save up to 10% on fees"
+msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settling"
@@ -853,7 +850,7 @@ msgstr "Paraswap"
 msgid "TP - Long Dec."
 msgstr "TP - ロング減少"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ClaimableRebatesCard.tsx
 msgid "Claimable Rebates"
 msgstr "請求可能リベート"
 
@@ -873,6 +870,10 @@ msgstr "最大プール額到達"
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Market Orders"
 msgstr "市場注文"
+
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "Tiers"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order"
@@ -1047,10 +1048,6 @@ msgstr "すべてのアカウントのGMX {VERSION_NAME} {networkName}アクシ�
 msgid "GMX uses TradingView to provide real-time cryptocurrency charts, so you can easily follow <0>BTCUSD</0> price in real-time, along with other currency pair rates. The interactive charts offer advanced tools and a user-friendly interface for easier market analysis and decision-making."
 msgstr "GMXはTradingViewを使用してリアルタイムの暗号通貨チャートを提供します。<0>BTCUSD</0>価格をリアルタイムで簡単に追跡でき、他の通貨ペアレートも同様です。インタラクティブチャートは先進ツールとユーザー友好インターフェースを提供し、市場分析と意思決定を容易にします。"
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table."
-msgstr "GMX V2リベートは各取引で手数料割引として自動適用され、このテーブルに表示されません。"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buy {operationTokenSymbol}"
 msgstr "{operationTokenSymbol}を購入"
@@ -1201,6 +1198,10 @@ msgstr "このシミュレーション深度チャートはGMX流動性を仮想
 msgid "Since your position's collateral is in {symbol}, with an initial value higher than the {indexName} long position size, the collateral value will cover any negative PnL, so there is no liquidation price."
 msgstr "ポジションの担保が{symbol}であり、初期価値が{indexName}ロングポジションサイズより高いため、担保価値は負のPnLをカバーし、清算価格はありません。"
 
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. Learn more"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Short Liq."
@@ -1316,8 +1317,6 @@ msgstr "{0}以上の使用資本を持つポジションのみがランキング
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/ReferralsTradersContent.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
@@ -1452,6 +1451,10 @@ msgstr "NFTアドレス"
 msgid "{orderText} cancelled."
 msgstr "{orderText} がキャンセルされました。"
 
+#: src/components/Referrals/ShareReferralCardModal.tsx
+msgid "<0>Save up to 10%</0> on every<1/> trade on GMX."
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Set Max Leverage"
@@ -1461,6 +1464,10 @@ msgstr "最大レバレッジを設定"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr "Symbiosis"
+
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "How it works"
+msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -1506,6 +1513,7 @@ msgstr "ステーキングは{chainNames}でのみ利用可能です。稼ぎ機
 msgid "Shift GM"
 msgstr "GMをシフト"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Timestamp"
 msgstr "タイムスタンプ"
@@ -1589,11 +1597,6 @@ msgstr "このスワップに現在高いスワップ価格影響があります
 msgid "Update Limit Swap"
 msgstr "指値スワップを更新する"
 
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Avalanche Fuji"
-msgstr "V2 Avalanche Fuji"
-
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order executed"
 msgstr "注文執行済"
@@ -1605,11 +1608,6 @@ msgstr "ロングポジションから{indexSymbol}をロングし、{collateral
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update order(s)"
 msgstr "注文の更新失敗"
-
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Avalanche"
-msgstr "V2 Avalanche"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics Debug"
@@ -1889,11 +1887,6 @@ msgstr "ステークされていない"
 msgid "Layer 2"
 msgstr "レイヤー2"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "Rebates Distribution History"
-msgstr "リベート分配履歴"
-
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
 msgstr "V1インターフェース"
@@ -1932,6 +1925,10 @@ msgstr "ポジション手数料を決済中"
 msgid "Technically, net price impact breaks down into stored price impact (for increase orders) and close price impact (for decrease orders). This setting shows both in the net value tooltip and close modal execution details, plus the stored price impact for increase orders. <0>Read more</0>."
 msgstr "技術的には、ネット価格インパクトは保存価格インパクト（増加注文時）とクローズ価格インパクト（減少注文時）に分かれます。この設定ではネット値ツールチップとクローズモーダルの実行詳細に両方を表示し、増加注文時の保存価格インパクトも表示します。<0>詳細</0>"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
+msgid "Transaction Hash"
+msgstr ""
+
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "詳細を表示"
@@ -1949,7 +1946,6 @@ msgid "Buy {0}"
 msgstr "{0}を購入"
 
 #: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/TradersStats.tsx
 msgid "USD Value may not be accurate since the data does not contain prices for {0}"
 msgstr "データに{0}の価格が含まれていないため、USD価値が正確でない可能性があります"
 
@@ -2239,6 +2235,10 @@ msgstr "アドレス"
 msgid "Claiming successful."
 msgstr "請求に成功しました。"
 
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 20% commission through the GMX <0/> referral programs."
+msgstr ""
+
 #: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
 msgid "Create referral code"
 msgstr ""
@@ -2377,7 +2377,6 @@ msgstr "<0>入金</0>または<1>購入</1>{wrappedNativeTokenSymbol}。"
 
 #: src/components/Referrals/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/ReferralsTradersContent.tsx
-#: src/components/Referrals/TradersStats.tsx
 msgid "Trading Volume"
 msgstr "トレーディング出来高"
 
@@ -2625,10 +2624,6 @@ msgstr "GMXの求人"
 msgid "Autocompound"
 msgstr "自動複利"
 
-#: src/components/Referrals/ShareReferralCardModal.tsx
-msgid "Save up to <0>10%</0> on every<1/> trade on GMX."
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade from your wallet"
 msgstr "ウォレットから取引"
@@ -2707,10 +2702,6 @@ msgstr "スリッページが高すぎます。"
 #: src/components/SideNav/SideNav.tsx
 msgid "Collapse"
 msgstr "折りたたむ"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Traders Referred on Arbitrum"
-#~ msgstr "Arbitrumで紹介したトレーダー"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche LP Incentives"
@@ -2921,7 +2912,7 @@ msgstr "デバッグ値を表示"
 msgid "Annualized data based on the past 7 days."
 msgstr "過去7日間の年換算データ。"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ClaimableRebatesCard.tsx
 msgid "Claim Rebates"
 msgstr ""
 
@@ -2949,11 +2940,6 @@ msgstr "紹介コードが追加できませんでした"
 #: src/components/Referrals/ReferralsTradersFaq.tsx
 msgid "How is the discount applied to my trades?"
 msgstr ""
-
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Arbitrum"
-msgstr "V1 Arbitrum"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "Avalanche"
@@ -3757,13 +3743,10 @@ msgstr "手数料"
 msgid "Secure & Permissionless"
 msgstr "セキュア＆パーミッションレス"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "{0} Amount"
 msgstr "{0}数量"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Traders Referred on Avalanche"
-#~ msgstr "Avalancheで紹介したトレーダー"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Funding Fees"
@@ -3790,10 +3773,6 @@ msgstr "建玉"
 msgid "Updating settings..."
 msgstr "設定更新中..."
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "Active Referral Code"
-msgstr "有効な紹介コード"
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "The amount you are trying to deposit is below the limit. Please try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "入金しようとしている金額が下限を下回っています。<0>{lowerLimitFormatted}</0>より大きい金額をお試しください。"
@@ -3811,17 +3790,9 @@ msgstr "注文実行時にポジションが即時清算される可能性があ
 msgid "Lend out your GLV or GM tokens, and borrow against them."
 msgstr "GLVまたはGMトークンを貸し出して借り入れ。"
 
-#: src/components/Referrals/ReferralsTradersContent.tsx
-msgid "<0>Create your referral code and earn rebates from your referrals</0><1>Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <2/> with your tier and the activity of your referred traders. Learn more</1>"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP"
 msgstr "TWAPを作成"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Claimable rebates from your referred traders."
-#~ msgstr "紹介トレーダーからの請求可能リベート。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted."
@@ -3948,10 +3919,6 @@ msgstr "ショートポジションから{indexSymbol}をショートし、{coll
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to Market Traders' PnL"
 msgstr ""
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Rebates earned by this account as a trader."
-msgstr "トレーダーとしてこのアカウントが獲得したリベート"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Transfer account"
@@ -4387,10 +4354,6 @@ msgstr "アドレスがクリップボードにコピーされました"
 msgid "Settings"
 msgstr "設定"
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "The owner of this referral code has set a custom discount of {currentTierDiscount}% instead of the standard {0}% for Tier {1}."
-msgstr "このリファラルコードの所有者はティア{1}の標準{0}%の代わりにカスタム割引{currentTierDiscount}%を設定しています。"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs Trading Simulations"
 msgstr "Compass Labsトレーディングシミュレーション"
@@ -4520,10 +4483,6 @@ msgstr "ファンディング手数料を請求中…"
 msgid "No open orders"
 msgstr "オープンの注文はありません"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Traders Referred on Avalanche Fuji"
-#~ msgstr "Avalanche Fujiで紹介したトレーダー"
-
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your search."
 msgstr "検索に一致する機会はありません。"
@@ -4645,10 +4604,6 @@ msgstr "GMX Substack"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Positions Bot"
 msgstr "GMXポジションボット"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Edit Referral Code"
-msgstr "紹介コード編集"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Take Profit"
@@ -4936,10 +4891,9 @@ msgstr "<0>オラクル価格が {0} {1} になったときに注文が執行さ
 msgid "Create Stop Market"
 msgstr "ストップマーケットを作成"
 
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Avalanche"
-msgstr "V1 Avalanche"
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "Claiming Rewards"
+msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -5050,6 +5004,10 @@ msgstr "リファラルコードの作成をスキップしてよろしいです
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities."
 msgstr "Shiftingは{chainNames}でのみ利用可能です。稼ぎ機会にアクセスするには{chainNames}に切り替えてください。"
+
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "Transferring a Referral Code"
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the advanced display section."
@@ -5163,6 +5121,10 @@ msgstr "レバレッジスライダーを表示"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Collateral Delta"
 msgstr "担保デルタ"
+
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "Create your referral code and earn rebates from your referrals"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -5339,7 +5301,6 @@ msgid "Add Endpoint"
 msgstr "エンドポイントを追加"
 
 #: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Transaction"
 msgstr "取引"
@@ -5852,10 +5813,6 @@ msgstr "このサイズのロング増加のための流動性がありません
 msgid "Buy GMX using any token from any network:"
 msgstr "任意のネットワークから任意のトークンを使ってGMXを購入:"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#~ msgid "Volume traded by your referred traders."
-#~ msgstr "あなたが紹介したトレーダーによる取引高"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will be executed once there is sufficient liquidity."
 msgstr "十分な流動性がある場合にこの注文の一部が執行されます。"
@@ -6289,7 +6246,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Amount"
 msgstr "額"
@@ -6304,7 +6260,6 @@ msgid "Edit {0} {1}{2}"
 msgstr "{0} {1}{2} を編集"
 
 #: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/TradersStats.tsx
 msgid "No rebates distribution history yet."
 msgstr "紹介報酬支払い履歴はありません。"
 
@@ -6395,11 +6350,6 @@ msgstr "額を入力"
 msgid "No assets are available for deposit"
 msgstr "入金可能な資産なし"
 
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Avalanche Fuji"
-msgstr "V1 Avalanche Fuji"
-
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized Swap Impact"
@@ -6445,6 +6395,10 @@ msgstr "承認署名に失敗"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "The network fees are high currently, which may be due to a temporary increase in transactions on the {chainName} network."
 msgstr "現在ネットワーク手数料が高いです。これは{chainName}ネットワーク上の一時的なトランザクション増加によるものかもしれません。"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Learn more</1>"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -6622,7 +6576,6 @@ msgid "Execute Stop Market"
 msgstr "ストップマーケットを執行"
 
 #: src/components/Referrals/ReferralsTradersContent.tsx
-#: src/components/Referrals/TradersStats.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "有効な紹介コードを使ってこのアカウントでトレードされた取引高"
 
@@ -7001,7 +6954,6 @@ msgid "Max Network Fee includes fees for additional orders. It will be sent back
 msgstr "最大ネットワーク手数料には追加注文の手数料が含まれます。トリガーされずキャンセルされた場合、全額アカウントに返送されます。<0>詳細を読む</0>。"
 
 #: src/components/Referrals/AffiliatesOverviewChartCards.tsx
-#: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
 msgstr "リベート"
 
@@ -7032,7 +6984,6 @@ msgstr "{balanceFormatted} をメインアカウントに引き出すのに失�
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/ReferralsDistributionsTab.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -7204,10 +7155,6 @@ msgstr "GMX V2のトレーダー向けリーダーボード。"
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Withdraw"
 msgstr "出金失敗"
-
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "GMX紹介プログラムを通じて手数料割引を受け取り、リベートを獲得。<0/>詳細は<1>紹介プログラムの詳細</1>をお読みください。"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually sell your {gmOrGlvLabel} tokens."
@@ -8012,6 +7959,7 @@ msgstr "担保"
 msgid "Depositing..."
 msgstr "入金中…"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "ステータス"
@@ -8043,10 +7991,6 @@ msgstr "ウォレットが通常提供する独自RPCを使用して各取引を
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText}をキャンセル中…"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0}: {currentTierDiscount}% discount"
-msgstr "ティア {0}: {currentTierDiscount}% 割引"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards."
@@ -8181,10 +8125,6 @@ msgstr "転送を完了"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Trigger price below lowest limit price"
 msgstr "トリガー価格が最低リミット価格を下回っています"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
-msgstr "GMX V2割引は各取引で自動適用され、このテーブルに表示されません。"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share Position"
@@ -8405,10 +8345,6 @@ msgstr "24時間取引量"
 msgid "Currently, staking GMX is only supported on Avalanche and Arbitrum. For providing liquidity, different GLV vaults and GM tokens are available on each blockchain. Please visit the Pools page for an overview of the liquidity products that are available on the chain you're connected to."
 msgstr "現在、GMXのステーキングはAvalancheとArbitrumのみ対応しています。流動性提供については、各ブロックチェーンで異なるGLVボールトとGMトークンが利用可能です。接続中のチェーンで利用可能な流動性製品の概要はPoolsページをご覧ください。"
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "You will receive a {currentTierDiscount}% discount on opening and closing fees."
-msgstr "オープンおよびクローズ手数料で{currentTierDiscount}%割引を受け取ります。"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "GMXチームとの匿名チャット"
@@ -8441,6 +8377,10 @@ msgstr "売却"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "ショート"
+
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
+msgid "Transaction hash copied to clipboard"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"
@@ -8781,6 +8721,7 @@ msgid "Price impact rebates for closing trades are claimable under the claims ta
 msgstr "クローズ取引の価格影響リベートは請求タブで請求可能です。<0>詳細を読む</0>"
 
 #: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr "成功"
