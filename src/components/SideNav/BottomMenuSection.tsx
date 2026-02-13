@@ -96,12 +96,10 @@ function CollapsedMoreMenu({
   onLanguageClick,
   onThemeToggle,
   isDarkTheme,
-  floating,
 }: {
   onLanguageClick: () => void;
   onThemeToggle: () => void;
   isDarkTheme: boolean;
-  floating?: boolean;
 }) {
   const { refs, floatingStyles } = useFloating({
     placement: "right-end",
@@ -122,9 +120,6 @@ function CollapsedMoreMenu({
               <div
                 className={cx(
                   "flex h-32 w-44 items-center justify-center rounded-8 text-typography-secondary hover:bg-blue-400/20 hover:text-blue-400 dark:hover:bg-slate-700 dark:hover:text-typography-primary",
-                  {
-                    "w-32": floating,
-                  },
                   {
                     "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": open,
                   }
