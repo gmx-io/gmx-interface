@@ -76,7 +76,7 @@ function Referrals() {
   return (
     <AppPageLayout header={<ChainContentHeader />}>
       <SEO title={getPageTitle(t`Referrals`)}>
-        <div className="default-container page-layout flex flex-col gap-20">
+        <div className="default-container page-layout flex grow flex-col gap-20">
           <PageTitle
             isTop
             title={t`Referrals`}
@@ -95,7 +95,7 @@ function Referrals() {
           {isBotanix ? (
             <BotanixBanner />
           ) : (
-            <div>
+            <div className="flex grow flex-col">
               <Tabs
                 type="inline-primary"
                 className="mb-8"
@@ -116,11 +116,7 @@ function Referrals() {
                 />
               )}
               {activeTab === ReferralsTab.Distributions && (
-                <ReferralsDistributionsTab
-                  loading={isLoading}
-                  account={account}
-                  referralsData={referralsData}
-                />
+                <ReferralsDistributionsTab loading={isLoading} account={account} referralsData={referralsData} />
               )}
             </div>
           )}

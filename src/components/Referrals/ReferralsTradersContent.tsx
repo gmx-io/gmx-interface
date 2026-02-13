@@ -21,11 +21,12 @@ import { formatUsd, numberToBigint } from "lib/numbers";
 import Button from "components/Button/Button";
 import { Faq } from "components/Faq/Faq";
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
+import { PromoCard } from "components/Referrals/PromoCard";
+import { ReferralsDocsCard } from "components/Referrals/ReferralsDocsCard";
 import { POST_WIZARD_FAQS } from "components/Referrals/ReferralsTradersFaq";
 import { TradersVolumeChartContainer } from "components/Referrals/TradersVolumeChartContainer";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import affiliateCodePromoBg from "img/affiliate_code_promo_bg.png";
 import affiliateCodePromoFg from "img/affiliate_code_promo_fg.png";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
@@ -102,25 +103,17 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
               timeRangeInfos={TIME_RANGE_INFOS}
             />
           </div>
-          <Card className="relative overflow-hidden !border-blue-300/20">
-            <div className="relative z-10">
+          <PromoCard
+            title={<Trans>Create your referral code and earn rebates from your referrals</Trans>}
+            subtitle={
               <Trans>
-                <div className="text-body-medium mb-2 font-medium text-typography-primary">
-                  Create your referral code and earn rebates from your referrals
-                </div>
-                <div className="text-body-small text-typography-secondary">
-                  Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <br />{" "}
-                  with your tier and the activity of your referred traders. Learn more
-                </div>
+                Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <br /> with
+                your tier and the activity of your referred traders. Learn more
               </Trans>
-            </div>
-
-            <img
-              src={affiliateCodePromoBg}
-              className="user-select-none absolute -right-8 -top-8 z-0 h-[calc(100%+16px)] blur-[8px]"
-            />
+            }
+          >
             <img src={affiliateCodePromoFg} className="user-select-none absolute -bottom-34 right-28 z-10 w-[104px]" />
-          </Card>
+          </PromoCard>
           <div className="flex gap-12">
             <Card className="flex-1">
               <div className="text-body-small mb-4 font-medium text-typography-secondary">
@@ -215,6 +208,7 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
             </Trans>
           </Card>
         </div>
+        <ReferralsDocsCard />
         <Faq items={POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
       </div>
     </>

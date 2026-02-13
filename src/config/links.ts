@@ -38,4 +38,12 @@ export const GLP_REIMBURSEMENT_TERMS_URL =
 export const GMX_DISCORD_URL = "https://discord.gg/H5PeQru3Aa";
 export const FEE_STRUCTURE_URL = "https://docs.gmx.io/docs/trading/fees-and-pricing/";
 export const REFERRALS_DOCS_URL = "https://docs.gmx.io/docs/referrals/";
+
+export const REFERRALS_DOCS_SECTION_LINKS = {
+  howItWorks: "https://docs.gmx.io/docs/referrals#how-it-works",
+  claimingRewards: "https://docs.gmx.io/docs/referrals#claiming-rewards",
+  tiers: "https://docs.gmx.io/docs/referrals#tiers",
+  transferringReferralCode: "https://docs.gmx.io/docs/referrals#transferring-a-referral-code",
+} as const;
+
 export const GMX_PARTNER_TELEGRAM_URL = "https://t.me/GMX_Announcements";

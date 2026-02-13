@@ -4,19 +4,17 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
-import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
-import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
-import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatBigUsd, formatUsd } from "lib/numbers";
+import { formatBigUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq } from "components/Faq/Faq";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -26,9 +24,9 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import CopyIcon from "img/ic_copy.svg?react";
-import EarnIcon from "img/ic_earn.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
+import referralCodePromoFg from "img/referral_code_promo_fg.png";
 
 import { AffiliateCodeFormContainer } from "./AddAffiliateCode";
 import {
@@ -37,10 +35,11 @@ import {
   TradersReferredChartCard,
   TradingVolumeChartCard,
 } from "./AffiliatesOverviewChartCards";
-import Modal from "../Modal/Modal";
-import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
+import { ClaimableRebatesCard } from "./ClaimableRebatesCard";
+import { PromoCard } from "./PromoCard";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 import { AFFILIATE_POST_WIZARD_FAQS } from "./ReferralsAffiliatesFaq";
+import { ReferralsDocsCard } from "./ReferralsDocsCard";
 import {
   getReferralCodeTradeUrl,
   getSharePercentage,
@@ -103,15 +102,10 @@ export function AffiliatesStats({
   handleCreateReferralCode,
   setRecentlyAddedCodes,
 }: Props) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId } = useChainId();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
-  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
-  const { affiliateRewardsData } = useAffiliateRewards(chainId);
-
-  const [isClaiming, setIsClaiming] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
   const open = useCallback(() => {
     userAnalytics.pushEvent<ReferralCreateCodeEvent>({
@@ -152,14 +146,6 @@ export function AffiliatesStats({
   const discountShare = affiliateTierInfo?.discountShare;
   const { totalRebate } = useTiers(chainId, tierId);
   const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate, true);
-
-  const totalClaimableRewardsUsd = useMemo(() => {
-    if (!affiliateRewardsData || !marketsInfoData) {
-      return 0n;
-    }
-
-    return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
-  }, [affiliateRewardsData, marketsInfoData]);
 
   const trackCopyCode = useCallback(() => {
     userAnalytics.pushEvent<ReferralShareEvent>(
@@ -205,6 +191,20 @@ export function AffiliatesStats({
             />
           </div>
         </div>
+        <PromoCard
+          title={<Trans>Enter the referral code and save up to 10% on fees</Trans>}
+          subtitle={
+            <Trans>
+              Activate someone's referral code to receive a permanent discount on all opening and closing <br /> fees.
+              Your savings apply automatically on every trade.{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-300">
+                <Trans>Learn more</Trans>
+              </ExternalLink>
+            </Trans>
+          }
+        >
+          <img src={referralCodePromoFg} className="user-select-none absolute -bottom-22 right-28 z-10 w-[104px]" />
+        </PromoCard>
         <div className="flex flex-col gap-12">
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
             <TradingVolumeChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
@@ -221,22 +221,6 @@ export function AffiliatesStats({
         </div>
       </div>
 
-      <Modal
-        className="Connect-wallet-modal"
-        isVisible={isAddReferralCodeModalOpen}
-        setIsVisible={close}
-        label={t`Create Referral Code`}
-        onAfterOpen={() => addNewModalRef.current?.focus()}
-      >
-        <div className="edit-referral-modal">
-          <AffiliateCodeFormContainer
-            handleCreateReferralCode={handleCreateReferralCode}
-            recentlyAddedCodes={recentlyAddedCodes}
-            setRecentlyAddedCodes={setRecentlyAddedCodes}
-            callAfterSuccess={close}
-          />
-        </div>
-      </Modal>
       <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900">
         <div className="flex items-center justify-between px-20 pt-20">
           <p className="title text-body-large">
@@ -372,7 +356,22 @@ export function AffiliatesStats({
         />
       </div>
 
-      {isClaiming && <ClaimAffiliatesModal onClose={() => setIsClaiming(false)} />}
+      <ModalWithPortal
+        className="Connect-wallet-modal"
+        isVisible={isAddReferralCodeModalOpen}
+        setIsVisible={close}
+        label={t`Create Referral Code`}
+        onAfterOpen={() => addNewModalRef.current?.focus()}
+      >
+        <div className="edit-referral-modal">
+          <AffiliateCodeFormContainer
+            handleCreateReferralCode={handleCreateReferralCode}
+            recentlyAddedCodes={recentlyAddedCodes}
+            setRecentlyAddedCodes={setRecentlyAddedCodes}
+            callAfterSuccess={close}
+          />
+        </div>
+      </ModalWithPortal>
     </div>
   );
 
@@ -380,20 +379,8 @@ export function AffiliatesStats({
     <div className="flex gap-8 max-md:flex-col">
       <div className="flex grow flex-col gap-8">{mainContent}</div>
       <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
-        <div className="rounded-8 bg-slate-900 p-20">
-          <div className="text-body-medium mb-8 font-medium text-typography-secondary">
-            <Trans>Claimable Rebates</Trans>
-          </div>
-          <div className="flex items-center justify-between gap-4">
-            <div className="text-24 font-medium text-typography-primary numbers">
-              {formatUsd(totalClaimableRewardsUsd)}
-            </div>
-            <Button variant="primary" onClick={() => setIsClaiming(true)} disabled={totalClaimableRewardsUsd <= 0}>
-              <Trans>Claim Rebates</Trans>
-              <EarnIcon className="size-16" />
-            </Button>
-          </div>
-        </div>
+        <ClaimableRebatesCard />
+        <ReferralsDocsCard />
         <Faq items={AFFILIATE_POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
       </div>
     </div>

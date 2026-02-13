@@ -226,8 +226,8 @@ async function fetchChainReferralData(chainId: number, account: string): Promise
     const item: RebateDistribution = {
       typeId: d.typeId as RebateDistributionType,
       receiver: getAddress(d.receiver),
-      markets: d.markets.map(getAddress),
-      tokens: d.tokens.map(getAddress),
+      markets: d.markets.map((market) => getAddress(market)),
+      tokens: d.tokens.map((token) => getAddress(token)),
       amounts: d.amounts.map(BigInt),
       amountsInUsd: d.amountsInUsd.map(BigInt),
       timestamp: parseInt(d.timestamp),
