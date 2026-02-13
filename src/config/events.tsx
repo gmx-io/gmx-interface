@@ -30,6 +30,19 @@ export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "cc-met-arbitrum-listing",
+    isActive: true,
+    startDate: "13 Feb 2026, 12:30",
+    endDate: "20 Feb 2026, 12:30",
+    title: "CC (Canton) and MET (Meteora) markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>.
+      </>
+    ),
+  },
+  {
     id: "xaut-lit-ip-arbitrum-listing",
     isActive: true,
     startDate: "23 Jan 2026, 11:00",
