@@ -580,6 +580,7 @@ msgstr "GMプール："
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "{chainName} で直接 {nativeTokenSymbol} を購入するか、そこに転送してください。"
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -3182,6 +3183,7 @@ msgid "Search Pools"
 msgstr "プールを検索"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "言語選択"
 
@@ -4182,6 +4184,8 @@ msgid "Claimable"
 msgstr "請求可能"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "ドキュメント"
@@ -6102,6 +6106,11 @@ msgstr "入金に失敗しました"
 msgid "Referral code created."
 msgstr "リファラルコードが作成されました。"
 
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
+msgid "Dark Theme"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "通知"
@@ -7897,6 +7906,8 @@ msgid "Referral code does not exist"
 msgstr "リファラルコードが存在しません"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "言語"
 

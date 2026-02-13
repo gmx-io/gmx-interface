@@ -580,6 +580,7 @@ msgstr "Пулы GM:"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "Купите {nativeTokenSymbol} напрямую на {chainName} или переведите его туда."
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -3182,6 +3183,7 @@ msgid "Search Pools"
 msgstr "Поиск пулов"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "Выбрать Язык"
 
@@ -4182,6 +4184,8 @@ msgid "Claimable"
 msgstr "Требуемый"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Документация"
@@ -6102,6 +6106,11 @@ msgstr "Внесение не удалось"
 msgid "Referral code created."
 msgstr "Реферальный код создан."
 
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
+msgid "Dark Theme"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Уведомления"
@@ -7897,6 +7906,8 @@ msgid "Referral code does not exist"
 msgstr "Реферальный код не существует"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "Язык"
 

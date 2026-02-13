@@ -580,6 +580,7 @@ msgstr "GM 풀:"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "{chainName}에서 직접 {nativeTokenSymbol}을 구매하거나 그곳으로 전송하세요."
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -3182,6 +3183,7 @@ msgid "Search Pools"
 msgstr "풀 검색"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "언어 선택"
 
@@ -4182,6 +4184,8 @@ msgid "Claimable"
 msgstr "수령가능"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "문서"
@@ -6102,6 +6106,11 @@ msgstr "입금 실패"
 msgid "Referral code created."
 msgstr "추천 코드 생성됨."
 
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
+msgid "Dark Theme"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "알림"
@@ -7897,6 +7906,8 @@ msgid "Referral code does not exist"
 msgstr "추천 코드가 존재하지 않습니다"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "언어"
 

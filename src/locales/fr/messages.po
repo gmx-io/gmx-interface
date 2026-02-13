@@ -580,6 +580,7 @@ msgstr "Pools GM :"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "Achetez {nativeTokenSymbol} directement sur {chainName} ou transférez-le là-bas."
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -3182,6 +3183,7 @@ msgid "Search Pools"
 msgstr "Rechercher des Pools"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "Sélectionner une langue"
 
@@ -4182,6 +4184,8 @@ msgid "Claimable"
 msgstr "Réclamable"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Documents"
@@ -6102,6 +6106,11 @@ msgstr "Dépôt échoué"
 msgid "Referral code created."
 msgstr "Code de parrainage créé."
 
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
+msgid "Dark Theme"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "Notifications"
@@ -7897,6 +7906,8 @@ msgid "Referral code does not exist"
 msgstr "Le code de parrainage n'existe pas"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "Langue"
 

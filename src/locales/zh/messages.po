@@ -580,6 +580,7 @@ msgstr "GM 资金池："
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "直接在 {chainName} 上购买 {nativeTokenSymbol} 或将其转移到那里。"
 
+#: src/components/SideNav/SideNav.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -3182,6 +3183,7 @@ msgid "Search Pools"
 msgstr "搜索资金池"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "选择语言"
 
@@ -4182,6 +4184,8 @@ msgid "Claimable"
 msgstr "可领取"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "文档"
@@ -6102,6 +6106,11 @@ msgstr "存入失败"
 msgid "Referral code created."
 msgstr "推荐码已创建。"
 
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
+msgid "Dark Theme"
+msgstr ""
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Notifications"
 msgstr "通知"
@@ -7897,6 +7906,8 @@ msgid "Referral code does not exist"
 msgstr "推荐码不存在"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Language"
 msgstr "语言"
 
