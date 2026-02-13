@@ -258,6 +258,10 @@ msgstr "Acheter {gasPaymentTokensText}"
 msgid "Show error"
 msgstr "Afficher l'erreur"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Short"
+msgstr ""
+
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Sent withdrawal transaction"
@@ -1322,10 +1326,6 @@ msgstr "Échec"
 msgid "No fee"
 msgstr "Aucun frais"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} - {marketIndexName}"
-msgstr "Liq. {longOrShortText} - {marketIndexName}"
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Market - Long Inc."
 msgstr "Marché - Long Augm."
@@ -1809,6 +1809,10 @@ msgstr "Sortir max {0}"
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded for you instantly."
 msgstr "Les tokens GM représentent des parts dans un pool de liquidité pour un seul marché GMX. Achetez du GM pour fournir de la liquidité et gagner des frais sur le trading à effet de levier, les swaps et l’activité de market-making sur ce marché spécifique. Toutes les récompenses sont recomposées automatiquement et instantanément."
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "There is no price impact. There is a single<0/>execution price for increasing shorts or<1/>decreasing longs for this size."
 msgstr "Il n'y a pas d'impact de prix. Il y a un prix d'exécution unique pour augmenter les shorts ou<1/>diminuer les longs pour cette taille."
@@ -1862,6 +1866,10 @@ msgstr "Acheter GM"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "of close fee"
 msgstr "des frais de fermeture"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {0}"
+msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL order(s)..."
@@ -2092,6 +2100,10 @@ msgstr "Instantané"
 msgid "Open positions"
 msgstr "Positions ouvertes"
 
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq. {longOrShortText} {marketIndexName}{extraLabel}"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled."
 msgstr "Ordre de vente annulé."
@@ -2149,6 +2161,10 @@ msgstr "Total :"
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0} Approuvé !"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Market @ {0}"
+msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No additional opportunities at this time on Botanix. Change to Arbitrum or Avalanche to see more."
@@ -2471,6 +2487,10 @@ msgstr "Vous signez chaque transaction off-chain. Les trades utilisent des RPC p
 msgid "Bridge and swap"
 msgstr "Bridge et échange"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Short"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "The execution price may vary from your set limit price due to fees and price impact, ensuring you receive the displayed minimum receive amount. <0>Read more</0>."
 msgstr "Le prix d'exécution peut varier par rapport à votre prix limite en raison des frais et de l'impact sur le prix, garantissant que vous recevez le montant minimum affiché. <0>En savoir plus</0>."
@@ -2510,6 +2530,10 @@ msgstr "Ordre d'achat annulé."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics for GMX"
 msgstr "Analyses Dune pour GMX"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {0}"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "NET RATE / 1 H"
@@ -3645,6 +3669,10 @@ msgstr "GMX ne recherche pas activement de nouveaux recrutements pour le moment.
 msgid "Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName} to access earning opportunities."
 msgstr "La fourniture de liquidité pour ce marché n'est disponible que sur {chainNames} et {lastChainName}. Veuillez passer à {chainNames} ou {lastChainName} pour accéder aux opportunités de gains."
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {0}"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Opening..."
@@ -3833,10 +3861,6 @@ msgstr "Temps Estimé"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdrawing"
 msgstr "Retrait"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} - {marketIndexName}"
-msgstr "Ouvrir {longOrShortText} - {marketIndexName}"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "TRADING Airdrop"
@@ -5433,6 +5457,10 @@ msgstr "Créé"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Liquidité insuffisante pour échanger le collatéral"
+
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Long"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/orders/utils.tsx
@@ -7550,9 +7578,17 @@ msgstr "Frais de réseau TWAP élevé"
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr ""
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Long"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "Qu’est-ce que GM ?"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Open {longOrShortText} {marketIndexName}{extraLabel}"
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
@@ -7713,6 +7749,10 @@ msgstr "Diminution limite"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
 msgstr "Protocole Stabilize"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Limit @ {0}"
+msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "All assets"
@@ -8011,6 +8051,10 @@ msgstr "Finaliser le transfert"
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "Les réductions GMX V2 sont automatiquement appliquées sur chaque trade et ne sont pas affichées dans ce tableau."
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {0}"
+msgstr ""
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share Position"
 msgstr "Partager la position"
@@ -8251,6 +8295,10 @@ msgstr "Continuer"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and Cumulative PnL"
 msgstr "PnL quotidien et cumulé"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {0}"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"

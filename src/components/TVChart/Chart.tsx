@@ -14,6 +14,7 @@ import { DepthChart } from "components/DepthChart/DepthChart";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tabs from "components/Tabs/Tabs";
+import type { OpenChartTPSLModalParams } from "components/TVChartContainer/useChartContextMenu";
 
 import { TVChart } from "./TVChart";
 
@@ -39,26 +40,6 @@ const TAB_LABELS = {
   ),
 };
 
-const TAB_CONTENTS = {
-  PRICE: (
-    <ErrorBoundary id="Chart-TVChart" variant="block">
-      <TVChart />
-    </ErrorBoundary>
-  ),
-  DEPTH: (
-    <ErrorBoundary id="Chart-DepthChart" variant="block">
-      <DepthChartContainer />
-    </ErrorBoundary>
-  ),
-  MARKET_GRAPH: (
-    <Suspense fallback={<div>...</div>}>
-      <ErrorBoundary id="Chart-MarketGraph" variant="block">
-        <LazyMarketGraph />
-      </ErrorBoundary>
-    </Suspense>
-  ),
-};
-
 const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
@@ -66,24 +47,52 @@ const TABS_OPTIONS = TABS.map((tab) => ({
   label: TAB_LABELS[tab],
 }));
 
-export function Chart() {
+type Props = {
+  onOpenChartTPSLModal?: (params: OpenChartTPSLModalParams) => void;
+};
+
+export function Chart({ onOpenChartTPSLModal }: Props) {
   const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const activeTab = tab || "PRICE";
+
+  const priceTabContent = (
+    <ErrorBoundary id="Chart-TVChart" variant="block">
+      <TVChart onOpenTPSLModal={onOpenChartTPSLModal} />
+    </ErrorBoundary>
+  );
+
+  const depthTabContent = (
+    <ErrorBoundary id="Chart-DepthChart" variant="block">
+      <DepthChartContainer />
+    </ErrorBoundary>
+  );
+
+  const marketGraphTabContent = (
+    <Suspense fallback={<div>...</div>}>
+      <ErrorBoundary id="Chart-MarketGraph" variant="block">
+        <LazyMarketGraph />
+      </ErrorBoundary>
+    </Suspense>
+  );
+
+  const activeTabContent =
+    activeTab === "DEPTH" ? depthTabContent : activeTab === "MARKET_GRAPH" ? marketGraphTabContent : priceTabContent;
 
   return (
     <div className="ExchangeChart tv Synthetics-chart flex flex-col">
       <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900">
         {isSwap ? (
-          tab === "MARKET_GRAPH" ? (
-            TAB_CONTENTS.MARKET_GRAPH
+          activeTab === "MARKET_GRAPH" ? (
+            marketGraphTabContent
           ) : (
-            <TVChart />
+            priceTabContent
           )
         ) : (
           <>
             <ChartTabs tab={tab} setTab={setTab} />
 
-            {TAB_CONTENTS[tab || "PRICE"]}
+            {activeTabContent}
           </>
         )}
       </div>
