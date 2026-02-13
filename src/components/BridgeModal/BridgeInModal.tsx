@@ -324,6 +324,7 @@ export function BridgeInModal({
                 }
               : undefined
           }
+          maxDecimals={sourceChainDecimals}
         >
           <MultichainMarketTokenSelector
             chainId={chainId}

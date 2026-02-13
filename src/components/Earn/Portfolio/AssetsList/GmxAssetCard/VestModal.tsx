@@ -336,6 +336,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       if (vestedAmount === undefined || vestedAmount === 0n) {
         return <Trans>No funds to withdraw</Trans>;
       }
+      if (selectedVault === "gmx") {
+        return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Withdraw and Unreserve GMX</Trans>;
+      }
       return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Confirm Withdraw</Trans>;
     }
 
@@ -353,6 +356,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     isWithdrawing,
     vestedAmount,
     claimableAmount,
+    selectedVault,
   ]);
 
   const isPrimaryDisabled = useMemo(() => {
@@ -445,7 +449,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
           regularOptionClassname="grow"
         />
 
-        <div className="flex flex-col gap-8 px-20">
+        <div className="flex flex-col gap-8 px-20 pb-20">
           {!isReadVestingDetailsBannerClosed && (
             <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
               <div>
@@ -478,6 +482,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 }
                 inputValue={depositValues[selectedVault]}
                 onInputValueChange={(e) => handleSetDepositValue(e.target.value)}
+                maxDecimals={18}
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
@@ -497,6 +502,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 topLeftLabel={t`Withdraw`}
                 inputValue={formatGmxAmount((vestedAmount ?? 0n) - (claimSum ?? 0n))}
                 isDisabled
+                maxDecimals={18}
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
@@ -512,7 +518,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
           {activeAction === "claim" && (
             <>
-              <BuyInputSection topLeftLabel={t`Claim`} inputValue={formatGmxAmount(claimableAmount)} isDisabled>
+              <BuyInputSection
+                topLeftLabel={t`Claim`}
+                inputValue={formatGmxAmount(claimableAmount)}
+                isDisabled
+                maxDecimals={18}
+              >
                 <div className="flex items-center gap-4">
                   <GmxIcon className="size-20" />
                   GMX

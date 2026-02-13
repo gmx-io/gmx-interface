@@ -445,8 +445,8 @@ export function PositionSeller() {
       numberOfParts,
     });
 
-    if (commonError[0] || decreaseError[0] || expressError[0]) {
-      return commonError[0] || decreaseError[0] || expressError[0];
+    if (commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage) {
+      return commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage;
     }
 
     if (isSubmitting) {
@@ -956,6 +956,7 @@ export function PositionSeller() {
                       setCloseUsdInputValueRaw(formattedAmount);
                     }}
                     qa="amount-input"
+                    maxDecimals={USD_DECIMALS}
                   >
                     USD
                   </BuyInputSection>
@@ -984,6 +985,7 @@ export function PositionSeller() {
                         setTriggerPriceInputValue(e.target.value);
                       }}
                       qa="trigger-input"
+                      maxDecimals={USD_DECIMALS}
                     >
                       USD
                     </BuyInputSection>

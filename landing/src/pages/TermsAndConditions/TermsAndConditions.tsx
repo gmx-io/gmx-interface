@@ -175,7 +175,15 @@ export default function TermsAndConditions() {
                       other aspect of any digital assets that you may transfer to or from a third party, and we are not
                       responsible for ensuring that an entity with whom you transact completes the transaction or is
                       authorized to do so. If you experience a problem with any transactions in digital assets using the
-                      Site or the Interface, you bear the entire risk.
+                      Site or the Interface, you bear the entire risk; and
+                    </p>
+                  </li>
+                  <li>
+                    <p className="text-terms-body mb-24">
+                      1.2.10. GMX does not collect personal data; however, from time to time third-party service
+                      providers may collect limited user data in accordance with their own terms and applicable
+                      data-protection laws, to which GMX has no direct access, and which is used solely to improve user
+                      experience, resolve technical issues, and monitor for suspicious activity.
                     </p>
                   </li>
                 </ul>

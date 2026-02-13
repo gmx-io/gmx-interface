@@ -99,11 +99,41 @@ export function numberToBigint(value: number, decimals: number) {
 }
 
 export const trimZeroDecimals = (amount: string) => {
-  if (parseFloat(amount) === parseInt(amount)) {
-    return parseInt(amount).toString();
+  if (amount === "") {
+    return amount;
   }
+  if (!amount.includes(".")) {
+    return normalizeInteger(amount);
+  }
+
+  const isNegative = amount.startsWith("-");
+  const unsignedAmount = isNegative ? amount.slice(1) : amount;
+  const [integerPartRaw, fractionPartRaw = ""] = unsignedAmount.split(".");
+
+  if (/^0*$/.test(fractionPartRaw)) {
+    const integerWithSign = isNegative ? `-${integerPartRaw}` : integerPartRaw;
+    return normalizeInteger(integerWithSign);
+  }
+
   return amount;
 };
+
+function normalizeInteger(value: string) {
+  if (!value) {
+    return "0";
+  }
+
+  const isNegative = value.startsWith("-");
+  const hasPlus = value.startsWith("+");
+  const unsigned = isNegative || hasPlus ? value.slice(1) : value;
+  const stripped = unsigned.replace(/^0+/, "") || "0";
+
+  if (stripped === "0") {
+    return "0";
+  }
+
+  return isNegative ? `-${stripped}` : stripped;
+}
 
 export function bigintToNumber(value: bigint, decimals: number) {
   const negative = value < 0;

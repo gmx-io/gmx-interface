@@ -88,7 +88,7 @@ function YieldMetric({
   disabled?: boolean;
 }) {
   const metricNode = (
-    <div className="flex items-center gap-6 text-13">
+    <div className="text-body-medium flex items-center gap-6">
       <span className={cx("text-typography-primary", { "group-hover:text-blue-300": !disabled })}>{value}</span>
       {!disabled && (
         <span className={cx("uppercase text-typography-secondary", { "group-hover:text-blue-300": !disabled })}>
@@ -134,7 +134,7 @@ function NetworkYieldCard({
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
       {showTitle && (
-        <div className="flex items-center gap-8 pl-12 text-16 font-medium text-typography-primary">
+        <div className="text-body-large flex items-center gap-8 pl-12 font-medium text-typography-primary">
           <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
           {title}
         </div>
@@ -177,6 +177,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
     "group flex items-center justify-between gap-8 border-b-1/2 border-slate-600 px-12 py-8 last:border-b-0",
     {
       "cursor-default": disabled,
+      "cursor-pointer": !disabled && !to && onClick,
     }
   );
 
@@ -184,7 +185,11 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
     <>
       <div className="flex items-center gap-8">
         <img className="size-20" src={ASSET_ICONS[token]} alt={token} />
-        <span className={cx("text-13 font-medium text-typography-primary", { "group-hover:text-blue-300": !disabled })}>
+        <span
+          className={cx("text-body-medium font-medium text-typography-primary", {
+            "group-hover:text-blue-300": !disabled,
+          })}
+        >
           {token}
         </span>
       </div>
@@ -395,7 +400,7 @@ export default function EarnYieldOverview() {
   return (
     <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
       <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
-      <h4 className="py-20 text-20 font-medium text-typography-primary max-xl:pb-12 max-xl:pt-0 max-xl:text-16">
+      <h4 className="text-h3 py-20 text-typography-primary max-xl:text-body-large max-xl:pb-12 max-xl:pt-0">
         <Trans>Current Yield Landscape</Trans>
       </h4>
 

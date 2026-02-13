@@ -63,7 +63,7 @@ export function OpportunityAssets({
         </div>
       }
       content={
-        <div className="flex flex-col gap-6 text-12">
+        <div className="text-body-small flex flex-col gap-6">
           {assets.map((token) => (
             <span key={getOpportunityAssetKey(token)} className="flex items-center gap-6">
               <OpportunityTokenIcon asset={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
