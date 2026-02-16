@@ -2712,10 +2712,6 @@ msgstr "В других токенах:"
 msgid "Returned Collateral"
 msgstr "Возвращённый Залог"
 
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "There are issues in the TP/SL orders."
-msgstr "Есть проблемы в ордерах TP/SL."
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Long Inc."
 msgstr "Стоп-Маркет - Лонг Увелич."
@@ -6492,10 +6488,6 @@ msgstr "Kudai AI агент"
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Current Price"
 msgstr "Текущая цена"
-
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "Enter TP/SL price"
-msgstr ""
 
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT ID"

@@ -2712,10 +2712,6 @@ msgstr ""
 msgid "Returned Collateral"
 msgstr ""
 
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "There are issues in the TP/SL orders."
-msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Long Inc."
 msgstr ""
@@ -6491,10 +6487,6 @@ msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Current Price"
-msgstr ""
-
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "Enter TP/SL price"
 msgstr ""
 
 #: src/pages/NftWallet/NftWallet.tsx

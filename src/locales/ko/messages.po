@@ -2712,10 +2712,6 @@ msgstr "다른 토큰으로:"
 msgid "Returned Collateral"
 msgstr "반환된 담보"
 
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "There are issues in the TP/SL orders."
-msgstr "TP/SL 주문에 문제가 있습니다."
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Long Inc."
 msgstr "스탑 마켓 - 롱 증가"
@@ -6492,10 +6488,6 @@ msgstr "Kudai AI 에이전트"
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Current Price"
 msgstr "현재 가격"
-
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "Enter TP/SL price"
-msgstr ""
 
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT ID"

@@ -2,7 +2,7 @@ import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@f
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, RefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -529,9 +529,6 @@ function DisplayModeSelector({
     middleware: [offset(4), flip(), shift()],
     placement: "bottom-end",
     whileElementsMounted: autoUpdate,
-    elements: {
-      reference: popoverReferenceRef?.current ?? buttonRef.current,
-    },
   });
 
   const setButtonRef = useCallback(
@@ -544,6 +541,12 @@ function DisplayModeSelector({
     },
     [popoverReferenceRef, refs]
   );
+
+  useLayoutEffect(() => {
+    if (popoverReferenceRef?.current) {
+      refs.setReference(popoverReferenceRef.current);
+    }
+  }, [popoverReferenceRef, refs]);
 
   const setPopoverButtonRef = useCallback(
     (node: HTMLButtonElement | null) => {

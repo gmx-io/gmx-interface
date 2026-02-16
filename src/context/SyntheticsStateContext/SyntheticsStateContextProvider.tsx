@@ -490,11 +490,7 @@ export function SyntheticsStateContextProvider({
     positionSellerState,
     positionEditorState,
     poolsDetailsState,
-    features,
     uiFlags,
-    sponsoredCallBalanceData,
-    gasPaymentTokenAllowance,
-    l1ExpressOrderGasReference,
   ]);
 
   latestStateRef.current = state;

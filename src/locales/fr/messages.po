@@ -2712,10 +2712,6 @@ msgstr "En d'autres jetons :"
 msgid "Returned Collateral"
 msgstr "Collatéral retourné"
 
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "There are issues in the TP/SL orders."
-msgstr "Il y a des problèmes dans les ordres TP/SL."
-
 #: src/components/TVChartContainer/constants.ts
 msgid "Stop Market - Long Inc."
 msgstr "Stop Market - Augmentation Long"
@@ -6492,10 +6488,6 @@ msgstr "Agent AI Kudai"
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Current Price"
 msgstr "Prix actuel"
-
-#: src/components/OrderEditor/hooks/useOrderEditorTPSL.ts
-msgid "Enter TP/SL price"
-msgstr ""
 
 #: src/pages/NftWallet/NftWallet.tsx
 msgid "Enter NFT ID"
