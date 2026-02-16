@@ -50,7 +50,7 @@ import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
 import { getTenderlyAccountParams } from "lib/tenderly";
-import { getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
+import { getGelatoRelayerForChain, getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
@@ -151,6 +151,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
   const latestPendingExpressTxnParams = useLatest(pendingExpressTxnParams);
+  const latestGelatoTaskStatuses = useLatest(gelatoTaskStatuses);
   const pendingOrderToastIdRef = useRef<number>();
   const eventLogHandlers = useRef({});
 
@@ -1007,70 +1008,58 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const pollingTaskIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    const GELATO_API = "https://api.gelato.digital";
-    const POLL_INTERVAL = 2000;
-    const FINAL_TASK_STATES = ["ExecSuccess", "ExecReverted", "Cancelled"];
-    const TASK_STATE_TO_STATUS_CODE: Record<string, StatusCode> = {
-      ExecSuccess: StatusCode.Success,
-      ExecReverted: StatusCode.Reverted,
-      Cancelled: StatusCode.Rejected,
-    };
-
-    const abortController = new AbortController();
-
     const taskIds = Object.values(pendingExpressTxnParams)
       .map((p) => p.taskId)
-      .filter((id): id is string => Boolean(id) && !gelatoTaskStatuses[id!] && !pollingTaskIdsRef.current.has(id!));
+      .filter(
+        (id): id is string =>
+          Boolean(id) && !latestGelatoTaskStatuses.current[id!] && !pollingTaskIdsRef.current.has(id!)
+      );
+
+    if (taskIds.length === 0) return;
+
+    const relayer = getGelatoRelayerForChain(chainId);
+
+    if (!relayer) return;
 
     for (const taskId of taskIds) {
       pollingTaskIdsRef.current.add(taskId);
 
       (async () => {
         try {
-          while (!abortController.signal.aborted) {
-            try {
-              const res = await fetch(`${GELATO_API}/tasks/status/${taskId}`, {
-                signal: abortController.signal,
-              });
-              const { task: taskStatus } = await res.json();
+          const terminalStatus = await relayer.waitForStatus({ id: taskId });
 
-              if (isDevelopment()) {
-                const { accountSlug, projectSlug } = getTenderlyAccountParams();
-                getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
-                  // eslint-disable-next-line no-console
-                  console.log("gelatoDebugData", taskStatus, debugInfo)
-                );
-              }
-
-              if (FINAL_TASK_STATES.includes(taskStatus.taskState)) {
-                setGelatoTaskStatuses((old) =>
-                  setByKey(old, taskStatus.taskId, {
-                    taskId: taskStatus.taskId,
-                    statusCode: TASK_STATE_TO_STATUS_CODE[taskStatus.taskState] ?? StatusCode.Rejected,
-                    message: taskStatus.lastCheckMessage,
-                    transactionHash: taskStatus.transactionHash,
-                  })
-                );
-                return;
-              }
-            } catch (e) {
-              if (abortController.signal.aborted) return;
+          if (isDevelopment()) {
+            const { accountSlug, projectSlug } = getTenderlyAccountParams();
+            getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
               // eslint-disable-next-line no-console
-              console.error(e);
-            }
-
-            await sleep(POLL_INTERVAL);
+              console.log("gelatoDebugData", terminalStatus, debugInfo)
+            );
           }
+
+          const transactionHash =
+            terminalStatus.status === StatusCode.Success
+              ? terminalStatus.receipt.transactionHash
+              : terminalStatus.status === StatusCode.Reverted
+                ? terminalStatus.receipt?.transactionHash
+                : undefined;
+
+          setGelatoTaskStatuses((old) =>
+            setByKey(old, taskId, {
+              taskId,
+              statusCode: terminalStatus.status,
+              message: terminalStatus.status !== StatusCode.Success ? terminalStatus.message : undefined,
+              transactionHash,
+            })
+          );
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error(e);
         } finally {
           pollingTaskIdsRef.current.delete(taskId);
         }
       })();
     }
-
-    return () => {
-      abortController.abort();
-    };
-  }, [pendingExpressTxnParams, gelatoTaskStatuses]);
+  }, [pendingExpressTxnParams, latestGelatoTaskStatuses, chainId]);
 
   useEffect(
     function notifyPendingExpressTxn() {

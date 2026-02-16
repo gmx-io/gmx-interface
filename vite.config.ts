@@ -72,7 +72,7 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash"],
+            web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatocloud/gasless"],
             charts: ["recharts"],
             ui: ["@headlessui/react", "framer-motion", "react-select"],
           },

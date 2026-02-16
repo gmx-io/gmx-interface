@@ -75,7 +75,7 @@ function makeExpressTxnResultWaiter(
     }
 
     const transactionHash =
-      terminalStatus.status === StatusCode.Reverted ? terminalStatus.receipt.transactionHash : undefined;
+      terminalStatus.status === StatusCode.Reverted ? terminalStatus.receipt?.transactionHash : undefined;
 
     return {
       transactionHash,
@@ -96,6 +96,12 @@ const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
   [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
   [ARBITRUM_SEPOLIA]: "nx5nyAg4h2kI_64YtOuPt7LSPDEXo4u8eJY_idF9xDw_",
 };
+
+export function getGelatoRelayerForChain(chainId: number) {
+  const apiKey = GELATO_API_KEYS[chainId as ContractsChainId];
+  if (!apiKey) return undefined;
+  return getGelatoRelayerClient(apiKey);
+}
 
 const GELATO_API = "https://api.gelato.digital";
 
