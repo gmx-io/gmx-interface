@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { ContractsChainId } from "config/chains";
@@ -43,8 +43,9 @@ export function useTokenRecentPricesRequest(
 
   const key = enabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
 
-  const { data, error, isLoading } = useSequentialTimedSWR(key, {
+  const { data, error, isLoading, mutate } = useSequentialTimedSWR(key, {
     refreshInterval: refreshPricesInterval,
+    refreshWhenHidden: true,
 
     fetcher: async ([chainId]) => {
       const priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
@@ -121,6 +122,16 @@ export function useTokenRecentPricesRequest(
       };
     },
   });
+
+  useEffect(() => {
+    const handler = () => {
+      if (document.visibilityState === "visible") {
+        mutate();
+      }
+    };
+    document.addEventListener("visibilitychange", handler);
+    return () => document.removeEventListener("visibilitychange", handler);
+  }, [mutate]);
 
   return {
     pricesData: data?.pricesData,
