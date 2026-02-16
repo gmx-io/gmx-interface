@@ -180,7 +180,7 @@ export function getSwapError(p: {
   }
 
   if (isLimit && (triggerRatio?.ratio === undefined || triggerRatio.ratio < 0)) {
-    return { buttonErrorMessage: t`Enter a  price` };
+    return { buttonErrorMessage: t`Enter a price` };
   }
 
   if ((!isLimit || isTwap) && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
@@ -786,7 +786,9 @@ export function getGmSwapError(p: {
     return { buttonErrorMessage: t`Loading...` };
   }
 
-  const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
+  const glvTooltipMessage = glvInfo
+    ? t`Buyable cap reached for GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}]. Reduce size, pick different GM, or shift to another pool.`
+    : undefined;
 
   if (isPair && isDeposit && paySource === "sourceChain") {
     return { buttonErrorMessage: t`Deposit from source chain support only single token` };
@@ -800,7 +802,7 @@ export function getGmSwapError(p: {
       if (!getIsValidPoolAmount(marketInfo, newPoolAmount)) {
         return {
           buttonErrorMessage: t`Max pool amount exceeded`,
-          buttonTooltipMessage: glvInfo ? glvTooltipMessage : undefined,
+          buttonTooltipMessage: glvTooltipMessage,
         };
       }
     }
@@ -808,7 +810,7 @@ export function getGmSwapError(p: {
     if (!getIsValidPoolUsdForDeposit(marketInfo)) {
       return {
         buttonErrorMessage: t`Max pool USD exceeded`,
-        buttonTooltipMessage: glvInfo ? glvTooltipMessage : undefined,
+        buttonTooltipMessage: glvTooltipMessage,
       };
     }
 
@@ -908,10 +910,7 @@ export function getGmSwapError(p: {
       if (marketTokenUsd !== undefined && (mintableGmUsd < marketTokenUsd || maxMintableInMarketUsd < marketTokenUsd)) {
         return {
           buttonErrorMessage: t`Max pool amount reached`,
-          buttonTooltipMessage:
-            longToken?.symbol === "GM"
-              ? t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
-              : t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please choose a different pool or reduce the buy size.`,
+          buttonTooltipMessage: glvTooltipMessage,
         };
       }
     }
@@ -933,7 +932,7 @@ export function getGmSwapError(p: {
       if ((glvTokenAmount ?? 0n) > (sellableGlvInMarket.sellableAmount ?? 0n)) {
         return {
           buttonErrorMessage: t`Insufficient GLV liquidity`,
-          buttonTooltipMessage: t`There isn't enough GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonTooltipMessage: t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose different pool, reduce size, or split withdrawal.`,
         };
       }
 
@@ -942,7 +941,7 @@ export function getGmSwapError(p: {
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return {
           buttonErrorMessage: t`Insufficient liquidity in GM Pool`,
-          buttonTooltipMessage: t`The sellable cap for the pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonTooltipMessage: t`Sellable cap reached for GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}]. Tokens reserved by traders. Choose different pool, reduce size, or split withdrawal.`,
         };
       }
     }
