@@ -739,6 +739,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9": {
       enabled: true,
     },
+    // SWAP-ONLY [ETH-USDM]
+    "0xc5c9B5E23810565763De41144741477eeCB25e2e": {
+      enabled: true,
+    },
   },
 };
 

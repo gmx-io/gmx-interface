@@ -1268,6 +1268,13 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
       shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
     },
+    // SWAP-ONLY [ETH-USDM]
+    "0xc5c9B5E23810565763De41144741477eeCB25e2e": {
+      marketTokenAddress: "0xc5c9B5E23810565763De41144741477eeCB25e2e",
+      indexTokenAddress: "0x0000000000000000000000000000000000000000",
+      longTokenAddress: "0x4200000000000000000000000000000000000006",
+      shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+    },
   },
 };
 
