@@ -125,7 +125,7 @@ function CollapsedMoreMenu({
                   }
                 )}
               >
-                <MenuDotsIcon className="size-16" />
+                <MenuDotsIcon className="size-16 rotate-90" />
               </div>
             </Popover.Button>
           </div>
