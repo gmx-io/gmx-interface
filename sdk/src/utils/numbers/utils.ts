@@ -1,6 +1,6 @@
-import { bigMath } from "utils/bigmath";
 import { formatUnits, parseUnits } from "viem";
 
+import { bigMath } from "utils/bigmath";
 
 export type Numeric = number | bigint;
 export type BigNumberish = string | Numeric;
@@ -15,7 +15,7 @@ export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 
 export const BN_ZERO = 0n;
-export const BN_ONE = 1n; 
+export const BN_ONE = 1n;
 export const BN_NEGATIVE_ONE = -1n;
 
 export const MaxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
