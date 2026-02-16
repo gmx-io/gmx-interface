@@ -1006,6 +1006,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   );
 
   const pollingTaskIdsRef = useRef<Set<string>>(new Set());
+  const taskChainIdRef = useRef<Map<string, number>>(new Map());
 
   useEffect(() => {
     const taskIds = Object.values(pendingExpressTxnParams)
@@ -1017,11 +1018,16 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     if (taskIds.length === 0) return;
 
-    const relayer = getGelatoRelayerForChain(chainId);
-
-    if (!relayer) return;
-
     for (const taskId of taskIds) {
+      if (!taskChainIdRef.current.has(taskId)) {
+        taskChainIdRef.current.set(taskId, chainId);
+      }
+
+      const taskChainId = taskChainIdRef.current.get(taskId)!;
+      const relayer = getGelatoRelayerForChain(taskChainId);
+
+      if (!relayer) continue;
+
       pollingTaskIdsRef.current.add(taskId);
 
       (async () => {
@@ -1056,6 +1062,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           console.error(e);
         } finally {
           pollingTaskIdsRef.current.delete(taskId);
+          taskChainIdRef.current.delete(taskId);
         }
       })();
     }
