@@ -4757,6 +4757,10 @@ msgstr "Не удалось отменить {ordersText}."
 msgid "Vesting"
 msgstr "Вестинг"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "Поддержка"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "Отменить недавно созданные ордера"
@@ -6273,6 +6277,10 @@ msgstr "Сдвиг {symbol}..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "Цена триггера выше маркированной цены"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "Новое"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"

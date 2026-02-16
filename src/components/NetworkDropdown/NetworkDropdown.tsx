@@ -78,7 +78,7 @@ function isValidVisualSourceChain(chainId: number) {
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,

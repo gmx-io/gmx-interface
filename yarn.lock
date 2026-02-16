@@ -3191,6 +3191,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@intercom/messenger-js-sdk@npm:^0.0.18":
+  version: 0.0.18
+  resolution: "@intercom/messenger-js-sdk@npm:0.0.18"
+  checksum: 10/10758f9228def7c075b8ee069e7ceb5dd1d00d02224e4e7a4e23abf227eed9384ce17f956baaf07ec029e64137e5a055d02e1c3f03ae8467024c17d6a06d1dcf
+  languageName: node
+  linkType: hard
+
 "@ioredis/commands@npm:^1.1.1":
   version: 1.2.0
   resolution: "@ioredis/commands@npm:1.2.0"
@@ -11462,6 +11469,7 @@ __metadata:
     "@floating-ui/react": "npm:0.26.19"
     "@gelatonetwork/relay-sdk": "npm:5.6.0"
     "@headlessui/react": "npm:1.7.19"
+    "@intercom/messenger-js-sdk": "npm:^0.0.18"
     "@layerzerolabs/lz-v2-utilities": "npm:3.0.85"
     "@lingui/cli": "npm:4.10.0"
     "@lingui/core": "npm:4.10.0"

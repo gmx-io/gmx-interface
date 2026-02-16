@@ -4757,6 +4757,10 @@ msgstr ""
 msgid "Vesting"
 msgstr ""
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr ""
@@ -6272,6 +6276,10 @@ msgstr ""
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
+msgstr ""
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
 msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx

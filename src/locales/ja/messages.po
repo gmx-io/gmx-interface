@@ -4757,6 +4757,10 @@ msgstr "{ordersText}のキャンセルに失敗しました。"
 msgid "Vesting"
 msgstr "ベスティング"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "サポート"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "新規作成注文をキャンセル"
@@ -6273,6 +6277,10 @@ msgstr "{symbol} をシフト中..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "トリガー価格がマーク価格を上回る"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "新着"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"

@@ -4757,6 +4757,10 @@ msgstr "Falló la cancelación de {ordersText}."
 msgid "Vesting"
 msgstr "Vesting"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "Soporte"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "Cancelar órdenes recién creadas"
@@ -6273,6 +6277,10 @@ msgstr "Cambiando {symbol}..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "Precio de activación por encima del precio de referencia"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "Nuevo"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
