@@ -132,9 +132,10 @@ export function PositionSeller() {
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const settings = useSettings();
-  const { shouldDisableValidationForTesting } = settings;
+  const { shouldDisableValidationForTesting, expressOrdersEnabled } = settings;
   useInitCollateralCloseDestination();
   const [isReceiveToGmxAccount, setIsReceiveToGmxAccount] = useState(settings.receiveToGmxAccount ?? false);
+  const effectiveIsReceiveToGmxAccount = isReceiveToGmxAccount && expressOrdersEnabled;
   const [isDestinationDialogVisible, setIsDestinationDialogVisible] = useState(false);
   const [dialogHidden, setDialogHidden] = useLocalStorageSerializeKey(
     getCollateralCloseDestinationDialogHiddenKey(chainId, account),
@@ -391,7 +392,7 @@ export function PositionSeller() {
   } = useExpressOrdersParams({
     label: "Position Seller",
     orderParams: batchParams,
-    isGmxAccount: srcChainId !== undefined || isReceiveToGmxAccount,
+    isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
@@ -572,7 +573,7 @@ export function PositionSeller() {
       signer,
       provider,
       batchParams,
-      isGmxAccount: srcChainId !== undefined || isReceiveToGmxAccount,
+      isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -724,7 +725,7 @@ export function PositionSeller() {
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
             topContent={
-              chainId === ARBITRUM && srcChainId === undefined ? (
+              chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled ? (
                 <div className="mb-16">
                   <div className="flex items-center justify-between gap-8">
                     <span className="text-14 text-typography-secondary">
