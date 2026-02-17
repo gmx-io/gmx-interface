@@ -130,6 +130,8 @@ msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche上のイールドオプティマイザー"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
@@ -669,6 +671,10 @@ msgstr "ペアトレーディング"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} Rewards"
 msgstr "{tokenSymbol}報酬をステーク"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Don't ask again"
+msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "Cancelling {ordersText}..."
@@ -1694,6 +1700,10 @@ msgstr "{orderTypeText} {0} を {1}に"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr "送信者がGLPベスティングボールトから全トークンを引き出しました"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "How do I choose?"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
@@ -3713,6 +3723,10 @@ msgstr "TVL (供給)"
 msgid "Decrease the leverage to match the max. allowed leverage."
 msgstr "最大許容レバレッジに合わせるためにレバレッジを減少させてください。"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Update Default Destination"
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Shorts"
@@ -4572,6 +4586,10 @@ msgstr "リンクがクリップボードにコピーされました。"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max slippage precision is -0.01%"
 msgstr "最大スリッページ精度は-0.01%"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "<0>GMX Balance</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Wallet</3> sends funds directly to your connected wallet."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Weekly Updates"
@@ -6731,6 +6749,10 @@ msgstr "ベスティング済み請求可能GMX："
 msgid "Transaction failed."
 msgstr "取引に失敗しました。"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Yes, set {destinationLabel} as default"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "分散型イールド製品"
@@ -7566,8 +7588,6 @@ msgstr "ボーナスAPRは{airdropTokenTitle}トークンとしてエアドロ�
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Wallet"
@@ -7921,6 +7941,10 @@ msgstr "転送を完了"
 msgid "Trigger price below lowest limit price"
 msgstr "トリガー価格が最低リミット価格を下回っています"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "No, keep current default"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "GMX V2割引は各取引で自動適用され、このテーブルに表示されません。"
@@ -8041,6 +8065,10 @@ msgstr "7日"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "You chose to send the remaining collateral to <0>{destinationLabel}</0>. Do you want to make <1>{destinationLabel}</1> your default destination when closing positions?"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Click on the position to select it, then use the trade box to increase it."

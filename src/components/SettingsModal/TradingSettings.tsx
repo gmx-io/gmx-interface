@@ -295,15 +295,15 @@ export function TradingSettings({
                 <div className="flex items-center gap-4 text-typography-primary">
                   <img
                     src={
-                      settings.receiveToGmxAccount
+                      (settings.receiveToGmxAccount ?? false)
                         ? CHAIN_ID_TO_NETWORK_ICON[GMX_ACCOUNT_PSEUDO_CHAIN_ID]
                         : CHAIN_ID_TO_NETWORK_ICON[ARBITRUM]
                     }
-                    alt={settings.receiveToGmxAccount ? "GMX Balance" : "Wallet"}
+                    alt={(settings.receiveToGmxAccount ?? false) ? "GMX Balance" : "Wallet"}
                     className="size-20"
                   />
                   <span>
-                    {settings.receiveToGmxAccount ? <Trans>GMX Balance</Trans> : <Trans>Wallet</Trans>}
+                    {(settings.receiveToGmxAccount ?? false) ? <Trans>GMX Balance</Trans> : <Trans>Wallet</Trans>}
                   </span>
                 </div>
               </div>
@@ -312,12 +312,12 @@ export function TradingSettings({
             <div className="flex flex-col">
               <CollateralDestinationOption
                 isGmxBalance
-                isSelected={settings.receiveToGmxAccount}
+                isSelected={settings.receiveToGmxAccount ?? false}
                 onClick={() => settings.setReceiveToGmxAccount(true)}
               />
               <CollateralDestinationOption
                 isGmxBalance={false}
-                isSelected={!settings.receiveToGmxAccount}
+                isSelected={!(settings.receiveToGmxAccount ?? false)}
                 onClick={() => settings.setReceiveToGmxAccount(false)}
               />
             </div>

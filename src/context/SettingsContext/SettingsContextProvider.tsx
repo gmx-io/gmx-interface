@@ -107,7 +107,7 @@ export type SettingsContextType = {
   isSetAcceptablePriceImpactEnabled: boolean;
   setIsSetAcceptablePriceImpactEnabled: (val: boolean) => void;
 
-  receiveToGmxAccount: boolean;
+  receiveToGmxAccount: boolean | null;
   setReceiveToGmxAccount: (val: boolean) => void;
 };
 
@@ -194,9 +194,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  const [receiveToGmxAccount, setReceiveToGmxAccount] = useLocalStorageSerializeKey(
+  const [receiveToGmxAccount, setReceiveToGmxAccount] = useLocalStorageSerializeKey<boolean | null>(
     getCollateralCloseDestinationKey(chainId, account),
-    true
+    null
   );
 
   const [savedBreakdownNetPriceImpactEnabled, setSavedBreakdownNetPriceImpactEnabled] = useLocalStorageSerializeKey(
@@ -339,7 +339,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
 
-      receiveToGmxAccount: receiveToGmxAccount!,
+      receiveToGmxAccount: receiveToGmxAccount ?? null,
       setReceiveToGmxAccount,
 
       feedbackModalVisible,

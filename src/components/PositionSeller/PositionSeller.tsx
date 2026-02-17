@@ -7,6 +7,7 @@ import { useKey, useLatest, useMedia } from "react-use";
 
 import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getCollateralCloseDestinationDialogHiddenKey } from "config/localStorage";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -45,6 +46,7 @@ import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tok
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -62,6 +64,7 @@ import { getCommonError, getDecreaseError, getExpressError } from "domain/synthe
 import { Token } from "domain/tokens";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { useChainId } from "lib/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -108,6 +111,7 @@ import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 import ArbitrumIcon from "img/tokens/ic_arbitrum.svg?react";
 
+import { CollateralDestinationDialog } from "./CollateralDestinationDialog";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -146,7 +150,24 @@ export function PositionSeller() {
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const settings = useSettings();
   const { shouldDisableValidationForTesting } = settings;
-  const [isReceiveToGmxAccount, setIsReceiveToGmxAccount] = useState(settings.receiveToGmxAccount);
+  useInitCollateralCloseDestination();
+  const [isReceiveToGmxAccount, setIsReceiveToGmxAccount] = useState(settings.receiveToGmxAccount ?? false);
+  const [isDestinationDialogVisible, setIsDestinationDialogVisible] = useState(false);
+  const [dialogHidden, setDialogHidden] = useLocalStorageSerializeKey(
+    getCollateralCloseDestinationDialogHiddenKey(chainId, account),
+    false
+  );
+
+  const handleSetIsReceiveToGmxAccount = useCallback(
+    (value: boolean) => {
+      setIsReceiveToGmxAccount(value);
+      if (value !== (settings.receiveToGmxAccount ?? false) && !dialogHidden) {
+        setIsDestinationDialogVisible(true);
+      }
+    },
+    [settings.receiveToGmxAccount, dialogHidden]
+  );
+
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -217,7 +238,7 @@ export function PositionSeller() {
 
   useEffect(() => {
     if (isVisible) {
-      setIsReceiveToGmxAccount(settings.receiveToGmxAccount);
+      setIsReceiveToGmxAccount(settings.receiveToGmxAccount ?? false);
     }
   }, [isVisible, settings.receiveToGmxAccount]);
 
@@ -778,12 +799,12 @@ export function PositionSeller() {
                         <CollateralDestinationOption
                           isGmxBalance={false}
                           isSelected={!isReceiveToGmxAccount}
-                          onClick={() => setIsReceiveToGmxAccount(false)}
+                          onClick={() => handleSetIsReceiveToGmxAccount(false)}
                         />
                         <CollateralDestinationOption
                           isGmxBalance
                           isSelected={isReceiveToGmxAccount}
-                          onClick={() => setIsReceiveToGmxAccount(true)}
+                          onClick={() => handleSetIsReceiveToGmxAccount(true)}
                         />
                       </div>
                     </SelectorBase>
@@ -1120,6 +1141,13 @@ export function PositionSeller() {
           )}
         </div>
       </Modal>
+
+      <CollateralDestinationDialog
+        isVisible={isDestinationDialogVisible}
+        setIsVisible={setIsDestinationDialogVisible}
+        chosenReceiveToGmxAccount={isReceiveToGmxAccount}
+        setDialogHidden={setDialogHidden}
+      />
     </div>
   );
 }
