@@ -1808,6 +1808,11 @@ msgstr "Layer 2"
 msgid "Rebates Distribution History"
 msgstr "Rebates Distribution History"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Collateral close destination"
+msgstr "Collateral close destination"
+
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
 msgstr "V1 Interface"
@@ -6198,6 +6203,10 @@ msgstr "Unknown shift GM order"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "GMX Balance"
 msgstr "GMX Balance"
 
@@ -7557,6 +7566,10 @@ msgstr "The Bonus APR will be airdropped as {airdropTokenTitle} tokens. <0>Read 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Wallet"
 msgstr "Wallet"
 

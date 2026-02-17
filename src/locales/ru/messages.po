@@ -1808,6 +1808,11 @@ msgstr "Layer 2"
 msgid "Rebates Distribution History"
 msgstr "История Распределения Рибейтов"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Collateral close destination"
+msgstr ""
+
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
 msgstr "Интерфейс V1"
@@ -6198,6 +6203,10 @@ msgstr "Неизвестный ордер сдвига GM"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "GMX Balance"
 msgstr "Баланс GMX"
 
@@ -7557,6 +7566,10 @@ msgstr "Бонусный APR будет аирдропнут как токены
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Wallet"
 msgstr "Кошелек"
 

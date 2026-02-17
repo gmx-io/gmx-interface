@@ -1808,6 +1808,11 @@ msgstr "레이어 2"
 msgid "Rebates Distribution History"
 msgstr "소개 보수 분배 내역"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Collateral close destination"
+msgstr ""
+
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
 msgstr "V1 인터페이스"
@@ -6198,6 +6203,10 @@ msgstr "알 수 없는 GM 이전 주문"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "GMX Balance"
 msgstr "GMX 잔액"
 
@@ -7557,6 +7566,10 @@ msgstr "보너스 APR은 {airdropTokenTitle} 토큰으로 에어드랍됩니다.
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Wallet"
 msgstr "지갑"
 

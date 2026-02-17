@@ -5,6 +5,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest, useMedia } from "react-use";
 
+import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -95,14 +96,17 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import GmxRoundedIcon from "img/ic_gmx_rounded.svg?react";
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
+import ArbitrumIcon from "img/tokens/ic_arbitrum.svg?react";
 
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
@@ -140,7 +144,9 @@ export function PositionSeller() {
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const { shouldDisableValidationForTesting } = useSettings();
+  const settings = useSettings();
+  const { shouldDisableValidationForTesting } = settings;
+  const [isReceiveToGmxAccount, setIsReceiveToGmxAccount] = useState(settings.receiveToGmxAccount);
   const localizedOrderOptionLabels = useLocalizedMap(ORDER_OPTION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -208,6 +214,12 @@ export function PositionSeller() {
   );
 
   const receiveToken = useSelector(selectPositionSellerReceiveToken);
+
+  useEffect(() => {
+    if (isVisible) {
+      setIsReceiveToGmxAccount(settings.receiveToGmxAccount);
+    }
+  }, [isVisible, settings.receiveToGmxAccount]);
 
   useEffect(() => {
     if (!isVisible) {
@@ -372,7 +384,7 @@ export function PositionSeller() {
   } = useExpressOrdersParams({
     label: "Position Seller",
     orderParams: batchParams,
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount: srcChainId !== undefined || isReceiveToGmxAccount,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
@@ -389,11 +401,11 @@ export function PositionSeller() {
       payTokenParamsList: [],
       gasPaymentTokenParams: expressParams?.gasPaymentParams
         ? {
-            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
-            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
-          }
+          tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+          amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+          allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
+          isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
+        }
         : undefined,
       permits: expressParams && tokenPermits ? tokenPermits : [],
     });
@@ -555,15 +567,15 @@ export function PositionSeller() {
       signer,
       provider,
       batchParams,
-      isGmxAccount: srcChainId !== undefined,
+      isGmxAccount: srcChainId !== undefined || isReceiveToGmxAccount,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
-            tokensData,
-            blockTimestampData,
-          },
+          tokensData,
+          blockTimestampData,
+        },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,
@@ -683,9 +695,9 @@ export function PositionSeller() {
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd
                 ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: toToken?.visualMultiplier,
-                  })
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: toToken?.visualMultiplier,
+                })
                 : undefined
           }
         />
@@ -739,6 +751,47 @@ export function PositionSeller() {
               </span>
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
+            topContent={
+              chainId === ARBITRUM && srcChainId === undefined ? (
+                <div className="mb-16">
+                  <div className="flex items-center gap-8 justify-between">
+                    <span className="text-14 text-typography-secondary">
+                      <Trans>Collateral close destination</Trans>
+                    </span>
+                    <SelectorBase
+                      modalLabel="Collateral close destination"
+                      desktopPanelClassName="w-[200px]"
+                      label={
+
+                        <div className="flex items-center gap-4">
+                          {isReceiveToGmxAccount
+                            ? <GmxRoundedIcon className="size-20" />
+                            : <ArbitrumIcon className="size-20" />
+                          }
+                          <span className="text-13 font-medium">
+                            {isReceiveToGmxAccount ? <Trans>GMX Balance</Trans> : <Trans>Arbitrum</Trans>}
+                          </span>
+                        </div>
+                      }
+                    >
+                      <div className="flex flex-col py-6">
+                        <CollateralDestinationOption
+                          isGmxBalance={false}
+                          isSelected={!isReceiveToGmxAccount}
+                          onClick={() => setIsReceiveToGmxAccount(false)}
+                        />
+                        <CollateralDestinationOption
+                          isGmxBalance
+                          isSelected={isReceiveToGmxAccount}
+                          onClick={() => setIsReceiveToGmxAccount(true)}
+                        />
+                      </div>
+                    </SelectorBase>
+                  </div>
+
+                </div>
+              ) : undefined
+            }
           />
         )
       }
@@ -1067,6 +1120,33 @@ export function PositionSeller() {
           )}
         </div>
       </Modal>
+    </div>
+  );
+}
+
+function CollateralDestinationOption({
+  isGmxBalance,
+  isSelected,
+  onClick,
+}: {
+  isGmxBalance: boolean;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  const close = useSelectorClose();
+
+  return (
+    <div
+      className={cx("flex cursor-pointer items-center gap-6 px-12 py-6 hover:bg-fill-surfaceHover text-14", {
+        "bg-slate-700": isSelected,
+      })}
+      onClick={() => {
+        onClick();
+        close();
+      }}
+    >
+      {isGmxBalance ? <GmxRoundedIcon className="size-20" /> : <ArbitrumIcon className="size-20" />}
+      <span>{isGmxBalance ? <Trans>GMX Balance</Trans> : <Trans>Arbitrum</Trans>}</span>
     </div>
   );
 }
