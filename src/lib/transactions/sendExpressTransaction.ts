@@ -1,9 +1,10 @@
-import { StatusCode } from "@gelatocloud/gasless";
+import { TransactionRevertedError, TransactionRejectedError, SimulationFailedRpcError } from "@gelatocloud/gasless";
 import { Address, encodePacked, type Hex } from "viem";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, BOTANIX, ContractsChainId } from "config/chains";
+import { ContractsChainId } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
-import { getGelatoRelayerClient } from "sdk/utils/gelatoRelay";
+import { GELATO_API_KEYS } from "sdk/configs/express";
+import { StatusCode, getGelatoRelayerClient } from "sdk/utils/gelatoRelay";
 
 import type { TransactionWaiterResult } from "./types";
 
@@ -36,11 +37,20 @@ export async function sendExpressTransaction(p: {
 
   const relayer = getGelatoRelayerClient(apiKey);
 
-  const taskId = await relayer.sendTransaction({
-    chainId: p.chainId,
-    to: p.txnData.to as Address,
-    data: data as Hex,
-  });
+  let taskId: string;
+
+  try {
+    taskId = await relayer.sendTransaction({
+      chainId: p.chainId,
+      to: p.txnData.to as Address,
+      data: data as Hex,
+    });
+  } catch (error) {
+    if (error instanceof SimulationFailedRpcError) {
+      throw new Error(`data="${error.revertData}"`);
+    }
+    throw error;
+  }
 
   return {
     taskId,
@@ -53,46 +63,67 @@ function makeExpressTxnResultWaiter(relayer: ReturnType<typeof getGelatoRelayerC
     const timerId = `pollGelatoTask ${taskId}`;
     metrics.startTimer(timerId);
 
-    const terminalStatus = await relayer.waitForStatus({ id: taskId, timeout: 120_000, pollingInterval: 1_000 });
+    try {
+      const receipt = await relayer.waitForReceipt({
+        id: taskId,
+        timeout: 120_000,
+        pollingInterval: 1_000,
+        throwOnReverted: true,
+        usePolling: true,
+      });
 
-    metrics.pushTiming<GelatoPollingTiming>("express.pollGelatoTask.finalStatus", metrics.getTime(timerId) ?? 0, {
-      status: String(terminalStatus.status),
-    });
+      metrics.pushTiming<GelatoPollingTiming>("express.pollGelatoTask.finalStatus", metrics.getTime(timerId) ?? 0, {
+        status: String(StatusCode.Success),
+      });
 
-    if (terminalStatus.status === StatusCode.Success) {
       return {
-        transactionHash: terminalStatus.receipt.transactionHash,
-        blockNumber: Number(terminalStatus.receipt.blockNumber),
+        transactionHash: receipt.transactionHash,
+        blockNumber: Number(receipt.blockNumber),
         status: "success",
         relayStatus: {
           taskId,
-          statusCode: terminalStatus.status,
+          statusCode: StatusCode.Success,
         },
       };
+    } catch (error) {
+      if (error instanceof TransactionRevertedError) {
+        metrics.pushTiming<GelatoPollingTiming>("express.pollGelatoTask.finalStatus", metrics.getTime(timerId) ?? 0, {
+          status: String(StatusCode.Reverted),
+        });
+
+        return {
+          transactionHash: error.receipt.transactionHash,
+          blockNumber: undefined,
+          status: "failed",
+          relayStatus: {
+            taskId,
+            statusCode: StatusCode.Reverted,
+            message: error.errorMessage,
+          },
+        };
+      }
+
+      if (error instanceof TransactionRejectedError) {
+        metrics.pushTiming<GelatoPollingTiming>("express.pollGelatoTask.finalStatus", metrics.getTime(timerId) ?? 0, {
+          status: String(StatusCode.Rejected),
+        });
+
+        return {
+          transactionHash: undefined,
+          blockNumber: undefined,
+          status: "failed",
+          relayStatus: {
+            taskId,
+            statusCode: StatusCode.Rejected,
+            message: error.errorMessage,
+          },
+        };
+      }
+
+      throw error;
     }
-
-    const transactionHash =
-      terminalStatus.status === StatusCode.Reverted ? terminalStatus.receipt?.transactionHash : undefined;
-
-    return {
-      transactionHash,
-      blockNumber: undefined,
-      status: "failed",
-      relayStatus: {
-        taskId,
-        statusCode: terminalStatus.status,
-        message: terminalStatus.message,
-      },
-    };
   };
 }
-
-const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
-  [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
-  [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
-  [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
-  [ARBITRUM_SEPOLIA]: "nx5nyAg4h2kI_64YtOuPt7LSPDEXo4u8eJY_idF9xDw_",
-};
 
 export function getGelatoRelayerForChain(chainId: number) {
   const apiKey = GELATO_API_KEYS[chainId as ContractsChainId];

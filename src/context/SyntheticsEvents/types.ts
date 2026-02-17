@@ -94,6 +94,7 @@ export type PendingExpressTxnParams = {
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+  sendFailed?: boolean;
 };
 
 export type GelatoTaskStatus = {

@@ -336,9 +336,7 @@ export function SyntheticsStateContextProvider({
 
   const externalSwapState = useInitExternalSwapState();
   const tokenPermitsState = useTokenPermitsContext();
-  const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId, {
-    tokensData: tokensDataResult.tokensData,
-  });
+  const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId);
 
   const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),

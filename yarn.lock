@@ -3113,14 +3113,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gelatocloud/gasless@npm:0.0.7":
-  version: 0.0.7
-  resolution: "@gelatocloud/gasless@npm:0.0.7"
+"@gelatocloud/gasless@npm:0.0.9":
+  version: 0.0.9
+  resolution: "@gelatocloud/gasless@npm:0.0.9"
   dependencies:
+    isomorphic-ws: "npm:^5.0.0"
+    ws: "npm:^8.19.0"
     zod: "npm:4.1.13"
   peerDependencies:
     viem: ^2.0.0
-  checksum: 10/fbf6768fe416afcac21a5b04059257b61887826c290c2d10aa4b29606c887affe7e77d2c8793c265ced8d597d3591c7e87fea5b40e956de4b33c894298cc58c5
+  checksum: 10/409a11b636bcad6326ab9c7b5ae9686efdbd2ab31a89ed87eaa076dc6689cc7675adf7160630b2007bb9a7883c9f08cae39c5a8819f4e00071f3742549c4ba73
   languageName: node
   linkType: hard
 
@@ -11412,7 +11414,7 @@ __metadata:
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
-    "@gelatocloud/gasless": "npm:0.0.7"
+    "@gelatocloud/gasless": "npm:0.0.9"
     "@headlessui/react": "npm:1.7.19"
     "@layerzerolabs/lz-v2-utilities": "npm:3.0.85"
     "@lingui/cli": "npm:4.10.0"
@@ -12422,6 +12424,15 @@ __metadata:
   peerDependencies:
     ws: "*"
   checksum: 10/d7190eadefdc28bdb93d67b5f0c603385aaf87724fa2974abb382ac1ec9756ed2cfb27065cbe76122879c2d452e2982bc4314317f3d6c737ddda6c047328771a
+  languageName: node
+  linkType: hard
+
+"isomorphic-ws@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "isomorphic-ws@npm:5.0.0"
+  peerDependencies:
+    ws: "*"
+  checksum: 10/e20eb2aee09ba96247465fda40c6d22c1153394c0144fa34fe6609f341af4c8c564f60ea3ba762335a7a9c306809349f9b863c8beedf2beea09b299834ad5398
   languageName: node
   linkType: hard
 
@@ -18323,6 +18334,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/9c796b84ba80ffc2c2adcdfc9c8e9a219ba99caa435c9a8d45f9ac593bba325563b3f83edc5eb067cc6d21b9a6bf2c930adf76dd40af5f58a5ca6859e81858f0
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.19.0":
+  version: 8.19.0
+  resolution: "ws@npm:8.19.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/26e4901e93abaf73af9f26a93707c95b4845e91a7a347ec8c569e6e9be7f9df066f6c2b817b2d685544e208207898a750b78461e6e8d810c11a370771450c31b
   languageName: node
   linkType: hard
 

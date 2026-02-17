@@ -74,10 +74,14 @@ function OrderStatusNotification({
   const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
 
   const isGelatoTaskFailed = useMemo(() => {
+    if (pendingExpressTxn?.sendFailed) {
+      return true;
+    }
+
     const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
 
     return gelatoTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(gelatoTaskStatus.statusCode);
-  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId]);
+  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId, pendingExpressTxn?.sendFailed]);
 
   const hasError =
     isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");

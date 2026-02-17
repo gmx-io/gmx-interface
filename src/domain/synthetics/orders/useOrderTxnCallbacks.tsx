@@ -356,6 +356,13 @@ export function useOrderTxnCallbacks() {
             resetTokenPermits();
           }
 
+          if (expressParams) {
+            updatePendingExpressTxn({
+              key: getExpressParamsKey(expressParams),
+              sendFailed: true,
+            });
+          }
+
           if (pendingOrderUpdate) {
             setPendingOrderUpdate(pendingOrderUpdate, "remove");
           }

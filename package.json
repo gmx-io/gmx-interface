@@ -41,7 +41,7 @@
     "@davatar/react": "1.8.1",
     "@floating-ui/dom": "1.6.7",
     "@floating-ui/react": "0.26.19",
-    "@gelatocloud/gasless": "0.0.7",
+    "@gelatocloud/gasless": "0.0.9",
     "@headlessui/react": "1.7.19",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "@lingui/core": "4.10.0",

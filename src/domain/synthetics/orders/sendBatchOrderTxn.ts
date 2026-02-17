@@ -128,7 +128,7 @@ export async function sendBatchOrderTxn({
           });
         });
 
-      return res;
+      return await res;
     }
 
     const { callData, value } = getBatchOrderMulticallPayload({ params: batchParams });

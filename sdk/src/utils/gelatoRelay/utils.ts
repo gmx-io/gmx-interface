@@ -1,8 +1,7 @@
 import { createGelatoEvmRelayerClient, type GelatoEvmRelayerClient } from "@gelatocloud/gasless";
 
 export { StatusCode } from "@gelatocloud/gasless";
-export type { TerminalStatus, Status } from "@gelatocloud/gasless";
-export type { GelatoEvmRelayerClient } from "@gelatocloud/gasless";
+export type { TerminalStatus, Status, GelatoEvmRelayerClient } from "@gelatocloud/gasless";
 
 let _relayerClients: Map<string, GelatoEvmRelayerClient> = new Map();
 

@@ -1,3 +1,4 @@
+import { TransactionRevertedError, TransactionRejectedError } from "@gelatocloud/gasless";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -1032,43 +1033,68 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       (async () => {
         try {
-          const terminalStatus = await relayer.waitForStatus({ id: taskId, timeout: 120_000, pollingInterval: 1_000 });
+          const receipt = await relayer.waitForReceipt({
+            id: taskId,
+            timeout: 120_000,
+            pollingInterval: 1_000,
+            throwOnReverted: true,
+            usePolling: true,
+          });
 
           if (isDevelopment()) {
             const { accountSlug, projectSlug } = getTenderlyAccountParams();
             getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
               // eslint-disable-next-line no-console
-              console.log("gelatoDebugData", terminalStatus, debugInfo)
+              console.log("gelatoDebugData", receipt, debugInfo)
             );
           }
 
-          const transactionHash =
-            terminalStatus.status === StatusCode.Success
-              ? terminalStatus.receipt.transactionHash
-              : terminalStatus.status === StatusCode.Reverted
-                ? terminalStatus.receipt?.transactionHash
-                : undefined;
-
           setGelatoTaskStatuses((old) =>
             setByKey(old, taskId, {
               taskId,
-              statusCode: terminalStatus.status,
-              message: terminalStatus.status !== StatusCode.Success ? terminalStatus.message : undefined,
-              transactionHash,
-              revertData: terminalStatus.status === StatusCode.Reverted ? terminalStatus.data : undefined,
+              statusCode: StatusCode.Success,
+              transactionHash: receipt.transactionHash,
             })
           );
         } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(e);
+          if (e instanceof TransactionRevertedError) {
+            if (isDevelopment()) {
+              const { accountSlug, projectSlug } = getTenderlyAccountParams();
+              getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
+                // eslint-disable-next-line no-console
+                console.log("gelatoDebugData reverted", e, debugInfo)
+              );
+            }
 
-          setGelatoTaskStatuses((old) =>
-            setByKey(old, taskId, {
-              taskId,
-              statusCode: StatusCode.Rejected,
-              message: e instanceof Error ? e.message : "Task status polling failed",
-            })
-          );
+            setGelatoTaskStatuses((old) =>
+              setByKey(old, taskId, {
+                taskId,
+                statusCode: StatusCode.Reverted,
+                message: e.errorMessage,
+                transactionHash: e.receipt.transactionHash,
+                revertData: typeof e.errorData === "string" ? e.errorData : undefined,
+              })
+            );
+          } else if (e instanceof TransactionRejectedError) {
+            setGelatoTaskStatuses((old) =>
+              setByKey(old, taskId, {
+                taskId,
+                statusCode: StatusCode.Rejected,
+                message: e.errorMessage,
+              })
+            );
+          } else {
+            // eslint-disable-next-line no-console
+            console.error(e);
+
+            setGelatoTaskStatuses((old) =>
+              setByKey(old, taskId, {
+                taskId,
+                statusCode: StatusCode.Rejected,
+                message: e instanceof Error ? e.message : "Task status polling failed",
+              })
+            );
+          }
         } finally {
           pollingTaskIdsRef.current.delete(taskId);
           taskChainIdRef.current.delete(taskId);
@@ -1080,6 +1106,19 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   useEffect(
     function notifyPendingExpressTxn() {
       Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
+        if (pendingExpressTxn.sendFailed && pendingExpressTxn.key && !pendingExpressTxn.isViewed) {
+          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
+          setOptimisticTokensBalancesUpdates((old) => {
+            const newState = { ...old };
+            pendingExpressTxn.payTokenAddresses?.forEach((tokenAddress) => {
+              delete newState[tokenAddress];
+            });
+            return newState;
+          });
+          setPendingPositionsUpdates({});
+          return;
+        }
+
         if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
           const status = gelatoTaskStatuses[pendingExpressTxn.taskId].statusCode;
 
