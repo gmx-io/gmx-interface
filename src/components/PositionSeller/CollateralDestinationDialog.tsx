@@ -24,7 +24,8 @@ export function CollateralDestinationDialog({
   const settings = useSettings();
   const [dontAskAgain, setDontAskAgain] = useState(false);
 
-  const destinationLabel = chosenReceiveToGmxAccount ? "GMX Balance" : "Wallet";
+  const chosenLabel = chosenReceiveToGmxAccount ? "GMX Account" : "Arbitrum wallet";
+  const currentLabel = chosenReceiveToGmxAccount ? "Arbitrum wallet" : "GMX Account";
 
   function handleYes() {
     settings.setReceiveToGmxAccount(chosenReceiveToGmxAccount);
@@ -52,26 +53,24 @@ export function CollateralDestinationDialog({
       <div className="flex flex-col gap-16">
         <div className="text-14 text-typography-secondary">
           <Trans>
-            You chose to send the remaining collateral to <span className="font-medium text-typography-primary">{destinationLabel}</span>.
-            Do you want to make <span className="font-medium text-typography-primary">{destinationLabel}</span> your default destination
-            when closing positions?
+            You chose to send the remaining collateral to your{" "}
+            <span className="font-medium text-typography-primary">{chosenLabel}</span>. Do you want to make this the
+            default destination when closing positions?
           </Trans>
         </div>
 
         <TooltipWithPortal
-          handle={
-            <Trans>How do I choose?</Trans>
-          }
-          handleClassName="text-typography-secondary text-14"
+          handle={<Trans>How do I choose?</Trans>}
+          handleClassName="text-14 text-typography-secondary"
           variant="iconStroke"
           content={
             <div>
               <Trans>
-                <span className="font-bold">GMX Balance</span> keeps funds in your GMX Account for faster trading and
+                <span className="font-bold">GMX Account</span> keeps funds in your GMX Account for faster trading and
                 lower gas costs.
                 <br />
                 <br />
-                <span className="font-bold">Wallet</span> sends funds directly to your connected wallet.
+                <span className="font-bold">Arbitrum wallet</span> sends funds directly to your connected wallet.
               </Trans>
             </div>
           }
@@ -79,10 +78,10 @@ export function CollateralDestinationDialog({
 
         <div className="flex flex-col gap-8">
           <Button className="w-full" variant="primary" onClick={handleYes}>
-            <Trans>Yes, set {destinationLabel} as default</Trans>
+            <Trans>Yes, set {chosenLabel} as default</Trans>
           </Button>
           <Button className="w-full" variant="secondary" onClick={handleNo}>
-            <Trans>No, keep current default</Trans>
+            <Trans>No, keep {currentLabel} as default</Trans>
           </Button>
         </div>
 

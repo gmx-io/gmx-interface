@@ -142,8 +142,6 @@ msgid "Yield Optimizer on Avalanche"
 msgstr "Yield-Optimierer auf Avalanche"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
@@ -1907,8 +1905,8 @@ msgstr "Rabatte Verteilungs-Historie"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Collateral close destination"
-msgstr ""
+#~ msgid "Collateral close destination"
+#~ msgstr ""
 
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
@@ -2649,6 +2647,11 @@ msgstr "Handeln aus Ihrer Wallet"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have yet to reach the minimum capital used of {0} to qualify for the rankings."
 msgstr "Du hast das Mindestkapital von {0} noch nicht erreicht, um für das Ranking qualifiziert zu sein."
+
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+msgid "Arbitrum wallet"
+msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
@@ -4767,8 +4770,8 @@ msgid "Max slippage precision is -0.01%"
 msgstr "Maximale Slippage-Präzision beträgt -0,01 %"
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "<0>GMX Balance</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Wallet</3> sends funds directly to your connected wallet."
-msgstr ""
+#~ msgid "<0>GMX Balance</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Wallet</3> sends funds directly to your connected wallet."
+#~ msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
@@ -5308,6 +5311,11 @@ msgstr "zahlen"
 msgid "Total circulating supply of GMX tokens."
 msgstr "Gesamte umlaufende Versorgung von GMX-Token."
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
+msgstr ""
+
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "Du kannst bis zu {allowedAutoCancelOrdersNumber} aktive auto-stornierbare TP/SL-Orders haben. Zusätzliche Orders müssen manuell storniert werden, während bestehende automatisch mit ihrer zugehörigen Position schließen."
@@ -5772,10 +5780,18 @@ msgstr ""
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "Um die Übertragung abzuschließen, musst du dein verbundenes Konto auf {receiver} wechseln."
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
+msgstr ""
+
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs Net Rate / 1h"
 msgstr "Longs Netto-Rate / 1h"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "No, keep {currentLabel} as default"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -6457,10 +6473,6 @@ msgstr "Unbekannte Shift-GM-Order"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
 msgid "GMX Balance"
 msgstr "GMX-Saldo"
 
@@ -7011,8 +7023,8 @@ msgid "Transaction failed."
 msgstr "Transaktion fehlgeschlagen."
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "Yes, set {destinationLabel} as default"
-msgstr ""
+#~ msgid "Yes, set {destinationLabel} as default"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
@@ -7310,6 +7322,11 @@ msgstr "Antrag auf Abrechnung von Finanzierungsgebühren"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
 msgstr "Partnerschaften und Integrationen"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Send remaining collateral to"
+msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -7649,6 +7666,8 @@ msgstr "Wähle, ob du von dezentralen oder zentralen Exchanges kaufst."
 msgid "Insufficient liquidity available in pool"
 msgstr ""
 
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -7888,8 +7907,6 @@ msgstr "Der Bonus-APR wird als {airdropTokenTitle}-Tokens airdropped. <0>Mehr le
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Wallet"
 msgstr "Wallet"
 
@@ -7944,6 +7961,10 @@ msgstr "Stop-Loss abbrechen"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "Limit-Verringerung"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Yes, set {chosenLabel} as default"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
@@ -8245,8 +8266,8 @@ msgid "Complete Transfer"
 msgstr "Übertragung abschließen"
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "No, keep current default"
-msgstr ""
+#~ msgid "No, keep current default"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
@@ -8366,8 +8387,8 @@ msgid "Rage Trade"
 msgstr "Rage Trade"
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "You chose to send the remaining collateral to <0>{destinationLabel}</0>. Do you want to make <1>{destinationLabel}</1> your default destination when closing positions?"
-msgstr ""
+#~ msgid "You chose to send the remaining collateral to <0>{destinationLabel}</0>. Do you want to make <1>{destinationLabel}</1> your default destination when closing positions?"
+#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Click on the position to select it, then use the trade box to increase it."

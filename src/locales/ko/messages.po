@@ -142,8 +142,6 @@ msgid "Yield Optimizer on Avalanche"
 msgstr "Avalanche 일드 옵티마이저"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
 msgid "Arbitrum"
 msgstr "Arbitrum"
 
@@ -1903,8 +1901,8 @@ msgstr "소개 보수 분배 내역"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "Collateral close destination"
-msgstr ""
+#~ msgid "Collateral close destination"
+#~ msgstr ""
 
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
@@ -2645,6 +2643,11 @@ msgstr "지갑에서 거래"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have yet to reach the minimum capital used of {0} to qualify for the rankings."
 msgstr "순위에 참여하려면 최소 사용 자본 {0}에 도달해야 합니다."
+
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+msgid "Arbitrum wallet"
+msgstr ""
 
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
@@ -4763,8 +4766,8 @@ msgid "Max slippage precision is -0.01%"
 msgstr "최대 슬리피지 정밀도는 -0.01%입니다"
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "<0>GMX Balance</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Wallet</3> sends funds directly to your connected wallet."
-msgstr ""
+#~ msgid "<0>GMX Balance</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Wallet</3> sends funds directly to your connected wallet."
+#~ msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
@@ -5300,6 +5303,11 @@ msgstr "지불"
 msgid "Total circulating supply of GMX tokens."
 msgstr "GMX 토큰의 총 순환 공급량."
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
+msgstr ""
+
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "최대 {allowedAutoCancelOrdersNumber}개의 활성 자동 취소 가능 TP/SL 주문을 가질 수 있습니다. 추가 주문은 수동으로 취소해야 하며, 기존 주문은 관련 포지션과 함께 자동으로 종료됩니다."
@@ -5759,10 +5767,18 @@ msgstr ""
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "전송을 완료하려면 연결된 계정을 {receiver}(으)로 전환해야 합니다."
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
+msgstr ""
+
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs Net Rate / 1h"
 msgstr "롱 순 수수료율 / 1시간"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "No, keep {currentLabel} as default"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -6444,10 +6460,6 @@ msgstr "알 수 없는 GM 이전 주문"
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
 msgid "GMX Balance"
 msgstr "GMX 잔액"
 
@@ -6998,8 +7010,8 @@ msgid "Transaction failed."
 msgstr "거래 실패."
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "Yes, set {destinationLabel} as default"
-msgstr ""
+#~ msgid "Yes, set {destinationLabel} as default"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
@@ -7297,6 +7309,11 @@ msgstr "자금 수수료 정산 요청"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Partnerships and Integrations"
 msgstr "파트너십 및 통합"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Send remaining collateral to"
+msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -7636,6 +7653,8 @@ msgstr "탈중앙화 또는 중앙화 거래소에서 구매 선택."
 msgid "Insufficient liquidity available in pool"
 msgstr ""
 
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -7875,8 +7894,6 @@ msgstr "보너스 APR은 {airdropTokenTitle} 토큰으로 에어드랍됩니다.
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Wallet"
 msgstr "지갑"
 
@@ -7931,6 +7948,10 @@ msgstr "스탑 로스 취소"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
 msgstr "지정가 감소"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Yes, set {chosenLabel} as default"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
@@ -8232,8 +8253,8 @@ msgid "Complete Transfer"
 msgstr "전송 완료"
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "No, keep current default"
-msgstr ""
+#~ msgid "No, keep current default"
+#~ msgstr ""
 
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
@@ -8353,8 +8374,8 @@ msgid "Rage Trade"
 msgstr "레이지 트레이드"
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
-msgid "You chose to send the remaining collateral to <0>{destinationLabel}</0>. Do you want to make <1>{destinationLabel}</1> your default destination when closing positions?"
-msgstr ""
+#~ msgid "You chose to send the remaining collateral to <0>{destinationLabel}</0>. Do you want to make <1>{destinationLabel}</1> your default destination when closing positions?"
+#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Click on the position to select it, then use the trade box to increase it."

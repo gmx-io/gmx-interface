@@ -1,9 +1,8 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, GMX_ACCOUNT_PSEUDO_CHAIN_ID, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, getChainName } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -23,13 +22,13 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { getNativeToken } from "sdk/configs/tokens";
 
+import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
-import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -283,46 +282,31 @@ export function TradingSettings({
           />
         )}
 
-{chainId === ARBITRUM && (
-          <SelectorBase
-            modalLabel="Collateral close destination"
-            desktopPanelClassName="!z-[10000] w-[200px] !top-[10px]"
-            label={
-              <div className="flex w-full items-center justify-between">
-                <span className="font-medium">
-                  <Trans>Collateral close destination</Trans>
-                </span>
-                <div className="flex items-center gap-4 text-typography-primary">
-                  <img
-                    src={
-                      (settings.receiveToGmxAccount ?? false)
-                        ? CHAIN_ID_TO_NETWORK_ICON[GMX_ACCOUNT_PSEUDO_CHAIN_ID]
-                        : CHAIN_ID_TO_NETWORK_ICON[ARBITRUM]
-                    }
-                    alt={(settings.receiveToGmxAccount ?? false) ? "GMX Balance" : "Wallet"}
-                    className="size-20"
-                  />
-                  <span>
-                    {(settings.receiveToGmxAccount ?? false) ? <Trans>GMX Balance</Trans> : <Trans>Wallet</Trans>}
-                  </span>
+        {chainId === ARBITRUM && (
+          <div className="flex w-full items-center justify-between">
+            <TooltipWithPortal
+              className="font-medium"
+              variant="icon"
+              handle={<Trans>Send remaining collateral to</Trans>}
+              content={
+                <div>
+                  <Trans>
+                    <span className="font-bold">GMX Account</span> keeps funds in your GMX Account for faster trading
+                    and lower gas costs.
+                    <br />
+                    <br />
+                    <span className="font-bold">Arbitrum wallet</span> sends funds directly to your connected wallet.
+                  </Trans>
                 </div>
-              </div>
-            }
-          >
-            <div className="flex flex-col">
-              <CollateralDestinationOption
-                isGmxBalance
-                isSelected={settings.receiveToGmxAccount ?? false}
-                onClick={() => settings.setReceiveToGmxAccount(true)}
-              />
-              <CollateralDestinationOption
-                isGmxBalance={false}
-                isSelected={!(settings.receiveToGmxAccount ?? false)}
-                onClick={() => settings.setReceiveToGmxAccount(false)}
-              />
-            </div>
-          </SelectorBase>
-      )}
+              }
+            />
+            <CollateralDestinationSelector
+              isReceiveToGmxAccount={settings.receiveToGmxAccount ?? false}
+              onChangeDestination={settings.setReceiveToGmxAccount}
+              desktopPanelClassName="!z-[10000] w-[200px] !top-[10px]"
+            />
+          </div>
+        )}
 
         <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
           <TooltipWithPortal
@@ -365,39 +349,6 @@ export function TradingSettings({
           <Trans>Set Acceptable Price Impact</Trans>
         </ToggleSwitch>
       </SettingsSection>
-    </div>
-  );
-}
-
-function CollateralDestinationOption({
-  isGmxBalance,
-  isSelected,
-  onClick,
-}: {
-  isGmxBalance: boolean;
-  isSelected: boolean;
-  onClick: () => void;
-}) {
-  const close = useSelectorClose();
-
-  return (
-    <div
-      className={cx("flex cursor-pointer items-center gap-8 px-14 py-8 hover:bg-fill-surfaceHover", {
-        "bg-slate-700": isSelected,
-      })}
-      onClick={() => {
-        onClick();
-        close();
-      }}
-    >
-      <img
-        src={
-          isGmxBalance ? CHAIN_ID_TO_NETWORK_ICON[GMX_ACCOUNT_PSEUDO_CHAIN_ID] : CHAIN_ID_TO_NETWORK_ICON[ARBITRUM]
-        }
-        alt={isGmxBalance ? "GMX Balance" : "Wallet"}
-        className="size-20"
-      />
-      <span>{isGmxBalance ? <Trans>GMX Balance</Trans> : <Trans>Wallet</Trans>}</span>
     </div>
   );
 }

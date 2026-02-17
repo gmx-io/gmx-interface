@@ -85,20 +85,18 @@ import { getIsValidTwapParams } from "sdk/utils/twap";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
-import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
-import GmxRoundedIcon from "img/ic_gmx_rounded.svg?react";
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
-import ArbitrumIcon from "img/tokens/ic_arbitrum.svg?react";
 
 import { CollateralDestinationDialog } from "./CollateralDestinationDialog";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
@@ -730,37 +728,12 @@ export function PositionSeller() {
                 <div className="mb-16">
                   <div className="flex items-center justify-between gap-8">
                     <span className="text-14 text-typography-secondary">
-                      <Trans>Collateral close destination</Trans>
+                      <Trans>Send remaining collateral to</Trans>
                     </span>
-                    <SelectorBase
-                      modalLabel="Collateral close destination"
-                      desktopPanelClassName="w-[200px]"
-                      label={
-                        <div className="flex items-center gap-4">
-                          {isReceiveToGmxAccount ? (
-                            <GmxRoundedIcon className="size-20" />
-                          ) : (
-                            <ArbitrumIcon className="size-20" />
-                          )}
-                          <span className="text-13 font-medium">
-                            {isReceiveToGmxAccount ? <Trans>GMX Balance</Trans> : <Trans>Arbitrum</Trans>}
-                          </span>
-                        </div>
-                      }
-                    >
-                      <div className="flex flex-col py-6">
-                        <CollateralDestinationOption
-                          isGmxBalance={false}
-                          isSelected={!isReceiveToGmxAccount}
-                          onClick={() => handleSetIsReceiveToGmxAccount(false)}
-                        />
-                        <CollateralDestinationOption
-                          isGmxBalance
-                          isSelected={isReceiveToGmxAccount}
-                          onClick={() => handleSetIsReceiveToGmxAccount(true)}
-                        />
-                      </div>
-                    </SelectorBase>
+                    <CollateralDestinationSelector
+                      isReceiveToGmxAccount={isReceiveToGmxAccount}
+                      onChangeDestination={handleSetIsReceiveToGmxAccount}
+                    />
                   </div>
                 </div>
               ) : undefined
@@ -1053,33 +1026,6 @@ export function PositionSeller() {
         chosenReceiveToGmxAccount={isReceiveToGmxAccount}
         setDialogHidden={setDialogHidden}
       />
-    </div>
-  );
-}
-
-function CollateralDestinationOption({
-  isGmxBalance,
-  isSelected,
-  onClick,
-}: {
-  isGmxBalance: boolean;
-  isSelected: boolean;
-  onClick: () => void;
-}) {
-  const close = useSelectorClose();
-
-  return (
-    <div
-      className={cx("flex cursor-pointer items-center gap-6 px-12 py-6 text-14 hover:bg-fill-surfaceHover", {
-        "bg-slate-700": isSelected,
-      })}
-      onClick={() => {
-        onClick();
-        close();
-      }}
-    >
-      {isGmxBalance ? <GmxRoundedIcon className="size-20" /> : <ArbitrumIcon className="size-20" />}
-      <span>{isGmxBalance ? <Trans>GMX Balance</Trans> : <Trans>Arbitrum</Trans>}</span>
     </div>
   );
 }
