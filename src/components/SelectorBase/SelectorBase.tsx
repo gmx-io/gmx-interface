@@ -3,7 +3,16 @@ import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
-import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { useMedia } from "react-use";
 
@@ -21,6 +30,7 @@ type Props = PropsWithChildren<{
   handleClassName?: string;
   chevronClassName?: string;
   desktopPanelClassName?: string;
+  wrapperClassName?: string;
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
@@ -30,6 +40,7 @@ type Props = PropsWithChildren<{
   popoverPlacement?: Placement;
   footerContent?: ReactNode;
   qa?: string;
+  popoverReferenceRef?: React.RefObject<HTMLElement | null>;
 }>;
 
 type SelectorContextType = { close: () => void; mobileHeader?: HTMLDivElement };
@@ -156,6 +167,8 @@ export function SelectorBaseMobileHeaderContent(props: PropsWithChildren) {
 //#endregion
 
 function SelectorBaseDesktop(props: Props & { qa?: string }) {
+  const buttonRef = useRef<HTMLElement | null>(null);
+
   const { refs, floatingStyles } = useFloating({
     middleware: [
       offset({
@@ -173,19 +186,44 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     e.stopPropagation();
   }, []);
 
+  const setButtonRef = useCallback(
+    (node: HTMLElement | null) => {
+      buttonRef.current = node;
+
+      if (!props.popoverReferenceRef?.current) {
+        refs.setReference(node);
+      }
+    },
+    [props.popoverReferenceRef, refs]
+  );
+
+  useLayoutEffect(() => {
+    if (props.popoverReferenceRef?.current) {
+      refs.setReference(props.popoverReferenceRef.current);
+    }
+  }, [props.popoverReferenceRef, refs]);
+
+  const setPopoverButtonRef = useCallback(
+    (node: HTMLButtonElement | null) => {
+      setButtonRef(node);
+    },
+    [setButtonRef]
+  );
+
   if (props.disabled) {
     return (
       <div
         data-qa={props.qa ? props.qa + "-button-disabled" : undefined}
-        className="SelectorBase-button SelectorBase-button-disabled"
+        className={cx("SelectorBase-button SelectorBase-button-disabled gap-5", props.handleClassName)}
       >
-        {props.label}
+        <span className="grow overflow-hidden text-ellipsis">{props.label}</span>
+        <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
       </div>
     );
   }
 
   return (
-    <Popover>
+    <Popover className={props.wrapperClassName}>
       {(popoverProps) => (
         <>
           <Popover.Button
@@ -195,10 +233,10 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
               popoverProps.open && "text-blue-300",
               props.handleClassName
             )}
-            ref={refs.setReference}
+            ref={setPopoverButtonRef}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
-            {props.label}
+            <span className="grow overflow-hidden text-ellipsis leading-[20px]">{props.label}</span>
             <ChevronDownIcon
               className={cx(
                 "inline-block size-16 group-gmx-hover/selector-base:text-blue-300",
@@ -248,13 +286,18 @@ function SelectorBaseMobile(props: Props) {
   }, [setIsVisible]);
 
   if (props.disabled) {
-    return <div className="SelectorBase-button SelectorBase-button-disabled">{props.label}</div>;
+    return (
+      <div className={cx("SelectorBase-button SelectorBase-button-disabled", props.handleClassName)}>
+        <span className="overflow-hidden text-ellipsis">{props.label}</span>
+        <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
+      </div>
+    );
   }
 
   return (
     <>
       <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
-        {props.label}
+        <span className="overflow-hidden text-ellipsis">{props.label}</span>
         {!props.disabled && <ChevronDownIcon className={cx("inline-block size-16", props.chevronClassName)} />}
       </div>
 

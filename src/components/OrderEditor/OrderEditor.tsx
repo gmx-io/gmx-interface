@@ -51,6 +51,7 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
+  isLimitDecreaseOrderType,
   isLimitIncreaseOrderType,
   isLimitSwapOrderType,
   isStopIncreaseOrderType,
@@ -100,6 +101,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
@@ -112,6 +114,7 @@ type Props = {
   order: OrderInfo;
   source: EditingOrderSource;
   onClose: () => void;
+  onBack?: () => void;
 };
 
 export function OrderEditor(p: Props) {
@@ -648,15 +651,41 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
-    ? t`Trigger Price`
-    : isStopIncreaseOrderType(p.order.orderType)
-      ? t`Stop Price`
-      : t`Limit Price`;
+  const priceLabel = isLimitDecreaseOrderType(p.order.orderType)
+    ? t`Take Profit Price`
+    : isStopLossOrderType(p.order.orderType)
+      ? t`Stop Loss Price`
+      : isStopIncreaseOrderType(p.order.orderType)
+        ? t`Stop Price`
+        : t`Limit Price`;
 
   const positionSize = existingPosition?.sizeInUsd;
 
-  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
+  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS) ?? 0n;
+
+  const sizePercentage = useMemo(() => {
+    if (positionSize === undefined || positionSize === 0n) return 0;
+    const percentage = Number((sizeUsd * 100n) / positionSize);
+    return Math.min(100, Math.max(0, percentage));
+  }, [sizeUsd, positionSize]);
+
+  const handleSizePercentageChange = useCallback(
+    (percentage: number) => {
+      if (positionSize === undefined) return;
+      const formattedAmount = formatAmountFree((positionSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
+      setSizeInputValue(formattedAmount);
+    },
+    [positionSize, setSizeInputValue]
+  );
+
+  const handleBack = () => {
+    if (p.onBack) {
+      p.onBack();
+      return;
+    }
+
+    p.onClose();
+  };
 
   return (
     <div className="PositionEditor">
@@ -665,8 +694,10 @@ export function OrderEditor(p: Props) {
         isVisible={true}
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
+        contentPadding={false}
+        onBack={p.onBack ? handleBack : undefined}
       >
-        <div className="mb-14 flex flex-col gap-2">
+        <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <BuyInputSection
@@ -717,6 +748,10 @@ export function OrderEditor(p: Props) {
               >
                 USD
               </BuyInputSection>
+
+              {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
+                <MarginPercentageSlider value={sizePercentage} onChange={handleSizePercentageChange} />
+              )}
             </>
           )}
 
@@ -743,7 +778,7 @@ export function OrderEditor(p: Props) {
           )}
         </div>
 
-        <div className="flex flex-col gap-14">
+        <div className="flex flex-col gap-14 px-20 pb-16">
           {button}
 
           <ExpressTradingWarningCard

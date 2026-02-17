@@ -55,6 +55,12 @@
   align-items: center;
 }
 
+.Modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .Modal-title {
   text-align: left;
   font-size: var(--font-size-body-large);

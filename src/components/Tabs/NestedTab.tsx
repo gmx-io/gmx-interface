@@ -15,6 +15,7 @@ type Props<V extends string | number> = {
   commonOptionClassname?: string;
   onOptionClick: ((value: V) => void) | undefined;
   qa?: string;
+  type?: "inline" | "block" | "inline-primary" | "pills";
 };
 
 export default function NestedTab<V extends string | number>({
@@ -23,6 +24,7 @@ export default function NestedTab<V extends string | number>({
   commonOptionClassname,
   onOptionClick,
   qa,
+  type,
 }: Props<V>) {
   const { refs, floatingStyles } = useFloating({
     middleware: [flip(), shift()],
@@ -34,14 +36,37 @@ export default function NestedTab<V extends string | number>({
 
   const label = selectedSubOption ? selectedSubOption.label || selectedSubOption.value : t`More`;
 
+  const isPills = type === "pills";
+
   return (
     <Menu as="div" className="flex items-center justify-center gap-8">
       <Menu.Button as="div" ref={refs.setReference} data-qa={qa ? `${qa}-tab-${option.label}` : undefined}>
-        <Button variant="ghost" className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}>
-          <span>{label}</span>
-
-          <ChevronDownIcon className="mt-1 size-16" />
-        </Button>
+        {isPills ? (
+          <button
+            type="button"
+            className={cx(
+              "text-body-medium flex items-center gap-4 rounded-full border px-12 py-6 font-medium transition-colors",
+              commonOptionClassname,
+              {
+                "border-slate-600 bg-slate-800 text-typography-primary": selectedSubOption,
+                "bg-transparent border-slate-600 text-typography-secondary hover:text-typography-primary":
+                !selectedSubOption,
+              }
+            )}
+          >
+            <span>{label}</span>
+            <ChevronDownIcon className="size-16" />
+          </button>
+        ) : (
+          <Button
+            type="button"
+            variant="ghost"
+            className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}
+          >
+            <span>{label}</span>
+            <ChevronDownIcon className="mt-1 size-16" />
+          </Button>
+        )}
       </Menu.Button>
       <FloatingPortal>
         <Menu.Items

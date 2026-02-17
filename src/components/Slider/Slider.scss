@@ -1,17 +1,6 @@
-$blue: var(--color-blue-300);
-$gray: var(--color-slate-600);
+$slider-color: var(--color-blue-300);
 
-.LeverageSlider {
-  margin-top: 1.5rem;
-  margin-bottom: 3.4rem;
-
-  &.slim {
-    margin-top: 0px;
-    margin-bottom: 0px;
-  }
-
-  padding: 0 8px 0 12px;
-
+.Slider {
   user-select: none;
 
   .rc-slider-tooltip-inner {
@@ -21,7 +10,6 @@ $gray: var(--color-slate-600);
 
   .rc-slider-tooltip {
     z-index: 5;
-
     background: rgb(49, 54, 85);
     box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.25);
   }
@@ -32,35 +20,50 @@ $gray: var(--color-slate-600);
 
   .rc-slider-rail {
     border-radius: 0;
-    height: 4px;
+    height: 8px;
     background: var(--color-slate-800);
   }
 
   .rc-slider-track {
     border-radius: 0;
-    height: 4px;
-    background-color: var(--color-blue-300);
+    height: 8px;
+    background-color: $slider-color;
+  }
+
+  // This element is a hack to hide left corners of the track
+  .rc-slider-track::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px 0 0 4px;
+    background-color: $slider-color;
   }
 
   .rc-slider-dot {
-    border: 1.5px solid var(--color-slate-800);
     border-radius: 50%;
     width: 4px;
     height: 4px;
     background: var(--color-slate-900);
     box-sizing: content-box;
-    top: -1px;
+    border-width: 2;
+    top: 0px;
+    border-color: var(--color-slate-800);
   }
+
   .rc-slider-dot-active {
     border-color: var(--color-blue-300);
   }
+
   .rc-slider-handle {
     background-color: var(--color-slate-800);
-    border: solid 2px $blue;
-    width: 8px;
-    height: 8px;
+    border: solid 2px $slider-color;
+    width: 9px;
+    height: 9px;
     box-sizing: content-box;
-    top: 6px;
+    top: 8px;
 
     &:active {
       box-shadow: unset;
@@ -75,6 +78,17 @@ $gray: var(--color-slate-600);
     font-weight: 500;
     text-transform: uppercase;
     text-align: left;
+  }
+
+  .rc-slider-mark-text:first-child {
+    left: -3px !important;
+    transform: translateX(0) !important;
+  }
+
+  .rc-slider-mark-text:last-child {
+    left: unset !important;
+    right: -5px;
+    transform: translateX(0) !important;
   }
 
   .rc-slider-mark-text:hover,

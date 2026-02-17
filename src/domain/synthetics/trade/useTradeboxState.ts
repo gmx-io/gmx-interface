@@ -165,6 +165,10 @@ export function useTradeboxState(
       setStoredOptionsWithoutFallbacks((oldState) => {
         const newState = typeof args === "function" ? args(oldState) : args;
 
+        if (isEqual(oldState, newState)) {
+          return oldState;
+        }
+
         localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(chainId)), JSON.stringify(newState));
 
         if (latestEnabled.current && newState.tradeType !== oldState.tradeType) {
@@ -290,7 +294,6 @@ export function useTradeboxState(
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
-  const [leverageInputValue, setLeverageInputValue] = useState<string>(() => leverageOption?.toString() ?? "");
 
   const tradeFlags = useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
   const { isSwap } = tradeFlags;
@@ -602,41 +605,6 @@ export function useTradeboxState(
     [setStoredOptions]
   );
 
-  const handleLeverageInputChange = useCallback(
-    (value: string) => {
-      const sanitizedValue = value.replace(",", ".");
-
-      const endsInDot = sanitizedValue.endsWith(".");
-
-      const numberValue = parseFloat(sanitizedValue);
-
-      if (isNaN(numberValue)) {
-        setLeverageInputValue(value);
-        return;
-      }
-
-      const truncatedValue = Math.trunc(numberValue * 10) / 10;
-
-      let stringValue = truncatedValue.toString();
-
-      if (endsInDot) {
-        stringValue += ".";
-      }
-
-      setLeverageInputValue(stringValue);
-      setLeverageOption(truncatedValue);
-    },
-    [setLeverageOption]
-  );
-
-  const handleLeverageSliderChange = useCallback(
-    (value: number) => {
-      setLeverageOption(value);
-      setLeverageInputValue(value.toString());
-    },
-    [setLeverageOption]
-  );
-
   const sidecarOrders = useSidecarOrdersState();
 
   useEffect(
@@ -653,7 +621,8 @@ export function useTradeboxState(
         return;
       }
 
-      setStoredOptions((oldState) => ({ ...oldState }));
+      // Trigger fallback normalization without forcing a redundant state change.
+      setStoredOptions((oldState) => oldState);
     },
     [availableSwapTokenAddresses.length, enabled, marketAddressIndexTokenMap, marketsInfoData, setStoredOptions]
   );
@@ -664,7 +633,7 @@ export function useTradeboxState(
         return;
       }
 
-      if (tradeType && tradeMode && !availableTradeModes.flat().includes(tradeMode)) {
+      if (tradeType && tradeMode && !availableTradeModes.flat().some((mode) => mode === tradeMode)) {
         setTradeMode(availableTradeModes[0]);
       }
     },
@@ -793,10 +762,8 @@ export function useTradeboxState(
     setTriggerPriceInputValue,
     triggerRatioInputValue,
     setTriggerRatioInputValue,
-    leverageInputValue,
-    setLeverageInputValue: handleLeverageInputChange,
     leverageOption,
-    setLeverageOption: handleLeverageSliderChange,
+    setLeverageOption,
     keepLeverage,
     setKeepLeverage,
     advancedOptions,
