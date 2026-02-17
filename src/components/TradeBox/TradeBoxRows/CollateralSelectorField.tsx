@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 
 import {
   selectTradeboxAvailableMarketsOptions,
@@ -15,8 +15,8 @@ import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/S
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { BlockField } from "components/BlockField/BlockField";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
-import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
@@ -26,40 +26,55 @@ export type Props = {
   selectedMarketAddress?: string;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
+  disabled?: boolean;
 };
 
-export function CollateralSelectorRow(p: Props) {
-  const { onSelectCollateralAddress } = p;
+export function CollateralSelectorField(p: Props) {
+  const { onSelectCollateralAddress, disabled } = p;
   const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
+  const popoverReferenceRef = useRef<HTMLDivElement | null>(null);
 
   const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
-  const warnings = useCollateralWarnings();
   const collateralInTooltipContent = useCollateralInTooltipContent();
 
   return (
-    <>
-      <SyntheticsInfoRow
-        label={
-          <TooltipWithPortal position="left-start" content={collateralInTooltipContent} variant="icon">
-            <Trans>Collateral in</Trans>
-          </TooltipWithPortal>
-        }
-        value={
-          <CollateralSelector
-            onSelect={onSelectCollateralAddress}
-            options={availableTokens}
-            disabledOptions={disabledTokens}
-            selectedTokenSymbol={selectedTokenName}
-          />
-        }
-      />
-      {warnings}
-    </>
+    <BlockField
+      containerRef={popoverReferenceRef}
+      forwardClickToSelector
+      disabled={disabled}
+      label={
+        <TooltipWithPortal
+          position="bottom-end"
+          content={collateralInTooltipContent}
+          variant="none"
+          className="overflow-hidden"
+          handleClassName="!flex overflow-hidden"
+          contentClassName="overflow-hidden"
+        >
+          <span className="overflow-hidden text-ellipsis">
+            <Trans>Collateral</Trans>
+          </span>
+        </TooltipWithPortal>
+      }
+      labelClassName="overflow-hidden shrink-1 grow-0 flex"
+      contentClassName="shrink-0 min-w-[unset]"
+      className="group/selector-field overflow-hidden"
+      content={
+        <CollateralSelector
+          onSelect={onSelectCollateralAddress}
+          options={availableTokens}
+          disabledOptions={disabledTokens}
+          selectedTokenSymbol={selectedTokenName}
+          popoverReferenceRef={popoverReferenceRef}
+          disabled={disabled}
+        />
+      }
+    />
   );
 }
 
-function useCollateralWarnings() {
+export function useCollateralWarnings() {
   const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
   const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const { isMarket } = useSelector(selectTradeboxTradeFlags);

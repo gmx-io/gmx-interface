@@ -1,6 +1,6 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-import { type JSX } from "react";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -8,11 +8,11 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 export type EventData = {
   id: string;
-  title: string;
+  title: ReactNode;
   isActive?: boolean;
   startDate?: string;
   endDate: string;
-  bodyText: string | string[] | JSX.Element;
+  bodyText: ReactNode;
   chains?: number[];
   link?: {
     text: string;

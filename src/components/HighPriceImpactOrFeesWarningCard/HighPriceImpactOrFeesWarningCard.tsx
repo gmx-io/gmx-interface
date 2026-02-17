@@ -33,18 +33,18 @@ export function HighPriceImpactOrFeesWarningCard({
 
     const formattedCap = formatPercentage(maxNegativeImpactBps, { displayDecimals: 1 });
 
-    if (priceImpactWarningState.shouldShowWarningForCollateral && formattedCap) {
+    if (priceImpactWarningState.shouldShowWarningForCollateral) {
       warnings.push({
         id: "high-impact-on-collateral",
         key: t`High net price impact`,
         value: undefined,
-        tooltipContent: (
+        tooltipContent: formattedCap ? (
           <Trans>
             High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
             collateral. Consider reducing leverage. <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>
             .
           </Trans>
-        ),
+        ) : undefined,
       });
     }
 
@@ -87,7 +87,7 @@ export function HighPriceImpactOrFeesWarningCard({
       });
     }
 
-    if (externalSwapFeeItem) {
+    if (priceImpactWarningState.shouldShowWarningForExternalSwap && externalSwapFeeItem) {
       warnings.push({
         id: "high-external-swap-fee",
         key: t`High external swap impact`,
@@ -104,7 +104,7 @@ export function HighPriceImpactOrFeesWarningCard({
     maxNegativeImpactBps,
   ]);
 
-  if (!priceImpactWarningState.shouldShowWarning) {
+  if (!priceImpactWarningState.shouldShowWarning || warnings.length === 0) {
     return null;
   }
 

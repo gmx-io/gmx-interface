@@ -40,6 +40,7 @@ export function InfoRows({
         title={t`Execution details`}
         open={isExecutionDetailsOpen}
         onToggle={toggleExecutionDetails}
+        wrapped
         contentClassName="flex flex-col gap-12"
       >
         <SyntheticsInfoRow

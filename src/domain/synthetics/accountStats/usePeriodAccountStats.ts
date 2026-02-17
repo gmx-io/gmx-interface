@@ -25,7 +25,7 @@ export type PeriodAccountStats = {
 
 export function usePeriodAccountStats(
   chainId: number,
-  params: { account?: string; from?: number; to?: number; enabled?: boolean }
+  params: { account?: string; from?: number; to?: number; enabled?: boolean; refreshInterval?: number }
 ) {
   const { account, from, to, enabled = true } = params;
 
@@ -88,6 +88,7 @@ export function usePeriodAccountStats(
           id: stats.id,
         };
       },
+      refreshInterval: params.refreshInterval,
     }
   );
 

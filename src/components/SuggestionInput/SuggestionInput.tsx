@@ -1,6 +1,15 @@
-import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import {
+  autoUpdate,
+  flip,
+  offset,
+  Placement,
+  shift,
+  useDismiss,
+  useFloating,
+  useInteractions,
+} from "@floating-ui/react";
 import cx from "classnames";
-import { ChangeEvent, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, PointerEvent, useCallback, useEffect, useRef, useState } from "react";
 
 import NumberInput from "components/NumberInput/NumberInput";
 import Portal from "components/Portal/Portal";
@@ -13,7 +22,7 @@ type Props = {
   setValue?: (value: string) => void;
   placeholder?: string;
   suggestionList?: number[];
-  symbol?: string;
+  suffix?: string;
   isError?: boolean;
   inputClassName?: string;
   onBlur?: () => void;
@@ -21,6 +30,9 @@ type Props = {
   className?: string;
   label?: React.ReactNode;
   onPanelVisibleChange?: (isPanelVisible: boolean) => void;
+  suggestionWithSuffix?: boolean;
+  suggestionsPlacement?: Placement;
+  disabled?: boolean;
 };
 
 export default function SuggestionInput({
@@ -28,7 +40,7 @@ export default function SuggestionInput({
   value,
   setValue,
   suggestionList,
-  symbol,
+  suffix,
   isError,
   inputClassName,
   onBlur,
@@ -37,6 +49,9 @@ export default function SuggestionInput({
   label,
   onPanelVisibleChange,
   inputId,
+  suggestionWithSuffix,
+  suggestionsPlacement = "bottom-end",
+  disabled,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
@@ -71,6 +86,16 @@ export default function SuggestionInput({
     onBlur?.();
   }, [onBlur]);
 
+  const handleReferencePointerDown = useCallback(
+    (e: PointerEvent<Element>) => {
+      if (disabled) return;
+      e.stopPropagation();
+      inputRef.current?.focus();
+      setIsPanelVisible(true);
+    },
+    [disabled]
+  );
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       const target = e.target as HTMLInputElement;
@@ -87,44 +112,53 @@ export default function SuggestionInput({
     [onKeyDown]
   );
 
-  const { refs, floatingStyles } = useFloating({
+  const { refs, floatingStyles, context } = useFloating({
+    open: isPanelVisible,
+    onOpenChange: setIsPanelVisible,
     middleware: [offset(4), flip(), shift()],
-    placement: "bottom-end",
+    placement: suggestionsPlacement,
     whileElementsMounted: autoUpdate,
   });
+  const { getReferenceProps, getFloatingProps } = useInteractions([useDismiss(context)]);
 
   return (
     <div className="Suggestion-input-wrapper">
       <div
-        className={cx("Suggestion-input flex items-baseline", className, { "input-error": isError, "pr-6": !symbol })}
-        onClick={() => inputRef.current?.focus()}
+        className={cx("Suggestion-input flex items-baseline", className, {
+          "input-error": isError,
+          "pr-6": !suffix,
+          "cursor-default opacity-50": disabled,
+        })}
         ref={refs.setReference}
+        {...getReferenceProps({ onPointerDown: handleReferencePointerDown })}
       >
         {label ? <span className="pl-7 pr-7 text-typography-secondary">{label}</span> : null}
         <NumberInput
           inputId={inputId}
           inputRef={inputRef}
           className={cx(inputClassName, "min-w-0 text-right outline-none")}
-          onFocus={() => setIsPanelVisible(true)}
+          onFocus={() => !disabled && setIsPanelVisible(true)}
           onBlur={handleBlur}
           value={value ?? ""}
           placeholder={placeholder}
           onValueChange={handleChange}
           onKeyDown={handleKeyDown}
+          isDisabled={disabled}
         />
-        {symbol && (
+        {suffix && (
           <div className="pr-7 text-typography-secondary">
-            <span>{symbol}</span>
+            <span>{suffix}</span>
           </div>
         )}
       </div>
       {suggestionList && isPanelVisible && (
         <Portal>
-          <div className="z-[100]" ref={refs.setFloating} style={floatingStyles}>
+          <div className="z-[1000]" ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()}>
             <ul className="Suggestion-list">
               {suggestionList.map((suggestion) => (
-                <li key={suggestion} onMouseDown={() => handleSuggestionClick(suggestion)}>
-                  {suggestion}%
+                <li key={suggestion} onPointerDown={() => handleSuggestionClick(suggestion)}>
+                  {suggestion}
+                  {suggestionWithSuffix ? suffix : "%"}
                 </li>
               ))}
             </ul>

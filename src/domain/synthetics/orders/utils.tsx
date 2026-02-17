@@ -1,8 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 
 import { Token } from "domain/tokens";
-import { formatPercentage, formatTokenAmount, formatUsd } from "lib/numbers";
-import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { formatPercentage } from "lib/numbers";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -25,38 +24,17 @@ import { FindSwapPath, getAcceptablePriceInfo, getMaxSwapPathLiquidity, getSwapA
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
 
-function getSwapOrderTitle(p: {
-  initialCollateralToken: Token;
-  targetCollateralToken: Token;
-  initialCollateralAmount: bigint;
-  minOutputAmount: bigint;
-}) {
-  const { initialCollateralToken, initialCollateralAmount, targetCollateralToken, minOutputAmount } = p;
-
-  const fromTokenText = formatTokenAmount(
-    initialCollateralAmount,
-    initialCollateralToken.decimals,
-    initialCollateralToken.symbol,
-    { isStable: initialCollateralToken.isStable }
-  );
-
-  const toTokenText = formatTokenAmount(minOutputAmount, targetCollateralToken.decimals, targetCollateralToken.symbol, {
-    isStable: targetCollateralToken.isStable,
-  });
-
-  return t`Swap ${fromTokenText} for ${toTokenText}`;
+function getSwapOrderTitle() {
+  return t`Swap`;
 }
 
 function getPositionOrderTitle(p: { orderType: OrderType; isLong: boolean; indexToken: Token; sizeDeltaUsd: bigint }) {
-  const { orderType, isLong, indexToken, sizeDeltaUsd } = p;
+  const { orderType, isLong, indexToken } = p;
 
   const longShortText = isLong ? t`Long` : t`Short`;
-  const visualMultiplier = getTokenVisualMultiplier(indexToken);
-  const tokenText = `${visualMultiplier}${indexToken.symbol} ${longShortText}`;
-  const sizeText = formatUsd(sizeDeltaUsd);
   const increaseOrDecreaseText = isIncreaseOrderType(orderType) ? t`Increase` : t`Decrease`;
 
-  return t`${increaseOrDecreaseText} ${tokenText} by ${sizeText}`;
+  return t`${increaseOrDecreaseText}: ${indexToken.symbol} ${longShortText}`;
 }
 
 export function getOrderTypeLabel(orderType: OrderType) {
@@ -78,12 +56,7 @@ export function setOrderInfoTitle(order: OrderInfo, indexToken?: Token) {
   let title: string | undefined = undefined;
 
   if (isSwapOrderType(order.orderType)) {
-    title = getSwapOrderTitle({
-      initialCollateralToken: order.initialCollateralToken,
-      targetCollateralToken: order.targetCollateralToken,
-      initialCollateralAmount: order.initialCollateralDeltaAmount,
-      minOutputAmount: order.minOutputAmount,
-    });
+    title = getSwapOrderTitle();
   } else {
     title = indexToken
       ? getPositionOrderTitle({

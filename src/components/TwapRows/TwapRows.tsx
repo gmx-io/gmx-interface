@@ -81,10 +81,10 @@ const TwapRows = ({
 
   return (
     <div className="flex flex-col gap-14">
-      <SyntheticsInfoRow label={t`Duration`} className="h-20">
+      <SyntheticsInfoRow label={t`Duration`} className="!items-center">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Number of parts`}>
+      <SyntheticsInfoRow label={t`Number of parts`} className="!items-center">
         <div className="flex">
           <ValueInput
             value={numberOfParts}

@@ -6,7 +6,6 @@ import {
   selectPositionSellerFees,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
-  selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
@@ -52,15 +51,12 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     selectedTriggerAcceptablePriceImpactBps,
   } = usePositionSeller();
 
-  const isTrigger = orderOption === OrderOption.Trigger;
   const isTwap = orderOption === OrderOption.Twap;
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
-
-  const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -103,17 +99,18 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   }
 
   return (
-    <ExpandableRow title={t`Execution details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
-      <ExitPriceRow
-        isSwap={false}
-        fees={fees}
-        price={isTrigger ? triggerPrice : position.markPrice}
-        isLong={position.isLong}
-      />
+    <ExpandableRow
+      title={t`Execution details`}
+      open={open}
+      onToggle={setOpen}
+      wrapped
+      contentClassName="flex flex-col gap-14"
+    >
+      <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
-      {isTrigger || isTwap ? (
+      {isTwap ? (
         isSetAcceptablePriceImpactEnabled ? (
           acceptablePriceImpactInputRow
         ) : null

@@ -36,7 +36,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
         <TooltipWithPortal
           handle={t`Allowed slippage`}
           position="left-start"
-          variant="icon"
+          variant="iconStroke"
           content={
             <div className="text-typography-primary">
               <Trans>

@@ -12,11 +12,13 @@ import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
-import { CustomErrorName, extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
+import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
+import { getContractErrorToastContent } from "./getContractErrorToastContent";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
@@ -95,26 +97,9 @@ export function getTxnErrorToast(
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
   }
 
-  if (
-    errorData.contractError === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
-    errorData.contractError === CustomErrorName.InsufficientSwapOutputAmount
-  ) {
-    toastParams.errorContent = (
-      <Trans>
-        Order failed due to price volatility. Try{" "}
-        <span
-          onClick={() => {
-            if (slippageInputId) {
-              document.getElementById(slippageInputId)?.focus();
-            }
-          }}
-          className={slippageInputId ? "cursor-pointer underline" : undefined}
-        >
-          <Trans>increasing the allowed slippage</Trans>
-        </span>
-      </Trans>
-    );
-
+  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId });
+  if (contractErrorMessage) {
+    toastParams.errorContent = contractErrorMessage;
     return toastParams;
   }
 

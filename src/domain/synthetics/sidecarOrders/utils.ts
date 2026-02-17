@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import uniqueId from "lodash/uniqueId";
 
 import { USD_DECIMALS } from "config/factors";
-import { BASIS_POINTS_DIVISOR, MAX_ALLOWED_LEVERAGE } from "config/factors";
 import { PositionOrderInfo } from "domain/synthetics/orders";
 import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 
@@ -96,27 +95,21 @@ export function prepareInitialEntries({
 
 export function handleEntryError<T extends SidecarOrderEntry>(
   entry: T,
-  type: "sl" | "tp" | "limit",
+  type: "sl" | "tp",
   {
-    liqPrice,
     triggerPrice,
     markPrice,
     isLong,
     isLimit,
-    isExistingLimits,
     isExistingPosition,
-    maxLimitTrigerPrice,
-    minLimitTrigerPrice,
   }: {
     liqPrice?: bigint;
+    entryPrice?: bigint;
     triggerPrice?: bigint;
     markPrice?: bigint;
     isLong?: boolean;
     isLimit?: boolean;
-    isExistingLimits?: boolean;
     isExistingPosition?: boolean;
-    maxLimitTrigerPrice?: bigint;
-    minLimitTrigerPrice?: bigint;
   }
 ): T {
   let sizeError: string | null = null;
@@ -126,102 +119,47 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   const inputPrice = entry.price.value;
 
   if (inputPrice !== undefined && inputPrice !== null && inputPrice > 0) {
-    if (markPrice !== undefined) {
-      if (type === "limit") {
-        const nextError = isLong
-          ? inputPrice > markPrice && t`Limit price above mark price`
-          : inputPrice < markPrice && t`Limit price below mark price`;
-
-        priceError = nextError || priceError;
-      }
-    }
-
-    if (!isExistingLimits && liqPrice !== undefined && liqPrice !== null) {
-      if (type === "sl") {
-        const nextError = isLong
-          ? inputPrice < liqPrice && t`Trigger price below liquidation price`
-          : inputPrice > liqPrice && t`Trigger price above liquidation price`;
-
-        priceError = nextError || priceError;
-      }
-    }
-
     if (isExistingPosition || !isLimit) {
       if (markPrice !== undefined && markPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
-            ? inputPrice < markPrice && t`Trigger price below mark price`
-            : inputPrice > markPrice && t`Trigger price above mark price`;
+            ? inputPrice < markPrice && t`TP price below mark price`
+            : inputPrice > markPrice && t`TP price above mark price`;
 
           priceError = nextError || priceError;
         }
 
         if (type === "sl") {
           const nextError = isLong
-            ? inputPrice > markPrice && t`Trigger price above mark price`
-            : inputPrice < markPrice && t`Trigger price below mark price`;
+            ? inputPrice > markPrice && t`SL price above mark price`
+            : inputPrice < markPrice && t`SL price below mark price`;
 
           priceError = nextError || priceError;
         }
       }
     } else {
-      if (isExistingLimits) {
-        if (
-          maxLimitTrigerPrice !== undefined &&
-          maxLimitTrigerPrice !== null &&
-          minLimitTrigerPrice !== undefined &&
-          minLimitTrigerPrice !== null
-        ) {
-          if (type === "tp") {
-            const nextError = isLong
-              ? inputPrice < maxLimitTrigerPrice && t`Trigger price below highest limit price`
-              : inputPrice > minLimitTrigerPrice && t`Trigger price above lowest limit price`;
+      if (triggerPrice !== undefined && triggerPrice !== null) {
+        if (type === "tp") {
+          const nextError = isLong
+            ? inputPrice < triggerPrice && t`TP price below limit price`
+            : inputPrice > triggerPrice && t`TP price above limit price`;
 
-            priceError = nextError || priceError;
-          }
-
-          if (type === "sl") {
-            const nextError = isLong
-              ? inputPrice > maxLimitTrigerPrice && t`Trigger price above highest limit price`
-              : inputPrice < minLimitTrigerPrice && t`Trigger price below lowest limit price`;
-
-            priceError = nextError || priceError;
-          }
+          priceError = nextError || priceError;
         }
-      } else {
-        if (triggerPrice !== undefined && triggerPrice !== null) {
-          if (type === "tp") {
-            const nextError = isLong
-              ? inputPrice < triggerPrice && t`Trigger price below limit price`
-              : inputPrice > triggerPrice && t`Trigger price above limit price`;
 
-            priceError = nextError || priceError;
-          }
+        if (type === "sl") {
+          const nextError = isLong
+            ? inputPrice > triggerPrice && t`SL price above limit price`
+            : inputPrice < triggerPrice && t`SL price below limit price`;
 
-          if (type === "sl") {
-            const nextError = isLong
-              ? inputPrice > triggerPrice && t`Trigger price above limit price`
-              : inputPrice < triggerPrice && t`Trigger price below limit price`;
-
-            priceError = nextError || priceError;
-          }
+          priceError = nextError || priceError;
         }
       }
     }
   }
 
-  if (type === "limit") {
-    if (entry.sizeUsd?.value === undefined || entry.sizeUsd.value === 0n) {
-      sizeError = t`Limit size required`;
-    }
-
-    if (entry?.increaseAmounts?.estimatedLeverage && entry?.increaseAmounts?.estimatedLeverage > MAX_ALLOWED_LEVERAGE) {
-      sizeError = t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
-    }
-  } else {
-    if (entry.percentage?.value === undefined || entry.percentage?.value === 0n) {
-      percentageError = t`Size percentage required`;
-    }
+  if (entry.percentage?.value === undefined || entry.percentage?.value === 0n) {
+    percentageError = t`Size percentage required`;
   }
 
   return {
