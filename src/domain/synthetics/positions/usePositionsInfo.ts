@@ -12,6 +12,7 @@ import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
 import { PositionsData, PositionsInfoData } from "./types";
 import { useApiPositionsInfoRequest } from "./useApiPositionsInfoRequest";
+import { getAllPossiblePositionsKeys, useOptimisticPositionsInfo } from "./useOptimisticPositions";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
 
 function composeApiPositionInfo(apiPosition: ApiPositionInfo, marketsInfoData: MarketsInfoData): PositionInfo | null {
@@ -65,7 +66,7 @@ export function usePositionsInfoRequest(
     positionsError,
   } = p;
 
-  const isApiSdkEnabled = getIsFlagEnabled("apiSdk");
+  const isApiSdkEnabled = getIsFlagEnabled("apiSdk2");
 
   const {
     positionsInfoData: apiPositionsInfoData,
@@ -136,14 +137,27 @@ export function usePositionsInfoRequest(
     }, {} as PositionsInfoData);
   }, [apiPositionsInfoData, marketsInfoData]);
 
+  const allPossiblePositionsKeys = useMemo(
+    () => getAllPossiblePositionsKeys(account, marketsInfoData),
+    [account, marketsInfoData]
+  );
+
+  const optimisticApiPositionsInfoData = useOptimisticPositionsInfo({
+    positionsInfoData: composedApiPositionsInfoData,
+    allPositionsKeys: allPossiblePositionsKeys.length > 0 ? allPossiblePositionsKeys : undefined,
+    isLoading: !composedApiPositionsInfoData && isApiSdkEnabled && !apiError && !isApiStale,
+    marketsInfoData,
+  });
+
   const positionsInfoData = useMemo(() => {
-    if (composedApiPositionsInfoData && !isApiStale && !apiError) {
-      return composedApiPositionsInfoData;
+    if (optimisticApiPositionsInfoData && !isApiStale && !apiError) {
+      return optimisticApiPositionsInfoData;
     }
     return rpcPositionsInfoData;
-  }, [composedApiPositionsInfoData, isApiStale, apiError, rpcPositionsInfoData]);
+  }, [optimisticApiPositionsInfoData, isApiStale, apiError, rpcPositionsInfoData]);
 
-  const isLoading = !positionsInfoData && (shouldFallbackToRpc ? !rpcPositionsInfoData : !composedApiPositionsInfoData);
+  const isLoading =
+    !positionsInfoData && (shouldFallbackToRpc ? !rpcPositionsInfoData : !optimisticApiPositionsInfoData);
 
   return {
     positionsInfoData,
