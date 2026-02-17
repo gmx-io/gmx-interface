@@ -99,29 +99,29 @@ export function SyntheticsStats() {
                   <Trans>POOL CAP SHORT</Trans>
                 </th>
                 <th>
-                  <TooltipWithPortal handle={t`PnL`} renderContent={() => t`Pending PnL from all open positions`} />
+                  <TooltipWithPortal handle={t`PNL`} renderContent={() => t`Pending PnL from all open positions`} />
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle={t`Borrowing Fees`}
-                    renderContent={() => t`Pending Borrowing Fees from all open positions`}
+                    handle={t`BORROWING FEES`}
+                    renderContent={() => t`Pending borrowing fees from all open positions`}
                   />
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle={t`Funding APR`}
+                    handle={t`FUNDING APR`}
                     renderContent={() => (
                       <div>
-                        <Trans>Longs / Shorts</Trans>
+                        <Trans>Longs / shorts</Trans>
                         <br />
                         <br />
                         <Trans>Per 1h</Trans>
                         <br />
                         <br />
-                        <Trans>Negative Value: Traders pay funding</Trans>
+                        <Trans>Negative value: traders pay funding</Trans>
                         <br />
                         <br />
-                        <Trans>Positive Value: Traders receive funding</Trans>
+                        <Trans>Positive value: traders receive funding</Trans>
                       </div>
                     )}
                   />
@@ -137,7 +137,7 @@ export function SyntheticsStats() {
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle={t`VI Positions`}
+                    handle={t`VI POSITIONS`}
                     position="bottom-end"
                     renderContent={() => (
                       <>
@@ -156,7 +156,7 @@ export function SyntheticsStats() {
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle={t`VI Swaps`}
+                    handle={t`VI SWAPS`}
                     position="bottom-end"
                     renderContent={() => (
                       <>
@@ -329,14 +329,14 @@ export function SyntheticsStats() {
                             />
 
                             <StatsTooltipRow
-                              label={t`Swap Impact Amount ${market.longToken.symbol}`}
+                              label={t`Swap impact amount ${market.longToken.symbol}`}
                               value={formatAmount(swapImpactUsdLong, 30, 0, true)}
                             />
                             <StatsTooltipRow
-                              label={t`Swap Impact Amount ${market.shortToken.symbol}`}
+                              label={t`Swap impact amount ${market.shortToken.symbol}`}
                               value={formatAmount(swapImpactUsdShort, 30, 0, true)}
                             />
-                            <StatsTooltipRow label={t`Position Impact Amount`} value={formatAmount(positionImpactUsd, 30, 0, true)} />
+                            <StatsTooltipRow label={t`Position impact amount`} value={formatAmount(positionImpactUsd, 30, 0, true)} />
                           </>
                         )}
                       />
@@ -756,23 +756,23 @@ export function SyntheticsStats() {
                                 value={formatAmount(reservedUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={t`Max Reserved ${directionLabel}`}
+                                label={t`Max reserved ${directionLabel}`}
                                 value={formatAmount(maxReservedUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={t`Open Interest ${directionLabel}`}
+                                label={t`Open interest ${directionLabel}`}
                                 value={formatAmount(interestUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={t`Max Open Interest ${directionLabel}`}
+                                label={t`Max open interest ${directionLabel}`}
                                 value={formatAmount(maxOpenInterest, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={t`Max ${token.symbol} Out`}
+                                label={t`Max ${token.symbol} out`}
                                 value={formatAmount(collateralLiquidityUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={t`Available Liquidity ${directionLabel}`}
+                                label={t`Available liquidity ${directionLabel}`}
                                 value={formatAmount(availableLiquidity, 30, 0, true)}
                               />
                             </>
@@ -841,7 +841,7 @@ export function SyntheticsStats() {
                               showDollar={false}
                             />
                             <StatsTooltipRow
-                              label={t`Distribution Rate, ${market.indexToken.symbol}`}
+                              label={t`Distribution rate, ${market.indexToken.symbol}`}
                               value={formatAmount(
                                 market.positionImpactPoolDistributionRate,
                                 market.indexToken.decimals + 30,

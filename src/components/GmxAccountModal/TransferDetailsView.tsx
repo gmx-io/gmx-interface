@@ -125,8 +125,8 @@ export const TransferDetailsView = () => {
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
-        <AlertInfoCard type="error">
-          <Trans>Deposit from {sourceChainName} failed.</Trans>
+        <AlertInfoCard type="error" hideClose>
+          <Trans>Deposit from {sourceChainName} failed</Trans>
         </AlertInfoCard>
       ) : null}
       <SyntheticsInfoRow

@@ -142,7 +142,7 @@ export function DecodeError() {
           <div className="mb-20 rounded-8 border border-slate-800 bg-slate-900 p-20">
             <div className="text-body-medium mb-12">
               <span className="font-medium">
-                <Trans>Error Name:</Trans>
+                <Trans>Error name:</Trans>
               </span>{" "}
               <span className="text-blue-400">{decodedError.errorName}</span>
             </div>

@@ -238,7 +238,7 @@ async function processSimulation({
     const url = `https://dashboard.tenderly.co/${config.accountSlug}/${config.projectSlug}/simulator/${json.simulation.id}`;
     sentReports.push({ url, comment: comment ?? "" });
     success = json.simulation.status;
-    helperToast.info(
+    helperToast.success(
       <>
         {sentReports.map(({ url, comment }) => (
           <div key={url}>

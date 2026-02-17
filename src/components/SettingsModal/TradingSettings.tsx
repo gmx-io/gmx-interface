@@ -122,7 +122,7 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading</Trans>
+                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
                 ) : undefined
               }
               chip={
@@ -141,7 +141,7 @@ export function TradingSettings({
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading</Trans>
+                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
                 ) : undefined
               }
               info={
@@ -233,12 +233,11 @@ export function TradingSettings({
                 slippage exceeds your maximum.
                 <br />
                 <br />
-                Note: Slippage differs from price impact, which is based on open interest imbalances.
+                Slippage differs from price impact, which is based on open interest imbalances.
               </Trans>{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">
                 <Trans>Read more</Trans>
-              </ExternalLink>
-              .
+              </ExternalLink>.
             </div>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
@@ -269,8 +268,7 @@ export function TradingSettings({
                 <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee-buffer">
                   <Trans>Read more</Trans>
-                </ExternalLink>
-                .
+                </ExternalLink>.
               </div>
             }
             defaultValue={30}
@@ -290,8 +288,7 @@ export function TradingSettings({
                 </Trans>{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading/#auto-cancel-tp--sl">
                   <Trans>Read more</Trans>
-                </ExternalLink>
-                .
+                </ExternalLink>.
               </div>
             }
             handle={<Trans>Auto-cancel TP/SL</Trans>}

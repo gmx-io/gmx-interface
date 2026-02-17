@@ -1372,7 +1372,7 @@ export const WithdrawalView = () => {
       {!isInsufficientBalance && (
         <>
           {isAboveLimit && (
-            <AlertInfoCard type="warning" className="my-4">
+            <AlertInfoCard type="warning" className="my-4" hideClose>
               <div>
                 <Trans>
                   Amount exceeds the withdrawal limit. Try an amount smaller than{" "}
@@ -1382,24 +1382,13 @@ export const WithdrawalView = () => {
             </AlertInfoCard>
           )}
           {isBelowLimit && (
-            <AlertInfoCard type="warning" className="my-4">
+            <AlertInfoCard type="warning" className="my-4" hideClose>
               <div>
                 <Trans>
                   Amount is below the withdrawal limit. Try an amount larger than{" "}
                   <span className="numbers">{lowerLimitFormatted}</span>.
                 </Trans>
               </div>
-            </AlertInfoCard>
-          )}
-
-          {buttonState.bannerErrorName && (
-            <AlertInfoCard type="error" className="mt-8" hideClose>
-              <ValidationBannerErrorContent
-                validationBannerErrorName={buttonState.bannerErrorName}
-                chainId={chainId}
-                srcChainId={withdrawalViewChain}
-                gasPaymentTokenAddress={gasPaymentToken?.address}
-              />
             </AlertInfoCard>
           )}
         </>
@@ -1433,6 +1422,17 @@ export const WithdrawalView = () => {
             }
           />
         </div>
+      )}
+
+      {buttonState.bannerErrorName && (
+        <AlertInfoCard type="error" className="mb-8" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={buttonState.bannerErrorName}
+            chainId={chainId}
+            srcChainId={withdrawalViewChain}
+            gasPaymentTokenAddress={gasPaymentToken?.address}
+          />
+        </AlertInfoCard>
       )}
 
       <Button

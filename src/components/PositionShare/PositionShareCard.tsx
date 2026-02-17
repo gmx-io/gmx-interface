@@ -63,7 +63,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
         >
           <img
             src={coinImg}
-            alt={t`coin`}
+            alt={t`Coin`}
             className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]"
           />
           <div className="z-3 relative flex flex-col justify-end gap-12 max-md:gap-4 max-smallMobile:gap-0">

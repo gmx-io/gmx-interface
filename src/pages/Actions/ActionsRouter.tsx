@@ -31,7 +31,7 @@ export function AccountsRouter() {
             subtitle={<VersionNetworkSwitcherRow chainId={chainId} version={1} />}
           />
           <div className="text-center text-yellow-300">
-            <Trans>V1 is unsupported on {chainName}. Switch to Arbitrum to use V1.</Trans>
+            <Trans>V1 unsupported on {chainName}. Switch to Arbitrum to use V1.</Trans>
           </div>
         </div>
       </AppPageLayout>

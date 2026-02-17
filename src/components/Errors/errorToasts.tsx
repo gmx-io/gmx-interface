@@ -138,7 +138,7 @@ export function getTxnErrorToast(
             <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible?.(true)}>
               Express Trading
             </Button>{" "}
-            in settings for better reliability.
+            in settings for better reliability
           </Trans>
           <br />
           <br />
@@ -282,7 +282,7 @@ export function InvalidSignatureToastContent() {
         Invalid signature.
         <br />
         <br />
-        Try a different wallet provider, or switch to Classic or One-Click Trading in{" "}
+        Try a different wallet provider or switch to Classic or One-Click Trading in{" "}
         <span className="clickable underline" onClick={() => setIsSettingsVisible(true)}>
           settings
         </span>
@@ -343,7 +343,7 @@ export function getInsufficientExecutionFeeToastContent({
       in settings for better reliability.
       <br />
       <br />
-      Or increase the max network fee buffer {bufferText} in {settingsLink}.
+      Or increase the max network fee buffer {bufferText} in {settingsLink}
     </Trans>
   ) : (
     <Trans>

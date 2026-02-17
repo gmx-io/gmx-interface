@@ -294,6 +294,10 @@ export function useTradeboxState(
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+  const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
+    "limit-price-warning-hidden",
+    false
+  );
 
   const tradeFlags = useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
   const { isSwap } = tradeFlags;
@@ -761,6 +765,8 @@ export function useTradeboxState(
     setLeverageOption,
     keepLeverage,
     setKeepLeverage,
+    limitPriceWarningHidden,
+    setLimitPriceWarningHidden,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,

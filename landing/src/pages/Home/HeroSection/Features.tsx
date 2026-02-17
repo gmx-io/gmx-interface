@@ -38,7 +38,7 @@ export function Features({ goToTradeArbitrum }: Props) {
           </div>
           <p className="text-description">
             <Trans>
-              Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book
+              Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book
               depth
             </Trans>
           </p>

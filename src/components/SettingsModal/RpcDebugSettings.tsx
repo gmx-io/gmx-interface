@@ -84,7 +84,7 @@ export function RpcDebugSettings() {
                       <div className="text-xs text-white">{endpoint.url}</div>
                       <div className="text-xs text-slate-400">
                         <Trans>
-                          Purpose: {endpoint.purpose} | Public: {endpoint.isPublic ? t`Yes` : t`No`}
+                          Purpose: {endpoint.purpose} | public: {endpoint.isPublic ? t`Yes` : t`No`}
                         </Trans>
                       </div>
                     </div>

@@ -135,7 +135,7 @@ export function getOrderErrors(p: {
 
       if (swapPathLiquidity < minOutputUsd && !isTwapOrder(order)) {
         errors.push({
-          msg: t`Insufficient liquidity for swap at min. receive amount.`,
+          msg: t`Insufficient liquidity for swap at min. receive amount`,
           level: "error",
           key: "liquidity0",
         });
@@ -152,7 +152,7 @@ export function getOrderErrors(p: {
 
       if (getIsHighPriceImpact(undefined, swapImpactFeeItem)) {
         errors.push({
-          msg: t`Swap price impact is high.`,
+          msg: t`Swap price impact is high`,
           level: "warning",
           key: "highPriceImpact",
         });
@@ -207,7 +207,7 @@ export function getOrderErrors(p: {
 
       if (currentLiquidity < positionOrder.sizeDeltaUsd) {
         errors.push({
-          msg: t`Insufficient liquidity to execute order at trigger price.`,
+          msg: t`Insufficient liquidity to execute order at trigger price`,
           level: "error",
           key: "liquidity1",
         });
@@ -228,7 +228,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < collateralSwapUsd) {
           errors.push({
-            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price.`,
+            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price`,
             level: "error",
             key: "liquidity2",
           });
@@ -247,7 +247,7 @@ export function getOrderErrors(p: {
 
       if (sameMarketPosition) {
         errors.push({
-          msg: t`Order uses ${collateralSymbol}, but existing ${longText} position uses ${symbol} as collateral.`,
+          msg: t`Order uses ${collateralSymbol}, but existing ${longText} position uses ${symbol} as collateral`,
           level: "warning",
           key: "collateralToken",
         });
@@ -267,7 +267,7 @@ export function getOrderErrors(p: {
 
       if (isInvalidTriggerPrice && !isMarketOrderType(order.orderType)) {
         errors.push({
-          msg: t`Order won't execute: trigger price beyond liquidation price.`,
+          msg: t`Order won't execute: trigger price beyond liquidation price`,
           level: "error",
           key: "triggerPrice",
         });

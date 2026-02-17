@@ -188,7 +188,7 @@ function TotalEarned({
       tooltipSections.push(
         <div key="staking" className="flex flex-col gap-8">
           <span className="text-body-medium font-medium text-typography-secondary">
-            <Trans>Lifetime staking rewards:</Trans>
+            <Trans>Lifetime staking rewards</Trans>
           </span>
           <div className="flex flex-col">{stakingRows}</div>
         </div>
@@ -199,7 +199,7 @@ function TotalEarned({
       tooltipSections.push(
         <div key="lp" className="flex flex-col gap-8">
           <span className="text-body-medium font-medium text-typography-secondary">
-            <Trans>Lifetime LP rewards:</Trans>
+            <Trans>Lifetime LP rewards</Trans>
           </span>
           <div className="flex flex-col">
             <StatsTooltipRow

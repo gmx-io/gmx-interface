@@ -168,7 +168,7 @@ export function getNameByOrderType(
     }
 
     if (lower) {
-      return t`take profit`;
+      return t`take-profit`;
     }
 
     return t`Take-Profit`;
@@ -180,7 +180,7 @@ export function getNameByOrderType(
     }
 
     if (lower) {
-      return t`stop loss`;
+      return t`stop-loss`;
     }
 
     return t`Stop-Loss`;

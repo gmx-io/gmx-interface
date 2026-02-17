@@ -268,7 +268,7 @@ export function AccountEvents() {
         <div className="default-container page-layout">
           <PageTitle title={t`Account events`} className="p-12" />
           <div className="text-center text-red-500">
-            <Trans>Please connect your wallet or provide an account address in the URL</Trans>
+            <Trans>Connect wallet or provide an account address in the URL</Trans>
           </div>
         </div>
       </AppPageLayout>

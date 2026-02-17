@@ -124,32 +124,32 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    color = "yellow";
+    onCloseClick = () => setIsVisible(false);
     content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    color = "yellow";
+    onCloseClick = () => setIsVisible(false);
     content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    color = "yellow";
+    onCloseClick = () => setIsVisible(false);
     content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = ExpressIcon;
     color = "yellow";
-    content = <Trans>Express and One-Click Trading are unavailable due to insufficient gas balance</Trans>;
+    content = <Trans>Express Trading and One-Click Trading are unavailable due to insufficient gas balance</Trans>;
     buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
     onClick = () => {
       history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
     };
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
-    color = "yellow";
+    onCloseClick = () => setIsVisible(false);
     content = (
       <Trans>
         One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign

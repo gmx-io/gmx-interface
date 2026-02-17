@@ -34,7 +34,7 @@ export function ExitPriceRow({
     <SyntheticsInfoRow
       label={
         <TooltipWithPortal
-          variant="icon"
+          variant="iconStroke"
           handle={t`Exit price`}
           content={t`Price you'll receive when closing, adjusted for capped price impact`}
         />

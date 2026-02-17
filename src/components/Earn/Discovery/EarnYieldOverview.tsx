@@ -135,7 +135,7 @@ function NetworkYieldCard({
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
       {showTitle && (
         <div className="text-body-large flex items-center gap-8 pl-12 font-medium text-typography-primary">
-          <img src={getIcon(chainId, "network")} alt={t`network`} className="h-20 w-20" />
+          <img src={getIcon(chainId, "network")} alt={t`Network`} className="h-20 w-20" />
           {title}
         </div>
       )}

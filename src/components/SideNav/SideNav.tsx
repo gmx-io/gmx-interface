@@ -73,7 +73,7 @@ function SideNav({ className }: { className?: string }) {
         className="language-popup"
         isVisible={isLanguageModalOpen}
         setIsVisible={setIsLanguageModalOpen}
-        label={t`Select Language`}
+        label={t`Select language`}
       >
         <LanguageModalContent currentLanguage={i18n.locale} onClose={handleCloseLanguageModal} />
       </ModalWithPortal>

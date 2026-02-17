@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import { Suspense, lazy, useState } from "react";
 
 import { isDevelopment } from "config/env";
+import { DOCS_LINKS } from "config/links";
 import {
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
@@ -107,10 +108,9 @@ function DepthChartContainer() {
             <Trans>
               Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact
               applies only on closes (capped, usually at 0.5%).{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
+              <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                 Read more
-              </ExternalLink>
-              .
+              </ExternalLink>.
             </Trans>
           </span>
         </ColorfulBanner>

@@ -862,23 +862,6 @@ export function PositionSeller() {
           {position && (
             <>
               <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
-                {twapRecommendation && !isTwapBannerDismissed && (
-                  <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
-                    <div className="flex flex-col gap-8">
-                      <span>
-                        <span
-                          className="cursor-pointer font-medium text-blue-300"
-                          onClick={() => {
-                            handleSetOrderOption(OrderOption.Twap);
-                          }}
-                        >
-                          <Trans>Use a TWAP order</Trans>
-                        </span>{" "}
-                        <Trans>for lower net price impact</Trans>
-                      </span>
-                    </div>
-                  </ColorfulBanner>
-                )}
                 <div className="flex flex-col gap-8">
                   <BuyInputSection
                     topLeftLabel={t`Close`}
@@ -943,6 +926,24 @@ export function PositionSeller() {
                   isWrapOrUnwrap={false}
                   isGmxAccount={srcChainId !== undefined}
                 />
+
+                {twapRecommendation && !isTwapBannerDismissed && (
+                  <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
+                    <div className="flex flex-col gap-8">
+                      <span>
+                        <span
+                          className="cursor-pointer font-medium text-blue-300"
+                          onClick={() => {
+                            handleSetOrderOption(OrderOption.Twap);
+                          }}
+                        >
+                          <Trans>Use a TWAP order</Trans>
+                        </span>{" "}
+                        <Trans>for lower net price impact</Trans>
+                      </span>
+                    </div>
+                  </ColorfulBanner>
+                )}
 
                 <Button
                   className="w-full"

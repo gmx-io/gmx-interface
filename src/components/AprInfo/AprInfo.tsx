@@ -95,7 +95,7 @@ export function AprInfo({
       return (
         <div className="inline-flex flex-nowrap">
           {node}
-          <img className="relative -top-3 h-10" src={sparkleIcon} alt={t`sparkle`} />
+          <img className="relative -top-3 h-10" src={sparkleIcon} alt={t`Sparkle`} />
         </div>
       );
     } else {

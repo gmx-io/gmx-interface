@@ -454,7 +454,7 @@ export function OverviewCard({
                         value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
                       />
                       <br />
-                      <Trans>May be higher on other sites that include position collateral.</Trans>
+                      <Trans>May be higher on other sites that include position collateral</Trans>
                     </>
                   }
                 />

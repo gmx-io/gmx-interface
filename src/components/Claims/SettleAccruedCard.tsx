@@ -7,6 +7,7 @@ import {
   selectClaimsPriceImpactAccruedTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { DOCS_LINKS } from "config/links";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -49,10 +50,9 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
           tooltipText: (
             <Trans>
               Price impact rebates accrued. Claimable after 5 days.{" "}
-              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/#price-impact-rebates">
+              <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
                 Read more
-              </ExternalLink>
-              .
+              </ExternalLink>.
             </Trans>
           ),
           onButtonClick: onAccruedPositionPriceImpactRebateClick,

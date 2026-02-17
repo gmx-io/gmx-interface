@@ -110,7 +110,7 @@ export function TestPermits() {
       }
 
       setPermitData(permit);
-      helperToast.success(t`Permit signed successfully for ${selectedToken.symbol}`);
+      helperToast.success(t`Permit signed for ${selectedToken.symbol}`);
     } catch (error) {
       helperToast.error(t`Error signing permit for ${selectedToken.symbol}: ${(error as Error).message}`);
     } finally {
@@ -191,7 +191,7 @@ export function TestPermits() {
                       <span className="text-xs text-slate-400 ">{token.address}</span>
                       <div>
                         <span className="font-semibold">
-                          <Trans>permitSupported:</Trans>
+                          <Trans>Permit supported:</Trans>
                         </span>{" "}
                         {token.isPermitSupported === true ? (
                           <span className="text-green-500">{t`true`}</span>
@@ -201,7 +201,7 @@ export function TestPermits() {
                       </div>
                       <div>
                         <span className="font-semibold">
-                          <Trans>permitDisabled:</Trans>
+                          <Trans>Permit disabled:</Trans>
                         </span>{" "}
                         {token.isPermitDisabled === true ? (
                           <span className="text-red-500">{t`true`}</span>
@@ -211,19 +211,19 @@ export function TestPermits() {
                       </div>
                       <div>
                         <span className="font-semibold">
-                          <Trans>version:</Trans>
+                          <Trans>Version:</Trans>
                         </span>{" "}
                         {loading ? t`...` : params?.version ?? t`-`}
                       </div>
                       <div>
                         <span className="font-semibold">
-                          <Trans>onchain name:</Trans>
+                          <Trans>Onchain name:</Trans>
                         </span>{" "}
                         {loading ? t`...` : params?.name ?? t`-`}
                       </div>
                       <div>
                         <span className="font-semibold">
-                          <Trans>nonce:</Trans>
+                          <Trans>Nonce:</Trans>
                         </span>{" "}
                         {loading ? t`...` : params?.nonce?.toString() ?? t`-`}
                       </div>
@@ -255,7 +255,7 @@ export function TestPermits() {
                 <div>
                   <div>
                     <span className="font-semibold">
-                      <Trans>permitSupported:</Trans>
+                      <Trans>Permit supported:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitSupported === true ? (
                       <span className="text-green-500">{t`true`}</span>
@@ -265,7 +265,7 @@ export function TestPermits() {
                   </div>
                   <div>
                     <span className="font-semibold">
-                      <Trans>permitDisabled:</Trans>
+                      <Trans>Permit disabled:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitDisabled === true ? (
                       <span className="text-red-500">{t`true`}</span>
@@ -275,19 +275,19 @@ export function TestPermits() {
                   </div>
                   <div>
                     <span className="font-semibold">
-                      <Trans>version:</Trans>
+                      <Trans>Version:</Trans>
                     </span>{" "}
                     {selectedToken.contractVersion}
                   </div>
                   <div>
                     <span className="font-semibold">
-                      <Trans>onchain name:</Trans>
+                      <Trans>Onchain name:</Trans>
                     </span>{" "}
                     {selectedToken.name}
                   </div>
                   <div>
                     <span className="font-semibold">
-                      <Trans>nonce:</Trans>
+                      <Trans>Nonce:</Trans>
                     </span>{" "}
                     {onchainParams[selectedToken.address]?.nonce?.toString() ?? t`-`}
                   </div>
@@ -347,7 +347,7 @@ export function TestPermits() {
               )}
 
               <Button onClick={handleSignPermit} disabled={!account || isLoading} className="w-full" variant="primary">
-                {isLoading ? t`Signing...` : t`Sign Permit`}
+                {isLoading ? t`Signing...` : t`Sign permit`}
               </Button>
 
               {permitData && (
@@ -357,7 +357,7 @@ export function TestPermits() {
                   className="w-full"
                   variant="primary"
                 >
-                  {isLoading ? t`Sending...` : t`Send Permit`}
+                  {isLoading ? t`Sending...` : t`Send permit`}
                 </Button>
               )}
             </div>

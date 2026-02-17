@@ -149,7 +149,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
                 handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
                 position="top-start"
                 content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
-                variant="icon"
+                variant="iconStroke"
               />
             }
             value={

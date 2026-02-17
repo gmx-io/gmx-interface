@@ -103,11 +103,11 @@ export default memo(function UiPage() {
         <AppPageLayout>
       <main className="mx-auto max-w-prose p-20">
         <h1 className="text-34 font-medium">
-          <Trans>UI Page</Trans>
+          <Trans>UI page</Trans>
         </h1>
 
         <p>
-          <Trans>This page demonstrates the use of the UI components in the app.</Trans>
+          <Trans>This page demonstrates the UI components in the app</Trans>
         </p>
 
         <h2 className="mb-16 mt-24 text-24 font-medium">
@@ -147,10 +147,10 @@ export default memo(function UiPage() {
             <Trans>Green 500</Trans>
           </p>
           <p className="text-typography-primary">
-            <Trans>Typography Primary</Trans>
+            <Trans>Typography primary</Trans>
           </p>
           <p className="text-typography-secondary">
-            <Trans>Typography Secondary</Trans>
+            <Trans>Typography secondary</Trans>
           </p>
         </div>
         <p className="mt-8 text-typography-primary underline decoration-gray-400 decoration-dashed decoration-8">
@@ -166,7 +166,7 @@ export default memo(function UiPage() {
               <Trans>h1</Trans>
             </div>
             <p className="text-h1">
-              <Trans>H1 Text Size</Trans>
+              <Trans>H1 text size</Trans>
             </p>
           </div>
           <div className="flex items-baseline gap-8">
@@ -174,12 +174,12 @@ export default memo(function UiPage() {
               <Trans>h2</Trans>
             </div>
             <p className="text-h2">
-              <Trans>H2 Text size</Trans>
+              <Trans>H2 text size</Trans>
             </p>
           </div>
           <div className="flex items-baseline gap-8">
             <div>
-              <Trans>Body Large</Trans>
+              <Trans>Body large</Trans>
             </div>
             <p className="text-body-large">
               <Trans>Some important text indeed</Trans>
@@ -190,7 +190,7 @@ export default memo(function UiPage() {
               <Trans>Medium</Trans>
             </div>
             <p className="text-body-medium">
-              <Trans>Base text it is. Nothing special</Trans>
+              <Trans>Base text it is. Nothing special.</Trans>
             </p>
           </div>
           <div className="flex items-baseline gap-8">
@@ -272,7 +272,7 @@ export default memo(function UiPage() {
               <StatsTooltipRow label={t`Some other label`} value="100" />
             </>
           }
-          handle={t`Lorem ipsum dolor.`}
+          handle={t`Lorem ipsum dolor`}
           closeDelay={100000000000}
         />
 
@@ -323,7 +323,7 @@ function IconsAndImages() {
     <>
       <div className="mx-auto max-w-prose p-20">
         <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Icons & Images</Trans>
+          <Trans>Icons & images</Trans>
         </h2>
       </div>
 

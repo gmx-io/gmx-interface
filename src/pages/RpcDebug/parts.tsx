@@ -59,7 +59,7 @@ const getEventColor = (type: string) => {
 };
 
 const getThreadName = (isInWorker: boolean) => {
-  return isInWorker ? t`Worker` : t`Main Thread`;
+  return isInWorker ? t`Worker` : t`Main thread`;
 };
 
 export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
@@ -144,11 +144,11 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                   <TableTd padding="compact">
                     {rpc.isPublic ? (
                       <span className="text-xs text-green-400">
-                        <Trans>public</Trans>
+                        <Trans>Public</Trans>
                       </span>
                     ) : (
                       <span className="text-xs text-gray-400">
-                        <Trans>private</Trans>
+                        <Trans>Private</Trans>
                       </span>
                     )}
                   </TableTd>
@@ -192,7 +192,7 @@ export function EventsPanel({
           <Trans>Multicall events</Trans>
         </h3>
         <Button variant="secondary" onClick={onClearEvents}>
-          <Trans>Clear Events</Trans>
+          <Trans>Clear events</Trans>
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -291,7 +291,7 @@ export function DebugControlsPanel({
                       <Trans>Account type</Trans>
                     </div>
                     <div className="text-base text-white">
-                      {getIsLargeAccount() ? t`Large Account` : t`Regular Account`}
+                      {getIsLargeAccount() ? t`Large account` : t`Regular account`}
                     </div>
                   </div>
                 </TableTd>
@@ -316,7 +316,7 @@ export function DebugControlsPanel({
                           });
                         }}
                       >
-                        <Trans>Force Primary Failure</Trans>
+                        <Trans>Force primary failure</Trans>
                       </Button>
                     </div>
                   </div>

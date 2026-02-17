@@ -59,7 +59,7 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
         onChange={setTenderlyProjectSlug}
       />
       <TenderlyInput
-        name={t`Access Key`}
+        name={t`Access key`}
         placeholder={t`xxxx-xxxx-xxxx`}
         value={accessKey}
         onChange={setTenderlyAccessKey}
@@ -71,7 +71,7 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
         <Trans>
           See{" "}
           <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
-            Tenderly Docs
+            Tenderly docs
           </ExternalLink>
         </Trans>
       </div>

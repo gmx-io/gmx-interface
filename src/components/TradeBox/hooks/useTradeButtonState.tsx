@@ -268,14 +268,13 @@ export function useTradeboxButtonState({
           tooltipContent = (
             <>
               {isLeverageSliderEnabled ? (
-                <Trans>Decrease the leverage to match the max allowed leverage</Trans>
+                <Trans>Decrease leverage to match the max allowed leverage.</Trans>
               ) : (
-                <Trans>Decrease the size to match the max allowed leverage:</Trans>
+                <Trans>Decrease size to match the max allowed leverage.</Trans>
               )}{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
                 <Trans>Read more</Trans>
-              </ExternalLink>
-              .
+              </ExternalLink>.
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
@@ -503,7 +502,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Loading Express params...`}
+            {t`Loading Express Trading...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -820,8 +819,8 @@ function NoSwapPathTooltipContent({
         <br />
         <br />
         <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
-          You can buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch.
-        </ExternalLink>
+          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch
+        </ExternalLink>.
       </Trans>
       {getBridgingOptionsForToken(collateralToken?.symbol) && (
         <>

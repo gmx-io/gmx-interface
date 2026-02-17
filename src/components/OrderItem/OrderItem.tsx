@@ -222,7 +222,7 @@ function OrderSize({
                   {positionOrder.targetCollateralToken.isNative
                     ? wrappedToken.symbol
                     : positionOrder.targetCollateralToken.symbol}{" "}
-                  when executed.
+                  when executed
                 </Trans>
               </div>
             )}

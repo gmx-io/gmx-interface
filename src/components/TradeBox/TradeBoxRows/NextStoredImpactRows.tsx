@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 
+import { DOCS_LINKS } from "config/links";
 import { selectBreakdownNetPriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
@@ -31,7 +32,7 @@ export function NextStoredImpactRows() {
             content={
               <Trans>
                 Price impact is stored when you increase a position and applied when you decrease.{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
+                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                   Read more
                 </ExternalLink>
               </Trans>

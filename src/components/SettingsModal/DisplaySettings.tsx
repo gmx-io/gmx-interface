@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 
+import { DOCS_LINKS } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -45,7 +46,7 @@ export function DisplaySettings() {
                   <Trans>
                     Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
                     orders) in tooltips and execution details.{" "}
-                    <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
+                    <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                       Read more
                     </ExternalLink>
                   </Trans>

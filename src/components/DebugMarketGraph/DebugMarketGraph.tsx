@@ -170,7 +170,7 @@ function DebugMarketGraph() {
         </span>{" "}
         <Trans>
           to toggle its filtering. To use this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings
-          are being saved in local storage, don't forget to clear it when you are done.
+          are saved in local storage; don't forget to clear it when done.
         </Trans>
       </div>
 

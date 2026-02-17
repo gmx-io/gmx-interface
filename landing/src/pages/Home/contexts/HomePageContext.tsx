@@ -6,7 +6,6 @@ import { useLocalStorage } from "react-use";
 
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 
-import { LeaveHomepageRedirectModal } from "../LeaveHomepageRedirectModal/LeaveHompageRedirectModal";
 import { SolanaRedirectModal } from "../SolanaRedirectModal/SolanaRedirectModal";
 
 type HomePageContextType = {
@@ -70,14 +69,14 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
 
   const redirectWithWarning = useCallback(
     (to: string, chainId?: RedirectChainIds) => {
-      if (shouldShowRedirectModal()) {
+      if (chainId === RedirectChainIds.Solana) {
         setRedirectModalTo(to);
-        setRedirectChainId(chainId || null);
+        setRedirectChainId(chainId);
       } else {
         window.location.href = to;
       }
     },
-    [shouldShowRedirectModal, setRedirectModalTo, setRedirectChainId]
+    [setRedirectModalTo, setRedirectChainId]
   );
 
   const handleSolanaConfirm = useCallback(() => {
@@ -116,15 +115,9 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
     <HomePageContext.Provider value={value}>
       {children}
       {redirectModalTo &&
-        (redirectChainId === RedirectChainIds.Solana ? (
+        redirectChainId === RedirectChainIds.Solana && (
           <SolanaRedirectModal onClose={handleCloseModal} onConfirm={handleSolanaConfirm} />
-        ) : (
-          <LeaveHomepageRedirectModal
-            to={redirectModalTo}
-            onClose={handleCloseModal}
-            setRedirectPopupTimestamp={setRedirectPopupTimestamp}
-          />
-        ))}
+        )}
     </HomePageContext.Provider>
   );
 }

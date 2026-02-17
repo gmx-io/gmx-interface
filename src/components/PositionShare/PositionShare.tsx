@@ -322,7 +322,11 @@ function PositionShare({
           )}
         </div>
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
-        {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
+        {uploadedImageError && (
+          <AlertInfoCard type="error" hideClose>
+            {uploadedImageError}
+          </AlertInfoCard>
+        )}
       </div>
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>

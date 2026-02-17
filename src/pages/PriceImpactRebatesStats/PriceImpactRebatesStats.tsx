@@ -164,10 +164,10 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-actions">
           <button className="SubaccountModal-mini-button" onClick={handleCopyCommandClick}>
-            <Trans>Copy Cmd</Trans>
+            <Trans>Copy cmd</Trans>
           </button>
           <button className="SubaccountModal-mini-button" onClick={handleCopyAccountsClick}>
-            <Trans>Copy Users</Trans>
+            <Trans>Copy users</Trans>
           </button>
         </div>
       </div>

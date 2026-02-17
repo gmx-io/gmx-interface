@@ -108,7 +108,7 @@ export function EventsPanel({
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase"><Trans>Oracle keeper events</Trans></h3>
         <Button variant="secondary" onClick={onClearEvents}>
-          <Trans>Clear Events</Trans>
+          <Trans>Clear events</Trans>
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -128,7 +128,7 @@ export function EventsPanel({
               <thead className="sticky top-0 z-10 bg-slate-900">
                 <TableTheadTr>
                   <TableTh padding="compact" className="text-left">
-                    <Trans>Event</Trans>
+                    <Trans>EVENT</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>
@@ -203,7 +203,7 @@ export function DebugControlsPanel({
                           });
                         }}
                       >
-                        <Trans>Force Primary Failure</Trans>
+                        <Trans>Force primary failure</Trans>
                       </Button>
                     </div>
                   </div>

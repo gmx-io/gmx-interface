@@ -31,7 +31,7 @@ export function getCollateralInHintText(tradeType: TradeType, collateralToken: T
 
   if (tradeType === TradeType.Long) {
     if (collateralToken.isStable) {
-      return <Trans>Pure {indexSymbol} long. Your exposure is only from the position.</Trans>;
+      return <Trans>Pure {indexSymbol} long. Exposure is only from the position.</Trans>;
     } else if (marketInfo.indexToken.isSynthetic) {
       return (
         <Trans>
@@ -49,7 +49,7 @@ export function getCollateralInHintText(tradeType: TradeType, collateralToken: T
     }
   } else {
     if (collateralToken.isStable) {
-      return <Trans>Pure {indexSymbol} short. Your exposure is only from the position.</Trans>;
+      return <Trans>Pure {indexSymbol} short. Exposure is only from the position.</Trans>;
     } else if (marketInfo.indexToken.isSynthetic) {
       return (
         <Trans>

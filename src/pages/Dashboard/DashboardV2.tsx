@@ -71,7 +71,7 @@ export default function DashboardV2() {
                   className="flex items-center gap-4 text-typography-secondary !no-underline hover:text-typography-primary"
                   to="/monitor"
                 >
-                  <V2Icon className="size-15" /> <Trans>Pools Stats</Trans>
+                  <V2Icon className="size-15" /> <Trans>Pools stats</Trans>
                 </Link>
               </div>
             }

@@ -107,7 +107,6 @@ import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPo
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
-import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
@@ -198,6 +197,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     numberOfParts,
     setNumberOfParts,
     setDuration,
+    limitPriceWarningHidden,
+    setLimitPriceWarningHidden,
   } = useSelector(selectTradeboxState);
 
   const isTwapModeAvailable = useMemo(
@@ -1050,35 +1051,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isTrigger && renderTriggerPriceInput()}
             </div>
 
-            {twapRecommendation && (
-              <ColorfulBanner color="blue" icon={InfoCircleIcon}>
-                <div className="flex flex-col gap-8">
-                  <span>
-                    <span
-                      className="cursor-pointer font-medium text-blue-300"
-                      onClick={() => onSelectTradeMode(TradeMode.Twap)}
-                    >
-                      <Trans>Use a TWAP order</Trans>
-                    </span>{" "}
-                    <Trans> for lower net price impact.</Trans>
-                  </span>
-                </div>
-              </ColorfulBanner>
-            )}
-
             {maxAutoCancelOrdersWarning}
-            {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
-              <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
-                <Trans>
-                  Execution price may differ from limit price due to fees and price impact. You'll receive at least the
-                  minimum amount shown.{" "}
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
-                    Read more
-                  </ExternalLink>
-                  .
-                </Trans>
-              </AlertInfoCard>
-            )}
 
             {isTrigger && (
               <SyntheticsInfoRow
@@ -1146,7 +1119,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             />
           )}
 
-          <div>{button}</div>
           <ExpressTradingWarningCard
             expressParams={submitButtonState.expressParams}
             payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
@@ -1154,6 +1126,31 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
           />
+          {twapRecommendation && (
+              <AlertInfoCard>
+                <span>
+                  <span
+                    className="cursor-pointer font-medium text-blue-300"
+                    onClick={() => onSelectTradeMode(TradeMode.Twap)}
+                  >
+                    <Trans>Use a TWAP order</Trans>
+                  </span>{" "}
+                  <Trans> for lower net price impact</Trans>
+                </span>
+              </AlertInfoCard>
+            )}
+            {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+              <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
+                <Trans>
+                  Execution price may differ from limit price due to fees and price impact. You'll receive at least the
+                  minimum amount shown.{" "}
+                  <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
+                    Read more
+                  </ExternalLink>.
+                </Trans>
+              </AlertInfoCard>
+            )}
+          <div>{button}</div>
         </div>
       </div>
 

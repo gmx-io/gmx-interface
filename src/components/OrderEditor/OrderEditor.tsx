@@ -784,15 +784,6 @@ export function OrderEditor(p: Props) {
         </div>
 
         <div className="flex flex-col gap-14 px-20 pb-16">
-          {button}
-
-          <ExpressTradingWarningCard
-            expressParams={expressParams}
-            payTokenAddress={undefined}
-            isWrapOrUnwrap={false}
-            isGmxAccount={srcChainId !== undefined}
-          />
-
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}
@@ -895,6 +886,15 @@ export function OrderEditor(p: Props) {
               />
             </>
           )}
+
+          <ExpressTradingWarningCard
+            expressParams={expressParams}
+            payTokenAddress={undefined}
+            isWrapOrUnwrap={false}
+            isGmxAccount={srcChainId !== undefined}
+          />
+
+          {button}
         </div>
       </Modal>
     </div>

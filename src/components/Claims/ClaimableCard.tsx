@@ -7,6 +7,7 @@ import {
   selectClaimsPriceImpactClaimableTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { DOCS_LINKS } from "config/links";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -45,9 +46,9 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
         {
           buttonText: _(buttonText),
           tooltipText: (
-            <Trans>
-              Price impact rebates ready to claim.{" "}
-              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/#price-impact-rebates">
+              <Trans>
+                Price impact rebates ready to claim.{" "}
+              <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
                 Read more
               </ExternalLink>
             </Trans>

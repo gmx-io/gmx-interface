@@ -88,7 +88,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
   return (
     <div className="flex h-full items-center justify-between gap-8">
       <TooltipWithPortal
-        handle={<Trans>Allowed Slippage</Trans>}
+        handle={<Trans>Allowed slippage</Trans>}
         position="bottom-start"
         variant="iconStroke"
         disabled={disabled}

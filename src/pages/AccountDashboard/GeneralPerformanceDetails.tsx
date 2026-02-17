@@ -34,7 +34,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
     <div className="overflow-hidden rounded-8 bg-slate-900">
       <div className="flex items-center gap-8 border-b-1/2 border-slate-600 p-20 text-20 font-medium">
         <Trans>General performance details</Trans>
-        <TooltipWithPortal content={t`Performance and chart data are based on UTC times.`} variant="none">
+        <TooltipWithPortal content={t`Performance and chart data are based on UTC times`} variant="none">
           <InfoIconStroke className="h-16 w-16 cursor-help text-typography-secondary" />
         </TooltipWithPortal>
       </div>
@@ -52,7 +52,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
-                  content={t`Total PnL (realized + unrealized) after fees and price impact.`}
+                  content={t`Total PnL (realized + unrealized) after fees and price impact`}
                   variant="iconStroke"
                 >
                   <Trans>PNL ($)</Trans>

@@ -79,7 +79,7 @@ export function setAutoCancelOrdersTxn(
     sentMsg: t`Updating ${updateOrdersCount} TP/SL orders...`,
     successMsg:
       updateOrdersCount < totalUpdatableOrdersCount
-        ? t`${totalUpdatableOrdersCount - updateOrdersCount} orders not updated, max limit reached`
+        ? t`${totalUpdatableOrdersCount - updateOrdersCount} orders not updated, limit reached`
         : t`${updateOrdersCount} TP/SL orders updated`,
     failMsg: t`Failed to update orders`,
     setPendingTxns,

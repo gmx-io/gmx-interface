@@ -339,7 +339,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         <TableTr>
           <TableTd colSpan={42}>
             <div className="muted">
-              <Trans>Order Key:</Trans> {tradeAction.orderKey}
+              <Trans>Order key:</Trans> {tradeAction.orderKey}
             </div>
           </TableTd>
         </TableTr>

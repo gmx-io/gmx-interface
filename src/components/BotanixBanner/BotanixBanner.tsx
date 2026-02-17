@@ -50,7 +50,7 @@ export function BotanixBanner() {
             <AvalancheIcon className="inline-block pb-4" />
             <span className="underline">Avalanche</span>
           </span>{" "}
-          for those features.
+          for those features
         </Trans>
       </p>
     </div>

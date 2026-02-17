@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { getIncentivesV2Url } from "config/links";
+import { DOCS_LINKS, getIncentivesV2Url } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
@@ -465,7 +465,7 @@ export function TradeFeesRow(p: Props) {
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
       const rebatedTextWithSparkle = (
         <span className="relative">
-          <Trans>(Rebated)</Trans>
+          <Trans>(rebated)</Trans>
           <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt={t`Sparkle`} />
         </span>
       );
@@ -492,8 +492,7 @@ export function TradeFeesRow(p: Props) {
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
-          </ExternalLink>
-          .
+          </ExternalLink>.
         </span>
       </Trans>
     );
@@ -507,10 +506,9 @@ export function TradeFeesRow(p: Props) {
     return (
       <Trans>
         Price impact rebates from closing are claimable in the Claims tab.{" "}
-        <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
+        <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
           Read more
-        </ExternalLink>
-        .
+        </ExternalLink>.
       </Trans>
     );
   }, [p.priceImpactDiff?.deltaUsd]);

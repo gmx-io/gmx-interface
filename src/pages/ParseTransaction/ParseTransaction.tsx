@@ -319,7 +319,7 @@ export function ParseTransactionPage() {
                       )
                     ) : (
                       <div className="text-body-medium text-typography-secondary">
-                        <Trans>No executed or cancelled transaction found yet.</Trans>
+                        <Trans>No executed or cancelled transaction found yet</Trans>
                       </div>
                     )}
                   </div>
@@ -706,7 +706,7 @@ const ParseTransactionEvents = ({
                 <CopyButton value={event.name} />
               </span>
               <span>
-                <Trans>LogIndex:</Trans> {event.logIndex}
+                <Trans>Log index:</Trans> {event.logIndex}
               </span>
             </div>
           </TableTd>

@@ -12,7 +12,7 @@ import { getChainName, SettlementChainId } from "sdk/configs/chains";
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { useAvailableToTradeAssetMultichainRequest } from "components/GmxAccountModal/hooks";
 
-import InfoIcon from "img/ic_info.svg?react";
+import WarnIcon from "img/ic_warn.svg?react";
 
 export function SettlementChainWarningContainer() {
   const { chainId: fallbackChainId, srcChainId } = useChainId();
@@ -48,7 +48,7 @@ export function SettlementChainWarningContainer() {
   }
 
   return (
-    <ColorfulBanner color="yellow" icon={InfoIcon} className="text-body-small">
+    <ColorfulBanner color="yellow" icon={WarnIcon} className="text-body-small">
       <Trans>
         Settlement network changed to {getChainName(settlementChainId)}, but {formatUsd(gmxAccountUsd)} remains in your{" "}
         {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account

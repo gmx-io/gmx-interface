@@ -361,19 +361,19 @@ export default function BeginAccountTransfer() {
         </div>
         <div className="flex flex-col gap-8 text-14 font-medium">
           <ValidationRow isValid={!hasVestedGmx}>
-            <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GMX vesting vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedGlp}>
-            <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from GLP vesting vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedAffiliate}>
-            <Trans>Sender has withdrawn all tokens from Affiliate Vesting Vault</Trans>
+            <Trans>Sender has withdrawn all tokens from Affiliate vesting vault</Trans>
           </ValidationRow>
           {hasVestedAffiliate && (
             <>
               <p className="soft-error">
                 <Trans>
-                  You have esGMX tokens in the Affiliate Vault. Withdraw them to transfer to the new account.
+                  You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account.
                 </Trans>
               </p>
               <Checkbox

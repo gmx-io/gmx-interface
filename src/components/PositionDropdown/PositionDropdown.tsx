@@ -125,7 +125,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleTwapIncreaseSize}>
                 <IncreaseMarket className="size-16" />
                 <p>
-                  <Trans>Increase Size (TWAP)</Trans>
+                  <Trans>Increase size (TWAP)</Trans>
                 </p>
               </div>
             </Menu.Item>
