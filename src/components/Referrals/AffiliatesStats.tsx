@@ -300,7 +300,7 @@ function AffiliatesStats({
           <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
             {(totalClaimableRewardsUsd > 0 && (
               <Button variant="secondary" onClick={() => setIsClaiming(true)}>
-                Claim
+                <Trans>Claim</Trans>
               </Button>
             )) ||
               null}

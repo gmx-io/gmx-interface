@@ -261,7 +261,9 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const txnTimestamp = (
     <span>
       {formatDateTime(transaction.timestamp)}{" "}
-      <span className="text-typography-secondary">({getDaysAgo(transaction.timestamp)} days ago)</span>
+      <span className="text-typography-secondary">
+        <Trans>({getDaysAgo(transaction.timestamp)} days ago)</Trans>
+      </span>
     </span>
   );
   const txnLink = (

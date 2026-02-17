@@ -896,7 +896,7 @@ export function PositionSeller() {
                     qa="amount-input"
                     maxDecimals={USD_DECIMALS}
                   >
-                    USD
+                    {t`USD`}
                   </BuyInputSection>
                   <MarginPercentageSlider value={closePercentage} onChange={handleClosePercentageChange} />
                 </div>

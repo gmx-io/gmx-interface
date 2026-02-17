@@ -248,22 +248,22 @@ function DecentralisedExchanges({
                 variant="secondary"
                 textAlign="left"
                 imgSrc={uniswapArbitrumIcon}
-                imgAlt={"Uniswap"}
+                imgAlt={t`Uniswap`}
                 to={externalLinks.buyGmx.uniswap}
                 newTab
               >
-                Uniswap
+                <Trans>Uniswap</Trans>
               </Button>
               <Button
                 variant="secondary"
                 textAlign="left"
                 imgSrc={gmxArbitrumIcon}
-                imgAlt="GMX"
+                imgAlt={t`GMX`}
                 to={externalLinks.buyGmx.gmx}
                 showExternalLinkArrow={false}
                 newTab
               >
-                GMX
+                <Trans>GMX</Trans>
               </Button>
             </div>
           </div>
@@ -278,10 +278,10 @@ function DecentralisedExchanges({
                 textAlign="left"
                 to={externalLinks.buyGmx.traderjoe}
                 imgSrc={traderjoeIcon}
-                imgAlt="Traderjoe"
+                imgAlt={t`TraderJoe`}
                 newTab
               >
-                TraderJoe
+                <Trans>TraderJoe</Trans>
               </Button>
             </div>
           </div>
@@ -345,10 +345,10 @@ function DecentralisedExchanges({
                 textAlign="left"
                 to="https://app.bondprotocol.finance/#/tokens/42161/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
                 imgSrc={bondProtocolIcon}
-                imgAlt="Bond Protocol"
+                imgAlt={t`Bond Protocol`}
                 newTab
               >
-                Bond Protocol
+                <Trans>Bond Protocol</Trans>
               </Button>
             </div>
           </div>

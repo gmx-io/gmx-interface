@@ -417,7 +417,7 @@ const TableRow = memo(
         </TableTd>
         <TableTd className="numbers">
           {formatAmount(position.leverage, 4, 2)}
-          <span className="ml-1 text-typography-secondary">x</span>
+          <span className="ml-1 text-typography-secondary">{t`x`}</span>
         </TableTd>
         <TableTd className="text-right">
           {liquidationPrice ? (

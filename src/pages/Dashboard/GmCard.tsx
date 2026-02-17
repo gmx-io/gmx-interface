@@ -79,7 +79,9 @@ export function GmCard() {
                     <img src={currentIcons.gm} width="40" alt={t`GM icon`} />
                   </div>
                   <div>
-                    <div className="text-body-medium font-medium">GM</div>
+                    <div className="text-body-medium font-medium">
+                      <Trans>GM</Trans>
+                    </div>
                   </div>
                 </div>
                 <div className="h-32">
@@ -90,7 +92,9 @@ export function GmCard() {
                 </div>
               </div>
               <div className="text-13 text-typography-secondary">
-                GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
+                <Trans>
+                  GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
+                </Trans>
               </div>
             </AppCardSection>
             <AppCardSection>

@@ -472,7 +472,7 @@ export function AvailableToTradeTokenList({
 
                   <div>
                     <div className="text-body-large">
-                      GM:{" "}
+                      <Trans>GM:</Trans>{" "}
                       {getMarketIndexName({
                         indexToken: getMarketIndexToken(chainId, token.address)!,
                         isSpotOnly: false,

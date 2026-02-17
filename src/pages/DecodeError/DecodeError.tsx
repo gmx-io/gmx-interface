@@ -133,7 +133,7 @@ export function DecodeError() {
           <textarea
             value={hexInput}
             onChange={(e) => setHexInput(e.target.value)}
-            placeholder="0x..."
+            placeholder={t`0x...`}
             className="min-h-96 w-full resize-y appearance-none border-none p-15 text-typography-primary text-input-bg focus:outline-none focus:ring-0"
           />
         </div>
@@ -175,7 +175,7 @@ export function DecodeError() {
         {hexInput.trim() && !decodedError && (
           <div className="mb-20 rounded-8 border border-red-500/50 bg-red-500/10 p-20">
             <div className="text-body-medium text-red-400">
-              Failed to decode error. Make sure the hex data is valid and starts with "0x".
+              <Trans>Failed to decode error. Make sure the hex data is valid and starts with "0x".</Trans>
             </div>
           </div>
         )}

@@ -44,7 +44,7 @@ export function GmFees(p: Props) {
     }
 
     if (p.totalFees?.deltaUsd === undefined) {
-      return "0.000% / 0.000%";
+      return t`0.000% / 0.000%`;
     } else if (
       bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 ||
       p.swapFee ||
@@ -89,14 +89,16 @@ export function GmFees(p: Props) {
                     <div>
                       <div>{t`Price impact`}:</div>
                       <div>
-                        (
-                        <span className="numbers">
-                          {formatPercentage(p.swapPriceImpact?.precisePercentage, {
-                            bps: false,
-                            displayDecimals: 3,
-                          })}
-                        </span>{" "}
-                        of {operationText} amount)
+                        <Trans>
+                          (
+                          <span className="numbers">
+                            {formatPercentage(p.swapPriceImpact?.precisePercentage, {
+                              bps: false,
+                              displayDecimals: 3,
+                            })}
+                          </span>{" "}
+                          of {operationText} amount)
+                        </Trans>
                       </div>
                     </div>
                   }
@@ -116,14 +118,16 @@ export function GmFees(p: Props) {
                       <div>
                         <div>{p.operation === Operation.Deposit ? t`Buy fee` : t`Sell fee`}:</div>
                         <div>
-                          (
-                          <span className="numbers">
-                            {formatPercentage(p.swapFee.precisePercentage, {
-                              bps: false,
-                              displayDecimals: 3,
-                            })}
-                          </span>{" "}
-                          of {operationText} amount)
+                          <Trans>
+                            (
+                            <span className="numbers">
+                              {formatPercentage(p.swapFee.precisePercentage, {
+                                bps: false,
+                                displayDecimals: 3,
+                              })}
+                            </span>{" "}
+                            of {operationText} amount)
+                          </Trans>
                         </div>
                       </div>
                     }
@@ -141,14 +145,16 @@ export function GmFees(p: Props) {
                     <div>
                       <div>{t`UI fee`}:</div>
                       <div>
-                        (
-                        <span className="numbers">
-                          {formatPercentage(p.uiFee?.precisePercentage, {
-                            bps: false,
-                            displayDecimals: 3,
-                          })}
-                        </span>{" "}
-                        of {operationText} amount)
+                        <Trans>
+                          (
+                          <span className="numbers">
+                            {formatPercentage(p.uiFee?.precisePercentage, {
+                              bps: false,
+                              displayDecimals: 3,
+                            })}
+                          </span>{" "}
+                          of {operationText} amount)
+                        </Trans>
                       </div>
                     </div>
                   }
@@ -165,14 +171,16 @@ export function GmFees(p: Props) {
                     <div>
                       <div>{t`Shift fee`}:</div>
                       <div>
-                        (
-                        <span className="numbers">
-                          {formatPercentage(p.shiftFee.precisePercentage, {
-                            bps: false,
-                            displayDecimals: 3,
-                          })}
-                        </span>{" "}
-                        of {operationText} amount)
+                        <Trans>
+                          (
+                          <span className="numbers">
+                            {formatPercentage(p.shiftFee.precisePercentage, {
+                              bps: false,
+                              displayDecimals: 3,
+                            })}
+                          </span>{" "}
+                          of {operationText} amount)
+                        </Trans>
                       </div>
                     </div>
                   }

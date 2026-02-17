@@ -46,9 +46,24 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
       contentClassName="flex flex-col gap-16 pt-8"
       scrollIntoViewOnMobile
     >
-      <TenderlyInput name="Account" placeholder="account" value={accountSlug} onChange={setTenderlyAccountSlug} />
-      <TenderlyInput name="Project" placeholder="project" value={projectSlug} onChange={setTenderlyProjectSlug} />
-      <TenderlyInput name="Access Key" placeholder="xxxx-xxxx-xxxx" value={accessKey} onChange={setTenderlyAccessKey} />
+      <TenderlyInput
+        name={t`Account`}
+        placeholder={t`account`}
+        value={accountSlug}
+        onChange={setTenderlyAccountSlug}
+      />
+      <TenderlyInput
+        name={t`Project`}
+        placeholder={t`project`}
+        value={projectSlug}
+        onChange={setTenderlyProjectSlug}
+      />
+      <TenderlyInput
+        name={t`Access Key`}
+        placeholder={t`xxxx-xxxx-xxxx`}
+        value={accessKey}
+        onChange={setTenderlyAccessKey}
+      />
       <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
         <Trans>Simulate transactions</Trans>
       </ToggleSwitch>

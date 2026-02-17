@@ -234,7 +234,7 @@ function PoolListItemMobile({
             "text-green-500": netRateState === "success",
           })}
         >
-          {formattedNetRate} / 1h
+          <Trans>{formattedNetRate} / 1h</Trans>
         </dd>
       </dl>
     </SelectorBaseMobileButton>

@@ -92,7 +92,9 @@ export function ClaimsHistory() {
         <div className="size-16">
           <DownloadIcon />
         </div>
-        <span className="text-body-small font-medium">CSV</span>
+        <span className="text-body-small font-medium">
+          <Trans>CSV</Trans>
+        </span>
       </Button>
     </div>
   );

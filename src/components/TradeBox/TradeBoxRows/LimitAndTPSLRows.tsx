@@ -124,7 +124,9 @@ function SideOrders({ type }: { type: "stopLoss" | "takeProfit" | "limit" }) {
                     <div className="mb-5 flex justify-between whitespace-nowrap" key={index}>
                       {(price && percentage && (
                         <span className="mr-15 whitespace-nowrap">
-                          At {price}, {isStopLoss ? "SL" : "TP"} {percentage}%:
+                          <Trans>
+                            At {price}, {isStopLoss ? t`SL` : t`TP`} {percentage}%:
+                          </Trans>
                         </span>
                       )) ||
                         null}

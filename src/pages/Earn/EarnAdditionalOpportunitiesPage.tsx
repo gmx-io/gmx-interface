@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
 import { BOTANIX } from "config/chains";
@@ -13,11 +13,9 @@ import { GlvAndGmMarketsInfoData, useMarketTokensData } from "domain/synthetics/
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 import { TokensData } from "sdk/utils/tokens/types";
 
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import OpportunityCard from "components/Earn/AdditionalOpportunities/OpportunityCard";
 import OpportunityFilters, {
   AVAILABLE_FILTERS,
@@ -79,14 +77,6 @@ export default function EarnAdditionalOpportunitiesPage() {
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isBannerDismissed, setIsBannerDismissed] = useLocalStorageSerializeKey(
-    "additional-opportunities-banner-dismissed",
-    false
-  );
-
-  const handleDismissBanner = useCallback(() => {
-    setIsBannerDismissed(true);
-  }, [setIsBannerDismissed]);
 
   const { filter: filterParam } = useParams<{ filter: string | undefined }>();
 
@@ -205,12 +195,6 @@ export default function EarnAdditionalOpportunitiesPage() {
     <EarnPageLayout>
       <div className="flex flex-col gap-8">
         <OpportunityFilters activeFilter={activeFilter} search={searchQuery} onSearchChange={setSearchQuery} />
-
-        {!isBannerDismissed && (
-          <ColorfulBanner onClose={handleDismissBanner}>
-            <Trans>Maximize earnings on your GMX, GLV, and GM tokens with integrated partner protocols</Trans>
-          </ColorfulBanner>
-        )}
 
         {activeFilter === "for-me" && !isUserDataLoaded ? (
           <Loader />

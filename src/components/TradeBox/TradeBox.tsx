@@ -879,7 +879,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         qa="close"
         maxDecimals={USD_DECIMALS}
       >
-        USD
+        {t`USD`}
       </BuyInputSection>
     );
   }
@@ -900,7 +900,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
       >
-        USD
+        {t`USD`}
       </BuyInputSection>
     );
   }
@@ -917,12 +917,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
       >
-        {markRatio && (
-          <>
-            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> per{" "}
-            <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
-          </>
-        )}
+          {markRatio && (
+            <>
+              <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> <Trans>per</Trans>{" "}
+              <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
+            </>
+          )}
       </BuyInputSection>
     );
   }

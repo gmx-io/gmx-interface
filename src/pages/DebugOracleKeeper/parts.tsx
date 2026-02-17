@@ -6,7 +6,7 @@ import { OracleKeeperDebugFlags } from "lib/oracleKeeperFetcher/_debug";
 import Button from "components/Button/Button";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { Trans } from "@lingui/macro";;
+import { t, Trans } from "@lingui/macro";
 
 export type OracleEndpointStats = {
   endpoint: string;
@@ -81,7 +81,7 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
                   </TableTd>
                   <TableTd padding="compact">
                     {endpoint.responseTime !== undefined ? (
-                      <span className="text-xs text-white">{endpoint.responseTime}ms</span>
+                      <span className="text-xs text-white">{t`${endpoint.responseTime}ms`}</span>
                     ) : (
                       <span className="text-xs text-gray-500">—</span>
                     )}
@@ -108,7 +108,7 @@ export function EventsPanel({
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-bold uppercase"><Trans>Oracle keeper events</Trans></h3>
         <Button variant="secondary" onClick={onClearEvents}>
-          Clear Events
+          <Trans>Clear Events</Trans>
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -128,7 +128,7 @@ export function EventsPanel({
               <thead className="sticky top-0 z-10 bg-slate-900">
                 <TableTheadTr>
                   <TableTh padding="compact" className="text-left">
-                    Event
+                    <Trans>Event</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>
@@ -203,7 +203,7 @@ export function DebugControlsPanel({
                           });
                         }}
                       >
-                        Force Primary Failure
+                        <Trans>Force Primary Failure</Trans>
                       </Button>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export function DebugControlsPanel({
                         }
                         textClassName="text-base text-white"
                       >
-                        Trigger tickers failure
+                        <Trans>Trigger tickers failure</Trans>
                       </ToggleSwitch>
                       <ToggleSwitch
                         isChecked={debugState.triggerPartialTickers ?? false}
@@ -230,7 +230,7 @@ export function DebugControlsPanel({
                         }
                         textClassName="text-base text-white"
                       >
-                        Trigger partial tickers
+                        <Trans>Trigger partial tickers</Trans>
                       </ToggleSwitch>
                     </div>
                   </div>

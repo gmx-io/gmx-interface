@@ -101,7 +101,9 @@ export function GmxCard({
                     <img src={currentIcons.gmx} width="40" alt={t`GMX token icon`} />
                   </div>
                   <div>
-                    <div className="text-body-medium font-medium">GMX</div>
+                    <div className="text-body-medium font-medium">
+                      <Trans>GMX</Trans>
+                    </div>
                   </div>
                 </div>
                 <div className="h-32">
@@ -112,8 +114,10 @@ export function GmxCard({
                 </div>
               </div>
               <div className="text-13 text-typography-secondary">
-                GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and
-                distribution mechanism.
+                <Trans>
+                  GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and
+                  distribution mechanism.
+                </Trans>
               </div>
             </AppCardSection>
 

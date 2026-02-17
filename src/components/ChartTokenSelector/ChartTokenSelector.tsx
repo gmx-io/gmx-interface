@@ -107,7 +107,8 @@ export default function ChartTokenSelector(props: Props) {
                   >
                     <span className="text-start text-[13px] font-medium text-typography-primary">
                       {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                      {selectedToken.symbol}/USD
+                      {selectedToken.symbol}
+                      {t`/USD`}
                     </span>
                     {poolName && (
                       <span
@@ -504,7 +505,7 @@ const MarketLabel = ({ token }: { token: Token }) => {
   return (
     <span className="text-typography-secondary">
       <span className="text-typography-primary">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
-      /USD
+      {t`/USD`}
     </span>
   );
 };

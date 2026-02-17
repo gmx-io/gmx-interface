@@ -174,7 +174,7 @@ export function GmStatusNotification({
         if (gmMarket) {
           tokensText = (
             <>
-              GM:
+              <Trans>GM:</Trans>
               <span className="inline-flex whitespace-nowrap">
                 {" "}
                 {getMarketIndexName(gmMarket)}

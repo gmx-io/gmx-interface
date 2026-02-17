@@ -245,7 +245,7 @@ async function processSimulation({
             <ExternalLink href={url}>
               <Trans>View transaction</Trans>
             </ExternalLink>{" "}
-            for {comment}
+            <Trans>for {comment}</Trans>
           </div>
         ))}
       </>,
@@ -264,7 +264,7 @@ async function processSimulation({
             <ExternalLink href={url}>
               <Trans>View transaction</Trans>
             </ExternalLink>{" "}
-            for {comment}
+            <Trans>for {comment}</Trans>
           </div>
         ))}
       </>

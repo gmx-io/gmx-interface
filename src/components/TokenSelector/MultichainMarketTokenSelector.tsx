@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 
@@ -258,11 +258,11 @@ function AvailableToTradeTokenList({
               <div>
                 <div>
                   {isGlvAddress(chainId, token.address) ? (
-                    "GLV"
+                    t`GLV`
                   ) : (
                     <>
                       {getTokenSymbolByMarket(chainId, token.address, "index")}
-                      <span className="text-slate-100">/USD</span>
+                      <span className="text-slate-100">{t`/USD`}</span>
                     </>
                   )}
                 </div>

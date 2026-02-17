@@ -385,7 +385,7 @@ const TableRow = memo(
             "text-typography-secondary": account.averageSize === 0n,
           })}
         >
-          {account.averageSize ? formatUsd(account.averageSize) : "$\u200a0.00"}
+          {account.averageSize ? formatUsd(account.averageSize) : t`$\u200a0.00`}
         </TableTd>
         <TableTd
           className={cx("numbers", {
@@ -393,7 +393,7 @@ const TableRow = memo(
           })}
         >
           {`${formatAmount(account.averageLeverage ?? 0n, 4, 2)}`}
-          <span className="ml-1 text-typography-secondary">x</span>
+          <span className="ml-1 text-typography-secondary">{t`x`}</span>
         </TableTd>
         <TableTd className="text-right text-typography-secondary numbers">
           <TooltipWithPortal
@@ -403,7 +403,7 @@ const TableRow = memo(
                   "text-typography-secondary": account.wins === 0 && account.losses === 0,
                 })}
               >
-                {account.wins} <span className="text-typography-secondary">/</span> {account.losses}
+                {account.wins} <span className="text-typography-secondary">{t`/`}</span> {account.losses}
               </span>
             }
             renderContent={renderWinsLossesTooltipContent}

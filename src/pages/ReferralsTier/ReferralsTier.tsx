@@ -65,7 +65,7 @@ export default function ReferralsTier() {
             </div>
             <div className="ReferralsTier-row">
               <Button variant="primary" onClick={onConfirmation}>
-                Save tier
+                <Trans>Save tier</Trans>
               </Button>
             </div>
           </>

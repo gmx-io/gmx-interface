@@ -219,7 +219,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       label={t`Confirm settle`}
     >
       <div className="ConfirmationBox-main">
-        <div className="text-center">Settle {totalStr}</div>
+        <div className="text-center">
+          <Trans>Settle {totalStr}</Trans>
+        </div>
       </div>
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">

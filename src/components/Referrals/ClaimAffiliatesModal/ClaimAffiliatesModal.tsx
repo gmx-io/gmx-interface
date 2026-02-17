@@ -388,7 +388,9 @@ export function ClaimAffiliatesModal(p: Props) {
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12">
-        <div className="text-center text-20 font-medium">Claim {formatUsd(totalClaimableFundingUsd)}</div>
+        <div className="text-center text-20 font-medium">
+          <Trans>Claim {formatUsd(totalClaimableFundingUsd)}</Trans>
+        </div>
 
         <Table>
           <TableTheadTr>

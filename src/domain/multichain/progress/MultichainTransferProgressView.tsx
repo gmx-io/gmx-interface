@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { getAccount } from "@wagmi/core";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
@@ -218,12 +218,12 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
             {formatTokenAmount(task.amount, task.token.decimals)}{" "}
             {isMarketTokenAddress(chainId, task.token.address) ? (
               <>
-                GM: {indexName}
+                <Trans>GM:</Trans> {indexName}
                 <span className="subtext">[{poolName}]</span>
               </>
             ) : (
               <>
-                GLV
+                {t`GLV`}
                 <span className="subtext">[{poolName}]</span>
               </>
             )}
@@ -232,7 +232,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
         <div className="text-typography-secondary">
           {finishedState === "pending" && (
             <div className="flex items-center gap-4">
-              <img src={SpinnerBlueSrc} alt="spinner" className="size-16 shrink-0 animate-spin" />
+              <img src={SpinnerBlueSrc} alt={t`spinner`} className="size-16 shrink-0 animate-spin" />
               <div className="text-typography-secondary">
                 <Trans>In progress...</Trans>
               </div>

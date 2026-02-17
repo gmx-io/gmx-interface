@@ -724,7 +724,7 @@ export function OrderEditor(p: Props) {
                 }
                 maxDecimals={USD_DECIMALS}
               >
-                USD
+                {t`USD`}
               </BuyInputSection>
 
               <BuyInputSection
@@ -749,7 +749,7 @@ export function OrderEditor(p: Props) {
                 onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
                 maxDecimals={USD_DECIMALS}
               >
-                USD
+                {t`USD`}
               </BuyInputSection>
 
               {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
@@ -774,7 +774,9 @@ export function OrderEditor(p: Props) {
                   }}
                   maxDecimals={USD_DECIMALS}
                 >
-                  {`${triggerRatio.smallestToken.symbol} per ${triggerRatio.largestToken.symbol}`}
+                  <Trans>
+                    {triggerRatio.smallestToken.symbol} per {triggerRatio.largestToken.symbol}
+                  </Trans>
                 </BuyInputSection>
               )}
             </>

@@ -7,7 +7,7 @@ export const tradeModeLabels: Record<TradeMode, MessageDescriptor> = {
   [TradeMode.Market]: msg`Market`,
   [TradeMode.Limit]: msg`Limit`,
   [TradeMode.Trigger]: msg`TP/SL`,
-  [TradeMode.StopMarket]: msg`Stop market`,
+  [TradeMode.StopMarket]: msg`Stop Market`,
   [TradeMode.Twap]: msg`TWAP`,
 };
 

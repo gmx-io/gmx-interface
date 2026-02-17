@@ -141,7 +141,7 @@ export function LeaderboardContainer() {
       case "march_20-27_2024":
         return (
           <>
-            Powered by the Arbitrum DAO STIP.&nbsp;
+            <Trans>Powered by the Arbitrum DAO STIP.</Trans>{" "}
             <ExternalLink href="https://open.substack.com/pub/gmxio/p/the-gmx-eip4844-trading-competition">
               <Trans>Read the rules</Trans>
             </ExternalLink>

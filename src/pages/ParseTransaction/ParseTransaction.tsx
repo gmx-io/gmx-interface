@@ -216,7 +216,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
+        <Trans>Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia</Trans>
       </div>
     );
   }
@@ -231,7 +231,9 @@ export function ParseTransactionPage() {
 
   if (error) {
     return (
-      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">Error: {error.message}</div>
+      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
+        <Trans>Error:</Trans> {error.message}
+      </div>
     );
   }
 
@@ -247,7 +249,8 @@ export function ParseTransactionPage() {
     <AppPageLayout>
       <div className="mx-auto max-w-[1280px] pt-24">
         <h1 className="text-body-large mb-24">
-          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>
+          <Trans>Transaction:</Trans>{" "}
+          <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>
         </h1>
 
         <ParseTransactionEvents
@@ -270,7 +273,7 @@ export function ParseTransactionPage() {
               <Loader />
             ) : orderTransactionsError ? (
               <div className="text-body-medium text-red-400">
-                Failed to load order data: {orderTransactionsError.message}
+                <Trans>Failed to load order data:</Trans> {orderTransactionsError.message}
               </div>
             ) : (
               orderLifecycleEntries.map((entry) => {
@@ -279,7 +282,9 @@ export function ParseTransactionPage() {
 
                 return (
                   <div key={entry.orderKey} className="mb-24 last:mb-0">
-                    <div className="text-body-medium mb-8">Order key: {entry.orderKey}</div>
+                    <div className="text-body-medium mb-8">
+                      <Trans>Order key:</Trans> {entry.orderKey}
+                    </div>
                     {!entry.transactions ? (
                       <div className="text-body-medium text-typography-secondary">
                         <Trans>Order data unavailable yet</Trans>
@@ -289,12 +294,12 @@ export function ParseTransactionPage() {
                         <Loader />
                       ) : orderLifecycleEventsError ? (
                         <div className="text-body-medium text-red-400">
-                          Failed to parse related transaction: {orderLifecycleEventsError.message}
+                          <Trans>Failed to parse related transaction:</Trans> {orderLifecycleEventsError.message}
                         </div>
                       ) : (
                         <>
                           <div className="text-body-medium mb-16">
-                            {getLabelByOrderLifecycleTxnType(lifecycleTarget.type)} transaction:{" "}
+                            {getLabelByOrderLifecycleTxnType(lifecycleTarget.type)} <Trans>transaction:</Trans>{" "}
                             <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](lifecycleTarget.hash)}>
                               {lifecycleTarget.hash}
                             </ExternalLink>
@@ -314,7 +319,7 @@ export function ParseTransactionPage() {
                       )
                     ) : (
                       <div className="text-body-medium text-typography-secondary">
-                        No executed or cancelled transaction found yet.
+                        <Trans>No executed or cancelled transaction found yet.</Trans>
                       </div>
                     )}
                   </div>
@@ -588,7 +593,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (typeof props.value === "boolean") {
-    value = props.value ? "true" : "false";
+    value = props.value ? t`true` : t`false`;
   }
 
   if (props.type === "bytes32") {
@@ -623,7 +628,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         })}
       >
         <div className="flex flex-row items-center gap-8">
-          {value ?? props.value ?? "Unknown value"}
+          {value ?? props.value ?? t`Unknown value`}
 
           <CopyButton value={props.value?.toString()} />
         </div>
@@ -681,7 +686,7 @@ const ParseTransactionEvents = ({
     return (
       <TableTr key={`empty-${keyPrefix}`}>
         <TableTd className="!text-center font-medium" colSpan={3}>
-          No events
+          <Trans>No events</Trans>
         </TableTd>
       </TableTr>
     );
@@ -700,7 +705,9 @@ const ParseTransactionEvents = ({
                 {event.log}: {event.name}
                 <CopyButton value={event.name} />
               </span>
-              <span>LogIndex: {event.logIndex}</span>
+              <span>
+                <Trans>LogIndex:</Trans> {event.logIndex}
+              </span>
             </div>
           </TableTd>
         </TableTr>
@@ -716,7 +723,7 @@ const ParseTransactionEvents = ({
                     <CopyButton value={t} />
                   </div>
                 ))
-              : "No topics"}
+              : t`No topics`}
           </TableTd>
         </TableTr>
         {event.values.map((value) => (

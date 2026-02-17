@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { ReactNode, useMemo, useState } from "react";
@@ -135,7 +135,7 @@ function NetworkYieldCard({
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
       {showTitle && (
         <div className="text-body-large flex items-center gap-8 pl-12 font-medium text-typography-primary">
-          <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
+          <img src={getIcon(chainId, "network")} alt={t`network`} className="h-20 w-20" />
           {title}
         </div>
       )}
@@ -262,6 +262,7 @@ export default function EarnYieldOverview() {
   const avaxMaxGm = useMemo(() => calculateMaxApr(avaxGmApy), [avaxGmApy]);
 
   const botanixMaxGm = useMemo(() => calculateMaxApr(botanixGmApy), [botanixGmApy]);
+  const avgGmxAprTotalLabel = "avgGMXAprTotal";
 
   const networkCards = useMemo(
     () => ({
@@ -275,7 +276,7 @@ export default function EarnYieldOverview() {
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             to={showGmxLink ? "/earn/portfolio" : undefined}
             chainId={ARBITRUM}
-            metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />} suffix="APR" />}
+            metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label={avgGmxAprTotalLabel} />} suffix="APR" />}
           />,
           <YieldRow
             key="arb-glv"
@@ -303,7 +304,7 @@ export default function EarnYieldOverview() {
             to={showGmxLink ? "/earn/portfolio" : undefined}
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             chainId={AVALANCHE}
-            metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />} suffix="APR" />}
+            metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label={avgGmxAprTotalLabel} />} suffix="APR" />}
           />,
           <YieldRow
             key="avax-glv"

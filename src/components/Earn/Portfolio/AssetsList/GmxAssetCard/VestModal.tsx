@@ -456,7 +456,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                 <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards#vesting" newTab>
-                  Read details
+                  <Trans>Read details</Trans>
                 </ColorfulButtonLink>
               </div>
             </AlertInfoCard>
@@ -484,7 +484,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
-                  esGMX
+                  {t`esGMX`}
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
@@ -504,7 +504,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
-                  esGMX
+                  {t`esGMX`}
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
@@ -524,7 +524,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               >
                 <div className="flex items-center gap-4">
                   <GmxIcon className="size-20" />
-                  GMX
+                  {t`GMX`}
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="staking" />
@@ -537,7 +537,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
           <div className="mt-8 flex flex-col gap-12">
             <ProgressRow
               label={<Trans>Claimable</Trans>}
-              value={`${formatGmxAmount(claimableAmount)} GMX`}
+              value={t`${formatGmxAmount(claimableAmount)} GMX`}
               currentValue={claimableAmount}
               totalValue={vestedAmount}
             />
@@ -550,8 +550,10 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                   handleClassName="whitespace-nowrap"
                   content={
                     <span>
-                      {formatGmxAmount(claimSum)} tokens have been converted to GMX from the{" "}
-                      {formatGmxAmount(vestedAmount)} esGMX deposited for vesting.
+                      <Trans>
+                        {formatGmxAmount(claimSum)} tokens have been converted to GMX from the{" "}
+                        {formatGmxAmount(vestedAmount)} esGMX deposited for vesting.
+                      </Trans>
                     </span>
                   }
                 />

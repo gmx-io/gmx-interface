@@ -10,7 +10,7 @@ import { getMarkPrice } from "sdk/utils/prices";
 import Button from "components/Button/Button";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 export type RpcStats = {
   endpoint: string;
@@ -59,7 +59,7 @@ const getEventColor = (type: string) => {
 };
 
 const getThreadName = (isInWorker: boolean) => {
-  return isInWorker ? "Worker" : "Main Thread";
+  return isInWorker ? t`Worker` : t`Main Thread`;
 };
 
 export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
@@ -143,14 +143,18 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                   </TableTd>
                   <TableTd padding="compact">
                     {rpc.isPublic ? (
-                      <span className="text-xs text-green-400">public</span>
+                      <span className="text-xs text-green-400">
+                        <Trans>public</Trans>
+                      </span>
                     ) : (
-                      <span className="text-xs text-gray-400">private</span>
+                      <span className="text-xs text-gray-400">
+                        <Trans>private</Trans>
+                      </span>
                     )}
                   </TableTd>
                   <TableTd padding="compact">
                     {rpc.responseTime !== undefined ? (
-                      <span className="text-xs text-white">{rpc.responseTime}ms</span>
+                      <span className="text-xs text-white">{t`${rpc.responseTime}ms`}</span>
                     ) : (
                       <span className="text-xs text-gray-500">—</span>
                     )}
@@ -188,7 +192,7 @@ export function EventsPanel({
           <Trans>Multicall events</Trans>
         </h3>
         <Button variant="secondary" onClick={onClearEvents}>
-          Clear Events
+          <Trans>Clear Events</Trans>
         </Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -200,7 +204,7 @@ export function EventsPanel({
                   <div className="text-sm font-semibold">
                     <Trans>Multicall idle</Trans>
                   </div>
-                  <div className="text-xs text-gray-500">{idleSeconds}s</div>
+                  <div className="text-xs text-gray-500">{t`${idleSeconds}s`}</div>
                 </TableTd>
               </TableTr>
             </tbody>
@@ -287,7 +291,7 @@ export function DebugControlsPanel({
                       <Trans>Account type</Trans>
                     </div>
                     <div className="text-base text-white">
-                      {getIsLargeAccount() ? "Large Account" : "Regular Account"}
+                      {getIsLargeAccount() ? t`Large Account` : t`Regular Account`}
                     </div>
                   </div>
                 </TableTd>
@@ -312,7 +316,7 @@ export function DebugControlsPanel({
                           });
                         }}
                       >
-                        Force Primary Failure
+                        <Trans>Force Primary Failure</Trans>
                       </Button>
                     </div>
                   </div>
@@ -335,14 +339,14 @@ export function DebugControlsPanel({
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInWorker", checked)}
                             textClassName="text-base text-white"
                           >
-                            Primary failed
+                            <Trans>Primary failed</Trans>
                           </ToggleSwitch>
                           <ToggleSwitch
                             isChecked={debugState.triggerPrimaryTimeoutInWorker ?? false}
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryTimeoutInWorker", checked)}
                             textClassName="text-base text-white"
                           >
-                            Primary timeout
+                            <Trans>Primary timeout</Trans>
                           </ToggleSwitch>
                         </div>
                       </div>
@@ -356,7 +360,7 @@ export function DebugControlsPanel({
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInMainThread", checked)}
                             textClassName="text-base text-white"
                           >
-                            Primary failed
+                            <Trans>Primary failed</Trans>
                           </ToggleSwitch>
                         </div>
                       </div>
@@ -393,9 +397,9 @@ export function NetworkStatusSection({
 
   const getStatusText = (trackingFailed: boolean, isActive: boolean) => {
     if (!isActive) {
-      return "Inactive";
+      return t`Inactive`;
     }
-    return trackingFailed ? "Failed" : "OK";
+    return trackingFailed ? t`Failed` : t`OK`;
   };
 
   return (
@@ -427,7 +431,7 @@ export function NetworkStatusSection({
                 </TableTd>
                 <TableTd padding="compact">
                   <span className={`text-xs font-semibold ${isGlobalNetworkDown ? "text-red-400" : "text-green-400"}`}>
-                    {isGlobalNetworkDown ? "Down" : "Up"}
+                    {isGlobalNetworkDown ? t`Down` : t`Up`}
                   </span>
                 </TableTd>
               </TableTr>
@@ -439,8 +443,10 @@ export function NetworkStatusSection({
                 </TableTd>
                 <TableTd padding="compact">
                   <span className="text-xs text-white">
-                    {failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount}{" "}
-                    total)
+                    <Trans>
+                      {failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount}{" "}
+                      total)
+                    </Trans>
                   </span>
                 </TableTd>
               </TableTr>
@@ -497,7 +503,7 @@ export function MarketsSection({ marketsInfoData }: { marketsInfoData: any }) {
               {!marketsInfoData ? (
                 <TableTr>
                   <TableTd padding="compact" colSpan={2}>
-                    Loading markets data...
+                    <Trans>Loading markets data...</Trans>
                   </TableTd>
                 </TableTr>
               ) : (

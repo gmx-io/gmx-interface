@@ -290,7 +290,7 @@ export function InvalidSignatureToastContent() {
       <br />
       <br />
       <div className="clickable underline" onClick={() => setFeedbackModalVisible(true)}>
-        Report issue
+        <Trans>Report issue</Trans>
       </div>
     </div>
   );

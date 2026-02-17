@@ -160,11 +160,18 @@ function DebugMarketGraph() {
       <div>
         {fromToken?.symbol} - {toToken?.symbol}
       </div>
-      <div>{allRouteTypes?.length} route types</div>
       <div>
-        Click on <span className="rounded-4 bg-slate-600 px-4 py-2">market label</span> to toggle its filtering. To use
-        this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are being saved in local storage,
-        don't forget to clear it when you are done.
+        <Trans>{allRouteTypes?.length} route types</Trans>
+      </div>
+      <div>
+        <Trans>Click on</Trans>{" "}
+        <span className="rounded-4 bg-slate-600 px-4 py-2">
+          <Trans>market label</Trans>
+        </span>{" "}
+        <Trans>
+          to toggle its filtering. To use this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings
+          are being saved in local storage, don't forget to clear it when you are done.
+        </Trans>
       </div>
 
       {!allRouteTypes?.length && (
@@ -185,7 +192,7 @@ function DebugMarketGraph() {
                 routeType.length === 0 ? toTokenWrappedAddress : routeType[0]
               ).length
             }{" "}
-            possibilities) →
+            <Trans>possibilities</Trans>) →
           </div>
 
           {routeType.map((tokenAddress, index) => (
@@ -194,7 +201,7 @@ function DebugMarketGraph() {
               {index < routeType.length - 1 && (
                 <div>
                   → ({getMarketsForTokenPair(marketAdjacencyGraph, fromTokenAddress, tokenAddress).length}{" "}
-                  possibilities) →
+                  <Trans>possibilities</Trans>) →
                 </div>
               )}
             </Fragment>
@@ -207,7 +214,7 @@ function DebugMarketGraph() {
                 getMarketsForTokenPair(marketAdjacencyGraph, routeType[routeType.length - 1], toTokenWrappedAddress)
                   .length
               }{" "}
-              possibilities) →
+              <Trans>possibilities</Trans>) →
             </div>
           )}
 
@@ -220,7 +227,7 @@ function DebugMarketGraph() {
               }
               return acc * getMarketsForTokenPair(marketAdjacencyGraph, tokenAddress, arr[index + 1]).length;
             }, 1)}{" "}
-            possibilities in total
+            <Trans>possibilities in total</Trans>
           </div>
         </div>
       ))}
@@ -233,7 +240,7 @@ function DebugMarketGraph() {
             setDebugSwapMarketsConfig({ ...debugSwapMarketsConfig, manualPath: e.target.checked ? [] : undefined })
           }
         />
-        Use manual path
+        <Trans>Use manual path</Trans>
       </label>
 
       {swapPath && !isUsingManualPath && (
@@ -268,7 +275,8 @@ function DebugMarketGraph() {
                       </div>
                     </div>
                     <div>
-                      L: {step.isOutLiquidity ? "🔴" : "✔️"} C: {step.isOutCapacity ? "🔴" : "✔️"}
+                      <Trans>L:</Trans> {step.isOutLiquidity ? "🔴" : "✔️"} <Trans>C:</Trans>{" "}
+                      {step.isOutCapacity ? "🔴" : "✔️"}
                     </div>
                   </div>
                 </Fragment>
@@ -303,7 +311,7 @@ function DebugMarketGraph() {
                 </Fragment>
               ))}
             </div>
-            <div>{swapPath ? formatUsd(swapPath.usdOut) : "N/A"}</div>
+            <div>{swapPath ? formatUsd(swapPath.usdOut) : t`N/A`}</div>
           </div>
         </div>
       )}
@@ -332,7 +340,7 @@ function DebugMarketGraph() {
           </div>
         </div>
         <button className="rounded-4 bg-slate-600 px-8 py-6" onClick={() => setDebugSwapMarketsConfig({})}>
-          Clear debug overrides
+          <Trans>Clear debug overrides</Trans>
         </button>
       </div>
 
@@ -373,7 +381,7 @@ function DebugMarketGraph() {
                             })
                           }
                         >
-                          Add
+                          <Trans>Add</Trans>
                         </button>
                       )}
                     </div>

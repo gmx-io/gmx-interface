@@ -99,29 +99,29 @@ export function SyntheticsStats() {
                   <Trans>POOL CAP SHORT</Trans>
                 </th>
                 <th>
-                  <TooltipWithPortal handle="PnL" renderContent={() => "Pending PnL from all open positions"} />
+                  <TooltipWithPortal handle={t`PnL`} renderContent={() => t`Pending PnL from all open positions`} />
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle="Borrowing Fees"
-                    renderContent={() => "Pending Borrowing Fees from all open positions"}
+                    handle={t`Borrowing Fees`}
+                    renderContent={() => t`Pending Borrowing Fees from all open positions`}
                   />
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle="Funding APR"
+                    handle={t`Funding APR`}
                     renderContent={() => (
                       <div>
-                        Longs / Shorts
+                        <Trans>Longs / Shorts</Trans>
                         <br />
                         <br />
-                        Per 1h
+                        <Trans>Per 1h</Trans>
                         <br />
                         <br />
-                        Negative Value: Traders pay funding
+                        <Trans>Negative Value: Traders pay funding</Trans>
                         <br />
                         <br />
-                        Positive Value: Traders receive funding
+                        <Trans>Positive Value: Traders receive funding</Trans>
                       </div>
                     )}
                   />
@@ -137,7 +137,7 @@ export function SyntheticsStats() {
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle="VI Positions"
+                    handle={t`VI Positions`}
                     position="bottom-end"
                     renderContent={() => (
                       <>
@@ -145,8 +145,10 @@ export function SyntheticsStats() {
                           <Trans>Virtual inventory for positions</Trans>
                         </p>
                         <p>
-                          Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
-                          ETH/USDT.
+                          <Trans>
+                            Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
+                            ETH/USDT.
+                          </Trans>
                         </p>
                       </>
                     )}
@@ -154,7 +156,7 @@ export function SyntheticsStats() {
                 </th>
                 <th>
                   <TooltipWithPortal
-                    handle="VI Swaps"
+                    handle={t`VI Swaps`}
                     position="bottom-end"
                     renderContent={() => (
                       <>
@@ -162,8 +164,10 @@ export function SyntheticsStats() {
                           <Trans>Virtual inventory for swaps (long / short)</Trans>
                         </p>
                         <p>
-                          Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
-                          ETH/USDT.
+                          <Trans>
+                            Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
+                            ETH/USDT.
+                          </Trans>
                         </p>
                       </>
                     )}
@@ -325,17 +329,14 @@ export function SyntheticsStats() {
                             />
 
                             <StatsTooltipRow
-                              label={`Swap Impact Amount ${market.longToken.symbol}`}
+                              label={t`Swap Impact Amount ${market.longToken.symbol}`}
                               value={formatAmount(swapImpactUsdLong, 30, 0, true)}
                             />
                             <StatsTooltipRow
-                              label={`Swap Impact Amount ${market.shortToken.symbol}`}
+                              label={t`Swap Impact Amount ${market.shortToken.symbol}`}
                               value={formatAmount(swapImpactUsdShort, 30, 0, true)}
                             />
-                            <StatsTooltipRow
-                              label={`Position Impact Amount`}
-                              value={formatAmount(positionImpactUsd, 30, 0, true)}
-                            />
+                            <StatsTooltipRow label={t`Position Impact Amount`} value={formatAmount(positionImpactUsd, 30, 0, true)} />
                           </>
                         )}
                       />
@@ -729,7 +730,7 @@ export function SyntheticsStats() {
                         market.shortToken,
                       ];
 
-                  const isLongLabel = isLong ? "Long" : "Short";
+                  const directionLabel = isLong ? t`Long` : t`Short`;
                   let availableLiquidity = maxLiquidity - liquidity;
                   if (availableLiquidity < 0) {
                     availableLiquidity = 0n;
@@ -751,27 +752,27 @@ export function SyntheticsStats() {
                           renderContent={() => (
                             <>
                               <StatsTooltipRow
-                                label={`Reserved ${isLongLabel}`}
+                                label={t`Reserved ${directionLabel}`}
                                 value={formatAmount(reservedUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={`Max Reserved ${isLongLabel}`}
+                                label={t`Max Reserved ${directionLabel}`}
                                 value={formatAmount(maxReservedUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={`Open Interest ${isLongLabel}`}
+                                label={t`Open Interest ${directionLabel}`}
                                 value={formatAmount(interestUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={`Max Open Interest ${isLongLabel}`}
+                                label={t`Max Open Interest ${directionLabel}`}
                                 value={formatAmount(maxOpenInterest, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={`Max ${token.symbol} Out`}
+                                label={t`Max ${token.symbol} Out`}
                                 value={formatAmount(collateralLiquidityUsd, 30, 0, true)}
                               />
                               <StatsTooltipRow
-                                label={`Available Liquidity ${isLongLabel}`}
+                                label={t`Available Liquidity ${directionLabel}`}
                                 value={formatAmount(availableLiquidity, 30, 0, true)}
                               />
                             </>
@@ -840,7 +841,7 @@ export function SyntheticsStats() {
                               showDollar={false}
                             />
                             <StatsTooltipRow
-                              label={`Distribution Rate, ${market.indexToken.symbol}`}
+                              label={t`Distribution Rate, ${market.indexToken.symbol}`}
                               value={formatAmount(
                                 market.positionImpactPoolDistributionRate,
                                 market.indexToken.decimals + 30,
@@ -978,7 +979,7 @@ export function SyntheticsStats() {
                             handle={
                               <>
                                 <div>
-                                  {virtualInventoryPositions > 0 ? "Short" : "Long"}{" "}
+                                  {virtualInventoryPositions > 0 ? t`Short` : t`Long`}{" "}
                                   {formatAmountHuman(bigMath.abs(virtualInventoryPositions), 30) || "$0.00"}
                                 </div>
                               </>
@@ -986,7 +987,7 @@ export function SyntheticsStats() {
                             renderContent={() => {
                               return (
                                 <StatsTooltipRow
-                                  label={virtualInventoryPositions > 0 ? "Short" : "Long"}
+                                  label={virtualInventoryPositions > 0 ? t`Short` : t`Long`}
                                   value={formatUsd(bigMath.abs(virtualInventoryPositions)) || "$0.00"}
                                   showDollar={false}
                                 />
@@ -1270,7 +1271,7 @@ export function SyntheticsStats() {
                               />
                               <StatsTooltipRow
                                 label={t`Use open interest in tokens for balance`}
-                                value={market.useOpenInterestInTokensForBalance ? "true" : "false"}
+                                value={market.useOpenInterestInTokensForBalance ? t`true` : t`false`}
                                 showDollar={false}
                               />
                             </div>

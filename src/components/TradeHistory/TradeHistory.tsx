@@ -138,7 +138,7 @@ export function TradeHistory(p: Props) {
 
       <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
         {isLoadingCsv ? <SpinnerIcon className="mr-4 animate-spin" /> : <DownloadIcon className="size-16" />}
-        CSV
+        <Trans>CSV</Trans>
       </Button>
     </>
   );

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
@@ -36,7 +36,7 @@ export const PriceImpactRebatesStatsPage = memo(() => {
       <div className="default-container page-layout">
         <div className="flex">
           <Checkbox isChecked={reviewed} setIsChecked={setReviewed}>
-            Incl. reviewed
+            <Trans>Incl. reviewed</Trans>
           </Checkbox>
           <div className="PriceImpactRebatesStats-loading">{loading && <SpinningLoader />}</div>
         </div>
@@ -164,10 +164,10 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
         </div>
         <div className="PriceImpactRebatesStatsPage-cell-actions">
           <button className="SubaccountModal-mini-button" onClick={handleCopyCommandClick}>
-            Copy Cmd
+            <Trans>Copy Cmd</Trans>
           </button>
           <button className="SubaccountModal-mini-button" onClick={handleCopyAccountsClick}>
-            Copy Users
+            <Trans>Copy Users</Trans>
           </button>
         </div>
       </div>
@@ -189,7 +189,7 @@ const RebateAccountsRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) =
         <div className="PriceImpactRebatesStatsPage-cell-approved">
           <Trans>FACTOR</Trans>
         </div>
-        <div className="PriceImpactRebatesStatsPage-cell-usd">USD</div>
+        <div className="PriceImpactRebatesStatsPage-cell-usd">{t`USD`}</div>
         <div className="PriceImpactRebatesStatsPage-cell-actions"></div>
       </div>
       {rebateGroup.userRebates.map((rebateItem) => {

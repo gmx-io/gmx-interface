@@ -421,11 +421,11 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && thresholdType === TriggerThresholdType.Above && triggerPrice < markPrice) {
-      return { buttonErrorMessage: t`Stop market price below mark price` };
+      return { buttonErrorMessage: t`Stop Market price below mark price` };
     }
 
     if (!isLong && thresholdType === TriggerThresholdType.Below && triggerPrice > markPrice) {
-      return { buttonErrorMessage: t`Stop market price above mark price` };
+      return { buttonErrorMessage: t`Stop Market price above mark price` };
     }
   }
 
