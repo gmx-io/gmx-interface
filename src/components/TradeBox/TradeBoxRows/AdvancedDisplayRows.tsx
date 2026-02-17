@@ -197,6 +197,7 @@ export function TradeBoxAdvancedGroups({
       hasError={hasError}
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
+      wrapped
     >
       {isTrigger ? (
         <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />
@@ -233,7 +234,7 @@ export function TradeBoxAdvancedGroups({
       {!isTwap && (
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
-          {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
+          {isMarket && !isSwap && <AllowedSlippageRow slippageInputId={slippageInputId} />}
           {!isSwap && <NextStoredImpactRows />}
           <LeverageInfoRows />
           <EntryPriceRow />
