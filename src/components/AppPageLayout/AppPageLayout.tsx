@@ -24,9 +24,12 @@ export default function AppPageLayout({
 }) {
   return (
     <div className={cx("flex h-full w-full", className)}>
-      <div className="z-30 hidden p-8 lg:block">{sideNav ? sideNav : <SideNav />}</div>
+      <div className="z-30 hidden p-8 pb-4 lg:block">{sideNav ? sideNav : <SideNav />}</div>
       <div
-        className={cx("flex h-full grow flex-col overflow-y-auto scrollbar-gutter-stable md:p-8", pageWrapperClassName)}
+        className={cx(
+          "flex h-full grow flex-col overflow-y-auto scrollbar-gutter-stable md:p-8 md:pb-4",
+          pageWrapperClassName
+        )}
       >
         <div className="flex h-full grow flex-col items-center">
           <div className="w-full md:pb-8">{header ? header : <AppHeader />}</div>

@@ -8,6 +8,7 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
   selectTradeboxFromTokenInputValue,
+  selectTradeboxToTokenInputValue,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
@@ -17,7 +18,7 @@ export function useTradeboxChanges() {
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const fromTokenInputValue = useSelector(selectTradeboxFromTokenInputValue);
-  const toTokenInputValue = useSelector(selectTradeboxFromTokenInputValue);
+  const toTokenInputValue = useSelector(selectTradeboxToTokenInputValue);
 
   const previousMarketIndexTokenAddress = usePrevious(marketInfo?.indexTokenAddress);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
