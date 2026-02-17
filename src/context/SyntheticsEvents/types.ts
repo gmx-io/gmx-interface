@@ -1,4 +1,3 @@
-import type { StatusCode } from "sdk/utils/gelatoRelay";
 import type { ReactNode } from "react";
 
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
@@ -6,6 +5,7 @@ import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubacсountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
+import type { StatusCode } from "sdk/utils/gelatoRelay";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
