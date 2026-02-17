@@ -1,7 +1,8 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn test:ci
+yarn test:ci &
 
-cd sdk
-yarn test:ci
+cd sdk && yarn test:ci &
+
+wait

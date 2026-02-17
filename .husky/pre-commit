@@ -2,7 +2,27 @@
 set -e
 . "$(dirname "$0")/_/husky.sh"
 
-yarn lingui:generate
-yarn lint-staged
-yarn tscheck
+# Step 1: Start independent tasks in parallel
+yarn lingui:generate &
+LINGUI_PID=$!
+
+yarn build-sdk &
+BUILD_PID=$!
+
+# Step 2: Wait for build-sdk — lint-staged and tscheck depend on it
+wait $BUILD_PID
+
+# Step 3: Start dependent tasks in parallel
+yarn lint-staged &
+LINT_PID=$!
+
+yarn tscheck &
+TSCHECK_PID=$!
+
+# Step 4: Wait for all remaining tasks
+wait $LINGUI_PID
+wait $LINT_PID
+wait $TSCHECK_PID
+
+# Step 5: Stage generated locale files
 git add src/locales/
