@@ -170,12 +170,12 @@ export function PriceImpactFeesRow() {
                 No price impact on increases — orders execute at mark price.{" "}
                 <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                   Read more
-                </ExternalLink>
+                </ExternalLink>.
               </Trans>
             }
           />
           {" / "}
-          {t`Fees`}
+          {t`fees`}
         </span>
       }
       value={
