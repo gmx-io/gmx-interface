@@ -712,7 +712,17 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       return t`Unable to calculate order`;
     }
     return undefined;
-  }, [tpPriceInput, slPriceInput, tpPriceError, slPriceError, orderPayloads.length, editTPSLSize, closeSizeInput, closeSizeUsd, formattedMaxCloseSize]);
+  }, [
+    tpPriceInput,
+    slPriceInput,
+    tpPriceError,
+    slPriceError,
+    orderPayloads.length,
+    editTPSLSize,
+    closeSizeInput,
+    closeSizeUsd,
+    formattedMaxCloseSize,
+  ]);
 
   const handleSubmit = useCallback(async () => {
     if (!signer || !provider || !batchParams || !tokensData || !marketsInfoData) return;

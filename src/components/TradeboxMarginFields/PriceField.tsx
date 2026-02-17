@@ -36,10 +36,7 @@ export function PriceField({
     });
 
     return (
-      <span
-        className={onMarkPriceClick ? "cursor-pointer" : undefined}
-        onClick={onMarkPriceClick}
-      >
+      <span className={onMarkPriceClick ? "cursor-pointer" : undefined} onClick={onMarkPriceClick}>
         {t`Mark:`} <span className="text-typography-primary">{formattedMarkPrice}</span>
       </span>
     );
