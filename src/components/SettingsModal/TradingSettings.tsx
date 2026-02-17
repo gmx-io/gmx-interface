@@ -235,7 +235,7 @@ export function TradingSettings({
                 <br />
                 Slippage differs from price impact, which is based on open interest imbalances.
               </Trans>{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">
+              <ExternalLink href="https://docs.gmx.io/docs/trading/#slippage">
                 <Trans>Read more</Trans>
               </ExternalLink>.
             </div>
@@ -266,7 +266,7 @@ export function TradingSettings({
             description={
               <div>
                 <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee-buffer">
+                <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee">
                   <Trans>Read more</Trans>
                 </ExternalLink>.
               </div>

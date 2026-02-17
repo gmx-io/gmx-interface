@@ -49,7 +49,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
                 <br />
                 <br />
                 Slippage differs from price impact, which is based on open interest imbalances.{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">Read more</ExternalLink>.
+                <ExternalLink href="https://docs.gmx.io/docs/trading/#slippage">Read more</ExternalLink>.
               </Trans>
             </div>
           }
