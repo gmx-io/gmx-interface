@@ -848,16 +848,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gelatocloud/gasless@npm:0.0.9":
-  version: 0.0.9
-  resolution: "@gelatocloud/gasless@npm:0.0.9"
+"@gelatocloud/gasless@npm:0.0.10":
+  version: 0.0.10
+  resolution: "@gelatocloud/gasless@npm:0.0.10"
   dependencies:
     isomorphic-ws: "npm:^5.0.0"
     ws: "npm:^8.19.0"
     zod: "npm:4.1.13"
   peerDependencies:
     viem: ^2.0.0
-  checksum: 10/409a11b636bcad6326ab9c7b5ae9686efdbd2ab31a89ed87eaa076dc6689cc7675adf7160630b2007bb9a7883c9f08cae39c5a8819f4e00071f3742549c4ba73
+  checksum: 10/247e7068f058e4e13c0f5c4ada98a65d65dd5495038d1bb9a88cf5462e6ecdaa9810285a80cd8cbd5e5de4a3c2f909ed39a622a3e64a042d80324ee9aa4b543d
   languageName: node
   linkType: hard
 
@@ -866,7 +866,7 @@ __metadata:
   resolution: "@gmx-io/sdk@workspace:."
   dependencies:
     "@babel/plugin-transform-private-property-in-object": "npm:^7.25.9"
-    "@gelatocloud/gasless": "npm:0.0.9"
+    "@gelatocloud/gasless": "npm:0.0.10"
     "@graphql-codegen/cli": "npm:5.0.6"
     "@graphql-codegen/client-preset": "npm:4.8.1"
     "@graphql-codegen/typescript": "npm:4.1.6"

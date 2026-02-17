@@ -69,7 +69,6 @@ function makeExpressTxnResultWaiter(relayer: ReturnType<typeof getGelatoRelayerC
         timeout: 120_000,
         pollingInterval: 1_000,
         throwOnReverted: true,
-        usePolling: true,
       });
 
       metrics.pushTiming<GelatoPollingTiming>("express.pollGelatoTask.finalStatus", metrics.getTime(timerId) ?? 0, {

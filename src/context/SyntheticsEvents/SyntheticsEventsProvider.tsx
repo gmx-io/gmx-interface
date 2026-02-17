@@ -1038,7 +1038,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             timeout: 120_000,
             pollingInterval: 1_000,
             throwOnReverted: true,
-            usePolling: true,
           });
 
           if (isDevelopment()) {
