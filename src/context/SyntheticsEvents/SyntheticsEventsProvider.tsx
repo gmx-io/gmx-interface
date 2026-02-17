@@ -1032,7 +1032,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       (async () => {
         try {
-          const terminalStatus = await relayer.waitForStatus({ id: taskId });
+          const terminalStatus = await relayer.waitForStatus({ id: taskId, timeout: 120_000, pollingInterval: 1_000 });
 
           if (isDevelopment()) {
             const { accountSlug, projectSlug } = getTenderlyAccountParams();
@@ -1055,11 +1055,20 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               statusCode: terminalStatus.status,
               message: terminalStatus.status !== StatusCode.Success ? terminalStatus.message : undefined,
               transactionHash,
+              revertData: terminalStatus.status === StatusCode.Reverted ? terminalStatus.data : undefined,
             })
           );
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error(e);
+
+          setGelatoTaskStatuses((old) =>
+            setByKey(old, taskId, {
+              taskId,
+              statusCode: StatusCode.Rejected,
+              message: e instanceof Error ? e.message : "Task status polling failed",
+            })
+          );
         } finally {
           pollingTaskIdsRef.current.delete(taskId);
           taskChainIdRef.current.delete(taskId);

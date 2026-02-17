@@ -499,8 +499,8 @@ export async function estimateExpressParams({
 export function getIsValidExpressParams({
   gasPaymentValidations,
 }: {
-  chainId?: number;
   gasPaymentValidations: GasPaymentValidations;
+  [key: string]: unknown;
 }): boolean {
   return gasPaymentValidations.isValid;
 }

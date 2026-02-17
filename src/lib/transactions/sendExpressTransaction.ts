@@ -48,15 +48,12 @@ export async function sendExpressTransaction(p: {
   };
 }
 
-function makeExpressTxnResultWaiter(
-  relayer: ReturnType<typeof getGelatoRelayerClient>,
-  taskId: string
-) {
+function makeExpressTxnResultWaiter(relayer: ReturnType<typeof getGelatoRelayerClient>, taskId: string) {
   return async (): Promise<TransactionWaiterResult> => {
     const timerId = `pollGelatoTask ${taskId}`;
     metrics.startTimer(timerId);
 
-    const terminalStatus = await relayer.waitForStatus({ id: taskId });
+    const terminalStatus = await relayer.waitForStatus({ id: taskId, timeout: 120_000, pollingInterval: 1_000 });
 
     metrics.pushTiming<GelatoPollingTiming>("express.pollGelatoTask.finalStatus", metrics.getTime(timerId) ?? 0, {
       status: String(terminalStatus.status),

@@ -101,6 +101,7 @@ export type GelatoTaskStatus = {
   statusCode: StatusCode;
   message?: string;
   transactionHash?: string;
+  revertData?: string;
 };
 
 export type PendingPositionsUpdates = {

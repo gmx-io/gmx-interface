@@ -323,6 +323,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@gelatocloud/gasless": "0.0.7",
     "cross-fetch": "4.0.0",
     "crypto-js": "4.2.0",
     "graphql": "15.8.0",
