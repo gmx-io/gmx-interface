@@ -1837,6 +1837,10 @@ msgstr "Keine Mittel zum Einlösen"
 msgid "Max deposit limit reached"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+#~ msgid "Min size per part: {0}"
+#~ msgstr "Min. Größe pro Teil: {0}"
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above liq. price"
@@ -5078,6 +5082,10 @@ msgstr "Spread"
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von {formattedMaxLeverage} überschritten wurde, wenn die Gebühren berücksichtigt werden."
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#~ msgid "Swap {0}"
+#~ msgstr "Swap {0}"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buyable cap reached for GM: {0} in {1} [{2}]. Reduce size, pick different GM, or shift to another pool."
 msgstr ""
@@ -5369,11 +5377,16 @@ msgstr "Bridge-TX-Hash"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
-msgstr "Start unrealisierter PnL<<<<<<< HEAD======="
+msgstr "Start unrealisierter PnL"
+
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
+#~ msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
+#~ msgstr "Unzureichendes {nativeTokenSymbol} für Gas in Ihrer Wallet auf {0}. <0>Kaufe {nativeTokenSymbol}</0>"
 
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Size (% of Position)"
-msgstr ">>>>>>> f1dc1dcfae90cb33db28fde02c823f4591625a49"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
