@@ -417,10 +417,6 @@ msgstr "Цена стоп-рынка выше рыночной цены"
 msgid "Net value is the amount held in the position inclusive of PnL, fees and net price impact."
 msgstr "Чистая стоимость — это сумма, удерживаемая в позиции, включая PnL, комиссии и чистое влияние на цену."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "Достигнута продаваемая емкость для пула GM: {0} [{1}], поскольку токены зарезервированы трейдерами. Пожалуйста, выберите другой пул, уменьшите размер продажи или разделите вывод из нескольких пулов."
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
 msgstr "TWAP-обмен: Обмен токенов равномерно распределенными частями за указанное время."
@@ -486,7 +482,7 @@ msgstr "Позиции"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} не может быть отправлен на адреса смарт-контрактов. Выберите другой токен."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "Развернуть"
 
@@ -613,6 +609,7 @@ msgstr "Пулы GM:"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "Купите {nativeTokenSymbol} напрямую на {chainName} или переведите его туда."
 
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -1795,10 +1792,6 @@ msgstr "Отправитель вывел все токены из GLP Vesting V
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "ВНИМАНИЕ: Эта позиция имеет низкую сумму залога после вычета комиссий, внесите больше залога, чтобы снизить риск ликвидации позиции."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Enter a  price"
-#~ msgstr "Введите цену"
-
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data available yet"
 msgstr "Пока недостаточно данных"
@@ -1843,10 +1836,6 @@ msgstr "Нет средств для клейма"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached"
 msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min size per part: {0}"
-#~ msgstr "Мин. размер на часть: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2185,10 +2174,6 @@ msgstr "Dune Analytics"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug Swaps"
 msgstr "Отладка свопов"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "Недостаточно ликвидности GM: {0} [{1}] в GLV для выполнения вашего запроса на продажу. Пожалуйста, выберите другой пул, уменьшите размер продажи или разделите вывод из нескольких пулов."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -2720,7 +2705,7 @@ msgstr "Ордер отменён"
 msgid "Slippage is too high."
 msgstr "Slippage слишком высок."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "Свернуть"
 
@@ -3325,6 +3310,7 @@ msgid "Search Pools"
 msgstr "Поиск пулов"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "Выбрать Язык"
 
@@ -3519,10 +3505,6 @@ msgstr "Выбрать рынок"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "Нет совпадающих токенов"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
-#~ msgstr "Достигнут лимит покупки для пула GM: {0} в {1} [{2}]. Пожалуйста, выберите другой пул или уменьшите размер покупки."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
@@ -4353,6 +4335,8 @@ msgid "Claimable"
 msgstr "Требуемый"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Документация"
@@ -5094,10 +5078,6 @@ msgstr "Спред"
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "Эта позиция была ликвидирована, так как максимальное кредитное плечо {formattedMaxLeverage} было превышено с учетом комиссий."
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Swap {0}"
-#~ msgstr "Обмен {0}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buyable cap reached for GM: {0} in {1} [{2}]. Reduce size, pick different GM, or shift to another pool."
 msgstr ""
@@ -5391,11 +5371,6 @@ msgstr "Хэш транзакции моста"
 msgid "Start unrealized pnl"
 msgstr "Начальный нереализованный PnL"
 
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
-#~ msgstr "Недостаточно {nativeTokenSymbol} для газа в вашем кошельке на {0}. <0>Купить {nativeTokenSymbol}</0>"
-
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Size (% of Position)"
 msgstr ""
@@ -5403,10 +5378,6 @@ msgstr ""
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Одобрение подано! <0>Просмотреть статус.</0>"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-#~ msgstr "Достигнут лимит покупки для пула GM: {0} в {1} [{2}]. Пожалуйста, уменьшите размер покупки, выберите другой токен GM или сдвиньте токены GM в другой пул и попробуйте снова."
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Deposit"
@@ -6180,10 +6151,6 @@ msgstr "Стимулы LP tBTC"
 msgid "of open fee"
 msgstr "от комиссии открытия"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
-#~ msgstr "Ошибка ордера. Цены сейчас волатильны для этого рынка, попробуйте снова, <0>увеличив разрешенный slippage</0> в разделе деталей исполнения."
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
 msgstr "Одобрить GMX"
@@ -6343,6 +6310,11 @@ msgstr "Внесение не удалось"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr "Реферальный код создан."
+
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+msgid "Dark Theme"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
@@ -6771,10 +6743,6 @@ msgstr "Ошибки торгов"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr "Рассмотрите выбор только позиций, где накопленная комиссия за финансирование превышает стоимость газа {0} для расчета каждой позиции."
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
-#~ msgstr "Достигнут лимит покупки для пула GM: {0} с использованием выбранного токена оплаты. Пожалуйста, выберите другой пул, уменьшите размер покупки или выберите другой состав токенов."
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -8220,6 +8188,8 @@ msgstr "Распределение"
 msgid "Referral code does not exist"
 msgstr "Реферальный код не существует"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "Язык"
@@ -8273,10 +8243,6 @@ msgstr "Достигнуто максимальное количество де�
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
-
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
-#~ msgstr "Недостаточно {localizedList} для газа в вашем кошельке на {chainName}. <0>Купить {localizedList}</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"

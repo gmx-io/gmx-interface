@@ -417,10 +417,6 @@ msgstr "止损市场价格高于标记价格"
 msgid "Net value is the amount held in the position inclusive of PnL, fees and net price impact."
 msgstr "净值是仓位中持有的金额，包括 PnL、费用和净价格影响。"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "池 GM: {0} [{1}] 的可售上限已达到，因为代币已被交易者保留。请选择不同的池、减少售卖规模，或从多个池拆分提款。"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
 msgstr "TWAP 交换：在指定时间内均匀分布部分交换代币。"
@@ -486,7 +482,7 @@ msgstr "仓位"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} 无法发送到智能合约地址。请选择另一个代币。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "展开"
 
@@ -613,6 +609,7 @@ msgstr "GM 资金池："
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "直接在 {chainName} 上购买 {nativeTokenSymbol} 或将其转移到那里。"
 
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -1795,10 +1792,6 @@ msgstr "发送方已从 GLP 归属金库中提取所有代币"
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "警告：扣除费用后，此仓位抵押品金额较低，请存入更多抵押品以降低仓位清算风险。"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Enter a  price"
-#~ msgstr "输入价格"
-
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data available yet"
 msgstr "暂无足够数据"
@@ -1843,10 +1836,6 @@ msgstr "无资金可申领"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached"
 msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min size per part: {0}"
-#~ msgstr "每个部分最小规模：{0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2185,10 +2174,6 @@ msgstr "Dune Analytics"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug Swaps"
 msgstr "调试互换"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "GLV 中没有足够的 GM: {0} [{1}] 流动性来满足您的售卖请求。请选择不同的池、减少售卖规模，或从多个池拆分提款。"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -2720,7 +2705,7 @@ msgstr "订单已取消"
 msgid "Slippage is too high."
 msgstr "滑点过高。"
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "折叠"
 
@@ -3325,6 +3310,7 @@ msgid "Search Pools"
 msgstr "搜索资金池"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "选择语言"
 
@@ -3519,10 +3505,6 @@ msgstr "选择市场"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "没有匹配的代币"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
-#~ msgstr "池 GM: {0} 在 {1} [{2}] 的可购买上限已达到。请选择不同的池或减少购买规模。"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
@@ -4353,6 +4335,8 @@ msgid "Claimable"
 msgstr "可领取"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "文档"
@@ -5094,10 +5078,6 @@ msgstr "价差"
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "由于在考虑费用时超出了 {formattedMaxLeverage} 的最大杠杆，该头寸已被清算。"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Swap {0}"
-#~ msgstr "交换 {0}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buyable cap reached for GM: {0} in {1} [{2}]. Reduce size, pick different GM, or shift to another pool."
 msgstr ""
@@ -5391,11 +5371,6 @@ msgstr "跨链交易哈希"
 msgid "Start unrealized pnl"
 msgstr "起始未实现 PnL"
 
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
-#~ msgstr "钱包中 {0} 上的 {nativeTokenSymbol} 不足以支付 gas。<0>购买 {nativeTokenSymbol}</0>"
-
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Size (% of Position)"
 msgstr ""
@@ -5403,10 +5378,6 @@ msgstr ""
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "批准已提交！<0>查看状态。</0>"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-#~ msgstr "池 GM: {0} 在 {1} [{2}] 的可买入上限已达到。请减少买入大小、选择不同的 GM 代币，或将 GM 代币转移到不同的池并重试。"
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Deposit"
@@ -6180,10 +6151,6 @@ msgstr "tBTC LP 激励"
 msgid "of open fee"
 msgstr "开仓费用"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
-#~ msgstr "订单错误。此市场价格当前波动，请在执行详情部分 <0>增加允许滑点</0> 后重试。"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
 msgstr "授权 GMX"
@@ -6343,6 +6310,11 @@ msgstr "存入失败"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr "推荐码已创建。"
+
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+msgid "Dark Theme"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
@@ -6771,10 +6743,6 @@ msgstr "交易错误"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr "考虑仅选择累积资金费用超过结算每个头寸的 {0} gas 成本的头寸。"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
-#~ msgstr "使用所选支付代币的池 GM: {0} 的可买入上限已达到。请选择不同的池、减少买入大小或选择不同的代币组成。"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -8220,6 +8188,8 @@ msgstr "分配"
 msgid "Referral code does not exist"
 msgstr "推荐码不存在"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "语言"
@@ -8273,10 +8243,6 @@ msgstr "达到最大操作次数。<0>点击这里</0> 更新。"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
-
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
-#~ msgstr "钱包中 {chainName} 上的 {localizedList} 不足以支付 gas。<0>购买 {localizedList}</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"

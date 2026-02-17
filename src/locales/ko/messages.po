@@ -417,10 +417,6 @@ msgstr "스탑 마켓 가격이 마크 가격 초과"
 msgid "Net value is the amount held in the position inclusive of PnL, fees and net price impact."
 msgstr "순 가치는 PnL, 수수료 및 순 가격 영향을 포함하여 포지션에 보유된 금액입니다."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "트레이더에 의해 토큰이 예약되어 풀 GM: {0} [{1}]의 판매 상한에 도달했습니다. 다른 풀을 선택하거나 판매 크기를 줄이거나 여러 풀에서 인출을 분할하세요."
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
 msgstr "TWAP 스왑: 지정된 시간 동안 균등하게 분배된 부분으로 토큰 스왑."
@@ -486,7 +482,7 @@ msgstr "포지션"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0}은 스마트 컨트랙트 주소로 보낼 수 없습니다. 다른 토큰을 선택하세요."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "확장"
 
@@ -613,6 +609,7 @@ msgstr "GM 풀:"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "{chainName}에서 직접 {nativeTokenSymbol}을 구매하거나 그곳으로 전송하세요."
 
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -1795,10 +1792,6 @@ msgstr "발신자가 GLP 베스팅 볼트에서 모든 토큰을 출금했습니
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "경고: 이 포지션은 수수료 차감 후 담보액이 낮습니다. 포지션 청산 위험을 줄이기 위해 담보를 더 예치하세요."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Enter a  price"
-#~ msgstr "가격 입력"
-
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data available yet"
 msgstr "아직 충분한 데이터가 없습니다"
@@ -1843,10 +1836,6 @@ msgstr "청구할 자금 없음"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached"
 msgstr ""
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min size per part: {0}"
-#~ msgstr "부분당 최소 크기: {0}"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -2185,10 +2174,6 @@ msgstr "Dune Analytics"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug Swaps"
 msgstr "스왑 디버그"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "판매 요청을 충족할 GLV 내 GM: {0} [{1}] 유동성이 충분하지 않습니다. 다른 풀을 선택하거나 판매 크기를 줄이거나 여러 풀에서 인출을 분할하세요."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -2720,7 +2705,7 @@ msgstr "주문 최소됨"
 msgid "Slippage is too high."
 msgstr "슬리피지가 너무 높습니다."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "접기"
 
@@ -3325,6 +3310,7 @@ msgid "Search Pools"
 msgstr "풀 검색"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "언어 선택"
 
@@ -3519,10 +3505,6 @@ msgstr "시장 선택"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "일치하는 토큰 없음"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
-#~ msgstr "{1} [{2}]의 풀 GM: {0} 구매 상한에 도달했습니다. 다른 풀을 선택하거나 구매 크기를 줄이세요."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
@@ -4353,6 +4335,8 @@ msgid "Claimable"
 msgstr "수령가능"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "문서"
@@ -5094,10 +5078,6 @@ msgstr "스프레드"
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "수수료를 고려했을 때 최대 레버리지 {formattedMaxLeverage}가 초과되어 해당 포지션이 청산되었습니다."
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Swap {0}"
-#~ msgstr "{0} 스왑"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buyable cap reached for GM: {0} in {1} [{2}]. Reduce size, pick different GM, or shift to another pool."
 msgstr ""
@@ -5391,11 +5371,6 @@ msgstr "브리지 TX 해시"
 msgid "Start unrealized pnl"
 msgstr "시작 미실현 PnL"
 
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
-#~ msgstr "{0}의 지갑에 가스용 {nativeTokenSymbol}가 부족합니다. <0>{nativeTokenSymbol} 구매</0>"
-
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Size (% of Position)"
 msgstr ""
@@ -5403,10 +5378,6 @@ msgstr ""
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "승인 제출 완료! <0>상태 보기.</0>"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-#~ msgstr "풀 GM: {1} [{2}]의 {0} 구매 가능 상한에 도달했습니다. 구매 크기를 줄이거나 다른 GM 토큰을 선택하거나 GM 토큰을 다른 풀로 이전한 후 다시 시도해주세요."
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Deposit"
@@ -6180,10 +6151,6 @@ msgstr "tBTC LP 인센티브"
 msgid "of open fee"
 msgstr "개설 수수료의"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
-#~ msgstr "주문 오류. 이 시장의 가격이 현재 변동적입니다. 실행 세부 섹션에서 <0>허용 슬리피지 증가</0>로 다시 시도하세요."
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
 msgstr "GMX 승인"
@@ -6343,6 +6310,11 @@ msgstr "입금 실패"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr "추천 코드 생성됨."
+
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+msgid "Dark Theme"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
@@ -6771,10 +6743,6 @@ msgstr "거래 오류"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr "누적 펀딩 수수료가 각 포지션 정산을 위한 {0} 가스 비용을 초과하는 포지션만 선택하는 것을 고려하세요."
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
-#~ msgstr "선택된 지불 토큰을 사용하는 풀 GM: {0}의 구매 가능 상한에 도달했습니다. 다른 풀을 선택하거나 구매 크기를 줄이거나 다른 토큰 구성을 선택해주세요."
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -8220,6 +8188,8 @@ msgstr "분배"
 msgid "Referral code does not exist"
 msgstr "추천 코드가 존재하지 않습니다"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "언어"
@@ -8273,10 +8243,6 @@ msgstr "최대 액션 수 도달. <0>여기 클릭</0>하여 업데이트."
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
-
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
-#~ msgstr "{chainName}의 지갑에 가스용 {localizedList}가 부족합니다. <0>{localizedList} 구매</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"

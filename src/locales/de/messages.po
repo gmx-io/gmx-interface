@@ -417,10 +417,6 @@ msgstr "Stop-Marktpreis über Markpreis"
 msgid "Net value is the amount held in the position inclusive of PnL, fees and net price impact."
 msgstr "Der Nettowert ist der in der Position gehaltene Betrag einschließlich PnL, Gebühren und Netto-Preis-Impact."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "Die verkaufbare Obergrenze für den Pool GM: {0} [{1}] ist erreicht, da die Token von Tradern reserviert sind. Bitte wähle einen anderen Pool, reduziere die Verkaufsgröße oder teile deine Abhebung auf mehrere Pools auf."
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
 msgstr "Swap TWAP: Tausche Token in gleichmäßig verteilten Teilen über einen festgelegten Zeitraum."
@@ -486,7 +482,7 @@ msgstr "Positionen"
 msgid "{0} can not be sent to smart contract addresses. Select another token."
 msgstr "{0} kann nicht an Smart-Contract-Adressen gesendet werden. Wähle einen anderen Token."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Expand"
 msgstr "Erweitern"
 
@@ -613,6 +609,7 @@ msgstr "GM-Pools:"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there."
 msgstr "Kaufen Sie {nativeTokenSymbol} direkt auf {chainName} oder übertragen Sie es dorthin."
 
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/Tabs/NestedTab.tsx
 #: src/components/TradeBox/TradeBox.tsx
 msgid "More"
@@ -1795,10 +1792,6 @@ msgstr "Der Absender hat alle Token aus dem GLP-Vesting-Vault abgezogen"
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "WARNUNG: Diese Position weist nach Abzug der Gebühren einen geringen Betrag an Kollateral auf; hinterlege mehr Kollateral, um das Liquidationsrisiko der Position zu verringern."
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Enter a  price"
-#~ msgstr "Preis eingeben"
-
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data available yet"
 msgstr "Noch nicht genügend Daten verfügbar"
@@ -2185,10 +2178,6 @@ msgstr "Dune Analytics"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug Swaps"
 msgstr "Swap-Debug"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "Es gibt nicht genügend GM: {0} [{1}]-Liquidität in GLV, um deine Verkaufsanfrage zu erfüllen. Bitte wähle einen anderen Pool, reduziere die Verkaufsgröße oder teile deine Abhebung auf mehrere Pools auf."
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -2720,7 +2709,7 @@ msgstr "Order storniert"
 msgid "Slippage is too high."
 msgstr "Slippage ist zu hoch."
 
-#: src/components/SideNav/SideNav.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr "Einklappen"
 
@@ -3325,6 +3314,7 @@ msgid "Search Pools"
 msgstr "Pools suchen"
 
 #: src/components/SideNav/LanguageNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "Select Language"
 msgstr "Sprache auswählen"
 
@@ -3519,10 +3509,6 @@ msgstr "Markt auswählen"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "Keine Tokens passen"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
-#~ msgstr "Das kaufbaren Limit für den Pool GM: {0} in {1} [{2}] wurde erreicht. Bitte wähle einen anderen Pool oder reduziere die Kaufgröße."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
@@ -4353,6 +4339,8 @@ msgid "Claimable"
 msgstr "Beanspruchbar"
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/SideNav.tsx
 msgid "Docs"
 msgstr "Dokumente"
@@ -5404,10 +5392,6 @@ msgstr ""
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "Genehmigung übermittelt! <0>Status anzeigen.</0>"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-#~ msgstr "Die kaufbaren Limit für den Pool GM: {0} in {1} [{2}] wurde erreicht. Bitte reduziere die Kaufgröße, wähle einen anderen GM-Token oder verschiebe die GM-Token in einen anderen Pool und versuche es erneut."
-
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Deposit"
 msgstr "Verfügbar zum Einzahlen"
@@ -6180,10 +6164,6 @@ msgstr "tBTC LP-Anreize"
 msgid "of open fee"
 msgstr "der Eröffnungsgebühr"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
-#~ msgstr "Order-Fehler. Preise sind derzeit volatil für diesen Markt, versuchen Sie es erneut durch <0>Erhöhen des erlaubten Slippage</0> im Abschnitt Ausführungsdetails."
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
 msgstr "GMX genehmigen"
@@ -6343,6 +6323,11 @@ msgstr "Einzahlung fehlgeschlagen"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Referral code created."
 msgstr "Empfehlungscode erstellt."
+
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
+msgid "Dark Theme"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
@@ -6771,10 +6756,6 @@ msgstr "Trade-Fehler"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr "Überlege, nur Positionen auszuwählen, bei denen die angesammelte Funding-Gebühr die {0} Gas-Kosten zur Abwicklung jeder Position überschreitet."
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
-#~ msgstr "Das kaufbaren Limit für den Pool GM: {0} mit dem ausgewählten Zahlungstoken wurde erreicht. Bitte wähle einen anderen Pool, reduziere die Kaufgröße oder wähle eine andere Token-Zusammensetzung."
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -8220,6 +8201,8 @@ msgstr "Verteilung"
 msgid "Referral code does not exist"
 msgstr "Empfehlungscode existiert nicht"
 
+#: src/components/SideNav/BottomMenuSection.tsx
+#: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "Sprache"
@@ -8273,10 +8256,6 @@ msgstr "Max. Aktionsanzahl erreicht. <0>Hier klicken</0> zum Aktualisieren."
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
-
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
-#~ msgstr "Unzureichendes {localizedList} für Gas in Ihrer Wallet auf {chainName}. <0>Kaufe {localizedList}</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"
