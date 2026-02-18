@@ -214,7 +214,7 @@ function GmxAccountBalanceTooltipContent() {
   return (
     <Trans>
       Your GMX Account balance, usable for trading from any supported chain.{" "}
-      <ExternalLink href="https://docs.gmx.io/docs/trading/#multichain-trading">Read more</ExternalLink>
+      <ExternalLink href="https://docs.gmx.io/docs/trading/#multichain-trading">Read more</ExternalLink>.
     </Trans>
   );
 }

@@ -104,7 +104,7 @@ export function PriceImpactFeesRow() {
                 Net price impact and fees from your trade.{" "}
                 <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                   Read more
-                </ExternalLink>
+                </ExternalLink>.
               </Trans>
             }
           />
