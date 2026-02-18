@@ -124,7 +124,7 @@ const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketSt
   const tokenIconBadge = getMarketBadge(chainId, marketStat.marketInfo);
 
   return (
-    <Link to={`/pools/?market=${marketStat.marketInfo.marketTokenAddress}&operation=buy`} className="asset-item">
+    <Link to={`/pools/details?market=${marketStat.marketInfo.marketTokenAddress}&operation=buy`} className="asset-item">
       <div className="mr-12">
         <TokenIcon symbol={tokenIconName} badge={tokenIconBadge} displaySize={32} />
       </div>
