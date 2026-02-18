@@ -549,7 +549,8 @@ export function useTradeboxButtonState({
         if (isSwap) {
           submitButtonText = `${modeLabel}: ${t`Swap`} ${fromToken?.symbol}`;
         } else {
-          submitButtonText = `${modeLabel}: ${localizedTradeTypeLabels[tradeType!]} ${isIncrease ? t`Increase` : t`Decrease`}`;
+          const actionLabel = isIncrease ? t`increase` : t`decrease`;
+          submitButtonText = `${modeLabel}: ${localizedTradeTypeLabels[tradeType!]} ${actionLabel}`;
         }
       }
     }
