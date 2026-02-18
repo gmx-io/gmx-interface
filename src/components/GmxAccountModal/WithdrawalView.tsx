@@ -455,7 +455,6 @@ function useWithdrawViewTransactions({
         const receipt = await sendExpressTransaction({
           chainId,
           txnData: signedTxnData,
-          isSponsoredCall: expressTxnParams.isSponsoredCall,
         });
 
         sendOrderTxnSubmittedMetric(metricData.metricId);

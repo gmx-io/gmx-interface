@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectIsSponsoredCallAvailable } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { removeSubaccountExpressTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
@@ -292,7 +291,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     if (srcChainId !== undefined) {
       const globalExpressParams = calcSelector(selectExpressGlobalParams);
-      const isSponsoredCallAvailable = calcSelector(selectIsSponsoredCallAvailable);
 
       if (!provider || !globalExpressParams) {
         return false;
@@ -307,7 +305,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           signer,
           subaccount,
           globalExpressParams,
-          isSponsoredCallAvailable,
         });
     } else {
       removeSubaccount = () => removeSubaccountWalletTxn(chainId, signer, subaccount.address);
