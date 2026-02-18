@@ -282,7 +282,7 @@ export function TradingSettings({
           />
         )}
 
-        {chainId === ARBITRUM && srcChainId === undefined && (
+        {chainId === ARBITRUM && srcChainId === undefined && settings.expressOrdersEnabled && (
           <div className="flex w-full items-center justify-between">
             <TooltipWithPortal
               className="font-medium"
