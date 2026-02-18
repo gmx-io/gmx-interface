@@ -2,8 +2,6 @@ import { CSSProperties, memo, useMemo } from "react";
 
 import type { CrosshairPercentageState } from "./useCrosshairPercentage";
 
-import "./CrosshairPercentageLabel.scss";
-
 interface CrosshairPercentageLabelProps {
   state: CrosshairPercentageState;
 }
@@ -31,9 +29,12 @@ function CrosshairPercentageLabelComponent({ state }: CrosshairPercentageLabelPr
   const formattedPercentage = `${percentage >= 0 ? "+" : ""}${percentage.toFixed(2)}%`;
 
   return (
-    <div className="CrosshairPercentageLabel" style={style}>
-      <div className="CrosshairPercentageLabel-price">{formattedPrice}</div>
-      <div className="CrosshairPercentageLabel-percentage">{formattedPercentage}</div>
+    <div
+      className="leading-none pointer-events-none absolute z-10 box-border flex flex-col items-center gap-2 whitespace-nowrap rounded-2 bg-[#131722] px-8 py-4 text-11 font-medium text-white dark:bg-[#363a45]"
+      style={style}
+    >
+      <div className="text-14 leading-[16px]">{formattedPrice}</div>
+      <div className="text-11 leading-[13px]">{formattedPercentage}</div>
     </div>
   );
 }
