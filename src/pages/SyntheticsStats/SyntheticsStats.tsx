@@ -76,7 +76,7 @@ export function SyntheticsStats() {
   });
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Synthetics Stats">
       <div className="SyntheticsStats mt-20">
         <div className="SyntheticsStats-table-wrap">
           <table>

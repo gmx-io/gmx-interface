@@ -69,7 +69,7 @@ export default function NftWallet() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title={t`NFT Wallet`}>
       <div className="NftWallet Page page-layout">
         <div className="Page-title-section">
           <div className="Page-title">

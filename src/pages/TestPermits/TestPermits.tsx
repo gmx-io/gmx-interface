@@ -163,7 +163,7 @@ export function TestPermits() {
   };
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Token Permit Testing">
       <div className="mx-auto max-w-4xl p-4">
         <h1 className="text-2xl mb-6 font-medium">Token Permit Testing</h1>
 

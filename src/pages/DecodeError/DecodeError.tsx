@@ -113,7 +113,7 @@ export function DecodeError() {
   const formattedArgs = decodedError ? formatArgs(decodedError.args, decodedError.errorName, decodedError.abi) : null;
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Decode Error">
       <div className="default-container page-layout">
         <PageTitle
           title="Decode Error"

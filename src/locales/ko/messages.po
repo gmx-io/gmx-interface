@@ -1639,6 +1639,7 @@ msgid "Full market"
 msgstr "전체 마켓"
 
 #: src/pages/NftWallet/NftWallet.tsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Wallet"
 msgstr "NFT 지갑"
 
@@ -2595,6 +2596,7 @@ msgid "Relayer request failed"
 msgstr "릴레이어 요청 실패"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "계정 전송"
 
@@ -2602,6 +2604,7 @@ msgstr "계정 전송"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "GMX 계정의 가스용 {wrappedNativeTokenSymbol}가 부족합니다."
 
+#: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
 msgstr "GMX V1 작업"
@@ -2917,6 +2920,7 @@ msgstr "이 크기로 숏 증가를 위한 유동성이 없습니다. 최대 숏
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "트레이드"
 
@@ -6908,6 +6912,7 @@ msgstr "세션 생성됨"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -7317,6 +7322,7 @@ msgstr "수익률 볼트"
 msgid "Telegram Group (Portuguese)"
 msgstr "텔레그램 그룹 (포르투갈어)"
 
+#: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX V2 Actions"
 msgstr "GMX V2 액션"
@@ -7612,6 +7618,8 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX 계정"
@@ -8706,6 +8714,8 @@ msgstr "TWAP 파트 업데이트"
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "GLV는 어떻게 수익을 벌며, 내 수익은 어디서 볼 수 있나요?"
 
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete Account Transfer"

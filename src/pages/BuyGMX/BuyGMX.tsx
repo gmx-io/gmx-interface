@@ -86,7 +86,7 @@ export default function BuyGMX() {
   const canTransferNativeToken = TRANSFER_EXCHANGES.filter((e) => chainId in e.links).length > 0;
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title={t`Buy GMX`}>
       <div className="BuyGMXGLP default-container page-layout">
         <div className="BuyGMXGLP-container">
           <div className="section-title-block">

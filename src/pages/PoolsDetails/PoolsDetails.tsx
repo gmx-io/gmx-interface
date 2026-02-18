@@ -12,7 +12,6 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getTokenData } from "domain/synthetics/tokens";
-import { getPageTitle } from "lib/legacy";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
@@ -26,7 +25,6 @@ import Loader from "components/Loader/Loader";
 import { useCompositionData } from "components/MarketStats/hooks/useCompositionData";
 import { MarketComposition } from "components/MarketStats/MarketComposition";
 import { MarketGraphs } from "components/MarketStats/MarketGraphs";
-import SEO from "components/Seo/SEO";
 import SideNav from "components/SideNav/SideNav";
 import { Curtain } from "components/TradeBox/Curtain";
 
@@ -67,57 +65,56 @@ export function PoolsDetails() {
 
   return (
     <AppPageLayout
+      title="V2 Pools"
       className="max-lg:pb-40"
       sideNav={<SideNav className="max-xl:pb-40" />}
       header={<ChainContentHeader breadcrumbs={breadcrumbs} leftContentClassName="!pl-0 max-md:!pl-8" />}
     >
-      <SEO title={getPageTitle("V2 Pools")}>
-        <div className={cx("flex flex-col gap-8")}>
-          {glvOrMarketInfo ? (
-            <>
-              <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
+      <div className={cx("flex flex-col gap-8")}>
+        {glvOrMarketInfo ? (
+          <>
+            <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
 
-              <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
-                <div className="flex grow flex-col gap-8">
-                  <ErrorBoundary id="PoolsDetails-MarketGraphs" variant="block" wrapperClassName="rounded-t-8">
-                    {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
-                  </ErrorBoundary>
+            <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
+              <div className="flex grow flex-col gap-8">
+                <ErrorBoundary id="PoolsDetails-MarketGraphs" variant="block" wrapperClassName="rounded-t-8">
+                  {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
+                </ErrorBoundary>
 
-                  <ErrorBoundary id="PoolsDetails-MarketComposition" variant="block" wrapperClassName="rounded-t-8">
-                    <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
-                      <MarketComposition
-                        type="backing"
-                        label={<Trans>Backing Composition</Trans>}
-                        title={<Trans>Exposure to Backing Tokens</Trans>}
-                        composition={backingComposition}
-                      />
-
-                      <MarketComposition
-                        type="market"
-                        label={<Trans>Market Composition</Trans>}
-                        title={<Trans>Exposure to Market Traders' PnL</Trans>}
-                        composition={marketComposition}
-                      />
-                    </div>
-                  </ErrorBoundary>
-                  <PoolsDetailsCard title={<Trans>About</Trans>}>
-                    <PoolsDetailsAbout
-                      glvOrMarketInfo={glvOrMarketInfo}
-                      marketToken={marketToken}
-                      marketsInfoData={glvAndMarketsInfoData}
-                      marketTokensData={depositMarketTokensData}
+                <ErrorBoundary id="PoolsDetails-MarketComposition" variant="block" wrapperClassName="rounded-t-8">
+                  <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
+                    <MarketComposition
+                      type="backing"
+                      label={<Trans>Backing Composition</Trans>}
+                      title={<Trans>Exposure to Backing Tokens</Trans>}
+                      composition={backingComposition}
                     />
-                  </PoolsDetailsCard>
-                </div>
 
-                <PoolsDetailsGmSwapBox isInCurtain={isInCurtain} />
+                    <MarketComposition
+                      type="market"
+                      label={<Trans>Market Composition</Trans>}
+                      title={<Trans>Exposure to Market Traders' PnL</Trans>}
+                      composition={marketComposition}
+                    />
+                  </div>
+                </ErrorBoundary>
+                <PoolsDetailsCard title={<Trans>About</Trans>}>
+                  <PoolsDetailsAbout
+                    glvOrMarketInfo={glvOrMarketInfo}
+                    marketToken={marketToken}
+                    marketsInfoData={glvAndMarketsInfoData}
+                    marketTokensData={depositMarketTokensData}
+                  />
+                </PoolsDetailsCard>
               </div>
-            </>
-          ) : (
-            <Loader />
-          )}
-        </div>
-      </SEO>
+
+              <PoolsDetailsGmSwapBox isInCurtain={isInCurtain} />
+            </div>
+          </>
+        ) : (
+          <Loader />
+        )}
+      </div>
     </AppPageLayout>
   );
 }
