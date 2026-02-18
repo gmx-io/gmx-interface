@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -6,10 +6,12 @@ import { useLeaderboardPageKey } from "context/SyntheticsStateContext/hooks/lead
 import { LeaderboardPageConfig } from "domain/synthetics/leaderboard";
 import { LEADERBOARD_PAGES } from "domain/synthetics/leaderboard/constants";
 import { useChainId } from "lib/chains";
+import { getPageTitle } from "lib/legacy";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { Breadcrumbs, BreadcrumbItem } from "components/Breadcrumbs/Breadcrumbs";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import SEO from "components/Seo/SEO";
 
 import { LeaderboardContainer } from "./components/LeaderboardContainer";
 import "./LeaderboardPage.scss";
@@ -39,9 +41,11 @@ const LeaderboardBreadcrumbs = () => {
 export function LeaderboardPage() {
   return (
     <AppPageLayout header={<ChainContentHeader breadcrumbs={<LeaderboardBreadcrumbs />} />}>
-      <div className="page-layout">
-        <LeaderboardContainer />
-      </div>
+      <SEO title={getPageTitle(t`Leaderboard`)}>
+        <div className="page-layout">
+          <LeaderboardContainer />
+        </div>
+      </SEO>
     </AppPageLayout>
   );
 }

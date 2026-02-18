@@ -403,10 +403,6 @@ msgstr "ストップ市場価格がマーク価格を上回っています"
 msgid "Net value is the amount held in the position inclusive of PnL, fees and net price impact."
 msgstr "純価値は、PnL、手数料、および純価格影響を含むポジションで保有される金額です。"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The sellable cap for the pool GM: {0} [{1}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "プールGM: {0} [{1}] の売却可能上限に達しました。トークンがトレーダーによってリザーブされているためです。別のプールを選択するか、売却サイズを減らすか、複数のプールから出金を分割してください。"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time."
 msgstr "TWAPスワップ: 指定された時間に均等に分割してトークンをスワップ。"
@@ -1752,10 +1748,6 @@ msgstr "送信者がGLPベスティングボールトから全トークンを引
 msgid "WARNING: This position has a low amount of collateral after deducting fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr "警告: このポジションは手数料差引後の担保額が低いため、担保額を増やしてポジションの清算リスクを減らしてください。"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Enter a  price"
-#~ msgstr "価格を入力"
-
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data available yet"
 msgstr "まだ十分なデータがありません"
@@ -2149,10 +2141,6 @@ msgstr "Dune Analytics"
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug Swaps"
 msgstr "スワップデバッグ"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "There isn't enough GM: {0} [{1}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
-#~ msgstr "売却リクエストを満たすためのGLV内のGM: {0} [{1}]流動性が不足しています。別のプールを選択するか、売却サイズを減らすか、複数のプールから出金を分割してください。"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -3478,10 +3466,6 @@ msgstr "マーケットを選択"
 msgid "No tokens matched"
 msgstr "一致するトークンなし"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please choose a different pool or reduce the buy size."
-#~ msgstr "プールGM: {0}の{1} [{2}]での購入可能上限に達しました。別のプールを選択するか購入サイズを減らしてください。"
-
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "トレード履歴はありません"
@@ -3866,6 +3850,7 @@ msgstr "Compass Labs GMトークンダッシュボード"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "獲得"
@@ -5327,18 +5312,9 @@ msgstr "ブリッジTXハッシュ"
 msgid "Start unrealized pnl"
 msgstr "未実現PnL開始"
 
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
-#~ msgstr "{0}のウォレット内のガス用の{nativeTokenSymbol}が不足しています。<0>{nativeTokenSymbol}を購入</0>"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval submitted! <0>View status.</0>"
 msgstr "承認が提出されました! <0>状況を確認する</0>"
-
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} in {1} [{2}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again."
-#~ msgstr "プールGM: {0} の{1} [{2}]での購入可能上限に達しました。購入サイズを減らすか、別のGMトークンを選択するか、GMトークンを別のプールにシフトして再試行してください。"
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to Deposit"
@@ -6109,10 +6085,6 @@ msgstr "tBTC LPインセンティブ"
 msgid "of open fee"
 msgstr "オープン手数料の"
 
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Order error. Prices are currently volatile for this market, try again by <0>increasing the allowed slippage</0> under the execution details section."
-#~ msgstr "注文エラー。この市場の価格が現在変動的です。実行詳細セクションで<0>許容スリッページを増やして</0>もう一度お試しください。"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
 msgstr "GMXを承認"
@@ -6701,10 +6673,6 @@ msgstr "取引エラー"
 msgid "Consider selecting only positions where the accrued funding fee exceeds the {0} gas cost to settle each position."
 msgstr "各ポジションの決済に{0}ガスコストを超える蓄積資金手数料を持つポジションのみを選択することを検討してください。"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "The buyable cap for the pool GM: {0} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens."
-#~ msgstr "選択された支払いトークンを使ったプールGM: {0} の購入可能上限に達しました。別のプールを選択するか、購入サイズを減らすか、別のトークン構成を選択してください。"
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size exceeds available open interest. Delta: {usdDeltaText}, max OI: {openInterestText}"
@@ -6752,6 +6720,7 @@ msgid "Top Positions"
 msgstr "トップポジション"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "プール"
@@ -7879,6 +7848,7 @@ msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "リーダーボード"
 
@@ -8162,10 +8132,6 @@ msgstr "最大アクション数に達しました。<0>ここをクリック</0
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
-
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {localizedList} for gas in your wallet on {chainName}. <0>Buy {localizedList}</0>"
-#~ msgstr "{chainName}のウォレット内のガス用の{localizedList}が不足しています。<0>{localizedList}を購入</0>"
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Stay Safe from <0/> Liquidations"

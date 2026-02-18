@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
 import { LAST_EARN_TAB_KEY } from "config/localStorage";
+import { getPageTitle } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { sendEarnPageTabViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/earnEvents";
 
@@ -11,6 +12,7 @@ import Button from "components/Button/Button";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import PageTitle from "components/PageTitle/PageTitle";
+import SEO from "components/Seo/SEO";
 
 export enum EarnTab {
   Discover = "discover",
@@ -77,30 +79,32 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   return (
     <AppPageLayout header={<ChainContentHeader />}>
-      <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
+      <SEO title={getPageTitle(t`Earn`)}>
+        <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
 
-      <div className="mt-12 flex grow flex-col gap-8">
-        <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex gap-8">
-            {tabOptions.map((tab) => (
-              <Button
-                key={tab.value}
-                variant={pathname.startsWith(`/earn/${tab.value}`) ? "primary" : "secondary"}
-                to={`/earn/${tab.value}`}
-                className="shrink-0"
-              >
-                {tab.label}
-              </Button>
-            ))}
+        <div className="mt-12 flex grow flex-col gap-8">
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-8">
+              {tabOptions.map((tab) => (
+                <Button
+                  key={tab.value}
+                  variant={pathname.startsWith(`/earn/${tab.value}`) ? "primary" : "secondary"}
+                  to={`/earn/${tab.value}`}
+                  className="shrink-0"
+                >
+                  {tab.label}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {children ? (
-          <ErrorBoundary id="EarnPageLayout" variant="block" wrapperClassName="rounded-t-8">
-            <div className="flex grow flex-col gap-8">{children}</div>
-          </ErrorBoundary>
-        ) : null}
-      </div>
+          {children ? (
+            <ErrorBoundary id="EarnPageLayout" variant="block" wrapperClassName="rounded-t-8">
+              <div className="flex grow flex-col gap-8">{children}</div>
+            </ErrorBoundary>
+          ) : null}
+        </div>
+      </SEO>
     </AppPageLayout>
   );
 }
