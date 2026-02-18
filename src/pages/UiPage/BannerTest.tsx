@@ -1,14 +1,15 @@
 import { Trans } from "@lingui/macro";
+import noop from "lodash/noop";
 
-import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import InfoIcon from "img/ic_info.svg?react";
-import WarnIcon from "img/ic_warn.svg?react";
 import AlertIcon from "img/ic_alert.svg?react";
 import ExpressIcon from "img/ic_express.svg?react";
+import InfoIcon from "img/ic_info.svg?react";
 import OneClickIcon from "img/ic_one_click.svg?react";
+import WarnIcon from "img/ic_warn.svg?react";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -39,9 +40,9 @@ export function BannerTest() {
         </Section>
 
         <Section title="Text + ColorfulButtonLink">
-          <ColorfulBanner color="blue" icon={InfoIcon} onClose={() => {}}>
+          <ColorfulBanner color="blue" icon={InfoIcon} onClose={noop}>
             <Trans>0.0045 WETH remaining in old 1CT subaccount</Trans>
-            <ColorfulButtonLink color="blue" onClick={() => {}}>
+            <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Withdraw</Trans>
             </ColorfulButtonLink>
           </ColorfulBanner>
@@ -50,14 +51,14 @@ export function BannerTest() {
             <Trans>
               Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account
             </Trans>
-            <ColorfulButtonLink color="yellow" onClick={() => {}}>
+            <ColorfulButtonLink color="yellow" onClick={noop}>
               <Trans>Change to Base</Trans>
             </ColorfulButtonLink>
           </ColorfulBanner>
 
-          <ColorfulBanner color="blue" icon={OneClickIcon} onClose={() => {}}>
+          <ColorfulBanner color="blue" icon={OneClickIcon} onClose={noop}>
             <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>
-            <ColorfulButtonLink color="blue" onClick={() => {}}>
+            <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Re-enable</Trans>
             </ColorfulButtonLink>
           </ColorfulBanner>
@@ -66,7 +67,7 @@ export function BannerTest() {
             <Trans>
               Insufficient liquidity in WETH-USDC pool. Select a different pool.
             </Trans>
-            <ColorfulButtonLink color="blue" onClick={() => {}}>
+            <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Switch to WBTC-USDC pool</Trans>
             </ColorfulButtonLink>
           </AlertInfoCard>
@@ -75,14 +76,14 @@ export function BannerTest() {
             <Trans>
               Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position.
             </Trans>
-            <ColorfulButtonLink color="blue" onClick={() => {}}>
+            <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Switch to WBTC-USDC pool</Trans>
             </ColorfulButtonLink>
           </AlertInfoCard>
         </Section>
 
         <Section title="Stacked spans">
-          <ColorfulBanner color="blue" icon={AlertIcon} onClose={() => {}}>
+          <ColorfulBanner color="blue" icon={AlertIcon} onClose={noop}>
             <div className="flex flex-col gap-4">
               <span className="font-medium text-blue-300">
                 <Trans>Skip creating a referral code?</Trans>
@@ -98,7 +99,7 @@ export function BannerTest() {
           <AlertInfoCard type="warning" hideClose>
             <Trans>
               Existing position in WETH-USDC pool.
-              <ColorfulButtonLink color="blue" onClick={() => {}}>
+              <ColorfulButtonLink color="blue" onClick={noop}>
                 Switch to WETH-USDC pool
               </ColorfulButtonLink>
             </Trans>
@@ -107,7 +108,7 @@ export function BannerTest() {
           <AlertInfoCard type="warning" hideClose>
             <Trans>
               Existing limit order in WETH-USDC pool.
-              <ColorfulButtonLink onClick={() => {}}>
+              <ColorfulButtonLink onClick={noop}>
                 Switch to WETH-USDC pool
               </ColorfulButtonLink>
             </Trans>
@@ -116,7 +117,7 @@ export function BannerTest() {
           <AlertInfoCard>
             <Trans>
               Existing position uses USDC collateral. This action won't affect it.{" "}
-              <ColorfulButtonLink color="blue" onClick={() => {}}>
+              <ColorfulButtonLink color="blue" onClick={noop}>
                 Switch to USDC collateral
               </ColorfulButtonLink>
             </Trans>
@@ -163,13 +164,13 @@ export function BannerTest() {
             <div>
               <Trans>Insufficient gas balance. Deposit more ETH.</Trans>
               <br />
-              <ColorfulButtonLink color="red" onClick={() => {}}>
+              <ColorfulButtonLink color="red" onClick={noop}>
                 <Trans>Deposit ETH</Trans>
               </ColorfulButtonLink>
             </div>
           </ColorfulBanner>
 
-          <AlertInfoCard type="info" onClose={() => {}}>
+          <AlertInfoCard type="info" onClose={noop}>
             <div>
               <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
               <ColorfulButtonLink to="https://docs.gmx.io" newTab>
@@ -178,7 +179,7 @@ export function BannerTest() {
             </div>
           </AlertInfoCard>
 
-          <ColorfulBanner color="blue" icon={InfoIcon} onClose={() => {}}>
+          <ColorfulBanner color="blue" icon={InfoIcon} onClose={noop}>
             <div className="flex flex-col gap-8">
               <span>
                 <span className="cursor-pointer font-medium text-blue-300">
@@ -189,7 +190,7 @@ export function BannerTest() {
             </div>
           </ColorfulBanner>
 
-          <ColorfulBanner color="blue" icon={OneClickIcon} onClose={() => {}} onClick={() => {}} className="cursor-pointer">
+          <ColorfulBanner color="blue" icon={OneClickIcon} onClose={noop} onClick={noop} className="cursor-pointer">
             <div>
               <Trans>Try Express Trading</Trans>
             </div>
@@ -197,7 +198,7 @@ export function BannerTest() {
         </Section>
 
         <Section title="Inline ExternalLink">
-          <ColorfulBanner color="blue" onClose={() => {}}>
+          <ColorfulBanner color="blue" onClose={noop}>
             <span>
               <Trans>
                 Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net

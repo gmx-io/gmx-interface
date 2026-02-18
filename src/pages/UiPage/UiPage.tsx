@@ -4,8 +4,6 @@ import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 import { memo, SVGProps, useState } from "react";
 
-import { BannerTest } from "./BannerTest";
-
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
@@ -18,6 +16,8 @@ import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";
 import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+
+import { BannerTest } from "./BannerTest";
 
 const iconsContext = mapKeys(
   import.meta.glob("img/ic_*.svg", {
