@@ -14,13 +14,6 @@ export type TransactionWaiterResult = {
   status: "success" | "failed";
 };
 
-export type GelatoTaskStatus = {
-  taskId: string;
-  statusCode: StatusCode;
-  message?: string;
-  transactionHash?: string;
-};
-
 export enum TxnEventName {
   Submitted = "Submitted",
   Simulated = "Simulated",
